@@ -38,10 +38,10 @@ req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl
       text =       if (info)            prefix_message("*  ", msg),
       headerIn =                        prefix_message("<- ", msg),
       headerOut =                       prefix_message("-> ", msg),
-      dataIn =     if (data_in)         prefix_message("<<  ", msg, TRUE),
-      dataOut =    if (data_out)        prefix_message(">> ", msg, TRUE),
-      sslDataIn =  if (ssl && data_in)  prefix_message("*< ", msg, TRUE),
-      sslDataOut = if (ssl && data_out) prefix_message("*> ", msg, TRUE)
+      dataIn =     if (data_in)         prefix_message("<<  ", msg),
+      dataOut =    if (data_out)        prefix_message(">> ", msg),
+      sslDataIn =  if (ssl && data_in)  prefix_message("*< ", msg),
+      sslDataOut = if (ssl && data_out) prefix_message("*> ", msg)
     )
   }
   req_options_set(req, debugfunction = debug, verbose = TRUE)
@@ -49,13 +49,13 @@ req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl
 
 # helpers -----------------------------------------------------------------
 
-prefix_message <- function(prefix, x, blank_line = FALSE) {
+prefix_message <- function(prefix, x) {
   x <- readBin(x, character())
 
   lines <- unlist(strsplit(x, "\n", fixed = TRUE, useBytes = TRUE))
   out <- paste0(prefix, lines, collapse = "\n")
-  cat(out)
-  if (blank_line) cat("\n")
+
+  cat(out, "\n", sep = "")
 }
 
 
