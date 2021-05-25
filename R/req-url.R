@@ -1,27 +1,60 @@
-
-req_query_set <- function(req, ...) {
-  query <- list2(...)
-  req$url$query <- utils::modifyList(req$url$query, query)
+#' Modify the request URL
+#'
+#' @description
+#' * `req_url()` replaces the entire url
+#' * `req_url_query()` modifies the components of the query
+#' * `req_url_path()` modifies the path
+#' * `req_url_path_append()` adds to the path
+#'
+#' @inheritParams req_fetch
+#' @param url New URL; completely replaces existing.
+#' @return A modified HTTP [req]uest.
+#' @export
+#' @examples
+#' req <- req("http://example.com")
+#'
+#' # Change url components
+#' req %>%
+#'   req_url_path_append("a") %>%
+#'   req_url_path_append("b") %>%
+#'   req_url_path_append("search.html") %>%
+#'   req_url_query(q = "the cool ice")
+#'
+#' # Change complete url
+#' req %>%
+#'   req_url("http://google.com")
+req_url <- function(req, url) {
+  if (inherits(url, "url")) {
+    # Temporary fudging
+    url <- httr::build_url(url)
+  }
+  req$url <- url
   req
 }
 
-
-req_url_get <- function(req) {
-  httr::build_url(req$url)
+#' @export
+#' @rdname req_url
+#' @param ... Name-value pairs that provide query parameters.
+req_url_query <- function(req, ...) {
+  url <- httr::parse_url(req$url)
+  url$query <- modify_list(url$query, ...)
+  req_url(req, url)
 }
 
+#' @export
+#' @rdname req_url
+#' @param path Path to replace or append to existing path.
+req_url_path <- function(req, path) {
+  url <- httr::parse_url(req$url)
+  url$path <- path
 
-req_url_set <- function(req, url) {
-  req$url <- httr::parse_url(url)
-  req
+  req_url(req, url)
 }
 
-req_path_set <- function(req, path) {
-  req$url$path <- path
-  req
-}
-
-req_path_append <- function(req, path) {
-  req$url$path <- paste0(req$url$path, "/", path)
-  req
+#' @export
+#' @rdname req_url
+req_url_path_append <- function(req, path) {
+  url <- httr::parse_url(req$url)
+  url$path <- paste0(url$path, "/", path)
+  req_url(req, url)
 }

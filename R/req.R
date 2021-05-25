@@ -20,7 +20,7 @@ req <- function(base_url) {
 #' @export
 print.httr2_request <- function(x, ...) {
   cli::cli_text("{.cls {class(x)}}")
-  cli::cli_text("{.field URL}: {req_url_get(x)}")
+  cli::cli_text("{.field URL}: {x$url}")
 
   bullets_with_header("Headers:", x$headers)
   bullets_with_header("Options:", x$options)
@@ -30,7 +30,9 @@ print.httr2_request <- function(x, ...) {
 }
 
 new_request <- function(url, headers = list(), body = list(), fields = list(), options = list()) {
-  url <- httr::parse_url(url)
+  if (!is_string(url)) {
+    abort("`url` must be a string")
+  }
 
   structure(
     list(

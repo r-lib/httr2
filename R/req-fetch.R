@@ -13,14 +13,13 @@
 #' req("https://google.com") %>%
 #'   req_fetch()
 req_fetch <- function(req, path = NULL, handle = NULL) {
-  url <- req_url_get(req)
   handle <- handle %||% req_handle(req)
 
   if (!is.null(path)) {
-    res <- curl::curl_fetch_disk(url, path, handle)
+    res <- curl::curl_fetch_disk(req$url, path, handle)
     body <- new_path(path)
   } else {
-    res <- curl::curl_fetch_memory(url, handle)
+    res <- curl::curl_fetch_memory(req$url, handle)
     body <- res$content
   }
 
@@ -55,14 +54,13 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
 #' req("http://httpbin.org/stream-bytes/100000") %>%
 #'   req_stream(show_bytes, buffer_kb = 32)
 req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
-  url <- req_url_get(req)
   handle <- req_handle(req)
   callback <- as_function(callback)
 
   stopifnot(is.numeric(timeout_sec), timeout_sec > 0)
   stop_time <- Sys.time() + timeout_sec
 
-  stream <- curl::curl(url, handle = handle)
+  stream <- curl::curl(req$url, handle = handle)
   open(stream, "rb")
   withr::defer(close(stream))
 
