@@ -21,5 +21,9 @@ Imports:
     httr,
     lifecycle,
     magrittr,
+    mime,
     rlang,
     withr
+Suggests: 
+    jsonlite,
+    xml2

@@ -1,17 +1,57 @@
-
+#' Extract the body from the response
+#'
+#' @description
+#' * `resp_body_raw()` returns the raw bytes.
+#' * `resp_body_string()` returns a UTF-8 string.
+#' * `resp_body_json()` returns parsed JSON.
+#' * `resp_body_xml()` returns parsed XML.
+#'
+#' `resp_body_json()` and `resp_body_xml()` check that the content-type header
+#' is correct; if the server returns an incorrect type you can suppress the
+#' check with `check_type = FALSE`.
+#'
+#' @param resp A response object.
+#' @export
 resp_body_raw <- function(resp) {
-  resp$body
+  if (resp_body_is_path(resp)) {
+    readBin(resp$body, "raw", file.size(resp$body))
+  } else {
+    resp$body
+  }
 }
 
+#' @param encoding Character encoding of the body text. If not specified,
+#'   will use the encoding specified by the content-type, falling back to
+#'   UTF-8 with a warning if it cannot be found. The resulting string is
+#'   always re-encoded to UTF-8.
+#' @rdname resp_body_raw
+#' @export
 resp_body_string <- function(resp, encoding = NULL) {
-  encoding <- encoding %||%
-    resp$type$params$charset %||%
-    warn_utf()
+  encoding <- encoding %||% resp_encoding(resp)
 
-  iconv(readBin(resp$body, character()), from = encoding, to = "UTF-8")
+  body <- resp_body_raw(resp)
+  iconv(readBin(body, character()), from = encoding, to = "UTF-8")
 }
 
-warn_utf <- function() {
-  warn("No encoding found; using UTF-8")
-  "UTF-8"
+#' @param check_type Check that response has expected content type? Set to
+#'   `FALSE` to suppress the automated check
+#' @param simplifyVector Should JSON arrays containing only primitives (i.e.
+#'   booleans, numbers, and strings) be caused to atomic vectors?
+#' @param ... Other argumented passed on to [jsonlite::fromJSON()] and
+#'   [xml2::read_xml()] respectively.
+#' @rdname resp_body_raw
+#' @export
+resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
+  check_installed("jsonlite")
+  check_content_type(resp, "application/json", check_type)
+  text <- resp_body_string(resp, "UTF-8")
+  jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+}
+
+#' @rdname resp_body_raw
+#' @export
+resp_body_xml <- function(resp, check_type = TRUE, ...) {
+  check_installed("xml2")
+  check_content_type(resp, c("application/xml", "text/xml"), check_type)
+  xml2::read_xml(resp$body, ...)
 }
