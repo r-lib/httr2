@@ -1,4 +1,39 @@
 
+
+req_fetch_with_hooks <- function(req, path = NULL, handle = NULL) {
+  for (hook in req$hooks) {
+    req <- hook$init(req)
+  }
+
+  retry <- TRUE
+  while(retry) {
+    for (hook in req$pre_hooks) {
+      req <- hook(req)
+    }
+
+    resp <- req_fetch(req, path = NULL, handle = NULL)
+    retry <- FALSE
+
+    for (hook in req$post_hooks) {
+      res <- hook$post_fetch(resp, req)
+      resp <- res$resp %||% resp
+      req <- res$req %||% req
+
+      if (isTRUE(res$refetch)) {
+        retry <- TRUE
+        break
+      }
+    }
+  }
+
+  for (hook in req$hooks) {
+    hook$finalise()
+  }
+
+  resp
+}
+
+
 hook_rate_limit <- function(retry_after = NULL) {
   if (is.null(retry_after)) {
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After

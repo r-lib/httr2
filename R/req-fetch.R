@@ -34,67 +34,6 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   )
 }
 
-req_fetch_with_hooks <- function(req, path = NULL, handle = NULL) {
-  for (hook in req$hooks) {
-    req <- hook$init(req)
-  }
-
-  retry <- TRUE
-  while(retry) {
-    for (hook in req$pre_hooks) {
-      req <- hook(req)
-    }
-
-    resp <- req_fetch(req, path = NULL, handle = NULL)
-    retry <- FALSE
-
-    for (hook in req$post_hooks) {
-      res <- hook$post_fetch(resp, req)
-      resp <- res$resp %||% resp
-      req <- res$req %||% req
-
-      if (isTRUE(res$refetch)) {
-        retry <- TRUE
-        break
-      }
-    }
-  }
-
-  for (hook in req$hooks) {
-    hook$finalise()
-  }
-
-  resp
-}
-
-
-req_handle <- function(req) {
-  handle <- curl::new_handle()
-  curl::handle_setheaders(handle, .list = req$headers)
-  curl::handle_setopt(handle, .list = req$options)
-  curl::handle_setform(handle, .list = req$fields)
-  handle
-}
-
-req_method_set <- function(req, method) {
-  method <- toupper(method)
-
-  # First reset all options - this still needs more thought since
-  # calling req_body_none() and then req_method_set(, "POST") will
-  # undo the desired effect. Maybe reserve engineer current and only
-  # set if different? Maybe set up full from -> to matrix.
-  req$options$httpget <- NULL
-  req$options$post <- NULL
-  req$options$nobody <- NULL
-  req$options$customrequest <- NULL
-
-  switch(method,
-    GET = req_options_set(req, httpget = TRUE),
-    POST = req_options_set(req, post = TRUE),
-    HEAD = req_options_set(req, nobody = TRUE),
-    req_options_set(req, customrequest = method)
-  )
-}
 
 req_stream <- function(req, callback, timeout = Inf, buffer_kb = 64) {
   url <- req_url_get(req)
@@ -127,33 +66,17 @@ req_stream <- function(req, callback, timeout = Inf, buffer_kb = 64) {
   )
 }
 
-
 req_handle <- function(req) {
   handle <- curl::new_handle()
   curl::handle_setheaders(handle, .list = req$headers)
   curl::handle_setopt(handle, .list = req$options)
+  if (length(req$fields) > 0) {
+    curl::handle_setform(handle, .list = req$fields)
+  }
+
   handle
 }
 
-req_method_set <- function(req, method) {
-  method <- toupper(method)
-
-  # First reset all options - this still needs more thought since
-  # calling req_body_none() and then req_method_set(, "POST") will
-  # undo the desired effect. Maybe reserve engineer current and only
-  # set if different? Maybe set up full from -> to matrix.
-  req$options$httpget <- NULL
-  req$options$post <- NULL
-  req$options$nobody <- NULL
-  req$options$customrequest <- NULL
-
-  switch(method,
-    GET = req_options_set(req, httpget = TRUE),
-    POST = req_options_set(req, post = TRUE),
-    HEAD = req_options_set(req, nobody = TRUE),
-    req_options_set(req, customrequest = method)
-  )
-}
 
 new_path <- function(x) structure(x, class = "httr_path")
 is_path <- function(x) inherits(x, "httr_path")
