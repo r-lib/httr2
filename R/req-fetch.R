@@ -52,7 +52,7 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
 #'   cat("Got ", length(x), " bytes\n", sep = "")
 #'   TRUE
 #' }
-#' req("http://httpbin.org/stream-bytes/100000") %>%
+#' resp <- req("http://httpbin.org/stream-bytes/100000") %>%
 #'   req_stream(show_bytes, buffer_kb = 32)
 req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   handle <- req_handle(req)
@@ -76,6 +76,7 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   data <- curl::handle_data(handle)
   new_response(
     handle = handle,
+    method = req$method %||% default_method(req),
     url = data$url,
     status_code = data$status_code,
     headers = curl::parse_headers_list(data$headers),

@@ -27,6 +27,6 @@ show_bytes <- function(x) {
   cat("Got ", length(x), " bytes\n", sep = "")
   TRUE
 }
-req("http://httpbin.org/stream-bytes/100000") \%>\%
+resp <- req("http://httpbin.org/stream-bytes/100000") \%>\%
   req_stream(show_bytes, buffer_kb = 32)
 }
