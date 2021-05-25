@@ -63,7 +63,7 @@ req_body_file <- function(req, path, type = NULL) {
   }
 
   req <- req_content_type(req, type, path = path)
-  req <- req_options_set(req,
+  req_options_set(req,
     post = TRUE,
     readfunction = read,
     postfieldsize_large = size,

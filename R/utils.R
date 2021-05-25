@@ -4,7 +4,21 @@ bullets_with_header <- function(header, x) {
   }
 
   cli::cli_text("{.strong {header}}")
-  cli::cli_li(paste0("{.field ", names(x), "}: ", x))
+
+  as_simple <- function(x) {
+    if (is.atomic(x) && length(x) == 1) {
+      if (is.character(x)) {
+        paste0("'", x, "'")
+      } else {
+        format(x)
+      }
+    } else {
+      friendly_type_of(x)
+    }
+  }
+  vals <- map_chr(x, as_simple)
+
+  cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
 }
 
 modify_list <- function(x, ...) {
