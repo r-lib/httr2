@@ -34,6 +34,35 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   )
 }
 
+#' Perform a dry run
+#'
+#' This shows you exactly what httr2 will send to the server, without
+#' actually sending anything. It requires the httpuv package because it
+#' works by sending the real HTTP request to a local webserver, thanks to
+#' the magic of [curl::curl_echo()].
+#'
+#' @inheritParams req_fetch
+#' @param quiet If `TRUE` doesn't print anything.
+#' @returns Invisibly, a list containing information about the request,
+#'   including `method`, `path`, and `headers`.
+#' @export
+#' @examples
+#' req("http://google.com") %>% req_dry_run()
+req_dry_run <- function(req, quiet = FALSE) {
+  check_installed("httpuv")
+
+  if (!quiet) {
+    req <- req_verbose(req, header_in = FALSE)
+  }
+  # Override local server with fake host
+  req <- req_headers_set(req, "Host" = httr::parse_url(req$url)$hostname)
+
+  handle <- req_handle(req)
+  resp <- curl::curl_echo(handle, progress = FALSE)
+
+  invisible(resp[c("method", "path", "headers")])
+}
+
 #' Perform a request, streaming data back to R
 #'
 #' After preparing a request, call `req_stream()` to perform the request

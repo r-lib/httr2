@@ -32,12 +32,12 @@ req_timeout <- function(req, seconds) {
   req_options_set(req, timeout_ms = seconds * 1000)
 }
 
-req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl = FALSE) {
+req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl = FALSE, header_out = TRUE, header_in = TRUE) {
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)            prefix_message("*  ", msg),
-      headerIn =                        prefix_message("<- ", msg),
-      headerOut =                       prefix_message("-> ", msg),
+      headerIn =   if (header_in)       prefix_message("<- ", msg),
+      headerOut =  if (header_out)      prefix_message("-> ", msg),
       dataIn =     if (data_in)         prefix_message("<<  ", msg),
       dataOut =    if (data_out)        prefix_message(">> ", msg),
       sslDataIn =  if (ssl && data_in)  prefix_message("*< ", msg),

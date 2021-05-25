@@ -1,7 +1,6 @@
 # https://everything.curl.dev/libcurl-http/requests#customize-http-request-headers
 req_headers_set <- function(req, ...) {
-  headers <- list2(...)
-  req$headers <- utils::modifyList(req$headers, headers)
+  req$headers <- modify_list(req$headers, ...)
   req
 }
 

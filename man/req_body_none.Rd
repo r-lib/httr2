@@ -63,22 +63,31 @@ Adding a body to a request will automatically switch the method to POST.
 req <- req("http://httpbin.org/post")
 
 # Most APIs expect small amounts of data in either form or json encoded:
-req \%>\% req_body_form(list(x = "A simple text string"))
-req \%>\% req_body_json(list(x = "A simple text string"))
+req \%>\%
+  req_body_form(list(x = "A simple text string")) \%>\%
+  req_dry_run()
+
+req \%>\%
+  req_body_json(list(x = "A simple text string")) \%>\%
+  req_dry_run()
 
 # For total control over the body, send a string or raw vector
-req \%>\% req_body_raw("A simple text string")
+req \%>\%
+  req_body_raw("A simple text string") \%>\%
+  req_dry_run()
 
 # There are two main ways that APIs expect entire files
 path <- tempfile()
-writeLines(letters, path)
+writeLines(letters[1:6], path)
 
 # You can send a single file as the body:
-req \%>\% req_body_file(path) \%>\% req_fetch()
+req \%>\%
+  req_body_file(path) \%>\%
+  req_dry_run()
 
 # You can send multiple files, or a mix of files and data
 # with multipart encoding
 req \%>\%
-  req_body_multipart(list(a = path, b = "some data")) \%>\%
-  req_fetch()
+  req_body_multipart(list(a = curl::form_file(path), b = "some data")) \%>\%
+  req_dry_run()
 }
