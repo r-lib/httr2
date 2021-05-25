@@ -1,4 +1,3 @@
-
 req_body_none <- function(req) {
   req_options_set(req, post = TRUE, nobody = TRUE)
 }
@@ -65,5 +64,4 @@ req_body_multipart <- function(req, ...) {
   req$fields <- utils::modifyList(req$fields, fields)
   req
 }
-
 

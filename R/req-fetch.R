@@ -25,6 +25,7 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
 
   new_response(
     handle = handle,
+    method = req$method %||% default_method(req),
     url = res$url,
     status_code = res$status_code,
     headers = curl::parse_headers_list(res$headers),
@@ -84,6 +85,17 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
 }
 
 req_handle <- function(req) {
+  if (!is.null(req$method)) {
+    req <- switch(req$method,
+      HEAD = req_options_set(req, nobody = TRUE),
+      req_options_set(req, customrequest = req$method)
+    )
+  }
+
+  if (!has_name(req$options, "useragent")) {
+    req <- req_user_agent(req, default_ua())
+  }
+
   handle <- curl::new_handle()
   curl::handle_setheaders(handle, .list = req$headers)
   curl::handle_setopt(handle, .list = req$options)

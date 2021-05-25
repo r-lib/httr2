@@ -10,17 +10,14 @@
 #' req("http://r-project.org")
 req <- function(base_url) {
   req <- new_request(base_url)
-  req <- req_headers_set(req,
-    Accept = "application/json, text/xml, application/xml, */*"
-  )
-  req <- req_user_agent(req, default_ua())
   req
 }
 
 #' @export
 print.httr2_request <- function(x, ...) {
   cli::cli_text("{.cls {class(x)}}")
-  cli::cli_text("{.field URL}: {x$url}")
+  method <- toupper(x$method %||% default_method(x))
+  cli::cli_text("{.strong {method}} {x$url}")
 
   bullets_with_header("Headers:", x$headers)
   bullets_with_header("Options:", x$options)
@@ -29,7 +26,7 @@ print.httr2_request <- function(x, ...) {
   invisible(x)
 }
 
-new_request <- function(url, headers = list(), body = list(), fields = list(), options = list()) {
+new_request <- function(url, method = NULL, headers = list(), body = list(), fields = list(), options = list()) {
   if (!is_string(url)) {
     abort("`url` must be a string")
   }
@@ -37,6 +34,7 @@ new_request <- function(url, headers = list(), body = list(), fields = list(), o
   structure(
     list(
       url = url,
+      method = method,
       headers = headers,
       body = body,
       fields = fields,
@@ -53,4 +51,14 @@ default_ua <- function() {
     libcurl = curl::curl_version()$version
   )
   paste0(names(versions), "/", versions, collapse = " ")
+}
+
+default_method <- function(req) {
+  if (has_name(req$options, "post")) {
+    "POST"
+  } else if (has_name(req$options, "nobody")) {
+    "HEAD"
+  } else {
+    "GET"
+  }
 }

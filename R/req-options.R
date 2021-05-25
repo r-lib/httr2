@@ -47,25 +47,9 @@ req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl
   req_options_set(req, debugfunction = debug, verbose = TRUE)
 }
 
-
-req_method_set <- function(req, method) {
-  method <- toupper(method)
-
-  # First reset all options - this still needs more thought since
-  # calling req_body_none() and then req_method_set(, "POST") will
-  # undo the desired effect. Maybe reserve engineer current and only
-  # set if different? Maybe set up full from -> to matrix.
-  req$options$httpget <- NULL
-  req$options$post <- NULL
-  req$options$nobody <- NULL
-  req$options$customrequest <- NULL
-
-  switch(method,
-    GET = req_options_set(req, httpget = TRUE),
-    POST = req_options_set(req, post = TRUE),
-    HEAD = req_options_set(req, nobody = TRUE),
-    req_options_set(req, customrequest = method)
-  )
+req_method <- function(req, method) {
+  req$method <- method
+  req
 }
 
 

@@ -1,9 +1,10 @@
 
 
-new_response <- function(handle, url, status_code, headers, body, times) {
+new_response <- function(handle, method, url, status_code, headers, body, times) {
   structure(
     list(
       handle = handle,
+      method = method,
       url = url,
       status_code = status_code,
       headers = headers,
@@ -17,7 +18,7 @@ new_response <- function(handle, url, status_code, headers, body, times) {
 #' @export
 print.httr2_response <- function(x, ...) {
   cli::cli_text("{.cls {class(x)}}")
-  cli::cli_text("{.field URL}: {x$url}")
+  cli::cli_text("{.strong {x$method}} {x$url}")
 
   status_text <- http_statuses[[as.character(x$status_code)]]
   cli::cli_text("{.field Status}: {x$status_code} {status_text}")
@@ -28,7 +29,7 @@ print.httr2_response <- function(x, ...) {
     cli::cli_text("{.field Body}: Empty")
   } else if (is_path(body)) {
     cli::cli_text("{.field Body}: On disk {.path body}")
-  } else {
+  } else if (length(body) > 0) {
     cli::cli_text("{.field Body}: In memory ({length(body)} bytes)")
   }
 
