@@ -45,8 +45,8 @@ req_body_raw <- function(req, body, type = NULL) {
   )
 }
 
-req_body_json <- function(req, auto_unbox = TRUE, digits = 22, ...) {
-  json <- jsonlite::toJSON(body, auto_unbox = TRUE, digits = 22, ...)
+req_body_json <- function(req, auto_unbox = TRUE, digits = 22, null = "null", ...) {
+  json <- jsonlite::toJSON(body, auto_unbox = TRUE, digits = 22, null = null, ...)
   req_body_raw(json, "application/json")
 }
 
