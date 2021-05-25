@@ -34,14 +34,33 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   )
 }
 
-
-req_stream <- function(req, callback, timeout = Inf, buffer_kb = 64) {
+#' Perform a request, streaming data back to R
+#'
+#' After preparing a request, call `req_stream()` to perform the request
+#' and handle the result with a streaming callback. This is useful for
+#' streaming HTTP APIs where potentially the stream never ends.
+#'
+#' @inheritParams req_fetch
+#' @param callback A single argument callback function. It will be called
+#'   repeatedly with a raw vector whenever there is at least `buffer_kb`
+#'   worth of data to process. It must return `TRUE` to continue streaming.
+#' @param timeout_sec Number of seconds to processs stream for.
+#' @param buffer_kb Buffer size, in kilobytes.
+#' @export
+#' @examples
+#' show_bytes <- function(x) {
+#'   cat("Got ", length(x), " bytes\n", sep = "")
+#'   TRUE
+#' }
+#' req("http://httpbin.org/stream-bytes/100000") %>%
+#'   req_stream(show_bytes, buffer_kb = 32)
+req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   url <- req_url_get(req)
   handle <- req_handle(req)
   callback <- as_function(callback)
 
-  stopifnot(is.numeric(timeout), timeout > 0)
-  stop_time <- Sys.time() + timeout
+  stopifnot(is.numeric(timeout_sec), timeout_sec > 0)
+  stop_time <- Sys.time() + timeout_sec
 
   stream <- curl::curl(url, handle = handle)
   open(stream, "rb")
@@ -55,14 +74,14 @@ req_stream <- function(req, callback, timeout = Inf, buffer_kb = 64) {
     }
   }
 
-  res <- curl::handle_data(handle)
-
+  data <- curl::handle_data(handle)
   new_response(
-    url = res$url,
-    status_code = res$status_code,
-    headers = curl::parse_headers_list(res$headers),
-    body = res$content,
-    times = res$times
+    handle = handle,
+    url = data$url,
+    status_code = data$status_code,
+    headers = curl::parse_headers_list(data$headers),
+    body = NULL,
+    times = data$times
   )
 }
 
@@ -76,7 +95,6 @@ req_handle <- function(req) {
 
   handle
 }
-
 
 new_path <- function(x) structure(x, class = "httr_path")
 is_path <- function(x) inherits(x, "httr_path")
