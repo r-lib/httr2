@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://httr2.r-lib.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/httr2-package.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_fetch.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_method.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_stream.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_template.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_url.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
+  </url>
+</urlset>

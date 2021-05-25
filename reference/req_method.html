@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a new HTTP request — req • httr2</title>
+<title>Set the request method — req_method • httr2</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="Create a new HTTP request — req" />
-<meta property="og:description" content="To perform a HTTP request, first create a request object with req(),
-then define its behaviour with req_ functions, then perform the request
-and fetch the response with req_fetch()." />
+<meta property="og:title" content="Set the request method — req_method" />
+<meta property="og:description" content="Use this function to use a custom HTTP method like &quot;HEAD&quot;,
+&quot;DELETE&quot;, &quot;PATCH&quot;, &quot;UPDATE&quot;, or &quot;OPTIONS&quot;." />
 
 
 
@@ -110,32 +109,37 @@ and fetch the response with req_fetch()." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a new HTTP request</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req.R'><code>R/req.R</code></a></small>
-    <div class="hidden name"><code>req.Rd</code></div>
+    <h1>Set the request method</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-method.R'><code>R/req-method.R</code></a></small>
+    <div class="hidden name"><code>req_method.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>To perform a HTTP request, first create a request object with <code>req()</code>,
-then define its behaviour with <code>req_</code> functions, then perform the request
-and fetch the response with <code><a href='req_fetch.html'>req_fetch()</a></code>.</p>
+    <p>Use this function to use a custom HTTP method like "HEAD",
+"DELETE", "PATCH", "UPDATE", or "OPTIONS".</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req</span><span class='op'>(</span><span class='va'>base_url</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>req_method</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>method</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>base_url</th>
-      <td><p>Base URL for request.</p></td>
+      <th>req</th>
+      <td><p>A <a href='req.html'>req</a>uest.</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>Custom HTTP method</p></td>
     </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>req</span><span class='op'>(</span><span class='st'>"http://r-project.org"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> http://r-project.org</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>req_method</span><span class='op'>(</span><span class='st'>"PATCH"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>PATCH</span> http://httpbin.org</span></div><div class='input'><span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>req_method</span><span class='op'>(</span><span class='st'>"PUT"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>PUT</span> http://httpbin.org</span></div><div class='input'><span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>req_method</span><span class='op'>(</span><span class='st'>"HEAD"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>HEAD</span> http://httpbin.org</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

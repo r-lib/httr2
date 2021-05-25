@@ -91,7 +91,12 @@ streaming HTTP APIs where potentially the stream never ends." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/r-lib/httr2/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -106,7 +111,7 @@ streaming HTTP APIs where potentially the stream never ends." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform a request, streaming data back to R</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-fetch.R'><code>R/req-fetch.R</code></a></small>
     <div class="hidden name"><code>req_stream.Rd</code></div>
     </div>
 
@@ -147,12 +152,12 @@ worth of data to process. It must return <code>TRUE</code> to continue streaming
   <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='st'>"Got "</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='st'>" bytes\n"</span>, sep <span class='op'>=</span> <span class='st'>""</span><span class='op'>)</span>
   <span class='cn'>TRUE</span>
 <span class='op'>}</span>
-<span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org/stream-bytes/100000"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+<span class='va'>resp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org/stream-bytes/100000"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>req_stream</span><span class='op'>(</span><span class='va'>show_bytes</span>, buffer_kb <span class='op'>=</span> <span class='fl'>32</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Got 32768 bytes
 #&gt; Got 32768 bytes
 #&gt; Got 32768 bytes
-#&gt; Got 1696 bytes</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>URL</span>: http://httpbin.org/stream-bytes/100000</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Status</span>: 200 OK</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Content-Type</span>: application/octet-stream</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Body</span>: Empty</span></div></pre>
+#&gt; Got 1696 bytes</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
