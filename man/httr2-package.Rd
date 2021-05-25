@@ -8,6 +8,15 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://httr2.r-lib.org}
+  \item \url{https://github.com/r-lib/httr2}
+  \item Report bugs at \url{https://github.com/r-lib/httr2/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Hadley Wickham \email{hadley@rstudio.com}
 
