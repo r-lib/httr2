@@ -1,5 +1,9 @@
 #' Create a new HTTP request
 #'
+#' To perform a HTTP request, first create a request object with `req()`,
+#' then define its behaviour with `req_` functions, then perform the request
+#' and fetch the response with [req_fetch()].
+#'
 #' @param base_url Base URL for request.
 #' @export
 #' @examples
@@ -16,7 +20,7 @@ req <- function(base_url) {
 #' @export
 print.httr2_request <- function(x, ...) {
   cli::cli_text("{.cls {class(x)}}")
-  cli::cli_text("URL: {req_url_get(x)}")
+  cli::cli_text("{.field URL}: {req_url_get(x)}")
 
   bullets_with_header("Headers:", x$headers)
   bullets_with_header("Options:", x$options)

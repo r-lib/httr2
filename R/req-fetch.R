@@ -1,3 +1,17 @@
+#' Perform a request, fetching data back to R
+#'
+#' After preparing a request, call `req_fetch()` to perform it, fetching
+#' the results back to R.
+#'
+#' @param req A [req]uest.
+#' @param path Optionally, path to save body of request. This is useful for
+#'   large responses since it avoids storing the response in memory.
+#' @param handle Advanced use only; a curl handle.
+#' @returns Returns an HTTP response.
+#' @export
+#' @examples
+#' req("https://google.com") %>%
+#'   req_fetch()
 req_fetch <- function(req, path = NULL, handle = NULL) {
   url <- req_url_get(req)
   handle <- handle %||% req_handle(req)

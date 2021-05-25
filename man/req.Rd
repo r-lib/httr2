@@ -10,7 +10,9 @@ req(base_url)
 \item{base_url}{Base URL for request.}
 }
 \description{
-Create a new HTTP request
+To perform a HTTP request, first create a request object with \code{req()},
+then define its behaviour with \code{req_} functions, then perform the request
+and fetch the response with \code{\link[=req_fetch]{req_fetch()}}.
 }
 \examples{
 req("http://r-project.org")
