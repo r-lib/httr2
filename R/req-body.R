@@ -46,7 +46,7 @@
 req_body_none <- function(req) {
   # Must override method, otherwise curl uses HEAD
   req <- req_method(req, "POST")
-  req_options_set(req, nobody = TRUE)
+  req_options(req, nobody = TRUE)
 }
 
 #' @export
@@ -72,7 +72,7 @@ req_body_file <- function(req, path, type = NULL) {
   }
 
   req <- req_headers(req, `Content-Type` = type %||% "")
-  req_options_set(req,
+  req_options(req,
     post = TRUE,
     readfunction = read,
     postfieldsize_large = size,
@@ -92,7 +92,7 @@ req_body_raw <- function(req, body, type = NULL) {
 
   # Need to override default content-type "application/x-www-form-urlencoded"
   req <- req_headers(req, `Content-Type` = type %||% "")
-  req_options_set(req,
+  req_options(req,
     post = TRUE,
     postfieldsize = length(body),
     postfields = body

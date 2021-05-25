@@ -1,38 +1,115 @@
-req_options_set <- function(req, ...) {
-  options <- list2(...)
-  req$options <- utils::modifyList(req$options, options)
-  req
+#' Set arbitrary curl options in request
+#'
+#' `req_options()` is for expert use only; it allows you to directly set
+#' libcurl options to access features that are otherwise not available in
+#' httr2.
+#'
+#' @inheritParams req_headers
+#' @param ... Name-value pairs. The name should be a valid curl option,
+#'   as found in [curl::curl_options()].
+#' @keywords internal
+#' @export
+req_options <- function(.req, ...) {
+  .req$options <- modify_list(.req$options, ...)
+  .req
 }
 
+#' Set request user agent
+#'
+#' This overrides the default user agent set by httr2 which includes the
+#' version numbers of httr2, the curl package, and libcurl.
+#'
+#' @inheritParams req_fetch
+#' @param ua A new user-agent string.
+#' @export
+#' @examples
+#' req("http://example.com") %>% req_dry_run()
+#' req("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
 req_user_agent <- function(req, ua) {
-  req_options_set(req, useragent = ua)
+  if (!is_string(ua)) {
+    abort("`ua` must be a string")
+  }
+  req_options(req, useragent = ua)
 }
 
+#' Use basic HTTP authentication
+#'
+#' This sets the Authorization header. See details at
+#' <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>.
+#'
+#' @inheritParams req_fetch
+#' @param user_name,password User name and password pair.
+#' @param type Type of HTTP authentication. Should be one of the following
+#'   values: "basic", "digest", "digest_ie", "gssnegotiate", "ntlm", "any".
+#' @export
+#' @examples
+#' req("http://example.com") %>%
+#'   req_authenticate("hadley", "my-secret-password") %>%
+#'   req_dry_run()
+#'
+#' # Note that the authorization header is not encrypted and the
+#' # password can easily be restored:
+#' rawToChar(jsonlite::base64_dec("aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA=="))
+#' # This means that you should be careful when sharing any code that
+#' # reveals the Authorization header
 req_authenticate <- function(req, user_name, password, type = "basic") {
   stopifnot(is.character(user_name), length(user_name) == 1)
   stopifnot(is.character(password), length(password) == 1)
 
-  req_options_set(req,
+  req_options(req,
     httpauth = auth_flags(type),
     userpwd = paste0(user_name, ":", password)
   )
 }
 
-req_cookies <- function(req, ...) {
-  cookies <- map_chr(list2(...), curl::curl_escape)
-  cookie <- paste(names(cookies), cookies, sep = "=", collapse = ";")
-
-  req_options_set(req, cookie = cookie)
-}
-
+#' Set a request timeout
+#'
+#' An error will be thrown if the request does not complete in the time limit.
+#'
+#' @inheritParams req_fetch
+#' @param seconds Maximum number of seconds to wait
+#' @export
+#' @examples
+#' # Give up after at most 10 seconds
+#' req("http://example.com") %>% req_timeout(10)
 req_timeout <- function(req, seconds) {
+  if (!is_double(seconds, n = 1) && !is.na(seconds)) {
+    abort("`seconds` must be a single number")
+  }
   if (seconds < 0.001) {
     abort("`timeout` must be >1 ms")
   }
-  req_options_set(req, timeout_ms = seconds * 1000)
+  req_options(req, timeout_ms = seconds * 1000)
 }
 
-req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl = FALSE, header_out = TRUE, header_in = TRUE) {
+#' Show verbose output when request is performed
+#'
+#' @description
+#' `req_verbose()` uses the following prefixes to distinguish between
+#' different components of the http messages:
+#'
+#' * `*` informative curl messages
+#' * `->` headers sent (out)
+#' * `>>` data sent (out)
+#' * `*>` ssl data sent (out)
+#' * `<-` headers received (in)
+#' * `<<` data received (in)
+#' * `<*` ssl data received (in)
+#'
+#' @inheritParams req_fetch
+#' @param header_out,header_in Show headers sent to/received from the server?
+#' @param data_out,data_in Show data sent to/received from the server?
+#' @param info Show informational text from curl. This is mainly useful
+#'   for debugging https and auth problems, so is disabled by default.
+#' @param ssl Show data even when using a secure connection?
+#' @export
+req_verbose <- function(req,
+                        header_out = TRUE,
+                        header_in = TRUE,
+                        data_out = TRUE,
+                        data_in = FALSE,
+                        info = FALSE,
+                        ssl = FALSE) {
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)            prefix_message("*  ", msg),
@@ -44,7 +121,7 @@ req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl
       sslDataOut = if (ssl && data_out) prefix_message("*> ", msg)
     )
   }
-  req_options_set(req, debugfunction = debug, verbose = TRUE)
+  req_options(req, debugfunction = debug, verbose = TRUE)
 }
 
 # helpers -----------------------------------------------------------------
@@ -57,7 +134,6 @@ prefix_message <- function(prefix, x) {
 
   cat(out, "\n", sep = "")
 }
-
 
 auth_flags <- function(type) {
   constants <- c(
