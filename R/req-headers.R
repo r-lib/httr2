@@ -1,13 +1,24 @@
-# https://everything.curl.dev/libcurl-http/requests#customize-http-request-headers
-req_headers_set <- function(req, ...) {
-  req$headers <- modify_list(req$headers, ...)
-  req
-}
-
-req_content_type <- function(req, type, path = NULL) {
-  if (is.null(type) && !is.null(path)) {
-    type <- mime::guess_type(path, empty = "")
-  }
-
-  req_headers_set(req, "Content-Type" = type)
+#' Set request headers
+#'
+#' `req_headers()` allows you to set the value of any header.
+#'
+#' @param .req A [req]uest.
+#' @param ... Name-value pairs of headers and their values. Note that setting a
+#'    header to `NULL` will not necessarily remove it, but will reset it
+#'    to httr2's default value. To remove a header, set it to `""`.
+#' @export
+#' @examples
+#' req <- req("http://example.com")
+#' # Setting Accept to NULL uses curl's default:
+#' req %>%
+#'   req_headers(Accept = NULL) %>%
+#'   req_dry_run()
+#'
+#' # Setting it to "" removes it:
+#' req %>%
+#'   req_headers(Accept = "") %>%
+#'   req_dry_run()
+req_headers <- function(.req, ...) {
+  .req$headers <- modify_list(.req$headers, ...)
+  .req
 }

@@ -55,7 +55,7 @@ req_dry_run <- function(req, quiet = FALSE) {
     req <- req_verbose(req, header_in = FALSE)
   }
   # Override local server with fake host
-  req <- req_headers_set(req, "Host" = httr::parse_url(req$url)$hostname)
+  req <- req_headers(req, "Host" = httr::parse_url(req$url)$hostname)
 
   handle <- req_handle(req)
   resp <- curl::curl_echo(handle, progress = FALSE)
