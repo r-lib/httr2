@@ -52,13 +52,3 @@ default_ua <- function() {
   )
   paste0(names(versions), "/", versions, collapse = " ")
 }
-
-default_method <- function(req) {
-  if (has_name(req$options, "post")) {
-    "POST"
-  } else if (has_name(req$options, "nobody")) {
-    "HEAD"
-  } else {
-    "GET"
-  }
-}

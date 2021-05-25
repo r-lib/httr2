@@ -47,12 +47,6 @@ req_verbose <- function(req, data_out = TRUE, data_in = FALSE, info = FALSE, ssl
   req_options_set(req, debugfunction = debug, verbose = TRUE)
 }
 
-req_method <- function(req, method) {
-  req$method <- method
-  req
-}
-
-
 # helpers -----------------------------------------------------------------
 
 prefix_message <- function(prefix, x, blank_line = FALSE) {

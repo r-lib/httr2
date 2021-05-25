@@ -85,13 +85,7 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
 }
 
 req_handle <- function(req) {
-  if (!is.null(req$method)) {
-    req <- switch(req$method,
-      HEAD = req_options_set(req, nobody = TRUE),
-      req_options_set(req, customrequest = req$method)
-    )
-  }
-
+  req <- req_method_apply(req)
   if (!has_name(req$options, "useragent")) {
     req <- req_user_agent(req, default_ua())
   }
