@@ -1,6 +1,6 @@
 #' Set method/path from a template
 #'
-#' @descroption
+#' @description
 #' Many APIs document their methods with a lightweight template mechanism
 #' that looks like `GET /user/{user}` or `POST /organisation/:org`. This
 #' function makes it easy to copy and paste this snippets and retrieve template
