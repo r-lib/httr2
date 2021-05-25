@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • httr2</title>
+<title>Perform a dry run — req_dry_run • httr2</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,11 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Perform a dry run — req_dry_run" />
+<meta property="og:description" content="This shows you exactly what httr2 will send to the server, without
+actually sending anything. It requires the httpuv package because it
+works by sending the real HTTP request to a local webserver, thanks to
+the magic of curl::curl_echo()." />
 
 
 
@@ -58,7 +62,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,109 +109,49 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Perform a dry run</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-fetch.R'><code>R/req-fetch.R</code></a></small>
+    <div class="hidden name"><code>req_dry_run.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>This shows you exactly what httr2 will send to the server, without
+actually sending anything. It requires the httpuv package because it
+works by sending the real HTTP request to a local webserver, thanks to
+the magic of <code><a href='https://rdrr.io/pkg/curl/man/curl_echo.html'>curl::curl_echo()</a></code>.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>req_dry_run</span><span class='op'>(</span><span class='va'>req</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-requests" class="hasAnchor"><a href="#section-requests" class="anchor"></a>Requests</h2>
-          <p class="section-desc"><p>Functions to create, modify, and perform HTTP requests</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="req.html">req()</a></code> </p>
-        </td>
-        <td><p>Create a new HTTP request</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_body_none.html">req_body_none()</a></code> <code><a href="req_body_none.html">req_body_file()</a></code> <code><a href="req_body_none.html">req_body_raw()</a></code> <code><a href="req_body_none.html">req_body_json()</a></code> <code><a href="req_body_none.html">req_body_form()</a></code> <code><a href="req_body_none.html">req_body_multipart()</a></code> </p>
-        </td>
-        <td><p>Send a body in an HTTP request</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_dry_run.html">req_dry_run()</a></code> </p>
-        </td>
-        <td><p>Perform a dry run</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_fetch.html">req_fetch()</a></code> </p>
-        </td>
-        <td><p>Perform a request, fetching data back to R</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_headers.html">req_headers()</a></code> </p>
-        </td>
-        <td><p>Set request headers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_method.html">req_method()</a></code> </p>
-        </td>
-        <td><p>Set the request method</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_stream.html">req_stream()</a></code> </p>
-        </td>
-        <td><p>Perform a request, streaming data back to R</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_template.html">req_template()</a></code> </p>
-        </td>
-        <td><p>Set method/path from a template</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_url.html">req_url()</a></code> <code><a href="req_url.html">req_url_query()</a></code> <code><a href="req_url.html">req_url_path()</a></code> <code><a href="req_url.html">req_url_path_append()</a></code> </p>
-        </td>
-        <td><p>Modify the request URL</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-responses" class="hasAnchor"><a href="#section-responses" class="anchor"></a>Responses</h2>
-          <p class="section-desc"><p>Functions to process HTTP responses.</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="resp_body_raw.html">resp_body_raw()</a></code> <code><a href="resp_body_raw.html">resp_body_string()</a></code> <code><a href="resp_body_raw.html">resp_body_json()</a></code> <code><a href="resp_body_raw.html">resp_body_xml()</a></code> </p>
-        </td>
-        <td><p>Extract the body from the response</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>req</th>
+      <td><p>A <a href='req.html'>req</a>uest.</p></td>
+    </tr>
+    <tr>
+      <th>quiet</th>
+      <td><p>If <code>TRUE</code> doesn't print anything.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Invisibly, a list containing information about the request,
+including <code>method</code>, <code>path</code>, and <code>headers</code>.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://google.com"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>req_dry_run</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; -&gt; GET / HTTP/1.1
+#&gt; -&gt; Host: google.com
+#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
+#&gt; -&gt; Accept: */*
+#&gt; -&gt; Accept-Encoding: deflate, gzip
+#&gt; -&gt; </div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
