@@ -4,7 +4,7 @@ bullets_with_header <- function(header, x) {
   }
 
   cli::cli_text("{.strong {header}}")
-  cli::cli_li("{.field {names(x)}}: {x}")
+  cli::cli_li(paste0("{.field ", names(x), "}: ", x))
 }
 
 modify_list <- function(x, ...) {
