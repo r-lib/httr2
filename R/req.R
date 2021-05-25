@@ -1,6 +1,11 @@
-
+#' Create a new HTTP request
+#'
+#' @param base_url Base URL for request.
+#' @export
+#' @examples
+#' req("http://r-project.org")
 req <- function(base_url) {
-  req <- new_req(base_url)
+  req <- new_request(base_url)
   req <- req_headers_set(req,
     Accept = "application/json, text/xml, application/xml, */*"
   )
@@ -8,7 +13,19 @@ req <- function(base_url) {
   req
 }
 
-new_req <- function(url, headers = list(), body = list(), fields = list(), options = list()) {
+#' @export
+print.httr2_request <- function(x, ...) {
+  cli::cli_text("{.cls {class(x)}}")
+  cli::cli_text("URL: {req_url_get(x)}")
+
+  bullets_with_header("Headers:", x$headers)
+  bullets_with_header("Options:", x$options)
+  bullets_with_header("Fields:", x$fields)
+
+  invisible(x)
+}
+
+new_request <- function(url, headers = list(), body = list(), fields = list(), options = list()) {
   url <- httr::parse_url(url)
 
   structure(
@@ -19,10 +36,9 @@ new_req <- function(url, headers = list(), body = list(), fields = list(), optio
       fields = fields,
       options = options
     ),
-    class = "httr2_req"
+    class = "httr2_request"
   )
 }
-
 
 default_ua <- function() {
   versions <- c(
