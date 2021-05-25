@@ -1,3 +1,5 @@
 ^httr2\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^codecov\.yml$
+^\.github$

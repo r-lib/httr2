@@ -27,5 +27,6 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0),
     jsonlite,
-    xml2
+    xml2,
+    covr
 Config/testthat/edition: 3
