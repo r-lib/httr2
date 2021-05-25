@@ -39,7 +39,7 @@ print.httr2_response <- function(x, ...) {
 resp_body_is_path <- function(resp) is_path(resp$body)
 
 resp_status <- function(resp) {
-  resp$status
+  resp$status_code
 }
 resp_is_error <- function(resp) {
   resp_status(resp) >= 400
