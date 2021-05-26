@@ -4,6 +4,7 @@
 \alias{resp_status}
 \alias{resp_status_desc}
 \alias{resp_is_error}
+\alias{resp_check_status}
 \title{Retrieve response status}
 \usage{
 resp_status(resp)
@@ -11,16 +12,22 @@ resp_status(resp)
 resp_status_desc(resp)
 
 resp_is_error(resp)
+
+resp_check_status(resp, info = NULL)
 }
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_fetch]{req_fetch()}}.}
+
+\item{info}{A character vector of additional information to include in
+the error message. Passed to \code{\link[rlang:abort]{rlang::abort()}}.}
 }
 \description{
 \itemize{
-\item \code{http_status()} retrieves the numeric HTTP status code
-\item \code{http_status_desc()} retrieves the brief textual description.
-\item \code{http_is_error()} returns \code{TRUE} if the status code represents an error
+\item \code{respstatus()} retrieves the numeric HTTP status code
+\item \code{resp_status_desc()} retrieves the brief textual description.
+\item \code{resp_is_error()} returns \code{TRUE} if the status code represents an error
 (i.e. a 4xx or 5xx status).
+\item \code{resp_check_status()} turns HTTPs errors into R errors.
 }
 
 In most cases you will not see 1xx or 3xx status codes, as these are

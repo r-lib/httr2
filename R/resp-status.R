@@ -1,10 +1,11 @@
 #' Retrieve response status
 #'
 #' @description
-#' * `http_status()` retrieves the numeric HTTP status code
-#' * `http_status_desc()` retrieves the brief textual description.
-#' * `http_is_error()` returns `TRUE` if the status code represents an error
+#' * `respstatus()` retrieves the numeric HTTP status code
+#' * `resp_status_desc()` retrieves the brief textual description.
+#' * `resp_is_error()` returns `TRUE` if the status code represents an error
 #'   (i.e. a 4xx or 5xx status).
+#' * `resp_check_status()` turns HTTPs errors into R errors.
 #'
 #' In most cases you will not see 1xx or 3xx status codes, as these are
 #' handled automatically by libcurl.
@@ -30,6 +31,26 @@ resp_status_desc <- function(resp) {
 #' @rdname resp_status
 resp_is_error <- function(resp) {
   resp_status(resp) >= 400
+}
+
+#' @export
+#' @param info A character vector of additional information to include in
+#'   the error message. Passed to [rlang::abort()].
+#' @rdname resp_status
+resp_check_status <- function(resp, info = NULL) {
+  if (!resp_is_error(resp)) {
+    return(invisible(resp))
+  }
+
+  status <- resp_status(resp)
+  desc <- resp_status_desc(resp)
+  message <- glue("HTTP {status} {desc}.")
+
+  abort(
+    c(message, info),
+    status = status,
+    class = c(glue("httr2_http_{status}", "httr2_http"))
+  )
 }
 
 http_statuses <- c(
