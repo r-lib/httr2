@@ -14,7 +14,7 @@ reference:
   - req_user_agent
   - req_verbose
 
-- title: Perform it
+- title: Perform a request
   contents:
   - req_dry_run
   - req_fetch
