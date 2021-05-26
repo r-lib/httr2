@@ -8,12 +8,12 @@ Authors@R:
              email = "hadley@rstudio.com"),
       person(given = "RStudio",
              role = c("cph", "fnd")))
-Description: httr2 is a modern re-imagining on httr designed around a pipeable
-   interface and solving more of the problems that API wrappers need.
+Description: httr2 is a modern re-imagining on httr designed around a
+    pipeable interface and solving more of the problems that API wrappers
+    need.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+URL: https://httr2.r-lib.org, https://github.com/r-lib/httr2
+BugReports: https://github.com/r-lib/httr2/issues
 Imports: 
     cli,
     curl,
@@ -25,11 +25,12 @@ Imports:
     rlang,
     withr
 Suggests: 
-    testthat (>= 3.0.0),
-    jsonlite,
-    xml2,
     covr,
-    httpuv
+    httpuv,
+    jsonlite,
+    testthat (>= 3.0.0),
+    xml2
 Config/testthat/edition: 3
-URL: https://httr2.r-lib.org, https://github.com/r-lib/httr2
-BugReports: https://github.com/r-lib/httr2/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
