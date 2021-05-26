@@ -44,9 +44,12 @@
 #'   req_body_multipart(list(a = curl::form_file(path), b = "some data")) %>%
 #'   req_dry_run()
 req_body_none <- function(req) {
+  req <- req_body_reset(req)
   # Must override method, otherwise curl uses HEAD
   req <- req_method(req, "POST")
-  req_options(req, nobody = TRUE)
+  req_options(req,
+    nobody = TRUE
+  )
 }
 
 #' @export
@@ -71,6 +74,7 @@ req_body_file <- function(req, path, type = NULL) {
     bin
   }
 
+  req <- req_body_reset(req)
   req <- req_headers(req, `Content-Type` = type %||% "")
   req_options(req,
     post = TRUE,
@@ -91,6 +95,7 @@ req_body_raw <- function(req, body, type = NULL) {
   }
 
   # Need to override default content-type "application/x-www-form-urlencoded"
+  req <- req_body_reset(req)
   req <- req_headers(req, `Content-Type` = type %||% "")
   req_options(req,
     post = TRUE,
@@ -131,6 +136,7 @@ req_body_json <- function(req, data,
 #' @rdname req_body_none
 req_body_form <- function(req, data) {
   check_body_data(data)
+  req <- req_body_reset(req)
   req_body_raw(req, httr:::compose_query(data), "application/x-www-form-urlencoded")
 }
 
@@ -138,10 +144,14 @@ req_body_form <- function(req, data) {
 #' @rdname req_body_none
 req_body_multipart <- function(req, data) {
   check_body_data(data)
+  req <- req_body_reset(req)
   # fields must be character, raw, curl::form_file, or curl::form_data
   req$fields <- data
   req
 }
+
+
+# Helpers -----------------------------------------------------------------
 
 check_body_data <- function(data) {
   if (!is.list(data)) {
@@ -150,4 +160,22 @@ check_body_data <- function(data) {
   if (!is_named(data)) {
     abort("All elements of `data` must be named")
   }
+}
+
+req_body_reset <- function(req) {
+  req$fields <- list()
+
+  if (identical(req$method, "POST")) {
+    req$method <- NULL
+  }
+
+  req <- req_headers(req, `Content-Type` = NULL)
+  req <- req_options(req,
+    nobody = NULL,
+    post = NULL,
+    readfunction = NULL,
+    postfields = NULL,
+    postfieldsize_large = NULL
+  )
+  req
 }
