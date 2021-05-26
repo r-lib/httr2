@@ -58,6 +58,8 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
 
 # Helpers -----------------------------------------------------------------
 
+resp_body_is_path <- function(resp) is_path(resp$body)
+
 check_content_type <- function(resp, types, check_type = TRUE) {
   if (!check_type || resp_content_type(resp) %in% types) {
     return()
@@ -73,3 +75,4 @@ check_content_type <- function(resp, types, check_type = TRUE) {
     i = "Override check with `check_type = FALSE`"
   ))
 }
+
