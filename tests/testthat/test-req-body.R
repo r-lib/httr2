@@ -13,6 +13,8 @@ test_that("can send empty body", {
 })
 
 test_that("can send file", {
+  skip_on_os("windows") # fails due to line ending difference
+
   path <- tempfile()
   writeLines("this is a test", path)
 
@@ -60,6 +62,8 @@ test_that("can send named list as json/form/multipart", {
 })
 
 test_that("can upload file with multipart", {
+  skip_on_os("windows") # fails due to line ending difference
+
   path <- tempfile()
   writeLines("this is a test", path)
 
