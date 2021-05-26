@@ -121,8 +121,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-requests" class="hasAnchor"><a href="#section-requests" class="anchor"></a>Requests</h2>
-          <p class="section-desc"><p>Functions to create, modify, and perform HTTP requests</p></p>
+          <h2 id="section-create-a-request" class="hasAnchor"><a href="#section-create-a-request" class="anchor"></a>Create a request</h2>
+          <p class="section-desc"></p>
         </th>
       </tr>
       
@@ -141,43 +141,25 @@
         <td>
           <p><code><a href="req_authenticate.html">req_authenticate()</a></code> </p>
         </td>
-        <td><p>Use basic HTTP authentication</p></td>
+        <td><p>Authenticate request with HTTP basic authentication</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="req_body_none.html">req_body_none()</a></code> <code><a href="req_body_none.html">req_body_file()</a></code> <code><a href="req_body_none.html">req_body_raw()</a></code> <code><a href="req_body_none.html">req_body_json()</a></code> <code><a href="req_body_none.html">req_body_form()</a></code> <code><a href="req_body_none.html">req_body_multipart()</a></code> </p>
         </td>
-        <td><p>Send a body in an HTTP request</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_dry_run.html">req_dry_run()</a></code> </p>
-        </td>
-        <td><p>Perform a dry run</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_fetch.html">req_fetch()</a></code> </p>
-        </td>
-        <td><p>Perform a request, fetching data back to R</p></td>
+        <td><p>Send data in request body</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="req_headers.html">req_headers()</a></code> </p>
         </td>
-        <td><p>Set request headers</p></td>
+        <td><p>Modify request headers</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="req_method.html">req_method()</a></code> </p>
         </td>
-        <td><p>Set the request method</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_stream.html">req_stream()</a></code> </p>
-        </td>
-        <td><p>Perform a request, streaming data back to R</p></td>
+        <td><p>Modify request method</p></td>
       </tr><tr>
         
         <td>
@@ -195,13 +177,13 @@
         <td>
           <p><code><a href="req_url.html">req_url()</a></code> <code><a href="req_url.html">req_url_query()</a></code> <code><a href="req_url.html">req_url_path()</a></code> <code><a href="req_url.html">req_url_path_append()</a></code> </p>
         </td>
-        <td><p>Modify the request URL</p></td>
+        <td><p>Modify request URL</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="req_user_agent.html">req_user_agent()</a></code> </p>
         </td>
-        <td><p>Set request user agent</p></td>
+        <td><p>Modify request user agent</p></td>
       </tr><tr>
         
         <td>
@@ -212,8 +194,39 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-responses" class="hasAnchor"><a href="#section-responses" class="anchor"></a>Responses</h2>
-          <p class="section-desc"><p>Functions to process HTTP responses.</p></p>
+          <h2 id="section-perform-a-request" class="hasAnchor"><a href="#section-perform-a-request" class="anchor"></a>Perform a request</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="req_dry_run.html">req_dry_run()</a></code> </p>
+        </td>
+        <td><p>Perform a dry run</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_fetch.html">req_fetch()</a></code> </p>
+        </td>
+        <td><p>Simulate a request</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_stream.html">req_stream()</a></code> </p>
+        </td>
+        <td><p>Perform a request, streaming data back to R</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-handle-the-response" class="hasAnchor"><a href="#section-handle-the-response" class="anchor"></a>Handle the response</h2>
+          <p class="section-desc"></p>
         </th>
       </tr>
       

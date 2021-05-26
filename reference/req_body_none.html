@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Send a body in an HTTP request — req_body_none • httr2</title>
+<title>Send data in request body — req_body_none • httr2</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Send a body in an HTTP request — req_body_none" />
+<meta property="og:title" content="Send data in request body — req_body_none" />
 <meta property="og:description" content="
 
 req_body_none() sends an empty body.
@@ -118,7 +118,7 @@ Adding a body to a request will automatically switch the method to POST." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Send a body in an HTTP request</h1>
+    <h1>Send data in request body</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-body.R'><code>R/req-body.R</code></a></small>
     <div class="hidden name"><code>req_body_none.Rd</code></div>
     </div>
@@ -269,11 +269,11 @@ or an empty list (<code>"list"</code>).</p></td>
 #&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
 #&gt; -&gt; Accept: */*
 #&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; Content-Length: 315
-#&gt; -&gt; Content-Type: multipart/form-data; boundary=------------------------13e495882b4775a5
+#&gt; -&gt; Content-Length: 314
+#&gt; -&gt; Content-Type: multipart/form-data; boundary=------------------------6828a41a931eee75
 #&gt; -&gt; 
-#&gt; &gt;&gt; --------------------------13e495882b4775a5
-#&gt; &gt;&gt; Content-Disposition: form-data; name="a"; filename="file6e95d98963b"
+#&gt; &gt;&gt; --------------------------6828a41a931eee75
+#&gt; &gt;&gt; Content-Disposition: form-data; name="a"; filename="file66c2f0c931"
 #&gt; &gt;&gt; Content-Type: application/octet-stream
 #&gt; &gt;&gt; 
 #&gt; &gt;&gt; a
@@ -283,11 +283,11 @@ or an empty list (<code>"list"</code>).</p></td>
 #&gt; &gt;&gt; e
 #&gt; &gt;&gt; f
 #&gt; &gt;&gt; 
-#&gt; &gt;&gt; --------------------------13e495882b4775a5
+#&gt; &gt;&gt; --------------------------6828a41a931eee75
 #&gt; &gt;&gt; Content-Disposition: form-data; name="b"
 #&gt; &gt;&gt; 
 #&gt; &gt;&gt; some data
-#&gt; &gt;&gt; --------------------------13e495882b4775a5--</div></pre>
+#&gt; &gt;&gt; --------------------------6828a41a931eee75--</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
