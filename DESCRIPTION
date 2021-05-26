@@ -1,5 +1,5 @@
 Package: httr2
-Title: What the Package Does (One Line, Title Case)
+Title: Perform HTTP Requests and Process the Responses
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Hadley",
@@ -8,7 +8,8 @@ Authors@R:
              email = "hadley@rstudio.com"),
       person(given = "RStudio",
              role = c("cph", "fnd")))
-Description: What the package does (one paragraph).
+Description: httr2 is a modern re-imagining on httr designed around a pipeable
+   interface and solving more of the problems that API wrappers need.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
