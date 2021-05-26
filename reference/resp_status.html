@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>httr2: Perform HTTP Requests and Process the Responses — httr2-package • httr2</title>
+<title>Retrieve response status — resp_status • httr2</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,18 @@
 
 
 
-<meta property="og:title" content="httr2: Perform HTTP Requests and Process the Responses — httr2-package" />
-<meta property="og:description" content="httr2 is a modern re-imagining on httr designed around a
-    pipeable interface and solving more of the problems that API wrappers
-    need." />
+<meta property="og:title" content="Retrieve response status — resp_status" />
+<meta property="og:description" content="
+
+respstatus() retrieves the numeric HTTP status code
+resp_status_desc() retrieves the brief textual description.
+resp_is_error() returns TRUE if the status code represents an error
+(i.e. a 4xx or 5xx status).
+resp_check_status() turns HTTPs errors into R errors.
+
+
+In most cases you will not see 1xx or 3xx status codes, as these are
+handled automatically by libcurl." />
 
 
 
@@ -110,35 +118,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>httr2: Perform HTTP Requests and Process the Responses</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/httr2-package.R'><code>R/httr2-package.R</code></a></small>
-    <div class="hidden name"><code>httr2-package.Rd</code></div>
+    <h1>Retrieve response status</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp-status.R'><code>R/resp-status.R</code></a></small>
+    <div class="hidden name"><code>resp_status.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>httr2 is a modern re-imagining on httr designed around a
-    pipeable interface and solving more of the problems that API wrappers
-    need.</p>
+    
+<ul>
+<li><p><code>respstatus()</code> retrieves the numeric HTTP status code</p></li>
+<li><p><code>resp_status_desc()</code> retrieves the brief textual description.</p></li>
+<li><p><code>resp_is_error()</code> returns <code>TRUE</code> if the status code represents an error
+(i.e. a 4xx or 5xx status).</p></li>
+<li><p><code>resp_check_status()</code> turns HTTPs errors into R errors.</p></li>
+</ul>
+
+<p>In most cases you will not see 1xx or 3xx status codes, as these are
+handled automatically by libcurl.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>resp_status</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
 
+<span class='fu'>resp_status_desc</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+<span class='fu'>resp_is_error</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
 
-    <div class='dont-index'><p>Useful links:</p><ul>
-<li><p><a href='https://httr2.r-lib.org'>https://httr2.r-lib.org</a></p></li>
-<li><p><a href='https://github.com/r-lib/httr2'>https://github.com/r-lib/httr2</a></p></li>
-<li><p>Report bugs at <a href='https://github.com/r-lib/httr2/issues'>https://github.com/r-lib/httr2/issues</a></p></li>
-</ul>
+<span class='fu'>resp_check_status</span><span class='op'>(</span><span class='va'>resp</span>, info <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
-</div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p><strong>Maintainer</strong>: Hadley Wickham <a href='mailto:hadley@rstudio.com'>hadley@rstudio.com</a></p>
-<p>Other contributors:</p><ul>
-<li><p>RStudio [copyright holder, funder]</p></li>
-</ul>
-
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>resp</th>
+      <td><p>An HTTP response object, as created by <code><a href='req_fetch.html'>req_fetch()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>info</th>
+      <td><p>A character vector of additional information to include in
+the error message. Passed to <code><a href='https://rlang.r-lib.org/reference/abort.html'>rlang::abort()</a></code>.</p></td>
+    </tr>
+    </table>
 
 
   </div>

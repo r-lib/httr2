@@ -13,6 +13,9 @@
     <loc>https://httr2.r-lib.org/reference/req.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_authenticate.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/req_body_none.html</loc>
   </url>
   <url>
@@ -28,15 +31,33 @@
     <loc>https://httr2.r-lib.org/reference/req_method.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_options.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/req_stream.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_template.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_timeout.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/req_url.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_user_agent.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_verbose.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/resp_headers.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>
   </url>
 </urlset>

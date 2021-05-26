@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>httr2: Perform HTTP Requests and Process the Responses — httr2-package • httr2</title>
+<title>Use basic HTTP authentication — req_authenticate • httr2</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="httr2: Perform HTTP Requests and Process the Responses — httr2-package" />
-<meta property="og:description" content="httr2 is a modern re-imagining on httr designed around a
-    pipeable interface and solving more of the problems that API wrappers
-    need." />
+<meta property="og:title" content="Use basic HTTP authentication — req_authenticate" />
+<meta property="og:description" content="This sets the Authorization header. See details at
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization." />
 
 
 
@@ -110,37 +109,54 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>httr2: Perform HTTP Requests and Process the Responses</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/httr2-package.R'><code>R/httr2-package.R</code></a></small>
-    <div class="hidden name"><code>httr2-package.Rd</code></div>
+    <h1>Use basic HTTP authentication</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-options.R'><code>R/req-options.R</code></a></small>
+    <div class="hidden name"><code>req_authenticate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>httr2 is a modern re-imagining on httr designed around a
-    pipeable interface and solving more of the problems that API wrappers
-    need.</p>
+    <p>This sets the Authorization header. See details at
+<a href='https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization'>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization</a>.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>req_authenticate</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>user_name</span>, <span class='va'>password</span>, type <span class='op'>=</span> <span class='st'>"basic"</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>req</th>
+      <td><p>A <a href='req.html'>req</a>uest.</p></td>
+    </tr>
+    <tr>
+      <th>user_name, password</th>
+      <td><p>User name and password pair.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>Type of HTTP authentication. Should be one of the following
+values: "basic", "digest", "digest_ie", "gssnegotiate", "ntlm", "any".</p></td>
+    </tr>
+    </table>
 
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Useful links:</p><ul>
-<li><p><a href='https://httr2.r-lib.org'>https://httr2.r-lib.org</a></p></li>
-<li><p><a href='https://github.com/r-lib/httr2'>https://github.com/r-lib/httr2</a></p></li>
-<li><p>Report bugs at <a href='https://github.com/r-lib/httr2/issues'>https://github.com/r-lib/httr2/issues</a></p></li>
-</ul>
-
-</div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p><strong>Maintainer</strong>: Hadley Wickham <a href='mailto:hadley@rstudio.com'>hadley@rstudio.com</a></p>
-<p>Other contributors:</p><ul>
-<li><p>RStudio [copyright holder, funder]</p></li>
-</ul>
-
-
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>req_authenticate</span><span class='op'>(</span><span class='st'>"hadley"</span>, <span class='st'>"my-secret-password"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; -&gt; GET / HTTP/1.1
+#&gt; -&gt; Host: example.com
+#&gt; -&gt; Authorization: Basic aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA==
+#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
+#&gt; -&gt; Accept: */*
+#&gt; -&gt; Accept-Encoding: deflate, gzip
+#&gt; -&gt; </div><div class='input'>
+<span class='co'># Note that the authorization header is not encrypted and the</span>
+<span class='co'># password can easily be restored:</span>
+<span class='fu'><a href='https://rdrr.io/r/base/rawConversion.html'>rawToChar</a></span><span class='op'>(</span><span class='fu'>jsonlite</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/jsonlite/man/base64.html'>base64_dec</a></span><span class='op'>(</span><span class='st'>"aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA=="</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "hadley:my-secret-password"</div><div class='input'><span class='co'># This means that you should be careful when sharing any code that</span>
+<span class='co'># reveals the Authorization header</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
