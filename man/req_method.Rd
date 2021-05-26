@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-method.R
 \name{req_method}
 \alias{req_method}
-\title{Set the request method}
+\title{Modify request method}
 \usage{
 req_method(req, method)
 }

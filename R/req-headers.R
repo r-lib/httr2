@@ -1,4 +1,4 @@
-#' Set request headers
+#' Modify request headers
 #'
 #' `req_headers()` allows you to set the value of any header.
 #'

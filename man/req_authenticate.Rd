@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-options.R
 \name{req_authenticate}
 \alias{req_authenticate}
-\title{Use basic HTTP authentication}
+\title{Authenticate request with HTTP basic authentication}
 \usage{
 req_authenticate(req, user_name, password, type = "basic")
 }

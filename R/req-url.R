@@ -1,4 +1,4 @@
-#' Modify the request URL
+#' Modify request URL
 #'
 #' @description
 #' * `req_url()` replaces the entire url

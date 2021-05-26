@@ -1,4 +1,4 @@
-#' Send a body in an HTTP request
+#' Send data in request body
 #'
 #' @description
 #' * `req_body_none()` sends an empty body.

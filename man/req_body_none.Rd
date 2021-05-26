@@ -7,7 +7,7 @@
 \alias{req_body_json}
 \alias{req_body_form}
 \alias{req_body_multipart}
-\title{Send a body in an HTTP request}
+\title{Send data in request body}
 \usage{
 req_body_none(req)
 

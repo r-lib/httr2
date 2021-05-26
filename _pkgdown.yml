@@ -1,13 +1,25 @@
 url: https://httr2.r-lib.org
 
 reference:
-- title: Requests
-  desc: Functions to create, modify, and perform HTTP requests
+- title: Create a request
   contents:
   - req
-  - starts_with("req_")
+  - req_authenticate
+  - req_body_none
+  - req_headers
+  - req_method
+  - req_template
+  - req_timeout
+  - req_url
+  - req_user_agent
+  - req_verbose
 
-- title: Responses
-  desc: Functions to process HTTP responses.
+- title: Perform it
+  contents:
+  - req_dry_run
+  - req_fetch
+  - req_stream
+
+- title: Handle the response
   contents:
   - starts_with("resp_")

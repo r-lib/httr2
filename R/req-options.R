@@ -14,7 +14,7 @@ req_options <- function(.req, ...) {
   .req
 }
 
-#' Set request user agent
+#' Modify request user agent
 #'
 #' This overrides the default user agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
@@ -32,7 +32,7 @@ req_user_agent <- function(req, ua) {
   req_options(req, useragent = ua)
 }
 
-#' Use basic HTTP authentication
+#' Authenticate request with HTTP basic authentication
 #'
 #' This sets the Authorization header. See details at
 #' <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>.

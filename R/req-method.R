@@ -1,4 +1,4 @@
-#' Set the request method
+#' Modify request method
 #'
 #' Use this function to use a custom HTTP method like "HEAD",
 #' "DELETE", "PATCH", "UPDATE", or "OPTIONS".

@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-fetch.R
 \name{req_fetch}
 \alias{req_fetch}
-\title{Perform a request, fetching data back to R}
+\title{Simulate a request}
 \usage{
 req_fetch(req, path = NULL, handle = NULL)
 }

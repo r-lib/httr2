@@ -1,4 +1,4 @@
-#' Perform a request, fetching data back to R
+#' Simulate a request
 #'
 #' After preparing a request, call `req_fetch()` to perform it, fetching
 #' the results back to R.

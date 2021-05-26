@@ -5,7 +5,7 @@
 \alias{req_url_query}
 \alias{req_url_path}
 \alias{req_url_path_append}
-\title{Modify the request URL}
+\title{Modify request URL}
 \usage{
 req_url(req, url)
 

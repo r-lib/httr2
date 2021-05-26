@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-headers.R
 \name{req_headers}
 \alias{req_headers}
-\title{Set request headers}
+\title{Modify request headers}
 \usage{
 req_headers(.req, ...)
 }
