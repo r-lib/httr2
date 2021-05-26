@@ -83,20 +83,20 @@ hook_retry <- function(max_tries = 4, max_wait_time = 60) {
   ))
 }
 
-hook_throttle <- function(max_requests, timeout, realm = NULL) {
+hook_throttle <- function(requests_per_second, realm = NULL) {
+  delay <- 1 / requests_per_second
   function(req) {
     realm <- req$url$hostname %||% realm
 
     val <- the$throttle[[realm]]
-    if (is.null(val) || val$reset > Sys.time()) {
-      val <- list(reset = Sys.time() + timeout, n = 1)
-    } else {
-      val <- list(reset = val$reset, n = val$n + 1)
+    if (!is.null(val)) {
+      wait <- (Sys.time() - val$last) - delay
+      if (wait > 0) {
+        Sys.sleep(wait)
+      }
     }
+    the$throttle[[realm]] <- list(last = Sys.time())
 
-    if (val$n > max_requests) {
-      Sys.sleep(val$reset - Sys.time())
-    }
     req
   }
 }
