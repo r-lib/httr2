@@ -55,3 +55,21 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
   check_content_type(resp, c("application/xml", "text/xml"), check_type)
   xml2::read_xml(resp$body, ...)
 }
+
+# Helpers -----------------------------------------------------------------
+
+check_content_type <- function(resp, types, check_type = TRUE) {
+  if (!check_type || resp_content_type(resp) %in% types) {
+    return()
+  }
+
+  if (length(types) > 1) {
+    type <- paste0("one of ", paste0("'", types, "'", collapse = ", "))
+  } else {
+    type <- type
+  }
+  abort(c(
+    glue("Declared content type is not {type}"),
+    i = "Override check with `check_type = FALSE`"
+  ))
+}

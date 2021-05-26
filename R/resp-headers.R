@@ -1,7 +1,24 @@
+#' Extract headers from a response
+#'
+#' * `resp_headers()` retrieves a list of all headers.
+#' * `resp_header()` retrieves a single header.
+#' * `resp_header_exists()` checks if a header is present
+#'
+#' @param resp An HTTP response object, as created by [req_fetch()].
+#' @export
+resp_headers <- function(resp) {
+  resp$headers
+}
 
+#' @export
+#' @param header Header name (case insensitive)
+#' @rdname resp_headers
 resp_header <- function(resp, header) {
   resp$headers[[tolower(header)]]
 }
+
+#' @export
+#' @rdname resp_headers
 resp_header_exists <- function(resp, header) {
   has_name(resp$headers, tolower(header))
 }
@@ -14,46 +31,18 @@ resp_content_type <- function(resp) {
   )
 }
 
-resp_content_type_params <- function(resp) {
-  type <- resp_header(resp, "content-type")
-  tryCatch(
-    error = function(err) NULL,
-    httr::parse_media(type)$params
-  )
-}
-
 resp_encoding <- function(resp) {
-  encoding <- resp_content_type_params(resp)$charset
+  type <- resp_header(resp, "content-type")
+  charset <- tryCatch(
+    error = function(err) NULL,
+    httr::parse_media(type)$params$charset
+  )
 
-  if (is.null(encoding)) {
+  if (is.null(charset)) {
     warn("No encoding found; guessing UTF-8")
     "UTF-8"
   } else {
-    encoding
+    charset
   }
 }
 
-resp_has_content_type <- function(resp, types) {
-  resp_type <- resp_content_type(resp)
-  if (is.null(resp_type)) {
-    FALSE
-  } else {
-    resp_type %in% types
-  }
-}
-
-check_content_type <- function(resp, types, check_type = TRUE) {
-  if (!check_type || resp_content_type(resp) %in% types) {
-    return()
-  }
-
-  if (length(types) > 1) {
-    type <- paste0("one of ", paste0("'", types, "'", collapse = ", "))
-  } else {
-    type <- type
-  }
-  abort(c(
-    glue("Declared content type is not {type}"),
-    i = "Override check with `check_type = FALSE`"
-  ))
-}
