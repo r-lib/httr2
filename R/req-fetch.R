@@ -13,6 +13,7 @@
 #' req("https://google.com") %>%
 #'   req_fetch()
 req_fetch <- function(req, path = NULL, handle = NULL) {
+  check_request(req)
   handle <- handle %||% req_handle(req)
 
   if (!is.null(path)) {
@@ -49,6 +50,7 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
 #' @examples
 #' req("http://google.com") %>% req_dry_run()
 req_dry_run <- function(req, quiet = FALSE) {
+  check_request(req)
   check_installed("httpuv")
 
   if (!quiet) {
@@ -84,6 +86,8 @@ req_dry_run <- function(req, quiet = FALSE) {
 #' resp <- req("http://httpbin.org/stream-bytes/100000") %>%
 #'   req_stream(show_bytes, buffer_kb = 32)
 req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
+  check_request(req)
+
   handle <- req_handle(req)
   callback <- as_function(callback)
 

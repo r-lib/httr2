@@ -44,3 +44,14 @@ new_request <- function(url, method = NULL, headers = list(), body = list(), fie
     class = "httr2_request"
   )
 }
+
+is_request <- function(x) {
+  inherits(x, "httr2_request")
+}
+
+check_request <- function(req) {
+  if (is_request(req)) {
+    return()
+  }
+  abort("`req` must be an HTTP request object")
+}

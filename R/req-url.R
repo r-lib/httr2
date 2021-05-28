@@ -24,6 +24,8 @@
 #' req %>%
 #'   req_url("http://google.com")
 req_url <- function(req, url) {
+  check_request(req)
+
   if (inherits(url, "url")) {
     # Temporary fudging
     url <- httr::build_url(url)
@@ -36,6 +38,8 @@ req_url <- function(req, url) {
 #' @rdname req_url
 #' @param ... Name-value pairs that provide query parameters.
 req_url_query <- function(req, ...) {
+  check_request(req)
+
   url <- httr::parse_url(req$url)
   url$query <- modify_list(url$query, ...)
   req_url(req, url)
@@ -45,6 +49,8 @@ req_url_query <- function(req, ...) {
 #' @rdname req_url
 #' @param path Path to replace or append to existing path.
 req_url_path <- function(req, path) {
+  check_request(req)
+
   url <- httr::parse_url(req$url)
   url$path <- path
 
@@ -54,6 +60,8 @@ req_url_path <- function(req, path) {
 #' @export
 #' @rdname req_url
 req_url_path_append <- function(req, path) {
+  check_request(req)
+
   url <- httr::parse_url(req$url)
   url$path <- paste0(url$path, "/", path)
   req_url(req, url)

@@ -11,6 +11,8 @@
 #' req("http://httpbin.org") %>% req_method("PUT")
 #' req("http://httpbin.org") %>% req_method("HEAD")
 req_method <- function(req, method) {
+  check_request(req)
+
   req$method <- toupper(method)
   req
 }

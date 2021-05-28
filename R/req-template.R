@@ -23,6 +23,8 @@
 #' n <- 200
 #' httpbin %>% req_template("GET /bytes/{n}")
 req_template <- function(req, template, ..., .env = parent.frame()) {
+  check_request(req)
+
   if (!is_string(template)) {
     abort("`template` must be a string")
   }

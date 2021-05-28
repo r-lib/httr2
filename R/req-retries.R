@@ -56,6 +56,7 @@ req_retry <- function(req,
                       is_transient = NULL,
                       backoff = NULL,
                       after = NULL) {
+  check_request(req)
 
   req$policies$retry_max_n <- req$policies$retry_max_n %||% max_tries
   req$policies$retry_max_wait <- req$policies$retry_max_wait %||% max_seconds

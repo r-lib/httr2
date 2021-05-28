@@ -44,6 +44,8 @@
 #'   req_body_multipart(list(a = curl::form_file(path), b = "some data")) %>%
 #'   req_dry_run()
 req_body_none <- function(req) {
+  check_request(req)
+
   req <- req_body_reset(req)
   # Must override method, otherwise curl uses HEAD
   req <- req_method(req, "POST")
@@ -58,6 +60,8 @@ req_body_none <- function(req) {
 #' @param type Content type. For `req_body_file()`, the default
 #'  will will attempt to guess from the extension of `path`.
 req_body_file <- function(req, path, type = NULL) {
+  check_request(req)
+
   size <- file.info(path)$size
 
   # Connection leaks if not completely uploaded
@@ -87,6 +91,8 @@ req_body_file <- function(req, path, type = NULL) {
 #' @rdname req_body_none
 #' @param body A literal string or raw vector to send as body.
 req_body_raw <- function(req, body, type = NULL) {
+  check_request(req)
+
   if (is_string(body)) {
     body <- charToRaw(enc2utf8(body))
   }
@@ -122,6 +128,8 @@ req_body_json <- function(req, data,
                           digits = 22,
                           null = "null",
                           ...) {
+  check_request(req)
+
   check_installed("jsonlite")
   json <- jsonlite::toJSON(data,
     auto_unbox = TRUE,
@@ -135,6 +143,8 @@ req_body_json <- function(req, data,
 #' @export
 #' @rdname req_body_none
 req_body_form <- function(req, data) {
+  check_request(req)
+
   check_body_data(data)
   req <- req_body_reset(req)
   req_body_raw(req, httr:::compose_query(data), "application/x-www-form-urlencoded")
@@ -143,6 +153,8 @@ req_body_form <- function(req, data) {
 #' @export
 #' @rdname req_body_none
 req_body_multipart <- function(req, data) {
+  check_request(req)
+
   check_body_data(data)
   req <- req_body_reset(req)
   # fields must be character, raw, curl::form_file, or curl::form_data

@@ -7,6 +7,7 @@
 #' @param resp An HTTP response object, as created by [req_fetch()].
 #' @export
 resp_headers <- function(resp) {
+  check_response(resp)
   resp$headers
 }
 
@@ -14,12 +15,14 @@ resp_headers <- function(resp) {
 #' @param header Header name (case insensitive)
 #' @rdname resp_headers
 resp_header <- function(resp, header) {
+  check_response(resp)
   resp$headers[[tolower(header)]]
 }
 
 #' @export
 #' @rdname resp_headers
 resp_header_exists <- function(resp, header) {
+  check_response(resp)
   has_name(resp$headers, tolower(header))
 }
 

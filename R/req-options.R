@@ -10,6 +10,8 @@
 #' @keywords internal
 #' @export
 req_options <- function(.req, ...) {
+  check_request(.req)
+
   .req$options <- modify_list(.req$options, ...)
   .req
 }
@@ -26,6 +28,7 @@ req_options <- function(.req, ...) {
 #' req("http://example.com") %>% req_dry_run()
 #' req("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
 req_user_agent <- function(req, ua) {
+  check_request(req)
   if (!is_string(ua)) {
     abort("`ua` must be a string")
   }
@@ -62,6 +65,8 @@ default_ua <- function() {
 #' # This means that you should be careful when sharing any code that
 #' # reveals the Authorization header
 req_authenticate <- function(req, user_name, password, type = "basic") {
+  check_request(req)
+
   stopifnot(is.character(user_name), length(user_name) == 1)
   stopifnot(is.character(password), length(password) == 1)
 
@@ -82,6 +87,8 @@ req_authenticate <- function(req, user_name, password, type = "basic") {
 #' # Give up after at most 10 seconds
 #' req("http://example.com") %>% req_timeout(10)
 req_timeout <- function(req, seconds) {
+  check_request(req)
+
   if (!is_double(seconds, n = 1) && !is.na(seconds)) {
     abort("`seconds` must be a single number")
   }
@@ -119,6 +126,8 @@ req_verbose <- function(req,
                         data_in = FALSE,
                         info = FALSE,
                         ssl = FALSE) {
+  check_request(req)
+
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)            prefix_message("*  ", msg),

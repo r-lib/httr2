@@ -13,6 +13,8 @@
 #' @param resp A response object.
 #' @export
 resp_body_raw <- function(resp) {
+  check_response(resp)
+
   if (resp_body_is_path(resp)) {
     readBin(resp$body, "raw", file.size(resp$body))
   } else {
@@ -27,6 +29,7 @@ resp_body_raw <- function(resp) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_string <- function(resp, encoding = NULL) {
+  check_response(resp)
   encoding <- encoding %||% resp_encoding(resp)
 
   body <- resp_body_raw(resp)
@@ -42,8 +45,10 @@ resp_body_string <- function(resp, encoding = NULL) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
+  check_response(resp)
   check_installed("jsonlite")
   check_content_type(resp, "application/json", check_type)
+
   text <- resp_body_string(resp, "UTF-8")
   jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
 }
@@ -51,8 +56,10 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 #' @rdname resp_body_raw
 #' @export
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
+  check_response(resp)
   check_installed("xml2")
   check_content_type(resp, c("application/xml", "text/xml"), check_type)
+
   xml2::read_xml(resp$body, ...)
 }
 

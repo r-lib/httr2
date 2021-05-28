@@ -1,5 +1,3 @@
-
-
 new_response <- function(handle, method, url, status_code, headers, body, times) {
   structure(
     list(
@@ -32,4 +30,14 @@ print.httr2_response <- function(x, ...) {
   }
 
   invisible(x)
+}
+
+is_response <- function(x) {
+  inherits(x, "httr2_response")
+}
+check_response <- function(req) {
+  if (is_response(req)) {
+    return()
+  }
+  abort("`resp` must be an HTTP response object")
 }

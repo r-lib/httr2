@@ -13,12 +13,14 @@
 #' @inheritParams resp_headers
 #' @export
 resp_status <- function(resp) {
+  check_response(resp)
   resp$status_code
 }
 
 #' @export
 #' @rdname resp_status
 resp_status_desc <- function(resp) {
+  check_response(resp)
   status <- resp_status(resp)
   if (status %in% names(http_statuses)) {
     http_statuses[[as.character(status)]]
@@ -30,6 +32,7 @@ resp_status_desc <- function(resp) {
 #' @export
 #' @rdname resp_status
 resp_is_error <- function(resp) {
+  check_response(resp)
   resp_status(resp) >= 400
 }
 
@@ -38,6 +41,7 @@ resp_is_error <- function(resp) {
 #'   the error message. Passed to [rlang::abort()].
 #' @rdname resp_status
 resp_check_status <- function(resp, info = NULL) {
+  check_response(resp)
   if (!resp_is_error(resp)) {
     return(invisible(resp))
   }

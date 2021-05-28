@@ -19,6 +19,8 @@
 #'   req_headers(Accept = "") %>%
 #'   req_dry_run()
 req_headers <- function(.req, ...) {
+  check_request(.req)
+
   .req$headers <- modify_list(.req$headers, ...)
   .req
 }

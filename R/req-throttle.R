@@ -9,6 +9,8 @@
 #'   For example, if you want to make 15 requests per minute, write `15 / 60`.
 #' @export
 req_throttle <- function(req, requests_per_second) {
+  check_request(req)
+
   last <- NULL
   delay <- 1 / requests_per_second
 
