@@ -16,6 +16,44 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   check_request(req)
   handle <- handle %||% req_handle(req)
 
+  max_tries <- retry_max_tries(req)
+  deadline <- retry_deadline(req)
+
+  i <- 0
+  delay <- throttle_delay(req)
+
+  while(i < max_tries && Sys.time() < deadline) {
+    sys_sleep(delay)
+    resp <- tryCatch(
+      req_fetch1(req, path = path, handle = handle),
+      error = function(err) err
+    )
+
+    if (is_error(resp)) {
+      i <- i + 1
+      delay <- retry_backoff(req, i)
+    } else if (retry_is_transient(req, resp)) {
+      i <- i + 1
+      delay <- retry_after(req, resp) %||% retry_backoff(req, i)
+    # } else if (auth_needs_reauth(req, resp)) {
+    #   req <- auth_reauth(req)
+    #   handle <- req_handle(req)
+    } else {
+      # done
+      break
+    }
+  }
+
+  if (is_error(resp)) {
+    stop(resp)
+  } else if (error_is_error(req, resp)) {
+    resp_check_status(resp, error_info(req, resp))
+  } else {
+    resp
+  }
+}
+
+req_fetch1 <- function(req, path = NULL, handle = NULL) {
   if (!is.null(path)) {
     res <- curl::curl_fetch_disk(req$url, path, handle)
     body <- new_path(path)

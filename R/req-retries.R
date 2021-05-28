@@ -78,7 +78,7 @@ retry_deadline <- function(req) {
 
 retry_is_transient <- function(req, resp) {
   req_policy_call(req, "retry_is_transient", list(resp),
-    default = ~resp_status(.x) %in% c(429, 503)
+    default = function(resp) resp_status(resp) %in% c(429, 503)
   )
 }
 

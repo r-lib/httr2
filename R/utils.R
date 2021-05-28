@@ -64,3 +64,5 @@ check_number <- function(x, name) {
   }
   abort("{name} must be a number")
 }
+
+is_error <- function(x) inherits(x, "error")
