@@ -26,7 +26,7 @@ print.httr2_request <- function(x, ...) {
   invisible(x)
 }
 
-new_request <- function(url, method = NULL, headers = list(), body = list(), fields = list(), options = list()) {
+new_request <- function(url, method = NULL, headers = list(), body = list(), fields = list(), options = list(), policies = list()) {
   if (!is_string(url)) {
     abort("`url` must be a string")
   }
@@ -38,7 +38,8 @@ new_request <- function(url, method = NULL, headers = list(), body = list(), fie
       headers = headers,
       body = body,
       fields = fields,
-      options = options
+      options = options,
+      policies = policies
     ),
     class = "httr2_request"
   )

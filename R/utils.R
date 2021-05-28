@@ -37,3 +37,14 @@ modify_list <- function(.x, ...) {
   out
 }
 
+
+sys_sleep <- function(seconds) {
+  if (!is_double(seconds, n = 1)) {
+    abort("`seconds` must be a single number")
+  }
+  if (seconds > 0) {
+    # TODO: add progress bar
+    Sys.sleep(seconds)
+  }
+  invisible()
+}

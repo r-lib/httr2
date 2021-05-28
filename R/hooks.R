@@ -1,108 +1,44 @@
+req_fetch_retry <- function(req, path = NULL, handle = NULL) {
+  handle <- handle %||% req_handle(req)
 
+  max_tries <- retry_max_tries(req)
+  deadline <- retry_deadline(req)
 
-req_fetch_with_hooks <- function(req, path = NULL, handle = NULL) {
-  for (hook in req$hooks) {
-    req <- hook$init(req)
-  }
+  i <- 0
+  delay <- throttle_delay(req)
 
-  retry <- TRUE
-  while(retry) {
-    for (hook in req$pre_hooks) {
-      req <- hook(req)
-    }
+  while(i < max_tries && Sys.time() < deadline) {
+    sys_sleep(delay)
+    resp <- req_fetch_safely(req, path = path, handle = handle)
 
-    resp <- req_fetch(req, path = NULL, handle = NULL)
-    retry <- FALSE
-
-    for (hook in req$post_hooks) {
-      res <- hook$post_fetch(resp, req)
-      resp <- res$resp %||% resp
-      req <- res$req %||% req
-
-      if (isTRUE(res$refetch)) {
-        retry <- TRUE
-        break
-      }
-    }
-  }
-
-  for (hook in req$hooks) {
-    hook$finalise()
-  }
-
-  resp
-}
-
-
-hook_rate_limit <- function(retry_after = NULL) {
-  if (is.null(retry_after)) {
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
-    # TODO: add HTTP date parsing
-    retry_after <- function(resp) {
-      if (!resp_header_exists(resp, "Retry-After")) {
-        abort("Response must have `Retry-After` header")
-      }
-      as.numeric(resp_header(resp, "Retry-After"))
+    if (is_condition(resp)) {
+      i <- i + 1
+      delay <- retry_backoff(req, i)
+    } else if (retry_is_transient(req, resp)) {
+      i <- i + 1
+      delay <- retry_after(req, resp) %||% retry_backoff(req, i)
+    # } else if (auth_needs_reauth(req, resp)) {
+    #   req <- auth_reauth(req)
+    #   handle <- req_handle(req)
+    } else {
+      # done
+      break
     }
   }
 
-  function(resp, req) {
-    if (resp_status(resp) != 429) {
-      return()
-    }
-    val <- retry_after(resp)
-    if (is.null(val)) {
-      return()
-    }
-
-    Sys.sleep(val)
-    list(retry = TRUE)
+  if (is_condition(resp)) {
+    stop(resp)
+  } else {
+    resp
   }
 }
 
-# Maybe this can't be a hook?
-# * Needs state
-# * Needs tryCatch around curl call
-hook_retry <- function(max_tries = 4, max_wait_time = 60) {
-  i <- 1
+# helpers -----------------------------------------------------------------
 
-  list("hook", public = list(
-    i = 1,
-    time = NULL,
-    initialize = function() {
-
-    },
-    reset = function() {
-      self$time <- Sys.time()
-    },
-    post = function(resp, req) {
-      if (i > max_tries) {
-        return()
-      }
-    }
-  ))
-}
-
-hook_throttle <- function(requests_per_second, realm = NULL) {
-  delay <- 1 / requests_per_second
-  function(req) {
-    realm <- req$url$hostname %||% realm
-
-    val <- the$throttle[[realm]]
-    if (!is.null(val)) {
-      wait <- (Sys.time() - val$last) - delay
-      if (wait > 0) {
-        Sys.sleep(wait)
-      }
-    }
-    the$throttle[[realm]] <- list(last = Sys.time())
-
-    req
-  }
-}
-
-hook_sign <- function(callback) {
-  function(req) {
-    callback(req)
-  }
+req_fetch_safely <- function(req, path = NULL, handle = NULL) {
+  # TODO: PR to curl so can specifically catch curl errors
+  tryCatch(
+    req_fetch(req, path = path, handle = handle),
+    error = function(err) err
+  )
 }
