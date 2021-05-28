@@ -44,12 +44,3 @@ new_request <- function(url, method = NULL, headers = list(), body = list(), fie
     class = "httr2_request"
   )
 }
-
-default_ua <- function() {
-  versions <- c(
-    httr2 = as.character(utils::packageVersion("httr2")),
-    `r-curl` = as.character(utils::packageVersion("curl")),
-    libcurl = curl::curl_version()$version
-  )
-  paste0(names(versions), "/", versions, collapse = " ")
-}

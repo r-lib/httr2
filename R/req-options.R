@@ -32,6 +32,15 @@ req_user_agent <- function(req, ua) {
   req_options(req, useragent = ua)
 }
 
+default_ua <- function() {
+  versions <- c(
+    httr2 = as.character(utils::packageVersion("httr2")),
+    `r-curl` = as.character(utils::packageVersion("curl")),
+    libcurl = curl::curl_version()$version
+  )
+  paste0(names(versions), "/", versions, collapse = " ")
+}
+
 #' Authenticate request with HTTP basic authentication
 #'
 #' This sets the Authorization header. See details at
