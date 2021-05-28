@@ -48,3 +48,18 @@ sys_sleep <- function(seconds) {
   }
   invisible()
 }
+
+check_string <- function(x, name) {
+  if (is_string(x) && !is.na(x)) {
+    return()
+  }
+
+  abort(glue("{name} must be a string"))
+}
+
+check_number <- function(x, name) {
+  if (is_double(x, n = 1) && !is.na(x)) {
+    return()
+  }
+  abort("{name} must be a number")
+}

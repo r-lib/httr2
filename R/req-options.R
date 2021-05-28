@@ -29,9 +29,8 @@ req_options <- function(.req, ...) {
 #' req("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
 req_user_agent <- function(req, ua) {
   check_request(req)
-  if (!is_string(ua)) {
-    abort("`ua` must be a string")
-  }
+  check_string(ua, "`ua`")
+
   req_options(req, useragent = ua)
 }
 
@@ -66,9 +65,8 @@ default_ua <- function() {
 #' # reveals the Authorization header
 req_authenticate <- function(req, user_name, password, type = "basic") {
   check_request(req)
-
-  stopifnot(is.character(user_name), length(user_name) == 1)
-  stopifnot(is.character(password), length(password) == 1)
+  check_string(user_name, "`user_name`")
+  check_string(password, "`password`")
 
   req_options(req,
     httpauth = auth_flags(type),
@@ -88,10 +86,8 @@ req_authenticate <- function(req, user_name, password, type = "basic") {
 #' req("http://example.com") %>% req_timeout(10)
 req_timeout <- function(req, seconds) {
   check_request(req)
+  check_number(seconds, "`seconds`")
 
-  if (!is_double(seconds, n = 1) && !is.na(seconds)) {
-    abort("`seconds` must be a single number")
-  }
   if (seconds < 0.001) {
     abort("`timeout` must be >1 ms")
   }

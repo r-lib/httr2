@@ -50,6 +50,7 @@ req_url_query <- function(req, ...) {
 #' @param path Path to replace or append to existing path.
 req_url_path <- function(req, path) {
   check_request(req)
+  check_string(path, "`path`")
 
   url <- httr::parse_url(req$url)
   url$path <- path
@@ -61,6 +62,7 @@ req_url_path <- function(req, path) {
 #' @rdname req_url
 req_url_path_append <- function(req, path) {
   check_request(req)
+  check_string(path, "`path`")
 
   url <- httr::parse_url(req$url)
   url$path <- paste0(url$path, "/", path)

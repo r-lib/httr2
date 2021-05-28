@@ -10,6 +10,7 @@
 #' @export
 req_throttle <- function(req, requests_per_second) {
   check_request(req)
+  check_number(requests_per_second, "`requests_per_second`")
 
   last <- NULL
   delay <- 1 / requests_per_second

@@ -24,12 +24,9 @@
 #' httpbin %>% req_template("GET /bytes/{n}")
 req_template <- function(req, template, ..., .env = parent.frame()) {
   check_request(req)
+  check_string(template, "`template`")
 
-  if (!is_string(template)) {
-    abort("`template` must be a string")
-  }
   pieces <- strsplit(template, " ")[[1]]
-
   if (length(pieces) == 1) {
     template <- pieces[[1]]
   } else if (length(pieces) == 2) {

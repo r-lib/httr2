@@ -12,6 +12,7 @@
 #' req("http://httpbin.org") %>% req_method("HEAD")
 req_method <- function(req, method) {
   check_request(req)
+  check_string(method, "`method`")
 
   req$method <- toupper(method)
   req
