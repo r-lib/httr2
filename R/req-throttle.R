@@ -19,9 +19,9 @@ req_throttle <- function(req, requests_per_second) {
     if (is.null(last)) {
       wait <- 0
     } else {
-      wait <- delay - (Sys.time() - last)
+      wait <- delay - (unix_time() - last)
     }
-    last <<- Sys.time()
+    last <<- unix_time()
     wait
   }
 
@@ -31,3 +31,5 @@ req_throttle <- function(req, requests_per_second) {
 throttle_delay <- function(req) {
   req_policy_call(req, "throttle_delay", list(), default = 0)
 }
+
+
