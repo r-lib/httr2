@@ -45,7 +45,7 @@
 #' @examples
 #' # google APIs assume that a 500 is also a transient error
 #' req("http://google.com") %>%
-#'   req_retry(is_transient = ~ resp_status_code(.x) %in% c(429, 500, 503))
+#'   req_retry(is_transient = ~ resp_status(.x) %in% c(429, 500, 503))
 #'
 #' # use a constant 10s delay after every failure
 #' req("http://example.com") %>%
@@ -58,60 +58,52 @@ req_retry <- function(req,
                       after = NULL) {
   check_request(req)
 
-  req$policies$retry_max_n <- req$policies$retry_max_n %||% max_tries
-  req$policies$retry_max_wait <- req$policies$retry_max_wait %||% max_seconds
-  if (!is.null(is_transient)) {
-    req$policies$retry_is_transient <- as_function(is_transient)
-  }
-  if (!is.null(backoff)) {
-    req$policies$retry_backoff <- as_function(backoff)
-  }
-  if (!is.null(after)) {
-    req$policies$after <- as_function(after)
-  }
-
-  req
+  req_policies(req,
+    retry_max_tries = max_tries,
+    retry_max_wait = max_seconds,
+    retry_is_transient = as_callback(is_transient, 1, "is_transient"),
+    retry_backoff = as_callback(backoff, 1, "backoff"),
+    retry_after = as_callback(after, 1, "after")
+  )
 }
 
 retry_max_tries <- function(req) {
   has_max_wait <- !is.null(req$policies$retries_max_wait)
-  req$policies$retry_max_n %||% if (has_max_wait) Inf else 1
+  req$policies$retry_max_tries %||% if (has_max_wait) Inf else 1
 }
 
 retry_deadline <- function(req) {
-  Sys.time() + (req$policies$retries_max_wait %||% Inf)
+  Sys.time() + (req$policies$retry_max_wait %||% Inf)
 }
 
 retry_is_transient <- function(req, resp) {
-  if (req_has_policy(req, "retry_is_transient")) {
-    isTRUE(req$policies$retry_is_transient(resp))
-  } else {
-    FALSE
-  }
+  req_policy_call(req, "retry_is_transient", list(resp),
+    default = ~resp_status(.x) %in% c(429, 503)
+  )
 }
 
 retry_backoff <- function(req, i) {
-  if (req_has_policy(req, "retry_backoff")) {
-    req$policies$retry_backoff(i)
-  } else {
-    # Exponential backoff with full-jitter, capped to 60s wait
-    # https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
-    min(stats::runif(1, 2^i), 60)
-  }
+  req_policy_call(req, "retry_backoff", list(i), default = backoff_default)
 }
 
 retry_after <- function(req, resp) {
-  if (req_has_policy(req, "retry_after")) {
-    return(req$policies$retry_after(resp))
-  }
+  req_policy_call(req, "retry_after", list(resp), default = resp_retry_after)
+}
 
-  if (!resp_header_exists(resp, "Rate-Limit")) {
-    return(NULL)
-  }
+# Helpers -----------------------------------------------------------------
 
+# Exponential backoff with full-jitter, capped to 60s wait
+# https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
+backoff_default <- function(i) {
+  min(stats::runif(1, 2^i), 60)
+}
+
+resp_retry_after <- function(resp) {
   # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
   val <- resp_header(resp, "Retry-After")
-  if (grepl(" ", val)) {
+  if (is.null(val)) {
+    NULL
+  } else if (grepl(" ", val)) {
     unclass(httr::parse_http_date(val)) - unclass(Sys.time())
   } else {
     as.numeric(val)

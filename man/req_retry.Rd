@@ -63,7 +63,7 @@ You can control the total number of requests by setting \code{max_tries},
 \examples{
 # google APIs assume that a 500 is also a transient error
 req("http://google.com") \%>\%
-  req_retry(is_transient = ~ resp_status_code(.x) \%in\% c(429, 500, 503))
+  req_retry(is_transient = ~ resp_status(.x) \%in\% c(429, 500, 503))
 
 # use a constant 10s delay after every failure
 req("http://example.com") \%>\%

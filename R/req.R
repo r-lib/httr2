@@ -22,6 +22,7 @@ print.httr2_request <- function(x, ...) {
   bullets_with_header("Headers:", x$headers)
   bullets_with_header("Options:", x$options)
   bullets_with_header("Fields:", x$fields)
+  bullets_with_header("Policies:", x$policies)
 
   invisible(x)
 }

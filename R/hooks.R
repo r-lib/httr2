@@ -28,6 +28,8 @@ req_fetch_retry <- function(req, path = NULL, handle = NULL) {
 
   if (is_condition(resp)) {
     stop(resp)
+  } else if (error_is_error(req, resp)) {
+    resp_check_status(resp, error_info(req, resp))
   } else {
     resp
   }

@@ -15,7 +15,7 @@ req_throttle <- function(req, requests_per_second) {
   last <- NULL
   delay <- 1 / requests_per_second
 
-  req$policies$throttle <- function(resp) {
+  throttle_delay <- function(resp) {
     if (is.null(last)) {
       wait <- 0
     } else {
@@ -24,13 +24,10 @@ req_throttle <- function(req, requests_per_second) {
     last <<- Sys.time()
     wait
   }
-  req
+
+  req_policies(req, throttle_delay = throttle_delay)
 }
 
 throttle_delay <- function(req, resp) {
-  if (req_has_policy(req, "throttle")) {
-    req$hook$throttle(resp)
-  } else {
-    0
-  }
+  req_policy_call(req, "throttle_delay", list(resp), default = 0)
 }

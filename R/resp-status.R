@@ -1,14 +1,22 @@
 #' Retrieve response status
 #'
 #' @description
-#' * `respstatus()` retrieves the numeric HTTP status code
+#' * `resp_status()` retrieves the numeric HTTP status code
 #' * `resp_status_desc()` retrieves the brief textual description.
 #' * `resp_is_error()` returns `TRUE` if the status code represents an error
 #'   (i.e. a 4xx or 5xx status).
 #' * `resp_check_status()` turns HTTPs errors into R errors.
 #'
-#' In most cases you will not see 1xx or 3xx status codes, as these are
-#' handled automatically by libcurl.
+#' These functions are mostly for internal use because in most cases you
+#' will only ever see a 200 response:
+#'
+#' * 1xx are handled internally by curl.
+#' * 3xx redirects are automatically followed. You will only see them if you
+#'   have deliberately suppressed redirects with
+#'   `req %>% req_options(followlocation = FALSE)`.
+#' * 4xx client and 5xx server errors are automatically turned into R errors.
+#'   You can stop them from being turned into R errors with [req_error()],
+#'   e.g. `req %>% req_error(is_error = ~ FALSE)`.
 #'
 #' @inheritParams resp_headers
 #' @export

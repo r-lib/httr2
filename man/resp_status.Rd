@@ -23,13 +23,22 @@ the error message. Passed to \code{\link[rlang:abort]{rlang::abort()}}.}
 }
 \description{
 \itemize{
-\item \code{respstatus()} retrieves the numeric HTTP status code
+\item \code{resp_status()} retrieves the numeric HTTP status code
 \item \code{resp_status_desc()} retrieves the brief textual description.
 \item \code{resp_is_error()} returns \code{TRUE} if the status code represents an error
 (i.e. a 4xx or 5xx status).
 \item \code{resp_check_status()} turns HTTPs errors into R errors.
 }
 
-In most cases you will not see 1xx or 3xx status codes, as these are
-handled automatically by libcurl.
+These functions are mostly for internal use because in most cases you
+will only ever see a 200 response:
+\itemize{
+\item 1xx are handled internally by curl.
+\item 3xx redirects are automatically followed. You will only see them if you
+have deliberately suppressed redirects with
+\code{req \%>\% req_options(followlocation = FALSE)}.
+\item 4xx client and 5xx server errors are automatically turned into R errors.
+You can stop them from being turned into R errors with \code{\link[=req_error]{req_error()}},
+e.g. \code{req \%>\% req_error(is_error = ~ FALSE)}.
+}
 }
