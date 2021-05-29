@@ -4,14 +4,18 @@
 \alias{req_throttle}
 \title{Throttle a request by automatically adding a delay}
 \usage{
-req_throttle(req, requests_per_second)
+req_throttle(req, rate, realm = NULL)
 }
 \arguments{
 \item{req}{A \link{req}uest.}
 
-\item{requests_per_second}{Maximum number of requests per second - usually
-easier to specify as a fraction, \code{number_of_requests / number_of_seconds}.
-For example, if you want to make 15 requests per minute, write \code{15 / 60}.}
+\item{rate}{Maximum rate, i.e. maximum number of requests per second.
+Usually easiest expressed as a fraction,
+\code{number_of_requests / number_of_seconds}, e.g. 15 requests per minute
+is \code{15 / 60}.}
+
+\item{realm}{An unique identifier that for throttle pool. If not supplied,
+defaults to the hostname of the request.}
 }
 \description{
 Throttling a request ensures that it never makes more than the specified
