@@ -61,6 +61,7 @@ resp_check_status <- function(resp, info = NULL) {
   abort(
     c(message, info),
     status = status,
+    resp = resp,
     class = c(glue("httr2_http_{status}", "httr2_http"))
   )
 }
