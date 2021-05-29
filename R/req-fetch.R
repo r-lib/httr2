@@ -32,12 +32,12 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
     if (is_error(resp)) {
       i <- i + 1
       delay <- retry_backoff(req, i)
-    } else if (retry_is_transient(req, resp)) {
-      i <- i + 1
-      delay <- retry_after(req, resp) %||% retry_backoff(req, i)
     # } else if (auth_needs_reauth(req, resp)) {
     #   req <- auth_reauth(req)
     #   handle <- req_handle(req)
+    } else if (retry_is_transient(req, resp)) {
+      i <- i + 1
+      delay <- retry_after(req, resp) %||% retry_backoff(req, i)
     } else {
       # done
       break
