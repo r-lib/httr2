@@ -69,4 +69,7 @@
   <url>
     <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>
   </url>
+  <url>
+    <loc>https://httr2.r-lib.org/articles/articles/oauth.html</loc>
+  </url>
 </urlset>

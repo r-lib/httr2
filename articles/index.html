@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Modify request headers — req_headers • httr2</title>
+<title>Articles • httr2</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,7 @@
 
 
 
-<meta property="og:title" content="Modify request headers — req_headers" />
-<meta property="og:description" content="req_headers() allows you to set the value of any header." />
+<meta property="og:title" content="Articles" />
 
 
 
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-article-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -120,59 +119,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Modify request headers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-headers.R'><code>R/req-headers.R</code></a></small>
-    <div class="hidden name"><code>req_headers.Rd</code></div>
+      <h1>Articles</h1>
     </div>
 
-    <div class="ref-description">
-    <p><code>req_headers()</code> allows you to set the value of any header.</p>
+    <div class="section ">
+      <h3>All vignettes</h3>
+      <p class="section-desc"></p>
+
+      <dl>
+        <dt><a href="articles/oauth.html">oauth</a></dt>
+        <dd></dt>
+      </dl>
     </div>
-
-    <pre class="usage"><span class='fu'>req_headers</span><span class='op'>(</span><span class='va'>.req</span>, <span class='va'>...</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>.req</th>
-      <td><p>A <a href='req.html'>req</a>uest.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Name-value pairs of headers and their values. Note that setting a
-header to <code>NULL</code> will not necessarily remove it, but will reset it
-to httr2's default value. To remove a header, set it to <code>""</code>.</p></td>
-    </tr>
-    </table>
-
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>req</span> <span class='op'>&lt;-</span> <span class='fu'><a href='req.html'>req</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span>
-<span class='co'># Setting Accept to NULL uses curl's default:</span>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_headers</span><span class='op'>(</span>Accept <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; GET / HTTP/1.1
-#&gt; -&gt; Host: example.com
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; </div><div class='input'>
-<span class='co'># Setting it to "" removes it:</span>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_headers</span><span class='op'>(</span>Accept <span class='op'>=</span> <span class='st'>""</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; GET / HTTP/1.1
-#&gt; -&gt; Host: example.com
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; </div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <nav id="toc" data-toggle="toc" class="sticky-top">
-      <h2 data-toc-skip>Contents</h2>
-    </nav>
   </div>
 </div>
 
