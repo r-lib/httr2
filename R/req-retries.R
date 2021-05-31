@@ -104,7 +104,7 @@ resp_retry_after <- function(resp) {
   if (is.null(val)) {
     NULL
   } else if (grepl(" ", val)) {
-    unclass(httr::parse_http_date(val)) - unclass(Sys.time())
+    unclass(httr::parse_http_date(val)) - unix_time()
   } else {
     as.numeric(val)
   }

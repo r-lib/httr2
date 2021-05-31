@@ -67,4 +67,4 @@ check_number <- function(x, name) {
 
 is_error <- function(x) inherits(x, "error")
 
-unix_time <- function(x) unclass(Sys.time())
+unix_time <- function() unclass(Sys.time())
