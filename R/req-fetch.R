@@ -63,13 +63,11 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
   }
 
   new_response(
-    handle = handle,
     method = req$method %||% default_method(req),
     url = res$url,
     status_code = res$status_code,
     headers = curl::parse_headers_list(res$headers),
-    body = body,
-    times = res$times
+    body = body
   )
 }
 
@@ -146,13 +144,11 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
 
   data <- curl::handle_data(handle)
   new_response(
-    handle = handle,
     method = req$method %||% default_method(req),
     url = data$url,
     status_code = data$status_code,
     headers = curl::parse_headers_list(data$headers),
-    body = NULL,
-    times = data$times
+    body = NULL
   )
 }
 

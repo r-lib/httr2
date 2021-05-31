@@ -1,20 +1,32 @@
-new_response <- function(handle, method, url, status_code, headers, body, times) {
+new_response <- function(method, url, status_code, headers, body, times) {
   structure(
     list(
-      handle = handle,
       method = method,
       url = url,
       status_code = status_code,
       headers = headers,
-      body = body,
-      times = times
+      body = body
     ),
     class = "httr2_response"
   )
 }
 
+response <- function(status_code,
+                     url = NULL,
+                     method = "GET",
+                     headers = list(),
+                     body = NULL) {
+  new_response(
+    method = method,
+    url = url,
+    status_code = as.integer(status_code),
+    headers = headers,
+    body = body
+  )
+}
+
 #' @export
-print.httr2_response <- function(x, ...) {
+print.httr2_response <- function(x,...) {
   cli::cli_text("{.cls {class(x)}}")
   cli::cli_text("{.strong {x$method}} {x$url}")
   cli::cli_text("{.field Status}: {x$status_code} {resp_status_desc(x)}")
