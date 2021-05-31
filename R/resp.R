@@ -14,8 +14,15 @@ new_response <- function(method, url, status_code, headers, body, times) {
 response <- function(status_code,
                      url = NULL,
                      method = "GET",
-                     headers = list(),
+                     headers = NULL,
                      body = NULL) {
+
+  check_number(status_code, "status_code")
+  if (!is.null(headers)) {
+    headers <- curl::parse_headers_list(headers)
+  }
+  check_string(method, "method")
+
   new_response(
     method = method,
     url = url,

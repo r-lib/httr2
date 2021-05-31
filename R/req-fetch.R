@@ -37,7 +37,7 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
     #   handle <- req_handle(req)
     } else if (retry_is_transient(req, resp)) {
       i <- i + 1
-      delay <- retry_after(req, resp) %||% retry_backoff(req, i)
+      delay <- retry_after(req, resp, i)
     } else {
       # done
       break

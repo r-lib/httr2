@@ -86,8 +86,9 @@ retry_backoff <- function(req, i) {
   req_policy_call(req, "retry_backoff", list(i), default = backoff_default)
 }
 
-retry_after <- function(req, resp) {
-  req_policy_call(req, "retry_after", list(resp), default = resp_retry_after)
+retry_after <- function(req, resp, i) {
+  after <- req_policy_call(req, "retry_after", list(resp), default = resp_retry_after)
+  after %||% retry_backoff(req, i)
 }
 
 # Helpers -----------------------------------------------------------------
@@ -95,7 +96,7 @@ retry_after <- function(req, resp) {
 # Exponential backoff with full-jitter, capped to 60s wait
 # https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
 backoff_default <- function(i) {
-  min(stats::runif(1, 2^i), 60)
+  round(min(stats::runif(1, min = 1, max = 2^i), 60), 1)
 }
 
 resp_retry_after <- function(resp) {
