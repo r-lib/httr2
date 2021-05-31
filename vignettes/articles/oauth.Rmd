@@ -1,0 +1,153 @@
+---
+title: "oauth"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(httr2)
+```
+
+## RFC6749: OAuth 2.0
+
+Allows third party to authenticate on behalf or on its own behalf.
+
+Instead of sharing your username and password with a third party, you instead give the 3rd party permission to perform actions on your behalf.
+
+resource owner = user; user-agent = browser;
+
+Basic flow:
+
+-   Client makes authorisation request to resource owner, and it returns an authorisation grant (four types are defined in this rfc: authorisation code, implicit, resource owner password credentials, and client credentials).
+
+-   Client makes authorisation grant to authorisation server (which can be different to resource server, even though that appears to be rare in practice) which returns access token.
+    Can also provides a refresh token which is a way to get new access tokens (which either have limited lifetime or limited scope; this reduces impact of MITM attacks).
+
+-   Client uses access token to access protected resources.
+
+### Client setup
+
+Resource server provides some way to register a new client.
+
+**Confidential** client can keep secrets from resource owner; **public** clients can not.
+
+Client profiles:
+
+-   web app: can manage secrets only accessible to client authors
+
+-   user-agent-based (i.e in browser): all credentials accessible to resource owner; can easily use browser auth
+
+-   native: public client installed on device used by resource owner.
+    generally possible to extract secrets with some effort.
+
+Each client is identified by a (non secret) client id.
+
+For client to authenticate to authorisation sever:
+
+-   Can use HTTP basic auth with client ID as user name and client secret as password.
+
+-   Can also (but not recommended) include in form encoded request body
+
+-   Also free to use own setup.
+
+## RC6750: Bearer Token Usage
+
+<https://datatracker.ietf.org/doc/html/rfc6750>
+
+Defines how to use a bearer token.
+(A bearer token is an opaque string that is meaningful to the server.)
+
+Three options in order of preference:
+
+-   In header: `Authorization: Bearer mF_9.B5f-4.1JqM`
+
+-   Form encoded in body.
+    Can't use for GET.
+    Can include other parameters.
+
+         POST /resource HTTP/1.1
+         Host: server.example.com
+         Content-Type: application/x-www-form-urlencodedsla
+
+         access_token=mF_9.B5f-4.1JqM
+
+-   In query parameter:
+
+        GET /resource?access_token=mF_9.B5f-4.1JqM HTTP/1.1
+        Host: server.example.com
+
+    Request should also include `Cache-Control: no-store`.
+    Least favoured because easy to leak in logs, history, etc.
+
+If client doesn't provide one these, server **must** include `WWW-authenticate` header.
+Can include attributes:
+
+-   realm (may) from RFC2617
+
+-   scope (may): "space-delimited list of case-sensitive scopes" indicating required scopes.
+
+-   error (should), error_description (may), error_uri (may): error code + optional description and link to learn more.
+    Error code is one of invalid_request (400), invalid_token (401), insufficient_scope (403)
+
+```{=html}
+<!-- -->
+```
+     HTTP/1.1 401 Unauthorized
+     WWW-Authenticate: 
+       Bearer realm="example",
+       error="invalid_token",
+       error_description="The access token expired"
+
+##  Grant types/flows
+
+### Authorisation code (web app) (RFC6749)
+
+Standard flow where user logs into resource server, then client gets code via redirect.
+Browser (user-agent) never sees token.
+
+Examples: [Google](https://developers.google.com/identity/protocols/oauth2/web-server)
+
+### Authorisation code with PKCE (native app) (RFC8252)
+
+No true way for a native (desktop or mobile) to keep a secret.
+
+<https://datatracker.ietf.org/doc/html/rfc8252>
+
+Should use PKCE (<https://datatracker.ietf.org/doc/html/rfc7636>)
+
+Examples: [Google](https://developers.google.com/identity/protocols/oauth2/native-app) (but requires client_secret in when getting access/refresh token).
+
+### Device (RFC8628)
+
+<https://datatracker.ietf.org/doc/html/rfc8628>
+
+Examples: [Google](https://developers.google.com/identity/protocols/oauth2/limited-input-device), [Github](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow).
+
+### Implicit (RFC6749)
+
+Skip authorisation code, and get access token directly.
+Authorisation server does not authenticate client (??).
+No refresh tokens.
+
+Examples: [Google](https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow).
+
+### Token exchange (RFC8693) 
+
+<https://datatracker.ietf.org/doc/html/rfc8693>
+
+### JWT (RFC7523) 
+
+Examples: [Google](https://developers.google.com/identity/protocols/oauth2/service-account#httprest).
+
+### Client credentials (RFC6749)
+
+Used when client is acting on its own behalf.
+
+### Resource owner password (RFC6749)
+
+Use username & password once to get an access (so client doesn't need to store them.
