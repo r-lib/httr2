@@ -22,8 +22,9 @@ req_error <- function(req,
   check_request(req)
 
   req_policies(
+    req,
     error_is_error = as_callback(is_error, 1, "is_error"),
-    info = as_callback(info, 1, "info")
+    error_info = as_callback(info, 1, "info")
   )
 }
 
