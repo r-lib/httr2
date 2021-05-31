@@ -7,3 +7,10 @@ req_test <- function(template = "GET /get", ...) {
   req <- req_template(req, template, ...)
   req
 }
+
+req_httpbin <- function(template) {
+  req <- req("https://httpbin.org")
+  req <- req_template(req, template)
+  req
+}
+

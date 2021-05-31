@@ -1,10 +1,5 @@
-req_httpbin <- function(template) {
-  req("https://httpbin.org") %>%
-    req_template(template)
-}
-
 test_that("can send empty body", {
-  resp <- req_httpbin("/post") %>%
+  resp <- req_test("/post") %>%
     req_body_none() %>%
     req_fetch()
 
@@ -18,7 +13,7 @@ test_that("can send file", {
   path <- tempfile()
   writeLines("this is a test", path)
 
-  resp <- req_httpbin("/post") %>%
+  resp <- req_test("/post") %>%
     req_body_file(path, type = "text/plain") %>%
     req_fetch()
 
@@ -40,20 +35,20 @@ test_that("can send string", {
 test_that("can send named list as json/form/multipart", {
   data <- list(a = "1", b = "2")
 
-  resp <- req_httpbin("/post") %>%
+  resp <- req_test("/post") %>%
     req_body_json(data) %>%
     req_fetch()
   json <- resp_body_json(resp)
   expect_equal(json$json, data)
 
-  resp <- req_httpbin("/post") %>%
+  resp <- req_test("/post") %>%
     req_body_form(data) %>%
     req_fetch()
   json <- resp_body_json(resp)
   expect_equal(json$headers$`Content-Type`, "application/x-www-form-urlencoded")
   expect_equal(json$form, data)
 
-  resp <- req_httpbin("/post") %>%
+  resp <- req_test("/post") %>%
     req_body_multipart(data) %>%
     req_fetch()
   json <- resp_body_json(resp)
