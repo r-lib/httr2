@@ -17,7 +17,7 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   handle <- handle %||% req_handle(req)
 
   max_tries <- retry_max_tries(req)
-  deadline <- retry_deadline(req)
+  deadline <- Sys.time() + retry_max_seconds(req)
 
   i <- 0
   delay <- throttle_delay(req)

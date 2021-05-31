@@ -68,12 +68,12 @@ req_retry <- function(req,
 }
 
 retry_max_tries <- function(req) {
-  has_max_wait <- !is.null(req$policies$retries_max_wait)
+  has_max_wait <- !is.null(req$policies$retry_max_wait)
   req$policies$retry_max_tries %||% if (has_max_wait) Inf else 1
 }
 
-retry_deadline <- function(req) {
-  Sys.time() + (req$policies$retry_max_wait %||% Inf)
+retry_max_seconds <- function(req) {
+  req$policies$retry_max_wait %||% Inf
 }
 
 retry_is_transient <- function(req, resp) {
