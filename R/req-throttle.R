@@ -27,11 +27,19 @@ req_throttle <- function(req, rate, realm = NULL) {
       wait <- delay - (unix_time() - last)
     }
 
-    the$throttle[[realm]] <- unix_time()
+    throttle_touch(realm)
     wait
   }
 
   req_policies(req, throttle_delay = throttle_delay)
+}
+
+throttle_reset <- function() {
+  env_bind(the, throttle = list())
+  invisible()
+}
+throttle_touch <- function(realm) {
+  env_bind(the, throttle = modify_list(the$throttle, !!realm := unix_time()))
 }
 
 throttle_delay <- function(req) {
