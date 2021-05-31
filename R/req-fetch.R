@@ -19,10 +19,13 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
 
-  i <- 0
+  n <- 0
+  tries <- 0
   delay <- throttle_delay(req)
 
-  while(i < max_tries && Sys.time() < deadline) {
+  while(tries < max_tries && Sys.time() < deadline) {
+    n <- n + 1
+
     sys_sleep(delay)
     resp <- tryCatch(
       req_fetch1(req, path = path, handle = handle),
@@ -30,19 +33,21 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
     )
 
     if (is_error(resp)) {
-      i <- i + 1
-      delay <- retry_backoff(req, i)
+      tries <- tries + 1
+      delay <- retry_backoff(req, tries)
     # } else if (auth_needs_reauth(req, resp)) {
     #   req <- auth_reauth(req)
     #   handle <- req_handle(req)
+    #   delay <- 0
     } else if (retry_is_transient(req, resp)) {
-      i <- i + 1
-      delay <- retry_after(req, resp, i)
+      tries <- tries + 1
+      delay <- retry_after(req, resp, tries)
     } else {
       # done
       break
     }
   }
+  signal("", "httr2_fetch", n = n, tries = tries)
 
   if (is_error(resp)) {
     stop(resp)

@@ -62,7 +62,7 @@ resp_check_status <- function(resp, info = NULL) {
     c(message, info),
     status = status,
     resp = resp,
-    class = c(glue("httr2_http_{status}", "httr2_http"))
+    class = c(glue("httr2_http_{status}"), "httr2_http")
   )
 }
 
