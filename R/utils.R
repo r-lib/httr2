@@ -62,7 +62,7 @@ check_number <- function(x, name) {
   if (is_double(x, n = 1) && !is.na(x)) {
     return()
   }
-  abort("{name} must be a number")
+  abort(glue("{name} must be a number"))
 }
 
 is_error <- function(x) inherits(x, "error")

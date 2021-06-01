@@ -14,9 +14,9 @@
     Code
       check_number("2", "x")
     Error <rlang_error>
-      {name} must be a number
+      x must be a number
     Code
       check_number(NA_real_, "x")
     Error <rlang_error>
-      {name} must be a number
+      x must be a number
 
