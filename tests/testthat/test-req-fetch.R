@@ -44,5 +44,5 @@ test_that("req_fetch() will throttle requests", {
 
   cnd <- req %>% req_fetch("/get") %>% catch_cnd("httr2_sleep")
   expect_s3_class(cnd, "httr2_sleep")
-  expect_true(cnd$seconds > 0.001)
+  expect_gt(cnd$seconds, 0.002)
 })
