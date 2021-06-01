@@ -27,24 +27,21 @@ resp_header_exists <- function(resp, header) {
 }
 
 resp_content_type <- function(resp) {
-  type <- resp_header(resp, "content-type")
-  tryCatch(
-    error = function(err) NA_character_,
-    httr::parse_media(type)$complete
-  )
+  resp_parsed_content_type(resp)$complete %||% NA_character_
+}
+
+resp_date <- function(resp) {
+  httr::parse_http_date(resp_header(resp, "Date"), NULL)
 }
 
 resp_encoding <- function(resp) {
-  type <- resp_header(resp, "content-type")
-  charset <- tryCatch(
-    error = function(err) NULL,
-    httr::parse_media(type)$params$charset
-  )
-
-  if (is.null(charset)) {
-    "UTF-8"
-  } else {
-    charset
-  }
+  resp_parsed_content_type(resp)$params$charset %||% "UTF-8"
 }
 
+resp_parsed_content_type <- function(resp) {
+  type <- resp_header(resp, "content-type")
+  tryCatch(
+    httr::parse_media(type),
+    error = function(err) NULL
+  )
+}

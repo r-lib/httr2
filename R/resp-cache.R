@@ -40,10 +40,6 @@ resp_cache_expiry <- function(resp, control = NULL) {
   }
 }
 
-resp_date <- function(resp) {
-  httr::parse_http_date(resp_header(resp, "Date"), NULL)
-}
-
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
 resp_cache_control <- function(resp) {
   x <- resp_header(resp, "Cache-Control")
