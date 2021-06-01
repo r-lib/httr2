@@ -94,7 +94,8 @@
 <h2 class="hasAnchor">
 <a href="#major-differences-to-httr" class="anchor"></a>Major differences to httr</h2>
 <ul>
-<li>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors), or to extract additional information about the error from the body of the response.</li>
+<li><p>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors), or to extract additional information about the error from the body of the response.</p></li>
+<li><p>It’s easy to automatically retry if the request fails or encounters a transient HTTP error (e.g. a 429 rate limit request). Use <code><a href="reference/req_retry.html">req_retry()</a></code> to define maximum number of retries, and override the defaults that determine which errors are transient, and how long to wait before retrying.</p></li>
 </ul>
 </div>
 <div id="installation" class="section level2">
