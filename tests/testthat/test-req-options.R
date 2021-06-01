@@ -39,10 +39,15 @@ test_that("can set timeout", {
 })
 
 test_that("can request verbose record of request", {
-  req <- req_test("/post") %>%
-    req_body_raw("This is some text") %>%
+  req <- req_test("/post") %>% req_body_raw("This is some text")
+
+  # Snapshot test of what can be made reproducible
+  req1 <- req %>%
     req_headers("Host" = "http://example.com") %>%
     req_verbose(header_in = FALSE)
+  expect_snapshot_output(invisible(req_fetch(req1)))
 
-  expect_snapshot_output(invisible(req_fetch(req)))
+  # Lightweight test for everything else
+  req2 <- req %>% req_verbose(info = TRUE, data_in = TRUE)
+  expect_output(req_fetch(req2))
 })
