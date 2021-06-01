@@ -44,6 +44,7 @@ test_that("can request verbose record of request", {
   # Snapshot test of what can be made reproducible
   req1 <- req %>%
     req_headers("Host" = "http://example.com") %>%
+    req_user_agent("verbose") %>%
     req_verbose(header_in = FALSE)
   expect_snapshot_output(invisible(req_fetch(req1)))
 
