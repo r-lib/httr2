@@ -1,4 +1,16 @@
 new_response <- function(method, url, status_code, headers, body, times) {
+  check_string(method, "method")
+  check_string(url, "url")
+  check_number(status_code, "status_code")
+
+  if (!is_list(headers) || !(length(headers) == 0 || is_named(headers))) {
+    abort("`headers` must be a named list")
+  }
+  # ensure we always have a date field
+  if (!has_name(headers, "date")) {
+    headers$date <- httr::http_date(Sys.time())
+  }
+
   structure(
     list(
       method = method,
@@ -14,14 +26,12 @@ new_response <- function(method, url, status_code, headers, body, times) {
 response <- function(status_code = 200,
                      url = "http://example.com",
                      method = "GET",
-                     headers = NULL,
+                     headers = list(),
                      body = NULL) {
 
-  check_number(status_code, "status_code")
-  if (!is.null(headers)) {
+  if (is.character(headers)) {
     headers <- curl::parse_headers_list(headers)
   }
-  check_string(method, "method")
 
   new_response(
     method = method,

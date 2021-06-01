@@ -59,7 +59,7 @@ check_string <- function(x, name) {
 }
 
 check_number <- function(x, name) {
-  if (is_double(x, n = 1) && !is.na(x)) {
+  if ((is_double(x, n = 1) || is_integer(x, n = 1)) && !is.na(x)) {
     return()
   }
   abort(glue("{name} must be a number"))
