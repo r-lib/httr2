@@ -4,7 +4,7 @@ req_test <- function(template, ...) {
   }
 
   req <- req(the$test_app$url())
-  req <- req_template(req, template, ...)
+  req <- req_template(req, template, ..., .env = caller_env())
   req
 }
 

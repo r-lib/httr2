@@ -90,7 +90,7 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
 #' @export
 #' @examples
 #' req("http://google.com") %>% req_dry_run()
-req_dry_run <- function(req, quiet = FALSE) {
+req_dry_run <- function(req, quiet = !is_interactive()) {
   check_request(req)
   check_installed("httpuv")
 
@@ -103,7 +103,11 @@ req_dry_run <- function(req, quiet = FALSE) {
   handle <- req_handle(req)
   resp <- curl::curl_echo(handle, progress = FALSE)
 
-  invisible(resp[c("method", "path", "headers")])
+  invisible(list(
+    method = resp$method,
+    path = resp$path,
+    headers = as.list(resp$headers)
+  ))
 }
 
 #' Perform a request, streaming data back to R
