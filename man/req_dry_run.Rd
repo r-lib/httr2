@@ -4,7 +4,7 @@
 \alias{req_dry_run}
 \title{Perform a dry run}
 \usage{
-req_dry_run(req, quiet = FALSE)
+req_dry_run(req, quiet = !is_interactive())
 }
 \arguments{
 \item{req}{A \link{req}uest.}
