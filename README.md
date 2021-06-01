@@ -24,6 +24,12 @@ httr2 is a ground up rewrite of httr with two main goals:
     responses into errors), or to extract additional information about
     the error from the body of the response.
 
+-   It’s easy to automatically retry if the request fails or encounters
+    a transient HTTP error (e.g. a 429 rate limit request). Use
+    `req_retry()` to define maximum number of retries, and override the
+    defaults that determine which errors are transient, and how long to
+    wait before retrying.
+
 ## Installation
 
 You can install the released version of httr2 from

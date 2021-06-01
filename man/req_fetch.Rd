@@ -20,7 +20,15 @@ throw an error for 4xx and 5xx responses; override with \code{\link[=req_error]{
 }
 \description{
 After preparing a request, call \code{req_fetch()} to perform it, fetching
-the results back to R.
+the results back to R. One call to \code{req_fetch()} may perform multiple
+HTTP requests:
+\itemize{
+\item If the \code{url} is redirected with a 301, 302, 303, or 307, curl will
+automatically follow the \code{Location} header to the new location.
+\item If you have configured retries with \code{\link[=req_retry]{req_retry()}} and the request
+fails with a transient problem, \code{req_fetch()} will try again after
+waiting a bit. See \code{\link[=req_retry]{req_retry()}} for details.
+}
 }
 \examples{
 req("https://google.com") \%>\%

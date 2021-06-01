@@ -1,7 +1,16 @@
 #' Simulate a request
 #'
+#' @description
 #' After preparing a request, call `req_fetch()` to perform it, fetching
-#' the results back to R.
+#' the results back to R. One call to `req_fetch()` may perform multiple
+#' HTTP requests:
+#'
+#' * If the `url` is redirected with a 301, 302, 303, or 307, curl will
+#'   automatically follow the `Location` header to the new location.
+#'
+#' * If you have configured retries with [req_retry()] and the request
+#'   fails with a transient problem, `req_fetch()` will try again after
+#'   waiting a bit. See [req_retry()] for details.
 #'
 #' @param req A [req]uest.
 #' @param path Optionally, path to save body of request. This is useful for
