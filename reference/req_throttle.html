@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Throttle a request by automatically adding a delay — req_throttle" />
-<meta property="og:description" content="Throttling a request ensures that it never makes more than the specified
-number of requests per second." />
+<meta property="og:description" content="Use req_throttle() to ensure that repeated calls to req_fetch() never
+exceed a specified rate." />
 
 
 
@@ -127,8 +127,8 @@ number of requests per second." />
     </div>
 
     <div class="ref-description">
-    <p>Throttling a request ensures that it never makes more than the specified
-number of requests per second.</p>
+    <p>Use <code>req_throttle()</code> to ensure that repeated calls to <code><a href='req_fetch.html'>req_fetch()</a></code> never
+exceed a specified rate.</p>
     </div>
 
     <pre class="usage"><span class='fu'>req_throttle</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>rate</span>, realm <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -154,6 +154,9 @@ defaults to the hostname of the request.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='req_retry.html'>req_retry()</a></code> for another way of handling rate-limited APIs.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
