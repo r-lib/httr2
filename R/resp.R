@@ -11,8 +11,8 @@ new_response <- function(method, url, status_code, headers, body, times) {
   )
 }
 
-response <- function(status_code,
-                     url = NULL,
+response <- function(status_code = 200,
+                     url = "http://example.com",
                      method = "GET",
                      headers = NULL,
                      body = NULL) {
