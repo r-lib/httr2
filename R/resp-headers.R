@@ -42,7 +42,6 @@ resp_encoding <- function(resp) {
   )
 
   if (is.null(charset)) {
-    warn("No encoding found; guessing UTF-8")
     "UTF-8"
   } else {
     charset

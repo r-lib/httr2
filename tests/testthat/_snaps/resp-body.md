@@ -1,3 +1,10 @@
+# empty body generates error
+
+    Code
+      req_test("HEAD /get") %>% req_fetch() %>% resp_body_raw()
+    Error <rlang_error>
+      Can not retrieve empty body
+
 # content types are checked
 
     Code

@@ -16,8 +16,10 @@
 resp_body_raw <- function(resp) {
   check_response(resp)
 
-  if (resp_body_is_path(resp)) {
+  if (is_path(resp$body)) {
     readBin(resp$body, "raw", file.size(resp$body))
+  } else if (length(resp$body) == 0) {
+    abort("Can not retrieve empty body")
   } else {
     resp$body
   }
@@ -75,8 +77,6 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
 }
 
 # Helpers -----------------------------------------------------------------
-
-resp_body_is_path <- function(resp) is_path(resp$body)
 
 check_content_type <- function(resp, types, check_type = TRUE) {
   if (!check_type || resp_content_type(resp) %in% types) {
