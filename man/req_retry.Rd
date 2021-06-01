@@ -90,3 +90,7 @@ req("http://api.github.com") \%>\%
     after = github_after
   )
 }
+\seealso{
+\code{\link[=req_throttle]{req_throttle()}} if the API has a rate-limit but doesn't expose
+the limits in the response.
+}

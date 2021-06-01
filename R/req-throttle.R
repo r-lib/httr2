@@ -1,7 +1,7 @@
 #' Throttle a request by automatically adding a delay
 #'
-#' Throttling a request ensures that it never makes more than the specified
-#' number of requests per second.
+#' Use `req_throttle()` to ensure that repeated calls to [req_fetch()] never
+#' exceed a specified rate.
 #'
 #' @inheritParams req_fetch
 #' @param rate Maximum rate, i.e. maximum number of requests per second.
@@ -10,6 +10,7 @@
 #'   is `15 / 60`.
 #' @param realm An unique identifier that for throttle pool. If not supplied,
 #'   defaults to the hostname of the request.
+#' @seealso [req_retry()] for another way of handling rate-limited APIs.
 #' @export
 req_throttle <- function(req, rate, realm = NULL) {
   check_request(req)

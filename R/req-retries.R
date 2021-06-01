@@ -46,6 +46,8 @@
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead..
 #' @export
+#' @seealso [req_throttle()] if the API has a rate-limit but doesn't expose
+#'   the limits in the response.
 #' @examples
 #' # google APIs assume that a 500 is also a transient error
 #' req("http://google.com") %>%

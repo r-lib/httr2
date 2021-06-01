@@ -18,6 +18,9 @@ is \code{15 / 60}.}
 defaults to the hostname of the request.}
 }
 \description{
-Throttling a request ensures that it never makes more than the specified
-number of requests per second.
+Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_fetch]{req_fetch()}} never
+exceed a specified rate.
+}
+\seealso{
+\code{\link[=req_retry]{req_retry()}} for another way of handling rate-limited APIs.
 }
