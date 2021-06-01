@@ -18,3 +18,16 @@ test_that("can parse date header", {
   resp <- response(headers = "Date: Mon, 18 Jul 2016 16:06:00 GMT")
   expect_equal(resp_date(resp), as.POSIXct('2016-07-18 16:06:06', tz = "GMT"))
 })
+
+test_that("can parse both forms of retry-after header", {
+  resp_abs <- response(headers = c(
+    "Retry-After: Mon, 18 Jul 2016 16:06:10 GMT",
+    "Date: Mon, 18 Jul 2016 16:06:00 GMT"
+  ))
+  expect_equal(resp_retry_after(resp_abs), 10)
+
+  resp_rel <- response(headers = c(
+    "Retry-After: 20"
+  ))
+  expect_equal(resp_retry_after(resp_rel), 20)
+})

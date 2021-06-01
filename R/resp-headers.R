@@ -22,6 +22,10 @@
 #'    header. If that header is not found, not valid, or no charset parameter
 #'    is found, this returns `UTF-8`. Used by [resp_body_string()].
 #'
+#' *  `resp_retry_after()` returns how many seconds you should wait before
+#'    retrying a request. It parses both forms (absolute and relative) and
+#'    returns the number of seconds to wait. If the heading is not found,
+#'    it will return `NULL`.
 #'
 #' @param resp An HTTP response object, as created by [req_fetch()].
 #' @export
@@ -62,6 +66,23 @@ resp_date <- function(resp) {
 resp_encoding <- function(resp) {
   resp_parsed_content_type(resp)$params$charset %||% "UTF-8"
 }
+
+#' @export
+#' @rdname resp_headers
+resp_retry_after <- function(resp) {
+  # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
+  val <- resp_header(resp, "Retry-After")
+  if (is.null(val)) {
+    NULL
+  } else if (grepl(" ", val)) {
+    diff <- difftime(httr::parse_http_date(val), resp_date(resp), units = "secs")
+    as.numeric(diff)
+  } else {
+    as.numeric(val)
+  }
+}
+
+# Helpers -----------------------------------------------------------------
 
 resp_parsed_content_type <- function(resp) {
   type <- resp_header(resp, "content-type")

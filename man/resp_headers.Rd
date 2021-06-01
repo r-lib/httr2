@@ -7,6 +7,7 @@
 \alias{resp_content_type}
 \alias{resp_date}
 \alias{resp_encoding}
+\alias{resp_retry_after}
 \title{Extract headers from a response}
 \usage{
 resp_headers(resp)
@@ -20,6 +21,8 @@ resp_content_type(resp)
 resp_date(resp)
 
 resp_encoding(resp)
+
+resp_retry_after(resp)
 }
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_fetch]{req_fetch()}}.}
@@ -47,5 +50,9 @@ automatically.
 types, as parsed from the \code{charset} parameter of the \code{Content-Type}
 header. If that header is not found, not valid, or no charset parameter
 is found, this returns \code{UTF-8}. Used by \code{\link[=resp_body_string]{resp_body_string()}}.
+\item \code{resp_retry_after()} returns how many seconds you should wait before
+retrying a request. It parses both forms (absolute and relative) and
+returns the number of seconds to wait. If the heading is not found,
+it will return \code{NULL}.
 }
 }

@@ -98,15 +98,3 @@ retry_after <- function(req, resp, i) {
 backoff_default <- function(i) {
   round(min(stats::runif(1, min = 1, max = 2^i), 60), 1)
 }
-
-resp_retry_after <- function(resp) {
-  # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
-  val <- resp_header(resp, "Retry-After")
-  if (is.null(val)) {
-    NULL
-  } else if (grepl(" ", val)) {
-    unclass(httr::parse_http_date(val)) - unix_time()
-  } else {
-    as.numeric(val)
-  }
-}
