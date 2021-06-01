@@ -4,6 +4,9 @@
 \alias{resp_headers}
 \alias{resp_header}
 \alias{resp_header_exists}
+\alias{resp_content_type}
+\alias{resp_date}
+\alias{resp_encoding}
 \title{Extract headers from a response}
 \usage{
 resp_headers(resp)
@@ -11,6 +14,12 @@ resp_headers(resp)
 resp_header(resp, header)
 
 resp_header_exists(resp, header)
+
+resp_content_type(resp)
+
+resp_date(resp)
+
+resp_encoding(resp)
 }
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_fetch]{req_fetch()}}.}
@@ -18,9 +27,25 @@ resp_header_exists(resp, header)
 \item{header}{Header name (case insensitive)}
 }
 \description{
+Some of these functions provide generic access to all headers:
 \itemize{
 \item \code{resp_headers()} retrieves a list of all headers.
 \item \code{resp_header()} retrieves a single header.
-\item \code{resp_header_exists()} checks if a header is present
+\item \code{resp_header_exists()} checks if a header is present.
+}
+
+Other functions parse specific headers:
+\itemize{
+\item \code{resp_content_type()} returns the just the type and subtype of the
+from the \code{Content-Type} header. If \code{Content-Type} is not provided
+(or is not a valid mime type), this returns \code{NA}. Used by
+\code{\link[=resp_body_json]{resp_body_json()}}, \code{\link[=resp_body_html]{resp_body_html()}}, and \code{\link[=resp_body_xml]{resp_body_xml()}}.
+\item \code{resp_date()} returns the \code{Date} header as a POSIXct. This header
+always exists; if the server does not return it, httr2 adds
+automatically.
+\item \code{resp_encoding()} returns the likely character encoding of text
+types, as parsed from the \code{charset} parameter of the \code{Content-Type}
+header. If that header is not found, not valid, or no charset parameter
+is found, this returns \code{UTF-8}. Used by \code{\link[=resp_body_string]{resp_body_string()}}.
 }
 }
