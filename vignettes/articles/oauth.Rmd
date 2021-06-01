@@ -94,16 +94,15 @@ Can include attributes:
 -   error (should), error_description (may), error_uri (may): error code + optional description and link to learn more.
     Error code is one of invalid_request (400), invalid_token (401), insufficient_scope (403)
 
-```{=html}
 <!-- -->
-```
+
      HTTP/1.1 401 Unauthorized
      WWW-Authenticate: 
        Bearer realm="example",
        error="invalid_token",
        error_description="The access token expired"
 
-##  Grant types/flows
+## Grant types/flows
 
 ### Authorisation code (web app) (RFC6749)
 
@@ -136,11 +135,11 @@ No refresh tokens.
 
 Examples: [Google](https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow).
 
-### Token exchange (RFC8693) 
+### Token exchange (RFC8693)
 
 <https://datatracker.ietf.org/doc/html/rfc8693>
 
-### JWT (RFC7523) 
+### JWT (RFC7523)
 
 Examples: [Google](https://developers.google.com/identity/protocols/oauth2/service-account#httprest).
 
