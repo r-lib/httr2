@@ -41,10 +41,9 @@
 
 <meta property="og:title" content="Control handling of HTTP errors — req_error" />
 <meta property="og:description" content="req_fetch() will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors, but you can override with is_error. If the
-API provides useful additional information in the response, you can use
-info to extract into a character vector that will be automatically
-appended to the generated error." />
+status code) into R errors. Use req_fetch() to either override the
+defaults, or extract additional information from the response that would
+be useful to expose to the user." />
 
 
 
@@ -131,10 +130,9 @@ appended to the generated error." />
 
     <div class="ref-description">
     <p><code><a href='req_fetch.html'>req_fetch()</a></code> will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors, but you can override with <code>is_error</code>. If the
-API provides useful additional information in the response, you can use
-<code>info</code> to extract into a character vector that will be automatically
-appended to the generated error.</p>
+status code) into R errors. Use <code><a href='req_fetch.html'>req_fetch()</a></code> to either override the
+defaults, or extract additional information from the response that would
+be useful to expose to the user.</p>
     </div>
 
     <pre class="usage"><span class='fu'>req_error</span><span class='op'>(</span><span class='va'>req</span>, is_error <span class='op'>=</span> <span class='cn'>NULL</span>, info <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -161,6 +159,9 @@ so you can use any formatting that it supports.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An HTTP <a href='req.html'>req</a>uest.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='req_retry.html'>req_retry()</a></code> to control when errors are automatically retried.</p></div>

@@ -45,6 +45,7 @@
 resp_body_raw() returns the raw bytes.
 resp_body_string() returns a UTF-8 string.
 resp_body_json() returns parsed JSON.
+resp_body_html() returns parsed HTML.
 resp_body_xml() returns parsed XML.
 
 
@@ -141,6 +142,7 @@ check with check_type = FALSE." />
 <li><p><code>resp_body_raw()</code> returns the raw bytes.</p></li>
 <li><p><code>resp_body_string()</code> returns a UTF-8 string.</p></li>
 <li><p><code>resp_body_json()</code> returns parsed JSON.</p></li>
+<li><p><code>resp_body_html()</code> returns parsed HTML.</p></li>
 <li><p><code>resp_body_xml()</code> returns parsed XML.</p></li>
 </ul>
 
@@ -154,6 +156,8 @@ check with <code>check_type = FALSE</code>.</p>
 <span class='fu'>resp_body_string</span><span class='op'>(</span><span class='va'>resp</span>, encoding <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='fu'>resp_body_json</span><span class='op'>(</span><span class='va'>resp</span>, check_type <span class='op'>=</span> <span class='cn'>TRUE</span>, simplifyVector <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>resp_body_html</span><span class='op'>(</span><span class='va'>resp</span>, check_type <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>resp_body_xml</span><span class='op'>(</span><span class='va'>resp</span>, check_type <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 

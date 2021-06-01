@@ -40,11 +40,28 @@
 
 
 <meta property="og:title" content="Extract headers from a response — resp_headers" />
-<meta property="og:description" content="
-
+<meta property="og:description" content="Some of these functions provide generic access to all headers:
 resp_headers() retrieves a list of all headers.
 resp_header() retrieves a single header.
-resp_header_exists() checks if a header is present
+resp_header_exists() checks if a header is present.
+
+
+Other functions parse specific headers:
+resp_content_type() returns the just the type and subtype of the
+from the Content-Type header. If Content-Type is not provided
+(or is not a valid mime type), this returns NA. Used by
+resp_body_json(), resp_body_html(), and resp_body_xml().
+resp_date() returns the Date header as a POSIXct. This header
+always exists; if the server does not return it, httr2 adds
+automatically.
+resp_encoding() returns the likely character encoding of text
+types, as parsed from the charset parameter of the Content-Type
+header. If that header is not found, not valid, or no charset parameter
+is found, this returns UTF-8. Used by resp_body_string().
+resp_retry_after() returns how many seconds you should wait before
+retrying a request. It parses both forms (absolute and relative) and
+returns the number of seconds to wait. If the heading is not found,
+it will return NULL.
 
 " />
 
@@ -132,11 +149,28 @@ resp_header_exists() checks if a header is present
     </div>
 
     <div class="ref-description">
-    
-<ul>
+    <p>Some of these functions provide generic access to all headers:</p><ul>
 <li><p><code>resp_headers()</code> retrieves a list of all headers.</p></li>
 <li><p><code>resp_header()</code> retrieves a single header.</p></li>
-<li><p><code>resp_header_exists()</code> checks if a header is present</p></li>
+<li><p><code>resp_header_exists()</code> checks if a header is present.</p></li>
+</ul>
+
+<p>Other functions parse specific headers:</p><ul>
+<li><p><code>resp_content_type()</code> returns the just the type and subtype of the
+from the <code>Content-Type</code> header. If <code>Content-Type</code> is not provided
+(or is not a valid mime type), this returns <code>NA</code>. Used by
+<code><a href='resp_body_raw.html'>resp_body_json()</a></code>, <code><a href='resp_body_raw.html'>resp_body_html()</a></code>, and <code><a href='resp_body_raw.html'>resp_body_xml()</a></code>.</p></li>
+<li><p><code>resp_date()</code> returns the <code>Date</code> header as a POSIXct. This header
+always exists; if the server does not return it, httr2 adds
+automatically.</p></li>
+<li><p><code>resp_encoding()</code> returns the likely character encoding of text
+types, as parsed from the <code>charset</code> parameter of the <code>Content-Type</code>
+header. If that header is not found, not valid, or no charset parameter
+is found, this returns <code>UTF-8</code>. Used by <code><a href='resp_body_raw.html'>resp_body_string()</a></code>.</p></li>
+<li><p><code>resp_retry_after()</code> returns how many seconds you should wait before
+retrying a request. It parses both forms (absolute and relative) and
+returns the number of seconds to wait. If the heading is not found,
+it will return <code>NULL</code>.</p></li>
 </ul>
 
     </div>
@@ -145,7 +179,15 @@ resp_header_exists() checks if a header is present
 
 <span class='fu'>resp_header</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span>
 
-<span class='fu'>resp_header_exists</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span></pre>
+<span class='fu'>resp_header_exists</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span>
+
+<span class='fu'>resp_content_type</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
+
+<span class='fu'>resp_date</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
+
+<span class='fu'>resp_encoding</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
+
+<span class='fu'>resp_retry_after</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
