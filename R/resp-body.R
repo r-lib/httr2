@@ -4,6 +4,7 @@
 #' * `resp_body_raw()` returns the raw bytes.
 #' * `resp_body_string()` returns a UTF-8 string.
 #' * `resp_body_json()` returns parsed JSON.
+#' * `resp_body_html()` returns parsed HTML.
 #' * `resp_body_xml()` returns parsed XML.
 #'
 #' `resp_body_json()` and `resp_body_xml()` check that the content-type header
@@ -55,6 +56,16 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 
 #' @rdname resp_body_raw
 #' @export
+resp_body_html <- function(resp, check_type = TRUE, ...) {
+  check_response(resp)
+  check_installed("xml2")
+  check_content_type(resp, c("text/html", "application/xhtml+xml"), check_type)
+
+  xml2::read_html(resp$body, ...)
+}
+
+#' @rdname resp_body_raw
+#' @export
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
@@ -75,7 +86,7 @@ check_content_type <- function(resp, types, check_type = TRUE) {
   if (length(types) > 1) {
     type <- paste0("one of ", paste0("'", types, "'", collapse = ", "))
   } else {
-    type <- type
+    type <- paste0("'", types, "'")
   }
   abort(c(
     glue("Declared content type is not {type}"),

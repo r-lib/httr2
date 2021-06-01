@@ -4,6 +4,7 @@
 \alias{resp_body_raw}
 \alias{resp_body_string}
 \alias{resp_body_json}
+\alias{resp_body_html}
 \alias{resp_body_xml}
 \title{Extract the body from the response}
 \usage{
@@ -12,6 +13,8 @@ resp_body_raw(resp)
 resp_body_string(resp, encoding = NULL)
 
 resp_body_json(resp, check_type = TRUE, simplifyVector = FALSE, ...)
+
+resp_body_html(resp, check_type = TRUE, ...)
 
 resp_body_xml(resp, check_type = TRUE, ...)
 }
@@ -37,6 +40,7 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \item \code{resp_body_raw()} returns the raw bytes.
 \item \code{resp_body_string()} returns a UTF-8 string.
 \item \code{resp_body_json()} returns parsed JSON.
+\item \code{resp_body_html()} returns parsed HTML.
 \item \code{resp_body_xml()} returns parsed XML.
 }
 
