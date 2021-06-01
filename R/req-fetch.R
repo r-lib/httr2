@@ -7,7 +7,8 @@
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
 #' @param handle Advanced use only; a curl handle.
-#' @returns Returns an HTTP response.
+#' @returns Returns an HTTP response with successful status code. Will
+#'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
 #' @examples
 #' req("https://google.com") %>%

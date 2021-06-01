@@ -27,6 +27,13 @@ httr2 is a ground up rewrite of httr with two main goals:
 * Solve problems that were out of scope for httr but make writing API 
   wrappers a pain (e.g. rate-limiting, retries, non-standard oauth, ...)
 
+## Major differences to httr
+
+* HTTP errors are automatically converted into R errors. Use `req_error()`
+  to override the defaults (which turn all 4xx and 5xx responses into errors),
+  or to extract additional information about the error from the body of the 
+  response.
+
 ## Installation
 
 You can install the released version of httr2 from [CRAN](https://CRAN.R-project.org) with:

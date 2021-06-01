@@ -18,12 +18,14 @@ and returns a character vector of additional information about the error.
 This vector is passed along to the \code{message} argument of \code{\link[rlang:abort]{rlang::abort()}}
 so you can use any formatting that it supports.}
 }
+\value{
+An HTTP \link{req}uest.
+}
 \description{
 \code{req_fetch()} will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors, but you can override with \code{is_error}. If the
-API provides useful additional information in the response, you can use
-\code{info} to extract into a character vector that will be automatically
-appended to the generated error.
+status code) into R errors. Use \code{req_fetch()} to either override the
+defaults, or extract additional information from the response that would
+be useful to expose to the user.
 }
 \seealso{
 \code{\link[=req_retry]{req_retry()}} to control when errors are automatically retried.

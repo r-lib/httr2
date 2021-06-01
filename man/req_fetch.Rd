@@ -15,7 +15,8 @@ large responses since it avoids storing the response in memory.}
 \item{handle}{Advanced use only; a curl handle.}
 }
 \value{
-Returns an HTTP response.
+Returns an HTTP response with successful status code. Will
+throw an error for 4xx and 5xx responses; override with \code{\link[=req_error]{req_error()}}.
 }
 \description{
 After preparing a request, call \code{req_fetch()} to perform it, fetching
