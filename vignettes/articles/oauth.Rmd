@@ -188,3 +188,14 @@ How do we expose this to the user?
 
 Current thinking - provide obvious extension points, and export components so that you can reuse if needed.
 
+### Token caching
+
+An oauth flow is a relatively complicated process, and even when no user interaction is required you want to do it as infrequently as possible.
+This implies that once you've performed a flow and received a token you want to cache it.
+
+At a minimum you want to cache within the current session so that use of the same flow with the same app automatically returns the same token.
+
+The user may also want to opt-in to saving the token on disk for use in future sessions.
+
+each request has an oauth flow and a cache policy (which defaults to caching within a session only; by default there's one token per client id, but you can add additional keys if you want).When you make a request, we look up the token from the cache, and if it's not present we use the flow to get a new token.
+If the token has expired and has a refresh token, we automatically refresh before the first request.If the request errors with a 401 and error `invalid_token` then we first try the refresh token, and then if that fails, we re-run the full flow.

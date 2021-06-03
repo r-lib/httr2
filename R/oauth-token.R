@@ -5,6 +5,8 @@ new_token <- function(access_token,
                       ...,
                       .date = NULL) {
 
+  # TODO: should tokens always store their state?
+
   if (!is.null(expires_in) && !is.null(date)) {
     # Store as unix time to avoid worrying about type coercions in cache
     expires_at <- unclass(date) + expires_in
