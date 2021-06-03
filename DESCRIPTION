@@ -24,7 +24,8 @@ Imports:
     magrittr,
     rlang,
     withr
-Suggests: 
+Suggests:
+    askpass,
     covr,
     httpuv,
     jsonlite,

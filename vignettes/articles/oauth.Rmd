@@ -104,40 +104,50 @@ Can include attributes:
 
 ## Grant types/flows
 
-### Authorisation code (web app) (RFC6749)
-
-Standard flow where user logs into resource server, then client gets code via redirect.
-Browser (user-agent) never sees token.
-
-Examples: [Google](https://developers.google.com/identity/protocols/oauth2/web-server)
-
 ### Authorisation code with PKCE (native app) (RFC8252)
 
-No true way for a native (desktop or mobile) to keep a secret.
+<https://datatracker.ietf.org/doc/html/rfc8252>; `grant_type: authorization_code` + public client, since no true way for a native (desktop or mobile) to keep a secret.
 
-<https://datatracker.ietf.org/doc/html/rfc8252>
-
-Should use PKCE (<https://datatracker.ietf.org/doc/html/rfc7636>)
+Should use PKCE ([\<https://datatracker.ietf.org/doc/html/rfc7636\>](https://datatracker.ietf.org/doc/html/rfc7636){.uri})
 
 Examples: [Google](https://developers.google.com/identity/protocols/oauth2/native-app) (but requires client_secret in when getting access/refresh token).
 
+### Authorisation code (web app) (RFC6749)
+
+<https://datatracker.ietf.org/doc/html/rfc6749#section-4.1>; `grant_type: authorization_code`.
+
+Standard flow where user logs into resource server, then client gets code via redirect.
+Browser (user-agent) never sees token.
+Not perfectly suited for an R package, but it's the only form supported by many APIs so we do the best we can.
+
+Examples: [Google](https://developers.google.com/identity/protocols/oauth2/web-server), [Azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow), [GitHub](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow),
+
 ### Device (RFC8628)
 
-<https://datatracker.ietf.org/doc/html/rfc8628>
+<https://datatracker.ietf.org/doc/html/rfc8628>; `grant_type: urn:ietf:params:oauth:grant-type:device_code`
 
 Examples: [Google](https://developers.google.com/identity/protocols/oauth2/limited-input-device), [Github](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow).
 
 ### Implicit (RFC6749)
 
+<https://datatracker.ietf.org/doc/html/rfc6749#section-4.2>
+
 Skip authorisation code, and get access token directly.
 Authorisation server does not authenticate client (??).
 No refresh tokens.
+Useful if you really don't want to store client secret.
 
 Examples: [Google](https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow).
 
+### Refresh token (6749)
+
+<https://datatracker.ietf.org/doc/html/rfc6749#section-6>; `grant_type: refresh_token`
+
+Refresh token is bound to client; if client is confidential must authenticate.
+
 ### Token exchange (RFC8693)
 
-<https://datatracker.ietf.org/doc/html/rfc8693>
+[\<https://datatracker.ietf.org/doc/html/rfc8693\>](https://datatracker.ietf.org/doc/html/rfc8693){.uri}
 
 ### JWT (RFC7523)
 
@@ -150,3 +160,25 @@ Used when client is acting on its own behalf.
 ### Resource owner password (RFC6749)
 
 Use username & password once to get an access (so client doesn't need to store them.
+
+## Extensibility
+
+Every API seems to differ a little bit - the major flow is all the same but there are additional query parameters you might want to pass along, the auth is slightly different, and there might be additional content that you want to expose to the user.
+How do we expose this to the user?
+
+1.  Export the individual functions that power each flow - if your API varies from the spec, you can provide a complete function.
+
+    **Pros**: total flexibility
+
+    **Cons**: have to export a lot of functions; user has to do a lot of work (and this is not trivial code)
+
+2.  Provide S3 methods
+
+3.  Provide individual arguments - this would match the API elsewhere in httr2, but I don't think it can work here; there are just too many places where variation might occur.
+
+4.  Bundle together functions into a list.
+
+5.  Bundle together functions into a R6 object.
+    Would make it easier to flow state across pieces
+
+Current thinking - provide obvious extension points, and export components so that you can reuse if needed.

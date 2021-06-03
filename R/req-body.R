@@ -150,6 +150,21 @@ req_body_form <- function(req, data) {
   req_body_raw(req, httr:::compose_query(data), "application/x-www-form-urlencoded")
 }
 
+# Hacky way to append data to body. Not exported, but used by OAuth app
+# authentication to make it easier to decouple req generation from auth
+req_body_form_append <- function(req, data) {
+  data_query <- httr:::compose_query(data)
+  body <- rawToChar(req$option$body)
+  if (identical(body, "")) {
+    body <- data_query
+  } else {
+    body <- paste0(body, "&", data_query)
+  }
+
+  req_body_raw(req, body, "application/x-www-form-urlencoded")
+}
+
+
 #' @export
 #' @rdname req_body_none
 req_body_multipart <- function(req, data) {

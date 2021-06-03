@@ -68,3 +68,9 @@ check_number <- function(x, name) {
 is_error <- function(x) inherits(x, "error")
 
 unix_time <- function() unclass(Sys.time())
+
+nonce <- function(length = 10) {
+  paste(sample(c(letters, LETTERS, 0:9), length, replace = TRUE),
+    collapse = ""
+  )
+}
