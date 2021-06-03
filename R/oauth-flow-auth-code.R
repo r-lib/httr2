@@ -4,7 +4,8 @@ oauth_flow_auth_code <- function(app,
                                  pkce = TRUE,
                                  auth_params = list(),
                                  token_params = list(),
-                                 host = "127.0.0.1",
+                                 host_name = "localhost",
+                                 host_ip = "127.0.0.1",
                                  port = 1410
 ) {
   oauth_flow_check_app(app,
@@ -13,10 +14,10 @@ oauth_flow_auth_code <- function(app,
     endpoints = c("token", "authorization"),
     interactive = TRUE
   )
-  check_installed("httpuv2")
+  check_installed("httpuv")
 
   state <- nonce()
-  redirect_url <- paste0("http://", host, ":", port)
+  redirect_url <- paste0("http://", host_name, ":", port)
 
   # TODO: implement PKCE
 
@@ -28,7 +29,7 @@ oauth_flow_auth_code <- function(app,
     !!!auth_params
   )
   utils::browseURL(user_url)
-  result <- oauth_flow_auth_code_listen(host, port)
+  result <- oauth_flow_auth_code_listen(host_ip, port)
   code <- oauth_flow_auth_code_parse(result, state)
 
   # Get access/refresh token from authorisation code
@@ -65,8 +66,6 @@ oauth_flow_auth_code_listen <- function(host = "127.0.0.1", port = 1410) {
   complete <- FALSE
   info <- NULL
   listen <- function(env) {
-    browser()
-
     if (!identical(env$PATH_INFO, "/")) {
       return(list(
         status = 404L,
@@ -75,13 +74,12 @@ oauth_flow_auth_code_listen <- function(host = "127.0.0.1", port = 1410) {
       ))
     }
 
-    # TODO: parse out fragment
     query <- env$QUERY_STRING
     if (!is.character(query) || identical(query, "")) {
       complete <<- TRUE
     } else {
       complete <<- TRUE
-      info <<- httr:::parse_query(gsub("^\\?", "", query))
+      info <<- parse_form_urlencoded(query)
     }
 
     list(
@@ -101,11 +99,21 @@ oauth_flow_auth_code_listen <- function(host = "127.0.0.1", port = 1410) {
   }
   httpuv::service() # send data back to client
 
-  if (!is.null(abort)) {
+  if (is.null(info)) {
     abort("Authentication failed; invalid url from server.")
   }
 
   info
+}
+
+# application/x-www-form-urlencoded defined in
+# https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.1
+# Spaces are first replaced by +
+parse_form_urlencoded <- function(query) {
+  query <- gsub("^\\?", "", query)
+  query <- httr:::parse_query(query)
+  query[] <- gsub("+", " ", query, fixed = TRUE)
+  query
 }
 
 # Authorisation response: get query params back from redirect

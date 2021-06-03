@@ -3,7 +3,7 @@ oauth_app <- function(client, endpoints, auth = c("body", "header")) {
     abort("`client` must be an OAuth client created with `oauth_client()`")
   }
 
-  if (!is.character(endpoints) || is_named(endpoints)) {
+  if (!is.character(endpoints) || !is_named(endpoints)) {
     abort("`endpoints` must be a named character vector")
   }
   if (!has_name(endpoints, "token")) {
@@ -61,7 +61,7 @@ req_auth_oauth_client <- function(req, app) {
 # Helpers -----------------------------------------------------------------
 
 check_app <- function(app) {
-  if (!inherits(app, "httr_oauth_app")) {
+  if (!inherits(app, "httr2_oauth_app")) {
     abort("`app` must be an OAuth app created with `oauth_app()`")
   }
 }
@@ -72,7 +72,7 @@ oauth_flow_check_app <- function(app, flow,
                                  interactive = TRUE) {
   check_app(app)
 
-  if (is_confidential && !is.null(app$client$secret)) {
+  if (is_confidential && is.null(app$client$secret)) {
     abort(c(
       glue("Can't use this `app` with OAuth 2.0 {flow} flow"),
       "`app` must have a confidential client (i.e. `client_secret` is required)"

@@ -5,23 +5,25 @@ new_token <- function(access_token,
                       ...,
                       .date = NULL) {
 
-  # TODO: should tokens always store their state?
+  check_string(access_token, "`access_token`")
+  check_string(token_type, "`token_type`")
+  # TODO: should tokens always store their scope
 
-  if (!is.null(expires_in) && !is.null(date)) {
+  if (!is.null(expires_in) && !is.null(.date)) {
     # Store as unix time to avoid worrying about type coercions in cache
-    expires_at <- unclass(date) + expires_in
+    expires_at <- as.numeric(.date) + expires_in
   } else {
     expires_at <- NULL
   }
 
   structure(
-    list(
+    compact(list2(
       access_token = access_token,
       token_type = token_type,
       expires_at = expires_at,
       refresh_token = refresh_token,
       ...
-    ),
+    )),
     class = "httr2_token"
   )
 }

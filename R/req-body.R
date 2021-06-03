@@ -154,11 +154,11 @@ req_body_form <- function(req, data) {
 # authentication to make it easier to decouple req generation from auth
 req_body_form_append <- function(req, data) {
   data_query <- httr:::compose_query(data)
-  body <- rawToChar(req$option$body)
-  if (identical(body, "")) {
+
+  if (is.null(req$options$postfields)) {
     body <- data_query
   } else {
-    body <- paste0(body, "&", data_query)
+    body <- paste0(rawToChar(req$options$postfields), "&", data_query)
   }
 
   req_body_raw(req, body, "application/x-www-form-urlencoded")
