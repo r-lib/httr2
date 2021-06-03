@@ -25,12 +25,16 @@ oauth_flow_access_token <- function(app, ...) {
     # TODO: figure out how to make this user configurable
     if (resp_status(resp) == 200) {
       body <- resp_body_json(resp)
-      exec(new_token, !!!body, .date = resp_date(resp))
-    } else if (resp_status(resp) == 400) {
+      if (!has_name(body, "error")) {
+        return(exec(new_token, !!!body, .date = resp_date(resp)))
+      }
+    }
+
+    if (resp_content_type(resp) == "application/json") {
       body <- resp_body_json(resp)
       oauth_flow_abort(body$error, body$error_description, body$error_uri)
     } else {
-      abort("Unknown status code from access endpoint")
+      resp_check_status(resp)
     }
   }
 }

@@ -3,7 +3,7 @@ oauth_flow_device <- function(app,
                               auth_params = list(),
                               token_params = list()) {
   oauth_flow_check_app(app,
-    flow = "device_flow",
+    flow = "device",
     endpoints = "device_authorization"
   )
 

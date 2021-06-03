@@ -23,3 +23,7 @@ reference:
 - title: Handle the response
   contents:
   - starts_with("resp_")
+
+- title: OAuth flows
+  contents:
+  - starts_with("oauth_")
