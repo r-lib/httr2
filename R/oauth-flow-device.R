@@ -29,7 +29,7 @@ oauth_flow_device <- function(app,
   # User interaction
   # https://datatracker.ietf.org/doc/html/rfc8628#section-3.3
   # Azure provides a message that we might want to print?
-  if (has_name(body, "verification_uri_complete")) {
+  if (is_interactive() && has_name(body, "verification_uri_complete")) {
     inform(glue("Use code {body$user_code}"))
     utils::browseURL(body$verification_uri_complete)
   } else {

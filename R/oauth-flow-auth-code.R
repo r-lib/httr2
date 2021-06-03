@@ -10,7 +10,8 @@ oauth_flow_auth_code <- function(app,
   oauth_flow_check_app(app,
     flow = "authorization code",
     is_confidential = TRUE,
-    endpoints = c("token", "authorization")
+    endpoints = c("token", "authorization"),
+    interactive = TRUE
   )
   check_installed("httpuv2")
 

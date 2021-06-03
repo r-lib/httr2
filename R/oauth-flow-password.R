@@ -7,7 +7,8 @@ oauth_flow_password <- function(app,
 ) {
   oauth_flow_check_app(app,
     flow = "resource owner password credentials",
-    endpoints = "token"
+    endpoints = "token",
+    interactive = is.null(password)
   )
   check_string(username, "`username`")
   if (is.null(password)) {

@@ -66,7 +66,10 @@ check_app <- function(app) {
   }
 }
 
-oauth_flow_check_app <- function(app, flow, is_confidential = FALSE, endpoints = character()) {
+oauth_flow_check_app <- function(app, flow,
+                                 is_confidential = FALSE,
+                                 endpoints = character(),
+                                 interactive = TRUE) {
   check_app(app)
 
   if (is_confidential && !is.null(app$client$secret)) {
@@ -82,6 +85,10 @@ oauth_flow_check_app <- function(app, flow, is_confidential = FALSE, endpoints =
       glue("Can't use this `app` with OAuth 2.0 {flow} flow"),
       glue("`app` lacks endpoints '{missing}'")
     ))
+  }
+
+  if (interactive && !is_interactive()) {
+    abort(glue("OAuth 2.0 {flow} flow requires an interactive session"))
   }
 }
 
