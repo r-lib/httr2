@@ -161,36 +161,45 @@ Host: server.example.com</code></pre>
 <div id="grant-typesflows" class="section level2">
 <h2 class="hasAnchor">
 <a href="#grant-typesflows" class="anchor"></a>Grant types/flows</h2>
-<div id="authorisation-code-web-app-rfc6749" class="section level3">
-<h3 class="hasAnchor">
-<a href="#authorisation-code-web-app-rfc6749" class="anchor"></a>Authorisation code (web app) (RFC6749)</h3>
-<p>Standard flow where user logs into resource server, then client gets code via redirect. Browser (user-agent) never sees token.</p>
-<p>Examples: <a href="https://developers.google.com/identity/protocols/oauth2/web-server">Google</a></p>
-</div>
 <div id="authorisation-code-with-pkce-native-app-rfc8252" class="section level3">
 <h3 class="hasAnchor">
 <a href="#authorisation-code-with-pkce-native-app-rfc8252" class="anchor"></a>Authorisation code with PKCE (native app) (RFC8252)</h3>
-<p>No true way for a native (desktop or mobile) to keep a secret.</p>
-<p><a href="https://datatracker.ietf.org/doc/html/rfc8252" class="uri">https://datatracker.ietf.org/doc/html/rfc8252</a></p>
-<p>Should use PKCE (<a href="https://datatracker.ietf.org/doc/html/rfc7636" class="uri">https://datatracker.ietf.org/doc/html/rfc7636</a>)</p>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc8252" class="uri">https://datatracker.ietf.org/doc/html/rfc8252</a>; <code>grant_type: authorization_code</code> + public client, since no true way for a native (desktop or mobile) to keep a secret.</p>
+<p>Should use PKCE (<a href="https://datatracker.ietf.org/doc/html/rfc7636" class="uri">&lt;https://datatracker.ietf.org/doc/html/rfc7636&gt;</a>)</p>
 <p>Examples: <a href="https://developers.google.com/identity/protocols/oauth2/native-app">Google</a> (but requires client_secret in when getting access/refresh token).</p>
+</div>
+<div id="authorisation-code-web-app-rfc6749" class="section level3">
+<h3 class="hasAnchor">
+<a href="#authorisation-code-web-app-rfc6749" class="anchor"></a>Authorisation code (web app) (RFC6749)</h3>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1" class="uri">https://datatracker.ietf.org/doc/html/rfc6749#section-4.1</a>; <code>grant_type: authorization_code</code>.</p>
+<p>Standard flow where user logs into resource server, then client gets code via redirect. Browser (user-agent) never sees token. Not perfectly suited for an R package, but it’s the only form supported by many APIs so we do the best we can.</p>
+<p>Examples: <a href="https://developers.google.com/identity/protocols/oauth2/web-server">Google</a>, <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow">Azure</a>, <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow">GitHub</a>,</p>
 </div>
 <div id="device-rfc8628" class="section level3">
 <h3 class="hasAnchor">
 <a href="#device-rfc8628" class="anchor"></a>Device (RFC8628)</h3>
-<p><a href="https://datatracker.ietf.org/doc/html/rfc8628" class="uri">https://datatracker.ietf.org/doc/html/rfc8628</a></p>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc8628" class="uri">https://datatracker.ietf.org/doc/html/rfc8628</a>; <code>grant_type: urn:ietf:params:oauth:grant-type:device_code</code></p>
 <p>Examples: <a href="https://developers.google.com/identity/protocols/oauth2/limited-input-device">Google</a>, <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow">Github</a>.</p>
 </div>
 <div id="implicit-rfc6749" class="section level3">
 <h3 class="hasAnchor">
 <a href="#implicit-rfc6749" class="anchor"></a>Implicit (RFC6749)</h3>
-<p>Skip authorisation code, and get access token directly. Authorisation server does not authenticate client (??). No refresh tokens.</p>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.2" class="uri">https://datatracker.ietf.org/doc/html/rfc6749#section-4.2</a></p>
+<p>Skip authorisation code, and get access token directly. Authorisation server does not authenticate client (??). No refresh tokens. Useful if you really don’t want to store client secret.</p>
+<p>Now mostly deprecated:<a href="https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead" class="uri">https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead</a></p>
+<p>Difficult to get with non-native web apps because it returns the auth information in the url fragment which is never sent to the server (although we could of course hack around that with some js). But together with the previous point suggests that it’s not appropriate to implement in httr2.</p>
 <p>Examples: <a href="https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow">Google</a>.</p>
+</div>
+<div id="refresh-token-6749" class="section level3">
+<h3 class="hasAnchor">
+<a href="#refresh-token-6749" class="anchor"></a>Refresh token (6749)</h3>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc6749#section-6" class="uri">https://datatracker.ietf.org/doc/html/rfc6749#section-6</a>; <code>grant_type: refresh_token</code></p>
+<p>Refresh token is bound to client; if client is confidential must authenticate.</p>
 </div>
 <div id="token-exchange-rfc8693" class="section level3">
 <h3 class="hasAnchor">
 <a href="#token-exchange-rfc8693" class="anchor"></a>Token exchange (RFC8693)</h3>
-<p><a href="https://datatracker.ietf.org/doc/html/rfc8693" class="uri">https://datatracker.ietf.org/doc/html/rfc8693</a></p>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc8693" class="uri">&lt;https://datatracker.ietf.org/doc/html/rfc8693&gt;</a></p>
 </div>
 <div id="jwt-rfc7523" class="section level3">
 <h3 class="hasAnchor">
@@ -206,6 +215,31 @@ Host: server.example.com</code></pre>
 <h3 class="hasAnchor">
 <a href="#resource-owner-password-rfc6749" class="anchor"></a>Resource owner password (RFC6749)</h3>
 <p>Use username &amp; password once to get an access (so client doesn’t need to store them.</p>
+</div>
+</div>
+<div id="extensibility" class="section level2">
+<h2 class="hasAnchor">
+<a href="#extensibility" class="anchor"></a>Extensibility</h2>
+<p>Every API seems to differ a little bit - the major flow is all the same but there are additional query parameters you might want to pass along, the auth is slightly different, and there might be additional content that you want to expose to the user. How do we expose this to the user?</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>Export the individual functions that power each flow - if your API varies from the spec, you can provide a complete function.</p>
+<p><strong>Pros</strong>: total flexibility</p>
+<p><strong>Cons</strong>: have to export a lot of functions; user has to do a lot of work (and this is not trivial code)</p>
+</li>
+<li><p>Provide S3 methods</p></li>
+<li><p>Provide individual arguments - this would match the API elsewhere in httr2, but I don’t think it can work here; there are just too many places where variation might occur.</p></li>
+<li><p>Bundle together functions into a list.</p></li>
+<li><p>Bundle together functions into a R6 object. Would make it easier to flow state across pieces</p></li>
+</ol>
+<p>Current thinking - provide obvious extension points, and export components so that you can reuse if needed.</p>
+<div id="token-caching" class="section level3">
+<h3 class="hasAnchor">
+<a href="#token-caching" class="anchor"></a>Token caching</h3>
+<p>An oauth flow is a relatively complicated process, and even when no user interaction is required you want to do it as infrequently as possible. This implies that once you’ve performed a flow and received a token you want to cache it.</p>
+<p>At a minimum you want to cache within the current session so that use of the same flow with the same app automatically returns the same token.</p>
+<p>The user may also want to opt-in to saving the token on disk for use in future sessions.</p>
+<p>each request has an oauth flow and a cache policy (which defaults to caching within a session only; by default there’s one token per client id, but you can add additional keys if you want).When you make a request, we look up the token from the cache, and if it’s not present we use the flow to get a new token. If the token has expired and has a refresh token, we automatically refresh before the first request.If the request errors with a 401 and error <code>invalid_token</code> then we first try the refresh token, and then if that fails, we re-run the full flow.</p>
 </div>
 </div>
   </div>

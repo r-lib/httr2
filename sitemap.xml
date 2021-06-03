@@ -13,7 +13,10 @@
     <loc>https://httr2.r-lib.org/reference/req.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/req_authenticate.html</loc>
+    <loc>https://httr2.r-lib.org/reference/req_auth_basic.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_auth_bearer_token.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_body_none.html</loc>
