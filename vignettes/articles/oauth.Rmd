@@ -137,6 +137,11 @@ Authorisation server does not authenticate client (??).
 No refresh tokens.
 Useful if you really don't want to store client secret.
 
+Now mostly deprecated:<https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead>
+
+Difficult to get with non-native web apps because it returns the auth information in the url fragment which is never sent to the server (although we could of course hack around that with some js).
+But together with the previous point suggests that it's not appropriate to implement in httr2.
+
 Examples: [Google](https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow).
 
 ### Refresh token (6749)
@@ -182,3 +187,4 @@ How do we expose this to the user?
     Would make it easier to flow state across pieces
 
 Current thinking - provide obvious extension points, and export components so that you can reuse if needed.
+
