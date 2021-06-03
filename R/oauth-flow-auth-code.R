@@ -17,14 +17,17 @@
 #' * `oauth_flow_auth_code_parse()` parses the query parameters returned from
 #'   the server redirect, verifying that the `state` is correct, and returning
 #'   the authorisation code.
+#' * `ouath_flow_auth_pkce()` generates code verifier, method, and challenge
+#'   components as needed for PKCE, as defined in
+#'   [RFC7636](https://datatracker.ietf.org/doc/html/rfc7636).
 #'
 #' @family OAuth flows
 #' @param app An [oauth_app()].
 #' @param scope Scopes to be requested from the resource owner.
 #' @param pkce Use "Proof Key for Code Exchange"? This adds an extra layer of
 #'   security and should always be used if supported by the server.
-#' @param auth_params Additional parameters passed to `oauth_flow_auth_code_url()`
-#' @param token_params Additional parameters passed to `oauth_flow_access_token()`.
+#' @param auth_params List containing additional parameters passed to `oauth_flow_auth_code_url()`
+#' @param token_params List containing additional parameters passed to `oauth_flow_access_token()`.
 #' @param host_name Host name used to generate `redirect_uri`
 #' @param host_ip IP address web server will be bound to.
 #' @param port Port to bind web server to. By default, this uses a random port.
@@ -49,10 +52,15 @@ oauth_flow_auth_code <- function(app,
   )
   check_installed("httpuv")
 
+  if (pkce) {
+    code <- oauth_flow_auth_pkce()
+    auth_params$code_challenge <- code$challenge
+    auth_params$code_challenge_method <- code$method
+    token_params$code_verifier <- code$verifier
+  }
+
   state <- nonce()
   redirect_url <- paste0("http://", host_name, ":", port)
-
-  # TODO: implement PKCE
 
   # Redirect user to authorisation url, and listen for result
   user_url <- oauth_flow_auth_code_url(app,
@@ -173,4 +181,31 @@ oauth_flow_auth_code_parse <- function(query, state) {
   }
 
   query$code
+}
+
+#' @export
+#' @rdname oauth_flow_auth_code
+oauth_flow_auth_pkce <- function() {
+  # https://datatracker.ietf.org/doc/html/rfc7636#section-4.1
+  #
+  # It is RECOMMENDED that the output of a suitable random number generator
+  # be used to create a 32-octet sequence.  The octet sequence is then
+  # base64url-encoded to produce a 43-octet URL safe string to use as the
+  # code verifier.
+  verifier <- base64_url_encode(openssl::rand_bytes(32))
+
+  list(
+    verifier = verifier,
+    method = "S256",
+    challenge = base64_url_encode(openssl::sha256(charToRaw(verifier)))
+  )
+}
+
+# https://datatracker.ietf.org/doc/html/rfc7636#appendix-A
+base64_url_encode <- function(x) {
+  x <- openssl::base64_encode(x)
+  x <- gsub("=+$", "", x)
+  x <- gsub("+", "-", x, fixed = TRUE)
+  x <- gsub("/", "_", x, fixed = TRUE)
+  x
 }

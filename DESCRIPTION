@@ -21,6 +21,7 @@ Imports:
     glue,
     httr,
     lifecycle,
+    openssl,
     magrittr,
     rlang,
     withr
