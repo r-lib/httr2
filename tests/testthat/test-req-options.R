@@ -12,9 +12,6 @@ test_that("can add header called req", {
   expect_equal(req$options, list(req = 1))
 })
 
-
-# user_agent --------------------------------------------------------------
-
 test_that("can override default user agent", {
   req1 <- req("http://example.com")
   req2 <- req1 %>% req_user_agent("abc")
@@ -27,11 +24,17 @@ test_that("can send username/password", {
   user <- "u"
   password <- "p"
   req1 <- req_test("/basic-auth/:user/:password")
-  req2 <- req1 %>% req_authenticate(user, password)
+  req2 <- req1 %>% req_auth_basic(user, password)
 
   expect_error(req_fetch(req1), class = "httr2_http_401")
   expect_error(req_fetch(req2), NA)
 })
+
+test_that("can send bearer token", {
+  req <- req_auth_bearer_token(req_test("/get"), "abc")
+  expect_equal(req$headers$Authorization, "Bearer abc")
+})
+
 
 test_that("can set timeout", {
   req <- req_test("/delay/:secs", secs = 1) %>% req_timeout(0.1)
