@@ -1,14 +1,18 @@
 url: https://httr2.r-lib.org
 
 reference:
-- title: Create a request
+- title: Create a request and control its behaviour
   contents:
   - req
-  - req_authenticate
+  - req_auth_basic
+  - req_auth_bearer_token
   - req_body_none
+  - req_error
   - req_headers
   - req_method
+  - req_retry
   - req_template
+  - req_throttle
   - req_timeout
   - req_url
   - req_user_agent
