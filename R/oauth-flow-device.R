@@ -1,3 +1,15 @@
+#' OAuth flow: device
+#'
+#' @description
+#' These functions implement the OAuth device flow, as defined
+#' by [rfc8628](https://datatracker.ietf.org/doc/html/rfc8628). It's designed
+#' for devices that don't have access to a web browser (if you've ever
+#' authenticated an app on your TV, this is probably the flow you've used),
+#' but it also works well from within R.
+#'
+#' @inheritParams oauth_flow_auth_code
+#' @export
+#' @family OAuth flows
 oauth_flow_device <- function(app,
                               scope = NULL,
                               auth_params = list(),

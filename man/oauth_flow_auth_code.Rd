@@ -5,7 +5,7 @@
 \alias{oauth_flow_auth_code_url}
 \alias{oauth_flow_auth_code_listen}
 \alias{oauth_flow_auth_code_parse}
-\alias{oauth_flow_auth_pkce}
+\alias{oauth_flow_auth_code_pkce}
 \title{OAuth flow: authorization code}
 \usage{
 oauth_flow_auth_code(
@@ -31,7 +31,7 @@ oauth_flow_auth_code_listen(host_ip = "127.0.0.1", port = 1410)
 
 oauth_flow_auth_code_parse(query, state)
 
-oauth_flow_auth_pkce()
+oauth_flow_auth_code_pkce()
 }
 \arguments{
 \item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
@@ -80,7 +80,7 @@ the response from the resource server.
 \item \code{oauth_flow_auth_code_parse()} parses the query parameters returned from
 the server redirect, verifying that the \code{state} is correct, and returning
 the authorisation code.
-\item \code{ouath_flow_auth_pkce()} generates code verifier, method, and challenge
+\item \code{oauth_flow_auth_code_pkce()} generates code verifier, method, and challenge
 components as needed for PKCE, as defined in
 \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
 }
@@ -103,5 +103,12 @@ as it's mildly obfuscated to protect it from credential scraping. There's
 no incentive to steal your client credentials if it takes less time to
 create a new client than find your client secret.
 }
+}
+\seealso{
+Other OAuth flows: 
+\code{\link{oauth_flow_client_credentials}()},
+\code{\link{oauth_flow_device}()},
+\code{\link{oauth_flow_password}()},
+\code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}

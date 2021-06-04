@@ -17,7 +17,7 @@
 #' * `oauth_flow_auth_code_parse()` parses the query parameters returned from
 #'   the server redirect, verifying that the `state` is correct, and returning
 #'   the authorisation code.
-#' * `ouath_flow_auth_pkce()` generates code verifier, method, and challenge
+#' * `oauth_flow_auth_code_pkce()` generates code verifier, method, and challenge
 #'   components as needed for PKCE, as defined in
 #'   [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
 #'
@@ -72,7 +72,7 @@ oauth_flow_auth_code <- function(app,
   check_installed("httpuv")
 
   if (pkce) {
-    code <- oauth_flow_auth_pkce()
+    code <- oauth_flow_auth_code_pkce()
     auth_params$code_challenge <- code$challenge
     auth_params$code_challenge_method <- code$method
     token_params$code_verifier <- code$verifier
@@ -204,7 +204,7 @@ oauth_flow_auth_code_parse <- function(query, state) {
 
 #' @export
 #' @rdname oauth_flow_auth_code
-oauth_flow_auth_pkce <- function() {
+oauth_flow_auth_code_pkce <- function() {
   # https://datatracker.ietf.org/doc/html/rfc7636#section-4.1
   #
   # It is RECOMMENDED that the output of a suitable random number generator
