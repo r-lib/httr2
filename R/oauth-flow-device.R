@@ -7,10 +7,32 @@ oauth_flow_device <- function(app,
     endpoints = "device_authorization"
   )
 
-  # Device Authorization Request
-  # https://datatracker.ietf.org/doc/html/rfc8628#section-3.1
-  #
-  # Can require authentication, in which case client_id is not needed
+  request <- oauth_flow_device_request(app, scope, auth_params)
+
+  # User interaction
+  # https://datatracker.ietf.org/doc/html/rfc8628#section-3.3
+  # Azure provides a message that we might want to print?
+  # Google uses verification_url instead of verification_uri
+  if (is_interactive() && has_name(request, "verification_uri_complete")) {
+    inform(glue("Use code {request$user_code}"))
+    utils::browseURL(request$verification_uri_complete)
+  } else {
+    url <- request$verification_uri %||% request$verification_url
+    inform(glue("Visit <{url}> and enter code {request$user_code}"))
+  }
+
+  token <- oauth_flow_device_poll(app, request, token_params)
+  if (is.null(token)) {
+    abort("Expired without user confirmation; please try again.")
+  }
+
+  exec(new_token, !!!token)
+}
+
+# Device authorization request and response
+# https://datatracker.ietf.org/doc/html/rfc8628#section-3.1
+# https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+oauth_flow_device_request <- function(app, scope, auth_params) {
   url <- app_endpoint(app, "device_authorization")
 
   params <- list2(
@@ -20,40 +42,28 @@ oauth_flow_device <- function(app,
   )
   req <- req(url)
   req <- req_body_form(req, params)
-  req <- req_auth_oauth_client(req, app)
+  # req <- req_auth_oauth_client(req, app)
   req <- req_headers(req, Accept = "application/json")
+
   resp <- req_fetch(req)
-  # Device Authorization Response
-  # https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
-  body <- resp_body_json(resp)
+  resp_body_json(resp)
+}
 
-  # User interaction
-  # https://datatracker.ietf.org/doc/html/rfc8628#section-3.3
-  # Azure provides a message that we might want to print?
-  if (is_interactive() && has_name(body, "verification_uri_complete")) {
-    inform(glue("Use code {body$user_code}"))
-    utils::browseURL(body$verification_uri_complete)
-  } else {
-    inform(glue("Visit <{body$verification_uri}> and enter code {body$user_code}"))
-  }
+# Device Access Token Request
+# https://datatracker.ietf.org/doc/html/rfc8628#section-3.4
+oauth_flow_device_poll <- function(app, request, token_params) {
+  delay <- request$interval %||% 5
+  deadline <- Sys.time() + request$expires_in
 
-  # Device Access Token Request
-  # https://datatracker.ietf.org/doc/html/rfc8628#section-3.4
   token <- NULL
-  delay <- body$interval %||% 5
-  deadline <- Sys.time() + body$expires_in
-
-  repeat {
+  while (Sys.time() < deadline) {
     sys_sleep(delay) # Waiting for confirmation :spinner
-    if (Sys.time() > deadline) {
-      abort("Expired without user confirmation; please try again.")
-    }
 
     tryCatch(
       {
         token <- oauth_flow_access_token(app,
           grant_type = "urn:ietf:params:oauth:grant-type:device_code",
-          device_code = body$device_code,
+          device_code = request$device_code,
           !!!token_params
         )
         break
@@ -65,5 +75,5 @@ oauth_flow_device <- function(app,
     )
   }
 
-  exec(new_token, !!!token)
+  token
 }
