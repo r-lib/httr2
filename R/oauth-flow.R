@@ -9,33 +9,24 @@ oauth_flow_access_token <- function(app, ...) {
   req <- req_error(req, is_error = ~ FALSE)
   resp <- req_fetch(req)
 
-  if (url == "https://github.com/login/oauth/access_token") {
-    # Github:
-    # * returns as application/x-www-form-urlencoded instead of application/json,
-    #   unless specifically set Accept header
-    # * error has status code 200, not 400
+  # This is rather more flexible than what the spec requires, and should
+  # hopefully be general enough to handle most token endpoints. However,
+  # it would still be nice to figure out how to make user extensible,
+  # especially since you might be able to give better errors.
 
+  if (resp_content_type(resp) == "application/json") {
     body <- resp_body_json(resp)
-    if (has_name(body, "error")) {
-      oauth_flow_abort(body$error, body$error_description, body$error_uri)
-    } else {
-      exec(new_token, !!!body, .date = resp_date(resp))
-    }
   } else {
-    # TODO: figure out how to make this user configurable
-    if (resp_status(resp) == 200) {
-      body <- resp_body_json(resp)
-      if (!has_name(body, "error")) {
-        return(exec(new_token, !!!body, .date = resp_date(resp)))
-      }
-    }
+    body <- NULL
+  }
 
-    if (resp_content_type(resp) == "application/json") {
-      body <- resp_body_json(resp)
-      oauth_flow_abort(body$error, body$error_description, body$error_uri)
-    } else {
-      resp_check_status(resp)
-    }
+  if (has_name(body, "access_token") && resp_status(resp) == 200) {
+    exec(new_token, !!!body, .date = resp_date(resp))
+  } else if (has_name(body, "error")) {
+    oauth_flow_abort(body$error, body$error_description, body$error_uri)
+  } else {
+    resp_check_status(resp)
+    abort("Failed to process response from 'token' endpoint")
   }
 }
 
