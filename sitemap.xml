@@ -7,6 +7,21 @@
     <loc>https://httr2.r-lib.org/reference/httr2-package.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_client_credentials.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_device.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_password.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_refresh.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
   </url>
   <url>

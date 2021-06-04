@@ -133,7 +133,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-create-a-request" class="hasAnchor"><a href="#section-create-a-request" class="anchor"></a>Create a request</h2>
+          <h2 id="section-create-a-request-and-control-its-behaviour" class="hasAnchor"><a href="#section-create-a-request-and-control-its-behaviour" class="anchor"></a>Create a request and control its behaviour</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -151,9 +151,27 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="req_auth_basic.html">req_auth_basic()</a></code> </p>
+        </td>
+        <td><p>Authenticate request with HTTP basic authentication</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_auth_bearer_token.html">req_auth_bearer_token()</a></code> </p>
+        </td>
+        <td><p>Authenticate request with bearer token</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="req_body_none.html">req_body_none()</a></code> <code><a href="req_body_none.html">req_body_file()</a></code> <code><a href="req_body_none.html">req_body_raw()</a></code> <code><a href="req_body_none.html">req_body_json()</a></code> <code><a href="req_body_none.html">req_body_form()</a></code> <code><a href="req_body_none.html">req_body_multipart()</a></code> </p>
         </td>
         <td><p>Send data in request body</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_error.html">req_error()</a></code> </p>
+        </td>
+        <td><p>Control handling of HTTP errors</p></td>
       </tr><tr>
         
         <td>
@@ -169,9 +187,21 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="req_retry.html">req_retry()</a></code> </p>
+        </td>
+        <td><p>Control when a request will retry, and how long it will wait between tries</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="req_template.html">req_template()</a></code> </p>
         </td>
         <td><p>Set method/path from a template</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_throttle.html">req_throttle()</a></code> </p>
+        </td>
+        <td><p>Throttle a request by automatically adding a delay</p></td>
       </tr><tr>
         
         <td>
@@ -258,6 +288,49 @@
           <p><code><a href="resp_status.html">resp_status()</a></code> <code><a href="resp_status.html">resp_status_desc()</a></code> <code><a href="resp_status.html">resp_is_error()</a></code> <code><a href="resp_status.html">resp_check_status()</a></code> </p>
         </td>
         <td><p>Retrieve response status</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-oauth-flows" class="hasAnchor"><a href="#section-oauth-flows" class="anchor"></a>OAuth flows</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_url()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_listen()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_parse()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_pkce()</a></code> </p>
+        </td>
+        <td><p>OAuth flow: authorization code</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="oauth_flow_client_credentials.html">oauth_flow_client_credentials()</a></code> </p>
+        </td>
+        <td><p>OAuth flow: client credentials</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="oauth_flow_device.html">oauth_flow_device()</a></code> </p>
+        </td>
+        <td><p>OAuth flow: device</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="oauth_flow_password.html">oauth_flow_password()</a></code> </p>
+        </td>
+        <td><p>OAuth flow: user password</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="oauth_flow_refresh.html">oauth_flow_refresh()</a></code> </p>
+        </td>
+        <td><p>OAuth flow: refresh token</p></td>
       </tr>
     </tbody>
     </table>
