@@ -34,11 +34,11 @@ check_token <- function(x) {
   }
 }
 
-token_has_expired <- function(token) {
+token_has_expired <- function(token, delay = 5) {
   if (is.null(token$expires_at)) {
     FALSE
   } else {
-    token$expires_at > unix_time()
+    token$expires_at > (unix_time() + delay)
   }
 }
 
@@ -50,3 +50,20 @@ token_refresh <- function(token, app, scope = NULL) {
   oauth_flow_refresh(app, token$refresh_token, scope = scope)
 }
 
+
+cache_mem <- function(app, key) {
+  key <- hash(c(oauth_app_id(app), key))
+  list(
+    get = function() env_get(the$token_cache, key, default = NULL),
+    set = function(token) env_bind(the$token_cache, key, token),
+    clear = function() env_unbind(the$token_cache, key)
+  )
+}
+cache_disk <- function(app, key) {
+  path <- ouath_token_cache_path(app, key)
+  list(
+    get = function() if (file.exists(path)) readRDS(path) else NULL,
+    set = function(token) saveRDS(path, token),
+    clear = function() file.remove(path)
+  )
+}

@@ -15,16 +15,16 @@
 #' @param req A [req]uest.
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
-#' @param handle Advanced use only; a curl handle.
 #' @returns Returns an HTTP response with successful status code. Will
 #'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
 #' @examples
 #' req("https://google.com") %>%
 #'   req_fetch()
-req_fetch <- function(req, path = NULL, handle = NULL) {
+req_fetch <- function(req, path = NULL) {
   check_request(req)
-  handle <- handle %||% req_handle(req)
+  req <- auth_sign(req)
+  handle <- req_handle(req)
 
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
@@ -32,6 +32,7 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
   n <- 0
   tries <- 0
   delay <- throttle_delay(req)
+  reauth <- FALSE # only ever reauthenticate once
 
   while(tries < max_tries && Sys.time() < deadline) {
     n <- n + 1
@@ -45,10 +46,11 @@ req_fetch <- function(req, path = NULL, handle = NULL) {
     if (is_error(resp)) {
       tries <- tries + 1
       delay <- retry_backoff(req, tries)
-    # } else if (auth_needs_reauth(req, resp)) {
-    #   req <- auth_reauth(req)
-    #   handle <- req_handle(req)
-    #   delay <- 0
+    } else if (!reauth && auth_can_retry(req, resp)) {
+      req <- auth_sign(req, TRUE)
+      handle <- req_handle(req)
+      delay <- 0
+      reauth <- TRUE # should only retry auth once
     } else if (retry_is_transient(req, resp)) {
       tries <- tries + 1
       delay <- retry_after(req, resp, tries)
@@ -173,6 +175,7 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
 
 req_handle <- function(req) {
   req <- req_method_apply(req)
+
   if (!has_name(req$options, "useragent")) {
     req <- req_user_agent(req, default_ua())
   }

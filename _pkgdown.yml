@@ -4,8 +4,6 @@ reference:
 - title: Create a request and control its behaviour
   contents:
   - req
-  - req_auth_basic
-  - req_auth_bearer_token
   - req_body_none
   - req_error
   - req_headers
@@ -17,6 +15,10 @@ reference:
   - req_url
   - req_user_agent
   - req_verbose
+
+- title: Authenticate a request
+  - starts_with("req_auth")
+  - starts_with("req_oauth")
 
 - title: Perform a request
   contents:
