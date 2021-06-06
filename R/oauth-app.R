@@ -21,6 +21,11 @@ oauth_app <- function(client, endpoints, auth = c("body", "header")) {
   )
 }
 
+ouath_app_name <- function(app) {
+  app$name %||% c(httr::parse_url(app$endpoints[[1]])$hostname, app$client$id)
+}
+
+
 #' @param name Optional name for the client. Used when generating cache
 #'   directory. If `NULL`, generated from hash of app hostname and
 #'   `client_id`.

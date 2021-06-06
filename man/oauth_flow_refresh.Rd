@@ -27,16 +27,8 @@ is to look in \code{HTTR_REFRESH_TOKEN}.}
 This function generates an access token from a refresh token, following
 the process described in
 \href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{rfc6749},
-Section 6. This is primarily useful for testing - you can manually performed
-some other OAuth flow (e.g. \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or
-\code{\link[=oauth_flow_device]{oauth_flow_device()}}) and save the refresh token into an environment
-variable.
-
-When requesting an access token, the server may also return a new refresh
-token. If this happens, \code{oauth_flow_refresh()} will error, and you'll have
-to create a new refresh token following the same procedure you did to get
-the first token (so it's a good idea to document what you did the first time
-because you might need to do it again).
+Section 6. Errors if the refresh returns a new refresh token, see
+\code{\link[=req_oauth_refresh]{req_oauth_refresh()}} for details.
 }
 \seealso{
 Other OAuth flows: 

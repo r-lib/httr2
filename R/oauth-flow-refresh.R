@@ -22,14 +22,13 @@ req_oauth_refresh <- function(req,
                               scope = NULL,
                               token_params = list()) {
 
-  cache <- cache_mem(app, key)
   params <- list(
     app = app,
     refresh_token = refresh_token,
     scope = scope,
     token_params = token_params
   )
-  cache <- cache_mem(app, key)
+  cache <- cache_mem(app, NULL)
 
   req_oauth(app, "oauth_flow_refresh", params, cache = cache)
 }

@@ -6,7 +6,7 @@
 #'   * `clear()` removes the token from the cache
 #' @param flow Function used to generate the access token.
 #' @param flow_params List of parameters to call `flow` with.
-req_oauth <- function(req, cache, flow, flow_params) {
+req_oauth <- function(req, flow, flow_params, cache) {
   # Want req object to contain meaningful objects, not just a closure
   req_policies(req,
     auth_oauth = list(
@@ -63,7 +63,7 @@ auth_oauth_invalid_token <- function(req, resp) {
 # Caches -------------------------------------------------------------------
 
 cache_mem <- function(app, key) {
-  key <- hash(c(oauth_app_id(app), key))
+  key <- hash(c(ouath_app_name(app), key))
   list(
     get = function() env_get(the$token_cache, key, default = NULL),
     set = function(token) env_bind(the$token_cache, key, token),
@@ -71,8 +71,7 @@ cache_mem <- function(app, key) {
   )
 }
 cache_disk <- function(app, key) {
-  app_id <- app$client$name %||% hash(c(httr::parse_url(app$endpoints[[1]])$hostname, app$client$id))
-  app_path <- file.path(rappdirs::user_cache_dir("httr2"), app_id)
+  app_path <- file.path(rappdirs::user_cache_dir("httr2"), ouath_app_name(app))
   dir.create(app, showWarnings = FALSE, recursive = TRUE)
 
   path <- file.path(app_path, paste0(hash(key), ".rds"))
