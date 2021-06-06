@@ -21,14 +21,18 @@ oauth_app <- function(client, endpoints, auth = c("body", "header")) {
   )
 }
 
-oauth_client <- function(client_id, client_secret = NULL) {
+#' @param name Optional name for the client. Used when generating cache
+#'   directory. If `NULL`, generated from hash of app hostname and
+#'   `client_id`.
+oauth_client <- function(client_id, client_secret = NULL, name = NULL) {
   # TODO: provide some lightweight way of encrypting the secret so that it
   # never appears in plain text
 
   structure(
     list(
       id = client_id,
-      secret = client_secret
+      secret = client_secret,
+      name = name
     ),
     class = "httr2_oauth_client"
   )

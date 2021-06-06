@@ -1,18 +1,3 @@
-
-req_auth_dynamic <- function(req, sign = NULL, can_reauth = NULL) {
-  req_policies(req,
-    auth_sign = sign,
-    auth_can_retry = can_retry
-  )
-}
-
-auth_sign <- function(req) {
-  req_policy_call(req, "auth_sign", list(req), default = req)
-}
-auth_can_retry <- function(req, resp) {
-  req_policy_call(req, "auth_can_retry", list(resp), default = FALSE)
-}
-
 #' Authenticate request with HTTP basic authentication
 #'
 #' This sets the Authorization header. See details at

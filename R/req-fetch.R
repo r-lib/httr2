@@ -23,7 +23,7 @@
 #'   req_fetch()
 req_fetch <- function(req, path = NULL) {
   check_request(req)
-  req <- auth_sign(req)
+  req <- auth_oauth_sign(req)
   handle <- req_handle(req)
 
   max_tries <- retry_max_tries(req)
@@ -46,11 +46,11 @@ req_fetch <- function(req, path = NULL) {
     if (is_error(resp)) {
       tries <- tries + 1
       delay <- retry_backoff(req, tries)
-    } else if (!reauth && auth_can_retry(req, resp)) {
-      req <- auth_sign(req, TRUE)
+    } else if (!reauth && auth_oauth_invalid_token(resp)) {
+      reauth <- TRUE
+      req <- auth_oauth_sign(req, TRUE)
       handle <- req_handle(req)
       delay <- 0
-      reauth <- TRUE # should only retry auth once
     } else if (retry_is_transient(req, resp)) {
       tries <- tries + 1
       delay <- retry_after(req, resp, tries)
@@ -59,7 +59,7 @@ req_fetch <- function(req, path = NULL) {
       break
     }
   }
-  signal("", "httr2_fetch", n = n, tries = tries)
+  signal("", "httr2_fetch", n = n, tries = tries, reauth = reauth)
 
   if (is_error(resp)) {
     stop(resp)
