@@ -38,6 +38,6 @@ token_has_expired <- function(token, delay = 5) {
   if (is.null(token$expires_at)) {
     FALSE
   } else {
-    token$expires_at > (unix_time() + delay)
+    (unix_time() + delay) > token$expires_at
   }
 }

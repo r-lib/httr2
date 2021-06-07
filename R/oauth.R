@@ -27,19 +27,19 @@ req_oauth <- function(req, flow, flow_params, cache) {
   )
 }
 
-auth_oauth_sign <- function(req, reauth) {
-  if (!req_policy_exists(req, "oauth")) {
+auth_oauth_sign <- function(req, reauth = FALSE) {
+  if (!req_policy_exists(req, "auth_oauth")) {
     return(req)
   }
 
-  cache <- req$policies$oauth$cache
-  flow <- req$policies$oauth$flow
-  flow_params <- req$policies$oauth$flow_params
+  cache <- req$policies$auth_oauth$cache
+  flow <- req$policies$auth_oauth$flow
+  flow_params <- req$policies$auth_oauth$flow_params
 
-  if (reauth || !cache$exists()) {
+  token <- cache$get()
+  if (reauth || is.null(token)) {
     token <- exec(flow, !!!flow_params)
   } else {
-    token <- cache$get()
     if (token_has_expired(token)) {
       if (is.null(token$refresh_token)) {
         token <- exec(flow, !!!flow_params)
@@ -49,7 +49,7 @@ auth_oauth_sign <- function(req, reauth) {
     }
   }
   cache$set(token)
-  req_auth_bearer_token(req, token)
+  req_auth_bearer_token(req, token$access_token)
 }
 
 auth_oauth_invalid_token <- function(req, resp) {
@@ -76,7 +76,7 @@ cache_mem <- function(app, key) {
   key <- hash(c(ouath_app_name(app), key))
   list(
     get = function() env_get(the$token_cache, key, default = NULL),
-    set = function(token) env_bind(the$token_cache, key, token),
+    set = function(token) env_poke(the$token_cache, key, token),
     clear = function() env_unbind(the$token_cache, key)
   )
 }

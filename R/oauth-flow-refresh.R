@@ -31,7 +31,7 @@ req_oauth_refresh <- function(req,
   )
   cache <- cache_mem(app, NULL)
 
-  req_oauth(app, "oauth_flow_refresh", params, cache = cache)
+  req_oauth(req, "oauth_flow_refresh", params, cache = cache)
 }
 
 #' OAuth flow: refresh token
@@ -67,7 +67,7 @@ oauth_flow_refresh <- function(app,
 
   # Should generally do this automaitcaly, but in this workflow the token will
   # often be stored in an env var or similar
-  if (token$refresh_token != token) {
+  if (!is.null(token$refresh_token) && token$refresh_token != refresh_token) {
     abort("Refresh token has changed! Please update stored value")
   }
 
