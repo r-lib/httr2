@@ -41,6 +41,7 @@ auth_oauth_sign <- function(req, reauth = FALSE) {
     token <- exec(flow, !!!flow_params)
   } else {
     if (token_has_expired(token)) {
+      cache$clear()
       if (is.null(token$refresh_token)) {
         token <- exec(flow, !!!flow_params)
       } else {
@@ -71,6 +72,14 @@ auth_oauth_invalid_token <- function(req, resp) {
 }
 
 # Caches -------------------------------------------------------------------
+
+cache_choose <- function(app, cache_disk = FALSE, cache_key = NULL) {
+  if (cache_disk) {
+    cache_disk(app, cache_key)
+  } else {
+    cache_mem(app, cache_key)
+  }
+}
 
 cache_mem <- function(app, key) {
   key <- hash(c(ouath_app_name(app), key))

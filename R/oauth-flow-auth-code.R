@@ -1,3 +1,64 @@
+#' OAuth authentication with authorization code
+#'
+#' @description
+#' This uses [oauth_flow_auth_code()] to generate an access token. The token
+#' is cached for at least the current session, and if you set `cache_disk = TRUE`
+#' also for future sessions.
+#'
+#' ## Security considerations
+#'
+#' The authorization code flow is used for both web applications and native
+#' applications (which are equivalent to R packages).
+#' [rfc8252](https://datatracker.ietf.org/doc/html/rfc8252) spells out
+#' important considerations for native apps. Most importantly there's no way
+#' for native apps to keep secrets from their users. This means that the
+#' server should either not require a `client_secret` (i.e. a public client
+#' not an confidential client) or ensure that possession of the `client_secret`
+#' doesn't bestow any meaningful rights.
+#'
+#' Only modern APIs from the bigger players (Azure, Google, etc) explicitly
+#' native apps. However, in most cases, even for older APIs, possessing the
+#' `client_secret` gives you no ability to do anything harmful, so our
+#' general principle is that it's fine to include it in an R package, as long
+#' as it's mildly obfuscated to protect it from credential scraping. There's
+#' no incentive to steal your client credentials if it takes less time to
+#' create a new client than find your client secret.
+#'
+#' @export
+#' @inheritParams req_fetch
+#' @param cache_disk Should the access token be cached on disk? This reduces
+#'   the number of times that you need to re-authenticate at the cost of
+#'   storing access credentials on disk.
+#' @param cache_key If you want to cache multiple tokens per app, use this
+#'   key to disambiguate them.
+#' @inheritParams oauth_flow_auth_code
+req_oauth_auth_code <- function(req, app,
+                                cache_disk = FALSE,
+                                cache_key = NULL,
+                                scope = NULL,
+                                pkce = TRUE,
+                                auth_params = list(),
+                                token_params = list(),
+                                host_name = "localhost",
+                                host_ip = "127.0.0.1",
+                                port = httpuv::randomPort()
+                                ) {
+
+  params <- list(
+    app = app,
+    scope = scope,
+    pkce = pkce,
+    auth_params = auth_params,
+    token_params = token_params,
+    host_name = host_name,
+    host_ip = host_ip,
+    port = port
+  )
+
+  cache <- cache_choose(app, cache_disk, cache_key)
+  req_oauth(req, "oauth_flow_auth_code", params, cache = cache)
+}
+
 #' OAuth flow: authorization code
 #'
 #' @description
@@ -20,25 +81,6 @@
 #' * `oauth_flow_auth_code_pkce()` generates code verifier, method, and challenge
 #'   components as needed for PKCE, as defined in
 #'   [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
-#'
-#' ## Security considerations
-#'
-#' The authorization code flow is used for both web applications and native
-#' applications (which are equivalent to R packages).
-#' [rfc8252](https://datatracker.ietf.org/doc/html/rfc8252) spells out
-#' important considerations for native apps. Most importantly there's no way
-#' for native apps to keep secrets from their users. This means that the
-#' server should either not require a `client_secret` (i.e. a public client
-#' not an confidential client) or ensure that possession of the `client_secret`
-#' doesn't bestow any meaningful rights.
-#'
-#' Only modern APIs from the bigger players (Azure, Google, etc) explicitly
-#' native apps. However, in most cases, even for older APIs, possessing the
-#' `client_secret` gives you no ability to do anything harmful, so our
-#' general principle is that it's fine to include it in an R package, as long
-#' as it's mildly obfuscated to protect it from credential scraping. There's
-#' no incentive to steal your client credentials if it takes less time to
-#' create a new client than find your client secret.
 #'
 #' @family OAuth flows
 #' @param app An [oauth_app()].

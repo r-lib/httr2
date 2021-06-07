@@ -32,7 +32,7 @@ req_fetch <- function(req, path = NULL) {
   n <- 0
   tries <- 0
   delay <- throttle_delay(req)
-  reauth <- FALSE # only ever reauthenticate once
+  reauth <- FALSE # only ever re-authenticate once
 
   while(tries < max_tries && Sys.time() < deadline) {
     n <- n + 1

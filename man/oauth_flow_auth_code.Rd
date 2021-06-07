@@ -84,25 +84,6 @@ the authorisation code.
 components as needed for PKCE, as defined in
 \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
 }
-\subsection{Security considerations}{
-
-The authorization code flow is used for both web applications and native
-applications (which are equivalent to R packages).
-\href{https://datatracker.ietf.org/doc/html/rfc8252}{rfc8252} spells out
-important considerations for native apps. Most importantly there's no way
-for native apps to keep secrets from their users. This means that the
-server should either not require a \code{client_secret} (i.e. a public client
-not an confidential client) or ensure that possession of the \code{client_secret}
-doesn't bestow any meaningful rights.
-
-Only modern APIs from the bigger players (Azure, Google, etc) explicitly
-native apps. However, in most cases, even for older APIs, possessing the
-\code{client_secret} gives you no ability to do anything harmful, so our
-general principle is that it's fine to include it in an R package, as long
-as it's mildly obfuscated to protect it from credential scraping. There's
-no incentive to steal your client credentials if it takes less time to
-create a new client than find your client secret.
-}
 }
 \seealso{
 Other OAuth flows: 
