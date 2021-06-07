@@ -1,12 +1,12 @@
-#' Authenticate a request with an OAuth refresh token
+#' OAuth authentication with a refresh token
 #'
 #' @description
-#' This use [oauth_flow_refresh()] to generate an access token, then caches
+#' This uses [oauth_flow_refresh()] to generate an access token, then caches
 #' it for use within the current session. This is primarily useful for testing:
-#' you can manually perform another OAuth flow (e.g. by calling
+#' you can manually execute another OAuth flow (e.g. by calling
 #' [oauth_flow_auth_code()] or [oauth_flow_device()]), extract the refresh
 #' token from the result, and then save in an environment variable for
-#' future automated use.
+#' future use in automated tests.
 #'
 #' When requesting an access token, the server may also return a new refresh
 #' token. If this happens, `oauth_flow_refresh()` will error, and you'll have
@@ -14,6 +14,7 @@
 #' the first token (so it's a good idea to document what you did the first time
 #' because you might need to do it again).
 #'
+#' @export
 #' @inheritParams req_fetch
 #' @inheritParams oauth_flow_refresh
 req_oauth_refresh <- function(req,

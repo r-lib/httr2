@@ -1,7 +1,7 @@
 url: https://httr2.r-lib.org
 
 reference:
-- title: Create a request and control its behaviour
+- title: Define a request
   contents:
   - req
   - req_body_none
@@ -17,10 +17,11 @@ reference:
   - req_verbose
 
 - title: Authenticate a request
+  contents:
   - starts_with("req_auth")
   - starts_with("req_oauth")
 
-- title: Perform a request
+- title: Perform a request and get a response
   contents:
   - req_dry_run
   - req_fetch
@@ -31,5 +32,9 @@ reference:
   - starts_with("resp_")
 
 - title: OAuth flows
+  desc: >
+    These functions implement various OAuth flows, returning an access token.
+    Generally, you should not need to call them directly, instead using the
+    `req_oauth_*` helpers
   contents:
   - starts_with("oauth_")

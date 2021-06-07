@@ -1,3 +1,11 @@
+#' OAuth authentication
+#'
+#' This is a low-level helper for automatically authenticating a request with
+#' an OAuth flow, caching the access token and refreshing it where possible.
+#' You should only need to use this function if you're implementing your own
+#' OAuth flow.
+#'
+#' @inheritParams req_fetch
 #' @param cache An object that controls how the token is cached. This should
 #'   be a list containing three functions:
 #'   * `get()` retrieves the token from the cache, returning `NULL` if not
@@ -6,6 +14,8 @@
 #'   * `clear()` removes the token from the cache
 #' @param flow Function used to generate the access token.
 #' @param flow_params List of parameters to call `flow` with.
+#' @keywords internal
+#' @export
 req_oauth <- function(req, flow, flow_params, cache) {
   # Want req object to contain meaningful objects, not just a closure
   req_policies(req,
