@@ -38,7 +38,7 @@ oauth_flow_device <- function(app,
     abort("Expired without user confirmation; please try again.")
   }
 
-  exec(new_token, !!!token)
+  exec(oauth_token, !!!token)
 }
 
 # Device authorization request and response

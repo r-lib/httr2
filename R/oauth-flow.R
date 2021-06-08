@@ -21,7 +21,7 @@ oauth_flow_access_token <- function(app, ...) {
   }
 
   if (has_name(body, "access_token") && resp_status(resp) == 200) {
-    exec(new_token, !!!body, .date = resp_date(resp))
+    exec(oauth_token, !!!body, .date = resp_date(resp))
   } else if (has_name(body, "error")) {
     oauth_flow_abort(body$error, body$error_description, body$error_uri)
   } else {

@@ -59,7 +59,7 @@ oauth_flow_refresh <- function(app,
     endpoints = "token"
   )
 
-  token <- oauth_token_refresh(app,
+  token <- token_refresh(app,
     refresh_token = refresh_token,
     scope = scope,
     token_params = token_params
@@ -72,13 +72,4 @@ oauth_flow_refresh <- function(app,
   }
 
   token
-}
-
-oauth_token_refresh <- function(app, refresh_token, scope = NULL, token_params = list()) {
-  oauth_flow_access_token(app,
-    grant_type = "refresh_token",
-    refresh_token = refresh_token,
-    scope = scope,
-    !!!token_params
-  )
 }
