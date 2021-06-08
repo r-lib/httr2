@@ -56,6 +56,14 @@ test_that("can send named list as json/form/multipart", {
   expect_equal(json$form, list(a = "1", b = "2"))
 })
 
+test_that("can append form elements", {
+  req1 <- req_test("/GET") %>% req_body_form_append(list(a = 1))
+  req2 <- req1 %>% req_body_form_append(list(b = 1))
+
+  expect_equal(rawToChar(req1$options$postfields), "a=1")
+  expect_equal(rawToChar(req2$options$postfields), "a=1&b=1")
+})
+
 test_that("can upload file with multipart", {
   skip_on_os("windows") # fails due to line ending difference
 

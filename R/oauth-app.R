@@ -39,8 +39,8 @@ oauth_app <- function(client, endpoints, auth = c("body", "header")) {
   )
 }
 
-oauth_app_name <- function(app) {
-  app$name %||% hash(c(httr::parse_url(app$endpoints[[1]])$hostname, app$client$id))
+oauth_client_name <- function(app) {
+  app$client$name %||% hash(c(httr::parse_url(app$endpoints[[1]])$hostname, app$client$id))
 }
 
 
