@@ -1,3 +1,34 @@
+#' OAuth authentication with username and password
+#'
+#' @description
+#' This uses [oauth_flow_password()] to generate an access token, which is
+#' then used to authentication the request with [req_auth_bearer_token()].
+#' The token, not the password is automatically cached (either in memory
+#' or on disk); the password is used once to get the token and is then
+#' discarded.
+#'
+#' @export
+#' @inheritParams oauth_flow_password
+#' @inheritParams req_oauth_auth_code
+req_oauth_password <- function(req, app,
+                               username,
+                               password = NULL,
+                               cache_disk = FALSE,
+                               scope = NULL,
+                               token_params = list()) {
+
+  password <- check_password(password)
+  params <- list(
+    app = app,
+    username = username,
+    password = password,
+    scope = scope,
+    token_params = token_params
+  )
+  cache <- cache_choose(app, cache_disk = cache_disk, cache_key = username)
+  req_oauth(req, "oauth_flow_password", params, cache = cache)
+}
+
 #' OAuth flow: user password
 #'
 #' This function implements the OAuth resource owner password flow, as defined
@@ -24,11 +55,7 @@ oauth_flow_password <- function(app,
     interactive = is.null(password)
   )
   check_string(username, "`username`")
-  if (is.null(password)) {
-    check_installed("askpass")
-    password <- askpass::askpass()
-  }
-  check_string(password, "`password`")
+  password <- check_password(password)
 
   oauth_flow_access_token(app,
     grant_type = "password",
@@ -37,4 +64,13 @@ oauth_flow_password <- function(app,
     scope = scope,
     !!!token_params
   )
+}
+
+check_password <- function(password) {
+  if (is.null(password)) {
+    check_installed("askpass")
+    password <- askpass::askpass()
+  }
+  check_string(password, "`password`")
+  password
 }

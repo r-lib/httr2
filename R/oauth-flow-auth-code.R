@@ -1,11 +1,12 @@
 #' OAuth authentication with authorization code
 #'
 #' @description
-#' This uses [oauth_flow_auth_code()] to generate an access token. The token
-#' is cached for at least the current session, and if you set `cache_disk = TRUE`
-#' also for future sessions.
+#' This uses [oauth_flow_auth_code()] to generate an access token, which is
+#' then used to authentication the request with [req_auth_bearer_token()].
+#' The token is automatically cached (either in memory or on disk) to minimise
+#' the number of times the flow is performed.
 #'
-#' ## Security considerations
+#' # Security considerations
 #'
 #' The authorization code flow is used for both web applications and native
 #' applications (which are equivalent to R packages).

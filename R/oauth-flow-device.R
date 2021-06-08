@@ -1,3 +1,31 @@
+#' OAuth authentication with device flow
+#'
+#' @description
+#' This uses [oauth_flow_device()] to generate an access token, which is
+#' then used to authentication the request with [req_auth_bearer_token()].
+#' The token is automatically cached (either in memory or on disk) to minimise
+#' the number of times the flow is performed.
+#'
+#' @export
+#' @inheritParams oauth_flow_password
+#' @inheritParams req_oauth_auth_code
+req_oauth_device <- function(req, app,
+                             cache_disk = FALSE,
+                             cache_key = NULL,
+                             scope = NULL,
+                             auth_params = list(),
+                             token_params = list()) {
+
+  params <- list(
+    app = app,
+    scope = scope,
+    auth_params = auth_params,
+    token_params = token_params
+  )
+  cache <- cache_choose(app, cache_disk, cache_key)
+  req_oauth(req, "oauth_flow_device", params, cache = cache)
+}
+
 #' OAuth flow: device
 #'
 #' @description

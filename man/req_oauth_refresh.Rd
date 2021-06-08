@@ -27,12 +27,12 @@ is to look in \code{HTTR_REFRESH_TOKEN}.}
 \item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
 }
 \description{
-This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, then caches
-it for use within the current session. This is primarily useful for testing:
-you can manually execute another OAuth flow (e.g. by calling
-\code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or \code{\link[=oauth_flow_device]{oauth_flow_device()}}), extract the refresh
-token from the result, and then save in an environment variable for
-future use in automated tests.
+This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, which is
+then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
+This is primarily useful for testing: you can manually execute another OAuth
+flow (e.g. by calling \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or \code{\link[=oauth_flow_device]{oauth_flow_device()}}),
+extract the refresh token from the result, and then save in an environment
+variable for future use in automated tests.
 
 When requesting an access token, the server may also return a new refresh
 token. If this happens, \code{oauth_flow_refresh()} will error, and you'll have
