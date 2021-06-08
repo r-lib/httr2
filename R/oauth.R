@@ -82,7 +82,7 @@ cache_choose <- function(app, cache_disk = FALSE, cache_key = NULL) {
 }
 
 cache_mem <- function(app, key) {
-  key <- hash(c(ouath_app_name(app), key))
+  key <- hash(c(oauth_app_name(app), key))
   list(
     get = function() env_get(the$token_cache, key, default = NULL),
     set = function(token) env_poke(the$token_cache, key, token),
@@ -90,13 +90,13 @@ cache_mem <- function(app, key) {
   )
 }
 cache_disk <- function(app, key) {
-  app_path <- file.path(rappdirs::user_cache_dir("httr2"), ouath_app_name(app))
-  dir.create(app, showWarnings = FALSE, recursive = TRUE)
+  app_path <- file.path(rappdirs::user_cache_dir("httr2"), oauth_app_name(app))
+  dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
   path <- file.path(app_path, paste0(hash(key), ".rds"))
   list(
     get = function() if (file.exists(path)) readRDS(path) else NULL,
-    set = function(token) saveRDS(path, token),
+    set = function(token) saveRDS(token, path),
     clear = function() file.remove(path)
   )
 }
