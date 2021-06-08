@@ -21,8 +21,9 @@ Imports:
     glue,
     httr,
     lifecycle,
-    openssl,
     magrittr,
+    openssl,
+    rappdirs,
     rlang,
     withr
 Suggests:
@@ -32,8 +33,8 @@ Suggests:
     jsonlite,
     rmarkdown,
     testthat (>= 3.0.0),
-    xml2,
-    webfakes
+    webfakes,
+    xml2
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

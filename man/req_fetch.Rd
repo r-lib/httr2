@@ -4,15 +4,13 @@
 \alias{req_fetch}
 \title{Simulate a request}
 \usage{
-req_fetch(req, path = NULL, handle = NULL)
+req_fetch(req, path = NULL)
 }
 \arguments{
 \item{req}{A \link{req}uest.}
 
 \item{path}{Optionally, path to save body of request. This is useful for
 large responses since it avoids storing the response in memory.}
-
-\item{handle}{Advanced use only; a curl handle.}
 }
 \value{
 Returns an HTTP response with successful status code. Will

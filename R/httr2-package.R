@@ -10,3 +10,4 @@ NULL
 
 the <- new_environment()
 the$throttle <- list()
+the$token_cache <- new_environment()

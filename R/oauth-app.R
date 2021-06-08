@@ -1,3 +1,21 @@
+#' Create an OAuth app
+#'
+#' An OAuth app is the combination of a client, a set of endpoints
+#' (i.e. urls where various requests should be sent), and an authentication
+#' mechanism. A client consists of at least a `client_id`, and also often
+#' a `client_secret`. You'll get these values when you create the client on
+#' the API's website.
+#'
+#' @param client A OAuth client created with `oauth_client()`.
+#' @param endpoints A named character vector of endpoints. The precise endpoints
+#'   required depend on the flow that you'll use, but all require a `token`
+#'   endpoint that returns an access token.
+#' @param auth Authentication mechanism used by the API to authenticate
+#'   confidential requests made during the flow. This is most commonly
+#'   `"body"` where the `client_id` and `client_secret` are added to the body
+#'   of the request, but can also be `"header"` where the `client_id`
+#'   and `client_secret` are sent using the HTTP Authorization header.
+#' @export
 oauth_app <- function(client, endpoints, auth = c("body", "header")) {
   if (!inherits(client, "httr2_oauth_client")) {
     abort("`client` must be an OAuth client created with `oauth_client()`")
@@ -21,14 +39,30 @@ oauth_app <- function(client, endpoints, auth = c("body", "header")) {
   )
 }
 
-oauth_client <- function(client_id, client_secret = NULL) {
+oauth_client_name <- function(app) {
+  app$client$name %||% hash(c(httr::parse_url(app$endpoints[[1]])$hostname, app$client$id))
+}
+
+
+#' @export
+#' @rdname oauth_app
+#' @param client_id Client identifier.
+#' @param client_secret Client secret. This is not technically a confidential
+#'   pieces of information so you should avoid storing in the public where
+#'   possible. However, many APIs require it in order to provide a user friendly
+#'   authentication experience, and the risks of including it are usually low.
+#' @param name Optional name for the client. Used when generating cache
+#'   directory. If `NULL`, generated from hash of app hostname and
+#'   `client_id`.
+oauth_client <- function(client_id, client_secret = NULL, name = NULL) {
   # TODO: provide some lightweight way of encrypting the secret so that it
   # never appears in plain text
 
   structure(
     list(
       id = client_id,
-      secret = client_secret
+      secret = client_secret,
+      name = name
     ),
     class = "httr2_oauth_client"
   )

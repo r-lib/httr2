@@ -1,15 +1,31 @@
-new_token <- function(access_token,
-                      token_type = "bearer",
-                      expires_in = NULL,
-                      refresh_token = NULL,
-                      ...,
-                      .date = NULL) {
+#' Create an OAuth token
+#'
+#' Creates a S3 object of class <httr2_token> representing an OAuth token
+#' returned from the access token endpoint.
+#'
+#' @param access_token The access token used to authenticate request
+#' @param token_type Type of token; only `"bearer"` is currently supported.
+#' @param expires_in Number of seconds until token expires.
+#' @param refresh_token Optional refresh token; if supplied, this can be
+#'   used to cheaply get a new access token when this one expires.
+#' @param ... Additional components returned by the endpoint
+#' @param .date Date the request was made; used to convert the relative
+#'   `expires_in` to an absolute `expires_at`.
+#' @export
+oauth_token <- function(
+                        access_token,
+                        token_type = "bearer",
+                        expires_in = NULL,
+                        refresh_token = NULL,
+                        ...,
+                        .date = Sys.time()
+                        ) {
 
   check_string(access_token, "`access_token`")
   check_string(token_type, "`token_type`")
-  # TODO: should tokens always store their scope
+  # TODO: should tokens always store their scope?
 
-  if (!is.null(expires_in) && !is.null(.date)) {
+  if (!is.null(expires_in)) {
     # Store as unix time to avoid worrying about type coercions in cache
     expires_at <- as.numeric(.date) + expires_in
   } else {
@@ -28,25 +44,19 @@ new_token <- function(access_token,
   )
 }
 
-check_token <- function(x) {
-  if (!inherits(x, "httr2_token")) {
-    abort("`token` must be an OAuth2 token")
-  }
-}
-
-token_has_expired <- function(token) {
+token_has_expired <- function(token, delay = 5) {
   if (is.null(token$expires_at)) {
     FALSE
   } else {
-    token$expires_at > unix_time()
+    (unix_time() + delay) > token$expires_at
   }
 }
 
-token_refresh <- function(token, app, scope = NULL) {
-  check_token(token)
-  if (is.null(token$refresh_token)) {
-    abort("Token must have `$refresh_token` field in order to be refreshed")
-  }
-  oauth_flow_refresh(app, token$refresh_token, scope = scope)
+token_refresh <- function(app, refresh_token, scope = NULL, token_params = list()) {
+  oauth_flow_access_token(app,
+    grant_type = "refresh_token",
+    refresh_token = refresh_token,
+    scope = scope,
+    !!!token_params
+  )
 }
-
