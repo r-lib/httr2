@@ -103,6 +103,6 @@ cache_disk <- function(app, key) {
   list(
     get = function() if (file.exists(path)) readRDS(path) else NULL,
     set = function(token) saveRDS(token, path),
-    clear = function() file.remove(path)
+    clear = function() if (file.exists(path)) file.remove(path)
   )
 }
