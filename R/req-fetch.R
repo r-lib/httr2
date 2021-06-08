@@ -46,7 +46,7 @@ req_fetch <- function(req, path = NULL) {
     if (is_error(resp)) {
       tries <- tries + 1
       delay <- retry_backoff(req, tries)
-    } else if (!reauth && auth_oauth_invalid_token(resp)) {
+    } else if (!reauth && resp_is_invalid_oauth_token(req, resp)) {
       reauth <- TRUE
       req <- auth_oauth_sign(req, TRUE)
       handle <- req_handle(req)

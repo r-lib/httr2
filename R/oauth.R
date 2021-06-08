@@ -53,8 +53,8 @@ auth_oauth_sign <- function(req, reauth = FALSE) {
   req_auth_bearer_token(req, token$access_token)
 }
 
-auth_oauth_invalid_token <- function(req, resp) {
-  if (!req_policy_exists(req, "oauth")) {
+resp_is_invalid_oauth_token <- function(req, resp) {
+  if (!req_policy_exists(req, "auth_oauth")) {
     return(FALSE)
   }
 
@@ -63,11 +63,17 @@ auth_oauth_invalid_token <- function(req, resp) {
   }
 
   auth <- resp_header(resp, "WWW-Authenticate")
-  if (!is.null(auth)) {
+  if (is.null(auth)) {
     return(FALSE)
   }
 
-  # https://datatracker.ietf.org/doc/html/rfc7235#section-4.1
+  # https://datatracker.ietf.org/doc/html/rfc6750#section-3.1
+  # invalid_token:
+  #   The access token provided is expired, revoked, malformed, or
+  #   invalid for other reasons.  The resource SHOULD respond with
+  #   the HTTP 401 (Unauthorized) status code.  The client MAY
+  #   request a new access token and retry the protected resource
+  #   request.
   grepl('error="invalid_token"', auth, fixed = TRUE)
 }
 
