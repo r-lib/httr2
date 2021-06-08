@@ -121,7 +121,7 @@ oauth_flow_auth_code <- function(app,
   }
 
   state <- nonce()
-  redirect_url <- paste0("http://", host_name, ":", port)
+  redirect_url <- paste0("http://", host_name, ":", port, "/")
 
   # Redirect user to authorisation url, and listen for result
   user_url <- oauth_flow_auth_code_url(app,
