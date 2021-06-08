@@ -7,6 +7,9 @@
     <loc>https://httr2.r-lib.org/reference/httr2-package.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_app.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code.html</loc>
   </url>
   <url>
@@ -20,6 +23,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_refresh.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_token.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
@@ -50,6 +56,24 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_method.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_auth_code.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_client_credentials.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_device.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_password.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_refresh.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_options.html</loc>

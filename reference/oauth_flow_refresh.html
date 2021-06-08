@@ -43,15 +43,8 @@
 <meta property="og:description" content="This function generates an access token from a refresh token, following
 the process described in
 rfc6749,
-Section 6. This is primarily useful for testing - you can manually performed
-some other OAuth flow (e.g. oauth_flow_auth_code() or
-oauth_flow_device()) and save the refresh token into an environment
-variable.
-When requesting an access token, the server may also return a new refresh
-token. If this happens, oauth_flow_refresh() will error, and you'll have
-to create a new refresh token following the same procedure you did to get
-the first token (so it's a good idea to document what you did the first time
-because you might need to do it again)." />
+Section 6. Errors if the refresh returns a new refresh token, see
+req_oauth_refresh() for details." />
 
 
 
@@ -140,15 +133,8 @@ because you might need to do it again)." />
     <p>This function generates an access token from a refresh token, following
 the process described in
 <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-6'>rfc6749</a>,
-Section 6. This is primarily useful for testing - you can manually performed
-some other OAuth flow (e.g. <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code()</a></code> or
-<code><a href='oauth_flow_device.html'>oauth_flow_device()</a></code>) and save the refresh token into an environment
-variable.</p>
-<p>When requesting an access token, the server may also return a new refresh
-token. If this happens, <code>oauth_flow_refresh()</code> will error, and you'll have
-to create a new refresh token following the same procedure you did to get
-the first token (so it's a good idea to document what you did the first time
-because you might need to do it again).</p>
+Section 6. Errors if the refresh returns a new refresh token, see
+<code><a href='req_oauth_refresh.html'>req_oauth_refresh()</a></code> for details.</p>
     </div>
 
     <pre class="usage"><span class='fu'>oauth_flow_refresh</span><span class='op'>(</span>
@@ -163,7 +149,7 @@ because you might need to do it again).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>app</th>
-      <td><p>An <code>oauth_app()</code>.</p></td>
+      <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
     </tr>
     <tr>
       <th>refresh_token</th>

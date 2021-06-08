@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: client credentials — oauth_flow_client_credentials • httr2</title>
+<title>OAuth authentication with a refresh token — req_oauth_refresh • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,18 @@
 
 
 
-<meta property="og:title" content="OAuth flow: client credentials — oauth_flow_client_credentials" />
-<meta property="og:description" content="This function implements the OAuth client credentials flow, as defined
-by rfc6749,
-Section 4.4. It is used to allow the client to access resources that it
-controls directly, not on behalf of an user." />
+<meta property="og:title" content="OAuth authentication with a refresh token — req_oauth_refresh" />
+<meta property="og:description" content="This uses oauth_flow_refresh() to generate an access token, which is
+then used to authentication the request with req_auth_bearer_token().
+This is primarily useful for testing: you can manually execute another OAuth
+flow (e.g. by calling oauth_flow_auth_code() or oauth_flow_device()),
+extract the refresh token from the result, and then save in an environment
+variable for future use in automated tests.
+When requesting an access token, the server may also return a new refresh
+token. If this happens, oauth_flow_refresh() will error, and you'll have
+to create a new refresh token following the same procedure you did to get
+the first token (so it's a good idea to document what you did the first time
+because you might need to do it again)." />
 
 
 
@@ -123,26 +130,50 @@ controls directly, not on behalf of an user." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: client credentials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-client-credentials.R'><code>R/oauth-flow-client-credentials.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_client_credentials.Rd</code></div>
+    <h1>OAuth authentication with a refresh token</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-refresh.R'><code>R/oauth-flow-refresh.R</code></a></small>
+    <div class="hidden name"><code>req_oauth_refresh.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function implements the OAuth client credentials flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-4.4'>rfc6749</a>,
-Section 4.4. It is used to allow the client to access resources that it
-controls directly, not on behalf of an user.</p>
+    <p>This uses <code><a href='oauth_flow_refresh.html'>oauth_flow_refresh()</a></code> to generate an access token, which is
+then used to authentication the request with <code><a href='req_auth_bearer_token.html'>req_auth_bearer_token()</a></code>.
+This is primarily useful for testing: you can manually execute another OAuth
+flow (e.g. by calling <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code()</a></code> or <code><a href='oauth_flow_device.html'>oauth_flow_device()</a></code>),
+extract the refresh token from the result, and then save in an environment
+variable for future use in automated tests.</p>
+<p>When requesting an access token, the server may also return a new refresh
+token. If this happens, <code><a href='oauth_flow_refresh.html'>oauth_flow_refresh()</a></code> will error, and you'll have
+to create a new refresh token following the same procedure you did to get
+the first token (so it's a good idea to document what you did the first time
+because you might need to do it again).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_client_credentials</span><span class='op'>(</span><span class='va'>app</span>, scope <span class='op'>=</span> <span class='cn'>NULL</span>, token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>req_oauth_refresh</span><span class='op'>(</span>
+  <span class='va'>req</span>,
+  <span class='va'>app</span>,
+  refresh_token <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span><span class='op'>(</span><span class='st'>"HTTR_REFRESH_TOKEN"</span><span class='op'>)</span>,
+  scope <span class='op'>=</span> <span class='cn'>NULL</span>,
+  token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>req</th>
+      <td><p>A <a href='req.html'>req</a>uest.</p></td>
+    </tr>
+    <tr>
       <th>app</th>
       <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>refresh_token</th>
+      <td><p>A refresh token. This is equivalent to a password
+so shouldn't be typed into the console or stored in a script. Instead,
+we recommend placing in an environment variable; the default behaviour
+is to look in <code>HTTR_REFRESH_TOKEN</code>.</p></td>
     </tr>
     <tr>
       <th>scope</th>
@@ -154,13 +185,6 @@ controls directly, not on behalf of an user.</p>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other OAuth flows: 
-<code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
-<code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
-<code><a href='oauth_flow_password.html'>oauth_flow_password</a>()</code>,
-<code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

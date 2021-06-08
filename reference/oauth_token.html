@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: client credentials — oauth_flow_client_credentials • httr2</title>
+<title>Create an OAuth token — oauth_token • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,9 @@
 
 
 
-<meta property="og:title" content="OAuth flow: client credentials — oauth_flow_client_credentials" />
-<meta property="og:description" content="This function implements the OAuth client credentials flow, as defined
-by rfc6749,
-Section 4.4. It is used to allow the client to access resources that it
-controls directly, not on behalf of an user." />
+<meta property="og:title" content="Create an OAuth token — oauth_token" />
+<meta property="og:description" content="Creates a S3 object of class &amp;lt;httr2_token&amp;gt; representing an OAuth token
+returned from the access token endpoint." />
 
 
 
@@ -123,44 +121,56 @@ controls directly, not on behalf of an user." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: client credentials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-client-credentials.R'><code>R/oauth-flow-client-credentials.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_client_credentials.Rd</code></div>
+    <h1>Create an OAuth token</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-token.R'><code>R/oauth-token.R</code></a></small>
+    <div class="hidden name"><code>oauth_token.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function implements the OAuth client credentials flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-4.4'>rfc6749</a>,
-Section 4.4. It is used to allow the client to access resources that it
-controls directly, not on behalf of an user.</p>
+    <p>Creates a S3 object of class &lt;httr2_token&gt; representing an OAuth token
+returned from the access token endpoint.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_client_credentials</span><span class='op'>(</span><span class='va'>app</span>, scope <span class='op'>=</span> <span class='cn'>NULL</span>, token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>oauth_token</span><span class='op'>(</span>
+  <span class='va'>access_token</span>,
+  token_type <span class='op'>=</span> <span class='st'>"bearer"</span>,
+  expires_in <span class='op'>=</span> <span class='cn'>NULL</span>,
+  refresh_token <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>,
+  .date <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.time</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>app</th>
-      <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+      <th>access_token</th>
+      <td><p>The access token used to authenticate request</p></td>
     </tr>
     <tr>
-      <th>scope</th>
-      <td><p>Scopes to be requested from the resource owner.</p></td>
+      <th>token_type</th>
+      <td><p>Type of token; only <code>"bearer"</code> is currently supported.</p></td>
     </tr>
     <tr>
-      <th>token_params</th>
-      <td><p>List containing additional parameters passed to <code>oauth_flow_access_token()</code>.</p></td>
+      <th>expires_in</th>
+      <td><p>Number of seconds until token expires.</p></td>
+    </tr>
+    <tr>
+      <th>refresh_token</th>
+      <td><p>Optional refresh token; if supplied, this can be
+used to cheaply get a new access token when this one expires.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional components returned by the endpoint</p></td>
+    </tr>
+    <tr>
+      <th>.date</th>
+      <td><p>Date the request was made; used to convert the relative
+<code>expires_in</code> to an absolute <code>expires_at</code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other OAuth flows: 
-<code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
-<code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
-<code><a href='oauth_flow_password.html'>oauth_flow_password</a>()</code>,
-<code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

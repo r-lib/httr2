@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: client credentials — oauth_flow_client_credentials • httr2</title>
+<title>OAuth authentication with authorization code — req_oauth_auth_code • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="OAuth flow: client credentials — oauth_flow_client_credentials" />
-<meta property="og:description" content="This function implements the OAuth client credentials flow, as defined
-by rfc6749,
-Section 4.4. It is used to allow the client to access resources that it
-controls directly, not on behalf of an user." />
+<meta property="og:title" content="OAuth authentication with authorization code — req_oauth_auth_code" />
+<meta property="og:description" content="This uses oauth_flow_auth_code() to generate an access token, which is
+then used to authentication the request with req_auth_bearer_token().
+The token is automatically cached (either in memory or on disk) to minimise
+the number of times the flow is performed." />
 
 
 
@@ -123,44 +123,105 @@ controls directly, not on behalf of an user." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: client credentials</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-client-credentials.R'><code>R/oauth-flow-client-credentials.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_client_credentials.Rd</code></div>
+    <h1>OAuth authentication with authorization code</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-auth-code.R'><code>R/oauth-flow-auth-code.R</code></a></small>
+    <div class="hidden name"><code>req_oauth_auth_code.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function implements the OAuth client credentials flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-4.4'>rfc6749</a>,
-Section 4.4. It is used to allow the client to access resources that it
-controls directly, not on behalf of an user.</p>
+    <p>This uses <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code()</a></code> to generate an access token, which is
+then used to authentication the request with <code><a href='req_auth_bearer_token.html'>req_auth_bearer_token()</a></code>.
+The token is automatically cached (either in memory or on disk) to minimise
+the number of times the flow is performed.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_client_credentials</span><span class='op'>(</span><span class='va'>app</span>, scope <span class='op'>=</span> <span class='cn'>NULL</span>, token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>req_oauth_auth_code</span><span class='op'>(</span>
+  <span class='va'>req</span>,
+  <span class='va'>app</span>,
+  cache_disk <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  cache_key <span class='op'>=</span> <span class='cn'>NULL</span>,
+  scope <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pkce <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  auth_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  host_name <span class='op'>=</span> <span class='st'>"localhost"</span>,
+  host_ip <span class='op'>=</span> <span class='st'>"127.0.0.1"</span>,
+  port <span class='op'>=</span> <span class='fu'>httpuv</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/httpuv/man/randomPort.html'>randomPort</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>req</th>
+      <td><p>A <a href='req.html'>req</a>uest.</p></td>
+    </tr>
+    <tr>
       <th>app</th>
       <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>cache_disk</th>
+      <td><p>Should the access token be cached on disk? This reduces
+the number of times that you need to re-authenticate at the cost of
+storing access credentials on disk.</p></td>
+    </tr>
+    <tr>
+      <th>cache_key</th>
+      <td><p>If you want to cache multiple tokens per app, use this
+key to disambiguate them.</p></td>
     </tr>
     <tr>
       <th>scope</th>
       <td><p>Scopes to be requested from the resource owner.</p></td>
     </tr>
     <tr>
+      <th>pkce</th>
+      <td><p>Use "Proof Key for Code Exchange"? This adds an extra layer of
+security and should always be used if supported by the server.</p></td>
+    </tr>
+    <tr>
+      <th>auth_params</th>
+      <td><p>List containing additional parameters passed to <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code_url()</a></code></p></td>
+    </tr>
+    <tr>
       <th>token_params</th>
       <td><p>List containing additional parameters passed to <code>oauth_flow_access_token()</code>.</p></td>
     </tr>
+    <tr>
+      <th>host_name</th>
+      <td><p>Host name used to generate <code>redirect_uri</code></p></td>
+    </tr>
+    <tr>
+      <th>host_ip</th>
+      <td><p>IP address web server will be bound to.</p></td>
+    </tr>
+    <tr>
+      <th>port</th>
+      <td><p>Port to bind web server to. By default, this uses a random port.
+You may need to set it to a fixed port if the API requires that the
+<code>redirect_uri</code> specified in the client exactly matches the <code>redirect_uri</code>
+generated by this function.</p></td>
+    </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="security-considerations"><a class="anchor" href="#security-considerations"></a>Security considerations</h2>
 
-    <div class='dont-index'><p>Other OAuth flows: 
-<code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
-<code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
-<code><a href='oauth_flow_password.html'>oauth_flow_password</a>()</code>,
-<code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
+    <p>The authorization code flow is used for both web applications and native
+applications (which are equivalent to R packages).
+<a href='https://datatracker.ietf.org/doc/html/rfc8252'>rfc8252</a> spells out
+important considerations for native apps. Most importantly there's no way
+for native apps to keep secrets from their users. This means that the
+server should either not require a <code>client_secret</code> (i.e. a public client
+not an confidential client) or ensure that possession of the <code>client_secret</code>
+doesn't bestow any meaningful rights.</p>
+<p>Only modern APIs from the bigger players (Azure, Google, etc) explicitly
+native apps. However, in most cases, even for older APIs, possessing the
+<code>client_secret</code> gives you no ability to do anything harmful, so our
+general principle is that it's fine to include it in an R package, as long
+as it's mildly obfuscated to protect it from credential scraping. There's
+no incentive to steal your client credentials if it takes less time to
+create a new client than find your client secret.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

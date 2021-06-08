@@ -133,7 +133,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-create-a-request-and-control-its-behaviour" class="hasAnchor"><a href="#section-create-a-request-and-control-its-behaviour" class="anchor"></a>Create a request and control its behaviour</h2>
+          <h2 id="section-define-a-request" class="hasAnchor"><a href="#section-define-a-request" class="anchor"></a>Define a request</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -148,18 +148,6 @@
           <p><code><a href="req.html">req()</a></code> </p>
         </td>
         <td><p>Create a new HTTP request</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_auth_basic.html">req_auth_basic()</a></code> </p>
-        </td>
-        <td><p>Authenticate request with HTTP basic authentication</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_auth_bearer_token.html">req_auth_bearer_token()</a></code> </p>
-        </td>
-        <td><p>Authenticate request with bearer token</p></td>
       </tr><tr>
         
         <td>
@@ -230,7 +218,62 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-perform-a-request" class="hasAnchor"><a href="#section-perform-a-request" class="anchor"></a>Perform a request</h2>
+          <h2 id="section-authenticate-a-request" class="hasAnchor"><a href="#section-authenticate-a-request" class="anchor"></a>Authenticate a request</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="req_auth_basic.html">req_auth_basic()</a></code> </p>
+        </td>
+        <td><p>Authenticate request with HTTP basic authentication</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_auth_bearer_token.html">req_auth_bearer_token()</a></code> </p>
+        </td>
+        <td><p>Authenticate request with bearer token</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_oauth_auth_code.html">req_oauth_auth_code()</a></code> </p>
+        </td>
+        <td><p>OAuth authentication with authorization code</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> </p>
+        </td>
+        <td><p>OAuth authentication with client credentials</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_oauth_device.html">req_oauth_device()</a></code> </p>
+        </td>
+        <td><p>OAuth authentication with device flow</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_oauth_password.html">req_oauth_password()</a></code> </p>
+        </td>
+        <td><p>OAuth authentication with username and password</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_oauth_refresh.html">req_oauth_refresh()</a></code> </p>
+        </td>
+        <td><p>OAuth authentication with a refresh token</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-perform-a-request-and-get-a-response" class="hasAnchor"><a href="#section-perform-a-request-and-get-a-response" class="anchor"></a>Perform a request and get a response</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -293,7 +336,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-oauth-flows" class="hasAnchor"><a href="#section-oauth-flows" class="anchor"></a>OAuth flows</h2>
-          <p class="section-desc"></p>
+          <p class="section-desc"><p>These functions implement various OAuth flows, returning an access token. Generally, you should not need to call them directly, instead using the <code>req_oauth_*</code> helpers</p></p>
         </th>
       </tr>
       
@@ -302,6 +345,12 @@
       
       
       <tr>
+        
+        <td>
+          <p><code><a href="oauth_app.html">oauth_app()</a></code> <code><a href="oauth_app.html">oauth_client()</a></code> </p>
+        </td>
+        <td><p>Create an OAuth app</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_url()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_listen()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_parse()</a></code> <code><a href="oauth_flow_auth_code.html">oauth_flow_auth_code_pkce()</a></code> </p>
@@ -331,6 +380,12 @@
           <p><code><a href="oauth_flow_refresh.html">oauth_flow_refresh()</a></code> </p>
         </td>
         <td><p>OAuth flow: refresh token</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="oauth_token.html">oauth_token()</a></code> </p>
+        </td>
+        <td><p>Create an OAuth token</p></td>
       </tr>
     </tbody>
     </table>
