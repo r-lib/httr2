@@ -3,7 +3,7 @@ url: https://httr2.r-lib.org
 reference:
 - title: Define a request
   contents:
-  - req
+  - request
   - req_body_none
   - req_error
   - req_headers
@@ -31,6 +31,10 @@ reference:
 - title: Handle the response
   contents:
   - starts_with("resp_")
+
+- title: Miscellaenous helpers
+  contents:
+    secrets
 
 - title: OAuth flows
   desc: >
