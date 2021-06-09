@@ -4,12 +4,17 @@
 \alias{req_auth_basic}
 \title{Authenticate request with HTTP basic authentication}
 \usage{
-req_auth_basic(req, user_name, password)
+req_auth_basic(req, username, password = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{user_name, password}{User name and password pair.}
+\item{username}{User name.}
+
+\item{password}{Password. You avoid entering the password directly when
+calling this function as it will be captured by \code{.Rhistory}. Instead,
+leave it unset and the default behaviour will prompt you for it
+interactively.}
 }
 \description{
 This sets the Authorization header. See details at

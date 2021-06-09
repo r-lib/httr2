@@ -37,10 +37,7 @@ req_oauth_password <- function(req, app,
 #' it for an access token that can be cached locally.
 #'
 #' @inheritParams oauth_flow_auth_code
-#' @param username,password Pair of user name and password. Note that you
-#'   should avoid entering the password directly when calling this function
-#'   as it will be captured by `.Rhistory`. Instead, leave it unset and
-#'   the default behaviour will prompt you for it interactively.
+#' @inheritParams req_auth_basic
 #' @export
 #' @family OAuth flows
 oauth_flow_password <- function(app,

@@ -4,7 +4,11 @@
 #' <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>.
 #'
 #' @inheritParams req_fetch
-#' @param user_name,password User name and password pair.
+#' @param username User name.
+#' @param password Password. You avoid entering the password directly when
+#'   calling this function as it will be captured by `.Rhistory`. Instead,
+#'   leave it unset and the default behaviour will prompt you for it
+#'   interactively.
 #' @export
 #' @examples
 #' request("http://example.com") %>%
@@ -16,14 +20,14 @@
 #' rawToChar(jsonlite::base64_dec("aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA=="))
 #' # This means that you should be careful when sharing any code that
 #' # reveals the Authorization header
-req_auth_basic <- function(req, user_name, password) {
+req_auth_basic <- function(req, username, password = NULL) {
   check_request(req)
-  check_string(user_name, "`user_name`")
-  check_string(password, "`password`")
+  check_string(username, "`username`")
+  password <- check_password(password)
 
   req_options(req,
     httpauth = auth_flags("basic"),
-    userpwd = paste0(user_name, ":", password)
+    userpwd = paste0(username, ":", password)
   )
 }
 

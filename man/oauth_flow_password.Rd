@@ -15,10 +15,12 @@ oauth_flow_password(
 \arguments{
 \item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
 
-\item{username, password}{Pair of user name and password. Note that you
-should avoid entering the password directly when calling this function
-as it will be captured by \code{.Rhistory}. Instead, leave it unset and
-the default behaviour will prompt you for it interactively.}
+\item{username}{User name.}
+
+\item{password}{Password. You avoid entering the password directly when
+calling this function as it will be captured by \code{.Rhistory}. Instead,
+leave it unset and the default behaviour will prompt you for it
+interactively.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

@@ -19,15 +19,12 @@ req_oauth_password(
 
 \item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
 
-\item{username}{Pair of user name and password. Note that you
-should avoid entering the password directly when calling this function
-as it will be captured by \code{.Rhistory}. Instead, leave it unset and
-the default behaviour will prompt you for it interactively.}
+\item{username}{User name.}
 
-\item{password}{Pair of user name and password. Note that you
-should avoid entering the password directly when calling this function
-as it will be captured by \code{.Rhistory}. Instead, leave it unset and
-the default behaviour will prompt you for it interactively.}
+\item{password}{Password. You avoid entering the password directly when
+calling this function as it will be captured by \code{.Rhistory}. Instead,
+leave it unset and the default behaviour will prompt you for it
+interactively.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
