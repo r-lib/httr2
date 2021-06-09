@@ -16,3 +16,20 @@ test_that("encryption and decryption of object is symmetric", {
   x2 <- secret_read_rds(path, key)
   expect_equal(x1, x2)
 })
+
+
+test_that("can unobfuscate obfuscated string", {
+  expect_snapshot({
+    obfuscate("test")
+    obfuscated("ZlWk7g")
+  })
+
+  x <- obfuscated("ZlWk7g")
+  expect_equal(unobfuscate(x), "test")
+})
+
+test_that("unobfuscate serves as argument checker", {
+  expect_equal(unobfuscate(NULL), NULL)
+  expect_equal(unobfuscate("x"), "x")
+  expect_snapshot(unobfuscate(1, "`x`"), error = TRUE)
+})

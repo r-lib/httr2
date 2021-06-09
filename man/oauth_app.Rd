@@ -24,10 +24,12 @@ and \code{client_secret} are sent using the HTTP Authorization header.}
 
 \item{client_id}{Client identifier.}
 
-\item{client_secret}{Client secret. This is not technically a confidential
-pieces of information so you should avoid storing in the public where
-possible. However, many APIs require it in order to provide a user friendly
-authentication experience, and the risks of including it are usually low.}
+\item{client_secret}{Client secret. This is technically confidential so you
+should avoid storing it in source code where possible. However, many APIs
+require it in order to provide a user friendly authentication experience,
+and the risks of including it are usually low. To make things a little
+safer, I recommend using \code{\link[=obfuscate]{obfuscate()}} to store an obfuscated version of
+the source.}
 
 \item{name}{Optional name for the client. Used when generating cache
 directory. If \code{NULL}, generated from hash of app hostname and

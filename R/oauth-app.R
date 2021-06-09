@@ -47,17 +47,16 @@ oauth_client_name <- function(app) {
 #' @export
 #' @rdname oauth_app
 #' @param client_id Client identifier.
-#' @param client_secret Client secret. This is not technically a confidential
-#'   pieces of information so you should avoid storing in the public where
-#'   possible. However, many APIs require it in order to provide a user friendly
-#'   authentication experience, and the risks of including it are usually low.
+#' @param client_secret Client secret. This is technically confidential so you
+#'   should avoid storing it in source code where possible. However, many APIs
+#'   require it in order to provide a user friendly authentication experience,
+#'   and the risks of including it are usually low. To make things a little
+#'   safer, I recommend using [obfuscate()] to store an obfuscated version of
+#'   the source.
 #' @param name Optional name for the client. Used when generating cache
 #'   directory. If `NULL`, generated from hash of app hostname and
 #'   `client_id`.
 oauth_client <- function(client_id, client_secret = NULL, name = NULL) {
-  # TODO: provide some lightweight way of encrypting the secret so that it
-  # never appears in plain text
-
   structure(
     list(
       id = client_id,
@@ -84,11 +83,11 @@ req_auth_oauth_client <- function(req, app) {
   if (app$auth == "body") {
     params <- compact(list(
       client_id = app$client$id,
-      client_secret = app$client$secret # might be NULL
+      client_secret = unobfuscate(app$client$secret) # might be NULL
     ))
     req_body_form_append(req, params)
   } else {
-    req_auth_basic(req, app$client$id, app$client$secret)
+    req_auth_basic(req, app$client$id, unobfuscate(app$client$secret))
   }
 }
 

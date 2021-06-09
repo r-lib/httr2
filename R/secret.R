@@ -118,6 +118,72 @@ secret_write_rds <- function(x, path, key) {
   writeBin(x_enc, path)
 }
 
+
+#' Obfuscate mildly secret information
+#'
+#' @description
+#' This pair of functions provides a way to obfuscate mildly confidential
+#' information, like OAuth client secrets. The secret can not be revealed
+#' from your source code, but a good R programmer could still figure it
+#' out with a little effort. The main goal is to protect against scraping;
+#' there's no way for an automated tool to grab your obfuscated secrets.
+#'
+#' Because un-obfuscation happens at the last possible instant, `obfuscated()`
+#' only works in limited locations; currently only the `secret` argument to
+#' [oauth_client()].
+#'
+#' @param x A string to obfuscate, or mark as obfuscated.
+#' @return `obfuscate()` prints the `obfuscated()` call to include in your
+#'   code. `obfuscated()` returns an S3 class marking the string as obfuscated
+#'   so it can be unobfuscated when needed.
+#' @export
+#' @examples
+#' obfuscate("good morning")
+#' obfuscated("dV-4_vKoUp90pP_M")
+obfuscate <- function(x) {
+  check_string(x, "`x`")
+
+  enc <- secret_encrypt(x, obfuscate_key)
+  glue('obfuscated("{enc}")')
+}
+attr(obfuscate, "srcref") <- "function(x) {}"
+
+#' @export
+#' @rdname obfuscate
+obfuscated <- function(x) {
+  structure(x, class = "httr2_obfuscated")
+}
+
+#' @export
+format.httr2_obfuscated <- function(x, ...) {
+  "<OBFUSCATED>"
+}
+
+#' @export
+print.httr2_obfuscated <- function(x, ...) {
+  cat(format(x), "\n", sep = "")
+  invisible(x)
+}
+
+unobfuscate <- function(x, arg_name) {
+  if (is.null(x)) {
+    x
+  } else if (inherits(x, "httr2_obfuscated")) {
+    secret_decrypt(x, obfuscate_key)
+  } else if (is_string(x)) {
+    x
+  } else {
+    abort(glue("{arg_name} must be a string"))
+  }
+}
+attr(unobfuscate, "srcref") <- "function(x) {}"
+
+obfuscate_key <- as.raw(c(
+  0xf7, 0x76, 0x13, 0x88, 0x76, 0x01, 0x6f, 0xb7,
+  0x67, 0xd5, 0xca, 0x45, 0x8b, 0xbb, 0x24, 0x2e
+))
+
+
 # Helpers -----------------------------------------------------------------
 
 as_key <- function(x) {
