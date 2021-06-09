@@ -30,4 +30,8 @@ get a real HTTP response by calling \code{\link[=req_fetch]{req_fetch()}} and fr
 function is provided primarily for testing, and a place to describe
 the key components of a response.
 }
+\examples{
+response()
+response(404, method = "POST")
+}
 \keyword{internal}
