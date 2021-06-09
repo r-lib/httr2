@@ -7,7 +7,7 @@
 req_dry_run(req, quiet = !is_interactive())
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{quiet}{If \code{TRUE} doesn't print anything.}
 }
@@ -22,5 +22,5 @@ works by sending the real HTTP request to a local webserver, thanks to
 the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 }
 \examples{
-req("http://google.com") \%>\% req_dry_run()
+request("http://google.com") \%>\% req_dry_run()
 }

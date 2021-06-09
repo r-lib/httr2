@@ -25,8 +25,8 @@ req_options <- function(.req, ...) {
 #' @param ua A new user-agent string.
 #' @export
 #' @examples
-#' req("http://example.com") %>% req_dry_run()
-#' req("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
+#' request("http://example.com") %>% req_dry_run()
+#' request("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
 req_user_agent <- function(req, ua) {
   check_request(req)
   check_string(ua, "`ua`")
@@ -52,7 +52,7 @@ default_ua <- function() {
 #' @export
 #' @examples
 #' # Give up after at most 10 seconds
-#' req("http://example.com") %>% req_timeout(10)
+#' request("http://example.com") %>% req_timeout(10)
 req_timeout <- function(req, seconds) {
   check_request(req)
   check_number(seconds, "`seconds`")

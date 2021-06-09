@@ -1,5 +1,5 @@
 test_that("can send empty body", {
-  resp <- req_test("/post") %>%
+  resp <- request_test("/post") %>%
     req_body_none() %>%
     req_fetch()
 
@@ -13,7 +13,7 @@ test_that("can send file", {
   path <- tempfile()
   writeLines("this is a test", path)
 
-  resp <- req_test("/post") %>%
+  resp <- request_test("/post") %>%
     req_body_file(path, type = "text/plain") %>%
     req_fetch()
 
@@ -23,7 +23,7 @@ test_that("can send file", {
 })
 
 test_that("can send string", {
-  resp <- req_httpbin("/post") %>%
+  resp <- request_httpbin("/post") %>%
     req_body_raw("test") %>%
     req_fetch()
 
@@ -35,20 +35,20 @@ test_that("can send string", {
 test_that("can send named list as json/form/multipart", {
   data <- list(a = "1", b = "2")
 
-  resp <- req_test("/post") %>%
+  resp <- request_test("/post") %>%
     req_body_json(data) %>%
     req_fetch()
   json <- resp_body_json(resp)
   expect_equal(json$json, data)
 
-  resp <- req_test("/post") %>%
+  resp <- request_test("/post") %>%
     req_body_form(data) %>%
     req_fetch()
   json <- resp_body_json(resp)
   expect_equal(json$headers$`Content-Type`, "application/x-www-form-urlencoded")
   expect_equal(json$form, data)
 
-  resp <- req_test("/post") %>%
+  resp <- request_test("/post") %>%
     req_body_multipart(data) %>%
     req_fetch()
   json <- resp_body_json(resp)
@@ -57,7 +57,7 @@ test_that("can send named list as json/form/multipart", {
 })
 
 test_that("can append form elements", {
-  req1 <- req_test("/GET") %>% req_body_form_append(list(a = 1))
+  req1 <- request_test("/GET") %>% req_body_form_append(list(a = 1))
   req2 <- req1 %>% req_body_form_append(list(b = 1))
 
   expect_equal(rawToChar(req1$options$postfields), "a=1")
@@ -70,7 +70,7 @@ test_that("can upload file with multipart", {
   path <- tempfile()
   writeLines("this is a test", path)
 
-  resp <- req_httpbin("/post") %>%
+  resp <- request_httpbin("/post") %>%
     req_body_multipart(list(file = curl::form_file(path))) %>%
     req_fetch()
   json <- resp_body_json(resp)

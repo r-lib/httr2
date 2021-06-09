@@ -1,5 +1,5 @@
 test_that("invalid token test is specific", {
-  req <- req("https://example.com")
+  req <- request("https://example.com")
   resp_invalid <- response(401, headers = 'WWW-Authenticate: Bearer realm="example", error="invalid_token", error_description="The access token expired"')
 
   # Doesn't trigger for response if request doesn't use OAuth

@@ -33,7 +33,7 @@ test_that("client has useful print method", {
 })
 
 test_that("can authenticate using header or body", {
-  req <- req("http://example.com")
+  req <- request("http://example.com")
   client <- oauth_client("id", "secret")
   ep <- c("token" = "test")
 

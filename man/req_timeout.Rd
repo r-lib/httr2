@@ -7,7 +7,7 @@
 req_timeout(req, seconds)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{seconds}{Maximum number of seconds to wait}
 }
@@ -16,5 +16,5 @@ An error will be thrown if the request does not complete in the time limit.
 }
 \examples{
 # Give up after at most 10 seconds
-req("http://example.com") \%>\% req_timeout(10)
+request("http://example.com") \%>\% req_timeout(10)
 }

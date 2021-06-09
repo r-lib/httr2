@@ -80,7 +80,7 @@ oauth_flow_device_request <- function(app, scope, auth_params) {
     scope = scope,
     !!!auth_params
   )
-  req <- req(url)
+  req <- request(url)
   req <- req_body_form(req, params)
   # req <- req_auth_oauth_client(req, app)
   req <- req_headers(req, Accept = "application/json")

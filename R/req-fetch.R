@@ -12,14 +12,14 @@
 #'   fails with a transient problem, `req_fetch()` will try again after
 #'   waiting a bit. See [req_retry()] for details.
 #'
-#' @param req A [req]uest.
+#' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
 #' @returns Returns an HTTP response with successful status code. Will
 #'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
 #' @examples
-#' req("https://google.com") %>%
+#' request("https://google.com") %>%
 #'   req_fetch()
 req_fetch <- function(req, path = NULL) {
   check_request(req)
@@ -101,7 +101,7 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
 #'   including `method`, `path`, and `headers`.
 #' @export
 #' @examples
-#' req("http://google.com") %>% req_dry_run()
+#' request("http://google.com") %>% req_dry_run()
 req_dry_run <- function(req, quiet = !is_interactive()) {
   check_request(req)
   check_installed("httpuv")
@@ -140,7 +140,7 @@ req_dry_run <- function(req, quiet = !is_interactive()) {
 #'   cat("Got ", length(x), " bytes\n", sep = "")
 #'   TRUE
 #' }
-#' resp <- req("http://httpbin.org/stream-bytes/100000") %>%
+#' resp <- request("http://httpbin.org/stream-bytes/100000") %>%
 #'   req_stream(show_bytes, buffer_kb = 32)
 req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   check_request(req)

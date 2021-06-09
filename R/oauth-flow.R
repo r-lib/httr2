@@ -1,7 +1,7 @@
 oauth_flow_access_token <- function(app, ...) {
   url <- app_endpoint(app, "token")
 
-  req <- req(url)
+  req <- request(url)
   req <- req_body_form(req, list2(...))
   req <- req_auth_oauth_client(req, app)
   req <- req_headers(req, Accept = "application/json")

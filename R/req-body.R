@@ -13,7 +13,7 @@
 #' @inheritParams req_fetch
 #' @export
 #' @examples
-#' req <- req("http://httpbin.org/post")
+#' req <- request("http://httpbin.org/post")
 #'
 #' # Most APIs expect small amounts of data in either form or json encoded:
 #' req %>%

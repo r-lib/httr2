@@ -7,7 +7,7 @@
 req_oauth(req, flow, flow_params, cache)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{flow}{Function used to generate the access token.}
 

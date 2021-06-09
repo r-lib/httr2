@@ -7,7 +7,7 @@
 req_error(req, is_error = NULL, info = NULL)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{is_error}{A predicate function that takes a single argument (the
 response) and returns \code{TRUE} or \code{FALSE} indicating whether or not an
@@ -19,7 +19,7 @@ This vector is passed along to the \code{message} argument of \code{\link[rlang:
 so you can use any formatting that it supports.}
 }
 \value{
-An HTTP \link{req}uest.
+An HTTP \link{request}.
 }
 \description{
 \code{req_fetch()} will automatically convert HTTP errors (i.e. any 4xx or 5xx

@@ -14,7 +14,7 @@
 #'   in `...`. Expert use only.
 #' @export
 #' @examples
-#' httpbin <- req("http://httpbin.org")
+#' httpbin <- request("http://httpbin.org")
 #'
 #' # You can supply template parameters in `...`
 #' httpbin %>% req_template("GET /bytes/{n}", n = 100)

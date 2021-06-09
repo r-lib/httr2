@@ -7,7 +7,7 @@
 req_template(req, template, ..., .env = parent.frame())
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{template}{A template string which consists of a optional HTTP method
 and a path containing variables labelled like either \verb{:foo} or \code{{foo}}.}
@@ -24,7 +24,7 @@ function makes it easy to copy and paste this snippets and retrieve template
 variables either from function arguments or the current environment:
 }
 \examples{
-httpbin <- req("http://httpbin.org")
+httpbin <- request("http://httpbin.org")
 
 # You can supply template parameters in `...`
 httpbin \%>\% req_template("GET /bytes/{n}", n = 100)

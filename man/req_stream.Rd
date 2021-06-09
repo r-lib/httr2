@@ -7,7 +7,7 @@
 req_stream(req, callback, timeout_sec = Inf, buffer_kb = 64)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{callback}{A single argument callback function. It will be called
 repeatedly with a raw vector whenever there is at least \code{buffer_kb}
@@ -27,6 +27,6 @@ show_bytes <- function(x) {
   cat("Got ", length(x), " bytes\n", sep = "")
   TRUE
 }
-resp <- req("http://httpbin.org/stream-bytes/100000") \%>\%
+resp <- request("http://httpbin.org/stream-bytes/100000") \%>\%
   req_stream(show_bytes, buffer_kb = 32)
 }

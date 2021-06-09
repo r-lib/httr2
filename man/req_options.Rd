@@ -7,7 +7,7 @@
 req_options(.req, ...)
 }
 \arguments{
-\item{.req}{A \link{req}uest.}
+\item{.req}{A \link{request}.}
 
 \item{...}{Name-value pairs. The name should be a valid curl option,
 as found in \code{\link[curl:curl_options]{curl::curl_options()}}.}

@@ -1,25 +1,25 @@
 test_that("can set path", {
-  req <- req("http://test.com") %>% req_template("/x")
+  req <- request("http://test.com") %>% req_template("/x")
   expect_equal(req$url, "http://test.com/x")
 })
 
 test_that("can set method and path", {
-  req <- req("http://test.com") %>% req_template("PATCH /x")
+  req <- request("http://test.com") %>% req_template("PATCH /x")
   expect_equal(req$url, "http://test.com/x")
   expect_equal(req$method, "PATCH")
 })
 
 test_that("can use args or env", {
   x <- "x"
-  req <- req("http://test.com") %>% req_template("/:x")
+  req <- request("http://test.com") %>% req_template("/:x")
   expect_equal(req$url, "http://test.com/x")
 
-  req <- req("http://test.com") %>% req_template("/:x", x = "y")
+  req <- request("http://test.com") %>% req_template("/:x", x = "y")
   expect_equal(req$url, "http://test.com/y")
 })
 
 test_that("generates useful errors", {
-  req <- req("http://test.com")
+  req <- request("http://test.com")
 
   expect_snapshot(error = TRUE, {
     req_template(req, 1)

@@ -16,7 +16,7 @@ req_url_path(req, path)
 req_url_path_append(req, path)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{url}{New URL; completely replaces existing.}
 
@@ -25,7 +25,7 @@ req_url_path_append(req, path)
 \item{path}{Path to replace or append to existing path.}
 }
 \value{
-A modified HTTP \link{req}uest.
+A modified HTTP \link{request}.
 }
 \description{
 \itemize{
@@ -36,7 +36,7 @@ A modified HTTP \link{req}uest.
 }
 }
 \examples{
-req <- req("http://example.com")
+req <- request("http://example.com")
 
 # Change url components
 req \%>\%

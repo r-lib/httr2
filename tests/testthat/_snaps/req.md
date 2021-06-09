@@ -1,7 +1,7 @@
 # req has basic print method
 
     Code
-      req <- req("https://example.com")
+      req <- request("https://example.com")
       req
     Message <cliMessage>
       <httr2_request>

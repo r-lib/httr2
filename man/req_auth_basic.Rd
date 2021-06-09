@@ -7,7 +7,7 @@
 req_auth_basic(req, user_name, password)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{user_name, password}{User name and password pair.}
 }
@@ -16,7 +16,7 @@ This sets the Authorization header. See details at
 \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization}.
 }
 \examples{
-req("http://example.com") \%>\%
+request("http://example.com") \%>\%
   req_auth_basic("hadley", "my-secret-password") \%>\%
   req_dry_run()
 

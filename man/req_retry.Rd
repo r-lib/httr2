@@ -14,7 +14,7 @@ req_retry(
 )
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{max_tries, max_seconds}{Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
@@ -66,11 +66,11 @@ prefer a different strategy, you can override the default with \code{backoff}.
 }
 \examples{
 # google APIs assume that a 500 is also a transient error
-req("http://google.com") \%>\%
+request("http://google.com") \%>\%
   req_retry(is_transient = ~ resp_status(.x) \%in\% c(429, 500, 503))
 
 # use a constant 10s delay after every failure
-req("http://example.com") \%>\%
+request("http://example.com") \%>\%
   req_retry(backoff = ~ 10)
 
 # When rate-limited, GitHub's API returns a 403 with
@@ -84,7 +84,7 @@ github_after <- function(resp) {
   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
   time - unclass(Sys.time())
 }
-req("http://api.github.com") \%>\%
+request("http://api.github.com") \%>\%
   req_retry(
     is_transient = github_is_transient,
     after = github_after

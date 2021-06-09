@@ -19,7 +19,7 @@ req_oauth_auth_code(
 )
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
 

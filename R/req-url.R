@@ -8,10 +8,10 @@
 #'
 #' @inheritParams req_fetch
 #' @param url New URL; completely replaces existing.
-#' @return A modified HTTP [req]uest.
+#' @return A modified HTTP [request].
 #' @export
 #' @examples
-#' req <- req("http://example.com")
+#' req <- request("http://example.com")
 #'
 #' # Change url components
 #' req %>%

@@ -1,5 +1,5 @@
 test_that("can set define maximum retries", {
-  req <- req_test("/get")
+  req <- request_test("/get")
   expect_equal(retry_max_tries(req), 1)
   expect_equal(retry_max_seconds(req), Inf)
 
@@ -17,7 +17,7 @@ test_that("can set define maximum retries", {
 })
 
 test_that("can override default is_transient", {
-  req <- req_test("/get")
+  req <- request_test("/get")
   expect_equal(retry_is_transient(req, response(404)), FALSE)
   expect_equal(retry_is_transient(req, response(429)), TRUE)
 
@@ -29,7 +29,7 @@ test_that("can override default is_transient", {
 test_that("can override default backoff", {
   withr::local_seed(1014)
 
-  req <- req_test("/get")
+  req <- request_test("/get")
   expect_equal(retry_backoff(req, 1), 1.1)
   expect_equal(retry_backoff(req, 5), 26.9)
   expect_equal(retry_backoff(req, 10), 60)
@@ -42,7 +42,7 @@ test_that("can override default backoff", {
 
 test_that("can override default retry wait", {
   resp <- response(429, headers = c("Retry-After: 10", "Wait-For: 20"))
-  req <- req_test("/get")
+  req <- request_test("/get")
   expect_equal(retry_after(req, resp, 1), 10)
 
   req <- req_retry(req, after = ~ as.numeric(resp_header(.x, "Wait-For")))
@@ -50,7 +50,7 @@ test_that("can override default retry wait", {
 })
 
 test_that("missing retry-after uses backoff", {
-  req <- req_test("/get")
+  req <- request_test("/get")
   req <- req_retry(req, backoff = ~ 10)
 
   expect_equal(retry_after(req, response(429), 1), 10)

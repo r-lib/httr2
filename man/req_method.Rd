@@ -7,7 +7,7 @@
 req_method(req, method)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{method}{Custom HTTP method}
 }
@@ -16,7 +16,7 @@ Use this function to use a custom HTTP method like "HEAD",
 "DELETE", "PATCH", "UPDATE", or "OPTIONS".
 }
 \examples{
-req("http://httpbin.org") \%>\% req_method("PATCH")
-req("http://httpbin.org") \%>\% req_method("PUT")
-req("http://httpbin.org") \%>\% req_method("HEAD")
+request("http://httpbin.org") \%>\% req_method("PATCH")
+request("http://httpbin.org") \%>\% req_method("PUT")
+request("http://httpbin.org") \%>\% req_method("HEAD")
 }

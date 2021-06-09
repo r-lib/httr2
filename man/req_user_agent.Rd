@@ -7,7 +7,7 @@
 req_user_agent(req, ua)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{ua}{A new user-agent string.}
 }
@@ -16,6 +16,6 @@ This overrides the default user agent set by httr2 which includes the
 version numbers of httr2, the curl package, and libcurl.
 }
 \examples{
-req("http://example.com") \%>\% req_dry_run()
-req("http://example.com") \%>\% req_user_agent("MyPackage") \%>\% req_dry_run()
+request("http://example.com") \%>\% req_dry_run()
+request("http://example.com") \%>\% req_user_agent("MyPackage") \%>\% req_dry_run()
 }

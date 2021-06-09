@@ -1,16 +1,15 @@
 #' Create a new HTTP request
 #'
-#' To perform a HTTP request, first create a request object with `req()`,
+#' To perform a HTTP request, first create a request object with `request()`,
 #' then define its behaviour with `req_` functions, then perform the request
 #' and fetch the response with [req_fetch()].
 #'
 #' @param base_url Base URL for request.
 #' @export
 #' @examples
-#' req("http://r-project.org")
-req <- function(base_url) {
-  req <- new_request(base_url)
-  req
+#' request("http://r-project.org")
+request <- function(base_url) {
+  new_request(base_url)
 }
 
 #' @export

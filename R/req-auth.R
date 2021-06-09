@@ -7,7 +7,7 @@
 #' @param user_name,password User name and password pair.
 #' @export
 #' @examples
-#' req("http://example.com") %>%
+#' request("http://example.com") %>%
 #'   req_auth_basic("hadley", "my-secret-password") %>%
 #'   req_dry_run()
 #'

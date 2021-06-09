@@ -7,9 +7,9 @@
 #' @param method Custom HTTP method
 #' @export
 #' @examples
-#' req("http://httpbin.org") %>% req_method("PATCH")
-#' req("http://httpbin.org") %>% req_method("PUT")
-#' req("http://httpbin.org") %>% req_method("HEAD")
+#' request("http://httpbin.org") %>% req_method("PATCH")
+#' request("http://httpbin.org") %>% req_method("PUT")
+#' request("http://httpbin.org") %>% req_method("HEAD")
 req_method <- function(req, method) {
   check_request(req)
   check_string(method, "`method`")

@@ -15,7 +15,7 @@ req_verbose(
 )
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{header_out, header_in}{Show headers sent to/received from the server?}
 

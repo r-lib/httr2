@@ -7,7 +7,7 @@
 req_auth_bearer_token(req, token)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{token}{A bearer token}
 }

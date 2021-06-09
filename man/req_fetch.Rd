@@ -7,7 +7,7 @@
 req_fetch(req, path = NULL)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{path}{Optionally, path to save body of request. This is useful for
 large responses since it avoids storing the response in memory.}
@@ -29,6 +29,6 @@ waiting a bit. See \code{\link[=req_retry]{req_retry()}} for details.
 }
 }
 \examples{
-req("https://google.com") \%>\%
+request("https://google.com") \%>\%
   req_fetch()
 }

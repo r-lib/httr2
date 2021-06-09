@@ -1,5 +1,5 @@
 test_that("can customise what statuses are errors", {
-  req <- req_test("/get")
+  req <- request_test("/get")
   expect_equal(error_is_error(req, response(404)), TRUE)
   expect_equal(error_is_error(req, response(200)), FALSE)
 
@@ -9,7 +9,7 @@ test_that("can customise what statuses are errors", {
 })
 
 test_that("can customise error info", {
-  req <- req_test("/get")
+  req <- request_test("/get")
   expect_equal(error_info(req, response(404)), NULL)
 
   req <- req %>% req_error(info = ~ "Hi!")

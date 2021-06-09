@@ -1,6 +1,6 @@
 test_that("req has basic print method", {
   expect_snapshot({
-    req <- req("https://example.com")
+    req <- request("https://example.com")
     req
     req %>% req_body_raw("Test")
     req %>% req_body_multipart(list("Test" = 1))

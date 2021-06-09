@@ -14,7 +14,7 @@
 #'   and returns a character vector of additional information about the error.
 #'   This vector is passed along to the `message` argument of [rlang::abort()]
 #'   so you can use any formatting that it supports.
-#' @returns An HTTP [req]uest.
+#' @returns An HTTP [request].
 #' @export
 req_error <- function(req,
                       is_error = NULL,

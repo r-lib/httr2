@@ -1,5 +1,5 @@
 test_that("can override default method", {
-  req <- req("http://example.com")
+  req <- request("http://example.com")
 
   expect_equal(req$method, NULL)
 
@@ -8,7 +8,7 @@ test_that("can override default method", {
 })
 
 test_that("correctly guesses default method", {
-  req <- req("http://example.com")
+  req <- request("http://example.com")
   expect_equal(default_method(req), "GET")
 
   req <- req_options(req, post = TRUE)

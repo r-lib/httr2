@@ -1,5 +1,5 @@
 test_that("can modify url in various ways", {
-  req <- req("http://example.com")
+  req <- request("http://example.com")
 
   expect_equal(req_url(req, "http://foo.com:10")$url, "http://foo.com:10")
 

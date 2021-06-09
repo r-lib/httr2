@@ -1,22 +1,22 @@
 test_that("success request returns response", {
-  resp <- req_test("/get") %>% req_fetch()
+  resp <- request_test("/get") %>% req_fetch()
   expect_s3_class(resp, "httr2_response")
 })
 
 test_that("curl and http errors become errors", {
-  req <- req_test("/delay/:secs", secs = 1) %>% req_timeout(0.1)
+  req <- request_test("/delay/:secs", secs = 1) %>% req_timeout(0.1)
   expect_error(req_fetch(req), "timed out")
 
-  req <- req_test("/status/:status", status = 404)
+  req <- request_test("/status/:status", status = 404)
   expect_error(req_fetch(req), class = "httr2_http_404")
 
   # including transient errors
-  req <- req_test("/status/:status", status = 429)
+  req <- request_test("/status/:status", status = 429)
   expect_error(req_fetch(req), class = "httr2_http_429")
 })
 
 test_that("persistent HTTP errors only get single attempt", {
-  req <- req_test("/status/:status", status = 404) %>%
+  req <- request_test("/status/:status", status = 404) %>%
     req_retry(max_tries = 5)
 
   cnd <- req_fetch(req) %>%
@@ -26,7 +26,7 @@ test_that("persistent HTTP errors only get single attempt", {
 })
 
 test_that("repeated transient errors still fail", {
-  req <- req_test("/status/:status", status = 429) %>%
+  req <- request_test("/status/:status", status = 429) %>%
     req_retry(max_tries = 3, backoff = ~ 0)
 
   cnd <- req_fetch(req) %>%
@@ -38,7 +38,7 @@ test_that("repeated transient errors still fail", {
 test_that("req_fetch() will throttle requests", {
   throttle_reset()
 
-  req <- req_test("/get") %>% req_throttle(10 / 1)
+  req <- request_test("/get") %>% req_throttle(10 / 1)
   cnd <- req %>% req_fetch() %>% catch_cnd("httr2_sleep")
   expect_null(cnd)
 

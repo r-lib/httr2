@@ -22,7 +22,7 @@ req_body_form(req, data)
 req_body_multipart(req, data)
 }
 \arguments{
-\item{req}{A \link{req}uest.}
+\item{req}{A \link{request}.}
 
 \item{path}{Path to file to upload.}
 
@@ -60,7 +60,7 @@ or an empty list (\code{"list"}).}
 Adding a body to a request will automatically switch the method to POST.
 }
 \examples{
-req <- req("http://httpbin.org/post")
+req <- request("http://httpbin.org/post")
 
 # Most APIs expect small amounts of data in either form or json encoded:
 req \%>\%

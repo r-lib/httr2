@@ -7,7 +7,7 @@
 req_headers(.req, ...)
 }
 \arguments{
-\item{.req}{A \link{req}uest.}
+\item{.req}{A \link{request}.}
 
 \item{...}{Name-value pairs of headers and their values. Note that setting a
 header to \code{NULL} will not necessarily remove it, but will reset it
@@ -17,7 +17,7 @@ to httr2's default value. To remove a header, set it to \code{""}.}
 \code{req_headers()} allows you to set the value of any header.
 }
 \examples{
-req <- req("http://example.com")
+req <- request("http://example.com")
 # Setting Accept to NULL uses curl's default:
 req \%>\%
   req_headers(Accept = NULL) \%>\%
