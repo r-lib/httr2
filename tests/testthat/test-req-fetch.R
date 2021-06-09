@@ -46,3 +46,19 @@ test_that("req_fetch() will throttle requests", {
   expect_s3_class(cnd, "httr2_sleep")
   expect_gt(cnd$seconds, 0.002)
 })
+
+test_that("can retrieve last request and response", {
+  req <- request_test("/get")
+  resp <- req_fetch(req)
+
+  expect_equal(last_request(), req)
+  expect_equal(last_response(), resp)
+})
+
+test_that("can last response is NULL if it fails", {
+  req <- request("frooble")
+  try(req_fetch(req), silent = TRUE)
+
+  expect_equal(last_request(), req)
+  expect_equal(last_response(), NULL)
+})

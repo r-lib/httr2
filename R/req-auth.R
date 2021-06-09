@@ -45,3 +45,10 @@ req_auth_bearer_token <- function(req, token) {
   check_string(token, "`token`")
   req_headers(req, Authorization = paste("Bearer", token))
 }
+
+req_redact <- function(req) {
+  if (has_name(req$headers, "Authorization")) {
+    req$headers$Authorization <- "<REDACTED>"
+  }
+  req
+}

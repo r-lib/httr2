@@ -71,6 +71,9 @@ req_fetch <- function(req, path = NULL) {
 }
 
 req_fetch1 <- function(req, path = NULL, handle = NULL) {
+  the$last_request <- req
+  the$last_response <- NULL
+
   if (!is.null(path)) {
     res <- curl::curl_fetch_disk(req$url, path, handle)
     body <- new_path(path)
@@ -79,13 +82,33 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
     body <- res$content
   }
 
-  new_response(
+  resp <- new_response(
     method = req$method %||% default_method(req),
     url = res$url,
     status_code = res$status_code,
     headers = curl::parse_headers_list(res$headers),
     body = body
   )
+  the$last_response <- resp
+  resp
+}
+
+#' Retrieve most recent request/response
+#'
+#' These functions retrieve the most recent request made by httr2 and
+#' the response it received, to facilitate debugging problems _after_ they
+#' occur. If the request did not succeed (or no requests have been made)
+#' `last_response()` will be `NULL`.
+#'
+#' @export
+last_response <- function() {
+  the$last_response
+}
+
+#' @export
+#' @rdname last_response
+last_request <- function() {
+  req_redact(the$last_request)
 }
 
 #' Perform a dry run

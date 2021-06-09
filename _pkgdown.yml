@@ -26,6 +26,7 @@ reference:
   - req_dry_run
   - req_fetch
   - req_stream
+  - last_request
 
 - title: Handle the response
   contents:

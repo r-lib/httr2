@@ -11,3 +11,5 @@ NULL
 the <- new_environment()
 the$throttle <- list()
 the$token_cache <- new_environment()
+the$last_response <- NULL
+the$last_request <- NULL
