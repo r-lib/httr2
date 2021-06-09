@@ -131,7 +131,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization." />
 <a href='https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization'>https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req_auth_basic</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>user_name</span>, <span class='va'>password</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>req_auth_basic</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>username</span>, password <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,8 +141,15 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization." />
       <td><p>A <a href='request.html'>request</a>.</p></td>
     </tr>
     <tr>
-      <th>user_name, password</th>
-      <td><p>User name and password pair.</p></td>
+      <th>username</th>
+      <td><p>User name.</p></td>
+    </tr>
+    <tr>
+      <th>password</th>
+      <td><p>Password. You avoid entering the password directly when
+calling this function as it will be captured by <code>.Rhistory</code>. Instead,
+leave it unset and the default behaviour will prompt you for it
+interactively.</p></td>
     </tr>
     </table>
 
