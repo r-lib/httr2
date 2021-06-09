@@ -20,22 +20,6 @@ test_that("can override default user agent", {
   expect_equal(req_dry_run(req2)$headers$`user-agent`, "abc")
 })
 
-test_that("can send username/password", {
-  user <- "u"
-  password <- "p"
-  req1 <- request_test("/basic-auth/:user/:password")
-  req2 <- req1 %>% req_auth_basic(user, password)
-
-  expect_error(req_fetch(req1), class = "httr2_http_401")
-  expect_error(req_fetch(req2), NA)
-})
-
-test_that("can send bearer token", {
-  req <- req_auth_bearer_token(request_test("/get"), "abc")
-  expect_equal(req$headers$Authorization, "Bearer abc")
-})
-
-
 test_that("can set timeout", {
   req <- request_test("/delay/:secs", secs = 1) %>% req_timeout(0.1)
   expect_error(req_fetch(req), "timed out")
@@ -48,7 +32,7 @@ test_that("can request verbose record of request", {
   req1 <- req %>%
     req_headers("Host" = "http://example.com") %>%
     req_user_agent("verbose") %>%
-    req_verbose(header_in = FALSE)
+    req_verbose(header_in = FALSE, data_out = TRUE)
   expect_snapshot_output(invisible(req_fetch(req1)))
 
   # Lightweight test for everything else

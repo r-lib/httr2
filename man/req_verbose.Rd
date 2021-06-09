@@ -8,10 +8,11 @@ req_verbose(
   req,
   header_out = TRUE,
   header_in = TRUE,
-  data_out = TRUE,
+  data_out = FALSE,
   data_in = FALSE,
   info = FALSE,
-  ssl = FALSE
+  ssl = FALSE,
+  redact_header = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,10 @@ req_verbose(
 for debugging https and auth problems, so is disabled by default.}
 
 \item{ssl}{Show data even when using a secure connection?}
+
+\item{redact_header}{Redact confidential data in the headers? Currently
+redacts the contents of the Authorization header to prevent you from
+accidentally leaking credentials when debugging/reprexing.}
 }
 \description{
 \code{req_verbose()} uses the following prefixes to distinguish between

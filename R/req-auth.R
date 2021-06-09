@@ -11,13 +11,19 @@
 #'   interactively.
 #' @export
 #' @examples
-#' request("http://example.com") %>%
-#'   req_auth_basic("hadley", "my-secret-password") %>%
-#'   req_dry_run()
+#' req <- request("http://example.com") %>% req_auth_basic("hadley", "SECRET")
+#' req
+#' req %>% req_dry_run()
+#'
+#' # httr2 does its best to redact the Authorization header so that you don't
+#' # accidentally confidential data. If you need to see exactly what's happening
+#' # you can use redact = FALSE
+#' print(req, redact = FALSE)
+#' req %>% req_dry_run(redact = FALSE)
 #'
 #' # Note that the authorization header is not encrypted and the
 #' # password can easily be restored:
-#' rawToChar(jsonlite::base64_dec("aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA=="))
+#' rawToChar(jsonlite::base64_dec("aGFkbGV5IDogU0VDUkVU"))
 #' # This means that you should be careful when sharing any code that
 #' # reveals the Authorization header
 req_auth_basic <- function(req, username, password = NULL) {
@@ -25,10 +31,8 @@ req_auth_basic <- function(req, username, password = NULL) {
   check_string(username, "`username`")
   password <- check_password(password)
 
-  req_options(req,
-    httpauth = auth_flags("basic"),
-    userpwd = paste0(username, ":", password)
-  )
+  username_password <- openssl::base64_encode(paste0(username, ":", password))
+  req_headers(req, Authorization = paste0("Basic ", username_password))
 }
 
 #' Authenticate request with bearer token
@@ -48,11 +52,4 @@ req_auth_bearer_token <- function(req, token) {
   check_request(req)
   check_string(token, "`token`")
   req_headers(req, Authorization = paste("Bearer", token))
-}
-
-req_redact <- function(req) {
-  if (has_name(req$headers, "Authorization")) {
-    req$headers$Authorization <- "<REDACTED>"
-  }
-  req
 }

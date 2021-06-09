@@ -83,21 +83,25 @@ req_timeout <- function(req, seconds) {
 #' @param info Show informational text from curl. This is mainly useful
 #'   for debugging https and auth problems, so is disabled by default.
 #' @param ssl Show data even when using a secure connection?
+#' @param redact_header Redact confidential data in the headers? Currently
+#'   redacts the contents of the Authorization header to prevent you from
+#'   accidentally leaking credentials when debugging/reprexing.
 #' @export
 req_verbose <- function(req,
                         header_out = TRUE,
                         header_in = TRUE,
-                        data_out = TRUE,
+                        data_out = FALSE,
                         data_in = FALSE,
                         info = FALSE,
-                        ssl = FALSE) {
+                        ssl = FALSE,
+                        redact_header = TRUE) {
   check_request(req)
 
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)            prefix_message("*  ", msg),
       headerIn =   if (header_in)       prefix_message("<- ", msg),
-      headerOut =  if (header_out)      prefix_message("-> ", msg),
+      headerOut =  if (header_out)      prefix_message("-> ", msg, redact = redact_header),
       dataIn =     if (data_in)         prefix_message("<<  ", msg),
       dataOut =    if (data_out)        prefix_message(">> ", msg),
       sslDataIn =  if (ssl && data_in)  prefix_message("*< ", msg),
@@ -109,24 +113,15 @@ req_verbose <- function(req,
 
 # helpers -----------------------------------------------------------------
 
-prefix_message <- function(prefix, x) {
+prefix_message <- function(prefix, x, redact = FALSE) {
   x <- readBin(x, character())
+  lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
 
-  lines <- unlist(strsplit(x, "\n", fixed = TRUE, useBytes = TRUE))
+  if (redact) {
+    is_auth <- grepl("^[aA]uthorization: ", lines)
+    lines[is_auth] <- "Authorization: <REDACTED>"
+  }
   out <- paste0(prefix, lines, collapse = "\n")
 
   cat(out, "\n", sep = "")
-}
-
-auth_flags <- function(type) {
-  constants <- c(
-    basic = 1,
-    digest = 2,
-    gssnegotiate = 4,
-    ntlm = 8,
-    digest_ie = 16,
-    any = -17
-  )
-  type <- arg_match0(type, names(constants), "type")
-  constants[[type]]
 }

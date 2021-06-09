@@ -21,13 +21,19 @@ This sets the Authorization header. See details at
 \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization}.
 }
 \examples{
-request("http://example.com") \%>\%
-  req_auth_basic("hadley", "my-secret-password") \%>\%
-  req_dry_run()
+req <- request("http://example.com") \%>\% req_auth_basic("hadley", "SECRET")
+req
+req \%>\% req_dry_run()
+
+# httr2 does its best to redact the Authorization header so that you don't
+# accidentally confidential data. If you need to see exactly what's happening
+# you can use redact = FALSE
+print(req, redact = FALSE)
+req \%>\% req_dry_run(redact = FALSE)
 
 # Note that the authorization header is not encrypted and the
 # password can easily be restored:
-rawToChar(jsonlite::base64_dec("aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA=="))
+rawToChar(jsonlite::base64_dec("aGFkbGV5IDogU0VDUkVU"))
 # This means that you should be careful when sharing any code that
 # reveals the Authorization header
 }

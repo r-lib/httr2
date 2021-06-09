@@ -4,12 +4,16 @@
 \alias{req_dry_run}
 \title{Perform a dry run}
 \usage{
-req_dry_run(req, quiet = !is_interactive())
+req_dry_run(req, quiet = !is_interactive(), redact_header = TRUE)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
 \item{quiet}{If \code{TRUE} doesn't print anything.}
+
+\item{redact_header}{Redact confidential data in the headers? Currently
+redacts the contents of the Authorization header to prevent you from
+accidentally leaking credentials when debugging/reprexing.}
 }
 \value{
 Invisibly, a list containing information about the request,
@@ -22,5 +26,5 @@ works by sending the real HTTP request to a local webserver, thanks to
 the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 }
 \examples{
-request("http://google.com") \%>\% req_dry_run()
+request("http://google.com") \%>\% req_dry_run(FALSE)
 }

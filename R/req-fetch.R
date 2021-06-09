@@ -108,7 +108,7 @@ last_response <- function() {
 #' @export
 #' @rdname last_response
 last_request <- function() {
-  req_redact(the$last_request)
+  the$last_request
 }
 
 #' Perform a dry run
@@ -118,19 +118,19 @@ last_request <- function() {
 #' works by sending the real HTTP request to a local webserver, thanks to
 #' the magic of [curl::curl_echo()].
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_verbose
 #' @param quiet If `TRUE` doesn't print anything.
 #' @returns Invisibly, a list containing information about the request,
 #'   including `method`, `path`, and `headers`.
 #' @export
 #' @examples
-#' request("http://google.com") %>% req_dry_run()
-req_dry_run <- function(req, quiet = !is_interactive()) {
+#' request("http://google.com") %>% req_dry_run(FALSE)
+req_dry_run <- function(req, quiet = !is_interactive(), redact_header = TRUE) {
   check_request(req)
   check_installed("httpuv")
 
   if (!quiet) {
-    req <- req_verbose(req, header_in = FALSE)
+    req <- req_verbose(req, header_in = FALSE, redact_header = redact_header)
   }
   # Override local server with fake host
   req <- req_headers(req, "Host" = httr::parse_url(req$url)$hostname)
