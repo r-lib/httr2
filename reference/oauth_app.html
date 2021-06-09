@@ -168,10 +168,12 @@ and <code>client_secret</code> are sent using the HTTP Authorization header.</p>
     </tr>
     <tr>
       <th>client_secret</th>
-      <td><p>Client secret. This is not technically a confidential
-pieces of information so you should avoid storing in the public where
-possible. However, many APIs require it in order to provide a user friendly
-authentication experience, and the risks of including it are usually low.</p></td>
+      <td><p>Client secret. This is technically confidential so you
+should avoid storing it in source code where possible. However, many APIs
+require it in order to provide a user friendly authentication experience,
+and the risks of including it are usually low. To make things a little
+safer, I recommend using <code><a href='obfuscate.html'>obfuscate()</a></code> to store an obfuscated version of
+the source.</p></td>
     </tr>
     <tr>
       <th>name</th>

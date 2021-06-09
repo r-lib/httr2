@@ -155,14 +155,20 @@ interactively.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_auth_basic</span><span class='op'>(</span><span class='st'>"hadley"</span>, <span class='st'>"my-secret-password"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>req</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>req_auth_basic</span><span class='op'>(</span><span class='st'>"hadley"</span>, <span class='st'>"SECRET"</span><span class='op'>)</span>
+<span class='va'>req</span>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> http://example.com</span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>Headers:</span></span></div><div class='output co'>#&gt; <span class='message'>• <span style='color: #00BB00;'>Authorization</span>: '&lt;REDACTED&gt;'</span></div><div class='input'><span class='va'>req</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='co'># httr2 does its best to redact the Authorization header so that you don't</span>
+<span class='co'># accidentally confidential data. If you need to see exactly what's happening</span>
+<span class='co'># you can use redact = FALSE</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>req</span>, redact <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> http://example.com</span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>Headers:</span></span></div><div class='output co'>#&gt; <span class='message'>• <span style='color: #00BB00;'>Authorization</span>: 'Basic aGFkbGV5OlNFQ1JFVA=='</span></div><div class='input'><span class='va'>req</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span>redact <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># Note that the authorization header is not encrypted and the</span>
 <span class='co'># password can easily be restored:</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rawConversion.html'>rawToChar</a></span><span class='op'>(</span><span class='fu'>jsonlite</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/jsonlite/man/base64.html'>base64_dec</a></span><span class='op'>(</span><span class='st'>"aGFkbGV5Om15LXNlY3JldC1wYXNzd29yZA=="</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "hadley:my-secret-password"</div><div class='input'><span class='co'># This means that you should be careful when sharing any code that</span>
+<span class='fu'><a href='https://rdrr.io/r/base/rawConversion.html'>rawToChar</a></span><span class='op'>(</span><span class='fu'>jsonlite</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/jsonlite/man/base64.html'>base64_dec</a></span><span class='op'>(</span><span class='st'>"aGFkbGV5IDogU0VDUkVU"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "hadley : SECRET"</div><div class='input'><span class='co'># This means that you should be careful when sharing any code that</span>
 <span class='co'># reveals the Authorization header</span>
 </div></pre>
   </div>

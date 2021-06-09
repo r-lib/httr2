@@ -153,10 +153,11 @@ different components of the http messages:</p><ul>
   <span class='va'>req</span>,
   header_out <span class='op'>=</span> <span class='cn'>TRUE</span>,
   header_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  data_out <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  data_out <span class='op'>=</span> <span class='cn'>FALSE</span>,
   data_in <span class='op'>=</span> <span class='cn'>FALSE</span>,
   info <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  ssl <span class='op'>=</span> <span class='cn'>FALSE</span>
+  ssl <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  redact_header <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -182,6 +183,12 @@ for debugging https and auth problems, so is disabled by default.</p></td>
     <tr>
       <th>ssl</th>
       <td><p>Show data even when using a secure connection?</p></td>
+    </tr>
+    <tr>
+      <th>redact_header</th>
+      <td><p>Redact confidential data in the headers? Currently
+redacts the contents of the Authorization header to prevent you from
+accidentally leaking credentials when debugging/reprexing.</p></td>
     </tr>
     </table>
 
