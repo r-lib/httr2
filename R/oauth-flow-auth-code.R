@@ -270,3 +270,15 @@ base64_url_encode <- function(x) {
   x <- gsub("/", "_", x, fixed = TRUE)
   x
 }
+
+base64_url_decode <- function(x) {
+  mod4 <- nchar(x) %% 4
+  if (mod4 > 0) {
+    x <- paste0(x, strrep("=", 4 - mod4))
+  }
+
+  x <- gsub("_", "/", x, fixed = TRUE)
+  x <- gsub("-", "+", x, fixed = TRUE)
+  # x <- gsub("=+$", "", x)
+  openssl::base64_decode(x)
+}

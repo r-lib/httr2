@@ -74,3 +74,7 @@ nonce <- function(length = 10) {
     collapse = ""
   )
 }
+
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
