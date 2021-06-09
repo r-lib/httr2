@@ -31,9 +31,6 @@
     <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/req.html</loc>
-  </url>
-  <url>
     <loc>https://httr2.r-lib.org/reference/req_auth_basic.html</loc>
   </url>
   <url>
@@ -103,6 +100,9 @@
     <loc>https://httr2.r-lib.org/reference/req_verbose.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/request.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
   </url>
   <url>
@@ -110,6 +110,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/response.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/secrets.html</loc>

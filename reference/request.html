@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Control handling of HTTP errors — req_error • httr2</title>
+<title>Create a new HTTP request — request • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="Control handling of HTTP errors — req_error" />
-<meta property="og:description" content="req_fetch() will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use req_fetch() to either override the
-defaults, or extract additional information from the response that would
-be useful to expose to the user." />
+<meta property="og:title" content="Create a new HTTP request — request" />
+<meta property="og:description" content="To perform a HTTP request, first create a request object with request(),
+then define its behaviour with req_ functions, then perform the request
+and fetch the response with req_fetch()." />
 
 
 
@@ -123,49 +122,32 @@ be useful to expose to the user." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Control handling of HTTP errors</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-error.R'><code>R/req-error.R</code></a></small>
-    <div class="hidden name"><code>req_error.Rd</code></div>
+    <h1>Create a new HTTP request</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req.R'><code>R/req.R</code></a></small>
+    <div class="hidden name"><code>request.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code><a href='req_fetch.html'>req_fetch()</a></code> will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use <code><a href='req_fetch.html'>req_fetch()</a></code> to either override the
-defaults, or extract additional information from the response that would
-be useful to expose to the user.</p>
+    <p>To perform a HTTP request, first create a request object with <code>request()</code>,
+then define its behaviour with <code>req_</code> functions, then perform the request
+and fetch the response with <code><a href='req_fetch.html'>req_fetch()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req_error</span><span class='op'>(</span><span class='va'>req</span>, is_error <span class='op'>=</span> <span class='cn'>NULL</span>, info <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>request</span><span class='op'>(</span><span class='va'>base_url</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>req</th>
-      <td><p>A <a href='request.html'>request</a>.</p></td>
-    </tr>
-    <tr>
-      <th>is_error</th>
-      <td><p>A predicate function that takes a single argument (the
-response) and returns <code>TRUE</code> or <code>FALSE</code> indicating whether or not an
-R error should signalled.</p></td>
-    </tr>
-    <tr>
-      <th>info</th>
-      <td><p>A callback function that takes a single argument (the response)
-and returns a character vector of additional information about the error.
-This vector is passed along to the <code>message</code> argument of <code><a href='https://rlang.r-lib.org/reference/abort.html'>rlang::abort()</a></code>
-so you can use any formatting that it supports.</p></td>
+      <th>base_url</th>
+      <td><p>Base URL for request.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An HTTP <a href='request.html'>request</a>.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='req_retry.html'>req_retry()</a></code> to control when errors are automatically retried.</p></div>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>request</span><span class='op'>(</span><span class='st'>"http://r-project.org"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> http://r-project.org</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

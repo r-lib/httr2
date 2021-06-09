@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Control handling of HTTP errors — req_error • httr2</title>
+<title>Create a new HTTP response — response • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="Control handling of HTTP errors — req_error" />
-<meta property="og:description" content="req_fetch() will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use req_fetch() to either override the
-defaults, or extract additional information from the response that would
-be useful to expose to the user." />
+<meta property="og:title" content="Create a new HTTP response — response" />
+<meta property="og:description" content="Generally, you should not need to call this function directly; you'll
+get a real HTTP response by calling req_fetch() and friends. This
+function is provided primarily for testing, and a place to describe
+the key components of a response." />
 
 
 
@@ -123,48 +123,52 @@ be useful to expose to the user." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Control handling of HTTP errors</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-error.R'><code>R/req-error.R</code></a></small>
-    <div class="hidden name"><code>req_error.Rd</code></div>
+    <h1>Create a new HTTP response</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp.R'><code>R/resp.R</code></a></small>
+    <div class="hidden name"><code>response.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code><a href='req_fetch.html'>req_fetch()</a></code> will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use <code><a href='req_fetch.html'>req_fetch()</a></code> to either override the
-defaults, or extract additional information from the response that would
-be useful to expose to the user.</p>
+    <p>Generally, you should not need to call this function directly; you'll
+get a real HTTP response by calling <code><a href='req_fetch.html'>req_fetch()</a></code> and friends. This
+function is provided primarily for testing, and a place to describe
+the key components of a response.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req_error</span><span class='op'>(</span><span class='va'>req</span>, is_error <span class='op'>=</span> <span class='cn'>NULL</span>, info <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>response</span><span class='op'>(</span>
+  status_code <span class='op'>=</span> <span class='fl'>200</span>,
+  url <span class='op'>=</span> <span class='st'>"http://example.com"</span>,
+  method <span class='op'>=</span> <span class='st'>"GET"</span>,
+  headers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  body <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>req</th>
-      <td><p>A <a href='request.html'>request</a>.</p></td>
+      <th>status_code</th>
+      <td><p>HTTP status code. Must be a single integer.</p></td>
     </tr>
     <tr>
-      <th>is_error</th>
-      <td><p>A predicate function that takes a single argument (the
-response) and returns <code>TRUE</code> or <code>FALSE</code> indicating whether or not an
-R error should signalled.</p></td>
+      <th>url</th>
+      <td><p>URL response came from; might not be the same as the URL in
+the request if there were any redirects.</p></td>
     </tr>
     <tr>
-      <th>info</th>
-      <td><p>A callback function that takes a single argument (the response)
-and returns a character vector of additional information about the error.
-This vector is passed along to the <code>message</code> argument of <code><a href='https://rlang.r-lib.org/reference/abort.html'>rlang::abort()</a></code>
-so you can use any formatting that it supports.</p></td>
+      <th>method</th>
+      <td><p>HTTP method used to retrieve the response.</p></td>
+    </tr>
+    <tr>
+      <th>headers</th>
+      <td><p>A list of HTTP headers.</p></td>
+    </tr>
+    <tr>
+      <th>body</th>
+      <td><p>Response, if any, contained in the response body.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>An HTTP <a href='request.html'>request</a>.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='req_retry.html'>req_retry()</a></code> to control when errors are automatically retried.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
