@@ -72,3 +72,28 @@ unix_time <- function() as.integer(Sys.time())
 is_testing <- function() {
   identical(Sys.getenv("TESTTHAT"), "true")
 }
+
+# https://datatracker.ietf.org/doc/html/rfc7636#appendix-A
+base64_url_encode <- function(x) {
+  x <- openssl::base64_encode(x)
+  x <- gsub("=+$", "", x)
+  x <- gsub("+", "-", x, fixed = TRUE)
+  x <- gsub("/", "_", x, fixed = TRUE)
+  x
+}
+
+base64_url_decode <- function(x) {
+  mod4 <- nchar(x) %% 4
+  if (mod4 > 0) {
+    x <- paste0(x, strrep("=", 4 - mod4))
+  }
+
+  x <- gsub("_", "/", x, fixed = TRUE)
+  x <- gsub("-", "+", x, fixed = TRUE)
+  # x <- gsub("=+$", "", x)
+  openssl::base64_decode(x)
+}
+
+base64_url_rand <- function(bytes = 32) {
+  base64_url_encode(openssl::rand_bytes(bytes))
+}
