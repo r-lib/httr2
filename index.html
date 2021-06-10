@@ -86,15 +86,11 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>httr2 is a ground-up rewrite of httr with two main goals:</p>
-<ul>
-<li><p>Create a pipeable API that makes the request object explicit.</p></li>
-<li><p>Solve problems that were out of scope for httr but make writing API wrappers a pain (e.g. rate-limiting, retries, non-standard oauth, …)</p></li>
-</ul>
+<p>httr2 is a ground-up rewrite of <a href="https://httr.r-lib.org">httr</a> that provides a pipeable API (with an explicit request object) and solves more problems that making API wrappers a pain (e.g. rate-limiting, retries, OAuth, storing secrets needed for testing, …).</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install development version of httr2 from <a href="https://github.com/">GitHub</a> with:</p>
+<p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-lib/httr2"</span><span class="op">)</span></code></pre></div>
@@ -104,9 +100,12 @@
 <a href="#usage" class="anchor"></a>Usage</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></code></pre></div>
-<p>You begin by creating a request object:</p>
+<p>To use httr2, start by creating a request:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://r-project.org"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://r-project.org"</span><span class="op">)</span>
+<span class="va">req</span>
+<span class="co">#&gt; &lt;httr2_request&gt;</span>
+<span class="co">#&gt; GET https://r-project.org</span></code></pre></div>
 <p>You can tailor this request with the <code>req_</code> family of functions:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Add custom headers</span>
@@ -147,7 +146,7 @@
 <span class="co">#&gt; -&gt; Accept: */*</span>
 <span class="co">#&gt; -&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; -&gt;</span></code></pre></div>
-<p>And perform it getting back a response with <code><a href="reference/req_fetch.html">req_fetch()</a></code>:</p>
+<p>And perform the request, getting back a response, with <code><a href="reference/req_fetch.html">req_fetch()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span>
 <span class="va">resp</span>
@@ -156,7 +155,7 @@
 <span class="co">#&gt; Status: 200 OK</span>
 <span class="co">#&gt; Content-Type: text/html</span>
 <span class="co">#&gt; Body: In memory (6089 bytes)</span></code></pre></div>
-<p>The <code>resp_</code> functions then allow you to extract various pieces of data from the response:</p>
+<p>The <code>resp_</code> functions make it easy to work with the response:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_headers.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "text/html"</span>
@@ -172,10 +171,10 @@
 <h2 class="hasAnchor">
 <a href="#major-differences-to-httr" class="anchor"></a>Major differences to httr</h2>
 <ul>
-<li><p>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors), or to extract additional information about the error from the body of the response.</p></li>
-<li><p>It’s easy to automatically retry if the request fails or encounters a transient HTTP error (e.g. a 429 rate limit request). Use <code><a href="reference/req_retry.html">req_retry()</a></code> to define maximum number of retries, and override the defaults that determine which errors are transient, and how long to wait before retrying.</p></li>
-<li><p>OAuth support has been totally overhauled to directly support many more flows, and to make it much easier to both customise the built-in flows or to create your own.</p></li>
-<li><p><code><a href="reference/secrets.html">secret_encrypt()</a></code> and friends make it easier to manage encrypted secrets that you often need for testing. <code><a href="reference/obfuscate.html">obfuscate()</a></code> helps to obfuscate mildly confidential data (like many client secrets) preventing them being scraped from published code.</p></li>
+<li><p>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors) or to add additional details to the error message.</p></li>
+<li><p>You can automatically retry if the request fails or encounters a transient HTTP error (e.g. a 429 rate limit request). <code><a href="reference/req_retry.html">req_retry()</a></code> defines the maximum number of retries, which errors are transient, and how long to wait between tries.</p></li>
+<li><p>OAuth support has been totally overhauled to directly support many more flows and to make it much easier to both customise the built-in flows and create your own.</p></li>
+<li><p>You can manage encrypted secrets often needed for testing with <code>secret_encrpyt()</code> and friends. You can obfuscate mildly confidential data (like many client secrets) with <code><a href="reference/obfuscate.html">obfuscate()</a></code>, preventing them being scraped from published code.</p></li>
 </ul>
 </div>
 <div id="acknowledgements" class="section level2">
