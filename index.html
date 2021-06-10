@@ -85,29 +85,98 @@
 <a href="#httr2" class="anchor"></a>httr2</h1></div>
 <!-- badges: start -->
 
-<p>httr2 is a ground up rewrite of httr with two main goals:</p>
+<!-- badges: end -->
+<p>httr2 is a ground-up rewrite of httr with two main goals:</p>
 <ul>
 <li><p>Create a pipeable API that makes the request object explicit.</p></li>
 <li><p>Solve problems that were out of scope for httr but make writing API wrappers a pain (e.g. rate-limiting, retries, non-standard oauth, …)</p></li>
 </ul>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install development version of httr2 from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-lib/httr2"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></code></pre></div>
+<p>You begin by creating a request object:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://r-project.org"</span><span class="op">)</span></code></pre></div>
+<p>You can tailor this request with the <code>req_</code> family of functions:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Add custom headers</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_headers.html">req_headers</a></span><span class="op">(</span><span class="st">"Accept"</span> <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span>
+<span class="co">#&gt; &lt;httr2_request&gt;</span>
+<span class="co">#&gt; GET https://r-project.org</span>
+<span class="co">#&gt; Headers:</span>
+<span class="co">#&gt; • Accept: 'application/json'</span>
+
+<span class="co"># Add a body, turning it into a POST</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_body_none.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; &lt;httr2_request&gt;</span>
+<span class="co">#&gt; POST https://r-project.org</span>
+<span class="co">#&gt; Headers:</span>
+<span class="co">#&gt; • Content-Type: 'application/json'</span>
+<span class="co">#&gt; Options:</span>
+<span class="co">#&gt; • post: TRUE</span>
+<span class="co">#&gt; • postfieldsize: 13</span>
+<span class="co">#&gt; • postfields: a raw vector</span>
+
+<span class="co"># Automatically retry if the request fails</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_retry.html">req_retry</a></span><span class="op">(</span>max_tries <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="co">#&gt; &lt;httr2_request&gt;</span>
+<span class="co">#&gt; GET https://r-project.org</span>
+<span class="co">#&gt; Policies:</span>
+<span class="co">#&gt; • retry_max_tries: 5</span>
+
+<span class="co"># Change the HTTP method</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
+<span class="co">#&gt; &lt;httr2_request&gt;</span>
+<span class="co">#&gt; PATCH https://r-project.org</span></code></pre></div>
+<p>You can see what httr2 will send to the server with <code><a href="reference/req_dry_run.html">req_dry_run()</a></code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; -&gt; GET / HTTP/1.1</span>
+<span class="co">#&gt; -&gt; Host: r-project.org</span>
+<span class="co">#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class="co">#&gt; -&gt; Accept: */*</span>
+<span class="co">#&gt; -&gt; Accept-Encoding: deflate, gzip</span>
+<span class="co">#&gt; -&gt;</span></code></pre></div>
+<p>And perform it getting back a response with <code><a href="reference/req_fetch.html">req_fetch()</a></code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span>
+<span class="va">resp</span>
+<span class="co">#&gt; &lt;httr2_response&gt;</span>
+<span class="co">#&gt; GET https://www.r-project.org/</span>
+<span class="co">#&gt; Status: 200 OK</span>
+<span class="co">#&gt; Content-Type: text/html</span>
+<span class="co">#&gt; Body: In memory (6089 bytes)</span></code></pre></div>
+<p>The <code>resp_</code> functions then allow you to extract various pieces of data from the response:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_headers.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; [1] "text/html"</span>
+<span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; [1] "OK"</span>
+<span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_body_raw.html">resp_body_html</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; {html_document}</span>
+<span class="co">#&gt; &lt;html lang="en"&gt;</span>
+<span class="co">#&gt; [1] &lt;head&gt;\n&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8 ...</span>
+<span class="co">#&gt; [2] &lt;body&gt;\n    &lt;div class="container page"&gt;\n      &lt;div class="row"&gt;\n       ...</span></code></pre></div>
+</div>
 <div id="major-differences-to-httr" class="section level2">
 <h2 class="hasAnchor">
 <a href="#major-differences-to-httr" class="anchor"></a>Major differences to httr</h2>
 <ul>
 <li><p>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors), or to extract additional information about the error from the body of the response.</p></li>
 <li><p>It’s easy to automatically retry if the request fails or encounters a transient HTTP error (e.g. a 429 rate limit request). Use <code><a href="reference/req_retry.html">req_retry()</a></code> to define maximum number of retries, and override the defaults that determine which errors are transient, and how long to wait before retrying.</p></li>
+<li><p>OAuth support has been totally overhauled to directly support many more flows, and to make it much easier to both customise the built-in flows or to create your own.</p></li>
+<li><p><code><a href="reference/secrets.html">secret_encrypt()</a></code> and friends make it easier to manage encrypted secrets that you often need for testing. <code><a href="reference/obfuscate.html">obfuscate()</a></code> helps to obfuscate mildly confidential data (like many client secrets) preventing them being scraped from published code.</p></li>
 </ul>
-</div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of httr2 from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"httr2"</span><span class="op">)</span></code></pre></div>
-<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-lib/httr2"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="acknowledgements" class="section level2">
 <h2 class="hasAnchor">
