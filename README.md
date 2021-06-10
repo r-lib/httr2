@@ -11,16 +11,14 @@ coverage](https://codecov.io/gh/r-lib/httr2/branch/master/graph/badge.svg)](http
 
 <!-- badges: end -->
 
-httr2 is a ground-up rewrite of httr with two main goals:
-
--   Create a pipeable API that makes the request object explicit.
-
--   Solve problems that were out of scope for httr but make writing API
-    wrappers a pain (e.g. rate-limiting, retries, non-standard oauth, …)
+httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that
+provides a pipeable API (with an explicit request object) and solves
+more problems that making API wrappers a pain (e.g. rate-limiting,
+retries, OAuth, storing secrets needed for testing, …).
 
 ## Installation
 
-You can install development version of httr2 from
+You can install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -34,10 +32,13 @@ devtools::install_github("r-lib/httr2")
 library(httr2)
 ```
 
-You begin by creating a request object:
+To use httr2, start by creating a request:
 
 ``` r
 req <- request("https://r-project.org")
+req
+#> <httr2_request>
+#> GET https://r-project.org
 ```
 
 You can tailor this request with the `req_` family of functions:
@@ -86,7 +87,7 @@ req %>% req_dry_run(quiet = FALSE)
 #> ->
 ```
 
-And perform it getting back a response with `req_fetch()`:
+And perform the request, getting back a response, with `req_fetch()`:
 
 ``` r
 resp <- req_fetch(req)
@@ -98,8 +99,7 @@ resp
 #> Body: In memory (6089 bytes)
 ```
 
-The `resp_` functions then allow you to extract various pieces of data
-from the response:
+The `resp_` functions make it easy to work with the response:
 
 ``` r
 resp %>% resp_content_type()
@@ -117,22 +117,21 @@ resp %>% resp_body_html()
 
 -   HTTP errors are automatically converted into R errors. Use
     `req_error()` to override the defaults (which turn all 4xx and 5xx
-    responses into errors), or to extract additional information about
-    the error from the body of the response.
+    responses into errors) or to add additional details to the error
+    message.
 
--   It’s easy to automatically retry if the request fails or encounters
-    a transient HTTP error (e.g. a 429 rate limit request). Use
-    `req_retry()` to define maximum number of retries, and override the
-    defaults that determine which errors are transient, and how long to
-    wait before retrying.
+-   You can automatically retry if the request fails or encounters a
+    transient HTTP error (e.g. a 429 rate limit request). `req_retry()`
+    defines the maximum number of retries, which errors are transient,
+    and how long to wait between tries.
 
 -   OAuth support has been totally overhauled to directly support many
-    more flows, and to make it much easier to both customise the
-    built-in flows or to create your own.
+    more flows and to make it much easier to both customise the built-in
+    flows and create your own.
 
--   `secret_encrypt()` and friends make it easier to manage encrypted
-    secrets that you often need for testing. `obfuscate()` helps to
-    obfuscate mildly confidential data (like many client secrets)
+-   You can manage encrypted secrets often needed for testing with
+    `secret_encrpyt()` and friends. You can obfuscate mildly
+    confidential data (like many client secrets) with `obfuscate()`,
     preventing them being scraped from published code.
 
 ## Acknowledgements
