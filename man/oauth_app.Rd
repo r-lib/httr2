@@ -8,7 +8,7 @@
 oauth_app(
   client,
   endpoints,
-  auth = c("body", "header", "jwt_rs256"),
+  auth = c("body", "header", "jwt_sig"),
   auth_params = list()
 )
 
@@ -28,8 +28,9 @@ the contents of \code{auth_params}.
 
 The most common mechanism in the wild is \code{"body"} where the \code{client_id} and
 (optionally) \code{client_secret} are added to the body. \code{"header"} sends in
-\code{client_id} and \code{client_secret} in HTTP Authorization header. \code{"jwt_s256"}
-generate a JWT claim set signed with RS256.
+\code{client_id} and \code{client_secret} in HTTP Authorization header. \code{"jwt_sig"}
+will generate a JWT, and include it in a \code{client_assertion} field in the
+body.
 
 See \code{\link[=oauth_client_req_auth]{oauth_client_req_auth()}} for more details.}
 

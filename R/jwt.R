@@ -1,10 +1,10 @@
-#' Create and sign a JWT
+#' Create and encode a JWT
 #'
-#' `jwt_claim_set()` creates a JWT claim set as defined by
-#' [rfc7519](https://datatracker.ietf.org/doc/html/rfc7519).
-#' `jwt_sign_rs256()` signs a claim set with the RS256 algorithm (used by both
-#' Google and Azure), producing a JWT. These functions are used by
-#' [req_oauth_jwt()] and [oauth_client_req_auth_jwt_rs256()].
+#' `jwt_claim()` is a wrapper around [jose::jwt_claim()] that creates a JWT
+#' claim set with a few extra default values. `jwt_encode_sig()` and
+#' `jwt_encode_hmac()` are thin wrappers around [jose::jwt_encode_sig()] and
+#' [jose::jwt_encode_hmac()] that exist primarily to make specification
+#' in other functions a little simpler.
 #'
 #' @param iss Issuer claim. Identifies the principal that issued the JWT.
 #' @param sub Subject claim. Identifies the principal that is the subject of
@@ -22,7 +22,7 @@
 #'   If omitted, uses a random 32-byte sequence encoded with base64url.
 #' @param ... Any additional claims to include in the claim set.
 #' @export
-jwt_claim_set <- function(iss = NULL,
+jwt_claim <- function(iss = NULL,
                           sub = NULL,
                           aud = NULL,
                           exp = unix_time() + 5L * 60L,
@@ -30,7 +30,8 @@ jwt_claim_set <- function(iss = NULL,
                           iat = unix_time(),
                           jti = NULL,
                           ...) {
-  compact(list2(
+  # https://datatracker.ietf.org/doc/html/rfc7519
+  jose::jwt_claim(
     iss = iss,
     sub = sub,
     aud = aud,
@@ -39,36 +40,27 @@ jwt_claim_set <- function(iss = NULL,
     nbf = nbf,
     jti = jti %||% base64_url_rand(32),
     ...
-  ))
+  )
 }
 
 #' @export
-#' @rdname jwt_claim_set
-#' @param claim_set Claim set produced by `jwt_claim_set()`
-#' @param private_key Private key either specficied as a path to a file,
+#' @rdname jwt_claim
+#' @param claim Claim set produced by `jwt_claim()`
+#' @param key RSA or EC private key either specified as a path to a file,
 #'   a connection, or a string (PEM/SSH format), or a raw vector (DER format).
-#' @param extra_headers Any additional fields to include in the JWT header.
-jwt_sign_rs256 <- function(claim_set, private_key, extra_headers = list()) {
-  check_installed("jsonlite")
-  key <- openssl::read_key(private_key)
-
-  header <- list2(
-    typ = "JWT",
-    alg = "RS256",
-    # https://datatracker.ietf.org/doc/html/rfc7515#section-4.1.7
-    x5t = base64_url_encode(openssl::sha1(key)),
-    !!!extra_headers
-  )
-
-  header_json <- jwt_base64(header)
-  claim_set_json <- jwt_base64(claim_set)
-
-  body <- paste0(header_json, ".", claim_set_json)
-  sig <- openssl::signature_create(charToRaw(body), openssl::sha256, key)
-
-  paste0(body, ".", base64_url_encode(sig))
+#' @param size Size, in bits, of sha2 signature, i.e. 256, 384 or 512.
+#'   Only for HMAC/RSA, not applicable for ECDSA keys.
+#' @param header A named list giving additional fields to include in the
+#'   JWT header.
+jwt_encode_sig <- function(claim, key, size = 256, header = list()) {
+  check_installed("jose")
+  jose::jwt_encode_sig(claim, key, size = size, header = header)
 }
 
-jwt_base64 <- function(x) {
-  base64_url_encode(jsonlite::toJSON(x, auto_unbox = TRUE))
+#' @export
+#' @rdname jwt_claim
+#' @param secret String or raw vector with a secret passphrase.
+jwt_encode_hmac <- function(claim, secret, size = size, header = list()) {
+  check_installed("jose")
+  jose::jwt_encode_sig(claim, secret, size = size, header = header)
 }

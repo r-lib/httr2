@@ -4,7 +4,7 @@
 \alias{oauth_client_req_auth}
 \alias{oauth_client_req_auth_header}
 \alias{oauth_client_req_auth_body}
-\alias{oauth_client_req_auth_jwt_rs256}
+\alias{oauth_client_req_auth_jwt_sig}
 \title{OAuth client authentication}
 \usage{
 oauth_client_req_auth(req, app)
@@ -13,7 +13,14 @@ oauth_client_req_auth_header(req, client)
 
 oauth_client_req_auth_body(req, client)
 
-oauth_client_req_auth_jwt_rs256(req, client, claims, key)
+oauth_client_req_auth_jwt_sig(
+  req,
+  client,
+  claims,
+  key,
+  size = 256,
+  header = list()
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -22,9 +29,16 @@ oauth_client_req_auth_jwt_rs256(req, client, claims, key)
 
 \item{client}{An \link{oauth_client}.}
 
-\item{claims}{A list of claims passed to \link{jwt_claim_set}.}
+\item{claims}{A list of claims passed to \code{\link[=jwt_claim]{jwt_claim()}}.}
 
-\item{key}{Path to private key file used to sign the JWT.}
+\item{key}{RSA or EC private key either specified as a path to a file,
+a connection, or a string (PEM/SSH format), or a raw vector (DER format).}
+
+\item{size}{Size, in bits, of sha2 signature, i.e. 256, 384 or 512.
+Only for HMAC/RSA, not applicable for ECDSA keys.}
+
+\item{header}{A named list giving additional fields to include in the
+JWT header.}
 }
 \description{
 \code{oauth_client_req_auth()} authenticates a request using the authentication

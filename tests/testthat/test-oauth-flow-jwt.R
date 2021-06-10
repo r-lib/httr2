@@ -18,12 +18,12 @@ test_that("can generate token and use it automatically", {
   )
 
   # Can generate token
-  token <- oauth_flow_jwt(app, claims, "jwt_sign_rs256", list(private_key = secrets$private_key))
+  token <- oauth_flow_jwt(app, claims, "jwt_encode_sig", list(key = secrets$private_key))
   expect_s3_class(token, "httr2_token")
 
   # Can use it in request
   resp <- request("https://openidconnect.googleapis.com/v1/userinfo") %>%
-    req_oauth_jwt(app, claims, "jwt_sign_rs256", list(private_key = secrets$private_key)) %>%
+    req_oauth_jwt(app, claims, "jwt_encode_sig", list(key = secrets$private_key)) %>%
     req_fetch() %>%
     resp_body_json()
 

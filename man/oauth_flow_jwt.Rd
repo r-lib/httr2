@@ -7,7 +7,7 @@
 oauth_flow_jwt(
   app,
   claims,
-  signature,
+  signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
   token_params = list()
@@ -18,13 +18,14 @@ oauth_flow_jwt(
 
 \item{claims}{A list of claims. If all elements of the claim set are static
 apart from \code{iat}, \code{nbf}, \code{exp}, or \code{jti}, provide a list and
-\code{\link[=jwt_claim_set]{jwt_claim_set()}} will automatically fill in the dynamic components.
+\code{\link[=jwt_claim]{jwt_claim()}} will automatically fill in the dynamic components.
 If other components need to vary, you can instead provide a zero-argument
-callback function which should call \code{jwt_claim_set()}.}
+callback function which should call \code{jwt_claim()}.}
 
-\item{signature}{Function use to sign \code{claim_set}, e.g. \code{\link[=jwt_sign_rs256]{jwt_sign_rs256()}}.}
+\item{signature}{Function use to sign \code{claim_set}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
 
-\item{signature_params}{Additional arguments passed to \code{signature}}
+\item{signature_params}{Additional arguments passed to \code{signature}, e.g.
+\code{key}, \code{size}, \code{header}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

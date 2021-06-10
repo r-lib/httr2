@@ -17,8 +17,9 @@
 #'
 #'   The most common mechanism in the wild is `"body"` where the `client_id` and
 #'   (optionally) `client_secret` are added to the body. `"header"` sends in
-#'   `client_id` and `client_secret` in HTTP Authorization header. `"jwt_s256"`
-#'   generate a JWT claim set signed with RS256.
+#'   `client_id` and `client_secret` in HTTP Authorization header. `"jwt_sig"`
+#'   will generate a JWT, and include it in a `client_assertion` field in the
+#'   body.
 #'
 #'   See [oauth_client_req_auth()] for more details.
 #' @param auth_params Additional parameters passed to the function specified
@@ -26,7 +27,7 @@
 #' @export
 oauth_app <- function(client,
                       endpoints,
-                      auth = c("body", "header", "jwt_rs256"),
+                      auth = c("body", "header", "jwt_sig"),
                       auth_params = list()
                       ) {
   if (!inherits(client, "httr2_oauth_client")) {
@@ -150,13 +151,13 @@ oauth_client_req_auth_body <- function(req, client) {
   req_body_form_append(req, params)
 }
 
-#' @param claims A list of claims passed to [jwt_claim_set].
-#' @param key Path to private key file used to sign the JWT.
+#' @param claims A list of claims passed to [jwt_claim()].
+#' @inheritParams jwt_claim
 #' @export
 #' @rdname oauth_client_req_auth
-oauth_client_req_auth_jwt_rs256 <- function(req, client, claims, key) {
-  claim_set <- jwt_claim_set(!!!claims)
-  jwt <- jwt_sign_rs256(claim_set, key)
+oauth_client_req_auth_jwt_sig <- function(req, client, claims, key, size = 256, header = list()) {
+  claims <- jwt_claim(!!!claims)
+  jwt <- jwt_encode_sig(claims, key = key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
   params <- list(

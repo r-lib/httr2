@@ -41,27 +41,29 @@ req_oauth_jwt <- function(req, app,
 #' @family OAuth flows
 #' @param claims A list of claims. If all elements of the claim set are static
 #'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
-#'   [jwt_claim_set()] will automatically fill in the dynamic components.
+#'   [jwt_claim()] will automatically fill in the dynamic components.
 #'   If other components need to vary, you can instead provide a zero-argument
-#'   callback function which should call `jwt_claim_set()`.
-#' @param signature Function use to sign `claim_set`, e.g. [jwt_sign_rs256()].
-#' @param signature_params Additional arguments passed to `signature`
+#'   callback function which should call `jwt_claim()`.
+#' @param signature Function use to sign `claim_set`, e.g. [jwt_encode_sig()].
+#' @param signature_params Additional arguments passed to `signature`, e.g.
+#'   `key`, `size`, `header`.
 oauth_flow_jwt <- function(app,
                            claims,
-                           signature,
+                           signature = "jwt_encode_sig",
                            signature_params = list(),
                            scope = NULL,
                            token_params = list()) {
+  check_installed("jose")
 
   if (is_list(claims)) {
-    claims_set <- exec("jwt_claim_set", !!!claims)
+    claims <- exec("jwt_claim", !!!claims)
   } else if (is.function(claims)) {
-    claims_set <- claims()
+    claims <- claims()
   } else {
     abort("`claims` must be result a list or function")
   }
 
-  jwt <- exec(signature, claims_set, !!!signature_params)
+  jwt <- exec(signature, claims, !!!signature_params)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1
   oauth_flow_access_token(app,
