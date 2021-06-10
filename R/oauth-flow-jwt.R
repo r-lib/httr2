@@ -9,7 +9,7 @@
 #' @inheritParams req_fetch
 #' @inheritParams oauth_flow_jwt
 req_oauth_jwt <- function(req, app,
-                          claims_set,
+                          claims,
                           signature,
                           signature_params = list(),
                           scope = NULL,
@@ -18,7 +18,7 @@ req_oauth_jwt <- function(req, app,
 
   params <- list(
     app = app,
-    claims_set = claims_set,
+    claims = claims,
     signature = signature,
     signature_params = signature_params,
     scope = scope,
@@ -26,7 +26,7 @@ req_oauth_jwt <- function(req, app,
   )
 
   cache <- cache_mem(app, NULL)
-  req_oauth(req, "req_oauth_jwt", params, cache = cache)
+  req_oauth(req, "oauth_flow_jwt", params, cache = cache)
 }
 
 #' OAuth flow: JWT
@@ -39,15 +39,28 @@ req_oauth_jwt <- function(req, app,
 #' @inheritParams oauth_flow_auth_code
 #' @export
 #' @family OAuth flows
-#' @param claims_set JWT claim set produced [jwt_claim_set()].
+#' @param claims A list of claims. If all elements of the claim set are static
+#'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
+#'   [jwt_claim_set()] will automatically fill in the dynamic components.
+#'   If other components need to vary, you can instead provide a zero-argument
+#'   callback function which should call `jwt_claim_set()`.
 #' @param signature Function use to sign `claim_set`, e.g. [jwt_sign_rs256()].
 #' @param signature_params Additional arguments passed to `signature`
 oauth_flow_jwt <- function(app,
-                           claims_set,
+                           claims,
                            signature,
                            signature_params = list(),
                            scope = NULL,
                            token_params = list()) {
+
+  if (is_list(claims)) {
+    claims_set <- exec("jwt_claim_set", !!!claims)
+  } else if (is.function(claims)) {
+    claims_set <- claims()
+  } else {
+    abort("`claims` must be result a list or function")
+  }
+
   jwt <- exec(signature, claims_set, !!!signature_params)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1

@@ -48,7 +48,7 @@ jwt_claim_set <- function(iss = NULL,
 #' @param private_key Private key either specficied as a path to a file,
 #'   a connection, or a string (PEM/SSH format), or a raw vector (DER format).
 #' @param extra_headers Any additional fields to include in the JWT header.
-jwt_sign_rs256 <- function(claim_set, private_key, extra_headers) {
+jwt_sign_rs256 <- function(claim_set, private_key, extra_headers = list()) {
   check_installed("jsonlite")
   key <- openssl::read_key(private_key)
 
@@ -61,7 +61,7 @@ jwt_sign_rs256 <- function(claim_set, private_key, extra_headers) {
   )
 
   header_json <- jwt_base64(header)
-  claim_set_json <- jwt_base64(claim_set_json)
+  claim_set_json <- jwt_base64(claim_set)
 
   body <- paste0(header_json, ".", claim_set_json)
   sig <- openssl::signature_create(charToRaw(body), openssl::sha256, key)

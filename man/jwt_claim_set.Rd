@@ -16,7 +16,7 @@ jwt_claim_set(
   ...
 )
 
-jwt_sign_rs256(claim_set, private_key, extra_headers)
+jwt_sign_rs256(claim_set, private_key, extra_headers = list())
 }
 \arguments{
 \item{iss}{Issuer claim. Identifies the principal that issued the JWT.}

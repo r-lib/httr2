@@ -6,7 +6,7 @@
 \usage{
 oauth_flow_jwt(
   app,
-  claims_set,
+  claims,
   signature,
   signature_params = list(),
   scope = NULL,
@@ -16,8 +16,6 @@ oauth_flow_jwt(
 \arguments{
 \item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
 
-\item{claims_set}{JWT claim set produced \code{\link[=jwt_claim_set]{jwt_claim_set()}}.}
-
 \item{signature}{Function use to sign \code{claim_set}, e.g. \code{\link[=jwt_sign_rs256]{jwt_sign_rs256()}}.}
 
 \item{signature_params}{Additional arguments passed to \code{signature}}
@@ -25,6 +23,10 @@ oauth_flow_jwt(
 \item{scope}{Scopes to be requested from the resource owner.}
 
 \item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+
+\item{claims_set}{Either the output from of \code{\link[=jwt_claim_set]{jwt_claim_set()}},
+a list (which is passed to \code{jwt_claim_set()}) or a function (which
+should call \code{jwt_claim_set()}).}
 }
 \description{
 This function implements the OAuth client credentials flow, as defined

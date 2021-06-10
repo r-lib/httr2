@@ -55,7 +55,7 @@ NULL
 secret_get_key <- function(envvar) {
   key <- Sys.getenv(envvar)
 
-  if (identical(key, NA)) {
+  if (identical(key, "")) {
     msg <- glue("Can't find envvar {envvar}")
     if (is_testing()) {
       testthat::skip(msg)

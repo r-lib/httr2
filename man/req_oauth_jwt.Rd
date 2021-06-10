@@ -7,7 +7,7 @@
 req_oauth_jwt(
   req,
   app,
-  claims_set,
+  claims,
   signature,
   signature_params = list(),
   scope = NULL,
@@ -18,8 +18,6 @@ req_oauth_jwt(
 \item{req}{A \link{request}.}
 
 \item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
-
-\item{claims_set}{JWT claim set produced \code{\link[=jwt_claim_set]{jwt_claim_set()}}.}
 
 \item{signature}{Function use to sign \code{claim_set}, e.g. \code{\link[=jwt_sign_rs256]{jwt_sign_rs256()}}.}
 
