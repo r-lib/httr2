@@ -260,6 +260,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="req_oauth_jwt.html">req_oauth_jwt()</a></code> </p>
+        </td>
+        <td><p>OAuth authentication with a JWT</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="req_oauth_password.html">req_oauth_password()</a></code> </p>
         </td>
         <td><p>OAuth authentication with username and password</p></td>
@@ -353,7 +359,7 @@
       <tr>
         
         <td>
-          <p><code><a href="secrets.html">secret_get_key()</a></code> <code><a href="secrets.html">secret_make_key()</a></code> <code><a href="secrets.html">secret_encrypt()</a></code> <code><a href="secrets.html">secret_decrypt()</a></code> <code><a href="secrets.html">secret_read_rds()</a></code> <code><a href="secrets.html">secret_write_rds()</a></code> </p>
+          <p><code><a href="secrets.html">secret_make_key()</a></code> <code><a href="secrets.html">secret_encrypt()</a></code> <code><a href="secrets.html">secret_decrypt()</a></code> <code><a href="secrets.html">secret_read_rds()</a></code> <code><a href="secrets.html">secret_write_rds()</a></code> </p>
         </td>
         <td><p>Secret management</p></td>
       </tr><tr>
@@ -367,7 +373,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-oauth-flows" class="hasAnchor"><a href="#section-oauth-flows" class="anchor"></a>OAuth flows</h2>
-          <p class="section-desc"><p>These functions implement various OAuth flows, returning an access token. Generally, you should not need to call them directly, instead using the <code>req_oauth_*</code> helpers</p></p>
+          <p class="section-desc"><p>These functions implement the low-level components of OAuth.</p></p>
         </th>
       </tr>
       
@@ -381,6 +387,12 @@
           <p><code><a href="oauth_app.html">oauth_app()</a></code> <code><a href="oauth_app.html">oauth_client()</a></code> </p>
         </td>
         <td><p>Create an OAuth app</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="oauth_client_req_auth.html">oauth_client_req_auth()</a></code> <code><a href="oauth_client_req_auth.html">oauth_client_req_auth_header()</a></code> <code><a href="oauth_client_req_auth.html">oauth_client_req_auth_body()</a></code> <code><a href="oauth_client_req_auth.html">oauth_client_req_auth_jwt_rs256()</a></code> </p>
+        </td>
+        <td><p>OAuth client authentication</p></td>
       </tr><tr>
         
         <td>
@@ -402,6 +414,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="oauth_flow_jwt.html">oauth_flow_jwt()</a></code> </p>
+        </td>
+        <td><p>OAuth flow: JWT</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="oauth_flow_password.html">oauth_flow_password()</a></code> </p>
         </td>
         <td><p>OAuth flow: user password</p></td>
@@ -417,6 +435,12 @@
           <p><code><a href="oauth_token.html">oauth_token()</a></code> </p>
         </td>
         <td><p>Create an OAuth token</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="jwt_claim_set.html">jwt_claim_set()</a></code> <code><a href="jwt_claim_set.html">jwt_sign_rs256()</a></code> </p>
+        </td>
+        <td><p>Create and sign a JWT</p></td>
       </tr>
     </tbody>
     </table>

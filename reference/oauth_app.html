@@ -137,7 +137,12 @@ a <code>client_secret</code>. You'll get these values when you create the client
 the API's website.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_app</span><span class='op'>(</span><span class='va'>client</span>, <span class='va'>endpoints</span>, auth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"body"</span>, <span class='st'>"header"</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>oauth_app</span><span class='op'>(</span>
+  <span class='va'>client</span>,
+  <span class='va'>endpoints</span>,
+  auth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"body"</span>, <span class='st'>"header"</span>, <span class='st'>"jwt_rs256"</span><span class='op'>)</span>,
+  auth_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span>
 
 <span class='fu'>oauth_client</span><span class='op'>(</span><span class='va'>client_id</span>, client_secret <span class='op'>=</span> <span class='cn'>NULL</span>, name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
@@ -156,11 +161,20 @@ endpoint that returns an access token.</p></td>
     </tr>
     <tr>
       <th>auth</th>
-      <td><p>Authentication mechanism used by the API to authenticate
-confidential requests made during the flow. This is most commonly
-<code>"body"</code> where the <code>client_id</code> and <code>client_secret</code> are added to the body
-of the request, but can also be <code>"header"</code> where the <code>client_id</code>
-and <code>client_secret</code> are sent using the HTTP Authorization header.</p></td>
+      <td><p>Authentication mechanism used by the client to prove itself to
+the API. Can be one of three built-in methods ("body", "header", or "jwt"),
+or a function that will be called with arguments <code>req</code>, <code>client</code>, and
+the contents of <code>auth_params</code>.</p>
+<p>The most common mechanism in the wild is <code>"body"</code> where the <code>client_id</code> and
+(optionally) <code>client_secret</code> are added to the body. <code>"header"</code> sends in
+<code>client_id</code> and <code>client_secret</code> in HTTP Authorization header. <code>"jwt_s256"</code>
+generate a JWT claim set signed with RS256.</p>
+<p>See <code><a href='oauth_client_req_auth.html'>oauth_client_req_auth()</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>auth_params</th>
+      <td><p>Additional parameters passed to the function specified
+by <code>auth</code>.</p></td>
     </tr>
     <tr>
       <th>client_id</th>
@@ -184,6 +198,53 @@ directory. If <code>NULL</code>, generated from hash of app hostname and
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># Set up an OAuth app for MS Azure that authenticates with a private key</span>
+<span class='co'># https://bit.ly/3wc1WJB</span>
+
+<span class='va'>client_id</span> <span class='op'>&lt;-</span> <span class='st'>"my_client_id"</span>
+<span class='va'>claims</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  aud <span class='op'>=</span> <span class='st'>"https://login.microsoftonline.com/{tenant}/v2.0"</span>,
+  iss <span class='op'>=</span> <span class='va'>client_id</span>,
+  sub <span class='op'>=</span> <span class='va'>client_id</span>
+<span class='op'>)</span>
+<span class='fu'>oauth_app</span><span class='op'>(</span>
+  <span class='fu'>oauth_client</span><span class='op'>(</span><span class='st'>"id"</span><span class='op'>)</span>,
+  endpoints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+    token <span class='op'>=</span> <span class='st'>"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"</span>
+  <span class='op'>)</span>,
+  auth <span class='op'>=</span> <span class='st'>"jwt_rs256"</span>,
+  auth_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+    claims <span class='op'>=</span> <span class='va'>claims</span>,
+    key <span class='op'>=</span> <span class='st'>"path/to/private/key"</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; $client</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_oauth_client&gt;</span> ID: id (public)</span></div><div class='output co'>#&gt; 
+#&gt; $endpoints
+#&gt;                                                          token 
+#&gt; "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token" 
+#&gt; 
+#&gt; $auth
+#&gt; [1] "oauth_client_req_auth_jwt_rs256"
+#&gt; 
+#&gt; $auth_params
+#&gt; $auth_params$claims
+#&gt; $auth_params$claims$aud
+#&gt; [1] "https://login.microsoftonline.com/{tenant}/v2.0"
+#&gt; 
+#&gt; $auth_params$claims$iss
+#&gt; [1] "my_client_id"
+#&gt; 
+#&gt; $auth_params$claims$sub
+#&gt; [1] "my_client_id"
+#&gt; 
+#&gt; 
+#&gt; $auth_params$key
+#&gt; [1] "path/to/private/key"
+#&gt; 
+#&gt; 
+#&gt; attr(,"class")
+#&gt; [1] "httr2_oauth_app"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

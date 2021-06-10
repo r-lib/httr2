@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: user password — oauth_flow_password • httr2</title>
+<title>OAuth flow: JWT — oauth_flow_jwt • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="OAuth flow: user password — oauth_flow_password" />
-<meta property="og:description" content="This function implements the OAuth resource owner password flow, as defined
-by rfc6749,
-Section 4.3. It allows the user to supply their password once, exchanging
-it for an access token that can be cached locally." />
+<meta property="og:title" content="OAuth flow: JWT — oauth_flow_jwt" />
+<meta property="og:description" content="This function implements the OAuth client credentials flow, as defined
+by rfc7523,
+Section 2.1. It is often used for service accounts, accounts that are
+used primarily in automated environments." />
 
 
 
@@ -123,22 +123,23 @@ it for an access token that can be cached locally." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: user password</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-password.R'><code>R/oauth-flow-password.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_password.Rd</code></div>
+    <h1>OAuth flow: JWT</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-jwt.R'><code>R/oauth-flow-jwt.R</code></a></small>
+    <div class="hidden name"><code>oauth_flow_jwt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function implements the OAuth resource owner password flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-4.3'>rfc6749</a>,
-Section 4.3. It allows the user to supply their password once, exchanging
-it for an access token that can be cached locally.</p>
+    <p>This function implements the OAuth client credentials flow, as defined
+by <a href='https://datatracker.ietf.org/doc/html/rfc7523#section-2.1'>rfc7523</a>,
+Section 2.1. It is often used for service accounts, accounts that are
+used primarily in automated environments.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_password</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>oauth_flow_jwt</span><span class='op'>(</span>
   <span class='va'>app</span>,
-  <span class='va'>username</span>,
-  password <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>claims</span>,
+  <span class='va'>signature</span>,
+  signature_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   scope <span class='op'>=</span> <span class='cn'>NULL</span>,
   token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
@@ -151,15 +152,20 @@ it for an access token that can be cached locally.</p>
       <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>username</th>
-      <td><p>User name.</p></td>
+      <th>claims</th>
+      <td><p>A list of claims. If all elements of the claim set are static
+apart from <code>iat</code>, <code>nbf</code>, <code>exp</code>, or <code>jti</code>, provide a list and
+<code><a href='jwt_claim_set.html'>jwt_claim_set()</a></code> will automatically fill in the dynamic components.
+If other components need to vary, you can instead provide a zero-argument
+callback function which should call <code><a href='jwt_claim_set.html'>jwt_claim_set()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>password</th>
-      <td><p>Password. You avoid entering the password directly when
-calling this function as it will be captured by <code>.Rhistory</code>. Instead,
-leave it unset and the default behaviour will prompt you for it
-interactively.</p></td>
+      <th>signature</th>
+      <td><p>Function use to sign <code>claim_set</code>, e.g. <code><a href='jwt_claim_set.html'>jwt_sign_rs256()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>signature_params</th>
+      <td><p>Additional arguments passed to <code>signature</code></p></td>
     </tr>
     <tr>
       <th>scope</th>
@@ -177,7 +183,7 @@ interactively.</p></td>
 <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
 <code><a href='oauth_flow_client_credentials.html'>oauth_flow_client_credentials</a>()</code>,
 <code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
-<code><a href='oauth_flow_jwt.html'>oauth_flow_jwt</a>()</code>,
+<code><a href='oauth_flow_password.html'>oauth_flow_password</a>()</code>,
 <code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
 
   </div>

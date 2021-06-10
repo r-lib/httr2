@@ -7,10 +7,16 @@
     <loc>https://httr2.r-lib.org/reference/httr2-package.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/jwt_claim_set.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/last_response.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_app.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_client_req_auth.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code.html</loc>
@@ -20,6 +26,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_device.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_jwt.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_password.html</loc>
@@ -71,6 +80,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_oauth_device.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_jwt.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_oauth_password.html</loc>

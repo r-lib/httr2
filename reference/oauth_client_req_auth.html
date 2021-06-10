@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: user password — oauth_flow_password • httr2</title>
+<title>OAuth client authentication — oauth_client_req_auth • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,30 @@
 
 
 
-<meta property="og:title" content="OAuth flow: user password — oauth_flow_password" />
-<meta property="og:description" content="This function implements the OAuth resource owner password flow, as defined
-by rfc6749,
-Section 4.3. It allows the user to supply their password once, exchanging
-it for an access token that can be cached locally." />
+<meta property="og:title" content="OAuth client authentication — oauth_client_req_auth" />
+<meta property="og:description" content="oauth_client_req_auth() authenticates a request using the authentication
+strategy defined by the auth and auth_param arguments to oauth_app().
+This used to authenticate the client as part of the OAuth flow, not
+to authenticate a request on behalf of a user.
+There are three built-in strategies:
+oauth_client_req_body() adds the client id and (optionally) the secret
+to the request body, as described in
+rfc6749,
+Section 2.3.1.
+oauth_client_req_header() adds the client id and secret using HTTP
+basic authentication with the Authorization header, as described in
+rfc6749,
+Section 2.3.1.
+oauth_client_jwt_rs256() adds a client assertion to the body using a
+JWT signed with jwt_sign_rs256() using a private key, as described in
+rfc7523,
+Section 2.2.
+
+
+You will generally not call these functions directly but will instead
+specify them through the auth argument to oauth_app(). The req and
+client parameters are automatically filled in; other parameters come from
+the auth_params argument." />
 
 
 
@@ -123,62 +142,70 @@ it for an access token that can be cached locally." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: user password</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-password.R'><code>R/oauth-flow-password.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_password.Rd</code></div>
+    <h1>OAuth client authentication</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-app.R'><code>R/oauth-app.R</code></a></small>
+    <div class="hidden name"><code>oauth_client_req_auth.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function implements the OAuth resource owner password flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-4.3'>rfc6749</a>,
-Section 4.3. It allows the user to supply their password once, exchanging
-it for an access token that can be cached locally.</p>
+    <p><code>oauth_client_req_auth()</code> authenticates a request using the authentication
+strategy defined by the <code>auth</code> and <code>auth_param</code> arguments to <code><a href='oauth_app.html'>oauth_app()</a></code>.
+This used to authenticate the client as part of the OAuth flow, <strong>not</strong>
+to authenticate a request on behalf of a user.</p>
+<p>There are three built-in strategies:</p><ul>
+<li><p><code>oauth_client_req_body()</code> adds the client id and (optionally) the secret
+to the request body, as described in
+<a href='https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1'>rfc6749</a>,
+Section 2.3.1.</p></li>
+<li><p><code>oauth_client_req_header()</code> adds the client id and secret using HTTP
+basic authentication with the <code>Authorization</code> header, as described in
+<a href='https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1'>rfc6749</a>,
+Section 2.3.1.</p></li>
+<li><p><code>oauth_client_jwt_rs256()</code> adds a client assertion to the body using a
+JWT signed with <code><a href='jwt_claim_set.html'>jwt_sign_rs256()</a></code> using a private key, as described in
+<a href='https://datatracker.ietf.org/doc/html/rfc7523#section-2.2'>rfc7523</a>,
+Section 2.2.</p></li>
+</ul>
+
+<p>You will generally not call these functions directly but will instead
+specify them through the <code>auth</code> argument to <code><a href='oauth_app.html'>oauth_app()</a></code>. The <code>req</code> and
+<code>client</code> parameters are automatically filled in; other parameters come from
+the <code>auth_params</code> argument.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_password</span><span class='op'>(</span>
-  <span class='va'>app</span>,
-  <span class='va'>username</span>,
-  password <span class='op'>=</span> <span class='cn'>NULL</span>,
-  scope <span class='op'>=</span> <span class='cn'>NULL</span>,
-  token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>oauth_client_req_auth</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>app</span><span class='op'>)</span>
+
+<span class='fu'>oauth_client_req_auth_header</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>client</span><span class='op'>)</span>
+
+<span class='fu'>oauth_client_req_auth_body</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>client</span><span class='op'>)</span>
+
+<span class='fu'>oauth_client_req_auth_jwt_rs256</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>client</span>, <span class='va'>claims</span>, <span class='va'>key</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>req</th>
+      <td><p>A <a href='request.html'>request</a>.</p></td>
+    </tr>
+    <tr>
       <th>app</th>
-      <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+      <td><p>An <a href='oauth_app.html'>oauth_app</a>.</p></td>
     </tr>
     <tr>
-      <th>username</th>
-      <td><p>User name.</p></td>
+      <th>client</th>
+      <td><p>An <a href='oauth_app.html'>oauth_client</a>.</p></td>
     </tr>
     <tr>
-      <th>password</th>
-      <td><p>Password. You avoid entering the password directly when
-calling this function as it will be captured by <code>.Rhistory</code>. Instead,
-leave it unset and the default behaviour will prompt you for it
-interactively.</p></td>
+      <th>claims</th>
+      <td><p>A list of claims passed to <a href='jwt_claim_set.html'>jwt_claim_set</a>.</p></td>
     </tr>
     <tr>
-      <th>scope</th>
-      <td><p>Scopes to be requested from the resource owner.</p></td>
-    </tr>
-    <tr>
-      <th>token_params</th>
-      <td><p>List containing additional parameters passed to <code>oauth_flow_access_token()</code>.</p></td>
+      <th>key</th>
+      <td><p>Path to private key file used to sign the JWT.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other OAuth flows: 
-<code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
-<code><a href='oauth_flow_client_credentials.html'>oauth_flow_client_credentials</a>()</code>,
-<code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
-<code><a href='oauth_flow_jwt.html'>oauth_flow_jwt</a>()</code>,
-<code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
