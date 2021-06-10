@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simulate a request — req_fetch • httr2</title>
+<title>Create and encode a JWT — jwt_claim • httr2</title>
 
 
 <!-- jquery -->
@@ -39,17 +39,12 @@
 
 
 
-<meta property="og:title" content="Simulate a request — req_fetch" />
-<meta property="og:description" content="After preparing a request, call req_fetch() to perform it, fetching
-the results back to R. One call to req_fetch() may perform multiple
-HTTP requests:
-If the url is redirected with a 301, 302, 303, or 307, curl will
-automatically follow the Location header to the new location.
-If you have configured retries with req_retry() and the request
-fails with a transient problem, req_fetch() will try again after
-waiting a bit. See req_retry() for details.
-
-" />
+<meta property="og:title" content="Create and encode a JWT — jwt_claim" />
+<meta property="og:description" content="jwt_claim() is a wrapper around jose::jwt_claim() that creates a JWT
+claim set with a few extra default values. jwt_encode_sig() and
+jwt_encode_hmac() are thin wrappers around jose::jwt_encode_sig() and
+jose::jwt_encode_hmac() that exist primarily to make specification
+in other functions a little simpler." />
 
 
 
@@ -129,49 +124,102 @@ waiting a bit. See req_retry() for details.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simulate a request</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-fetch.R'><code>R/req-fetch.R</code></a></small>
-    <div class="hidden name"><code>req_fetch.Rd</code></div>
+    <h1>Create and encode a JWT</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/jwt.R'><code>R/jwt.R</code></a></small>
+    <div class="hidden name"><code>jwt_claim.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>After preparing a request, call <code>req_fetch()</code> to perform it, fetching
-the results back to R. One call to <code>req_fetch()</code> may perform multiple
-HTTP requests:</p><ul>
-<li><p>If the <code>url</code> is redirected with a 301, 302, 303, or 307, curl will
-automatically follow the <code>Location</code> header to the new location.</p></li>
-<li><p>If you have configured retries with <code><a href='req_retry.html'>req_retry()</a></code> and the request
-fails with a transient problem, <code>req_fetch()</code> will try again after
-waiting a bit. See <code><a href='req_retry.html'>req_retry()</a></code> for details.</p></li>
-</ul>
-
+    <p><code>jwt_claim()</code> is a wrapper around <code><a href='https://rdrr.io/pkg/jose/man/jwt_claim.html'>jose::jwt_claim()</a></code> that creates a JWT
+claim set with a few extra default values. <code>jwt_encode_sig()</code> and
+<code>jwt_encode_hmac()</code> are thin wrappers around <code><a href='https://rdrr.io/pkg/jose/man/jwt_encode.html'>jose::jwt_encode_sig()</a></code> and
+<code><a href='https://rdrr.io/pkg/jose/man/jwt_encode.html'>jose::jwt_encode_hmac()</a></code> that exist primarily to make specification
+in other functions a little simpler.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req_fetch</span><span class='op'>(</span><span class='va'>req</span>, path <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>jwt_claim</span><span class='op'>(</span>
+  iss <span class='op'>=</span> <span class='cn'>NULL</span>,
+  sub <span class='op'>=</span> <span class='cn'>NULL</span>,
+  aud <span class='op'>=</span> <span class='cn'>NULL</span>,
+  exp <span class='op'>=</span> <span class='fu'>unix_time</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>5L</span> <span class='op'>*</span> <span class='fl'>60L</span>,
+  nbf <span class='op'>=</span> <span class='fu'>unix_time</span><span class='op'>(</span><span class='op'>)</span>,
+  iat <span class='op'>=</span> <span class='fu'>unix_time</span><span class='op'>(</span><span class='op'>)</span>,
+  jti <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='fu'>jwt_encode_sig</span><span class='op'>(</span><span class='va'>claim</span>, <span class='va'>key</span>, size <span class='op'>=</span> <span class='fl'>256</span>, header <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'>jwt_encode_hmac</span><span class='op'>(</span><span class='va'>claim</span>, <span class='va'>secret</span>, size <span class='op'>=</span> <span class='va'>size</span>, header <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>req</th>
-      <td><p>A <a href='request.html'>request</a>.</p></td>
+      <th>iss</th>
+      <td><p>Issuer claim. Identifies the principal that issued the JWT.</p></td>
     </tr>
     <tr>
-      <th>path</th>
-      <td><p>Optionally, path to save body of request. This is useful for
-large responses since it avoids storing the response in memory.</p></td>
+      <th>sub</th>
+      <td><p>Subject claim. Identifies the principal that is the subject of
+the JWT (i.e. the entity that the claims apply to).</p></td>
+    </tr>
+    <tr>
+      <th>aud</th>
+      <td><p>Audience claim. Identifies the recipients that the JWT is
+intended. Each principle intended to process the JWT must be identifid
+with a unique value.</p></td>
+    </tr>
+    <tr>
+      <th>exp</th>
+      <td><p>Expiration claim. Identifies the expiration time on or after which
+the JWT MUST NOT be accepted for processing. Defaults to 5 minutes.</p></td>
+    </tr>
+    <tr>
+      <th>nbf</th>
+      <td><p>Not before claim. Identifies the time before which the JWT
+MUST NOT be accepted for processing. Defaults to current time.</p></td>
+    </tr>
+    <tr>
+      <th>iat</th>
+      <td><p>Issued at claim. Identifies the time at which the JWT was
+issued.  Defaults to current time.</p></td>
+    </tr>
+    <tr>
+      <th>jti</th>
+      <td><p>JWT ID claim. Provides a unique identifier for the JWT.
+If omitted, uses a random 32-byte sequence encoded with base64url.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Any additional claims to include in the claim set.</p></td>
+    </tr>
+    <tr>
+      <th>claim</th>
+      <td><p>Claim set produced by <code>jwt_claim()</code></p></td>
+    </tr>
+    <tr>
+      <th>key</th>
+      <td><p>RSA or EC private key either specified as a path to a file,
+a connection, or a string (PEM/SSH format), or a raw vector (DER format).</p></td>
+    </tr>
+    <tr>
+      <th>size</th>
+      <td><p>Size, in bits, of sha2 signature, i.e. 256, 384 or 512.
+Only for HMAC/RSA, not applicable for ECDSA keys.</p></td>
+    </tr>
+    <tr>
+      <th>header</th>
+      <td><p>A named list giving additional fields to include in the
+JWT header.</p></td>
+    </tr>
+    <tr>
+      <th>secret</th>
+      <td><p>String or raw vector with a secret passphrase.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns an HTTP response with successful status code. Will
-throw an error for 4xx and 5xx responses; override with <code><a href='req_error.html'>req_error()</a></code>.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://google.com"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_fetch</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> https://www.google.com/</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Status</span>: 200 OK</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Content-Type</span>: text/html</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Body</span>: In memory (13711 bytes)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -158,17 +158,18 @@ The token is cached in memory.</p>
       <th>claims</th>
       <td><p>A list of claims. If all elements of the claim set are static
 apart from <code>iat</code>, <code>nbf</code>, <code>exp</code>, or <code>jti</code>, provide a list and
-<code><a href='jwt_claim_set.html'>jwt_claim_set()</a></code> will automatically fill in the dynamic components.
+<code><a href='jwt_claim.html'>jwt_claim()</a></code> will automatically fill in the dynamic components.
 If other components need to vary, you can instead provide a zero-argument
-callback function which should call <code><a href='jwt_claim_set.html'>jwt_claim_set()</a></code>.</p></td>
+callback function which should call <code><a href='jwt_claim.html'>jwt_claim()</a></code>.</p></td>
     </tr>
     <tr>
       <th>signature</th>
-      <td><p>Function use to sign <code>claim_set</code>, e.g. <code><a href='jwt_claim_set.html'>jwt_sign_rs256()</a></code>.</p></td>
+      <td><p>Function use to sign <code>claim_set</code>, e.g. <code><a href='jwt_claim.html'>jwt_encode_sig()</a></code>.</p></td>
     </tr>
     <tr>
       <th>signature_params</th>
-      <td><p>Additional arguments passed to <code>signature</code></p></td>
+      <td><p>Additional arguments passed to <code>signature</code>, e.g.
+<code>key</code>, <code>size</code>, <code>header</code>.</p></td>
     </tr>
     <tr>
       <th>scope</th>

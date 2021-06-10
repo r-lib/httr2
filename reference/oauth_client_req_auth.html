@@ -162,7 +162,7 @@ basic authentication with the <code>Authorization</code> header, as described in
 <a href='https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1'>rfc6749</a>,
 Section 2.3.1.</p></li>
 <li><p><code>oauth_client_jwt_rs256()</code> adds a client assertion to the body using a
-JWT signed with <code><a href='jwt_claim_set.html'>jwt_sign_rs256()</a></code> using a private key, as described in
+JWT signed with <code>jwt_sign_rs256()</code> using a private key, as described in
 <a href='https://datatracker.ietf.org/doc/html/rfc7523#section-2.2'>rfc7523</a>,
 Section 2.2.</p></li>
 </ul>
@@ -179,7 +179,14 @@ the <code>auth_params</code> argument.</p>
 
 <span class='fu'>oauth_client_req_auth_body</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>client</span><span class='op'>)</span>
 
-<span class='fu'>oauth_client_req_auth_jwt_rs256</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>client</span>, <span class='va'>claims</span>, <span class='va'>key</span><span class='op'>)</span></pre>
+<span class='fu'>oauth_client_req_auth_jwt_sig</span><span class='op'>(</span>
+  <span class='va'>req</span>,
+  <span class='va'>client</span>,
+  <span class='va'>claims</span>,
+  <span class='va'>key</span>,
+  size <span class='op'>=</span> <span class='fl'>256</span>,
+  header <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,11 +205,22 @@ the <code>auth_params</code> argument.</p>
     </tr>
     <tr>
       <th>claims</th>
-      <td><p>A list of claims passed to <a href='jwt_claim_set.html'>jwt_claim_set</a>.</p></td>
+      <td><p>A list of claims passed to <code><a href='jwt_claim.html'>jwt_claim()</a></code>.</p></td>
     </tr>
     <tr>
       <th>key</th>
-      <td><p>Path to private key file used to sign the JWT.</p></td>
+      <td><p>RSA or EC private key either specified as a path to a file,
+a connection, or a string (PEM/SSH format), or a raw vector (DER format).</p></td>
+    </tr>
+    <tr>
+      <th>size</th>
+      <td><p>Size, in bits, of sha2 signature, i.e. 256, 384 or 512.
+Only for HMAC/RSA, not applicable for ECDSA keys.</p></td>
+    </tr>
+    <tr>
+      <th>header</th>
+      <td><p>A named list giving additional fields to include in the
+JWT header.</p></td>
     </tr>
     </table>
 
