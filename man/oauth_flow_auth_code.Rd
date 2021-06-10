@@ -89,6 +89,7 @@ components as needed for PKCE, as defined in
 Other OAuth flows: 
 \code{\link{oauth_flow_client_credentials}()},
 \code{\link{oauth_flow_device}()},
+\code{\link{oauth_flow_jwt}()},
 \code{\link{oauth_flow_password}()},
 \code{\link{oauth_flow_refresh}()}
 }
