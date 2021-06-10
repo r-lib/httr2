@@ -8,32 +8,31 @@
 #'
 #' * `secret_encrypt()` and `secret_decrypt()` work with individual strings
 #' * `secret_read_rds()` and `secret_write_rds()` work with `.rds` files
-#' * `secret_get_key()` retrieves a key from an environment variable.
-#'   When used inside of testthat, it will automatically [testthat::skip()] the
-#'   current test if the env var isn't set.
-#' * `secret_make_key()` generates a random key.
+#' * `secret_make_key()` generates a random string to use as a key.
+#'
+#' These all look for the key in an environment variable. When used inside of
+#' testthat, they will automatically [testthat::skip()] the test if the env var
+#' isn't found. (Outside of testthat, they'll error if the env var isn't
+#' found.)
 #'
 #' # Basic workflow
 #'
 #' 1.  Use `secret_make_key()` to generate a password. Make this available
-#'     as an env var by adding a line to your `.Renviron`.
+#'     as an env var (e.g. `{MYPACKAGE}_KEY`) by adding a line to your
+#'     `.Renviron`.
 #'
-#' 2.  Retrieve the key uss `secret_get_key()` and use it to encrypt data
-#'     with `secret_encrypt()` (for strings) and `secret_write_rds()` (for
-#'     more complicated data structures).
+#' 2.  Encrypt strings with `secret_encrypt()` and other data with
+#'     `secret_write_rds()`, setting `key = "{MYPACKAGE}_KEY"`.
 #'
-#' 3.  In your tests, access the encrypted data by first retrieving the key
-#'     with `secret_get_key()`, and then decrypting the data with
-#'     `secret_decrypt()` or `secret_read_rds()`. You might want to write
-#'     a couple of wrappers to reduce the amount of boilerplate in your
-#'     tests.
+#' 3.  In your tests, decrypt the data with `secret_decrypt()` or
+#'     `secret_read_rds()` to match how you encrypt it.
 #'
 #' 4.  If you push this code to your CI server, it will already "work" because
-#'     `secret_get_key()` will automatically skip tests when the env var isn't
-#'     set. To make the tests actually run, you'll need to set the env var using
-#'     whatever tool your CI system provides for setting env vars. Make sure
-#'     to carefully inspect the test output to check that the skips have gone
-#'     away.
+#'     all functions automatically skip tests when your `{MYPACKAGE}_KEY}`
+#'     env var isn't set. To make the tests actually run, you'll need to set
+#'     the env var using whatever tool your CI system provides for setting
+#'     env vars. Make sure to carefully inspect the test output to check that
+#'     the skips have actually gone away.
 #'
 #' @name secrets
 #' @aliases NULL
@@ -55,24 +54,6 @@
 #' secret_decrypt(x, "MY_KEY")
 NULL
 
-#' @param envvar Name of environment variable where the key is stored.
-#' @export
-#' @rdname secrets
-secret_get_key <- function(envvar) {
-  key <- Sys.getenv(envvar)
-
-  if (identical(key, "")) {
-    msg <- glue("Can't find envvar {envvar}")
-    if (is_testing()) {
-      testthat::skip(msg)
-    } else {
-      abort(msg)
-    }
-  }
-
-  base64_url_decode(key)
-}
-
 #' @export
 #' @rdname secrets
 secret_make_key <- function() {
@@ -83,9 +64,10 @@ secret_make_key <- function() {
 #' @rdname secrets
 #' @param x Object to encrypt. Must be a string for `secret_encrypt()`.
 #' @param key Encryption key; this is the password that allows you to "lock"
-#'   and "unlock" the secret. A bare string is passed to `secret_get_key()`
-#'   to look up from in an env var; wrap a string in `I()` to treat it directly
-#'   as a key.
+#'   and "unlock" the secret. The easiest way to specify this is as the
+#'   name of an environment variable. Alternatively, if you already have
+#'   a base64url encoded string, you can wrap it in `I()`, or you can pass
+#'   the raw vector in directly.
 secret_encrypt <- function(x, key) {
   check_string(x, "`x`")
   key <- as_key(key)
@@ -124,6 +106,21 @@ secret_write_rds <- function(x, path, key) {
   x_enc <- openssl::aes_ctr_encrypt(x_cmp, key, iv = httr_iv)
   attr(x_enc, "iv") <- NULL # writeBin uses is.vector()
   writeBin(x_enc, path)
+}
+
+secret_get_key <- function(envvar) {
+  key <- Sys.getenv(envvar)
+
+  if (identical(key, "")) {
+    msg <- glue("Can't find envvar {envvar}")
+    if (is_testing()) {
+      testthat::skip(msg)
+    } else {
+      abort(msg)
+    }
+  }
+
+  base64_url_decode(key)
 }
 
 
