@@ -39,6 +39,7 @@ jobs:
     env:
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      HTTR2_KEY: ${{ secrets.HTTR2_KEY }}
 
     steps:
       - uses: actions/checkout@v2
