@@ -101,7 +101,7 @@ secret_read_rds <- function(path, key) {
 secret_write_rds <- function(x, path, key) {
   key <- as_key(key)
 
-  x <- serialize(x, NULL)
+  x <- serialize(x, NULL, version = 2)
   x_cmp <- memCompress(x, "bzip2")
   x_enc <- openssl::aes_ctr_encrypt(x_cmp, key, iv = httr_iv)
   attr(x_enc, "iv") <- NULL # writeBin uses is.vector()

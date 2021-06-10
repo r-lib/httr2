@@ -1,8 +1,7 @@
 # 1. Create service account
 # 2. Add key and download json
 # 3. json <- jsonlite::read_json(path)
-# 4. secret_write_rds(json, "tests/testthat/test-oauth-flow-jwt-google.rds",
-#      secret_get_key("HTTR2_KEY"))
+# 4. secret_write_rds(json, "tests/testthat/test-oauth-flow-jwt-google.rds", "HTTR2_KEY")
 
 test_that("can generate token and use it automatically", {
   secrets <- secret_read_rds(test_path("test-oauth-flow-jwt-google.rds"), "HTTR2_KEY")
