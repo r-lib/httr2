@@ -5,7 +5,12 @@
 \alias{oauth_client}
 \title{Create an OAuth app}
 \usage{
-oauth_app(client, endpoints, auth = c("body", "header"))
+oauth_app(
+  client,
+  endpoints,
+  auth = c("body", "header", "jwt_rs256"),
+  auth_params = list()
+)
 
 oauth_client(client_id, client_secret = NULL, name = NULL)
 }
@@ -16,11 +21,20 @@ oauth_client(client_id, client_secret = NULL, name = NULL)
 required depend on the flow that you'll use, but all require a \code{token}
 endpoint that returns an access token.}
 
-\item{auth}{Authentication mechanism used by the API to authenticate
-confidential requests made during the flow. This is most commonly
-\code{"body"} where the \code{client_id} and \code{client_secret} are added to the body
-of the request, but can also be \code{"header"} where the \code{client_id}
-and \code{client_secret} are sent using the HTTP Authorization header.}
+\item{auth}{Authentication mechanism used by the client to prove itself to
+the API. Can be one of three built-in methods ("body", "header", or "jwt"),
+or a function that will be called with arguments \code{req}, \code{client}, and
+the contents of \code{auth_params}.
+
+The most common mechanism in the wild is \code{"body"} where the \code{client_id} and
+(optionally) \code{client_secret} are added to the body. \code{"header"} sends in
+\code{client_id} and \code{client_secret} in HTTP Authorization header. \code{"jwt_s256"}
+generate a JWT claim set signed with RS256.
+
+See \code{\link[=oauth_client_req_auth]{oauth_client_req_auth()}} for more details.}
+
+\item{auth_params}{Additional parameters passed to the function specified
+by \code{auth}.}
 
 \item{client_id}{Client identifier.}
 
@@ -41,4 +55,26 @@ An OAuth app is the combination of a client, a set of endpoints
 mechanism. A client consists of at least a \code{client_id}, and also often
 a \code{client_secret}. You'll get these values when you create the client on
 the API's website.
+}
+\examples{
+# Set up an OAuth app for MS Azure that authenticates with a private key
+# https://bit.ly/3wc1WJB
+
+client_id <- "my_client_id"
+claims <- list(
+  aud = "https://login.microsoftonline.com/{tenant}/v2.0",
+  iss = client_id,
+  sub = client_id
+)
+oauth_app(
+  oauth_client("id"),
+  endpoints = c(
+    token = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"
+  ),
+  auth = "jwt_rs256",
+  auth_params = list(
+    claims = claims,
+    key = "path/to/private/key"
+  )
+)
 }

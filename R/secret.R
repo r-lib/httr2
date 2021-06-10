@@ -70,7 +70,7 @@ secret_get_key <- function(envvar) {
 #' @export
 #' @rdname secrets
 secret_make_key <- function() {
-  base64_url_encode(openssl::rand_bytes(16))
+  base64_url_rand(16)
 }
 
 #' @export

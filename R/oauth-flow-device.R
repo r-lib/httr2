@@ -75,14 +75,9 @@ oauth_flow_device <- function(app,
 oauth_flow_device_request <- function(app, scope, auth_params) {
   url <- app_endpoint(app, "device_authorization")
 
-  params <- list2(
-    client_id = app$client$id,
-    scope = scope,
-    !!!auth_params
-  )
   req <- request(url)
-  req <- req_body_form(req, params)
-  # req <- req_auth_oauth_client(req, app)
+  req <- req_body_form(req, list2(scope = scope, !!!auth_params))
+  req <- oauth_client_req_auth(req, app)
   req <- req_headers(req, Accept = "application/json")
 
   resp <- req_fetch(req)

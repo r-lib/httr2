@@ -23,6 +23,7 @@ controls directly, not on behalf of an user.
 Other OAuth flows: 
 \code{\link{oauth_flow_auth_code}()},
 \code{\link{oauth_flow_device}()},
+\code{\link{oauth_flow_jwt}()},
 \code{\link{oauth_flow_password}()},
 \code{\link{oauth_flow_refresh}()}
 }

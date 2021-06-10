@@ -120,7 +120,7 @@ oauth_flow_auth_code <- function(app,
     token_params$code_verifier <- code$verifier
   }
 
-  state <- nonce()
+  state <- base64_url_rand(32)
   redirect_url <- paste0("http://", host_name, ":", port, "/")
 
   # Redirect user to authorisation url, and listen for result
@@ -253,7 +253,7 @@ oauth_flow_auth_code_pkce <- function() {
   # be used to create a 32-octet sequence.  The octet sequence is then
   # base64url-encoded to produce a 43-octet URL safe string to use as the
   # code verifier.
-  verifier <- base64_url_encode(openssl::rand_bytes(32))
+  verifier <- base64_url_rand(32)
 
   list(
     verifier = verifier,
@@ -281,4 +281,8 @@ base64_url_decode <- function(x) {
   x <- gsub("-", "+", x, fixed = TRUE)
   # x <- gsub("=+$", "", x)
   openssl::base64_decode(x)
+}
+
+base64_url_rand <- function(bytes = 32) {
+  base64_url_encode(openssl::rand_bytes(bytes))
 }

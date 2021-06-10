@@ -37,11 +37,9 @@ reference:
   - secrets
   - obfuscate
 
-
 - title: OAuth flows
   desc: >
-    These functions implement various OAuth flows, returning an access token.
-    Generally, you should not need to call them directly, instead using the
-    `req_oauth_*` helpers
+    These functions implement the low-level components of OAuth.
   contents:
   - starts_with("oauth_")
+  - starts_with("jwt_")

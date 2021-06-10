@@ -3,7 +3,7 @@ oauth_flow_access_token <- function(app, ...) {
 
   req <- request(url)
   req <- req_body_form(req, list2(...))
-  req <- req_auth_oauth_client(req, app)
+  req <- oauth_client_req_auth(req, app)
   req <- req_headers(req, Accept = "application/json")
 
   req <- req_error(req, is_error = ~ FALSE)
