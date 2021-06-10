@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   articles/oauth: oauth.html
-last_built: 2021-06-10T20:29Z
+last_built: 2021-06-10T20:39Z
 urls:
   reference: https://httr2.r-lib.org/reference
   article: https://httr2.r-lib.org/articles
