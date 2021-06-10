@@ -44,9 +44,15 @@
 #' secret_write_rds(mtcars, path, key = key)
 #' secret_read_rds(path, key)
 #'
-#' x <- secret_encrypt("This is a secret", key)
+#' # While you can manage the key explicitly in a variable, it's much
+#' # easier to store in an env variable. In real life, you should NEVER
+#' # use `Sys.setenv()` to create this env var (instead using .Renviron or
+#' # similar) but I need to do it here since it's an example
+#' Sys.setenv("MY_KEY" = key)
+#'
+#' x <- secret_encrypt("This is a secret", "MY_KEY")
 #' x
-#' secret_decrypt(x, key)
+#' secret_decrypt(x, "MY_KEY")
 NULL
 
 #' @param envvar Name of environment variable where the key is stored.
@@ -64,20 +70,22 @@ secret_get_key <- function(envvar) {
     }
   }
 
-  key
+  base64_url_decode(key)
 }
 
 #' @export
 #' @rdname secrets
 secret_make_key <- function() {
-  base64_url_rand(16)
+  I(base64_url_rand(16))
 }
 
 #' @export
 #' @rdname secrets
 #' @param x Object to encrypt. Must be a string for `secret_encrypt()`.
 #' @param key Encryption key; this is the password that allows you to "lock"
-#'   and "unlock" the secret.
+#'   and "unlock" the secret. A bare string is passed to `secret_get_key()`
+#'   to look up from in an env var; wrap a string in `I()` to treat it directly
+#'   as a key.
 secret_encrypt <- function(x, key) {
   check_string(x, "`x`")
   key <- as_key(key)
@@ -187,10 +195,12 @@ obfuscate_key <- as.raw(c(
 # Helpers -----------------------------------------------------------------
 
 as_key <- function(x) {
-  if (is.raw(x)) {
+  if (inherits(x, "AsIs") && is_string(x)) {
+    base64_url_decode(x)
+  } else if (is.raw(x)) {
     x
   } else if (is_string(x)) {
-    base64_url_decode(x)
+    secret_get_key(x)
   } else {
     abort("key` must be a raw vector or a base64 url encoded string")
   }

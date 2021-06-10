@@ -27,7 +27,9 @@ secret_write_rds(x, path, key)
 \item{x}{Object to encrypt. Must be a string for \code{secret_encrypt()}.}
 
 \item{key}{Encryption key; this is the password that allows you to "lock"
-and "unlock" the secret.}
+and "unlock" the secret. A bare string is passed to \code{secret_get_key()}
+to look up from in an env var; wrap a string in \code{I()} to treat it directly
+as a key.}
 
 \item{encrypted}{String to decrypt}
 
@@ -75,7 +77,13 @@ path <- tempfile()
 secret_write_rds(mtcars, path, key = key)
 secret_read_rds(path, key)
 
-x <- secret_encrypt("This is a secret", key)
+# While you can manage the key explicitly in a variable, it's much
+# easier to store in an env variable. In real life, you should NEVER
+# use `Sys.setenv()` to create this env var (instead using .Renviron or
+# similar) but I need to do it here since it's an example
+Sys.setenv("MY_KEY" = key)
+
+x <- secret_encrypt("This is a secret", "MY_KEY")
 x
-secret_decrypt(x, key)
+secret_decrypt(x, "MY_KEY")
 }
