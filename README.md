@@ -56,5 +56,5 @@ httr2 wouldn’t be possible without
 [Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
 Bryan](https://jennybryan.org) and [Craig
 Citro](https://research.google/people/CraigCitro/) who have given me
-much usual feedback on the both design of the internals and the user
+much useful feedback on the both design of the internals and the user
 facing API.
