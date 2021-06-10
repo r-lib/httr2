@@ -46,4 +46,15 @@ And the development version from [GitHub](https://github.com/) with:
 devtools::install_github("r-lib/httr2")
 ```
 
-## 
+## Acknowledgements
+
+httr2 wouldn’t be possible without
+[curl](https://jeroen.cran.dev/curl/),
+[openssl](https://github.com/jeroen/openssl/),
+[jsonlite](https://jeroen.cran.dev/jsonlite/), and
+[jose](https://github.com/jeroen/jose/), which are all maintained by
+[Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
+Bryan](https://jennybryan.org) and [Craig
+Citro](https://research.google/people/CraigCitro/) who have given me
+much usual feedback on the both design of the internals and the user
+facing API.
