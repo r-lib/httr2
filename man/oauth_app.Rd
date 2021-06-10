@@ -56,25 +56,3 @@ mechanism. A client consists of at least a \code{client_id}, and also often
 a \code{client_secret}. You'll get these values when you create the client on
 the API's website.
 }
-\examples{
-# Set up an OAuth app for MS Azure that authenticates with a private key
-# https://bit.ly/3wc1WJB
-
-client_id <- "my_client_id"
-claims <- list(
-  aud = "https://login.microsoftonline.com/{tenant}/v2.0",
-  iss = client_id,
-  sub = client_id
-)
-oauth_app(
-  oauth_client("id"),
-  endpoints = c(
-    token = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"
-  ),
-  auth = "jwt_rs256",
-  auth_params = list(
-    claims = claims,
-    key = "path/to/private/key"
-  )
-)
-}

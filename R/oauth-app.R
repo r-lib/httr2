@@ -24,27 +24,6 @@
 #' @param auth_params Additional parameters passed to the function specified
 #'   by `auth`.
 #' @export
-#' @examples
-#' # Set up an OAuth app for MS Azure that authenticates with a private key
-#' # https://bit.ly/3wc1WJB
-#'
-#' client_id <- "my_client_id"
-#' claims <- list(
-#'   aud = "https://login.microsoftonline.com/{tenant}/v2.0",
-#'   iss = client_id,
-#'   sub = client_id
-#' )
-#' oauth_app(
-#'   oauth_client("id"),
-#'   endpoints = c(
-#'     token = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token"
-#'   ),
-#'   auth = "jwt_rs256",
-#'   auth_params = list(
-#'     claims = claims,
-#'     key = "path/to/private/key"
-#'   )
-#' )
 oauth_app <- function(client,
                       endpoints,
                       auth = c("body", "header", "jwt_rs256"),
