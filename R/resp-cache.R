@@ -1,3 +1,104 @@
+req_cache <- function(req, path, use_on_error = FALSE) {
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+  req_policies(req,
+    cache_path = path,
+    cache_use_on_error = use_on_error
+  )
+}
+
+# Do I need to worry about hash collisions?
+# No - even if the user stores a billion urls, the probably of a collision
+# is ~ 1e-20: https://preshing.com/20110504/hash-collision-probabilities/
+cache_path <- function(req, ext = ".rds") {
+  file.path(cache_path(req$policies$cache_path), paste0(hash(req$url), ext))
+}
+cache_use_on_error <- function(req) {
+  req$policies$cache_use_on_error %||% FALSE
+}
+
+# Cache management --------------------------------------------------------
+
+cache_exists <- function(req) {
+  if (!req_policy_exists(req, "cache_path")) {
+    FALSE
+  } else {
+    file.exists(cache_path(req))
+  }
+}
+
+# Callers responsibility to check that cache exists
+cache_get <- function(req) {
+  path <- cache_path(req)
+
+  touch(path)
+  readRDS(path)
+}
+
+cache_set <- function(req, resp) {
+  if (is_path(resp$body)) {
+    body_path <- cache_path(req, ".body")
+    file.copy(resp$body, body_path, overwrite = TRUE)
+    resp$body <- new_path(body_path)
+  }
+
+  saveRDS(resp, cache_path(req, ".rds"))
+  invisible()
+}
+
+# Hooks for req_fetch -----------------------------------------------------
+
+# Can return request or response
+cache_pre_fetch <- function(req) {
+  if (!cache_exists(req)) {
+    req
+  }
+
+  info <- resp_cache_info(cache_get(req))
+  if (!is.na(info$expires) && info$expires <= Sys.time()) {
+    cache_get(req)
+  } else {
+    req_headers(req,
+      `If-Modified-Since` = info$last_modified,
+      `If-None-Match` = info$etag
+    )
+  }
+}
+
+cache_post_fetch <- function(req, resp, path = NULL) {
+  if (!req_policy_exists(req, "cache")) {
+    return(resp)
+  }
+
+  if (is_error(resp) && cache_use_on_error(req) && cache_exists(req)) {
+    cache_get(req)
+  } else if (resp_status(resp) == 304 && cache_exists(req)) {
+    # Replace body with cached result
+    resp$body <- cache_body(req, path)
+    resp
+  } else if (resp_is_cacheable(resp)) {
+    cache_set(req, resp)
+    resp
+  } else {
+    resp
+  }
+}
+
+cache_body <- function(req, path = NULL) {
+  body <- cache_get(req)$body
+  if (is.null(path)) {
+    return(body)
+  }
+
+  if (is_path(body)) {
+    file.copy(body, path, overwrite = TRUE)
+  } else {
+    writeBin(body, path)
+  }
+  new_path(path)
+}
+
+# Caching headers ---------------------------------------------------------
+
 resp_is_cacheable <- function(resp, control = NULL) {
   if (resp$method != "GET") {
     return(FALSE)
@@ -59,94 +160,4 @@ resp_cache_control <- function(resp) {
   values <- c(flags, lapply(keyvalues, "[[", 2))
 
   stats::setNames(values, keys)
-}
-
-req_cache_info <- function(req) {
-  if (req_policy_exists(req, "policy_cache_dir")) {
-    NULL
-  } else {
-    req_cache_info(req_cache_get(req))
-  }
-}
-
-# Do I need to worry about hash collisions?
-# No - even if the user stores a billion urls, the probably of a collision
-# is ~ 1e-20: https://preshing.com/20110504/hash-collision-probabilities/
-req_cache_path <- function(req, ext) {
-  file.path(req$policy_cache_dir, paste0(hash(req$url), ext))
-}
-
-req_cache_get <- function(req) {
-  path <- req_cache_path(req)
-  if (!file.exists(path)) {
-    abort("Internal error: attempted to retrive uncached request")
-  }
-
-   # Touch the path
-  Sys.setFileTime(path, Sys.time())
-  readRDS(path)
-}
-
-req_cache_gc <- function(req, max_n = Inf, max_size = Inf, max_days = Inf) {
-  #
-}
-
-req_cache_body <- function(req, path = NULL) {
-  body <- req_cache_get(req)$body
-  if (is.null(path)) {
-    return(body)
-  }
-
-  if (is_path(body)) {
-    file.copy(body, path, overwrite = TRUE)
-  } else {
-    writeBin(body, path)
-  }
-  new_path(path)
-}
-
-req_cache_set <- function(req, resp) {
-  if (is_path(resp$body)) {
-    body_path <- req_cache_path(req, ".body")
-    file.copy(resp$body, body_path, overwrite = TRUE)
-    resp$body <- new_path(body_path)
-  }
-
-  saveRDS(resp, req_cache_path(req, ".rds"))
-
-  invisible()
-}
-
-function() {
-  cached <- req_cache_info(req)
-  if (!is.na(cached$expires) && cached$expires <= Sys.time()) {
-    return(req_cached(req))
-  }
-  if (!is.null(cached)) {
-    req <- req_headers(req,
-      `If-Modified-Since` = cached$last_modified,
-      `If-None-Match` = cached$etag
-    )
-  }
-
-  if (is_error(resp)) {
-    if (!is.null(cached) && use_cache_on_error) {
-      req_cached(req)
-    } else {
-      stop(resp)
-    }
-  } else if (error_is_error(req, resp)) {
-    resp_check_status(resp, error_info(req, resp))
-  } else if (resp_status(resp) == 304) {
-    # Replace body with cached result
-    resp$body <- req_cache_body(req, path)
-    resp
-  } else {
-    if (has_cache && resp_cacheable(resp)) {
-      req_cache_set(req, resp)
-    }
-    resp
-  }
-
-
 }

@@ -133,3 +133,7 @@ parse_http_date <- function(x) {
   attr(out, "tzone") <- NULL
   out
 }
+
+touch <- function(path) {
+  Sys.setFileTime(path, Sys.time())
+}
