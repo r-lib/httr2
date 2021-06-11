@@ -1,3 +1,49 @@
+
+# cache -------------------------------------------------------------------
+
+test_that("can get and set from cache", {
+  req <- request("http://example.com") %>% req_cache(tempfile())
+  resp <- response(200, headers = "Etag: ABC", body = charToRaw("abc"))
+
+  expect_false(cache_exists(req))
+  cache_set(req, resp)
+  expect_true(cache_exists(req))
+  expect_equal(cache_get(req), resp)
+
+  # If path is null can leave resp as is
+  expect_equal(cache_body(req, NULL), resp$body)
+  # If path is set, need to save to path
+  path <- tempfile()
+  body <- cache_body(req, path)
+  expect_equal(body, new_path(path))
+  expect_equal(readLines(path, warn = FALSE), rawToChar(resp$body))
+})
+
+test_that("handles responses with files", {
+  req <- request("http://example.com") %>% req_cache(tempfile())
+
+  path <- local_write_lines("Hi there")
+  resp <- response(200, headers = "Etag: ABC", body = new_path(path))
+  cache_set(req, resp)
+
+  # File should be copied in cache directory, and response body updated
+  body_path <- cache_path(req, ".body")
+  expect_equal(readLines(body_path), "Hi there")
+  expect_equal(cache_get(req)$body, new_path(body_path))
+
+  # If path is null, just leave body as is, since req_body() already
+  # papers over the differences
+  expect_equal(cache_body(req, NULL), new_path(body_path))
+
+  # If path is not null, copy to desired location, and update body
+  path2 <- tempfile()
+  body <- cache_body(req, path2)
+  expect_equal(readLines(body), "Hi there")
+  expect_equal(body, new_path(path2))
+})
+
+# headers -----------------------------------------------------------------
+
 test_that("correctly determines if response is cacheable", {
   is_cacheable <- function(...) {
     resp_is_cacheable(response(...))

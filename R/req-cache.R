@@ -10,7 +10,7 @@ req_cache <- function(req, path, use_on_error = FALSE) {
 # No - even if the user stores a billion urls, the probably of a collision
 # is ~ 1e-20: https://preshing.com/20110504/hash-collision-probabilities/
 cache_path <- function(req, ext = ".rds") {
-  file.path(cache_path(req$policies$cache_path), paste0(hash(req$url), ext))
+  file.path(req$policies$cache_path, paste0(hash(req$url), ext))
 }
 cache_use_on_error <- function(req) {
   req$policies$cache_use_on_error %||% FALSE

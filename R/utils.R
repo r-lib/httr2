@@ -137,3 +137,9 @@ parse_http_date <- function(x) {
 touch <- function(path) {
   Sys.setFileTime(path, Sys.time())
 }
+
+local_write_lines <- function(..., .env = caller_env()) {
+  path <- withr::local_tempfile(.local_envir = .env)
+  writeLines(c(...), path)
+  path
+}
