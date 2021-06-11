@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Temporarily set verbosity for all requests — with_verbosity • httr2</title>
+<title>Automatically cache requests — req_cache • httr2</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,17 @@
 
 
 
-<meta property="og:title" content="Temporarily set verbosity for all requests — with_verbosity" />
-<meta property="og:description" content="with_verbose() is useful for debugging httr2 code buried deep inside
-another package because it allows you to see exactly what's been sent
-and requested." />
+<meta property="og:title" content="Automatically cache requests — req_cache" />
+<meta property="og:description" content="Use req_fetch() to automatically cache HTTP requests. Most API requests
+are not cacheable, but when possible (often when downloading larger files)
+it can make a big difference. req_cache() caches responses to GET requests
+that have status code 200 and at least one of the standard caching headers
+(e.g. Expires, Etag, Last-Modified, Cache-Control), unless caching
+has been expressly prohibited with Cache-Control: no-store. Typically,
+a request will still be sent to the server to check that the cached value
+is still up-to-date, but it will not need to re-download the body value.
+To learn more about HTTP caching, I recommend the MDN article
+HTTP caching." />
 
 
 
@@ -122,73 +129,45 @@ and requested." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Temporarily set verbosity for all requests</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
-    <div class="hidden name"><code>with_verbosity.Rd</code></div>
+    <h1>Automatically cache requests</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-cache.R'><code>R/req-cache.R</code></a></small>
+    <div class="hidden name"><code>req_cache.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>with_verbose()</code> is useful for debugging httr2 code buried deep inside
-another package because it allows you to see exactly what's been sent
-and requested.</p>
+    <p>Use <code><a href='req_fetch.html'>req_fetch()</a></code> to automatically cache HTTP requests. Most API requests
+are not cacheable, but when possible (often when downloading larger files)
+it can make a big difference. <code>req_cache()</code> caches responses to GET requests
+that have status code 200 and at least one of the standard caching headers
+(e.g. <code>Expires</code>, <code>Etag</code>, <code>Last-Modified</code>, <code>Cache-Control</code>), unless caching
+has been expressly prohibited with <code>Cache-Control: no-store</code>. Typically,
+a request will still be sent to the server to check that the cached value
+is still up-to-date, but it will not need to re-download the body value.</p>
+<p>To learn more about HTTP caching, I recommend the MDN article
+<a href='https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching'>HTTP caching</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>with_verbosity</span><span class='op'>(</span><span class='va'>code</span>, verbosity <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>req_cache</span><span class='op'>(</span><span class='va'>req</span>, <span class='va'>path</span>, use_on_error <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>code</th>
-      <td><p>Code to execture</p></td>
+      <th>req</th>
+      <td><p>A <a href='request.html'>request</a>.</p></td>
     </tr>
     <tr>
-      <th>verbosity</th>
-      <td><p>How much information to print? This is a wrapper
-around <code><a href='req_verbose.html'>req_verbose()</a></code> that uses an integer to control vebosity:</p><ul>
-<li><p>0: no output</p></li>
-<li><p>1: show headers</p></li>
-<li><p>2: show headers and bodies</p></li>
-<li><p>3: show headers, bodies, and curl status messages.</p></li>
-</ul></td>
+      <th>path</th>
+      <td><p>Path to cache directory</p></td>
+    </tr>
+    <tr>
+      <th>use_on_error</th>
+      <td><p>If the request errors, and there's a cache response,
+should <code><a href='req_fetch.html'>req_fetch()</a></code> return that instead of generating an error?</p></td>
     </tr>
     </table>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httr2.r-lib.org"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='req_fetch.html'>req_fetch</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-<span class='fu'>with_verbosity</span><span class='op'>(</span><span class='fu'>fun</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; GET / HTTP/2
-#&gt; -&gt; Host: httr2.r-lib.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; 
-#&gt; &lt;- HTTP/2 200 
-#&gt; &lt;- server: GitHub.com
-#&gt; &lt;- content-type: text/html; charset=utf-8
-#&gt; &lt;- last-modified: Fri, 11 Jun 2021 02:34:39 GMT
-#&gt; &lt;- access-control-allow-origin: *
-#&gt; &lt;- etag: W/"60c2cbbf-3e1f"
-#&gt; &lt;- expires: Fri, 11 Jun 2021 05:30:38 GMT
-#&gt; &lt;- cache-control: max-age=600
-#&gt; &lt;- content-encoding: gzip
-#&gt; &lt;- x-proxy-cache: MISS
-#&gt; &lt;- x-github-request-id: AC4C:3018:594131:976792:60C2F2A6
-#&gt; &lt;- accept-ranges: bytes
-#&gt; &lt;- date: Fri, 11 Jun 2021 05:20:38 GMT
-#&gt; &lt;- via: 1.1 varnish
-#&gt; &lt;- age: 0
-#&gt; &lt;- x-served-by: cache-pdk17841-PDK
-#&gt; &lt;- x-cache: MISS
-#&gt; &lt;- x-cache-hits: 0
-#&gt; &lt;- x-timer: S1623388838.280429,VS0,VE20
-#&gt; &lt;- vary: Accept-Encoding
-#&gt; &lt;- x-fastly-request-id: a96cef7e75671429726fb6f0a5dbe1834eec2962
-#&gt; &lt;- content-length: 4495
-#&gt; &lt;- </div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> https://httr2.r-lib.org</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Status</span>: 200 OK</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Content-Type</span>: text/html</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Body</span>: In memory (15903 bytes)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
