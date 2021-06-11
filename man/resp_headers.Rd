@@ -53,6 +53,6 @@ is found, this returns \code{UTF-8}. Used by \code{\link[=resp_body_string]{resp
 \item \code{resp_retry_after()} returns how many seconds you should wait before
 retrying a request. It parses both forms (absolute and relative) and
 returns the number of seconds to wait. If the heading is not found,
-it will return \code{NULL}.
+it will return \code{NA}.
 }
 }

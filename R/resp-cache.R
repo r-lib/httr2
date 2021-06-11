@@ -1,4 +1,4 @@
-resp_cacheable <- function(resp, control = NULL) {
+resp_is_cacheable <- function(resp, control = NULL) {
   if (resp$method != "GET") {
     return(FALSE)
   }
@@ -21,22 +21,22 @@ resp_cacheable <- function(resp, control = NULL) {
 
 resp_cache_info <- function(resp, control = NULL) {
   list(
-    expires = resp_cache_expiry(resp, control),
+    expires = resp_cache_expires(resp, control),
     last_modified = resp_header(resp, "Last-Modified"),
     etag = resp_header(resp, "Etag")
   )
 }
 
-resp_cache_expiry <- function(resp, control = NULL) {
+resp_cache_expires <- function(resp, control = NULL) {
   control <- control %||% resp_cache_control(resp)
 
   # Prefer max-age parameter if it exists, otherwise use Expires header
-  if (!has_name(control, "max-age") && resp_header_exists(resp, "Date")) {
-    expiry <- resp_date(resp) + as.integer(control[["max-age"]])
+  if (has_name(control, "max-age") && resp_header_exists(resp, "Date")) {
+    resp_date(resp) + as.integer(control[["max-age"]])
   } else if (resp_header_exists(resp, "Expires")) {
-    httr::parse_http_date(resp_header(resp, "Expires"), NULL)
+    parse_http_date(resp_header(resp, "Expires"))
   } else {
-    NULL
+    NA
   }
 }
 
@@ -119,7 +119,7 @@ req_cache_set <- function(req, resp) {
 
 function() {
   cached <- req_cache_info(req)
-  if (is.null(cached$expiry) && cached$expiry <= Sys.time()) {
+  if (!is.na(cached$expires) && cached$expires <= Sys.time()) {
     return(req_cached(req))
   }
   if (!is.null(cached)) {

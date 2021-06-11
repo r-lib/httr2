@@ -116,3 +116,20 @@ with_verbosity <- function(code, verbosity = 1) {
   withr::local_options(httr2_verbosity = verbosity)
   code
 }
+
+local_time <- function(x, tz = "UTC") {
+  out <- as.POSIXct(x, tz = tz)
+  attr(out, "tzone") <- NULL
+  out
+}
+
+parse_http_date <- function(x) {
+  check_string(x, "`x`")
+
+  withr::local_locale(LC_TIME = "C")
+
+  # https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1
+  out <- as.POSIXct(strptime(x, "%a, %d %b %Y %H:%M:%S", tz = "GMT"))
+  attr(out, "tzone") <- NULL
+  out
+}

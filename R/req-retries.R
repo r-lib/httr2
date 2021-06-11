@@ -111,7 +111,11 @@ retry_backoff <- function(req, i) {
 
 retry_after <- function(req, resp, i) {
   after <- req_policy_call(req, "retry_after", list(resp), default = resp_retry_after)
-  after %||% retry_backoff(req, i)
+  if (is.na(after)) {
+    retry_backoff(req, i)
+  } else {
+    after
+  }
 }
 
 # Helpers -----------------------------------------------------------------

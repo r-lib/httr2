@@ -25,7 +25,7 @@
 #' *  `resp_retry_after()` returns how many seconds you should wait before
 #'    retrying a request. It parses both forms (absolute and relative) and
 #'    returns the number of seconds to wait. If the heading is not found,
-#'    it will return `NULL`.
+#'    it will return `NA`.
 #'
 #' @param resp An HTTP response object, as created by [req_fetch()].
 #' @export
@@ -58,7 +58,8 @@ resp_content_type <- function(resp) {
 #' @export
 #' @rdname resp_headers
 resp_date <- function(resp) {
-  httr::parse_http_date(resp_header(resp, "Date"), NULL)
+  # Date header always added by req_fetch()
+  parse_http_date(resp_header(resp, "Date"))
 }
 
 #' @export
@@ -73,9 +74,9 @@ resp_retry_after <- function(resp) {
   # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
   val <- resp_header(resp, "Retry-After")
   if (is.null(val)) {
-    NULL
+    NA
   } else if (grepl(" ", val)) {
-    diff <- difftime(httr::parse_http_date(val), resp_date(resp), units = "secs")
+    diff <- difftime(parse_http_date(val), resp_date(resp), units = "secs")
     as.numeric(diff)
   } else {
     as.numeric(val)
