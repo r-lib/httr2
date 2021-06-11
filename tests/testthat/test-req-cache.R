@@ -37,6 +37,35 @@ test_that("cached cache header added to request", {
   expect_equal(req3$headers$`If-None-Match`, '"abc"')
 })
 
+test_that("error can use cached value", {
+  req <- request("http://example.com") %>% req_cache(tempfile(), TRUE)
+  resp <- response(200, body = charToRaw("OK"))
+  cache_set(req, resp)
+
+  cached <- cache_post_fetch(req, structure(list(), class = "error"))
+  expect_equal(cached, resp)
+})
+
+test_that("304 retains headers but gets cached body", {
+  req <- request("http://example.com") %>% req_cache(tempfile())
+  resp <- response(200, headers = "X: 1", body = charToRaw("OK"))
+  cache_set(req, resp)
+
+  cached <- cache_post_fetch(req, response(304, headers = "X: 2"))
+  expect_equal(cached$headers$x, "2")
+  expect_equal(cached$body, resp$body)
+})
+
+test_that("automatically adds to cache", {
+  req <- request("http://example.com") %>% req_cache(tempfile())
+  expect_false(cache_exists(req))
+
+  resp <- response(200, headers = 'Etag: "abc"', body = charToRaw("OK"))
+  cached <- cache_post_fetch(req, resp)
+  expect_true(cache_exists(req))
+  expect_equal(cache_get(req), resp)
+})
+
 # cache -------------------------------------------------------------------
 
 test_that("can get and set from cache", {

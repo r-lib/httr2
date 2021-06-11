@@ -65,7 +65,7 @@ cache_pre_fetch <- function(req) {
 }
 
 cache_post_fetch <- function(req, resp, path = NULL) {
-  if (!req_policy_exists(req, "cache")) {
+  if (!req_policy_exists(req, "cache_path")) {
     return(resp)
   }
 
