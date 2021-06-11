@@ -41,14 +41,12 @@
 
 <meta property="og:title" content="Show verbose output when request is performed — req_verbose" />
 <meta property="og:description" content="req_verbose() uses the following prefixes to distinguish between
-different components of the http messages:
-* informative curl messages
--&amp;gt; headers sent (out)
-&amp;gt;&amp;gt; data sent (out)
-*&amp;gt; ssl data sent (out)
-&amp;lt;- headers received (in)
-&amp;lt;&amp;lt; data received (in)
-&amp;lt;* ssl data received (in)
+different components of the HTTP requests and responses:
+*  informative curl messages
+&amp;lt;- request headers
+&amp;lt;&amp;lt; request body
+-&amp;gt; response headers
+&amp;gt;&amp;gt; response body
 
 " />
 
@@ -137,26 +135,23 @@ different components of the http messages:
 
     <div class="ref-description">
     <p><code>req_verbose()</code> uses the following prefixes to distinguish between
-different components of the http messages:</p><ul>
-<li><p><code><a href='https://rdrr.io/r/base/Arithmetic.html'>*</a></code> informative curl messages</p></li>
-<li><p><code>-&gt;</code> headers sent (out)</p></li>
-<li><p><code>&gt;&gt;</code> data sent (out)</p></li>
-<li><p><code>*&gt;</code> ssl data sent (out)</p></li>
-<li><p><code>&lt;-</code> headers received (in)</p></li>
-<li><p><code>&lt;&lt;</code> data received (in)</p></li>
-<li><p><code>&lt;*</code> ssl data received (in)</p></li>
+different components of the HTTP requests and responses:</p><ul>
+<li><p><code>* </code> informative curl messages</p></li>
+<li><p><code>&lt;-</code> request headers</p></li>
+<li><p><code>&lt;&lt;</code> request body</p></li>
+<li><p><code>-&gt;</code> response headers</p></li>
+<li><p><code>&gt;&gt;</code> response body</p></li>
 </ul>
 
     </div>
 
     <pre class="usage"><span class='fu'>req_verbose</span><span class='op'>(</span>
   <span class='va'>req</span>,
-  header_out <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  header_in <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  data_out <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  data_in <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  header_req <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  header_resp <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  body_req <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  body_resp <span class='op'>=</span> <span class='cn'>FALSE</span>,
   info <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  ssl <span class='op'>=</span> <span class='cn'>FALSE</span>,
   redact_header <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
@@ -168,21 +163,19 @@ different components of the http messages:</p><ul>
       <td><p>A <a href='request.html'>request</a>.</p></td>
     </tr>
     <tr>
-      <th>header_out, header_in</th>
-      <td><p>Show headers sent to/received from the server?</p></td>
+      <th>header_req, header_resp</th>
+      <td><p>Show request/response headers?</p></td>
     </tr>
     <tr>
-      <th>data_out, data_in</th>
-      <td><p>Show data sent to/received from the server?</p></td>
+      <th>body_req, body_resp</th>
+      <td><p>Should request/response bodies? When the response
+body is compressed, this will show the number of bytes recevied in
+each "chunk".</p></td>
     </tr>
     <tr>
       <th>info</th>
-      <td><p>Show informational text from curl. This is mainly useful
+      <td><p>Show informational text from curl? This is mainly useful
 for debugging https and auth problems, so is disabled by default.</p></td>
-    </tr>
-    <tr>
-      <th>ssl</th>
-      <td><p>Show data even when using a secure connection?</p></td>
     </tr>
     <tr>
       <th>redact_header</th>
@@ -192,6 +185,10 @@ accidentally leaking credentials when debugging/reprexing.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='req_fetch.html'>req_fetch()</a></code> which exposes a limited subset of these options
+through the <code>verbosity</code> argument.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
