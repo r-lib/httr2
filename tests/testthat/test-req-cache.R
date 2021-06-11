@@ -1,3 +1,41 @@
+test_that("nothing happens if cache not enabled", {
+  req <- request("http://example.com")
+
+  expect_false(cache_exists(req))
+  expect_equal(cache_pre_fetch(req), req)
+
+  resp <- response()
+  expect_equal(cache_post_fetch(req, resp), resp)
+})
+
+test_that("immutable objects retrieved directly from cache", {
+  req <- request("http://example.com") %>% req_cache(tempfile())
+  resp <- response(200,
+    headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
+    body = charToRaw("abc")
+  )
+  cache_set(req, resp)
+
+  expect_equal(cache_pre_fetch(req), resp)
+})
+
+test_that("cached cache header added to request", {
+  req <- request("http://example.com") %>% req_cache(tempfile())
+  # If not cached, request returned as is
+  req2 <- cache_pre_fetch(req)
+  expect_equal(req2, req)
+
+  resp <- response(200,
+    headers = c('Etag: "abc"', "Last-Modified: Wed, 01 Jan 2020 00:00:00 GMT"),
+    body = charToRaw("abc")
+  )
+  cache_set(req, resp)
+
+  # After caching adds caching headers
+  req3 <- cache_pre_fetch(req)
+  expect_equal(req3$headers$`If-Modified-Since`, "Wed, 01 Jan 2020 00:00:00 GMT")
+  expect_equal(req3$headers$`If-None-Match`, '"abc"')
+})
 
 # cache -------------------------------------------------------------------
 
@@ -49,6 +87,8 @@ test_that("correctly determines if response is cacheable", {
     resp_is_cacheable(response(...))
   }
 
+  expect_equal(is_cacheable(200, headers = "Expires: ABC"), TRUE)
+  expect_equal(is_cacheable(200, headers = "Cache-Control: max-age=10"), TRUE)
   expect_equal(is_cacheable(200, headers = "Etag: ABC"), TRUE)
   expect_equal(is_cacheable(200, headers = c("Etag: ABC", "Cache-Control: no-store")), FALSE)
   expect_equal(is_cacheable(200), FALSE)

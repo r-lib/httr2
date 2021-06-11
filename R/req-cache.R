@@ -50,11 +50,11 @@ cache_set <- function(req, resp) {
 # Can return request or response
 cache_pre_fetch <- function(req) {
   if (!cache_exists(req)) {
-    req
+    return(req)
   }
 
   info <- resp_cache_info(cache_get(req))
-  if (!is.na(info$expires) && info$expires <= Sys.time()) {
+  if (!is.na(info$expires) && info$expires >= Sys.time()) {
     cache_get(req)
   } else {
     req_headers(req,
@@ -112,8 +112,11 @@ resp_is_cacheable <- function(resp, control = NULL) {
   if ("no-store" %in% control$flags) {
     return(FALSE)
   }
+  if (has_name(control, "max-age")) {
+    return(TRUE)
+  }
 
-  if (!any(resp_header_exists(resp, c("Etag", "Last-Modified")))) {
+  if (!any(resp_header_exists(resp, c("Etag", "Last-Modified", "Expires")))) {
     return(FALSE)
   }
 
