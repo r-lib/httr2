@@ -32,10 +32,14 @@
 req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L)) {
   check_request(req)
   req <- req_verbosity(req, verbosity)
-
   req <- auth_oauth_sign(req)
-  handle <- req_handle(req)
 
+  req <- cache_pre_fetch(req)
+  if (is_response(req)) {
+    return(req)
+  }
+
+  handle <- req_handle(req)
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
 
@@ -70,6 +74,8 @@ req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity",
     }
   }
   signal("", "httr2_fetch", n = n, tries = tries, reauth = reauth)
+
+  resp <- cache_post_fetch(req, resp, path = path)
 
   if (is_error(resp)) {
     stop(resp)

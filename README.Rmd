@@ -95,6 +95,9 @@ resp %>% resp_body_html()
 -   You can manage encrypted secrets often needed for testing with `secret_encrpyt()` and friends.
     You can obfuscate mildly confidential data (like many client secrets) with `obfuscate()`, preventing them being scraped from published code.
 
+-   You can automatically cache all cacheable results with `req_cache()`.
+    Relatively few API responses are cacheable, but when they are it typically makes a big difference.
+
 ## Acknowledgements
 
 httr2 wouldn't be possible without [curl](https://jeroen.cran.dev/curl/), [openssl](https://github.com/jeroen/openssl/), [jsonlite](https://jeroen.cran.dev/jsonlite/), and [jose](https://github.com/jeroen/jose/), which are all maintained by [Jeroen Ooms](https://github.com/jeroen).

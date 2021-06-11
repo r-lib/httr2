@@ -35,6 +35,13 @@ test_that("repeated transient errors still fail", {
   expect_equal(cnd$n, 3)
 })
 
+test_that("can cache requests with etags", {
+  req <- request_test("/etag/:etag", etag = "abc") %>% req_cache(tempfile())
+
+  resp1 <- req_fetch(req)
+  expect_condition(resp2 <- req_fetch(req), class = "httr2_cache_not_modified")
+})
+
 test_that("req_fetch() will throttle requests", {
   throttle_reset()
 

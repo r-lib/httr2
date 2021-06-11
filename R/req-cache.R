@@ -1,3 +1,23 @@
+#' Automatically cache requests
+#'
+#' @description
+#' Use `req_fetch()` to automatically cache HTTP requests. Most API requests
+#' are not cacheable, but when possible (often when downloading larger files)
+#' it can make a big difference. `req_cache()` caches responses to GET requests
+#' that have status code 200 and at least one of the standard caching headers
+#' (e.g. `Expires`, `Etag`, `Last-Modified`, `Cache-Control`), unless caching
+#' has been expressly prohibited with `Cache-Control: no-store`. Typically,
+#' a request will still be sent to the server to check that the cached value
+#' is still up-to-date, but it will not need to re-download the body value.
+#'
+#' To learn more about HTTP caching, I recommend the MDN article
+#' [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching).
+#'
+#' @inheritParams req_fetch
+#' @param path Path to cache directory
+#' @param use_on_error If the request errors, and there's a cache response,
+#'   should `req_fetch()` return that instead of generating an error?
+#' @export
 req_cache <- function(req, path, use_on_error = FALSE) {
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
   req_policies(req,
@@ -55,6 +75,7 @@ cache_pre_fetch <- function(req) {
 
   info <- resp_cache_info(cache_get(req))
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
+    signal("", "httr2_cache_cached")
     cache_get(req)
   } else {
     req_headers(req,
@@ -72,6 +93,7 @@ cache_post_fetch <- function(req, resp, path = NULL) {
   if (is_error(resp) && cache_use_on_error(req) && cache_exists(req)) {
     cache_get(req)
   } else if (resp_status(resp) == 304 && cache_exists(req)) {
+    signal("", "httr2_cache_not_modified")
     # Replace body with cached result
     resp$body <- cache_body(req, path)
     resp

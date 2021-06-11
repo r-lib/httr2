@@ -134,6 +134,10 @@ resp %>% resp_body_html()
     confidential data (like many client secrets) with `obfuscate()`,
     preventing them being scraped from published code.
 
+-   You can automatically cache all cacheable results with
+    `req_cache()`. Relatively few API responses are cacheable, but when
+    they are it typically makes a big difference.
+
 ## Acknowledgements
 
 httr2 wouldn’t be possible without
