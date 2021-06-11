@@ -6,26 +6,25 @@
 \usage{
 req_verbose(
   req,
-  header_out = TRUE,
-  header_in = TRUE,
-  data_out = FALSE,
-  data_in = FALSE,
+  header_req = TRUE,
+  header_resp = TRUE,
+  body_req = FALSE,
+  body_resp = FALSE,
   info = FALSE,
-  ssl = FALSE,
   redact_header = TRUE
 )
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{header_out, header_in}{Show headers sent to/received from the server?}
+\item{header_req, header_resp}{Show request/response headers?}
 
-\item{data_out, data_in}{Show data sent to/received from the server?}
+\item{body_req, body_resp}{Should request/response bodies? When the response
+body is compressed, this will show the number of bytes recevied in
+each "chunk".}
 
-\item{info}{Show informational text from curl. This is mainly useful
+\item{info}{Show informational text from curl? This is mainly useful
 for debugging https and auth problems, so is disabled by default.}
-
-\item{ssl}{Show data even when using a secure connection?}
 
 \item{redact_header}{Redact confidential data in the headers? Currently
 redacts the contents of the Authorization header to prevent you from
@@ -33,14 +32,16 @@ accidentally leaking credentials when debugging/reprexing.}
 }
 \description{
 \code{req_verbose()} uses the following prefixes to distinguish between
-different components of the http messages:
+different components of the HTTP requests and responses:
 \itemize{
-\item \code{*} informative curl messages
-\item \verb{->} headers sent (out)
-\item \verb{>>} data sent (out)
-\item \verb{*>} ssl data sent (out)
-\item \verb{<-} headers received (in)
-\item \verb{<<} data received (in)
-\item \verb{<*} ssl data received (in)
+\item \verb{* } informative curl messages
+\item \verb{<-} request headers
+\item \verb{<<} request body
+\item \verb{->} response headers
+\item \verb{>>} response body
 }
+}
+\seealso{
+\code{\link[=req_fetch]{req_fetch()}} which exposes a limited subset of these options
+through the \code{verbosity} argument.
 }

@@ -15,14 +15,24 @@
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
+#' @param verbosity How much information to print? This is a wrapper
+#'   around `req_verbose()` that uses an integer to control vebosity:
+#'
+#'   * 0: no output
+#'   * 1: show headers
+#'   * 2: show headers and bodies
+#'   * 3: show headers, bodies, and curl status messages.
+#'
 #' @returns Returns an HTTP response with successful status code. Will
 #'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
 #' @examples
 #' request("https://google.com") %>%
 #'   req_fetch()
-req_fetch <- function(req, path = NULL) {
+req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L)) {
   check_request(req)
+  req <- req_verbosity(req, verbosity)
+
   req <- auth_oauth_sign(req)
   handle <- req_handle(req)
 
@@ -93,6 +103,19 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
   resp
 }
 
+req_verbosity <- function(req, verbosity) {
+  if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
+    abort("verbosity must 0, 1, 2, or 3")
+  }
+
+  switch(verbosity + 1,
+    req,
+    req_verbose(req),
+    req_verbose(req, body_req = TRUE, body_resp = TRUE),
+    req_verbose(req, body_req = TRUE, body_resp = TRUE, info = TRUE),
+  )
+}
+
 #' Retrieve most recent request/response
 #'
 #' These functions retrieve the most recent request made by httr2 and
@@ -130,7 +153,7 @@ req_dry_run <- function(req, quiet = !is_interactive(), redact_header = TRUE) {
   check_installed("httpuv")
 
   if (!quiet) {
-    req <- req_verbose(req, header_in = FALSE, redact_header = redact_header)
+    req <- req_verbose(req, header_resp = FALSE, redact_header = redact_header)
   }
   # Override local server with fake host
   req <- req_headers(req, "Host" = httr::parse_url(req$url)$hostname)

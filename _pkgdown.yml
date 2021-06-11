@@ -36,6 +36,7 @@ reference:
   contents:
   - secrets
   - obfuscate
+  - with_verbose
 
 - title: OAuth flows
   desc: >

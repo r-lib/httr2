@@ -67,45 +67,43 @@ req_timeout <- function(req, seconds) {
 #'
 #' @description
 #' `req_verbose()` uses the following prefixes to distinguish between
-#' different components of the http messages:
+#' different components of the HTTP requests and responses:
 #'
-#' * `*` informative curl messages
-#' * `->` headers sent (out)
-#' * `>>` data sent (out)
-#' * `*>` ssl data sent (out)
-#' * `<-` headers received (in)
-#' * `<<` data received (in)
-#' * `<*` ssl data received (in)
+#' * `* ` informative curl messages
+#' * `<-` request headers
+#' * `<<` request body
+#' * `->` response headers
+#' * `>>` response body
 #'
 #' @inheritParams req_fetch
-#' @param header_out,header_in Show headers sent to/received from the server?
-#' @param data_out,data_in Show data sent to/received from the server?
-#' @param info Show informational text from curl. This is mainly useful
+#' @param header_req,header_resp Show request/response headers?
+#' @param body_req,body_resp Should request/response bodies? When the response
+#'   body is compressed, this will show the number of bytes recevied in
+#'   each "chunk".
+#' @param info Show informational text from curl? This is mainly useful
 #'   for debugging https and auth problems, so is disabled by default.
-#' @param ssl Show data even when using a secure connection?
 #' @param redact_header Redact confidential data in the headers? Currently
 #'   redacts the contents of the Authorization header to prevent you from
 #'   accidentally leaking credentials when debugging/reprexing.
+#' @seealso [req_fetch()] which exposes a limited subset of these options
+#'   through the `verbosity` argument.
 #' @export
 req_verbose <- function(req,
-                        header_out = TRUE,
-                        header_in = TRUE,
-                        data_out = FALSE,
-                        data_in = FALSE,
+                        header_req = TRUE,
+                        header_resp = TRUE,
+                        body_req = FALSE,
+                        body_resp = FALSE,
                         info = FALSE,
-                        ssl = FALSE,
                         redact_header = TRUE) {
   check_request(req)
 
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)            prefix_message("*  ", msg),
-      headerIn =   if (header_in)       prefix_message("<- ", msg),
-      headerOut =  if (header_out)      prefix_message("-> ", msg, redact = redact_header),
-      dataIn =     if (data_in)         prefix_message("<<  ", msg),
-      dataOut =    if (data_out)        prefix_message(">> ", msg),
-      sslDataIn =  if (ssl && data_in)  prefix_message("*< ", msg),
-      sslDataOut = if (ssl && data_out) prefix_message("*> ", msg)
+      headerOut =  if (header_resp)     prefix_message("<- ", msg, redact = redact_header),
+      headerIn =   if (header_req)      prefix_message("-> ", msg),
+      dataOut =    if (body_resp)       prefix_message("<< ", msg),
+      dataIn =     if (body_req)        prefix_message(">> ", msg)
     )
   }
   req_options(req, debugfunction = debug, verbose = TRUE)
@@ -114,14 +112,20 @@ req_verbose <- function(req,
 # helpers -----------------------------------------------------------------
 
 prefix_message <- function(prefix, x, redact = FALSE) {
-  x <- readBin(x, character())
-  lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
 
-  if (redact) {
-    is_auth <- grepl("^[aA]uthorization: ", lines)
-    lines[is_auth] <- "Authorization: <REDACTED>"
+  if (any(x > 128)) {
+    # This doesn't handle unicode, but it seems like most output
+    # will be compressed in some way, so displaying bodies is unlikely
+    # to be useful anyway.
+    lines <- paste0(length(x), " bytes of binary data")
+  } else {
+    x <- readBin(x, character())
+    lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
+    if (redact) {
+      is_auth <- grepl("^[aA]uthorization: ", lines)
+      lines[is_auth] <- "Authorization: <REDACTED>"
+    }
   }
   out <- paste0(prefix, lines, collapse = "\n")
-
   cat(out, "\n", sep = "")
 }

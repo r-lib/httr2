@@ -97,3 +97,22 @@ base64_url_decode <- function(x) {
 base64_url_rand <- function(bytes = 32) {
   base64_url_encode(openssl::rand_bytes(bytes))
 }
+
+#' Temporarily set verbosity for all requests
+#'
+#' `with_verbose()` is useful for debugging httr2 code buried deep inside
+#' another package because it allows you to see exactly what's been sent
+#' and requested.
+#'
+#' @inheritParams req_fetch
+#' @param code Code to execture
+#' @export
+#' @examples
+#' fun <- function() {
+#'   request("https://httr2.r-lib.org") %>% req_fetch()
+#' }
+#' with_verbosity(fun())
+with_verbosity <- function(code, verbosity = 1) {
+  withr::local_options(httr2_verbosity = verbosity)
+  code
+}

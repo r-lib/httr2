@@ -4,13 +4,22 @@
 \alias{req_fetch}
 \title{Simulate a request}
 \usage{
-req_fetch(req, path = NULL)
+req_fetch(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L))
 }
 \arguments{
 \item{req}{A \link{request}.}
 
 \item{path}{Optionally, path to save body of request. This is useful for
 large responses since it avoids storing the response in memory.}
+
+\item{verbosity}{How much information to print? This is a wrapper
+around \code{req_verbose()} that uses an integer to control vebosity:
+\itemize{
+\item 0: no output
+\item 1: show headers
+\item 2: show headers and bodies
+\item 3: show headers, bodies, and curl status messages.
+}}
 }
 \value{
 Returns an HTTP response with successful status code. Will

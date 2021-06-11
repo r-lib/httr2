@@ -32,10 +32,10 @@ test_that("can request verbose record of request", {
   req1 <- req %>%
     req_headers("Host" = "http://example.com") %>%
     req_user_agent("verbose") %>%
-    req_verbose(header_in = FALSE, data_out = TRUE)
+    req_verbose(header_resp = FALSE, body_req = TRUE)
   expect_snapshot_output(invisible(req_fetch(req1)))
 
   # Lightweight test for everything else
-  req2 <- req %>% req_verbose(info = TRUE, data_in = TRUE)
+  req2 <- req %>% req_verbose(info = TRUE, body_resp = TRUE)
   expect_output(req_fetch(req2))
 })
