@@ -7,11 +7,14 @@ test_that("req has basic print method", {
   })
 })
 
-test_that("print method obfuscates Authorization header", {
+test_that("print method obfuscates Authorization header unless requested", {
   req <- request("https://example.com") %>%
     req_headers(Authorization = "SECRET")
   output <- testthat::capture_messages(print(req))
   expect_false(any(grepl("SECRET", output)))
+
+  output <- testthat::capture_messages(print(req, redact_headers = FALSE))
+  expect_true(any(grepl("SECRET", output)))
 })
 
 test_that("check_request() gives useful error", {

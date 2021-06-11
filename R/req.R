@@ -13,12 +13,12 @@ request <- function(base_url) {
 }
 
 #' @export
-print.httr2_request <- function(x, ..., redact = TRUE) {
+print.httr2_request <- function(x, ..., redact_headers = TRUE) {
   cli::cli_text("{.cls {class(x)}}")
   method <- toupper(x$method %||% default_method(x))
   cli::cli_text("{.strong {method}} {x$url}")
 
-  if (redact && has_name(x$headers, "Authorization")) {
+  if (redact_headers && has_name(x$headers, "Authorization")) {
     x <- req_headers(x, Authorization = "<REDACTED>")
   }
 

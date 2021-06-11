@@ -11,7 +11,7 @@ req_verbose(
   body_req = FALSE,
   body_resp = FALSE,
   info = FALSE,
-  redact_header = TRUE
+  redact_headers = TRUE
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ each "chunk".}
 \item{info}{Show informational text from curl? This is mainly useful
 for debugging https and auth problems, so is disabled by default.}
 
-\item{redact_header}{Redact confidential data in the headers? Currently
+\item{redact_headers}{Redact confidential data in the headers? Currently
 redacts the contents of the Authorization header to prevent you from
 accidentally leaking credentials when debugging/reprexing.}
 }

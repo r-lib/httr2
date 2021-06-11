@@ -26,14 +26,11 @@ req
 req \%>\% req_dry_run()
 
 # httr2 does its best to redact the Authorization header so that you don't
-# accidentally confidential data. If you need to see exactly what's happening
-# you can use redact = FALSE
-print(req, redact = FALSE)
-req \%>\% req_dry_run(redact = FALSE)
+# accidentally reveal confidential data. Use `redact_headers` to reveal it:
+print(req, redact_headers = FALSE)
+req \%>\% req_dry_run(redact_headers = FALSE)
 
-# Note that the authorization header is not encrypted and the
-# password can easily be restored:
-rawToChar(jsonlite::base64_dec("aGFkbGV5IDogU0VDUkVU"))
-# This means that you should be careful when sharing any code that
-# reveals the Authorization header
+# We do this because the authorization header is not encrypted and the
+# so password can easily be discovered:
+rawToChar(jsonlite::base64_dec("aGFkbGV5OlNFQ1JFVA=="))
 }

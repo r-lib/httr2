@@ -69,3 +69,22 @@ test_that("can last response is NULL if it fails", {
   expect_equal(last_request(), req)
   expect_equal(last_response(), NULL)
 })
+
+# dry run -----------------------------------------------------------------
+
+test_that("req_dry_run() returns useful data", {
+  resp <- request("http://example.com") %>% req_dry_run(quiet = TRUE)
+  expect_equal(resp$method, "GET")
+  expect_equal(resp$path, "/")
+  expect_equal(resp$headers$`user-agent`, default_ua())
+})
+
+test_that("authorization headers are redacted", {
+  expect_snapshot({
+    request("http://example.com") %>%
+      req_auth_basic("user", "password") %>%
+      req_user_agent("test") %>%
+      req_dry_run()
+  })
+})
+

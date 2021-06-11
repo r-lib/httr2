@@ -153,13 +153,22 @@ last_request <- function() {
 #'   including `method`, `path`, and `headers`.
 #' @export
 #' @examples
-#' request("http://google.com") %>% req_dry_run()
-req_dry_run <- function(req, quiet = FALSE, redact_header = TRUE) {
+#' # httr2 adds default User-Agent, Accept, and Accept-Encoding headers
+#' request("http://example.com") %>% req_dry_run()
+#'
+#' # the Authorization header is automatically redacted to avoid leaking
+#' # credentials on the console
+#' req <- request("http://example.com") %>% req_auth_basic("user", "password")
+#' req %>% req_dry_run()
+#'
+#' # if you need to see it, use redact_headers = FALSE
+#' req %>% req_dry_run(redact_headers = FALSE)
+req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   check_request(req)
   check_installed("httpuv")
 
   if (!quiet) {
-    req <- req_verbose(req, header_resp = FALSE, redact_header = redact_header)
+    req <- req_verbose(req, header_resp = FALSE, redact_headers = redact_headers)
   }
   # Override local server with fake host
   req <- req_headers(req, "Host" = httr::parse_url(req$url)$hostname)

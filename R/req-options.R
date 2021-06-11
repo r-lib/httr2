@@ -82,7 +82,7 @@ req_timeout <- function(req, seconds) {
 #'   each "chunk".
 #' @param info Show informational text from curl? This is mainly useful
 #'   for debugging https and auth problems, so is disabled by default.
-#' @param redact_header Redact confidential data in the headers? Currently
+#' @param redact_headers Redact confidential data in the headers? Currently
 #'   redacts the contents of the Authorization header to prevent you from
 #'   accidentally leaking credentials when debugging/reprexing.
 #' @seealso [req_fetch()] which exposes a limited subset of these options
@@ -94,14 +94,14 @@ req_verbose <- function(req,
                         body_req = FALSE,
                         body_resp = FALSE,
                         info = FALSE,
-                        redact_header = TRUE) {
+                        redact_headers = TRUE) {
   check_request(req)
 
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)            prefix_message("*  ", msg),
-      headerOut =  if (header_resp)     prefix_message("<- ", msg, redact = redact_header),
-      headerIn =   if (header_req)      prefix_message("-> ", msg),
+      headerOut =  if (header_resp)     prefix_message("<- ", msg),
+      headerIn =   if (header_req)      prefix_message("-> ", msg, redact = redact_headers),
       dataOut =    if (body_resp)       prefix_message("<< ", msg),
       dataIn =     if (body_req)        prefix_message(">> ", msg)
     )
