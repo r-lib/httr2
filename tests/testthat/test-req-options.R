@@ -16,8 +16,8 @@ test_that("can override default user agent", {
   req1 <- request("http://example.com")
   req2 <- req1 %>% req_user_agent("abc")
 
-  expect_equal(req_dry_run(req1)$headers$`user-agent`, default_ua())
-  expect_equal(req_dry_run(req2)$headers$`user-agent`, "abc")
+  expect_equal(req_dry_run(req1, TRUE)$headers$`user-agent`, default_ua())
+  expect_equal(req_dry_run(req2, TRUE)$headers$`user-agent`, "abc")
 })
 
 test_that("can set timeout", {

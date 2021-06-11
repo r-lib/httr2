@@ -4,7 +4,7 @@
 \alias{req_dry_run}
 \title{Perform a dry run}
 \usage{
-req_dry_run(req, quiet = !is_interactive(), redact_header = TRUE)
+req_dry_run(req, quiet = FALSE, redact_header = TRUE)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -26,5 +26,5 @@ works by sending the real HTTP request to a local webserver, thanks to
 the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 }
 \examples{
-request("http://google.com") \%>\% req_dry_run(FALSE)
+request("http://google.com") \%>\% req_dry_run()
 }

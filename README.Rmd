@@ -64,7 +64,7 @@ req %>% req_method("PATCH")
 You can see what httr2 will send to the server with `req_dry_run()`:
 
 ```{r}
-req %>% req_dry_run(quiet = FALSE)
+req %>% req_dry_run()
 ```
 
 And perform the request, getting back a response, with `req_fetch()`:

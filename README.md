@@ -78,7 +78,7 @@ req %>% req_method("PATCH")
 You can see what httr2 will send to the server with `req_dry_run()`:
 
 ``` r
-req %>% req_dry_run(quiet = FALSE)
+req %>% req_dry_run()
 #> -> GET / HTTP/1.1
 #> -> Host: r-project.org
 #> -> User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1

@@ -147,8 +147,8 @@ last_request <- function() {
 #'   including `method`, `path`, and `headers`.
 #' @export
 #' @examples
-#' request("http://google.com") %>% req_dry_run(FALSE)
-req_dry_run <- function(req, quiet = !is_interactive(), redact_header = TRUE) {
+#' request("http://google.com") %>% req_dry_run()
+req_dry_run <- function(req, quiet = FALSE, redact_header = TRUE) {
   check_request(req)
   check_installed("httpuv")
 
