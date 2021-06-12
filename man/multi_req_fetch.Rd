@@ -48,3 +48,25 @@ In general, where \code{\link[=req_fetch]{req_fetch()}} might make multiple requ
 or OAuth failures, \code{multi_req_fetch()} will make only make 1.
 }
 
+\examples{
+# Requesting these 4 pages one at a time would take four seconds:
+reqs <- list(
+  request("https://httpbin.org/delay/1"),
+  request("https://httpbin.org/delay/1"),
+  request("https://httpbin.org/delay/1"),
+  request("https://httpbin.org/delay/1")
+)
+# But it's much faster if you request in parallel
+system.time(resps <- multi_req_fetch(reqs))
+
+reqs <- list(
+  request("https://httpbin.org/status/200"),
+  request("https://httpbin.org/status/400"),
+  request("FAILURE")
+)
+# multi_req_fetch() will always succeed
+resps <- multi_req_fetch(reqs)
+# you'll need to inspect the results to figure out which requests fails
+fail <- vapply(resps, inherits, "error", FUN.VALUE = logical(1))
+resps[fail]
+}
