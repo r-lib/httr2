@@ -79,6 +79,15 @@ test_that("req_dry_run() returns useful data", {
   expect_equal(resp$headers$`user-agent`, default_ua())
 })
 
+test_that("req_dry_run() shows body", {
+  expect_snapshot({
+    request("http://example.com") %>%
+      req_body_json(list(x = 1, y = TRUE, z = "c")) %>%
+      req_user_agent("test") %>%
+      req_dry_run()
+  })
+})
+
 test_that("authorization headers are redacted", {
   expect_snapshot({
     request("http://example.com") %>%

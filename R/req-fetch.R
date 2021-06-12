@@ -170,12 +170,14 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   check_installed("httpuv")
 
   if (!quiet) {
-    req <- req_verbose(req, header_resp = FALSE, redact_headers = redact_headers)
+    debug <- function(type, msg) {
+      if (type %in% c(2L, 4L)) prefix_message("", msg, redact = redact_headers)
+    }
+    req <- req_options(req, debugfunction = debug, verbose = TRUE)
   }
-  # Override local server with fake host
-  req <- req_headers(req, "Host" = httr::parse_url(req$url)$hostname)
 
   handle <- req_handle(req)
+  curl::handle_setopt(handle, url = req$url)
   resp <- curl::curl_echo(handle, progress = FALSE)
 
   invisible(list(
