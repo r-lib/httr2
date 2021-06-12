@@ -14,11 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-The goal of this document is to get you up and running with httr2 as quickly as possible.
-httr2 is designed to map closely to the underlying HTTP protocol.
-I'll try and explain the basics in this intro, but I'd also recommend "[An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)" from MDN.
-
-There are two important parts to HTTP: the **request**, the data sent to the server, and the **response**, the data sent back from the server.
+The goal of this document is show you the basics of httr2.
+You'll learn how to create and submit HTTP requests and work with the HTTP responses that you get back.
+httr2 is designed to map closely to the underlying HTTP protocol, which I'll explain as we go along.
+For more details, I also recommend "[An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)" from MDN.
 
 ```{r setup}
 library(httr2)
@@ -27,17 +26,17 @@ library(httr2)
 ## Create a request
 
 In httr2, you start by creating a request.
-This is quite different to httr, where you could only submit a request, immediately receiving a response.
-Having an explicit request object makes it easier to built up a complex request piece by piece, and works well with the pipe.
+If you're familiar with httr, this a big change: with httr you could only submit a request, immediately receiving a response.
+Having an explicit request object makes it easier to built up a complex request piece by piece and works well with the pipe.
 
-The simplest request just needs a url:
+Every request starts with a URL:
 
 ```{r}
-req <- request("http://httpbin.org/get")
+req <- request("https://httpbin.org/get")
 req
 ```
 
-We can see exactly what this message this request will send to the server by performing a dry run:
+We can see exactly this request will send to the server with a dry run:
 
 ```{r}
 req %>% req_dry_run()
@@ -45,27 +44,33 @@ req %>% req_dry_run()
 
 The first line of the request contains three important pieces of information:
 
--   The HTTP **method**, which a verb telling the server what action you want to perform.
-    Here's its GET, indicating that we want to get some data.
+-   The HTTP **method**, which is a verb that tells the server what you want to do.
+    Here's its GET, the most common verb, indicating that we want to *get* some data.
+    Other verbs include POST, to send data, UPDATE, to update an existing resource, and DELETE, to delete resources.
 
--   The **path** which is the url stripped of all information that server already knows: the protocol (http), the domain or host (httpbin.org) and the port (not used here).
+-   The **path**,which is the url stripped of details that server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).
 
 -   The version of the HTTP protocol.
+    This is unimportant for our purposes and it's handled at a lower layer in the stack.
 
-The following lines consistent of name-value pairs separated by ":".
-These are called the HTTP **headers**.
-These headers are automatically added by httr2; if you want to add your own, you can use `req_headers()`:
+The following lines consistent are the HTTP **headers**, a series of name-value pairs separated by ":".
+The headers in this request were automatically added by httr2, but you can override them or add your own with `req_headers()`:
 
 ```{r}
 req %>%
-  req_headers(Name = "Hadley", `Shoe-Size` = "11") %>% 
+  req_headers(
+    Name = "Hadley", 
+    `Shoe-Size` = "11", 
+    Accept = "application/json"
+  ) %>% 
   req_dry_run()
 ```
 
-HTTP servers will ignore headers that they don't understand.
+Header names are case-insensitive, and servers will ignore headers that they don't understand.
 
-The headers are finished up by a blank line which is followed by the **body**.
-The requests above (like all GET requests) don't have a body, so let's see what happens if we add one.
+The headers finish with a blank line which is followed by the **body**.
+The requests above (like all GET requests) don't have a body, so let's add one to see what happens.
+The `req_body_*()` functions provide a variety of ways to add data to the body.
 Here we'll use `req_body_json()` to add some data encoded as JSON:
 
 ```{r}
@@ -77,26 +82,36 @@ req %>%
 What's changed?
 
 -   The method has changed from GET to POST.
-    POST is the standard method for sending data to a website.
-    You can use other methods with `req_method()`.
+    POST is the standard method for sending data to a website, and is automatically used whenever you add a body.
+    If you need to use a different method, call `req_method()`.
 
--   We have two new headers, `Content-Type` and `Content-Length` which tell the server how to interpret the body --- it's going to be 15 bytes long and is encoded as JSON.
+-   There are two new headers: `Content-Type` and `Content-Length`.
+    They tell the server how to interpret the body --- it's encoded as JSON and is 15 bytes long.
 
 -   We have a body, consisting of some JSON.
 
-Different sites need data stored in different formats so httr2 provides a selection of common data types:
+Different servers need data stored in different formats so httr2 provides a selection of common options.
+For example, `req_body_form()` uses the same encoding used when you submit a form from your browser:
 
 ```{r}
 req %>%
-  req_body_form(list(x = 1, y = "a")) %>% 
+  req_body_form(list(x = "1", y = "a")) %>% 
   req_dry_run()
 ```
 
-If you need to send data encoded differently, you can use `req_body_string()` or `req_body_raw()` to add the raw data to the body, and `req_header()` to set the `Content-Type` header to the appropriate type.
+And `req_body_multipart()` uses the multipart encoding which is particularly important when you need to send larger amounts of data or complete files:
+
+```{r}
+req %>%
+  req_body_multipart(list(x = "1", y = "a")) %>% 
+  req_dry_run()
+```
+
+If you need to data encoded in a different form, you can use `req_body_raw()` to add the data to the body and set the `Content-Type` header.
 
 ## Performing a request and fetch the response
 
-To actually perform a request and fetch the response back, you'll use `req_fetch()`:
+To actually perform a request and fetch the response back from the server, call `req_fetch()`:
 
 ```{r}
 req <- request("https://httpbin.org/json")
@@ -111,7 +126,7 @@ resp %>% resp_raw()
 ```
 
 An HTTP response has a very similar structure to an HTTP request.
-The first line gives the version of HTTP used, and a status code followed by a short description.
+The first line gives the version of HTTP used, and a status code that's optionally followed by a short description.
 Then we have the headers, followed by a blank line, followed by a body.
 The majority of responses will have a body, unlike requests.
 
@@ -144,7 +159,7 @@ You can extract data from the response using the `resp_()` functions:
     resp %>% resp_body_json() %>% str()
     ```
 
-Responses with status codes 4xx and 5xx are consider to be HTTP errors.
+Responses with status codes 4xx and 5xx are HTTP errors.
 httr2 automatically turns these into R errors:
 
 ```{r, error = TRUE}
@@ -153,12 +168,12 @@ request("https://httpbin.org/status/500") %>% req_fetch()
 ```
 
 This is another important difference with httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.
-If needed, you can revert to the httr behaviour with `req_error(req, is_error = ~ FALSE)`.
+Revert to the httr behaviour with `req_error(req, is_error = ~ FALSE)`.
 
 ## Controlling the request process
 
-A number of `req_` functions don't directly affect how the request is sent but affect how it's handled.
-I'm not going to go in to detail here, but wanted to make you aware of the options:
+A number of `req_` functions don't directly affect how the request is sent but affect how the process of submitting the request and handling the response.
+I won't give any details here, but you should be aware of the following important functions:
 
 -   `req_cache()` sets up a cache so if repeated requests return the same results, you can avoid a trip to the server.
 
