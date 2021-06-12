@@ -30,11 +30,12 @@ req_method_apply <- function(req) {
   )
 }
 
-
 # Guess the method that curl will used based on options
 # https://everything.curl.dev/libcurl-http/requests#request-method
-default_method <- function(req) {
-  if (has_name(req$options, "nobody")) {
+req_method_get <- function(req) {
+  if (!is.null(req$method)) {
+    req$method
+  } else if (has_name(req$options, "nobody")) {
     "HEAD"
   } else if (has_name(req$options, "post")) {
     "POST"
