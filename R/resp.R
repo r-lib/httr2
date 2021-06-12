@@ -80,6 +80,28 @@ print.httr2_response <- function(x,...) {
   invisible(x)
 }
 
+#' Show the raw response
+#'
+#' The reconstruct the HTTP message that httr2 received from the server.
+#' It's unlikely to be exactly the same (because most servers compress at
+#' least the body, and HTTP/2 can also compress the headers), but it conveys
+#' the same information.
+#'
+#' @param resp A HTTP [response]
+#' @export
+#' @examples
+#' resp <- request("https://httpbin.org/json") %>% req_fetch()
+#' resp %>% resp_raw()
+resp_raw <- function(resp) {
+  cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))
+  cli::cat_line(names(resp$headers), ": ", resp$headers)
+  cli::cat_line()
+  if (!is.null(resp$body)) {
+    cli::cat_line(resp_body_string(resp))
+  }
+
+}
+
 is_response <- function(x) {
   inherits(x, "httr2_response")
 }
