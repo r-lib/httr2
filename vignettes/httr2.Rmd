@@ -1,0 +1,167 @@
+---
+title: "httr2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{httr2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The goal of this document is to get you up and running with httr2 as quickly as possible.
+httr2 is designed to map closely to the underlying HTTP protocol.
+I'll try and explain the basics in this intro, but I'd also recommend "[An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)" from MDN.
+
+There are two important parts to HTTP: the **request**, the data sent to the server, and the **response**, the data sent back from the server.
+
+```{r setup}
+library(httr2)
+```
+
+## Create a request
+
+In httr2, you start by creating a request.
+This is quite different to httr, where you could only submit a request, immediately receiving a response.
+Having an explicit request object makes it easier to built up a complex request piece by piece, and works well with the pipe.
+
+The simplest request just needs a url:
+
+```{r}
+req <- request("http://httpbin.org/get")
+req
+```
+
+We can see exactly what this message this request will send to the server by performing a dry run:
+
+```{r}
+req %>% req_dry_run()
+```
+
+The first line of the request contains three important pieces of information:
+
+-   The HTTP **method**, which a verb telling the server what action you want to perform.
+    Here's its GET, indicating that we want to get some data.
+
+-   The **path** which is the url stripped of all information that server already knows: the protocol (http), the domain or host (httpbin.org) and the port (not used here).
+
+-   The version of the HTTP protocol.
+
+The following lines consistent of name-value pairs separated by ":".
+These are called the HTTP **headers**.
+These headers are automatically added by httr2; if you want to add your own, you can use `req_headers()`:
+
+```{r}
+req %>%
+  req_headers(Name = "Hadley", `Shoe-Size` = "11") %>% 
+  req_dry_run()
+```
+
+HTTP servers will ignore headers that they don't understand.
+
+The headers are finished up by a blank line which is followed by the **body**.
+The requests above (like all GET requests) don't have a body, so let's see what happens if we add one.
+Here we'll use `req_body_json()` to add some data encoded as JSON:
+
+```{r}
+req %>%
+  req_body_json(list(x = 1, y = "a")) %>% 
+  req_dry_run()
+```
+
+What's changed?
+
+-   The method has changed from GET to POST.
+    POST is the standard method for sending data to a website.
+    You can use other methods with `req_method()`.
+
+-   We have two new headers, `Content-Type` and `Content-Length` which tell the server how to interpret the body --- it's going to be 15 bytes long and is encoded as JSON.
+
+-   We have a body, consisting of some JSON.
+
+Different sites need data stored in different formats so httr2 provides a selection of common data types:
+
+```{r}
+req %>%
+  req_body_form(list(x = 1, y = "a")) %>% 
+  req_dry_run()
+```
+
+If you need to send data encoded differently, you can use `req_body_string()` or `req_body_raw()` to add the raw data to the body, and `req_header()` to set the `Content-Type` header to the appropriate type.
+
+## Performing a request and fetch the response
+
+To actually perform a request and fetch the response back, you'll use `req_fetch()`:
+
+```{r}
+req <- request("https://httpbin.org/json")
+resp <- req %>% req_fetch()
+resp
+```
+
+You can see a simulation of what httr2 actually received with `resp_raw()`:
+
+```{r}
+resp %>% resp_raw()
+```
+
+An HTTP response has a very similar structure to an HTTP request.
+The first line gives the version of HTTP used, and a status code followed by a short description.
+Then we have the headers, followed by a blank line, followed by a body.
+The majority of responses will have a body, unlike requests.
+
+You can extract data from the response using the `resp_()` functions:
+
+-   `resp_status()` returns the status code and `resp_status_desc()` returns the description:
+
+    ```{r}
+    resp %>% resp_status()
+    resp %>% resp_status_desc()
+    ```
+
+-   You can extract all headers with `resp_headers()` or a specific header with `resp_header()`:
+
+    ```{r}
+    resp %>% resp_headers() %>% str()
+    resp %>% resp_header("Content-Length")
+    ```
+
+    Headers are case insensitive:
+
+    ```{r}
+    resp %>% resp_header("CoTtEnT-LeNgTH")
+    ```
+
+-   You can extract the body in various forms using the `resp_body_*()` family of functions.
+    Since this response returns JSON we can use `resp_body_json()`:
+
+    ```{r}
+    resp %>% resp_body_json() %>% str()
+    ```
+
+Responses with status codes 4xx and 5xx are consider to be HTTP errors.
+httr2 automatically turns these into R errors:
+
+```{r, error = TRUE}
+request("https://httpbin.org/status/404") %>% req_fetch()
+request("https://httpbin.org/status/500") %>% req_fetch()
+```
+
+This is another important difference with httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.
+If needed, you can revert to the httr behaviour with `req_error(req, is_error = ~ FALSE)`.
+
+## Controlling the request process
+
+A number of `req_` functions don't directly affect how the request is sent but affect how it's handled.
+I'm not going to go in to detail here, but wanted to make you aware of the options:
+
+-   `req_cache()` sets up a cache so if repeated requests return the same results, you can avoid a trip to the server.
+
+-   `req_throttle()` will automatically add a small delay before each request so you can avoid hammering a server with many requests.
+
+-   `req_retry()` sets up a retry strategy so that if the request either fails or you get a transient HTTP error, it'll automatically retry after a short delay.

@@ -27,6 +27,7 @@ Imports:
     rlang,
     withr
 Suggests:
+    knitr,
     askpass,
     covr,
     httpuv,
@@ -41,5 +42,6 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Remotes:  
+Remotes: 
     r-lib/pkgdown
+VignetteBuilder: knitr
