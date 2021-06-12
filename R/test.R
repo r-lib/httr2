@@ -1,6 +1,9 @@
 request_test <- function(template, ...) {
   if (is.null(the$test_app)) {
-    the$test_app <- webfakes::new_app_process(webfakes::httpbin_app())
+    the$test_app <- webfakes::new_app_process(
+      webfakes::httpbin_app(),
+      opts = webfakes::server_opts(num_threads = 6)
+    )
   }
 
   req <- request(the$test_app$url())
@@ -8,9 +11,9 @@ request_test <- function(template, ...) {
   req
 }
 
-request_httpbin <- function(template) {
+request_httpbin <- function(template, ...) {
   req <- request("https://httpbin.org")
-  req <- req_template(req, template)
+  req <- req_template(req, template, ..., .env = caller_env())
   req
 }
 
