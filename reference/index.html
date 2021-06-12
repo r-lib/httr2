@@ -84,6 +84,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/httr2.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -133,11 +136,20 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-define-a-request" class="hasAnchor"><a href="#section-define-a-request" class="anchor"></a>Define a request</h2>
+          <h2 id="section-requests" class="hasAnchor"><a href="#section-requests" class="anchor"></a>Requests</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       
+      
+    </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-create-and-modify" class="hasAnchor"><a href="#section-create-and-modify" class="anchor"></a>Create and modify</h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
       
     </tbody><tbody>
       
@@ -157,18 +169,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="req_cache.html">req_cache()</a></code> </p>
-        </td>
-        <td><p>Automatically cache requests</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_error.html">req_error()</a></code> </p>
-        </td>
-        <td><p>Control handling of HTTP errors</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="req_headers.html">req_headers()</a></code> </p>
         </td>
         <td><p>Modify request headers</p></td>
@@ -181,21 +181,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="req_retry.html">req_retry()</a></code> </p>
-        </td>
-        <td><p>Control when a request will retry, and how long it will wait between tries</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="req_template.html">req_template()</a></code> </p>
         </td>
         <td><p>Set method/path from a template</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_throttle.html">req_throttle()</a></code> </p>
-        </td>
-        <td><p>Throttle a request by automatically adding a delay</p></td>
       </tr><tr>
         
         <td>
@@ -214,21 +202,15 @@
           <p><code><a href="req_user_agent.html">req_user_agent()</a></code> </p>
         </td>
         <td><p>Set user agent</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="req_verbose.html">req_verbose()</a></code> </p>
-        </td>
-        <td><p>Show extra output when request is performed</p></td>
       </tr>
     </tbody><tbody>
+      
       <tr>
         <th colspan="2">
-          <h2 id="section-authenticate-a-request" class="hasAnchor"><a href="#section-authenticate-a-request" class="anchor"></a>Authenticate a request</h2>
+          <h3 id="section-authentication" class="hasAnchor"><a href="#section-authentication" class="anchor"></a>Authentication</h3>
           <p class="section-desc"></p>
         </th>
       </tr>
-      
       
     </tbody><tbody>
       
@@ -326,6 +308,49 @@
         <td><p>Retrieve most recent request/response</p></td>
       </tr>
     </tbody><tbody>
+      
+      <tr>
+        <th colspan="2">
+          <h3 id="section-control-the-process" class="hasAnchor"><a href="#section-control-the-process" class="anchor"></a>Control the process</h3>
+          <p class="section-desc"><p>These functions don’t modify the HTTP request that is sent to the server, but affect the overall process of <code><a href="../reference/req_fetch.html">req_fetch()</a></code>.</p></p>
+        </th>
+      </tr>
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="req_cache.html">req_cache()</a></code> </p>
+        </td>
+        <td><p>Automatically cache requests</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_error.html">req_error()</a></code> </p>
+        </td>
+        <td><p>Control handling of HTTP errors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_throttle.html">req_throttle()</a></code> </p>
+        </td>
+        <td><p>Throttle a request by automatically adding a delay</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_retry.html">req_retry()</a></code> </p>
+        </td>
+        <td><p>Control when a request will retry, and how long it will wait between tries</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="req_verbose.html">req_verbose()</a></code> </p>
+        </td>
+        <td><p>Show extra output when request is performed</p></td>
+      </tr>
+    </tbody><tbody>
       <tr>
         <th colspan="2">
           <h2 id="section-handle-the-response" class="hasAnchor"><a href="#section-handle-the-response" class="anchor"></a>Handle the response</h2>
@@ -349,6 +374,12 @@
           <p><code><a href="resp_headers.html">resp_headers()</a></code> <code><a href="resp_headers.html">resp_header()</a></code> <code><a href="resp_headers.html">resp_header_exists()</a></code> <code><a href="resp_headers.html">resp_content_type()</a></code> <code><a href="resp_headers.html">resp_date()</a></code> <code><a href="resp_headers.html">resp_encoding()</a></code> <code><a href="resp_headers.html">resp_retry_after()</a></code> </p>
         </td>
         <td><p>Extract headers from a response</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="resp_raw.html">resp_raw()</a></code> </p>
+        </td>
+        <td><p>Show the raw response</p></td>
       </tr><tr>
         
         <td>

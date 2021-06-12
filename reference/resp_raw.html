@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform a dry run — req_dry_run • httr2</title>
+<title>Show the raw response — resp_raw • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="Perform a dry run — req_dry_run" />
-<meta property="og:description" content="This shows you exactly what httr2 will send to the server, without
-actually sending anything. It requires the httpuv package because it
-works by sending the real HTTP request to a local webserver, thanks to
-the magic of curl::curl_echo()." />
+<meta property="og:title" content="Show the raw response — resp_raw" />
+<meta property="og:description" content="The reconstruct the HTTP message that httr2 received from the server.
+It's unlikely to be exactly the same (because most servers compress at
+least the body, and HTTP/2 can also compress the headers), but it conveys
+the same information." />
 
 
 
@@ -126,74 +126,62 @@ the magic of curl::curl_echo()." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform a dry run</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-fetch.R'><code>R/req-fetch.R</code></a></small>
-    <div class="hidden name"><code>req_dry_run.Rd</code></div>
+    <h1>Show the raw response</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp.R'><code>R/resp.R</code></a></small>
+    <div class="hidden name"><code>resp_raw.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This shows you exactly what httr2 will send to the server, without
-actually sending anything. It requires the httpuv package because it
-works by sending the real HTTP request to a local webserver, thanks to
-the magic of <code><a href='https://rdrr.io/pkg/curl/man/curl_echo.html'>curl::curl_echo()</a></code>.</p>
+    <p>The reconstruct the HTTP message that httr2 received from the server.
+It's unlikely to be exactly the same (because most servers compress at
+least the body, and HTTP/2 can also compress the headers), but it conveys
+the same information.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req_dry_run</span><span class='op'>(</span><span class='va'>req</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span>, redact_headers <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>resp_raw</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>req</th>
-      <td><p>A <a href='request.html'>request</a>.</p></td>
-    </tr>
-    <tr>
-      <th>quiet</th>
-      <td><p>If <code>TRUE</code> doesn't print anything.</p></td>
-    </tr>
-    <tr>
-      <th>redact_headers</th>
-      <td><p>Redact confidential data in the headers? Currently
-redacts the contents of the Authorization header to prevent you from
-accidentally leaking credentials when debugging/reprexing.</p></td>
+      <th>resp</th>
+      <td><p>A HTTP <a href='response.html'>response</a></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Invisibly, a list containing information about the request,
-including <code>method</code>, <code>path</code>, and <code>headers</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'># httr2 adds default User-Agent, Accept, and Accept-Encoding headers</span></span>
-<span class='r-in'><span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'>req_dry_run</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> GET / HTTP/1.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Host:example.com</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Accept: */*</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Accept-Encoding: deflate, gzip</span>
+    <pre class="examples"><span class='r-in'><span class='va'>resp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/json"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'><a href='req_fetch.html'>req_fetch</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>resp</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'>resp_raw</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> HTTP/1.1 200 OK</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> date: Sat, 12 Jun 2021 05:04:47 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> content-type: application/json</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> content-length: 429</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> server: gunicorn/19.9.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> access-control-allow-origin: *</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> access-control-allow-credentials: true</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># the Authorization header is automatically redacted to avoid leaking</span></span>
-<span class='r-in'><span class='co'># credentials on the console</span></span>
-<span class='r-in'><span class='va'>req</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'><a href='req_auth_basic.html'>req_auth_basic</a></span><span class='op'>(</span><span class='st'>"user"</span>, <span class='st'>"password"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'>req_dry_run</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> GET / HTTP/1.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Host:example.com</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Accept: */*</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Accept-Encoding: deflate, gzip</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Authorization: &lt;REDACTED&gt;</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># if you need to see it, use redact_headers = FALSE</span></span>
-<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'>req_dry_run</span><span class='op'>(</span>redact_headers <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> GET / HTTP/1.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Host:example.com</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Accept: */*</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Accept-Encoding: deflate, gzip</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Authorization: Basic dXNlcjpwYXNzd29yZA==</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   "slideshow": {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     "author": "Yours Truly", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     "date": "date of publication", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     "slides": [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         "title": "Wake up to WonderWidgets!", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         "type": "all"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       }, </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         "items": [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           "Why &lt;em&gt;WonderWidgets&lt;/em&gt; are great", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           "Who &lt;em&gt;buys&lt;/em&gt; WonderWidgets"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ], </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         "title": "Overview", </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         "type": "all"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ], </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     "title": "Sample Slide Show"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 </pre>
   </div>

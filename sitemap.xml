@@ -133,6 +133,9 @@
     <loc>https://httr2.r-lib.org/reference/resp_headers.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resp_raw.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>
   </url>
   <url>
@@ -146,5 +149,8 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/articles/articles/oauth.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/articles/httr2.html</loc>
   </url>
 </urlset>
