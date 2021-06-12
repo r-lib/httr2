@@ -92,54 +92,57 @@
 
     
     
-<p>The goal of this document is to get you up and running with httr2 as quickly as possible. httr2 is designed to map closely to the underlying HTTP protocol. I’ll try and explain the basics in this intro, but I’d also recommend “<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview">An overview of HTTP</a>” from MDN.</p>
-<p>There are two important parts to HTTP: the <strong>request</strong>, the data sent to the server, and the <strong>response</strong>, the data sent back from the server.</p>
+<p>The goal of this document is show you the basics of httr2. You’ll learn how to create and submit HTTP requests and work with the HTTP responses that you get back. httr2 is designed to map closely to the underlying HTTP protocol, which I’ll explain as we go along. For more details, I also recommend “<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview">An overview of HTTP</a>” from MDN.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></code></pre></div>
 <div id="create-a-request" class="section level2">
 <h2 class="hasAnchor">
 <a href="#create-a-request" class="anchor"></a>Create a request</h2>
-<p>In httr2, you start by creating a request. This is quite different to httr, where you could only submit a request, immediately receiving a response. Having an explicit request object makes it easier to built up a complex request piece by piece, and works well with the pipe.</p>
-<p>The simplest request just needs a url:</p>
+<p>In httr2, you start by creating a request. If you’re familiar with httr, this a big change: with httr you could only submit a request, immediately receiving a response. Having an explicit request object makes it easier to built up a complex request piece by piece and works well with the pipe.</p>
+<p>Every request starts with a URL:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"http://httpbin.org/get"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span><span class="op">)</span>
 <span class="va">req</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
-<span class="co">#&gt; GET http://httpbin.org/get</span></code></pre></div>
-<p>We can see exactly what this message this request will send to the server by performing a dry run:</p>
+<span class="co">#&gt; GET https://httpbin.org/get</span></code></pre></div>
+<p>We can see exactly this request will send to the server with a dry run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; GET /get HTTP/1.1</span>
-<span class="co">#&gt; Host:httpbin.org</span>
+<span class="co">#&gt; Host: httpbin.org</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span></code></pre></div>
 <p>The first line of the request contains three important pieces of information:</p>
 <ul>
-<li><p>The HTTP <strong>method</strong>, which a verb telling the server what action you want to perform. Here’s its GET, indicating that we want to get some data.</p></li>
-<li><p>The <strong>path</strong> which is the url stripped of all information that server already knows: the protocol (http), the domain or host (httpbin.org) and the port (not used here).</p></li>
-<li><p>The version of the HTTP protocol.</p></li>
+<li><p>The HTTP <strong>method</strong>, which is a verb that tells the server what you want to do. Here’s its GET, the most common verb, indicating that we want to <em>get</em> some data. Other verbs include POST, to send data, UPDATE, to update an existing resource, and DELETE, to delete resources.</p></li>
+<li><p>The <strong>path</strong>,which is the url stripped of details that server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).</p></li>
+<li><p>The version of the HTTP protocol. This is unimportant for our purposes and it’s handled at a lower layer in the stack.</p></li>
 </ul>
-<p>The following lines consistent of name-value pairs separated by “:”. These are called the HTTP <strong>headers</strong>. These headers are automatically added by httr2; if you want to add your own, you can use <code><a href="../reference/req_headers.html">req_headers()</a></code>:</p>
+<p>The following lines consistent are the HTTP <strong>headers</strong>, a series of name-value pairs separated by “:”. The headers in this request were automatically added by httr2, but you can override them or add your own with <code><a href="../reference/req_headers.html">req_headers()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Name <span class="op">=</span> <span class="st">"Hadley"</span>, `Shoe-Size` <span class="op">=</span> <span class="st">"11"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>
+    Name <span class="op">=</span> <span class="st">"Hadley"</span>, 
+    `Shoe-Size` <span class="op">=</span> <span class="st">"11"</span>, 
+    Accept <span class="op">=</span> <span class="st">"application/json"</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; GET /get HTTP/1.1</span>
-<span class="co">#&gt; Host:httpbin.org</span>
+<span class="co">#&gt; Host: httpbin.org</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
-<span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; Name: Hadley</span>
-<span class="co">#&gt; Shoe-Size: 11</span></code></pre></div>
-<p>HTTP servers will ignore headers that they don’t understand.</p>
-<p>The headers are finished up by a blank line which is followed by the <strong>body</strong>. The requests above (like all GET requests) don’t have a body, so let’s see what happens if we add one. Here we’ll use <code><a href="../reference/req_body_none.html">req_body_json()</a></code> to add some data encoded as JSON:</p>
+<span class="co">#&gt; Shoe-Size: 11</span>
+<span class="co">#&gt; Accept: application/json</span></code></pre></div>
+<p>Header names are case-insensitive, and servers will ignore headers that they don’t understand.</p>
+<p>The headers finish with a blank line which is followed by the <strong>body</strong>. The requests above (like all GET requests) don’t have a body, so let’s add one to see what happens. The <code>req_body_*()</code> functions provide a variety of ways to add data to the body. Here we’ll use <code><a href="../reference/req_body_none.html">req_body_json()</a></code> to add some data encoded as JSON:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/req_body_none.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; POST /get HTTP/1.1</span>
-<span class="co">#&gt; Host:httpbin.org</span>
+<span class="co">#&gt; Host: httpbin.org</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span>
@@ -149,17 +152,17 @@
 <span class="co">#&gt; {"x":1,"y":"a"}</span></code></pre></div>
 <p>What’s changed?</p>
 <ul>
-<li><p>The method has changed from GET to POST. POST is the standard method for sending data to a website. You can use other methods with <code><a href="../reference/req_method.html">req_method()</a></code>.</p></li>
-<li><p>We have two new headers, <code>Content-Type</code> and <code>Content-Length</code> which tell the server how to interpret the body — it’s going to be 15 bytes long and is encoded as JSON.</p></li>
+<li><p>The method has changed from GET to POST. POST is the standard method for sending data to a website, and is automatically used whenever you add a body. If you need to use a different method, call <code><a href="../reference/req_method.html">req_method()</a></code>.</p></li>
+<li><p>There are two new headers: <code>Content-Type</code> and <code>Content-Length</code>. They tell the server how to interpret the body — it’s encoded as JSON and is 15 bytes long.</p></li>
 <li><p>We have a body, consisting of some JSON.</p></li>
 </ul>
-<p>Different sites need data stored in different formats so httr2 provides a selection of common data types:</p>
+<p>Different servers need data stored in different formats so httr2 provides a selection of common options. For example, <code><a href="../reference/req_body_none.html">req_body_form()</a></code> uses the same encoding used when you submit a form from your browser:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body_none.html">req_body_form</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_body_none.html">req_body_form</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; POST /get HTTP/1.1</span>
-<span class="co">#&gt; Host:httpbin.org</span>
+<span class="co">#&gt; Host: httpbin.org</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span>
@@ -167,13 +170,35 @@
 <span class="co">#&gt; Content-Length: 7</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; x=1&amp;y=a</span></code></pre></div>
-<p>If you need to send data encoded differently, you can use <code>req_body_string()</code> or <code><a href="../reference/req_body_none.html">req_body_raw()</a></code> to add the raw data to the body, and <code>req_header()</code> to set the <code>Content-Type</code> header to the appropriate type.</p>
+<p>And <code><a href="../reference/req_body_none.html">req_body_multipart()</a></code> uses the multipart encoding which is particularly important when you need to send larger amounts of data or complete files:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/req_body_none.html">req_body_multipart</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; POST /get HTTP/1.1</span>
+<span class="co">#&gt; Host: httpbin.org</span>
+<span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class="co">#&gt; Accept: */*</span>
+<span class="co">#&gt; Accept-Encoding: deflate, gzip</span>
+<span class="co">#&gt; Content-Length: 228</span>
+<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------e8dde143def491b1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; --------------------------e8dde143def491b1</span>
+<span class="co">#&gt; Content-Disposition: form-data; name="x"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; 1</span>
+<span class="co">#&gt; --------------------------e8dde143def491b1</span>
+<span class="co">#&gt; Content-Disposition: form-data; name="y"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; a</span>
+<span class="co">#&gt; --------------------------e8dde143def491b1--</span></code></pre></div>
+<p>If you need to data encoded in a different form, you can use <code><a href="../reference/req_body_none.html">req_body_raw()</a></code> to add the data to the body and set the <code>Content-Type</code> header.</p>
 </div>
 <div id="performing-a-request-and-fetch-the-response" class="section level2">
 <h2 class="hasAnchor">
 <a href="#performing-a-request-and-fetch-the-response" class="anchor"></a>Performing a request and fetch the response</h2>
-<p>To actually perform a request and fetch the response back, you’ll use <code><a href="../reference/req_fetch.html">req_fetch()</a></code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>To actually perform a request and fetch the response back from the server, call <code><a href="../reference/req_fetch.html">req_fetch()</a></code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/json"</span><span class="op">)</span>
 <span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resp</span>
@@ -183,10 +208,10 @@
 <span class="co">#&gt; Content-Type: application/json</span>
 <span class="co">#&gt; Body: In memory (429 bytes)</span></code></pre></div>
 <p>You can see a simulation of what httr2 actually received with <code><a href="../reference/resp_raw.html">resp_raw()</a></code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; HTTP/1.1 200 OK</span>
-<span class="co">#&gt; date: Sat, 12 Jun 2021 05:04:53 GMT</span>
+<span class="co">#&gt; date: Sat, 12 Jun 2021 21:00:35 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>
@@ -214,12 +239,12 @@
 <span class="co">#&gt;     "title": "Sample Slide Show"</span>
 <span class="co">#&gt;   }</span>
 <span class="co">#&gt; }</span></code></pre></div>
-<p>An HTTP response has a very similar structure to an HTTP request. The first line gives the version of HTTP used, and a status code followed by a short description. Then we have the headers, followed by a blank line, followed by a body. The majority of responses will have a body, unlike requests.</p>
+<p>An HTTP response has a very similar structure to an HTTP request. The first line gives the version of HTTP used, and a status code that’s optionally followed by a short description. Then we have the headers, followed by a blank line, followed by a body. The majority of responses will have a body, unlike requests.</p>
 <p>You can extract data from the response using the <code>resp_()</code> functions:</p>
 <ul>
 <li>
 <p><code><a href="../reference/resp_status.html">resp_status()</a></code> returns the status code and <code><a href="../reference/resp_status.html">resp_status_desc()</a></code> returns the description:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] 200</span>
 <span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span>
@@ -227,25 +252,24 @@
 </li>
 <li>
 <p>You can extract all headers with <code><a href="../reference/resp_headers.html">resp_headers()</a></code> or a specific header with <code><a href="../reference/resp_headers.html">resp_header()</a></code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; List of 6</span>
-<span class="co">#&gt;  $ date                            : chr "Sat, 12 Jun 2021 05:04:53 GMT"</span>
-<span class="co">#&gt;  $ content-type                    : chr "application/json"</span>
-<span class="co">#&gt;  $ content-length                  : chr "429"</span>
-<span class="co">#&gt;  $ server                          : chr "gunicorn/19.9.0"</span>
-<span class="co">#&gt;  $ access-control-allow-origin     : chr "*"</span>
-<span class="co">#&gt;  $ access-control-allow-credentials: chr "true"</span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; date: Sat, 12 Jun 2021 21:00:35 GMT</span>
+<span class="co">#&gt; content-type: application/json</span>
+<span class="co">#&gt; content-length: 429</span>
+<span class="co">#&gt; server: gunicorn/19.9.0</span>
+<span class="co">#&gt; access-control-allow-origin: *</span>
+<span class="co">#&gt; access-control-allow-credentials: true</span>
 <span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"Content-Length"</span><span class="op">)</span>
 <span class="co">#&gt; [1] "429"</span></code></pre></div>
 <p>Headers are case insensitive:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"CoTtEnT-LeNgTH"</span><span class="op">)</span>
-<span class="co">#&gt; NULL</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"ConTEnT-LeNgTH"</span><span class="op">)</span>
+<span class="co">#&gt; [1] "429"</span></code></pre></div>
 </li>
 <li>
 <p>You can extract the body in various forms using the <code>resp_body_*()</code> family of functions. Since this response returns JSON we can use <code><a href="../reference/resp_body_raw.html">resp_body_json()</a></code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; List of 1</span>
 <span class="co">#&gt;  $ slideshow:List of 4</span>
@@ -264,18 +288,18 @@
 <span class="co">#&gt;   ..$ title : chr "Sample Slide Show"</span></code></pre></div>
 </li>
 </ul>
-<p>Responses with status codes 4xx and 5xx are consider to be HTTP errors. httr2 automatically turns these into R errors:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>Responses with status codes 4xx and 5xx are HTTP errors. httr2 automatically turns these into R errors:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/404"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Error: HTTP 404 Not Found.</span>
 <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/500"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Error: HTTP 500 Internal Server Error.</span></code></pre></div>
-<p>This is another important difference with httr, which required that you explicitly call <code><a href="https://httr.r-lib.org/reference/stop_for_status.html">httr::stop_for_status()</a></code> to turn HTTP errors into R errors. If needed, you can revert to the httr behaviour with <code>req_error(req, is_error = ~ FALSE)</code>.</p>
+<p>This is another important difference with httr, which required that you explicitly call <code><a href="https://httr.r-lib.org/reference/stop_for_status.html">httr::stop_for_status()</a></code> to turn HTTP errors into R errors. Revert to the httr behaviour with <code>req_error(req, is_error = ~ FALSE)</code>.</p>
 </div>
 <div id="controlling-the-request-process" class="section level2">
 <h2 class="hasAnchor">
 <a href="#controlling-the-request-process" class="anchor"></a>Controlling the request process</h2>
-<p>A number of <code>req_</code> functions don’t directly affect how the request is sent but affect how it’s handled. I’m not going to go in to detail here, but wanted to make you aware of the options:</p>
+<p>A number of <code>req_</code> functions don’t directly affect how the request is sent but affect how the process of submitting the request and handling the response. I won’t give any details here, but you should be aware of the following important functions:</p>
 <ul>
 <li><p><code><a href="../reference/req_cache.html">req_cache()</a></code> sets up a cache so if repeated requests return the same results, you can avoid a trip to the server.</p></li>
 <li><p><code><a href="../reference/req_throttle.html">req_throttle()</a></code> will automatically add a small delay before each request so you can avoid hammering a server with many requests.</p></li>
