@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set a request timeout — req_timeout • httr2</title>
+<title>Set time limit — req_timeout • httr2</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Set a request timeout — req_timeout" />
+<meta property="og:title" content="Set time limit — req_timeout" />
 <meta property="og:description" content="An error will be thrown if the request does not complete in the time limit." />
 
 
@@ -120,7 +120,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set a request timeout</h1>
+    <h1>Set time limit</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-options.R'><code>R/req-options.R</code></a></small>
     <div class="hidden name"><code>req_timeout.Rd</code></div>
     </div>
@@ -146,9 +146,13 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Give up after at most 10 seconds</span>
-<span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>req_timeout</span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> http://example.com</span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>Options:</span></span></div><div class='output co'>#&gt; <span class='message'>• <span style='color: #00BB00;'>timeout_ms</span>: 10000</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># Give up after at most 10 seconds</span></span>
+<span class='r-in'><span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://example.com"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'>req_timeout</span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Options:</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> • <span style='color: #00BB00;'>timeout_ms</span>: 10000</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

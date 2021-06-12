@@ -171,9 +171,19 @@ the request if there were any redirects.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>response</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> http://example.com</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Status</span>: 200 OK</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Content-Type</span>: NA</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Body</span>: Empty</span></div><div class='input'><span class='fu'>response</span><span class='op'>(</span><span class='fl'>404</span>, method <span class='op'>=</span> <span class='st'>"POST"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>POST</span> http://example.com</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Status</span>: 404 Not Found</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Content-Type</span>: NA</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Body</span>: Empty</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>response</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 200 OK</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: NA</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: Empty</span>
+<span class='r-in'><span class='fu'>response</span><span class='op'>(</span><span class='fl'>404</span>, method <span class='op'>=</span> <span class='st'>"POST"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>POST</span> http://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 404 Not Found</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: NA</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: Empty</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

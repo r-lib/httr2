@@ -156,39 +156,45 @@ around <code><a href='req_verbose.html'>req_verbose()</a></code> that uses an in
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httr2.r-lib.org"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='req_fetch.html'>req_fetch</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-<span class='fu'>with_verbosity</span><span class='op'>(</span><span class='fu'>fun</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; GET / HTTP/2
-#&gt; -&gt; Host: httr2.r-lib.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; 
-#&gt; &lt;- HTTP/2 200 
-#&gt; &lt;- server: GitHub.com
-#&gt; &lt;- content-type: text/html; charset=utf-8
-#&gt; &lt;- last-modified: Fri, 11 Jun 2021 05:20:51 GMT
-#&gt; &lt;- access-control-allow-origin: *
-#&gt; &lt;- etag: W/"60c2f2b3-3f0a"
-#&gt; &lt;- expires: Sat, 12 Jun 2021 02:13:54 GMT
-#&gt; &lt;- cache-control: max-age=600
-#&gt; &lt;- content-encoding: gzip
-#&gt; &lt;- x-proxy-cache: MISS
-#&gt; &lt;- x-github-request-id: AB08:69C4:11DC7F:184ED4:60C4160A
-#&gt; &lt;- accept-ranges: bytes
-#&gt; &lt;- date: Sat, 12 Jun 2021 02:03:54 GMT
-#&gt; &lt;- via: 1.1 varnish
-#&gt; &lt;- age: 0
-#&gt; &lt;- x-served-by: cache-sea4437-SEA
-#&gt; &lt;- x-cache: MISS
-#&gt; &lt;- x-cache-hits: 0
-#&gt; &lt;- x-timer: S1623463435.714138,VS0,VE77
-#&gt; &lt;- vary: Accept-Encoding
-#&gt; &lt;- x-fastly-request-id: 0f1d4be9083ac27aff8b3993932294ba6f367560
-#&gt; &lt;- content-length: 4568
-#&gt; &lt;- </div><div class='output co'>#&gt; <span class='message'><span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span></div><div class='output co'>#&gt; <span class='message'><span style='font-weight: bold;'>GET</span> https://httr2.r-lib.org</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Status</span>: 200 OK</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Content-Type</span>: text/html</span></div><div class='output co'>#&gt; <span class='message'><span style='color: #00BB00;'>Body</span>: In memory (16138 bytes)</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httr2.r-lib.org"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'><a href='req_fetch.html'>req_fetch</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='fu'>with_verbosity</span><span class='op'>(</span><span class='fu'>fun</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; GET / HTTP/2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Host: httr2.r-lib.org</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept: */*</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept-Encoding: deflate, gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- HTTP/2 200 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- server: GitHub.com</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- content-type: text/html; charset=utf-8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- last-modified: Sat, 12 Jun 2021 02:04:06 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- access-control-allow-origin: *</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- etag: W/"60c41616-3f0a"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- expires: Sat, 12 Jun 2021 03:06:17 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- cache-control: max-age=600</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- content-encoding: gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-proxy-cache: MISS</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-github-request-id: BC84:0702:142413:1B85FF:60C42251</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- accept-ranges: bytes</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- date: Sat, 12 Jun 2021 02:59:17 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- via: 1.1 varnish</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- age: 79</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-served-by: cache-bwi5044-BWI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-cache: HIT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-cache-hits: 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-timer: S1623466758.796333,VS0,VE1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- vary: Accept-Encoding</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- x-fastly-request-id: eb5b95d52805b431729dd08180eb7de605a922eb</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- content-length: 4568</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;- </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> https://httr2.r-lib.org</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 200 OK</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: text/html</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: In memory (16138 bytes)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

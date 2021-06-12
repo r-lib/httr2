@@ -211,70 +211,75 @@ or an empty list (<code>"list"</code>).</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>req</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org/post"</span><span class='op'>)</span>
-
-<span class='co'># Most APIs expect small amounts of data in either form or json encoded:</span>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_body_form</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"A simple text string"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; POST / HTTP/1.1
-#&gt; -&gt; Host: httpbin.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; Content-Type: application/x-www-form-urlencoded
-#&gt; -&gt; Content-Length: 28
-#&gt; -&gt; </div><div class='input'>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_body_json</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"A simple text string"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; POST / HTTP/1.1
-#&gt; -&gt; Host: httpbin.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; Content-Type: application/json
-#&gt; -&gt; Content-Length: 28
-#&gt; -&gt; </div><div class='input'>
-<span class='co'># For total control over the body, send a string or raw vector</span>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_body_raw</span><span class='op'>(</span><span class='st'>"A simple text string"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; POST / HTTP/1.1
-#&gt; -&gt; Host: httpbin.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; Content-Length: 20
-#&gt; -&gt; </div><div class='input'>
-<span class='co'># There are two main ways that APIs expect entire files</span>
-<span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/writeLines.html'>writeLines</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>]</span>, <span class='va'>path</span><span class='op'>)</span>
-
-<span class='co'># You can send a single file as the body:</span>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_body_file</span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; POST / HTTP/1.1
-#&gt; -&gt; Host: httpbin.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; Content-Length: 12
-#&gt; -&gt; </div><div class='input'>
-<span class='co'># You can send multiple files, or a mix of files and data</span>
-<span class='co'># with multipart encoding</span>
-<span class='va'>req</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>req_body_multipart</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'>curl</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/curl/man/multipart.html'>form_file</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>, b <span class='op'>=</span> <span class='st'>"some data"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; -&gt; POST / HTTP/1.1
-#&gt; -&gt; Host: httpbin.org
-#&gt; -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#&gt; -&gt; Accept: */*
-#&gt; -&gt; Accept-Encoding: deflate, gzip
-#&gt; -&gt; Content-Length: 315
-#&gt; -&gt; Content-Type: multipart/form-data; boundary=------------------------0d638431a3fd3a49
-#&gt; -&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>req</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"http://httpbin.org/post"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Most APIs expect small amounts of data in either form or json encoded:</span></span>
+<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>req_body_form</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"A simple text string"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; POST / HTTP/1.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Host: httpbin.org</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept: */*</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept-Encoding: deflate, gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Type: application/x-www-form-urlencoded</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Length: 28</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>req_body_json</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"A simple text string"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; POST / HTTP/1.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Host: httpbin.org</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept: */*</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept-Encoding: deflate, gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Type: application/json</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Length: 28</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># For total control over the body, send a string or raw vector</span></span>
+<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>req_body_raw</span><span class='op'>(</span><span class='st'>"A simple text string"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; POST / HTTP/1.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Host: httpbin.org</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept: */*</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept-Encoding: deflate, gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Length: 20</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># There are two main ways that APIs expect entire files</span></span>
+<span class='r-in'><span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/writeLines.html'>writeLines</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>]</span>, <span class='va'>path</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># You can send a single file as the body:</span></span>
+<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>req_body_file</span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; POST / HTTP/1.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Host: httpbin.org</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept: */*</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept-Encoding: deflate, gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Length: 12</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># You can send multiple files, or a mix of files and data</span></span>
+<span class='r-in'><span class='co'># with multipart encoding</span></span>
+<span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>req_body_multipart</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'>curl</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/curl/man/multipart.html'>form_file</a></span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span>, b <span class='op'>=</span> <span class='st'>"some data"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_dry_run.html'>req_dry_run</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; POST / HTTP/1.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Host: httpbin.org</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept: */*</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Accept-Encoding: deflate, gzip</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Length: 315</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; Content-Type: multipart/form-data; boundary=------------------------1fe1c1818b20824e</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> -&gt; </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
