@@ -54,7 +54,9 @@ req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity",
     sys_sleep(delay)
     resp <- tryCatch(
       req_fetch1(req, path = path, handle = handle),
-      error = function(err) err
+      error = function(err) {
+        error_cnd("httr2_failed", message = conditionMessage(err), trace = trace_back())
+      }
     )
 
     if (is_error(resp)) {
@@ -78,7 +80,7 @@ req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity",
   resp <- cache_post_fetch(req, resp, path = path)
 
   if (is_error(resp)) {
-    stop(resp)
+    cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
     resp_check_status(resp, error_info(req, resp))
   } else {
