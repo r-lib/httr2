@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Show verbose output when request is performed — req_verbose • httr2</title>
+<title>Perform multiple requests in parallel — multi_req_fetch • httr2</title>
 
 
 <!-- jquery -->
@@ -39,16 +39,14 @@
 
 
 
-<meta property="og:title" content="Show verbose output when request is performed — req_verbose" />
-<meta property="og:description" content="req_verbose() uses the following prefixes to distinguish between
-different components of the HTTP requests and responses:
-*  informative curl messages
-&amp;lt;- request headers
-&amp;lt;&amp;lt; request body
--&amp;gt; response headers
-&amp;gt;&amp;gt; response body
-
-" />
+<meta property="og:title" content="Perform multiple requests in parallel — multi_req_fetch" />
+<meta property="og:description" content="This variation on req_fetch() performs multiple requests in parallel.
+Unlike req_fetch() it always succeeds; it will never throw an error.
+Instead it will return error objects, which are your responsibility to
+handle.
+Exercise caution when using this function; it's easy to pummel a server
+with many simultaneous requests. Only use it with hosts designed to serve
+many files at once." />
 
 
 
@@ -128,67 +126,67 @@ different components of the HTTP requests and responses:
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Show verbose output when request is performed</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-options.R'><code>R/req-options.R</code></a></small>
-    <div class="hidden name"><code>req_verbose.Rd</code></div>
+    <h1>Perform multiple requests in parallel</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/multi-req.R'><code>R/multi-req.R</code></a></small>
+    <div class="hidden name"><code>multi_req_fetch.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>req_verbose()</code> uses the following prefixes to distinguish between
-different components of the HTTP requests and responses:</p><ul>
-<li><p><code>* </code> informative curl messages</p></li>
-<li><p><code>&lt;-</code> request headers</p></li>
-<li><p><code>&lt;&lt;</code> request body</p></li>
-<li><p><code>-&gt;</code> response headers</p></li>
-<li><p><code>&gt;&gt;</code> response body</p></li>
-</ul>
-
+    <p>This variation on <code><a href='req_fetch.html'>req_fetch()</a></code> performs multiple requests in parallel.
+Unlike <code><a href='req_fetch.html'>req_fetch()</a></code> it always succeeds; it will never throw an error.
+Instead it will return error objects, which are your responsibility to
+handle.</p>
+<p>Exercise caution when using this function; it's easy to pummel a server
+with many simultaneous requests. Only use it with hosts designed to serve
+many files at once.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>req_verbose</span><span class='op'>(</span>
-  <span class='va'>req</span>,
-  header_req <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  header_resp <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  body_req <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  body_resp <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  info <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  redact_headers <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>multi_req_fetch</span><span class='op'>(</span><span class='va'>reqs</span>, paths <span class='op'>=</span> <span class='cn'>NULL</span>, pool <span class='op'>=</span> <span class='cn'>NULL</span>, cancel_on_error <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>req</th>
-      <td><p>A <a href='request.html'>request</a>.</p></td>
+      <th>reqs</th>
+      <td><p>A list of <a href='request.html'>request</a>s.</p></td>
     </tr>
     <tr>
-      <th>header_req, header_resp</th>
-      <td><p>Show request/response headers?</p></td>
+      <th>paths</th>
+      <td><p>An optional list of paths, if you want to download the request
+bodies to disks. If supplied, must be the same length as <code>reqs</code>.</p></td>
     </tr>
     <tr>
-      <th>body_req, body_resp</th>
-      <td><p>Should request/response bodies? When the response
-body is compressed, this will show the number of bytes recevied in
-each "chunk".</p></td>
+      <th>pool</th>
+      <td><p>Optionally, a curl pool made by <code><a href='https://rdrr.io/pkg/curl/man/multi.html'>curl::new_pool()</a></code>. Supply
+this if you want to override the defaults for total concurrent connections
+(100) or concurrent connections per host (6).</p></td>
     </tr>
     <tr>
-      <th>info</th>
-      <td><p>Show informational text from curl? This is mainly useful
-for debugging https and auth problems, so is disabled by default.</p></td>
-    </tr>
-    <tr>
-      <th>redact_headers</th>
-      <td><p>Redact confidential data in the headers? Currently
-redacts the contents of the Authorization header to prevent you from
-accidentally leaking credentials when debugging/reprexing.</p></td>
+      <th>cancel_on_error</th>
+      <td><p>Should all pending requests be cancelled when you
+hit an error. Set this to <code>TRUE</code> to stop all requests as soon as you
+hit an error. Responses that were never performed will have class
+<code>httr2_cancelled</code> in the result.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p><code><a href='req_fetch.html'>req_fetch()</a></code> which exposes a limited subset of these options
-through the <code>verbosity</code> argument.</p></div>
+    <p>A list the same length as <code>reqs</code> where each element is either a
+<a href='response.html'>response</a> or an <code>error</code>.</p>
+    <h2 class="hasAnchor" id="limitations"><a class="anchor" href="#limitations"></a>Limitations</h2>
+
+    
+<ul>
+<li><p>Will not retrieve a new OAuth token if it expires part way through
+the requests.</p></li>
+<li><p>Does not perform throttling with <code><a href='req_throttle.html'>req_throttle()</a></code>.</p></li>
+<li><p>Does not attempt retries as described by <code><a href='req_retry.html'>req_retry()</a></code>.</p></li>
+<li><p>Consults the cache set by <code><a href='req_cache.html'>req_cache()</a></code> before/after all requests.</p></li>
+</ul>
+
+<p>In general, where <code><a href='req_fetch.html'>req_fetch()</a></code> might make multiple requests due to retries
+or OAuth failures, <code>multi_req_fetch()</code> will make only make 1.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
