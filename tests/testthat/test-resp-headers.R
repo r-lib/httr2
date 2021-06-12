@@ -8,6 +8,12 @@ test_that("can extract headers and check for existence", {
   expect_equal(resp_header_exists(resp, "non-existent"), FALSE)
 })
 
+test_that("headers are case-insenstive", {
+  resp <- response(headers = "Content-Type: application/json")
+  expect_equal(resp_header(resp, "content-type"), "application/json")
+  expect_equal(resp_header_exists(resp, "content-type"), TRUE)
+})
+
 test_that("can extract content type/encoding", {
   resp <- response(headers = "Content-Type: text/html; charset=latin1")
   expect_equal(resp_content_type(resp), "text/html")

@@ -104,7 +104,7 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
     method = req_method_get(req),
     url = res$url,
     status_code = res$status_code,
-    headers = curl::parse_headers_list(res$headers),
+    headers = as_headers(res$headers),
     body = body
   )
   the$last_response <- resp
@@ -233,7 +233,7 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
     method = req_method_get(req),
     url = data$url,
     status_code = data$status_code,
-    headers = curl::parse_headers_list(data$headers),
+    headers = as_headers(data$headers),
     body = NULL
   )
 }

@@ -22,9 +22,7 @@ response <- function(status_code = 200,
                      headers = list(),
                      body = NULL) {
 
-  if (is.character(headers)) {
-    headers <- curl::parse_headers_list(headers)
-  }
+  headers <- as_headers(headers)
 
   new_response(
     method = method,
@@ -40,12 +38,10 @@ new_response <- function(method, url, status_code, headers, body) {
   check_string(url, "url")
   check_number(status_code, "status_code")
 
-  if (!is_list(headers) || !(length(headers) == 0 || is_named(headers))) {
-    abort("`headers` must be a named list")
-  }
+  headers <- as_headers(headers)
   # ensure we always have a date field
-  if (!has_name(headers, "date")) {
-    headers$date <- httr::http_date(Sys.time())
+  if (!"date" %in% tolower(names(headers))) {
+    headers$Date <- httr::http_date(Sys.time())
   }
 
   structure(
@@ -94,7 +90,7 @@ print.httr2_response <- function(x,...) {
 #' resp %>% resp_raw()
 resp_raw <- function(resp) {
   cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))
-  cli::cat_line(names(resp$headers), ": ", resp$headers)
+  cli::cat_line(cli::style_bold(names(resp$headers)), ": ", resp$headers)
   cli::cat_line()
   if (!is.null(resp$body)) {
     cli::cat_line(resp_body_string(resp))
