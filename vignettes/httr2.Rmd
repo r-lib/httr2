@@ -142,14 +142,14 @@ You can extract data from the response using the `resp_()` functions:
 -   You can extract all headers with `resp_headers()` or a specific header with `resp_header()`:
 
     ```{r}
-    resp %>% resp_headers() %>% str()
+    resp %>% resp_headers()
     resp %>% resp_header("Content-Length")
     ```
 
     Headers are case insensitive:
 
     ```{r}
-    resp %>% resp_header("CoTtEnT-LeNgTH")
+    resp %>% resp_header("ConTEnT-LeNgTH")
     ```
 
 -   You can extract the body in various forms using the `resp_body_*()` family of functions.
