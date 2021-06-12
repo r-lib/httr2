@@ -27,7 +27,7 @@ library(httr2)
 
 In httr2, you start by creating a request.
 If you're familiar with httr, this a big change: with httr you could only submit a request, immediately receiving a response.
-Having an explicit request object makes it easier to built up a complex request piece by piece and works well with the pipe.
+Having an explicit request object makes it easier to build up a complex request piece by piece and works well with the pipe.
 
 Every request starts with a URL:
 
@@ -36,7 +36,7 @@ req <- request("https://httpbin.org/get")
 req
 ```
 
-We can see exactly this request will send to the server with a dry run:
+We can see exactly what this request will send to the server with a dry run:
 
 ```{r}
 req %>% req_dry_run()
@@ -46,14 +46,14 @@ The first line of the request contains three important pieces of information:
 
 -   The HTTP **method**, which is a verb that tells the server what you want to do.
     Here's its GET, the most common verb, indicating that we want to *get* some data.
-    Other verbs include POST, to send data, UPDATE, to update an existing resource, and DELETE, to delete resources.
+    Other verbs include POST, to send data, PUT, to update an existing resource, and DELETE, to delete resources.
 
 -   The **path**,which is the url stripped of details that server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).
 
 -   The version of the HTTP protocol.
     This is unimportant for our purposes and it's handled at a lower layer in the stack.
 
-The following lines consistent are the HTTP **headers**, a series of name-value pairs separated by ":".
+The following lines specify the HTTP **headers**, a series of name-value pairs separated by ":".
 The headers in this request were automatically added by httr2, but you can override them or add your own with `req_headers()`:
 
 ```{r}
@@ -107,9 +107,9 @@ req %>%
   req_dry_run()
 ```
 
-If you need to data encoded in a different form, you can use `req_body_raw()` to add the data to the body and set the `Content-Type` header.
+If you need to send data encoded in a different form, you can use `req_body_raw()` to add the data to the body and set the `Content-Type` header.
 
-## Performing a request and fetch the response
+## Perform a request and fetch the response
 
 To actually perform a request and fetch the response back from the server, call `req_fetch()`:
 
@@ -170,9 +170,9 @@ request("https://httpbin.org/status/500") %>% req_fetch()
 This is another important difference with httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.
 Revert to the httr behaviour with `req_error(req, is_error = ~ FALSE)`.
 
-## Controlling the request process
+## Control the request process
 
-A number of `req_` functions don't directly affect how the request is sent but affect how the process of submitting the request and handling the response.
+A number of `req_` functions don't directly affect how the request is sent but affect the process of submitting the request and handling the response.
 I won't give any details here, but you should be aware of the following important functions:
 
 -   `req_cache()` sets up a cache so if repeated requests return the same results, you can avoid a trip to the server.
