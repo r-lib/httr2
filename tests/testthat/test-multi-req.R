@@ -30,7 +30,7 @@ test_that("errors can cancel outstanding requests", {
   expect_s3_class(out[[2]], "httr2_cancelled")
 
   reqs <- list2(
-    request("INVALID"),
+    request("blah://INVALID"),
     request_test("/delay/:secs", secs = 2),
   )
   out <- multi_req_fetch(reqs, cancel_on_error = TRUE)
