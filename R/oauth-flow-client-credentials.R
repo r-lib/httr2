@@ -40,7 +40,8 @@ oauth_flow_client_credentials <- function(app,
   oauth_flow_check_app(app,
     flow = "client credentials",
     is_confidential = TRUE,
-    endpoints = "token"
+    endpoints = "token",
+    interactive = FALSE
   )
 
   oauth_flow_access_token(app,
