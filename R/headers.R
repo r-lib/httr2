@@ -29,10 +29,24 @@ new_headers <- function(x) {
 }
 
 #' @export
-print.httr2_headers <- function(x, ...) {
-  cli::cat_line(cli::style_bold(names(x)), ": ", x)
+print.httr2_headers <- function(x, ..., redact = TRUE) {
+  cli::cat_line(cli::style_bold(names(x)), ": ", headers_redact(x, redact))
   invisible(x)
 }
+
+headers_redact <- function(x, redact = TRUE) {
+  if (!redact) {
+    return(x)
+  }
+
+  i <- match("authorization", tolower(names(x)))
+  if (!is.na(i)) {
+    x[[i]] <- cli::col_grey("<REDACTED>")
+  }
+
+  x
+}
+
 
 #' @export
 `[.httr2_headers` <- function(x, i, ...) {

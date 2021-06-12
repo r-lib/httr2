@@ -99,11 +99,11 @@ req_verbose <- function(req,
 
   debug <- function(type, msg) {
     switch(type + 1,
-      text =       if (info)            prefix_message("*  ", msg),
-      headerOut =  if (header_resp)     prefix_message("<- ", msg),
-      headerIn =   if (header_req)      prefix_message("-> ", msg, redact = redact_headers),
-      dataOut =    if (body_resp)       prefix_message("<< ", msg),
-      dataIn =     if (body_req)        prefix_message(">> ", msg)
+      text =       if (info)            verbose_message("*  ", msg),
+      headerOut =  if (header_resp)     verbose_header("<- ", msg),
+      headerIn =   if (header_req)      verbose_header("-> ", msg, redact = redact_headers),
+      dataOut =    if (body_resp)       verbose_message("<< ", msg),
+      dataIn =     if (body_req)        verbose_message(">> ", msg)
     )
   }
   req_options(req, debugfunction = debug, verbose = TRUE)
@@ -111,8 +111,7 @@ req_verbose <- function(req,
 
 # helpers -----------------------------------------------------------------
 
-prefix_message <- function(prefix, x, redact = FALSE) {
-
+verbose_message <- function(prefix, x) {
   if (any(x > 128)) {
     # This doesn't handle unicode, but it seems like most output
     # will be compressed in some way, so displaying bodies is unlikely
@@ -121,11 +120,20 @@ prefix_message <- function(prefix, x, redact = FALSE) {
   } else {
     x <- readBin(x, character())
     lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
-    if (redact) {
-      is_auth <- grepl("^[aA]uthorization: ", lines)
-      lines[is_auth] <- "Authorization: <REDACTED>"
+  }
+  cli::cat_line(prefix, lines)
+}
+
+verbose_header <- function(prefix, x, redact = TRUE) {
+  x <- readBin(x, character())
+  lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
+
+  for (line in lines) {
+    if (grepl(":", line, fixed = TRUE)) {
+      header <- headers_redact(as_headers(line), redact)
+      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", header)
+    } else {
+      cli::cat_line(prefix, line)
     }
   }
-  out <- paste0(prefix, lines, collapse = "\n")
-  cat(out, "\n", sep = "")
 }

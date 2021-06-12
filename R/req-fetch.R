@@ -171,7 +171,8 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 
   if (!quiet) {
     debug <- function(type, msg) {
-      if (type %in% c(2L, 4L)) prefix_message("", msg, redact = redact_headers)
+      if (type == 2L) verbose_header("", msg, redact = redact_headers)
+      if (type == 4L) verbose_message("", msg)
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
   }
