@@ -16,7 +16,7 @@ req_options <- function(.req, ...) {
   .req
 }
 
-#' Modify request user agent
+#' Set user agent
 #'
 #' This overrides the default user agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
@@ -43,7 +43,7 @@ default_ua <- function() {
   paste0(names(versions), "/", versions, collapse = " ")
 }
 
-#' Set a request timeout
+#' Set time limit
 #'
 #' An error will be thrown if the request does not complete in the time limit.
 #'
@@ -63,7 +63,7 @@ req_timeout <- function(req, seconds) {
   req_options(req, timeout_ms = seconds * 1000)
 }
 
-#' Show verbose output when request is performed
+#' Show extra output when request is performed
 #'
 #' @description
 #' `req_verbose()` uses the following prefixes to distinguish between

@@ -8,6 +8,7 @@ reference:
   contents:
   - request
   - req_body_none
+  - req_cache
   - req_error
   - req_headers
   - req_method
@@ -29,6 +30,7 @@ reference:
   - req_dry_run
   - req_fetch
   - req_stream
+  - multi_req_fetch
   - last_request
 
 - title: Handle the response
@@ -41,7 +43,7 @@ reference:
   - obfuscate
   - with_verbosity
 
-- title: OAuth flows
+- title: OAuth
   desc: >
     These functions implement the low-level components of OAuth.
   contents:

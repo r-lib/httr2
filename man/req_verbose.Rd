@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-options.R
 \name{req_verbose}
 \alias{req_verbose}
-\title{Show verbose output when request is performed}
+\title{Show extra output when request is performed}
 \usage{
 req_verbose(
   req,
