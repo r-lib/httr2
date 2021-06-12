@@ -4,23 +4,19 @@ template:
   bootstrap: 4
 
 reference:
-- title: Define a request
+- title: Requests
+  subtitle: Create and modify
   contents:
   - request
   - req_body_none
-  - req_cache
-  - req_error
   - req_headers
   - req_method
-  - req_retry
   - req_template
-  - req_throttle
   - req_timeout
   - req_url
   - req_user_agent
-  - req_verbose
 
-- title: Authenticate a request
+- subtitle: Authentication
   contents:
   - starts_with("req_auth")
   - starts_with("req_oauth")
@@ -32,6 +28,17 @@ reference:
   - req_stream
   - multi_req_fetch
   - last_request
+
+- subtitle: Control the process
+  desc: >
+    These functions don't modify the HTTP request that is sent to the server,
+    but affect the overall process of `req_fetch()`.
+  contents:
+  - req_cache
+  - req_error
+  - req_throttle
+  - req_retry
+  - req_verbose
 
 - title: Handle the response
   contents:
