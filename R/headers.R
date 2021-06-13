@@ -36,14 +36,19 @@ print.httr2_headers <- function(x, ..., redact = TRUE) {
 
 headers_redact <- function(x, redact = TRUE) {
   if (!redact) {
-    return(x)
+    x
+  } else {
+    list_redact(x, "Authorization", case_sensitive = FALSE)
   }
+}
 
-  i <- match("authorization", tolower(names(x)))
-  if (!is.na(i)) {
-    x[[i]] <- cli::col_grey("<REDACTED>")
+list_redact <- function(x, names, case_sensitive = TRUE) {
+  if (case_sensitive) {
+    i <- match(names, names(x))
+  } else {
+    i <- match(tolower(names), tolower(names(x)))
   }
-
+  x[i] <- cli::col_grey("<REDACTED>")
   x
 }
 

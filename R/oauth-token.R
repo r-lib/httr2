@@ -44,6 +44,15 @@ oauth_token <- function(
   )
 }
 
+#' @export
+print.httr2_token <- function(x, ...) {
+  cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
+  redacted <- list_redact(x, c("access_token", "refresh_token"))
+  cli::cli_dl(redacted)
+
+  invisible(x)
+}
+
 token_has_expired <- function(token, delay = 5) {
   if (is.null(token$expires_at)) {
     FALSE
