@@ -99,11 +99,11 @@ req_verbose <- function(req,
 
   debug <- function(type, msg) {
     switch(type + 1,
-      text =       if (info)            verbose_message("*  ", msg),
-      headerOut =  if (header_resp)     verbose_header("<- ", msg),
-      headerIn =   if (header_req)      verbose_header("-> ", msg, redact = redact_headers),
-      dataOut =    if (body_resp)       verbose_message("<< ", msg),
-      dataIn =     if (body_req)        verbose_message(">> ", msg)
+      text =       if (info)        verbose_message("*  ", msg),
+      headerOut =  if (header_resp) verbose_header("<- ", msg),
+      headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers),
+      dataOut =    if (body_resp)   verbose_message("<< ", msg),
+      dataIn =     if (body_req)    verbose_message(">> ", msg)
     )
   }
   req_options(req, debugfunction = debug, verbose = TRUE)
