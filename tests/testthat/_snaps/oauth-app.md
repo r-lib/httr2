@@ -40,9 +40,13 @@
     Code
       oauth_client("x")
     Message <cliMessage>
-      <httr2_oauth_client> ID: x (public)
+      <httr2_oauth_client>
+      id: x
+      secret: <REDACTED>
     Code
       oauth_client("x", "x")
     Message <cliMessage>
-      <httr2_oauth_client> ID: x (confidental)
+      <httr2_oauth_client>
+      id: x
+      secret: <REDACTED>
 

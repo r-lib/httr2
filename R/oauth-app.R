@@ -91,8 +91,10 @@ oauth_client <- function(client_id, client_secret = NULL, name = NULL) {
 
 #' @export
 print.httr2_oauth_client <- function(x, ...) {
-  type <- if (is.null(x$secret)) "public" else "confidental"
-  cli::cli_text("{.cls {class(x)}} ID: {x$id} ({type})")
+  cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
+  redacted <- compact(list_redact(x, "secret"))
+  cli::cli_dl(redacted)
+  invisible(x)
 }
 
 
