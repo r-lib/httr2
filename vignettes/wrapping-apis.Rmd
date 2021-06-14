@@ -1,0 +1,301 @@
+---
+title: "Wrapping APIs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{wrapping-apis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+A common use for httr2 is wrapping up a useful API and exposing it in an R package.
+One of the goals of httr is to make this easier, and this vignette will show you how.
+
+i.e. you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument.
+Also involves:
+
+-   Ensure that HTTP errors expose as much detail in the R error.
+
+-   Wrap up the details of authentication.
+
+-   Rate limiting
+
+-   Pagination
+
+```{r setup}
+library(httr2)
+```
+
+## Basics
+
+No auth.
+Simple pattern.
+
+<https://fakerapi.it/en>
+
+```{r}
+req <- request("https://fakerapi.it/api/v1")
+resp <- req %>% 
+  req_url_path_append("images") %>% 
+  req_url_query(`_width` = 380, `_quantity` = 1) %>% 
+  req_fetch()
+resp %>% resp_body_json()
+```
+
+Polite to set a user agent --- <https://github.com/r-lib/httr2/issues/43>.
+
+Error handling:
+
+```{r, error = TRUE}
+req %>% 
+  req_url_path_append("invalid") %>% 
+  req_fetch()
+
+req %>% 
+  req_url_path_append("images") %>% 
+  req_url_query(`_unsupport` = 380) %>% 
+  req_fetch()
+
+req %>% 
+  req_url_path_append("images") %>% 
+  req_url_query(`_quantity` = "x") %>% 
+  req_fetch()
+```
+
+It's always worth checking to see if the headers or body of the response has any useful information.
+We do this by suppressing httr's default of turning HTTP error codes in to R errors and inspecting the result:
+
+```{r}
+resp <- req %>% 
+  req_url_path_append("imagesasf") %>% 
+  req_error(is_error = ~ FALSE) %>% 
+  req_fetch()
+resp %>% resp_headers()
+resp %>% resp_body_json()
+```
+
+In this case, it doesn't look like it so we can leave the default error behaviour as is.
+
+Once you've got the basics, you can wrap it up into a function.
+You'll need to decide if you want to returning a request or perform the request and return the result.
+The first gives you more flexibility, but the user will need to add two more calls; the second is easier but less flexible.
+
+Use defaults.
+Automatically add underscores.
+
+```{r}
+req_faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
+  params <- list(
+    ...,
+    quantity = quantity,
+    locale = locale,
+    seed = seed
+  )
+  names(params) <- paste0("_", names(params))
+  
+  request("https://fakerapi.it/api/v1") %>% 
+    req_url_path_append(resource) %>% 
+    req_url_query(!!!params) %>% 
+    req_fetch() %>% 
+    resp_body_json()
+}
+
+req_faker("images", width = 300)
+```
+
+There's only one trick to notice here --- `req_url_query()` uses dynamic dots, so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US") `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
+
+In most cases, this function will be for internal use only, as you'll continue to make a function for each endpoint useful to the R programmer.
+In some cases, you might want to export this function sot that the experienced user can call endpoints that you haven't yet wrapped.
+
+To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame.
+I'd suggest keeping that code in a separate function since it's likely to vary by endpoint.
+
+## App with API key
+
+Next we'll take a look at the NYTimes API. It requires a very simple authentication --- you include the API key in the query of every request.
+
+To begin with, you can just store you key as a variable.
+I didn't want to just include my API key here so I've obfuscated it using `obfuscate()`:
+
+```{r}
+my_key <- obfuscated("Y2rj85iEepd5gaTPQwEeiQT3g6u6_fabR7Zjth_5sBs")
+# Doesn't work currently - need to add support in req_url_query and req_body?
+```
+
+This is encrypted but it uses an encryption key that is included in httr2 itself.
+The key is hidden in such a way that it should require a relatively good R programmer a few minutes to figure it out.
+It isn't 100% secured, but it's convenient to use, and for the vast majority of people it'll take less time to create their own API key on developer.nytimes.com.
+
+```{r}
+req_nytimes_books <- function(path, ..., api_key = get_api_key()) {
+  request("https://api.nytimes.com/svc/books/v3") %>% 
+    req_url_path_append(path) %>% 
+    req_url_query(..., `api-key` = api_key)
+}
+
+get_api_key <- function() {
+  key <- Sys.getenv("NYTIMES_KEY")
+  if (identical(key, "")) {
+    stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")
+  }
+  key
+}
+```
+
+Show example of error parsing here:
+
+```{r, error = TRUE}
+req_nytimes_books("/lists/2019-01-20/hardcover-fiction.json", api_key = my_key) %>% 
+  req_fetch(verbosity = 2)
+```
+
+The API also mentions rate limits:
+
+> Yes, there are two rate limits per API: 4,000 requests per day and 10 requests per minute.
+> You should sleep 6 seconds between calls to avoid hitting the per minute rate limit.
+> If you need a higher rate limit, please contact us at [code\@nytimes.com](mailto:code@nytimes.com){.email}.
+
+Note that including an API key in a query is a relatively insecure method; if an API uses it its typically because the key is relatively easy to create or gives relatively few privileges.
+Section 5.3 of [rfc6750](https://datatracker.ietf.org/doc/html/rfc6750#section-5.3) has this to say about passing bearer tokens[^1] in the URL:
+
+[^1]: A bearer token is a little different to an access key but the distinction isn't important here.
+
+> **Don't pass bearer tokens in page URLs**: Bearer tokens SHOULD NOT be passed in page URLs (for example, as query string parameters).
+> Instead, bearer tokens SHOULD be passed in HTTP message headers or message bodies for which confidentiality measures are taken.
+> Browsers, web servers, and other software may not adequately secure URLs in the browser history, web server logs, and other data structures.
+> If bearer tokens are passed in page URLs, attackers might be able to steal them from the history data, logs, or other unsecured locations.
+
+httr2 makes no efforts to redact confidential information stored in query parameters.
+
+## Sending data & HTTP methods
+
+<https://docs.github.com/en/rest/reference/gists#star-a-gist>
+
+Just use basic auth: <https://docs.github.com/en/rest/overview/other-authentication-methods#basic-authentication> username + token.
+Good example of why tokens: you can have many different tokens, each which can do different things, and can be revoked without affecting any other token or requiring you to change your password.
+
+Need to be a little careful with tokens in env vars.
+Any R package could use.
+But this doesn't really pose any additional threat: an R package can run any code, so it's already very powerful.
+If you are worried about this attack vector you need to resolve it by ensuring that the process that runs R is locked down (e.g. run in a container or other VM).
+
+Rate limiting: <https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>
+
+## App that uses OAuth
+
+If the API provides access to a website where the user already has an account (think twitter, instagram, facebook, google, etc), it's likely to use OAuth to allow you app to authenticate on behalf of the user.
+OAuth[^2] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
+You've almost certainly used this before on the web; it's used in most cases where one website wants to use another website on your behalf.
+
+[^2]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
+    OAuth 1.0 is largely only of historical interest.
+
+### OAuth clients
+
+The first step in working with any OAuth api is to create a client or app.
+This involves you registering for a developer account on the APIs website and creating a new OAuth app.
+The process varies from API to API, but at the end of it you'll be a client id and in most cases a client secret.
+
+If the API provides a way to authenticate without the client secret, you should leave it out of your package.
+But in most cases, you'll need to include the secret in the package.
+You can use `obfuscate()` to hide the secret; again this is not bullet proof but for most people it will be easier to create a new client than try and reuse yours.
+It is unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it (generally the worst they can do is use up your rate limits).
+
+To obfuscate a secret, call `obfuscate()`:
+
+```{r}
+obfuscate("secret")
+```
+
+Then use the client id from the website along with the obfuscated secret to create a client:
+
+```{r}
+client <- oauth_client("client_id", obfuscated("YVW06Lex"))
+client
+```
+
+Note that when you print the client, httr2 automatically redacts the secret --- this is part of the general effort that httr2 makes to prevent you from accidentally exposing any confidential information in logs or reprexes.
+
+### OAuth app
+
+Once you have a client, you'll need to collect a little more information to create an OAuth app.
+An app is the combination of the information about your client and some general information about the API.
+(From the perspective of the API client and app are synonymous because it's only thinking of itself).
+
+The information you'll need varies a little depending on the flow you're using, but for the most common case it will look something like this.
+You'll pass the client that you created above, as long as a list of authentication endpoints.
+In the most common case, you'll need to supply `token` and `authorization` endpoints.
+
+```{r}
+app <- oauth_app(
+  client,
+  endpoints = c(
+    token = "https://accounts.google.com/o/oauth2/token",
+    authorization = "https://accounts.google.com/o/oauth2/auth"
+  )
+)
+app
+```
+
+Depending on how the API is set up, you may also need to change the `auth` parameter.
+We'll come back to that shortly.
+
+### OAuth flows
+
+OAuth provides a number of different "flows".
+The most common is the "authorisation code" flow, which is implemented by `req_oauth_auth_code()`.
+It goes something like this:
+
+-   Client makes authorisation request to resource owner, and it returns an authorisation grant (four types are defined in this rfc: authorisation code, implicit, resource owner password credentials, and client credentials).
+
+-   Client makes authorisation grant to authorisation server (which can be different to resource server, even though that appears to be rare in practice) which returns access token.
+
+-   Client uses access token to access protected resources.
+    `req_auth_bearer_token()`
+
+Other flows provide different ways getting the token:
+
+-   `req_oauth_client_credentials()` is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user).
+
+-   `req_oauth_device()` uses the "device" flow which is designed for devices like TVs that don't have an easy way to enter data.
+    It also works well from the console.
+
+-   `req_oauth_jwt()` uses a JWT signed by a private key.
+
+-   `req_oauth_password()` exchanges a user name and password for an access token.
+
+-   `req_oauth_refresh()` works directly with a refresh token that you've got elsewhere.
+    It's useful for testing.
+
+There's one historically important OAuth flows that httr2 doesn't support: the implicit grant flow.
+This is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead) and was never a particularly good fit for native applications because it relies on a technique for returning the access token that only works inside a web browser.
+
+When wrapping an API, you'll need to carefully read the documentation to figure out which flows are available.
+Typically you'll want to use the auth code flow, but if it's not available you'll need to carefully consider the others.
+
+An additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec.
+If your initial attempt doesn't work, you're going to need to do some sleuthing.
+This is going to be moderately painful but unfortunately there's no way around it.
+I recommend using `with_verbose()` so you can see exactly what httr2 is sending to the server.
+You'll then need to carefully compare this to the API documentation and play spot the difference.
+
+To get started, I recommend first working with the lower-level `oauth_flow_*()` functions.
+They just return a token (rather than authenticating a request) so they're easy to work with as you get the system up and running.
+
+```{r, eval = FALSE}
+```
+
+### Token caching
+
+Token caching.
+Many acess tokens also have a refresh token, which is a way to get new access tokens.
+httr2 can cache these tokens.
+If the token has expired and has a refresh token, we automatically refresh before the first request.
+If the request errors with a 401 and error `invalid_token` then we try the refresh token if available, otherwise re-run the full flow.
