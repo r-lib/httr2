@@ -57,7 +57,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/articles/oauth.html">oauth</a>
+      <a href="../articles/wrapping-apis.html">Wrapping APIs</a>
     </li>
   </ul>
 </li>
@@ -181,17 +181,17 @@
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; Content-Length: 228</span>
-<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------b1747e01803ff931</span>
+<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------e9abc5a1703bdcbb</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; --------------------------b1747e01803ff931</span>
+<span class="co">#&gt; --------------------------e9abc5a1703bdcbb</span>
 <span class="co">#&gt; Content-Disposition: form-data; name="x"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; 1</span>
-<span class="co">#&gt; --------------------------b1747e01803ff931</span>
+<span class="co">#&gt; --------------------------e9abc5a1703bdcbb</span>
 <span class="co">#&gt; Content-Disposition: form-data; name="y"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; a</span>
-<span class="co">#&gt; --------------------------b1747e01803ff931--</span></code></pre></div>
+<span class="co">#&gt; --------------------------e9abc5a1703bdcbb--</span></code></pre></div>
 <p>If you need to send data encoded in a different form, you can use <code><a href="../reference/req_body_none.html">req_body_raw()</a></code> to add the data to the body and set the <code>Content-Type</code> header.</p>
 </div>
 <div id="perform-a-request-and-fetch-the-response" class="section level2">
@@ -211,7 +211,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; HTTP/1.1 200 OK</span>
-<span class="co">#&gt; date: Sun, 13 Jun 2021 16:32:12 GMT</span>
+<span class="co">#&gt; date: Mon, 14 Jun 2021 04:22:45 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>
@@ -254,7 +254,7 @@
 <p>You can extract all headers with <code><a href="../reference/resp_headers.html">resp_headers()</a></code> or a specific header with <code><a href="../reference/resp_headers.html">resp_header()</a></code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; date: Sun, 13 Jun 2021 16:32:12 GMT</span>
+<span class="co">#&gt; date: Mon, 14 Jun 2021 04:22:45 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>
