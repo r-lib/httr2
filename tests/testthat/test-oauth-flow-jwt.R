@@ -9,21 +9,22 @@ test_that("can generate token and use it automatically", {
   client <- oauth_client(
     id = secrets$client_id,
     key = secrets$private_key,
-    token_url = secrets$token_uri
+    token_url = secrets$token_uri,
+    auth = "body"
   )
-  claims <- list2(
+  claim <- list(
     iss = secrets$client_email,
     scope = "https://www.googleapis.com/auth/userinfo.email",
     aud = "https://oauth2.googleapis.com/token"
   )
 
   # Can generate token
-  token <- oauth_flow_jwt(client, claims)
+  token <- oauth_flow_jwt(client, claim)
   expect_s3_class(token, "httr2_token")
 
   # Can use it in request
   resp <- request("https://openidconnect.googleapis.com/v1/userinfo") %>%
-    req_oauth_jwt(client, claims) %>%
+    req_oauth_jwt(client, claim) %>%
     req_fetch() %>%
     resp_body_json()
 

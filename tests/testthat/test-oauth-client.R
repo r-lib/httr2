@@ -18,7 +18,7 @@ test_that("picks default auth", {
     oauth_client("x", "url", key = NULL)$auth,
     "oauth_client_req_auth_body")
   expect_equal(
-    oauth_client("x", "url", key = "key")$auth,
+    oauth_client("x", "url", key = "key", auth_params = list(claim = list()))$auth,
     "oauth_client_req_auth_jwt_sig"
   )
 })

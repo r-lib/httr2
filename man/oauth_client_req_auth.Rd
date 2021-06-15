@@ -13,14 +13,14 @@ oauth_client_req_auth_header(req, client)
 
 oauth_client_req_auth_body(req, client)
 
-oauth_client_req_auth_jwt_sig(req, client, claims, size = 256, header = list())
+oauth_client_req_auth_jwt_sig(req, client, claim, size = 256, header = list())
 }
 \arguments{
 \item{req}{A \link{request}.}
 
 \item{client}{An \link{oauth_client}.}
 
-\item{claims}{A list of claims passed to \code{\link[=jwt_claim]{jwt_claim()}}.}
+\item{claim}{Claim set produced by \code{\link[=jwt_claim]{jwt_claim()}}.}
 
 \item{size}{Size, in bits, of sha2 signature, i.e. 256, 384 or 512.
 Only for HMAC/RSA, not applicable for ECDSA keys.}

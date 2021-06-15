@@ -45,7 +45,7 @@ If omitted, uses a random 32-byte sequence encoded with base64url.}
 
 \item{...}{Any additional claims to include in the claim set.}
 
-\item{claim}{Claim set produced by \code{jwt_claim()}}
+\item{claim}{Claim set produced by \code{\link[=jwt_claim]{jwt_claim()}}.}
 
 \item{key}{RSA or EC private key either specified as a path to a file,
 a connection, or a string (PEM/SSH format), or a raw vector (DER format).}

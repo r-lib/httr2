@@ -57,9 +57,15 @@ oauth_client <- function(
 
     if (auth == "header" && is.null(secret)) {
       abort("`auth = 'header' requires a `secret`")
-    } else if (auth == "jwt_sig" && is.null(key)) {
-      abort("`auth = 'jwt_sig' requires a `key`")
+    } else if (auth == "jwt_sig") {
+      if (is.null(key)) {
+        abort("`auth = 'jwt_sig' requires a `key`")
+      }
+      if (!has_name(auth_params, "claim")) {
+        abort("`auth = 'jwt_sig' requires a claim specification in `auth_params`")
+      }
     }
+
     auth <- paste0("oauth_client_req_auth_", auth)
   } else if (!is_function(auth)) {
     abort("`auth` must be a string or function")
@@ -141,13 +147,12 @@ oauth_client_req_auth_body <- function(req, client) {
   req_body_form_append(req, params)
 }
 
-#' @param claims A list of claims passed to [jwt_claim()].
 #' @inheritParams jwt_claim
 #' @export
 #' @rdname oauth_client_req_auth
-oauth_client_req_auth_jwt_sig <- function(req, client, claims, size = 256, header = list()) {
-  claims <- exec("jwt_claim", !!!claims)
-  jwt <- jwt_encode_sig(claims, key = client$key, size = size, header = header)
+oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header = list()) {
+  claim <- exec("jwt_claim", !!!claim)
+  jwt <- jwt_encode_sig(claim, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
   params <- list(
