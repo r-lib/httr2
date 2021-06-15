@@ -139,7 +139,7 @@ oauth_flow_auth_code <- function(client,
 
   # Get access/refresh token from authorisation code
   # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
-  oauth_client_token(client,
+  oauth_client_get_token(client,
     grant_type = "authorization_code",
     code = code,
     redirect_uri = redirect_url,

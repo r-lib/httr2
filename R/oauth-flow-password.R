@@ -52,7 +52,7 @@ oauth_flow_password <- function(client,
   check_string(username, "`username`")
   password <- check_password(password)
 
-  oauth_client_token(client,
+  oauth_client_get_token(client,
     grant_type = "password",
     username = username,
     password = password,

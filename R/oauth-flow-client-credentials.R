@@ -39,7 +39,7 @@ oauth_flow_client_credentials <- function(client,
                                           ) {
   oauth_flow_check("client credentials", client, is_confidential = TRUE)
 
-  oauth_client_token(client,
+  oauth_client_get_token(client,
     grant_type = "client_credentials",
     scope = scope,
     !!!token_params

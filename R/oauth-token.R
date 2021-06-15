@@ -65,7 +65,7 @@ token_has_expired <- function(token, delay = 5) {
 }
 
 token_refresh <- function(client, refresh_token, scope = NULL, token_params = list()) {
-  oauth_client_token(client,
+  oauth_client_get_token(client,
     grant_type = "refresh_token",
     refresh_token = refresh_token,
     scope = scope,

@@ -69,7 +69,7 @@ oauth_flow_jwt <- function(client,
   jwt <- exec(signature, claims, key = client$key, !!!signature_params)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1
-  oauth_client_token(client,
+  oauth_client_get_token(client,
     grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer",
     assertion = jwt,
     scope = scope,

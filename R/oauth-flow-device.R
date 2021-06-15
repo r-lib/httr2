@@ -91,7 +91,7 @@ oauth_flow_device_poll <- function(client, request, token_params) {
 
     tryCatch(
       {
-        token <- oauth_client_token(client,
+        token <- oauth_client_get_token(client,
           grant_type = "urn:ietf:params:oauth:grant-type:device_code",
           device_code = request$device_code,
           !!!token_params
