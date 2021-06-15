@@ -5,7 +5,7 @@
 \title{OAuth flow: user password}
 \usage{
 oauth_flow_password(
-  app,
+  client,
   username,
   password = NULL,
   scope = NULL,
@@ -13,7 +13,7 @@ oauth_flow_password(
 )
 }
 \arguments{
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{username}{User name.}
 
@@ -24,7 +24,8 @@ interactively.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This function implements the OAuth resource owner password flow, as defined

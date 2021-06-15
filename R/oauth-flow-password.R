@@ -10,7 +10,7 @@
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
-req_oauth_password <- function(req, app,
+req_oauth_password <- function(req, client,
                                username,
                                password = NULL,
                                cache_disk = FALSE,
@@ -19,13 +19,13 @@ req_oauth_password <- function(req, app,
 
   password <- check_password(password)
   params <- list(
-    app = app,
+    client = client,
     username = username,
     password = password,
     scope = scope,
     token_params = token_params
   )
-  cache <- cache_choose(app, cache_disk = cache_disk, cache_key = username)
+  cache <- cache_choose(client, cache_disk = cache_disk, cache_key = username)
   req_oauth(req, "oauth_flow_password", params, cache = cache)
 }
 
@@ -40,21 +40,19 @@ req_oauth_password <- function(req, app,
 #' @inheritParams req_auth_basic
 #' @export
 #' @family OAuth flows
-oauth_flow_password <- function(app,
+oauth_flow_password <- function(client,
                                 username,
                                 password = NULL,
                                 scope = NULL,
                                 token_params = list()
 ) {
-  oauth_flow_check_app(app,
-    flow = "resource owner password credentials",
-    endpoints = "token",
+  oauth_flow_check("resource owner password credentials", client,
     interactive = is.null(password)
   )
   check_string(username, "`username`")
   password <- check_password(password)
 
-  oauth_flow_access_token(app,
+  oauth_client_get_token(client,
     grant_type = "password",
     username = username,
     password = password,

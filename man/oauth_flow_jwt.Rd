@@ -5,8 +5,8 @@
 \title{OAuth flow: JWT}
 \usage{
 oauth_flow_jwt(
-  app,
-  claims,
+  client,
+  claim,
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
@@ -14,22 +14,23 @@ oauth_flow_jwt(
 )
 }
 \arguments{
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
-\item{claims}{A list of claims. If all elements of the claim set are static
+\item{claim}{A list of claims. If all elements of the claim set are static
 apart from \code{iat}, \code{nbf}, \code{exp}, or \code{jti}, provide a list and
 \code{\link[=jwt_claim]{jwt_claim()}} will automatically fill in the dynamic components.
 If other components need to vary, you can instead provide a zero-argument
 callback function which should call \code{jwt_claim()}.}
 
-\item{signature}{Function use to sign \code{claim_set}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
+\item{signature}{Function use to sign \code{claim}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
 
 \item{signature_params}{Additional arguments passed to \code{signature}, e.g.
-\code{key}, \code{size}, \code{header}.}
+\code{size}, \code{header}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This function implements the OAuth client credentials flow, as defined

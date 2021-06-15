@@ -4,14 +4,15 @@
 \alias{oauth_flow_client_credentials}
 \title{OAuth flow: client credentials}
 \usage{
-oauth_flow_client_credentials(app, scope = NULL, token_params = list())
+oauth_flow_client_credentials(client, scope = NULL, token_params = list())
 }
 \arguments{
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This function implements the OAuth client credentials flow, as defined

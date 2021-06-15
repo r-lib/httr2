@@ -6,7 +6,7 @@
 \usage{
 req_oauth_refresh(
   req,
-  app,
+  client,
   refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
   scope = NULL,
   token_params = list()
@@ -15,7 +15,7 @@ req_oauth_refresh(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{refresh_token}{A refresh token. This is equivalent to a password
 so shouldn't be typed into the console or stored in a script. Instead,
@@ -24,7 +24,8 @@ is to look in \code{HTTR_REFRESH_TOKEN}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, which is

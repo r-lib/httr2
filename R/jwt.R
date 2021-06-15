@@ -45,7 +45,7 @@ jwt_claim <- function(iss = NULL,
 
 #' @export
 #' @rdname jwt_claim
-#' @param claim Claim set produced by `jwt_claim()`
+#' @param claim Claim set produced by [jwt_claim()].
 #' @param key RSA or EC private key either specified as a path to a file,
 #'   a connection, or a string (PEM/SSH format), or a raw vector (DER format).
 #' @param size Size, in bits, of sha2 signature, i.e. 256, 384 or 512.

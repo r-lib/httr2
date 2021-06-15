@@ -34,8 +34,8 @@ oauth_token <- function(
 
   structure(
     compact(list2(
-      access_token = access_token,
       token_type = token_type,
+      access_token = access_token,
       expires_at = expires_at,
       refresh_token = refresh_token,
       ...
@@ -48,7 +48,10 @@ oauth_token <- function(
 print.httr2_token <- function(x, ...) {
   cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
   redacted <- list_redact(x, c("access_token", "refresh_token"))
-  cli::cli_dl(redacted)
+  if (has_name(redacted, "expires_at")) {
+    redacted$expires_at <- format(.POSIXct(x$expires_at))
+  }
+  cli::cli_dl(compact(redacted))
 
   invisible(x)
 }
@@ -61,8 +64,8 @@ token_has_expired <- function(token, delay = 5) {
   }
 }
 
-token_refresh <- function(app, refresh_token, scope = NULL, token_params = list()) {
-  oauth_flow_access_token(app,
+token_refresh <- function(client, refresh_token, scope = NULL, token_params = list()) {
+  oauth_client_get_token(client,
     grant_type = "refresh_token",
     refresh_token = refresh_token,
     scope = scope,

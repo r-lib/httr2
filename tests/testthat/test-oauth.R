@@ -15,10 +15,13 @@ test_that("invalid token test is specific", {
 # Cache -------------------------------------------------------------------
 
 test_that("can store in memory", {
-  client <- oauth_client("x", name = "httr2-test")
-  app <- oauth_app(client, endpoints = c(token = "test"))
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
 
-  cache <- cache_mem(app, NULL)
+  cache <- cache_mem(client, NULL)
   withr::defer(cache$clear())
 
   expect_equal(cache$get(), NULL)
@@ -29,10 +32,13 @@ test_that("can store in memory", {
 })
 
 test_that("can store on disk", {
-  client <- oauth_client("x", name = "httr2-test")
-  app <- oauth_app(client, endpoints = c(token = "test"))
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
 
-  cache <- cache_disk(app, NULL)
+  cache <- cache_disk(client, NULL)
   withr::defer(cache$clear())
 
   expect_equal(cache$get(), NULL)

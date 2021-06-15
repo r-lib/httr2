@@ -6,7 +6,7 @@
 \usage{
 req_oauth_password(
   req,
-  app,
+  client,
   username,
   password = NULL,
   cache_disk = FALSE,
@@ -17,7 +17,7 @@ req_oauth_password(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{username}{User name.}
 
@@ -32,7 +32,8 @@ storing access credentials on disk.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_password]{oauth_flow_password()}} to generate an access token, which is

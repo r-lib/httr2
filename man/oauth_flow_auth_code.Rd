@@ -9,7 +9,8 @@
 \title{OAuth flow: authorization code}
 \usage{
 oauth_flow_auth_code(
-  app,
+  client,
+  auth_url,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -20,7 +21,8 @@ oauth_flow_auth_code(
 )
 
 oauth_flow_auth_code_url(
-  app,
+  client,
+  auth_url,
   redirect_uri = NULL,
   scope = NULL,
   state = NULL,
@@ -34,7 +36,10 @@ oauth_flow_auth_code_parse(query, state)
 oauth_flow_auth_code_pkce()
 }
 \arguments{
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
+
+\item{auth_url}{Authorization url; you'll need to discover this by reading
+the documentation.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
@@ -43,7 +48,8 @@ security and should always be used if supported by the server.}
 
 \item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 
 \item{host_name}{Host name used to generate \code{redirect_uri}}
 
