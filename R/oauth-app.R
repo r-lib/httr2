@@ -175,9 +175,13 @@ oauth_flow_check <- function(flow, client,
   }
 }
 
-app_endpoint <- function(app, endpoint) {
-  if (!has_name(app$endpoints, endpoint)) {
-    abort("app missing endpoint '{endpoint}'")
-  }
-  app$endpoints[[endpoint]]
+oauth_client_token <- function(client, ...) {
+  req <- request(client$token_url)
+  req <- req_body_form(req, list2(...))
+  req <- oauth_client_req_auth(req, client)
+  req <- req_headers(req, Accept = "application/json")
+
+  resp <- oauth_flow_fetch(req)
+  exec(oauth_token, !!!resp)
 }
+

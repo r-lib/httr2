@@ -48,7 +48,8 @@ security and should always be used if supported by the server.}
 
 \item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 
 \item{host_name}{Host name used to generate \code{redirect_uri}}
 

@@ -22,7 +22,8 @@ the documentation.}
 
 \item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 These functions implement the OAuth device flow, as defined

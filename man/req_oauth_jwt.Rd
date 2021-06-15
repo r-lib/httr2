@@ -32,7 +32,8 @@ callback function which should call \code{jwt_claim()}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_jwt]{oauth_flow_jwt()}} to generate an access token which is then

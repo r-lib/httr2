@@ -24,7 +24,8 @@ is to look in \code{HTTR_REFRESH_TOKEN}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, which is

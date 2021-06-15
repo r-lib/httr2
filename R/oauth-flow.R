@@ -1,13 +1,3 @@
-oauth_flow_access_token <- function(client, ...) {
-  req <- request(client$token_url)
-  req <- req_body_form(req, list2(...))
-  req <- oauth_client_req_auth(req, client)
-  req <- req_headers(req, Accept = "application/json")
-
-  resp <- oauth_flow_fetch(req)
-  exec(oauth_token, !!!resp)
-}
-
 oauth_flow_fetch <- function(req) {
   req <- req_error(req, is_error = ~ FALSE)
   resp <- req_fetch(req)

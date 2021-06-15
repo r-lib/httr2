@@ -24,7 +24,8 @@ interactively.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This function implements the OAuth resource owner password flow, as defined

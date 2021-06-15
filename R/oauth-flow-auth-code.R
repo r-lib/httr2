@@ -93,7 +93,8 @@ req_oauth_auth_code <- function(req, client,
 #' @param pkce Use "Proof Key for Code Exchange"? This adds an extra layer of
 #'   security and should always be used if supported by the server.
 #' @param auth_params List containing additional parameters passed to `oauth_flow_auth_code_url()`
-#' @param token_params List containing additional parameters passed to `oauth_flow_access_token()`.
+#' @param token_params List containing additional parameters passed to the
+#'   `token_url`.
 #' @param host_name Host name used to generate `redirect_uri`
 #' @param host_ip IP address web server will be bound to.
 #' @param port Port to bind web server to. By default, this uses a random port.
@@ -138,7 +139,7 @@ oauth_flow_auth_code <- function(client,
 
   # Get access/refresh token from authorisation code
   # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
-  oauth_flow_access_token(client,
+  oauth_client_token(client,
     grant_type = "authorization_code",
     code = code,
     redirect_uri = redirect_url,

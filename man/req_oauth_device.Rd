@@ -30,7 +30,8 @@ key to disambiguate them.}
 
 \item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_device]{oauth_flow_device()}} to generate an access token, which is

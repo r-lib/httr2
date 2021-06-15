@@ -29,7 +29,8 @@ callback function which should call \code{jwt_claim()}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This function implements the OAuth client credentials flow, as defined

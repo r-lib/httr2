@@ -32,7 +32,8 @@ storing access credentials on disk.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_password]{oauth_flow_password()}} to generate an access token, which is

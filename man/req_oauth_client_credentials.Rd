@@ -13,7 +13,8 @@ req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_client_credentials]{oauth_flow_client_credentials()}} to generate an access token,
