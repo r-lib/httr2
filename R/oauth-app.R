@@ -175,9 +175,9 @@ oauth_flow_check <- function(flow, client,
   }
 }
 
-oauth_client_token <- function(client, ...) {
+oauth_client_token <- function(client, grant_type, ...) {
   req <- request(client$token_url)
-  req <- req_body_form(req, list2(...))
+  req <- req_body_form(req, list2(grant_type = grant_type, ...))
   req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 
