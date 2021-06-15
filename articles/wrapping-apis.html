@@ -126,10 +126,10 @@
 <span class="co">#&gt; $data</span>
 <span class="co">#&gt; $data[[1]]</span>
 <span class="co">#&gt; $data[[1]]$title</span>
-<span class="co">#&gt; [1] "Quis vero sed quia id."</span>
+<span class="co">#&gt; [1] "Quae est sit repellendus sed."</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data[[1]]$description</span>
-<span class="co">#&gt; [1] "Eius voluptas voluptas suscipit et quos et non. Voluptatibus nulla ab deleniti recusandae sit. Molestias qui minima iure est in est. Facilis dicta porro voluptate et eos."</span>
+<span class="co">#&gt; [1] "Dicta nisi repellat modi. Est similique quaerat perspiciatis ipsa perspiciatis laudantium tempora. Voluptatum velit quo omnis placeat. Et illo rem velit repellendus."</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data[[1]]$url</span>
 <span class="co">#&gt; [1] "http://placeimg.com/380/480/any"</span></code></pre></div>
@@ -149,7 +149,7 @@
 <span class="co">#&gt; GET https://fakerapi.it/api/v1/images?_unsupport=380</span>
 <span class="co">#&gt; Status: 200 OK</span>
 <span class="co">#&gt; Content-Type: application/json</span>
-<span class="co">#&gt; Body: In memory (2410 bytes)</span>
+<span class="co">#&gt; Body: In memory (2535 bytes)</span>
 
 <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
@@ -174,7 +174,7 @@
 <span class="co">#&gt; Vary: Accept-Encoding</span>
 <span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
 <span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Mon, 14 Jun 2021 04:22:50 GMT</span>
+<span class="co">#&gt; Date: Tue, 15 Jun 2021 19:56:03 GMT</span>
 <span class="co">#&gt; Access-Control-Allow-Origin: *</span>
 <span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
 <span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
@@ -223,10 +223,10 @@
 <span class="co">#&gt; $data</span>
 <span class="co">#&gt; $data[[1]]</span>
 <span class="co">#&gt; $data[[1]]$title</span>
-<span class="co">#&gt; [1] "Sed dicta consequatur soluta."</span>
+<span class="co">#&gt; [1] "Odio qui qui dolores fuga."</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data[[1]]$description</span>
-<span class="co">#&gt; [1] "Dolorem assumenda quo aliquam accusantium qui. Magni natus autem et aut ab et. Minima quasi numquam esse illum sint."</span>
+<span class="co">#&gt; [1] "Ipsam quia nisi aperiam quasi molestiae. Expedita consequatur quod dolorum perferendis. Reiciendis et distinctio quas ipsum repellendus consequuntur."</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data[[1]]$url</span>
 <span class="co">#&gt; [1] "http://placeimg.com/300/480/any"</span></code></pre></div>
@@ -268,7 +268,7 @@
 <span class="co">#&gt; -&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; -&gt; </span>
 <span class="co">#&gt; &lt;- HTTP/1.1 401 Unauthorized</span>
-<span class="co">#&gt; &lt;- Date: Mon, 14 Jun 2021 04:22:51 GMT</span>
+<span class="co">#&gt; &lt;- Date: Tue, 15 Jun 2021 19:56:05 GMT</span>
 <span class="co">#&gt; &lt;- Content-Type: application/json</span>
 <span class="co">#&gt; &lt;- Content-Length: 90</span>
 <span class="co">#&gt; &lt;- Connection: keep-alive</span>
@@ -312,11 +312,18 @@
 <span class="co">#&gt; obfuscated("YVW06Lex")</span></code></pre></div>
 <p>Then use the client id from the website along with the obfuscated secret to create a client:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_app.html">oauth_client</a></span><span class="op">(</span><span class="st">"client_id"</span>, <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"YVW06Lex"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
+  id <span class="op">=</span> <span class="st">"client_id"</span>, 
+  secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"YVW06Lex"</span><span class="op">)</span>,
+  token <span class="op">=</span> <span class="st">"https://accounts.google.com/o/oauth2/token"</span>
+<span class="op">)</span>
 <span class="va">client</span>
 <span class="co">#&gt; &lt;httr2_oauth_client&gt;</span>
+<span class="co">#&gt; name: 741ee61ebc1fc0f8fedcf12647c95cb3</span>
 <span class="co">#&gt; id: client_id</span>
-<span class="co">#&gt; secret: &lt;REDACTED&gt;</span></code></pre></div>
+<span class="co">#&gt; secret: &lt;REDACTED&gt;</span>
+<span class="co">#&gt; token_url: https://accounts.google.com/o/oauth2/token</span>
+<span class="co">#&gt; auth: oauth_client_req_auth_body</span></code></pre></div>
 <p>Note that when you print the client, httr2 automatically redacts the secret — this is part of the general effort that httr2 makes to prevent you from accidentally exposing any confidential information in logs or reprexes.</p>
 </div>
 <div id="oauth-app" class="section level3">
@@ -324,34 +331,6 @@
 <a href="#oauth-app" class="anchor"></a>OAuth app</h3>
 <p>Once you have a client, you’ll need to collect a little more information to create an OAuth app. An app is the combination of the information about your client and some general information about the API. (From the perspective of the API client and app are synonymous because it’s only thinking of itself).</p>
 <p>The information you’ll need varies a little depending on the flow you’re using, but for the most common case it will look something like this. You’ll pass the client that you created above, as long as a list of authentication endpoints. In the most common case, you’ll need to supply <code>token</code> and <code>authorization</code> endpoints.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_app.html">oauth_app</a></span><span class="op">(</span>
-  <span class="va">client</span>,
-  endpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    token <span class="op">=</span> <span class="st">"https://accounts.google.com/o/oauth2/token"</span>,
-    authorization <span class="op">=</span> <span class="st">"https://accounts.google.com/o/oauth2/auth"</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="va">app</span>
-<span class="co">#&gt; $client</span>
-<span class="co">#&gt; &lt;httr2_oauth_client&gt;</span>
-<span class="co">#&gt; id: client_id</span>
-<span class="co">#&gt; secret: &lt;REDACTED&gt;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $endpoints</span>
-<span class="co">#&gt;                                        token </span>
-<span class="co">#&gt; "https://accounts.google.com/o/oauth2/token" </span>
-<span class="co">#&gt;                                authorization </span>
-<span class="co">#&gt;  "https://accounts.google.com/o/oauth2/auth" </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $auth</span>
-<span class="co">#&gt; [1] "oauth_client_req_auth_body"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $auth_params</span>
-<span class="co">#&gt; list()</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attr(,"class")</span>
-<span class="co">#&gt; [1] "httr2_oauth_app"</span></code></pre></div>
 <p>Depending on how the API is set up, you may also need to change the <code>auth</code> parameter. We’ll come back to that shortly.</p>
 </div>
 <div id="oauth-flows" class="section level3">

@@ -141,7 +141,7 @@ Section 6. Errors if the refresh returns a new refresh token, see
     </div>
 
     <pre class="usage"><span class='fu'>oauth_flow_refresh</span><span class='op'>(</span>
-  <span class='va'>app</span>,
+  <span class='va'>client</span>,
   refresh_token <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span><span class='op'>(</span><span class='st'>"HTTR_REFRESH_TOKEN"</span><span class='op'>)</span>,
   scope <span class='op'>=</span> <span class='cn'>NULL</span>,
   token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -151,8 +151,8 @@ Section 6. Errors if the refresh returns a new refresh token, see
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>app</th>
-      <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+      <th>client</th>
+      <td><p>An <code><a href='oauth_client.html'>oauth_client()</a></code>.</p></td>
     </tr>
     <tr>
       <th>refresh_token</th>
@@ -167,7 +167,8 @@ is to look in <code>HTTR_REFRESH_TOKEN</code>.</p></td>
     </tr>
     <tr>
       <th>token_params</th>
-      <td><p>List containing additional parameters passed to <code>oauth_flow_access_token()</code>.</p></td>
+      <td><p>List containing additional parameters passed to the
+<code>token_url</code>.</p></td>
     </tr>
     </table>
 

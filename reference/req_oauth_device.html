@@ -140,7 +140,7 @@ the number of times the flow is performed.</p>
 
     <pre class="usage"><span class='fu'>req_oauth_device</span><span class='op'>(</span>
   <span class='va'>req</span>,
-  <span class='va'>app</span>,
+  <span class='va'>client</span>,
   cache_disk <span class='op'>=</span> <span class='cn'>FALSE</span>,
   cache_key <span class='op'>=</span> <span class='cn'>NULL</span>,
   scope <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -156,8 +156,8 @@ the number of times the flow is performed.</p>
       <td><p>A <a href='request.html'>request</a>.</p></td>
     </tr>
     <tr>
-      <th>app</th>
-      <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+      <th>client</th>
+      <td><p>An <code><a href='oauth_client.html'>oauth_client()</a></code>.</p></td>
     </tr>
     <tr>
       <th>cache_disk</th>
@@ -180,7 +180,8 @@ key to disambiguate them.</p></td>
     </tr>
     <tr>
       <th>token_params</th>
-      <td><p>List containing additional parameters passed to <code>oauth_flow_access_token()</code>.</p></td>
+      <td><p>List containing additional parameters passed to the
+<code>token_url</code>.</p></td>
     </tr>
     </table>
 

@@ -141,7 +141,8 @@ but it also works well from within R.</p>
     </div>
 
     <pre class="usage"><span class='fu'>oauth_flow_device</span><span class='op'>(</span>
-  <span class='va'>app</span>,
+  <span class='va'>client</span>,
+  <span class='va'>auth_url</span>,
   scope <span class='op'>=</span> <span class='cn'>NULL</span>,
   auth_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -151,8 +152,13 @@ but it also works well from within R.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>app</th>
-      <td><p>An <code><a href='oauth_app.html'>oauth_app()</a></code>.</p></td>
+      <th>client</th>
+      <td><p>An <code><a href='oauth_client.html'>oauth_client()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>auth_url</th>
+      <td><p>Authorization url; you'll need to discover this by reading
+the documentation.</p></td>
     </tr>
     <tr>
       <th>scope</th>
@@ -164,7 +170,8 @@ but it also works well from within R.</p>
     </tr>
     <tr>
       <th>token_params</th>
-      <td><p>List containing additional parameters passed to <code>oauth_flow_access_token()</code>.</p></td>
+      <td><p>List containing additional parameters passed to the
+<code>token_url</code>.</p></td>
     </tr>
     </table>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: JWT — oauth_flow_jwt • httr2</title>
+<title>Create an OAuth client — oauth_client • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,12 @@
 
 
 
-<meta property="og:title" content="OAuth flow: JWT — oauth_flow_jwt" />
-<meta property="og:description" content="This function implements the OAuth client credentials flow, as defined
-by rfc7523,
-Section 2.1. It is often used for service accounts, accounts that are
-used primarily in automated environments." />
+<meta property="og:title" content="Create an OAuth client — oauth_client" />
+<meta property="og:description" content="An OAuth app is the combination of a client, a set of endpoints
+(i.e. urls where various requests should be sent), and an authentication
+mechanism. A client consists of at least a client_id, and also often
+a client_secret. You'll get these values when you create the client on
+the API's website." />
 
 
 
@@ -126,70 +127,82 @@ used primarily in automated environments." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: JWT</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-jwt.R'><code>R/oauth-flow-jwt.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_jwt.Rd</code></div>
+    <h1>Create an OAuth client</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-client.R'><code>R/oauth-client.R</code></a></small>
+    <div class="hidden name"><code>oauth_client.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function implements the OAuth client credentials flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc7523#section-2.1'>rfc7523</a>,
-Section 2.1. It is often used for service accounts, accounts that are
-used primarily in automated environments.</p>
+    <p>An OAuth app is the combination of a client, a set of endpoints
+(i.e. urls where various requests should be sent), and an authentication
+mechanism. A client consists of at least a <code>client_id</code>, and also often
+a <code>client_secret</code>. You'll get these values when you create the client on
+the API's website.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_jwt</span><span class='op'>(</span>
-  <span class='va'>client</span>,
-  <span class='va'>claim</span>,
-  signature <span class='op'>=</span> <span class='st'>"jwt_encode_sig"</span>,
-  signature_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  scope <span class='op'>=</span> <span class='cn'>NULL</span>,
-  token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>oauth_client</span><span class='op'>(</span>
+  <span class='va'>id</span>,
+  <span class='va'>token_url</span>,
+  secret <span class='op'>=</span> <span class='cn'>NULL</span>,
+  key <span class='op'>=</span> <span class='cn'>NULL</span>,
+  auth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"body"</span>, <span class='st'>"header"</span>, <span class='st'>"jwt_sig"</span><span class='op'>)</span>,
+  auth_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  name <span class='op'>=</span> <span class='fu'>hash</span><span class='op'>(</span><span class='va'>id</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>client</th>
-      <td><p>An <code><a href='oauth_client.html'>oauth_client()</a></code>.</p></td>
+      <th>id</th>
+      <td><p>Client identifier.</p></td>
     </tr>
     <tr>
-      <th>claim</th>
-      <td><p>A list of claims. If all elements of the claim set are static
-apart from <code>iat</code>, <code>nbf</code>, <code>exp</code>, or <code>jti</code>, provide a list and
-<code><a href='jwt_claim.html'>jwt_claim()</a></code> will automatically fill in the dynamic components.
-If other components need to vary, you can instead provide a zero-argument
-callback function which should call <code><a href='jwt_claim.html'>jwt_claim()</a></code>.</p></td>
+      <th>token_url</th>
+      <td><p>Url to retrieve an access token.</p></td>
     </tr>
     <tr>
-      <th>signature</th>
-      <td><p>Function use to sign <code>claim</code>, e.g. <code><a href='jwt_claim.html'>jwt_encode_sig()</a></code>.</p></td>
+      <th>secret</th>
+      <td><p>Client secret. For most apps, this is technically confidential
+so in principle you should avoid storing it in source code. However, many
+APIs require it in order to provide a user friendly authentication
+experience, and the risks of including it are usually low. To make things
+a little safer, I recommend using <code><a href='obfuscate.html'>obfuscate()</a></code> when recorded the client
+secret in public code.</p></td>
     </tr>
     <tr>
-      <th>signature_params</th>
-      <td><p>Additional arguments passed to <code>signature</code>, e.g.
-<code>size</code>, <code>header</code>.</p></td>
+      <th>key</th>
+      <td><p>Client key. As an alternative to using a <code>secret</code>, you can
+instead supply a confidential private key. This should never be included
+in a package.</p></td>
     </tr>
     <tr>
-      <th>scope</th>
-      <td><p>Scopes to be requested from the resource owner.</p></td>
+      <th>auth</th>
+      <td><p>Authentication mechanism used by the client to prove itself to
+the API. Can be one of three built-in methods ("body", "header", or "jwt"),
+or a function that will be called with arguments <code>req</code>, <code>client</code>, and
+the contents of <code>auth_params</code>.</p>
+<p>The most common mechanism in the wild is <code>"body"</code> where the <code>client_id</code> and
+(optionally) <code>client_secret</code> are added to the body. <code>"header"</code> sends in
+<code>client_id</code> and <code>client_secret</code> in HTTP Authorization header. <code>"jwt_sig"</code>
+will generate a JWT, and include it in a <code>client_assertion</code> field in the
+body.</p>
+<p>See <code><a href='oauth_client_req_auth.html'>oauth_client_req_auth()</a></code> for more details.</p></td>
     </tr>
     <tr>
-      <th>token_params</th>
-      <td><p>List containing additional parameters passed to the
-<code>token_url</code>.</p></td>
+      <th>auth_params</th>
+      <td><p>Additional parameters passed to the function specified
+by <code>auth</code>.</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>Optional name for the client. Used when generating cache
+directory. If <code>NULL</code>, generated from hash of <code>client_id</code>. If you're
+defining a package for use in a package, I recommend that you use
+the package name.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other OAuth flows: 
-<code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
-<code><a href='oauth_flow_client_credentials.html'>oauth_flow_client_credentials</a>()</code>,
-<code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
-<code><a href='oauth_flow_password.html'>oauth_flow_password</a>()</code>,
-<code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
