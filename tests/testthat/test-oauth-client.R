@@ -1,5 +1,5 @@
 test_that("can check app has needed pieces", {
-  client <- oauth_client("id", token = "http://example.com")
+  client <- oauth_client("id", token_url = "http://example.com")
   expect_snapshot(error = TRUE, {
     oauth_flow_check("test", client, is_confidential = TRUE)
     oauth_flow_check("test", client, interactive = TRUE)
@@ -12,6 +12,17 @@ test_that("client has useful print method", {
     oauth_client("x", secret = "SECRET", token_url = "http://example.com")
   })
 })
+
+test_that("picks default auth", {
+  expect_equal(
+    oauth_client("x", "url", key = NULL)$auth,
+    "oauth_client_req_auth_body")
+  expect_equal(
+    oauth_client("x", "url", key = "key")$auth,
+    "oauth_client_req_auth_jwt_sig"
+  )
+})
+
 
 test_that("can authenticate using header or body", {
   client <- function(auth) {

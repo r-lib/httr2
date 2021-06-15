@@ -50,10 +50,14 @@ oauth_client <- function(
   check_string(token_url, "`token_url`")
 
   if (is.character(auth)) {
+    if (missing(auth)) {
+      auth <- if (is.null(key)) "body" else "jwt_sig"
+    }
     auth <- arg_match(auth)
+
     if (auth == "header" && is.null(secret)) {
       abort("`auth = 'header' requires a `secret`")
-    } else if (auth == "jwt_sig") {
+    } else if (auth == "jwt_sig" && is.null(key)) {
       abort("`auth = 'jwt_sig' requires a `key`")
     }
     auth <- paste0("oauth_client_req_auth_", auth)
