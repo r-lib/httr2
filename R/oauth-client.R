@@ -146,7 +146,7 @@ oauth_client_req_auth_body <- function(req, client) {
 #' @export
 #' @rdname oauth_client_req_auth
 oauth_client_req_auth_jwt_sig <- function(req, client, claims, size = 256, header = list()) {
-  claims <- jwt_claim(!!!claims)
+  claims <- exec("jwt_claim", !!!claims)
   jwt <- jwt_encode_sig(claims, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
