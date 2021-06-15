@@ -1,52 +1,32 @@
-# oauth_app checks its inputs
-
-    Code
-      oauth_app(1)
-    Error <rlang_error>
-      `client` must be an OAuth client created with `oauth_client()`
-    Code
-      client <- oauth_client("id")
-      oauth_app(client, endpoints = 1)
-    Error <rlang_error>
-      `endpoints` must be a named character vector
-    Code
-      oauth_app(client, endpoints = c(x = "x"))
-    Error <rlang_error>
-      `endpoints` must contain a token endpoint
-    Code
-      oauth_app(client, endpoints = c(token = "test"), auth = "header")
-    Error <rlang_error>
-      `auth = 'header' requires a client with a secret
-
 # can check app has needed pieces
 
     Code
-      oauth_flow_check_app(app, "test", is_confidential = TRUE)
+      oauth_flow_check("test", client, is_confidential = TRUE)
     Error <rlang_error>
       Can't use this `app` with OAuth 2.0 test flow
       * `app` must have a confidential client (i.e. `client_secret` is required)
     Code
-      oauth_flow_check_app(app, "test", endpoints = "foo")
-    Error <rlang_error>
-      Can't use this `app` with OAuth 2.0 test flow
-      * `app` lacks endpoints 'foo'
-    Code
-      oauth_flow_check_app(app, "test", interactive = TRUE)
+      oauth_flow_check("test", client, interactive = TRUE)
     Error <rlang_error>
       OAuth 2.0 test flow requires an interactive session
 
 # client has useful print method
 
     Code
-      oauth_client("x")
+      oauth_client("x", token_url = "http://example.com")
     Message <cliMessage>
       <httr2_oauth_client>
+      name: bf27508f7925b06bf28a10f3805351ab
       id: x
-      secret: <REDACTED>
+      token_url: http://example.com
+      auth: oauth_client_req_auth_body
     Code
-      oauth_client("x", "x")
+      oauth_client("x", secret = "SECRET", token_url = "http://example.com")
     Message <cliMessage>
       <httr2_oauth_client>
+      name: bf27508f7925b06bf28a10f3805351ab
       id: x
       secret: <REDACTED>
+      token_url: http://example.com
+      auth: oauth_client_req_auth_body
 

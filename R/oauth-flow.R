@@ -1,11 +1,14 @@
-oauth_flow_access_token <- function(app, ...) {
-  url <- app_endpoint(app, "token")
-
-  req <- request(url)
+oauth_flow_access_token <- function(client, ...) {
+  req <- request(client$token_url)
   req <- req_body_form(req, list2(...))
-  req <- oauth_client_req_auth(req, app)
+  req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 
+  resp <- oauth_flow_fetch(req)
+  exec(oauth_token, !!!resp)
+}
+
+oauth_flow_fetch <- function(req) {
   req <- req_error(req, is_error = ~ FALSE)
   resp <- req_fetch(req)
 
@@ -13,7 +16,6 @@ oauth_flow_access_token <- function(app, ...) {
   # hopefully be general enough to handle most token endpoints. However,
   # it would still be nice to figure out how to make user extensible,
   # especially since you might be able to give better errors.
-
   if (resp_content_type(resp) == "application/json") {
     body <- resp_body_json(resp)
   } else {
@@ -21,13 +23,14 @@ oauth_flow_access_token <- function(app, ...) {
   }
 
   if (has_name(body, "access_token") && resp_status(resp) == 200) {
-    exec(oauth_token, !!!body, .date = resp_date(resp))
+    body
   } else if (has_name(body, "error")) {
     oauth_flow_abort(body$error, body$error_description, body$error_uri)
   } else {
     resp_check_status(resp)
     abort("Failed to process response from 'token' endpoint")
   }
+
 }
 
 # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1

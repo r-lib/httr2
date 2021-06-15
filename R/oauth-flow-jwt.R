@@ -8,16 +8,16 @@
 #' @export
 #' @inheritParams req_fetch
 #' @inheritParams oauth_flow_jwt
-req_oauth_jwt <- function(req, app,
+req_oauth_jwt <- function(req, client,
                           claims,
-                          signature,
+                          signature = "jwt_encode_sig",
                           signature_params = list(),
                           scope = NULL,
                           token_params = list()
                           ) {
 
   params <- list(
-    app = app,
+    client = client,
     claims = claims,
     signature = signature,
     signature_params = signature_params,
@@ -25,7 +25,7 @@ req_oauth_jwt <- function(req, app,
     token_params = token_params
   )
 
-  cache <- cache_mem(app, NULL)
+  cache <- cache_mem(client, NULL)
   req_oauth(req, "oauth_flow_jwt", params, cache = cache)
 }
 
@@ -46,14 +46,17 @@ req_oauth_jwt <- function(req, app,
 #'   callback function which should call `jwt_claim()`.
 #' @param signature Function use to sign `claim_set`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
-#'   `key`, `size`, `header`.
-oauth_flow_jwt <- function(app,
+#'   `size`, `header`.
+oauth_flow_jwt <- function(client,
                            claims,
                            signature = "jwt_encode_sig",
                            signature_params = list(),
                            scope = NULL,
                            token_params = list()) {
   check_installed("jose")
+  if (is.null(client$key)) {
+    abort("JWT flow requires `client` with a key")
+  }
 
   if (is_list(claims)) {
     claims <- exec("jwt_claim", !!!claims)
@@ -63,10 +66,10 @@ oauth_flow_jwt <- function(app,
     abort("`claims` must be result a list or function")
   }
 
-  jwt <- exec(signature, claims, !!!signature_params)
+  jwt <- exec(signature, claims, key = client$key, !!!signature_params)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1
-  oauth_flow_access_token(app,
+  oauth_flow_access_token(client,
     grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer",
     assertion = jwt,
     scope = scope,

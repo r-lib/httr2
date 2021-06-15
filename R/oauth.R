@@ -79,24 +79,24 @@ resp_is_invalid_oauth_token <- function(req, resp) {
 
 # Caches -------------------------------------------------------------------
 
-cache_choose <- function(app, cache_disk = FALSE, cache_key = NULL) {
+cache_choose <- function(client, cache_disk = FALSE, cache_key = NULL) {
   if (cache_disk) {
-    cache_disk(app, cache_key)
+    cache_disk(client, cache_key)
   } else {
-    cache_mem(app, cache_key)
+    cache_mem(client, cache_key)
   }
 }
 
-cache_mem <- function(app, key) {
-  key <- hash(c(oauth_client_name(app), key))
+cache_mem <- function(client, key) {
+  key <- hash(c(client$name, key))
   list(
     get = function() env_get(the$token_cache, key, default = NULL),
     set = function(token) env_poke(the$token_cache, key, token),
     clear = function() env_unbind(the$token_cache, key)
   )
 }
-cache_disk <- function(app, key) {
-  app_path <- file.path(rappdirs::user_cache_dir("httr2"), oauth_client_name(app))
+cache_disk <- function(client, key) {
+  app_path <- file.path(rappdirs::user_cache_dir("httr2"), client$name)
   dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
   path <- file.path(app_path, paste0(hash(key), ".rds"))

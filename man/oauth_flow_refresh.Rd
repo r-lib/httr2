@@ -5,14 +5,14 @@
 \title{OAuth flow: refresh token}
 \usage{
 oauth_flow_refresh(
-  app,
+  client,
   refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
   scope = NULL,
   token_params = list()
 )
 }
 \arguments{
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{refresh_token}{A refresh token. This is equivalent to a password
 so shouldn't be typed into the console or stored in a script. Instead,

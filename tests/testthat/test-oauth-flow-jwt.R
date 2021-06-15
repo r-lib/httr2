@@ -6,9 +6,10 @@
 test_that("can generate token and use it automatically", {
   secrets <- secret_read_rds(test_path("test-oauth-flow-jwt-google.rds"), "HTTR2_KEY")
 
-  app <- oauth_app(
-    client = oauth_client(secrets$client_id),
-    endpoints = c(token = secrets$token_uri)
+  client <- oauth_client(
+    id = secrets$client_id,
+    key = secrets$private_key,
+    token_url = secrets$token_uri
   )
   claims <- list2(
     iss = secrets$client_email,
@@ -17,12 +18,12 @@ test_that("can generate token and use it automatically", {
   )
 
   # Can generate token
-  token <- oauth_flow_jwt(app, claims, "jwt_encode_sig", list(key = secrets$private_key))
+  token <- oauth_flow_jwt(client, claims)
   expect_s3_class(token, "httr2_token")
 
   # Can use it in request
   resp <- request("https://openidconnect.googleapis.com/v1/userinfo") %>%
-    req_oauth_jwt(app, claims, "jwt_encode_sig", list(key = secrets$private_key)) %>%
+    req_oauth_jwt(client, claims) %>%
     req_fetch() %>%
     resp_body_json()
 

@@ -8,18 +8,18 @@
 #' @export
 #' @inheritParams req_fetch
 #' @inheritParams oauth_flow_client_credentials
-req_oauth_client_credentials <- function(req, app,
+req_oauth_client_credentials <- function(req, client,
                                          scope = NULL,
                                          token_params = list()
                                          ) {
 
   params <- list(
-    app = app,
+    client = client,
     scope = scope,
     token_params = token_params
   )
 
-  cache <- cache_mem(app, NULL)
+  cache <- cache_mem(client, NULL)
   req_oauth(req, "oauth_flow_client_credentials", params, cache = cache)
 }
 
@@ -33,17 +33,13 @@ req_oauth_client_credentials <- function(req, app,
 #' @inheritParams oauth_flow_auth_code
 #' @export
 #' @family OAuth flows
-oauth_flow_client_credentials <- function(app,
+oauth_flow_client_credentials <- function(client,
                                           scope = NULL,
                                           token_params = list()
                                           ) {
-  oauth_flow_check_app(app,
-    flow = "client credentials",
-    is_confidential = TRUE,
-    endpoints = "token"
-  )
+  oauth_flow_check("client credentials", client, is_confidential = TRUE)
 
-  oauth_flow_access_token(app,
+  oauth_flow_access_token(client,
     grant_type = "client_credentials",
     scope = scope,
     !!!token_params

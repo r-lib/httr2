@@ -6,7 +6,7 @@
 \usage{
 req_oauth_device(
   req,
-  app,
+  client,
   cache_disk = FALSE,
   cache_key = NULL,
   scope = NULL,
@@ -17,7 +17,7 @@ req_oauth_device(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of

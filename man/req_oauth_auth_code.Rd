@@ -6,7 +6,8 @@
 \usage{
 req_oauth_auth_code(
   req,
-  app,
+  client,
+  auth_url,
   cache_disk = FALSE,
   cache_key = NULL,
   scope = NULL,
@@ -21,7 +22,10 @@ req_oauth_auth_code(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
+
+\item{auth_url}{Authorization url; you'll need to discover this by reading
+the documentation.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of

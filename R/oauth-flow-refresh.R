@@ -17,18 +17,18 @@
 #' @export
 #' @inheritParams req_fetch
 #' @inheritParams oauth_flow_refresh
-req_oauth_refresh <- function(req, app,
+req_oauth_refresh <- function(req, client,
                               refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
                               scope = NULL,
                               token_params = list()) {
 
   params <- list(
-    app = app,
+    client = client,
     refresh_token = refresh_token,
     scope = scope,
     token_params = token_params
   )
-  cache <- cache_mem(app, NULL)
+  cache <- cache_mem(client, NULL)
 
   req_oauth(req, "oauth_flow_refresh", params, cache = cache)
 }
@@ -49,16 +49,12 @@ req_oauth_refresh <- function(req, app,
 #'   is to look in `HTTR_REFRESH_TOKEN`.
 #' @family OAuth flows
 #' @export
-oauth_flow_refresh <- function(app,
+oauth_flow_refresh <- function(client,
                                refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
                                scope = NULL,
                                token_params = list()) {
-  oauth_flow_check_app(app,
-    flow = "refresh",
-    endpoints = "token"
-  )
-
-  token <- token_refresh(app,
+  oauth_flow_check("refresh", client)
+  token <- token_refresh(client,
     refresh_token = refresh_token,
     scope = scope,
     token_params = token_params

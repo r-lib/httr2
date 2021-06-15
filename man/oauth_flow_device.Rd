@@ -5,14 +5,18 @@
 \title{OAuth flow: device}
 \usage{
 oauth_flow_device(
-  app,
+  client,
+  auth_url,
   scope = NULL,
   auth_params = list(),
   token_params = list()
 )
 }
 \arguments{
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
+
+\item{auth_url}{Authorization url; you'll need to discover this by reading
+the documentation.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

@@ -4,12 +4,12 @@
 \alias{req_oauth_client_credentials}
 \title{OAuth authentication with client credentials}
 \usage{
-req_oauth_client_credentials(req, app, scope = NULL, token_params = list())
+req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

@@ -6,7 +6,7 @@
 \usage{
 req_oauth_password(
   req,
-  app,
+  client,
   username,
   password = NULL,
   cache_disk = FALSE,
@@ -17,7 +17,7 @@ req_oauth_password(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{username}{User name.}
 

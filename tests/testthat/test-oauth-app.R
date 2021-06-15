@@ -1,45 +1,32 @@
-test_that("oauth_app checks its inputs", {
-  expect_snapshot(error = TRUE, {
-    oauth_app(1)
-
-    client <- oauth_client("id")
-    oauth_app(client, endpoints = 1)
-    oauth_app(client, endpoints = c("x" = "x"))
-
-    oauth_app(client, endpoints = c("token" = "test"), auth = "header")
-  })
-})
-
 test_that("can check app has needed pieces", {
-  app <- oauth_app(oauth_client("id"), c("token" = "test"))
+  client <- oauth_client("id", token = "http://example.com")
   expect_snapshot(error = TRUE, {
-    oauth_flow_check_app(app, "test", is_confidential = TRUE)
-    oauth_flow_check_app(app, "test", endpoints = "foo")
-    oauth_flow_check_app(app, "test", interactive = TRUE)
+    oauth_flow_check("test", client, is_confidential = TRUE)
+    oauth_flow_check("test", client, interactive = TRUE)
   })
-})
-
-test_that("can set custom name", {
-  client <- oauth_client("id", name = "test")
-  app <- oauth_app(client, c("token" = "test"))
-  expect_equal(oauth_client_name(app), "test")
 })
 
 test_that("client has useful print method", {
   expect_snapshot({
-    oauth_client("x")
-    oauth_client("x", "x")
+    oauth_client("x", token_url = "http://example.com")
+    oauth_client("x", secret = "SECRET", token_url = "http://example.com")
   })
 })
 
 test_that("can authenticate using header or body", {
-  req <- request("http://example.com")
-  client <- oauth_client("id", "secret")
-  ep <- c("token" = "test")
+  client <- function(auth) {
+    oauth_client(
+      id = "id",
+      secret = "secret",
+      token_url = "http://example.com",
+      auth = auth
+    )
+  }
 
-  req_h <- oauth_client_req_auth(req, oauth_app(client, ep, auth = "header"))
+  req <- request("http://example.com")
+  req_h <- oauth_client_req_auth(req, client("header"))
   expect_equal(req_h$headers$Authorization, "Basic aWQ6c2VjcmV0")
 
-  req_b <- oauth_client_req_auth(req, oauth_app(client, ep, auth = "body"))
+  req_b <- oauth_client_req_auth(req, client("body"))
   expect_equal(rawToChar(req_b$options$postfields), "client_id=id&client_secret=secret")
 })

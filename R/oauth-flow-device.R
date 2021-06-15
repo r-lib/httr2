@@ -9,7 +9,7 @@
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
-req_oauth_device <- function(req, app,
+req_oauth_device <- function(req, client,
                              cache_disk = FALSE,
                              cache_key = NULL,
                              scope = NULL,
@@ -17,12 +17,12 @@ req_oauth_device <- function(req, app,
                              token_params = list()) {
 
   params <- list(
-    app = app,
+    client = client,
     scope = scope,
     auth_params = auth_params,
     token_params = token_params
   )
-  cache <- cache_choose(app, cache_disk, cache_key)
+  cache <- cache_choose(client, cache_disk, cache_key)
   req_oauth(req, "oauth_flow_device", params, cache = cache)
 }
 
@@ -38,16 +38,14 @@ req_oauth_device <- function(req, app,
 #' @inheritParams oauth_flow_auth_code
 #' @export
 #' @family OAuth flows
-oauth_flow_device <- function(app,
+oauth_flow_device <- function(client,
+                              auth_url,
                               scope = NULL,
                               auth_params = list(),
                               token_params = list()) {
-  oauth_flow_check_app(app,
-    flow = "device",
-    endpoints = "device_authorization"
-  )
+  oauth_flow_check("device", client, interactive = TRUE)
 
-  request <- oauth_flow_device_request(app, scope, auth_params)
+  request <- oauth_flow_device_request(client, auth_url, scope, auth_params)
 
   # User interaction
   # https://datatracker.ietf.org/doc/html/rfc8628#section-3.3
@@ -61,7 +59,7 @@ oauth_flow_device <- function(app,
     inform(glue("Visit <{url}> and enter code {request$user_code}"))
   }
 
-  token <- oauth_flow_device_poll(app, request, token_params)
+  token <- oauth_flow_device_poll(client, request, token_params)
   if (is.null(token)) {
     abort("Expired without user confirmation; please try again.")
   }
@@ -72,21 +70,18 @@ oauth_flow_device <- function(app,
 # Device authorization request and response
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.1
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
-oauth_flow_device_request <- function(app, scope, auth_params) {
-  url <- app_endpoint(app, "device_authorization")
-
-  req <- request(url)
+oauth_flow_device_request <- function(client, auth_url, scope, auth_params) {
+  req <- request(auth_url)
   req <- req_body_form(req, list2(scope = scope, !!!auth_params))
-  req <- oauth_client_req_auth(req, app)
+  req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 
-  resp <- req_fetch(req)
-  resp_body_json(resp)
+  oauth_flow_fetch(req)
 }
 
 # Device Access Token Request
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.4
-oauth_flow_device_poll <- function(app, request, token_params) {
+oauth_flow_device_poll <- function(client, request, token_params) {
   delay <- request$interval %||% 5
   deadline <- Sys.time() + request$expires_in
 
@@ -96,7 +91,7 @@ oauth_flow_device_poll <- function(app, request, token_params) {
 
     tryCatch(
       {
-        token <- oauth_flow_access_token(app,
+        token <- oauth_flow_access_token(client,
           grant_type = "urn:ietf:params:oauth:grant-type:device_code",
           device_code = request$device_code,
           !!!token_params

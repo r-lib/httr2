@@ -217,7 +217,11 @@ obfuscate("secret")
 Then use the client id from the website along with the obfuscated secret to create a client:
 
 ```{r}
-client <- oauth_client("client_id", obfuscated("YVW06Lex"))
+client <- oauth_client(
+  id = "client_id", 
+  secret = obfuscated("YVW06Lex"),
+  token = "https://accounts.google.com/o/oauth2/token"
+)
 client
 ```
 
@@ -232,17 +236,6 @@ An app is the combination of the information about your client and some general 
 The information you'll need varies a little depending on the flow you're using, but for the most common case it will look something like this.
 You'll pass the client that you created above, as long as a list of authentication endpoints.
 In the most common case, you'll need to supply `token` and `authorization` endpoints.
-
-```{r}
-app <- oauth_app(
-  client,
-  endpoints = c(
-    token = "https://accounts.google.com/o/oauth2/token",
-    authorization = "https://accounts.google.com/o/oauth2/auth"
-  )
-)
-app
-```
 
 Depending on how the API is set up, you may also need to change the `auth` parameter.
 We'll come back to that shortly.
