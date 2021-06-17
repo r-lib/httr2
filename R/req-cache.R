@@ -17,12 +17,16 @@
 #' @param path Path to cache directory
 #' @param use_on_error If the request errors, and there's a cache response,
 #'   should `req_fetch()` return that instead of generating an error?
+#' @param debug When `TRUE` will emit useful messages telling you about
+#'   cache hits and misses. This can be helpful to understand whether or
+#'   not caching is actually doing anything for your use case.
 #' @export
-req_cache <- function(req, path, use_on_error = FALSE) {
+req_cache <- function(req, path, use_on_error = FALSE, debug = FALSE) {
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
   req_policies(req,
     cache_path = path,
-    cache_use_on_error = use_on_error
+    cache_use_on_error = use_on_error,
+    cache_debug = debug
   )
 }
 
@@ -34,6 +38,9 @@ cache_path <- function(req, ext = ".rds") {
 }
 cache_use_on_error <- function(req) {
   req$policies$cache_use_on_error %||% FALSE
+}
+cache_debug <- function(req) {
+  req$policies$cache_debug %||% FALSE
 }
 
 # Cache management --------------------------------------------------------
@@ -72,12 +79,17 @@ cache_pre_fetch <- function(req) {
   if (!cache_exists(req)) {
     return(req)
   }
+  debug <- cache_debug(req)
 
   info <- resp_cache_info(cache_get(req))
+  if (debug) cli::cli_text("Found url in cache {.val {hash(req$url)}}")
+
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
     signal("", "httr2_cache_cached")
+    if (debug) cli::cli_text("Cached value is fresh; retrieving response from cache")
     cache_get(req)
   } else {
+    if (debug) cli::cli_text("Cached value is stale; checking for updates")
     req_headers(req,
       `If-Modified-Since` = info$last_modified,
       `If-None-Match` = info$etag
@@ -89,15 +101,24 @@ cache_post_fetch <- function(req, resp, path = NULL) {
   if (!req_policy_exists(req, "cache_path")) {
     return(resp)
   }
+  debug <- cache_debug(req)
 
-  if (is_error(resp) && cache_use_on_error(req) && cache_exists(req)) {
-    cache_get(req)
+  if (is_error(resp)) {
+    if (cache_use_on_error(req) && cache_exists(req)) {
+      if (debug) cli::cli_text("Request errored; retrieving response from cache")
+      cache_get(req)
+    } else {
+      resp
+    }
   } else if (resp_status(resp) == 304 && cache_exists(req)) {
     signal("", "httr2_cache_not_modified")
+    if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
+
     # Replace body with cached result
     resp$body <- cache_body(req, path)
     resp
   } else if (resp_is_cacheable(resp)) {
+    if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
     cache_set(req, resp)
     resp
   } else {

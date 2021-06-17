@@ -66,6 +66,33 @@ test_that("automatically adds to cache", {
   expect_equal(cache_get(req), resp)
 })
 
+test_that("cache emits useful debugging info", {
+  req <- request("http://example.com") %>% req_cache(tempfile(), debug = TRUE)
+  resp <- response(200,
+    headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
+    body = charToRaw("abc")
+  )
+
+  expect_snapshot({
+    "Immutable"
+    invisible(cache_pre_fetch(req))
+    invisible(cache_post_fetch(req, resp))
+    invisible(cache_pre_fetch(req))
+  })
+
+
+  req <- request("http://example.com") %>%
+    req_cache(tempfile(), debug = TRUE, use_on_error = TRUE)
+  resp <- response(200, headers = "X: 1", body = charToRaw("OK"))
+  cache_set(req, resp)
+  expect_snapshot({
+    "freshness check"
+    invisible(cache_pre_fetch(req))
+    invisible(cache_post_fetch(req, response(304)))
+    invisible(cache_post_fetch(req, error_cnd()))
+  })
+})
+
 # cache -------------------------------------------------------------------
 
 test_that("can get and set from cache", {

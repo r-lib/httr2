@@ -4,7 +4,7 @@
 \alias{req_cache}
 \title{Automatically cache requests}
 \usage{
-req_cache(req, path, use_on_error = FALSE)
+req_cache(req, path, use_on_error = FALSE, debug = FALSE)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -13,6 +13,10 @@ req_cache(req, path, use_on_error = FALSE)
 
 \item{use_on_error}{If the request errors, and there's a cache response,
 should \code{req_fetch()} return that instead of generating an error?}
+
+\item{debug}{When \code{TRUE} will emit useful messages telling you about
+cache hits and misses. This can be helpful to understand whether or
+not caching is actually doing anything for your use case.}
 }
 \description{
 Use \code{req_fetch()} to automatically cache HTTP requests. Most API requests
