@@ -2,7 +2,7 @@
 title: "Wrapping APIs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{wrapping-apis}
+  %\VignetteIndexEntry{Wrapping APIs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -39,7 +39,17 @@ Simple pattern.
 
 <https://fakerapi.it/en>
 
-```{r}
+```{r, include = FALSE}
+faker_status <- request("https://fakerapi.it/api/v1") %>% 
+  req_url_path_append("images") %>% 
+  req_error(is_error = ~ FALSE) %>% 
+  req_fetch() %>% 
+  resp_status()
+faker_ok <- faker_status < 400
+```
+
+
+```{r, eval = faker_ok}
 req <- request("https://fakerapi.it/api/v1")
 resp <- req %>% 
   req_url_path_append("images") %>% 
@@ -52,7 +62,7 @@ Polite to set a user agent --- <https://github.com/r-lib/httr2/issues/43>.
 
 Error handling:
 
-```{r, error = TRUE}
+```{r, error = TRUE, eval = faker_ok}
 req %>% 
   req_url_path_append("invalid") %>% 
   req_fetch()
@@ -71,7 +81,7 @@ req %>%
 It's always worth checking to see if the headers or body of the response has any useful information.
 We do this by suppressing httr's default of turning HTTP error codes in to R errors and inspecting the result:
 
-```{r}
+```{r, eval = faker_ok}
 resp <- req %>% 
   req_url_path_append("imagesasf") %>% 
   req_error(is_error = ~ FALSE) %>% 
@@ -89,7 +99,7 @@ The first gives you more flexibility, but the user will need to add two more cal
 Use defaults.
 Automatically add underscores.
 
-```{r}
+```{r, eval = faker_ok}
 req_faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
   params <- list(
     ...,
