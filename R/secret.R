@@ -9,6 +9,9 @@
 #' * `secret_encrypt()` and `secret_decrypt()` work with individual strings
 #' * `secret_read_rds()` and `secret_write_rds()` work with `.rds` files
 #' * `secret_make_key()` generates a random string to use as a key.
+#' * `secret_has_key()` returns `TRUE` if the key is available; you can
+#'   use it in examples and vignettes that you want to evaluate on your CI,
+#'   but not for CRAN/package users.
 #'
 #' These all look for the key in an environment variable. When used inside of
 #' testthat, they will automatically [testthat::skip()] the test if the env var
@@ -108,6 +111,14 @@ secret_write_rds <- function(x, path, key) {
   writeBin(x_enc, path)
 }
 
+#' @export
+#' @rdname secrets
+secret_has_key <- function(key) {
+  check_string(key, "`envvar`")
+  key <- Sys.getenv(key)
+  !identical(key, "")
+}
+
 secret_get_key <- function(envvar) {
   key <- Sys.getenv(envvar)
 
@@ -199,7 +210,11 @@ as_key <- function(x) {
   } else if (is_string(x)) {
     secret_get_key(x)
   } else {
-    abort("key` must be a raw vector or a base64 url encoded string")
+    abort(paste0(
+      "`key` must be a raw vector containing the key, ",
+      "a string giving the name of an env var, ",
+      "or a string wrapped in I() that contains the base64url encoded key"
+    ))
   }
 }
 

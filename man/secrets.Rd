@@ -6,6 +6,7 @@
 \alias{secret_decrypt}
 \alias{secret_read_rds}
 \alias{secret_write_rds}
+\alias{secret_has_key}
 \title{Secret management}
 \usage{
 secret_make_key()
@@ -17,6 +18,8 @@ secret_decrypt(encrypted, key)
 secret_read_rds(path, key)
 
 secret_write_rds(x, path, key)
+
+secret_has_key(key)
 }
 \arguments{
 \item{x}{Object to encrypt. Must be a string for \code{secret_encrypt()}.}
@@ -40,6 +43,9 @@ but should not be available to package users.
 \item \code{secret_encrypt()} and \code{secret_decrypt()} work with individual strings
 \item \code{secret_read_rds()} and \code{secret_write_rds()} work with \code{.rds} files
 \item \code{secret_make_key()} generates a random string to use as a key.
+\item \code{secret_has_key()} returns \code{TRUE} if the key is available; you can
+use it in examples and vignettes that you want to evaluate on your CI,
+but not for CRAN/package users.
 }
 
 These all look for the key in an environment variable. When used inside of
