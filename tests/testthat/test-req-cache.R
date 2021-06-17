@@ -38,12 +38,14 @@ test_that("cached cache header added to request", {
 })
 
 test_that("error can use cached value", {
-  req <- request("http://example.com") %>% req_cache(tempfile(), TRUE)
+  req <- request("http://example.com") %>% req_cache(tempfile())
   resp <- response(200, body = charToRaw("OK"))
   cache_set(req, resp)
 
-  cached <- cache_post_fetch(req, structure(list(), class = "error"))
-  expect_equal(cached, resp)
+  expect_equal(cache_post_fetch(req, error_cnd()), error_cnd())
+
+  req$policies$cache_use_on_error <- TRUE
+  expect_equal(cache_post_fetch(req, error_cnd()), resp)
 })
 
 test_that("304 retains headers but gets cached body", {
@@ -79,7 +81,6 @@ test_that("cache emits useful debugging info", {
     invisible(cache_post_fetch(req, resp))
     invisible(cache_pre_fetch(req))
   })
-
 
   req <- request("http://example.com") %>%
     req_cache(tempfile(), debug = TRUE, use_on_error = TRUE)
