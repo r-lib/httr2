@@ -45,3 +45,5 @@ RoxygenNote: 7.1.1
 Remotes: 
     r-lib/pkgdown
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

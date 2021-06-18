@@ -159,7 +159,7 @@ secret_get_key <- function(envvar) {
 obfuscate <- function(x) {
   check_string(x, "`x`")
 
-  enc <- secret_encrypt(x, obfuscate_key)
+  enc <- secret_encrypt(x, obfuscate_key())
   glue('obfuscated("{enc}")')
 }
 attr(obfuscate, "srcref") <- "function(x) {}"
@@ -185,7 +185,7 @@ unobfuscate <- function(x, arg_name) {
   if (is.null(x)) {
     x
   } else if (inherits(x, "httr2_obfuscated")) {
-    secret_decrypt(x, obfuscate_key)
+    secret_decrypt(x, obfuscate_key())
   } else if (is_string(x)) {
     x
   } else {
@@ -194,10 +194,6 @@ unobfuscate <- function(x, arg_name) {
 }
 attr(unobfuscate, "srcref") <- "function(x) {}"
 
-obfuscate_key <- as.raw(c(
-  0xf7, 0x76, 0x13, 0x88, 0x76, 0x01, 0x6f, 0xb7,
-  0x67, 0xd5, 0xca, 0x45, 0x8b, 0xbb, 0x24, 0x2e
-))
 
 # Helpers -----------------------------------------------------------------
 
