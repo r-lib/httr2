@@ -76,7 +76,7 @@ test_that("req_dry_run() returns useful data", {
   resp <- request("http://example.com") %>% req_dry_run(quiet = TRUE)
   expect_equal(resp$method, "GET")
   expect_equal(resp$path, "/")
-  expect_equal(resp$headers$`user-agent`, default_ua())
+  expect_match(resp$headers$`user-agent`, "libcurl")
 })
 
 test_that("req_dry_run() shows body", {

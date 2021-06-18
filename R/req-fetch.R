@@ -243,7 +243,7 @@ req_handle <- function(req) {
   req <- req_method_apply(req)
 
   if (!has_name(req$options, "useragent")) {
-    req <- req_user_agent(req, default_ua())
+    req <- req_user_agent(req)
   }
 
   handle <- curl::new_handle()

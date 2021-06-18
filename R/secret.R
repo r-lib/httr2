@@ -199,7 +199,6 @@ obfuscate_key <- as.raw(c(
   0x67, 0xd5, 0xca, 0x45, 0x8b, 0xbb, 0x24, 0x2e
 ))
 
-
 # Helpers -----------------------------------------------------------------
 
 as_key <- function(x) {

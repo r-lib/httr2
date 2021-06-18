@@ -16,31 +16,48 @@ req_options <- function(.req, ...) {
   .req
 }
 
-#' Set user agent
+#' Set user-agent
 #'
-#' This overrides the default user agent set by httr2 which includes the
+#' This overrides the default user-agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
 #'
 #' @inheritParams req_fetch
-#' @param ua A new user-agent string.
+#' @param string String to be sent in the `User-Agent` header.
+#' @param versions Named character vector used to construct a user-agent
+#'   string using a lightweight convention. If both `string` and `versions`
+#'   are omitted,
 #' @export
 #' @examples
+#' # Default user-agent:
 #' request("http://example.com") %>% req_dry_run()
-#' request("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
-req_user_agent <- function(req, ua) {
+#'
+#' request("http://example.com") %>% req_user_agent("MyString") %>% req_dry_run()
+#'
+#' # If you're wrapping in an API in a package, it's polite to set the
+#' # user agent to identify your package.
+#' request("http://example.com") %>%
+#'   req_user_agent(versions = c("MyPackage" = "1.1.2")) %>%
+#'   req_dry_run()
+req_user_agent <- function(req, string = NULL, versions = NULL) {
   check_request(req)
-  check_string(ua, "`ua`")
+
+  if (is.null(string) && is.null(versions)) {
+    # Used in req_handle() to set default
+    return(req_user_agent(req, versions = c(
+        httr2 = utils::packageVersion("httr2"),
+        `r-curl` = utils::packageVersion("curl"),
+        libcurl = curl::curl_version()$version
+      )))
+  } else if (!is.null(string) && is.null(versions)) {
+    check_string(string, "`string`")
+    ua <- string
+  } else if (!is.null(versions) && is.null(string)) {
+    ua <- paste0(names(versions), "/", versions, collapse = " ")
+  } else {
+    abort("Must supply one of `string` and `versions`")
+  }
 
   req_options(req, useragent = ua)
-}
-
-default_ua <- function() {
-  versions <- c(
-    httr2 = as.character(utils::packageVersion("httr2")),
-    `r-curl` = as.character(utils::packageVersion("curl")),
-    libcurl = curl::curl_version()$version
-  )
-  paste0(names(versions), "/", versions, collapse = " ")
 }
 
 #' Set time limit
