@@ -113,23 +113,53 @@
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_width` <span class="op">=</span> <span class="fl">380</span>, `_quantity` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; $status</span>
+<span class="co">#&gt; [1] "OK"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $code</span>
+<span class="co">#&gt; [1] 200</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $total</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $data</span>
+<span class="co">#&gt; $data[[1]]</span>
+<span class="co">#&gt; $data[[1]]$title</span>
+<span class="co">#&gt; [1] "Occaecati vel sint dolore."</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $data[[1]]$description</span>
+<span class="co">#&gt; [1] "Repellendus nobis autem repellat voluptatibus beatae alias omnis. Est in corrupti quae adipisci. Dolorum sed aspernatur sunt ut laudantium sunt eum."</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $data[[1]]$url</span>
+<span class="co">#&gt; [1] "http://placeimg.com/380/480/any"</span></code></pre></div>
 <p>Polite to set a user agent — <a href="https://github.com/r-lib/httr2/issues/43" class="uri">https://github.com/r-lib/httr2/issues/43</a>.</p>
 <p>Error handling:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; Error: HTTP 404 Not Found.</span>
 
 <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_unsupport` <span class="op">=</span> <span class="fl">380</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; &lt;httr2_response&gt;</span>
+<span class="co">#&gt; GET https://fakerapi.it/api/v1/images?_unsupport=380</span>
+<span class="co">#&gt; Status: 200 OK</span>
+<span class="co">#&gt; Content-Type: application/json</span>
+<span class="co">#&gt; Body: In memory (2528 bytes)</span>
 
 <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_quantity` <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; &lt;httr2_response&gt;</span>
+<span class="co">#&gt; GET https://fakerapi.it/api/v1/images?_quantity=x</span>
+<span class="co">#&gt; Status: 200 OK</span>
+<span class="co">#&gt; Content-Type: application/json</span>
+<span class="co">#&gt; Body: In memory (46 bytes)</span></code></pre></div>
 <p>It’s always worth checking to see if the headers or body of the response has any useful information. We do this by suppressing httr’s default of turning HTTP error codes in to R errors and inspecting the result:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
@@ -137,7 +167,29 @@
   <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="co">#&gt; Server: nginx</span>
+<span class="co">#&gt; Content-Type: application/json</span>
+<span class="co">#&gt; Transfer-Encoding: chunked</span>
+<span class="co">#&gt; Connection: keep-alive</span>
+<span class="co">#&gt; Vary: Accept-Encoding</span>
+<span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
+<span class="co">#&gt; Cache-Control: no-cache, private</span>
+<span class="co">#&gt; Date: Fri, 18 Jun 2021 01:46:31 GMT</span>
+<span class="co">#&gt; Access-Control-Allow-Origin: *</span>
+<span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
+<span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
+<span class="co">#&gt; Access-Control-Max-Age: 86400</span>
+<span class="co">#&gt; Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With</span>
+<span class="co">#&gt; Content-Encoding: gzip</span>
+<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; $status</span>
+<span class="co">#&gt; [1] "Not found"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $code</span>
+<span class="co">#&gt; [1] 404</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $total</span>
+<span class="co">#&gt; [1] 0</span></code></pre></div>
 <p>In this case, it doesn’t look like it so we can leave the default error behaviour as is.</p>
 <p>Once you’ve got the basics, you can wrap it up into a function. You’ll need to decide if you want to returning a request or perform the request and return the result. The first gives you more flexibility, but the user will need to add two more calls; the second is easier but less flexible.</p>
 <p>Use defaults. Automatically add underscores.</p>
@@ -158,7 +210,26 @@
     <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="fu">req_faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
+<span class="fu">req_faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
+<span class="co">#&gt; $status</span>
+<span class="co">#&gt; [1] "OK"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $code</span>
+<span class="co">#&gt; [1] 200</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $total</span>
+<span class="co">#&gt; [1] 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $data</span>
+<span class="co">#&gt; $data[[1]]</span>
+<span class="co">#&gt; $data[[1]]$title</span>
+<span class="co">#&gt; [1] "Et veniam est non."</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $data[[1]]$description</span>
+<span class="co">#&gt; [1] "Ullam odio itaque facilis facere dolor non. Non nostrum adipisci voluptatem quam sed velit. Soluta vel qui in earum sit. Qui corporis et deleniti ex voluptas ullam et blanditiis."</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $data[[1]]$url</span>
+<span class="co">#&gt; [1] "http://placeimg.com/300/480/any"</span></code></pre></div>
 <p>There’s only one trick to notice here — <code><a href="../reference/req_url.html">req_url_query()</a></code> uses dynamic dots, so we can use <code>!!!</code> to convert (e.g.) <code>req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")</code> into <code>req_url_query(req, `_quantity` = 1, `_locale` = "en_US")</code>.</p>
 <p>In most cases, this function will be for internal use only, as you’ll continue to make a function for each endpoint useful to the R programmer. In some cases, you might want to export this function sot that the experienced user can call endpoints that you haven’t yet wrapped.</p>
 <p>To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame. I’d suggest keeping that code in a separate function since it’s likely to vary by endpoint.</p>
@@ -197,7 +268,7 @@
 <span class="co">#&gt; -&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; -&gt; </span>
 <span class="co">#&gt; &lt;- HTTP/1.1 401 Unauthorized</span>
-<span class="co">#&gt; &lt;- Date: Fri, 18 Jun 2021 01:41:38 GMT</span>
+<span class="co">#&gt; &lt;- Date: Fri, 18 Jun 2021 01:46:32 GMT</span>
 <span class="co">#&gt; &lt;- Content-Type: application/json</span>
 <span class="co">#&gt; &lt;- Content-Length: 90</span>
 <span class="co">#&gt; &lt;- Connection: keep-alive</span>
