@@ -14,19 +14,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-A common use for httr2 is wrapping up a useful API and exposing it in an R package.
-One of the goals of httr is to make this easier, and this vignette will show you how.
+A common use for httr2 is wrapping up a useful API and exposing it in an R package: you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument.
+This vignette will show you how, starting with a very simple API that doesn't need authentication, and working our way up in complexity.
 
-i.e. you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument.
-Also involves:
+Along the way, you'll learn about how to:
 
 -   Ensure that HTTP errors expose as much detail in the R error.
 
--   Wrap up the details of authentication.
+-   Wrap up details of authentication to provide a user friendly experience.
 
--   Rate limiting
-
--   Pagination
+-   Consistently throttle the rate of requests or dynamically respond to rate limiting headers sent by the server.
 
 ```{r setup}
 library(httr2)
@@ -34,12 +31,9 @@ library(httr2)
 
 ## Basics
 
-No auth.
-Simple pattern.
-
-<https://fakerapi.it/en>
-
 ```{r, include = FALSE}
+# Seems to return 500s from time-to-time, so avoid any problems
+# by only evaluating other chunks if a simple request succeeds.
 faker_status <- request("https://fakerapi.it/api/v1") %>% 
   req_url_path_append("images") %>% 
   req_error(is_error = ~ FALSE) %>% 
@@ -48,49 +42,59 @@ faker_status <- request("https://fakerapi.it/api/v1") %>%
 faker_ok <- faker_status < 400
 ```
 
+We'll start with a very simple API, [faker API](https://fakerapi.it/en){.uri}, which provides a collection of techniques for generating fake data.
+Before we start writing the sort of functions that you might put in a package, we'll perform a request just to see how the basics work:
 
 ```{r, eval = faker_ok}
+# We start by creating a request that uses the base API url
 req <- request("https://fakerapi.it/api/v1")
 resp <- req %>% 
+  # Then we add on the images path
   req_url_path_append("images") %>% 
+  # Add set _width and _quantity query parameters
   req_url_query(`_width` = 380, `_quantity` = 1) %>% 
   req_fetch()
-resp %>% resp_body_json()
+
+# The result comes back as JSON
+resp %>% resp_body_json() %>% str()
 ```
 
-Polite to set a user agent --- <https://github.com/r-lib/httr2/issues/43>.
+### Errors
 
-Error handling:
+Next it's worth a little experimentation to see if we get any useful information from errors.
+If you fetch a URL that returns an unsuccesful HTTP response, you'll get an error so you can't further inspect the body:
 
 ```{r, error = TRUE, eval = faker_ok}
 req %>% 
   req_url_path_append("invalid") %>% 
   req_fetch()
-
-req %>% 
-  req_url_path_append("images") %>% 
-  req_url_query(`_unsupport` = 380) %>% 
-  req_fetch()
-
-req %>% 
-  req_url_path_append("images") %>% 
-  req_url_query(`_quantity` = "x") %>% 
-  req_fetch()
 ```
 
-It's always worth checking to see if the headers or body of the response has any useful information.
-We do this by suppressing httr's default of turning HTTP error codes in to R errors and inspecting the result:
+To see what's going on, you'll need to use `req_error()` to turn off the default behaviour that turns HTTP errors into R errors:
 
 ```{r, eval = faker_ok}
 resp <- req %>% 
   req_url_path_append("imagesasf") %>% 
   req_error(is_error = ~ FALSE) %>% 
   req_fetch()
-resp %>% resp_headers()
+```
+
+Now you can look at the response body:
+
+```{r, eval = faker_ok}
 resp %>% resp_body_json()
 ```
 
-In this case, it doesn't look like it so we can leave the default error behaviour as is.
+It doesn't look like there's anything useful there so I'll double check the headers:
+
+```{r, eval = faker_ok}
+resp %>% resp_headers()
+```
+
+It doesn't look like we're getting any more useful information, so we can leave the default as is.
+We'll have another go later with an API that does provide more details.
+
+### Making a function
 
 Once you've got the basics, you can wrap it up into a function.
 You'll need to decide if you want to returning a request or perform the request and return the result.
@@ -126,6 +130,10 @@ In some cases, you might want to export this function sot that the experienced u
 
 To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame.
 I'd suggest keeping that code in a separate function since it's likely to vary by endpoint.
+
+### User agent
+
+Before we go on, Polite to set a user agent --- [<https://github.com/r-lib/httr2/issues/43>](https://github.com/r-lib/httr2/issues/43){.uri}.
 
 ## App with API key
 
