@@ -92,108 +92,59 @@
 
     
     
-<p>A common use for httr2 is wrapping up a useful API and exposing it in an R package. One of the goals of httr is to make this easier, and this vignette will show you how.</p>
-<p>i.e. you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument. Also involves:</p>
+<p>A common use for httr2 is wrapping up a useful API and exposing it in an R package: you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument. This vignette will show you how, starting with a very simple API that doesn’t need authentication, and working our way up in complexity.</p>
+<p>Along the way, you’ll learn about how to:</p>
 <ul>
 <li><p>Ensure that HTTP errors expose as much detail in the R error.</p></li>
-<li><p>Wrap up the details of authentication.</p></li>
-<li><p>Rate limiting</p></li>
-<li><p>Pagination</p></li>
+<li><p>Wrap up details of authentication to provide a user friendly experience.</p></li>
+<li><p>Consistently throttle the rate of requests or dynamically respond to rate limiting headers sent by the server.</p></li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></code></pre></div>
 <div id="basics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basics" class="anchor"></a>Basics</h2>
-<p>No auth. Simple pattern.</p>
-<p><a href="https://fakerapi.it/en" class="uri">https://fakerapi.it/en</a></p>
+<p>We’ll start with a very simple API, <a href="https://fakerapi.it/en" class="uri">faker API</a>, which provides a collection of techniques for generating fake data. Before we start writing the sort of functions that you might put in a package, we’ll perform a request just to see how the basics work:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co"># We start by creating a request that uses the base API url</span>
+<span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span>
 <span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="co"># Then we add on the images path</span>
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="co"># Add set _width and _quantity query parameters</span>
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_width` <span class="op">=</span> <span class="fl">380</span>, `_quantity` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; $status</span>
-<span class="co">#&gt; [1] "OK"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $code</span>
-<span class="co">#&gt; [1] 200</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $total</span>
-<span class="co">#&gt; [1] 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data</span>
-<span class="co">#&gt; $data[[1]]</span>
-<span class="co">#&gt; $data[[1]]$title</span>
-<span class="co">#&gt; [1] "Occaecati vel sint dolore."</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data[[1]]$description</span>
-<span class="co">#&gt; [1] "Repellendus nobis autem repellat voluptatibus beatae alias omnis. Est in corrupti quae adipisci. Dolorum sed aspernatur sunt ut laudantium sunt eum."</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data[[1]]$url</span>
-<span class="co">#&gt; [1] "http://placeimg.com/380/480/any"</span></code></pre></div>
-<p>Polite to set a user agent — <a href="https://github.com/r-lib/httr2/issues/43" class="uri">https://github.com/r-lib/httr2/issues/43</a>.</p>
-<p>Error handling:</p>
+
+<span class="co"># The result comes back as JSON</span>
+<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div id="errors" class="section level3">
+<h3 class="hasAnchor">
+<a href="#errors" class="anchor"></a>Errors</h3>
+<p>Next it’s worth a little experimentation to see if we get any useful information from errors. If you fetch a URL that returns an unsuccesful HTTP response, you’ll get an error so you can’t further inspect the body:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Error: HTTP 404 Not Found.</span>
-
-<span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_unsupport` <span class="op">=</span> <span class="fl">380</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;httr2_response&gt;</span>
-<span class="co">#&gt; GET https://fakerapi.it/api/v1/images?_unsupport=380</span>
-<span class="co">#&gt; Status: 200 OK</span>
-<span class="co">#&gt; Content-Type: application/json</span>
-<span class="co">#&gt; Body: In memory (2528 bytes)</span>
-
-<span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_quantity` <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;httr2_response&gt;</span>
-<span class="co">#&gt; GET https://fakerapi.it/api/v1/images?_quantity=x</span>
-<span class="co">#&gt; Status: 200 OK</span>
-<span class="co">#&gt; Content-Type: application/json</span>
-<span class="co">#&gt; Body: In memory (46 bytes)</span></code></pre></div>
-<p>It’s always worth checking to see if the headers or body of the response has any useful information. We do this by suppressing httr’s default of turning HTTP error codes in to R errors and inspecting the result:</p>
+  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>To see what’s going on, you’ll need to use <code><a href="../reference/req_error.html">req_error()</a></code> to turn off the default behaviour that turns HTTP errors into R errors:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"imagesasf"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Server: nginx</span>
-<span class="co">#&gt; Content-Type: application/json</span>
-<span class="co">#&gt; Transfer-Encoding: chunked</span>
-<span class="co">#&gt; Connection: keep-alive</span>
-<span class="co">#&gt; Vary: Accept-Encoding</span>
-<span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
-<span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Fri, 18 Jun 2021 01:46:31 GMT</span>
-<span class="co">#&gt; Access-Control-Allow-Origin: *</span>
-<span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
-<span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
-<span class="co">#&gt; Access-Control-Max-Age: 86400</span>
-<span class="co">#&gt; Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With</span>
-<span class="co">#&gt; Content-Encoding: gzip</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; $status</span>
-<span class="co">#&gt; [1] "Not found"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $code</span>
-<span class="co">#&gt; [1] 404</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $total</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
-<p>In this case, it doesn’t look like it so we can leave the default error behaviour as is.</p>
+  <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>Now you can look at the response body:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>It doesn’t look like there’s anything useful there so I’ll double check the headers:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>It doesn’t look like we’re getting any more useful information, so we can leave the default as is. We’ll have another go later with an API that does provide more details.</p>
+</div>
+<div id="making-a-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#making-a-function" class="anchor"></a>Making a function</h3>
 <p>Once you’ve got the basics, you can wrap it up into a function. You’ll need to decide if you want to returning a request or perform the request and return the result. The first gives you more flexibility, but the user will need to add two more calls; the second is easier but less flexible.</p>
 <p>Use defaults. Automatically add underscores.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req_faker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resource</span>, <span class="va">...</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
     <span class="va">...</span>,
@@ -210,40 +161,27 @@
     <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="fu">req_faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
-<span class="co">#&gt; $status</span>
-<span class="co">#&gt; [1] "OK"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $code</span>
-<span class="co">#&gt; [1] 200</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $total</span>
-<span class="co">#&gt; [1] 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data</span>
-<span class="co">#&gt; $data[[1]]</span>
-<span class="co">#&gt; $data[[1]]$title</span>
-<span class="co">#&gt; [1] "Et veniam est non."</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data[[1]]$description</span>
-<span class="co">#&gt; [1] "Ullam odio itaque facilis facere dolor non. Non nostrum adipisci voluptatem quam sed velit. Soluta vel qui in earum sit. Qui corporis et deleniti ex voluptas ullam et blanditiis."</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data[[1]]$url</span>
-<span class="co">#&gt; [1] "http://placeimg.com/300/480/any"</span></code></pre></div>
+<span class="fu">req_faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p>There’s only one trick to notice here — <code><a href="../reference/req_url.html">req_url_query()</a></code> uses dynamic dots, so we can use <code>!!!</code> to convert (e.g.) <code>req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")</code> into <code>req_url_query(req, `_quantity` = 1, `_locale` = "en_US")</code>.</p>
 <p>In most cases, this function will be for internal use only, as you’ll continue to make a function for each endpoint useful to the R programmer. In some cases, you might want to export this function sot that the experienced user can call endpoints that you haven’t yet wrapped.</p>
 <p>To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame. I’d suggest keeping that code in a separate function since it’s likely to vary by endpoint.</p>
+</div>
+<div id="user-agent" class="section level3">
+<h3 class="hasAnchor">
+<a href="#user-agent" class="anchor"></a>User agent</h3>
+<p>Before we go on, Polite to set a user agent — <a href="https://github.com/r-lib/httr2/issues/43" class="uri">https://github.com/r-lib/httr2/issues/43</a>.</p>
+</div>
 </div>
 <div id="app-with-api-key" class="section level2">
 <h2 class="hasAnchor">
 <a href="#app-with-api-key" class="anchor"></a>App with API key</h2>
 <p>Next we’ll take a look at the NYTimes API. It requires a very simple authentication — you include the API key in the query of every request.</p>
 <p>To begin with, you can just store you key as a variable. I didn’t want to just include my API key here so I’ve obfuscated it using <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">my_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"Y2rj85iEepd5gaTPQwEeiQT3g6u6_fabR7Zjth_5sBs"</span><span class="op">)</span>
 <span class="co"># Doesn't work currently - need to add support in req_url_query and req_body?</span></code></pre></div>
 <p>This is encrypted but it uses an encryption key that is included in httr2 itself. The key is hidden in such a way that it should require a relatively good R programmer a few minutes to figure it out. It isn’t 100% secured, but it’s convenient to use, and for the vast majority of people it’ll take less time to create their own API key on developer.nytimes.com.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req_nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span>, <span class="va">...</span>, <span class="va">api_key</span> <span class="op">=</span> <span class="fu">get_api_key</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
@@ -258,7 +196,7 @@
   <span class="va">key</span>
 <span class="op">}</span></code></pre></div>
 <p>Show example of error parsing here:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">req_nytimes_books</span><span class="op">(</span><span class="st">"/lists/2019-01-20/hardcover-fiction.json"</span>, api_key <span class="op">=</span> <span class="va">my_key</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_fetch.html">req_fetch</a></span><span class="op">(</span>verbosity <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; -&gt; GET /svc/books/v3//lists/2019-01-20/hardcover-fiction.json?api-key=Y2rj85iEepd5gaTPQwEeiQT3g6u6_fabR7Zjth_5sBs HTTP/1.1</span>
@@ -268,7 +206,7 @@
 <span class="co">#&gt; -&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; -&gt; </span>
 <span class="co">#&gt; &lt;- HTTP/1.1 401 Unauthorized</span>
-<span class="co">#&gt; &lt;- Date: Fri, 18 Jun 2021 01:46:32 GMT</span>
+<span class="co">#&gt; &lt;- Date: Sun, 20 Jun 2021 20:27:59 GMT</span>
 <span class="co">#&gt; &lt;- Content-Type: application/json</span>
 <span class="co">#&gt; &lt;- Content-Length: 90</span>
 <span class="co">#&gt; &lt;- Connection: keep-alive</span>
@@ -307,11 +245,11 @@
 <p>The first step in working with any OAuth api is to create a client or app. This involves you registering for a developer account on the APIs website and creating a new OAuth app. The process varies from API to API, but at the end of it you’ll be a client id and in most cases a client secret.</p>
 <p>If the API provides a way to authenticate without the client secret, you should leave it out of your package. But in most cases, you’ll need to include the secret in the package. You can use <code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; again this is not bullet proof but for most people it will be easier to create a new client than try and reuse yours. It is unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there’s not much harm they can do with it (generally the worst they can do is use up your rate limits).</p>
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
 <span class="co">#&gt; obfuscated("YVW06Lex")</span></code></pre></div>
 <p>Then use the client id from the website along with the obfuscated secret to create a client:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
   id <span class="op">=</span> <span class="st">"client_id"</span>, 
   secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"YVW06Lex"</span><span class="op">)</span>,

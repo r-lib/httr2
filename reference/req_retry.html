@@ -240,6 +240,7 @@ the limits in the response.</p></div>
 <span class='r-in'>  <span class='fu'>req_retry</span><span class='op'>(</span>is_transient <span class='op'>=</span> <span class='op'>~</span> <span class='fu'><a href='resp_status.html'>resp_status</a></span><span class='op'>(</span><span class='va'>.x</span><span class='op'>)</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>429</span>, <span class='fl'>500</span>, <span class='fl'>503</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://google.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Body</span>: empty</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Policies:</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> • <span style='color: #00BB00;'>retry_is_transient</span>: a &lt;rlang_lambda_function/function&gt; object</span>
 <span class='r-in'></span>
@@ -248,6 +249,7 @@ the limits in the response.</p></div>
 <span class='r-in'>  <span class='fu'>req_retry</span><span class='op'>(</span>backoff <span class='op'>=</span> <span class='op'>~</span> <span class='fl'>10</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Body</span>: empty</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Policies:</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> • <span style='color: #00BB00;'>retry_backoff</span>: a &lt;rlang_lambda_function/function&gt; object</span>
 <span class='r-in'></span>
@@ -269,6 +271,7 @@ the limits in the response.</p></div>
 <span class='r-in'>  <span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://api.github.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Body</span>: empty</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Policies:</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> • <span style='color: #00BB00;'>retry_is_transient</span>: a function</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> • <span style='color: #00BB00;'>retry_after</span>: a function</span>

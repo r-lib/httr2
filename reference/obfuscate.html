@@ -46,8 +46,12 @@ from your source code, but a good R programmer could still figure it
 out with a little effort. The main goal is to protect against scraping;
 there's no way for an automated tool to grab your obfuscated secrets.
 Because un-obfuscation happens at the last possible instant, obfuscated()
-only works in limited locations; currently only the secret argument to
-oauth_client()." />
+only works in limited locations:
+The secret argument to oauth_client()
+Elements of the data argument to req_body_form(), req_body_json(),
+and req_body_multipart().
+
+" />
 
 
 
@@ -142,8 +146,12 @@ from your source code, but a good R programmer could still figure it
 out with a little effort. The main goal is to protect against scraping;
 there's no way for an automated tool to grab your obfuscated secrets.</p>
 <p>Because un-obfuscation happens at the last possible instant, <code>obfuscated()</code>
-only works in limited locations; currently only the <code>secret</code> argument to
-<code><a href='oauth_client.html'>oauth_client()</a></code>.</p>
+only works in limited locations:</p><ul>
+<li><p>The <code>secret</code> argument to <code><a href='oauth_client.html'>oauth_client()</a></code></p></li>
+<li><p>Elements of the <code>data</code> argument to <code><a href='req_body.html'>req_body_form()</a></code>, <code><a href='req_body.html'>req_body_json()</a></code>,
+and <code><a href='req_body.html'>req_body_multipart()</a></code>.</p></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>obfuscate</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>

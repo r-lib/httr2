@@ -104,7 +104,8 @@
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span><span class="op">)</span>
 <span class="va">req</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
-<span class="co">#&gt; GET https://httpbin.org/get</span></code></pre></div>
+<span class="co">#&gt; GET https://httpbin.org/get</span>
+<span class="co">#&gt; Body: empty</span></code></pre></div>
 <p>We can see exactly what this request will send to the server with a dry run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
@@ -136,10 +137,10 @@
 <span class="co">#&gt; Shoe-Size: 11</span>
 <span class="co">#&gt; Accept: application/json</span></code></pre></div>
 <p>Header names are case-insensitive, and servers will ignore headers that they don’t understand.</p>
-<p>The headers finish with a blank line which is followed by the <strong>body</strong>. The requests above (like all GET requests) don’t have a body, so let’s add one to see what happens. The <code>req_body_*()</code> functions provide a variety of ways to add data to the body. Here we’ll use <code><a href="../reference/req_body_none.html">req_body_json()</a></code> to add some data encoded as JSON:</p>
+<p>The headers finish with a blank line which is followed by the <strong>body</strong>. The requests above (like all GET requests) don’t have a body, so let’s add one to see what happens. The <code>req_body_*()</code> functions provide a variety of ways to add data to the body. Here we’ll use <code><a href="../reference/req_body.html">req_body_json()</a></code> to add some data encoded as JSON:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body_none.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; POST /get HTTP/1.1</span>
 <span class="co">#&gt; Host: httpbin.org</span>
@@ -156,10 +157,10 @@
 <li><p>There are two new headers: <code>Content-Type</code> and <code>Content-Length</code>. They tell the server how to interpret the body — it’s encoded as JSON and is 15 bytes long.</p></li>
 <li><p>We have a body, consisting of some JSON.</p></li>
 </ul>
-<p>Different servers need data stored in different formats so httr2 provides a selection of common options. For example, <code><a href="../reference/req_body_none.html">req_body_form()</a></code> uses the same encoding used when you submit a form from your browser:</p>
+<p>Different servers need data stored in different formats so httr2 provides a selection of common options. For example, <code><a href="../reference/req_body.html">req_body_form()</a></code> uses the same encoding used when you submit a form from your browser:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body_none.html">req_body_form</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_body.html">req_body_form</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; POST /get HTTP/1.1</span>
 <span class="co">#&gt; Host: httpbin.org</span>
@@ -170,10 +171,10 @@
 <span class="co">#&gt; Content-Length: 7</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; x=1&amp;y=a</span></code></pre></div>
-<p>And <code><a href="../reference/req_body_none.html">req_body_multipart()</a></code> uses the multipart encoding which is particularly important when you need to send larger amounts of data or complete files:</p>
+<p>And <code><a href="../reference/req_body.html">req_body_multipart()</a></code> uses the multipart encoding which is particularly important when you need to send larger amounts of data or complete files:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body_none.html">req_body_multipart</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_body.html">req_body_multipart</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; POST /get HTTP/1.1</span>
 <span class="co">#&gt; Host: httpbin.org</span>
@@ -181,18 +182,18 @@
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span>
 <span class="co">#&gt; Content-Length: 228</span>
-<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------2fb8429f9393f98a</span>
+<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------fe2f4ec2e4f6142f</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; --------------------------2fb8429f9393f98a</span>
+<span class="co">#&gt; --------------------------fe2f4ec2e4f6142f</span>
 <span class="co">#&gt; Content-Disposition: form-data; name="x"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; 1</span>
-<span class="co">#&gt; --------------------------2fb8429f9393f98a</span>
+<span class="co">#&gt; --------------------------fe2f4ec2e4f6142f</span>
 <span class="co">#&gt; Content-Disposition: form-data; name="y"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; a</span>
-<span class="co">#&gt; --------------------------2fb8429f9393f98a--</span></code></pre></div>
-<p>If you need to send data encoded in a different form, you can use <code><a href="../reference/req_body_none.html">req_body_raw()</a></code> to add the data to the body and set the <code>Content-Type</code> header.</p>
+<span class="co">#&gt; --------------------------fe2f4ec2e4f6142f--</span></code></pre></div>
+<p>If you need to send data encoded in a different form, you can use <code><a href="../reference/req_body.html">req_body_raw()</a></code> to add the data to the body and set the <code>Content-Type</code> header.</p>
 </div>
 <div id="perform-a-request-and-fetch-the-response" class="section level2">
 <h2 class="hasAnchor">
@@ -211,7 +212,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; HTTP/1.1 200 OK</span>
-<span class="co">#&gt; date: Fri, 18 Jun 2021 01:46:25 GMT</span>
+<span class="co">#&gt; date: Sun, 20 Jun 2021 20:27:53 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>
@@ -254,7 +255,7 @@
 <p>You can extract all headers with <code><a href="../reference/resp_headers.html">resp_headers()</a></code> or a specific header with <code><a href="../reference/resp_headers.html">resp_header()</a></code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; date: Fri, 18 Jun 2021 01:46:25 GMT</span>
+<span class="co">#&gt; date: Sun, 20 Jun 2021 20:27:53 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>

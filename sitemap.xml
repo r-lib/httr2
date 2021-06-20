@@ -55,7 +55,7 @@
     <loc>https://httr2.r-lib.org/reference/req_auth_bearer_token.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/req_body_none.html</loc>
+    <loc>https://httr2.r-lib.org/reference/req_body.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_cache.html</loc>

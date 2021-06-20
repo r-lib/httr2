@@ -190,12 +190,14 @@ req_url_path_append() adds to the path
 <span class='r-in'>  <span class='fu'>req_url_query</span><span class='op'>(</span>q <span class='op'>=</span> <span class='st'>"the cool ice"</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://example.com/a/b/search.html?q=the%20cool%20ice</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Body</span>: empty</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Change complete url</span></span>
 <span class='r-in'><span class='va'>req</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
 <span class='r-in'>  <span class='fu'>req_url</span><span class='op'>(</span><span class='st'>"http://google.com"</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_request&gt;</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://google.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Body</span>: empty</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
