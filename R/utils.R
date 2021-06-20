@@ -136,8 +136,11 @@ parse_http_date <- function(x) {
   out
 }
 
-touch <- function(path) {
-  Sys.setFileTime(path, Sys.time())
+touch <- function(path, time = Sys.time()) {
+  if (!file.exists(path)) {
+    file.create(path)
+  }
+  Sys.setFileTime(path, time)
 }
 
 local_write_lines <- function(..., .env = caller_env()) {

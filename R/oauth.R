@@ -99,10 +99,19 @@ cache_disk <- function(client, key) {
   app_path <- file.path(rappdirs::user_cache_dir("httr2"), client$name)
   dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
-  path <- file.path(app_path, paste0(hash(key), ".rds"))
+  path <- file.path(app_path, paste0(hash(key), "-token.rds"))
   list(
     get = function() if (file.exists(path)) readRDS(path) else NULL,
     set = function(token) saveRDS(token, path),
     clear = function() if (file.exists(path)) file.remove(path)
   )
+}
+
+# Update req_oauth_auth_code() docs if change default from 30
+cache_disk_prune <- function(days = 30, path = rappdirs::user_cache_dir("httr2")) {
+  files <- dir(path, recursive = TRUE, full.names = TRUE, pattern = "-token\\.rds$")
+  mtime <- file.mtime(files)
+
+  old <- mtime < (Sys.time() - days * 86400)
+  unlink(files[old])
 }

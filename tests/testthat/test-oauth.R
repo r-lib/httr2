@@ -47,3 +47,11 @@ test_that("can store on disk", {
   cache$clear()
   expect_equal(cache$get(), NULL)
 })
+
+test_that("can prune old files", {
+  path <- withr::local_tempdir()
+  touch(file.path(path, "a-token.rds"), Sys.time() - 86400 * 1)
+  touch(file.path(path, "b-token.rds"), Sys.time() - 86400 * 2)
+  cache_disk_prune(2, path)
+  expect_equal(dir(path), "a-token.rds")
+})
