@@ -167,13 +167,13 @@ oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header
 
 oauth_flow_check <- function(flow, client,
                              is_confidential = FALSE,
-                             interactive = TRUE) {
+                             interactive = FALSE) {
 
   if (!inherits(client, "httr2_oauth_client")) {
     abort("`client` must be an OAuth client created with `oauth_client()`")
   }
 
-  if (is_confidential && is.null(client$secret) && is.null(client$secret)) {
+  if (is_confidential && is.null(client$secret) && is.null(client$key)) {
     abort(c(
       glue("Can't use this `app` with OAuth 2.0 {flow} flow"),
       "`app` must have a confidential client (i.e. `client_secret` is required)"
