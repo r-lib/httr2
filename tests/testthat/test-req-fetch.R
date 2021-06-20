@@ -80,6 +80,9 @@ test_that("req_dry_run() returns useful data", {
 })
 
 test_that("req_dry_run() shows body", {
+  # For reasons I don't understand, returns binary data in R 3.4
+  skip_if_not(getRversion() > "3.4")
+
   expect_snapshot({
     request("http://example.com") %>%
       req_body_json(list(x = 1, y = TRUE, z = "c")) %>%
