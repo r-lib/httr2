@@ -19,12 +19,12 @@ test_that("can generate token and use it automatically", {
   )
 
   # Can generate token
-  token <- oauth_flow_jwt(client, claim)
+  token <- oauth_flow_bearer_jwt(client, claim)
   expect_s3_class(token, "httr2_token")
 
   # Can use it in request
   resp <- request("https://openidconnect.googleapis.com/v1/userinfo") %>%
-    req_oauth_jwt(client, claim) %>%
+    req_oauth_bearer_jwt(client, claim) %>%
     req_fetch() %>%
     resp_body_json()
 

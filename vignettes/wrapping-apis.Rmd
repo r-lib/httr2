@@ -278,7 +278,7 @@ Other flows provide different ways getting the token:
 -   `req_oauth_device()` uses the "device" flow which is designed for devices like TVs that don't have an easy way to enter data.
     It also works well from the console.
 
--   `req_oauth_jwt()` uses a JWT signed by a private key.
+-   `req_oauth_bearer_jwt()` uses a JWT signed by a private key.
 
 -   `req_oauth_password()` exchanges a user name and password for an access token.
 

@@ -1,14 +1,14 @@
-#' OAuth authentication with a JWT
+#' OAuth authentication with a bearer JWT
 #'
 #' @description
-#' This uses [oauth_flow_jwt()] to generate an access token which is then
+#' This uses [oauth_flow_bearer_jwt()] to generate an access token which is then
 #' used to authenticate the request with [req_auth_bearer_token()].
 #' The token is cached in memory.
 #'
 #' @export
 #' @inheritParams req_fetch
-#' @inheritParams oauth_flow_jwt
-req_oauth_jwt <- function(req, client,
+#' @inheritParams oauth_flow_bearer_jwt
+req_oauth_bearer_jwt <- function(req, client,
                           claim,
                           signature = "jwt_encode_sig",
                           signature_params = list(),
@@ -26,13 +26,13 @@ req_oauth_jwt <- function(req, client,
   )
 
   cache <- cache_mem(client, NULL)
-  req_oauth(req, "oauth_flow_jwt", params, cache = cache)
+  req_oauth(req, "oauth_flow_bearer_jwt", params, cache = cache)
 }
 
-#' OAuth flow: JWT
+#' OAuth flow: Bearer JWT
 #'
-#' This function implements the OAuth client credentials flow, as defined
-#' by [rfc7523](https://datatracker.ietf.org/doc/html/rfc7523#section-2.1),
+#' This function uses a Bearer JWT as an authorization grant to get an access
+#' token, as defined by [rfc7523](https://datatracker.ietf.org/doc/html/rfc7523#section-2.1),
 #' Section 2.1. It is often used for service accounts, accounts that are
 #' used primarily in automated environments.
 #'
@@ -47,7 +47,7 @@ req_oauth_jwt <- function(req, client,
 #' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
 #'   `size`, `header`.
-oauth_flow_jwt <- function(client,
+oauth_flow_bearer_jwt <- function(client,
                            claim,
                            signature = "jwt_encode_sig",
                            signature_params = list(),
