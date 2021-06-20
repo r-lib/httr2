@@ -25,13 +25,13 @@
     <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_bearer_jwt.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_client_credentials.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_device.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_jwt.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_flow_password.html</loc>
@@ -82,13 +82,13 @@
     <loc>https://httr2.r-lib.org/reference/req_oauth_auth_code.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_oauth_bearer_jwt.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/req_oauth_client_credentials.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_oauth_device.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_jwt.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_oauth_password.html</loc>

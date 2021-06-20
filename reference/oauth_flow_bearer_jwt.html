@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>OAuth flow: device — oauth_flow_device • httr2</title>
+<title>OAuth flow: Bearer JWT — oauth_flow_bearer_jwt • httr2</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,11 @@
 
 
 
-<meta property="og:title" content="OAuth flow: device — oauth_flow_device" />
-<meta property="og:description" content="These functions implement the OAuth device flow, as defined
-by rfc8628. It's designed
-for devices that don't have access to a web browser (if you've ever
-authenticated an app on your TV, this is probably the flow you've used),
-but it also works well from within R." />
+<meta property="og:title" content="OAuth flow: Bearer JWT — oauth_flow_bearer_jwt" />
+<meta property="og:description" content="This function uses a Bearer JWT as an authorization grant to get an access
+token, as defined by rfc7523,
+Section 2.1. It is often used for service accounts, accounts that are
+used primarily in automated environments." />
 
 
 
@@ -127,24 +126,24 @@ but it also works well from within R." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>OAuth flow: device</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-device.R'><code>R/oauth-flow-device.R</code></a></small>
-    <div class="hidden name"><code>oauth_flow_device.Rd</code></div>
+    <h1>OAuth flow: Bearer JWT</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/oauth-flow-jwt.R'><code>R/oauth-flow-jwt.R</code></a></small>
+    <div class="hidden name"><code>oauth_flow_bearer_jwt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These functions implement the OAuth device flow, as defined
-by <a href='https://datatracker.ietf.org/doc/html/rfc8628'>rfc8628</a>. It's designed
-for devices that don't have access to a web browser (if you've ever
-authenticated an app on your TV, this is probably the flow you've used),
-but it also works well from within R.</p>
+    <p>This function uses a Bearer JWT as an authorization grant to get an access
+token, as defined by <a href='https://datatracker.ietf.org/doc/html/rfc7523#section-2.1'>rfc7523</a>,
+Section 2.1. It is often used for service accounts, accounts that are
+used primarily in automated environments.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>oauth_flow_device</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>oauth_flow_bearer_jwt</span><span class='op'>(</span>
   <span class='va'>client</span>,
-  <span class='va'>auth_url</span>,
+  <span class='va'>claim</span>,
+  signature <span class='op'>=</span> <span class='st'>"jwt_encode_sig"</span>,
+  signature_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   scope <span class='op'>=</span> <span class='cn'>NULL</span>,
-  auth_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   token_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
@@ -156,17 +155,25 @@ but it also works well from within R.</p>
       <td><p>An <code><a href='oauth_client.html'>oauth_client()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>auth_url</th>
-      <td><p>Authorization url; you'll need to discover this by reading
-the documentation.</p></td>
+      <th>claim</th>
+      <td><p>A list of claims. If all elements of the claim set are static
+apart from <code>iat</code>, <code>nbf</code>, <code>exp</code>, or <code>jti</code>, provide a list and
+<code><a href='jwt_claim.html'>jwt_claim()</a></code> will automatically fill in the dynamic components.
+If other components need to vary, you can instead provide a zero-argument
+callback function which should call <code><a href='jwt_claim.html'>jwt_claim()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>signature</th>
+      <td><p>Function use to sign <code>claim</code>, e.g. <code><a href='jwt_claim.html'>jwt_encode_sig()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>signature_params</th>
+      <td><p>Additional arguments passed to <code>signature</code>, e.g.
+<code>size</code>, <code>header</code>.</p></td>
     </tr>
     <tr>
       <th>scope</th>
       <td><p>Scopes to be requested from the resource owner.</p></td>
-    </tr>
-    <tr>
-      <th>auth_params</th>
-      <td><p>List containing additional parameters passed to <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code_url()</a></code></p></td>
     </tr>
     <tr>
       <th>token_params</th>
@@ -179,8 +186,8 @@ the documentation.</p></td>
 
     <div class='dont-index'><p>Other OAuth flows: 
 <code><a href='oauth_flow_auth_code.html'>oauth_flow_auth_code</a>()</code>,
-<code><a href='oauth_flow_bearer_jwt.html'>oauth_flow_bearer_jwt</a>()</code>,
 <code><a href='oauth_flow_client_credentials.html'>oauth_flow_client_credentials</a>()</code>,
+<code><a href='oauth_flow_device.html'>oauth_flow_device</a>()</code>,
 <code><a href='oauth_flow_password.html'>oauth_flow_password</a>()</code>,
 <code><a href='oauth_flow_refresh.html'>oauth_flow_refresh</a>()</code></p></div>
 
