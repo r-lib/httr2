@@ -9,13 +9,6 @@
     Output
       <OBFUSCATED>
 
-# unobfuscate serves as argument checker
-
-    Code
-      unobfuscate(1, "`x`")
-    Error <rlang_error>
-      `x` must be a string
-
 # can coerce to a key
 
     Code

@@ -37,7 +37,7 @@ req_method_get <- function(req) {
     req$method
   } else if (has_name(req$options, "nobody")) {
     "HEAD"
-  } else if (has_name(req$options, "post")) {
+  } else if (!is.null(req$body)) {
     "POST"
   } else {
     "GET"

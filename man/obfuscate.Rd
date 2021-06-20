@@ -25,8 +25,12 @@ out with a little effort. The main goal is to protect against scraping;
 there's no way for an automated tool to grab your obfuscated secrets.
 
 Because un-obfuscation happens at the last possible instant, \code{obfuscated()}
-only works in limited locations; currently only the \code{secret} argument to
-\code{\link[=oauth_client]{oauth_client()}}.
+only works in limited locations:
+\itemize{
+\item The \code{secret} argument to \code{\link[=oauth_client]{oauth_client()}}
+\item Elements of the \code{data} argument to \code{\link[=req_body_form]{req_body_form()}}, \code{req_body_json()},
+and \code{req_body_multipart()}.
+}
 }
 \examples{
 obfuscate("good morning")

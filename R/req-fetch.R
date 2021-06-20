@@ -241,6 +241,7 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
 
 req_handle <- function(req) {
   req <- req_method_apply(req)
+  req <- req_body_apply(req)
 
   if (!has_name(req$options, "useragent")) {
     req <- req_user_agent(req)

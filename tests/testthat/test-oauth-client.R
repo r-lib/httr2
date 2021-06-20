@@ -39,5 +39,5 @@ test_that("can authenticate using header or body", {
   expect_equal(req_h$headers$Authorization, "Basic aWQ6c2VjcmV0")
 
   req_b <- oauth_client_req_auth(req, client("body"))
-  expect_equal(rawToChar(req_b$options$postfields), "client_id=id&client_secret=secret")
+  expect_equal(req_b$body$data, list(client_id = "id", client_secret = "secret"))
 })

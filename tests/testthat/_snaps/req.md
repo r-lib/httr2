@@ -6,24 +6,19 @@
     Message <cliMessage>
       <httr2_request>
       GET https://example.com
+      Body: empty
     Code
       req %>% req_body_raw("Test")
     Message <cliMessage>
       <httr2_request>
       POST https://example.com
-      Headers:
-      * Content-Type: ''
-      Options:
-      * post: TRUE
-      * postfieldsize: 4
-      * postfields: a raw vector
+      Body: a string
     Code
       req %>% req_body_multipart(list(Test = 1))
     Message <cliMessage>
       <httr2_request>
-      GET https://example.com
-      Fields:
-      * Test: 1
+      POST https://example.com
+      Body: multipart encoded data
 
 # check_request() gives useful error
 

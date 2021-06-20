@@ -145,8 +145,11 @@ secret_get_key <- function(envvar) {
 #' there's no way for an automated tool to grab your obfuscated secrets.
 #'
 #' Because un-obfuscation happens at the last possible instant, `obfuscated()`
-#' only works in limited locations; currently only the `secret` argument to
-#' [oauth_client()].
+#' only works in limited locations:
+#'
+#' * The `secret` argument to [oauth_client()]
+#' * Elements of the `data` argument to [req_body_form()], `req_body_json()`,
+#'   and `req_body_multipart()`.
 #'
 #' @param x A string to obfuscate, or mark as obfuscated.
 #' @return `obfuscate()` prints the `obfuscated()` call to include in your
@@ -181,15 +184,14 @@ print.httr2_obfuscated <- function(x, ...) {
   invisible(x)
 }
 
-unobfuscate <- function(x, arg_name) {
-  if (is.null(x)) {
-    x
-  } else if (inherits(x, "httr2_obfuscated")) {
+unobfuscate <- function(x) {
+  if (inherits(x, "httr2_obfuscated")) {
     secret_decrypt(x, obfuscate_key())
-  } else if (is_string(x)) {
+  } else if (is.list(x)) {
+    x[] <- lapply(x, unobfuscate)
     x
   } else {
-    abort(glue("{arg_name} must be a string"))
+    x
   }
 }
 attr(unobfuscate, "srcref") <- "function(x) {}"

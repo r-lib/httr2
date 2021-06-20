@@ -48,6 +48,7 @@ oauth_client <- function(
 
   check_string(id, "`id`")
   check_string(token_url, "`token_url`")
+  check_string(secret, "`secret`", optional = TRUE)
 
   if (is.character(auth)) {
     if (missing(auth)) {
@@ -133,7 +134,7 @@ oauth_client_req_auth <- function(req, client) {
 oauth_client_req_auth_header <- function(req, client) {
   req_auth_basic(req,
     username = client$id,
-    password = unobfuscate(client$secret, "client secret")
+    password = unobfuscate(client$secret)
   )
 }
 
@@ -142,9 +143,9 @@ oauth_client_req_auth_header <- function(req, client) {
 oauth_client_req_auth_body <- function(req, client) {
   params <- compact(list(
     client_id = client$id,
-    client_secret = unobfuscate(client$secret, "client secret") # might be NULL
+    client_secret = unobfuscate(client$secret) # might be NULL
   ))
-  req_body_form_append(req, params)
+  req_body_form(req, params)
 }
 
 #' @inheritParams jwt_claim
@@ -159,7 +160,7 @@ oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header
     client_assertion = jwt,
     client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
   )
-  req_body_form_append(req, params)
+  req_body_form(req, params)
 }
 
 # Helpers -----------------------------------------------------------------

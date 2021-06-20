@@ -1,12 +1,3 @@
-test_that("can send empty body", {
-  resp <- request_test("/post") %>%
-    req_body_none() %>%
-    req_fetch()
-
-  expect_equal(resp_status(resp), 200)
-  expect_equal(resp$body, raw())
-})
-
 test_that("can send file", {
   skip_on_os("windows") # fails due to line ending difference
 
@@ -56,12 +47,12 @@ test_that("can send named list as json/form/multipart", {
   expect_equal(json$form, list(a = "1", b = "2"))
 })
 
-test_that("can append form elements", {
-  req1 <- request_test("/GET") %>% req_body_form_append(list(a = 1))
-  req2 <- req1 %>% req_body_form_append(list(b = 1))
+test_that("can modify body data", {
+  req1 <- request_test("/GET") %>% req_body_form(list(a = 1))
+  req2 <- req1 %>% req_body_form(list(b = 2))
 
-  expect_equal(rawToChar(req1$options$postfields), "a=1")
-  expect_equal(rawToChar(req2$options$postfields), "a=1&b=1")
+  expect_equal(req1$body$data, list(a = 1))
+  expect_equal(req2$body$data, list(a = 1, b = 2))
 })
 
 test_that("can upload file with multipart", {

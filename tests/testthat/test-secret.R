@@ -28,10 +28,10 @@ test_that("can unobfuscate obfuscated string", {
   expect_equal(unobfuscate(x), "test")
 })
 
-test_that("unobfuscate serves as argument checker", {
+test_that("unobfuscate operates recursively", {
   expect_equal(unobfuscate(NULL), NULL)
   expect_equal(unobfuscate("x"), "x")
-  expect_snapshot(unobfuscate(1, "`x`"), error = TRUE)
+  expect_equal(unobfuscate(list(list(obfuscated("ZlWk7g")))), list(list("test")))
 })
 
 test_that("secret_has_key returns FALSE/TRUE", {

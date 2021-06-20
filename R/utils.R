@@ -50,11 +50,13 @@ sys_sleep <- function(seconds) {
   invisible()
 }
 
-check_string <- function(x, name) {
+check_string <- function(x, name, optional = TRUE) {
   if (is_string(x) && !is.na(x)) {
     return()
   }
-
+  if (optional && is.null(x)) {
+    return()
+  }
   abort(glue("{name} must be a string"))
 }
 

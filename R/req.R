@@ -18,16 +18,15 @@ print.httr2_request <- function(x, ..., redact_headers = TRUE) {
   method <- toupper(req_method_get(x))
   cli::cli_text("{.strong {method}} {x$url}")
 
-
   bullets_with_header("Headers:", headers_redact(x$headers, redact_headers))
+  cli::cli_text("{.strong Body}: {req_body_info(x)}")
   bullets_with_header("Options:", x$options)
-  bullets_with_header("Fields:", x$fields)
   bullets_with_header("Policies:", x$policies)
 
   invisible(x)
 }
 
-new_request <- function(url, method = NULL, headers = list(), body = list(), fields = list(), options = list(), policies = list()) {
+new_request <- function(url, method = NULL, headers = list(), body = NULL, fields = list(), options = list(), policies = list()) {
   if (!is_string(url)) {
     abort("`url` must be a string")
   }
