@@ -138,7 +138,9 @@ Before we go on, Polite to set a user agent --- <https://github.com/r-lib/httr2/
 ## App with API key
 
 ```{r include = FALSE}
-nyt_ok <- secret_has_key("HTTR2_KEY")
+nyt_ok <- secret_has_key("HTTR2_KEY") && 
+  # Don't run in R CMD check on GHA
+  identical(Sys.getenv("RSPM"), "")
 ```
 
 Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview). It requires a very simple authentication --- you include the API key in the query of every request.
