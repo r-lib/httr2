@@ -156,7 +156,7 @@ In the source of this vignette I store whether or not it's available in `nyt_ok 
 
 This allows now allows us to perform a test request and look at the response:
 
-```{r}
+```{r, eval = nyt_ok}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = my_key, isbn = 9780307476463) %>% 
@@ -166,7 +166,7 @@ resp
 
 Like most modern APIs, this one returns the results as JSON:
 
-```{r}
+```{r, eval = nyt_ok}
 resp %>% 
   resp_body_json() %>% 
   str()
@@ -195,7 +195,7 @@ This just means you'll need to be a little cautious if you need to get help with
 What happens if there's an error?
 For example, if we deliberately supply an invalid key:
 
-```{r, error = TRUE}
+```{r, eval = nyt_ok, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -204,7 +204,7 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
 
 To see if there's any extra useful information we can again suppress the default error and inspect the result:
 
-```{r, error = TRUE}
+```{r, eval = nyt_ok, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -216,14 +216,14 @@ resp %>% resp_body_json()
 
 It looks like there's some useful additional info in the `faultstring`:
 
-```{r}
+```{r, eval = nyt_ok}
 resp %>% resp_body_json() %>% .$fault %>% .$faultstring
 ```
 
 To add that information to future errors we can use the `info` argument to `req_error()`.
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
-```{r, error = TRUE}
+```{r, eval = nyt_ok, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -243,7 +243,7 @@ The [frequently asked questions](https://developer.nytimes.com/faq#a11) also men
 
 Since the docs don't mention that the use of `Retry-After` header, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
 
-```{r}
+```{r, eval = nyt_ok}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -253,7 +253,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
 This limit is automatically shared across all requests made to `api.nytimes.com`.
 Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
 
-```{r}
+```{r, eval = nyt_ok}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -267,7 +267,7 @@ So I deliberately violated the rate limit by quickly making 11 requests; unfortu
 
 Putting together all the pieces above yields a function something like this:
 
-```{r}
+```{r, eval = nyt_ok}
 nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") %>% 
     req_url_path_append("/reviews.json") %>% 
