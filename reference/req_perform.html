@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract headers from a response — resp_headers • httr2</title>
+<title>Perform a request — req_perform • httr2</title>
 
 
 <!-- jquery -->
@@ -39,31 +39,9 @@
 
 
 
-<meta property="og:title" content="Extract headers from a response — resp_headers" />
-<meta property="og:description" content="Some of these functions provide generic access to all headers:
-resp_headers() retrieves a list of all headers.
-resp_header() retrieves a single header.
-resp_header_exists() checks if a header is present.
-
-
-Other functions parse specific headers:
-resp_content_type() returns the just the type and subtype of the
-from the Content-Type header. If Content-Type is not provided
-(or is not a valid mime type), this returns NA. Used by
-resp_body_json(), resp_body_html(), and resp_body_xml().
-resp_date() returns the Date header as a POSIXct. This header
-always exists; if the server does not return it, httr2 adds
-automatically.
-resp_encoding() returns the likely character encoding of text
-types, as parsed from the charset parameter of the Content-Type
-header. If that header is not found, not valid, or no charset parameter
-is found, this returns UTF-8. Used by resp_body_string().
-resp_retry_after() returns how many seconds you should wait before
-retrying a request. It parses both forms (absolute and relative) and
-returns the number of seconds to wait. If the heading is not found,
-it will return NA.
-
-" />
+<meta property="og:title" content="Perform a request — req_perform" />
+<meta property="og:description" content="After preparing a request, call req_perform() to perform it, fetching
+the results back to R as a response." />
 
 
 
@@ -146,66 +124,69 @@ it will return NA.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract headers from a response</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp-headers.R'><code>R/resp-headers.R</code></a></small>
-    <div class="hidden name"><code>resp_headers.Rd</code></div>
+    <h1>Perform a request</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/req-perform.R'><code>R/req-perform.R</code></a></small>
+    <div class="hidden name"><code>req_perform.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Some of these functions provide generic access to all headers:</p><ul>
-<li><p><code>resp_headers()</code> retrieves a list of all headers.</p></li>
-<li><p><code>resp_header()</code> retrieves a single header.</p></li>
-<li><p><code>resp_header_exists()</code> checks if a header is present.</p></li>
-</ul>
-
-<p>Other functions parse specific headers:</p><ul>
-<li><p><code>resp_content_type()</code> returns the just the type and subtype of the
-from the <code>Content-Type</code> header. If <code>Content-Type</code> is not provided
-(or is not a valid mime type), this returns <code>NA</code>. Used by
-<code><a href='resp_body_raw.html'>resp_body_json()</a></code>, <code><a href='resp_body_raw.html'>resp_body_html()</a></code>, and <code><a href='resp_body_raw.html'>resp_body_xml()</a></code>.</p></li>
-<li><p><code>resp_date()</code> returns the <code>Date</code> header as a POSIXct. This header
-always exists; if the server does not return it, httr2 adds
-automatically.</p></li>
-<li><p><code>resp_encoding()</code> returns the likely character encoding of text
-types, as parsed from the <code>charset</code> parameter of the <code>Content-Type</code>
-header. If that header is not found, not valid, or no charset parameter
-is found, this returns <code>UTF-8</code>. Used by <code><a href='resp_body_raw.html'>resp_body_string()</a></code>.</p></li>
-<li><p><code>resp_retry_after()</code> returns how many seconds you should wait before
-retrying a request. It parses both forms (absolute and relative) and
-returns the number of seconds to wait. If the heading is not found,
-it will return <code>NA</code>.</p></li>
-</ul>
-
+    <p>After preparing a <a href='request.html'>request</a>, call <code>req_perform()</code> to perform it, fetching
+the results back to R as a <a href='response.html'>response</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>resp_headers</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
-
-<span class='fu'>resp_header</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span>
-
-<span class='fu'>resp_header_exists</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span>
-
-<span class='fu'>resp_content_type</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
-
-<span class='fu'>resp_date</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
-
-<span class='fu'>resp_encoding</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
-
-<span class='fu'>resp_retry_after</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>req_perform</span><span class='op'>(</span><span class='va'>req</span>, path <span class='op'>=</span> <span class='cn'>NULL</span>, verbosity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"httr2_verbosity"</span>, <span class='fl'>0L</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>resp</th>
-      <td><p>An HTTP response object, as created by <code><a href='req_perform.html'>req_perform()</a></code>.</p></td>
+      <th>req</th>
+      <td><p>A <a href='request.html'>request</a>.</p></td>
     </tr>
     <tr>
-      <th>header</th>
-      <td><p>Header name (case insensitive)</p></td>
+      <th>path</th>
+      <td><p>Optionally, path to save body of request. This is useful for
+large responses since it avoids storing the response in memory.</p></td>
+    </tr>
+    <tr>
+      <th>verbosity</th>
+      <td><p>How much information to print? This is a wrapper
+around <code><a href='req_verbose.html'>req_verbose()</a></code> that uses an integer to control vebosity:</p><ul>
+<li><p>0: no output</p></li>
+<li><p>1: show headers</p></li>
+<li><p>2: show headers and bodies</p></li>
+<li><p>3: show headers, bodies, and curl status messages.</p></li>
+</ul></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>Returns an HTTP response with successful status code. Will
+throw an error for 4xx and 5xx responses; override with <code><a href='req_error.html'>req_error()</a></code>.</p>
+    <h2 class="hasAnchor" id="requests"><a class="anchor" href="#requests"></a>Requests</h2>
+
+    <p>Note that one call to <code>req_perform()</code> may perform multiple HTTP requests:</p><ul>
+<li><p>If the <code>url</code> is redirected with a 301, 302, 303, or 307, curl will
+automatically follow the <code>Location</code> header to the new location.</p></li>
+<li><p>If you have configured retries with <code><a href='req_retry.html'>req_retry()</a></code> and the request
+fails with a transient problem, <code>req_perform()</code> will try again after
+waiting a bit. See <code><a href='req_retry.html'>req_retry()</a></code> for details.</p></li>
+<li><p>If you are using OAuth, and the cached token has expired, <code>req_perform()</code>
+will get a new token either using the refresh token (if available)
+or by running the OAuth flow.</p></li>
+</ul>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://google.com"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>req_perform</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> https://www.google.com/</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 200 OK</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: text/html</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: In memory (13973 bytes)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

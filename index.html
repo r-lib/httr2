@@ -147,9 +147,9 @@
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip</span></code></pre></div>
-<p>And perform the request, getting back a response, with <code><a href="reference/req_fetch.html">req_fetch()</a></code>:</p>
+<p>And perform the request, getting back a response, with <code><a href="reference/req_perform.html">req_perform()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_fetch.html">req_fetch</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span>
 <span class="va">resp</span>
 <span class="co">#&gt; &lt;httr2_response&gt;</span>
 <span class="co">#&gt; GET https://www.r-project.org/</span>
@@ -172,7 +172,7 @@
 <h2 class="hasAnchor">
 <a href="#major-differences-to-httr" class="anchor"></a>Major differences to httr</h2>
 <ul>
-<li><p>You can now create and modify a request without performing it. This means that there’s now a single function to perform and request and fetch the result: <code><a href="reference/req_fetch.html">req_fetch()</a></code>. (If you want to handle the response as it streams in, instead use <code><a href="reference/req_stream.html">req_stream()</a></code>). This replaces <code><a href="https://httr.r-lib.org/reference/GET.html">httr::GET()</a></code>, <code>POST()</code>, <code>DELETE()</code>, <code>VERB()</code>, …. You can preview a request without sending it with <code><a href="reference/req_dry_run.html">req_dry_run()</a></code>.</p></li>
+<li><p>You can now create and modify a request without performing it. This means that there’s now a single function to perform and request and fetch the result: <code><a href="reference/req_perform.html">req_perform()</a></code>. (If you want to handle the response as it streams in, instead use <code><a href="reference/req_stream.html">req_stream()</a></code>). This replaces <code><a href="https://httr.r-lib.org/reference/GET.html">httr::GET()</a></code>, <code>POST()</code>, <code>DELETE()</code>, <code>VERB()</code>, …. You can preview a request without sending it with <code><a href="reference/req_dry_run.html">req_dry_run()</a></code>.</p></li>
 <li><p>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors) or to add additional details to the error message.</p></li>
 <li><p>You can automatically retry if the request fails or encounters a transient HTTP error (e.g. a 429 rate limit request). <code><a href="reference/req_retry.html">req_retry()</a></code> defines the maximum number of retries, which errors are transient, and how long to wait between tries.</p></li>
 <li><p>OAuth support has been totally overhauled to directly support many more flows and to make it much easier to both customise the built-in flows and create your own.</p></li>

@@ -13,7 +13,7 @@
     <loc>https://httr2.r-lib.org/reference/last_response.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/multi_req_fetch.html</loc>
+    <loc>https://httr2.r-lib.org/reference/multi_req_perform.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_client.html</loc>
@@ -67,9 +67,6 @@
     <loc>https://httr2.r-lib.org/reference/req_error.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/req_fetch.html</loc>
-  </url>
-  <url>
     <loc>https://httr2.r-lib.org/reference/req_headers.html</loc>
   </url>
   <url>
@@ -98,6 +95,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_options.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_perform.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_retry.html</loc>

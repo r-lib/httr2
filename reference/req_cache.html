@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Automatically cache requests — req_cache" />
-<meta property="og:description" content="Use req_fetch() to automatically cache HTTP requests. Most API requests
+<meta property="og:description" content="Use req_perform() to automatically cache HTTP requests. Most API requests
 are not cacheable, but when possible (often when downloading larger files)
 it can make a big difference. req_cache() caches responses to GET requests
 that have status code 200 and at least one of the standard caching headers
@@ -138,7 +138,7 @@ HTTP caching." />
     </div>
 
     <div class="ref-description">
-    <p>Use <code><a href='req_fetch.html'>req_fetch()</a></code> to automatically cache HTTP requests. Most API requests
+    <p>Use <code><a href='req_perform.html'>req_perform()</a></code> to automatically cache HTTP requests. Most API requests
 are not cacheable, but when possible (often when downloading larger files)
 it can make a big difference. <code>req_cache()</code> caches responses to GET requests
 that have status code 200 and at least one of the standard caching headers
@@ -166,7 +166,7 @@ is still up-to-date, but it will not need to re-download the body value.</p>
     <tr>
       <th>use_on_error</th>
       <td><p>If the request errors, and there's a cache response,
-should <code><a href='req_fetch.html'>req_fetch()</a></code> return that instead of generating an error?</p></td>
+should <code><a href='req_perform.html'>req_perform()</a></code> return that instead of generating an error?</p></td>
     </tr>
     <tr>
       <th>debug</th>
