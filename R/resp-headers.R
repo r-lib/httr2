@@ -39,14 +39,14 @@ resp_headers <- function(resp) {
 #' @rdname resp_headers
 resp_header <- function(resp, header) {
   check_response(resp)
-  resp$headers[[tolower(header)]]
+  resp$headers[[header]]
 }
 
 #' @export
 #' @rdname resp_headers
 resp_header_exists <- function(resp, header) {
   check_response(resp)
-  has_name(resp$headers, tolower(header))
+  tolower(header) %in% tolower(names(resp$headers))
 }
 
 #' @export

@@ -9,6 +9,9 @@
 #' * `secret_encrypt()` and `secret_decrypt()` work with individual strings
 #' * `secret_read_rds()` and `secret_write_rds()` work with `.rds` files
 #' * `secret_make_key()` generates a random string to use as a key.
+#' * `secret_has_key()` returns `TRUE` if the key is available; you can
+#'   use it in examples and vignettes that you want to evaluate on your CI,
+#'   but not for CRAN/package users.
 #'
 #' These all look for the key in an environment variable. When used inside of
 #' testthat, they will automatically [testthat::skip()] the test if the env var
@@ -108,6 +111,14 @@ secret_write_rds <- function(x, path, key) {
   writeBin(x_enc, path)
 }
 
+#' @export
+#' @rdname secrets
+secret_has_key <- function(key) {
+  check_string(key, "`envvar`")
+  key <- Sys.getenv(key)
+  !identical(key, "")
+}
+
 secret_get_key <- function(envvar) {
   key <- Sys.getenv(envvar)
 
@@ -134,8 +145,11 @@ secret_get_key <- function(envvar) {
 #' there's no way for an automated tool to grab your obfuscated secrets.
 #'
 #' Because un-obfuscation happens at the last possible instant, `obfuscated()`
-#' only works in limited locations; currently only the `secret` argument to
-#' [oauth_client()].
+#' only works in limited locations:
+#'
+#' * The `secret` argument to [oauth_client()]
+#' * Elements of the `data` argument to [req_body_form()], `req_body_json()`,
+#'   and `req_body_multipart()`.
 #'
 #' @param x A string to obfuscate, or mark as obfuscated.
 #' @return `obfuscate()` prints the `obfuscated()` call to include in your
@@ -148,7 +162,7 @@ secret_get_key <- function(envvar) {
 obfuscate <- function(x) {
   check_string(x, "`x`")
 
-  enc <- secret_encrypt(x, obfuscate_key)
+  enc <- secret_encrypt(x, obfuscate_key())
   glue('obfuscated("{enc}")')
 }
 attr(obfuscate, "srcref") <- "function(x) {}"
@@ -170,23 +184,17 @@ print.httr2_obfuscated <- function(x, ...) {
   invisible(x)
 }
 
-unobfuscate <- function(x, arg_name) {
-  if (is.null(x)) {
-    x
-  } else if (inherits(x, "httr2_obfuscated")) {
-    secret_decrypt(x, obfuscate_key)
-  } else if (is_string(x)) {
+unobfuscate <- function(x) {
+  if (inherits(x, "httr2_obfuscated")) {
+    secret_decrypt(x, obfuscate_key())
+  } else if (is.list(x)) {
+    x[] <- lapply(x, unobfuscate)
     x
   } else {
-    abort(glue("{arg_name} must be a string"))
+    x
   }
 }
 attr(unobfuscate, "srcref") <- "function(x) {}"
-
-obfuscate_key <- as.raw(c(
-  0xf7, 0x76, 0x13, 0x88, 0x76, 0x01, 0x6f, 0xb7,
-  0x67, 0xd5, 0xca, 0x45, 0x8b, 0xbb, 0x24, 0x2e
-))
 
 
 # Helpers -----------------------------------------------------------------
@@ -199,7 +207,11 @@ as_key <- function(x) {
   } else if (is_string(x)) {
     secret_get_key(x)
   } else {
-    abort("key` must be a raw vector or a base64 url encoded string")
+    abort(paste0(
+      "`key` must be a raw vector containing the key, ",
+      "a string giving the name of an env var, ",
+      "or a string wrapped in I() that contains the base64url encoded key"
+    ))
   }
 }
 

@@ -5,6 +5,12 @@ test_that("new token computes expires_at", {
   expect_equal(token$expires_at, as.numeric(time + 10))
 })
 
+test_that("printing token redacts access and refresh token", {
+  expect_snapshot({
+    oauth_token(access_token = "secret", refresh_token = "secret")
+  })
+})
+
 test_that("can compute token expiry", {
   token <- oauth_token("xyz")
   expect_equal(token_has_expired(token), FALSE)

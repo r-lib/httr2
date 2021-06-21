@@ -6,7 +6,7 @@
 \usage{
 req_oauth_device(
   req,
-  app,
+  client,
   cache_disk = FALSE,
   cache_key = NULL,
   scope = NULL,
@@ -17,11 +17,12 @@ req_oauth_device(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk.}
+storing access credentials on disk. Cached tokens are automatically
+deleted 30 days after creation.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
@@ -30,7 +31,8 @@ key to disambiguate them.}
 
 \item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_device]{oauth_flow_device()}} to generate an access token, which is

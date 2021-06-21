@@ -1,4 +1,4 @@
-#' Create an OAuth app
+#' Create an OAuth client
 #'
 #' An OAuth app is the combination of a client, a set of endpoints
 #' (i.e. urls where various requests should be sent), and an authentication
@@ -6,10 +6,17 @@
 #' a `client_secret`. You'll get these values when you create the client on
 #' the API's website.
 #'
-#' @param client A OAuth client created with `oauth_client()`.
-#' @param endpoints A named character vector of endpoints. The precise endpoints
-#'   required depend on the flow that you'll use, but all require a `token`
-#'   endpoint that returns an access token.
+#' @param id Client identifier.
+#' @param token_url Url to retrieve an access token.
+#' @param secret Client secret. For most apps, this is technically confidential
+#'   so in principle you should avoid storing it in source code. However, many
+#'   APIs require it in order to provide a user friendly authentication
+#'   experience, and the risks of including it are usually low. To make things
+#'   a little safer, I recommend using [obfuscate()] when recorded the client
+#'   secret in public code.
+#' @param key Client key. As an alternative to using a `secret`, you can
+#'   instead supply a confidential private key. This should never be included
+#'   in a package.
 #' @param auth Authentication mechanism used by the client to prove itself to
 #'   the API. Can be one of three built-in methods ("body", "header", or "jwt"),
 #'   or a function that will be called with arguments `req`, `client`, and
@@ -24,28 +31,42 @@
 #'   See [oauth_client_req_auth()] for more details.
 #' @param auth_params Additional parameters passed to the function specified
 #'   by `auth`.
+#' @param name Optional name for the client. Used when generating cache
+#'   directory. If `NULL`, generated from hash of `client_id`. If you're
+#'   defining a package for use in a package, I recommend that you use
+#'   the package name.
 #' @export
-oauth_app <- function(client,
-                      endpoints,
-                      auth = c("body", "header", "jwt_sig"),
-                      auth_params = list()
-                      ) {
-  if (!inherits(client, "httr2_oauth_client")) {
-    abort("`client` must be an OAuth client created with `oauth_client()`")
-  }
+oauth_client <- function(
+                         id,
+                         token_url,
+                         secret = NULL,
+                         key = NULL,
+                         auth = c("body", "header", "jwt_sig"),
+                         auth_params = list(),
+                         name = hash(id)
+                         ) {
 
-  if (!is.character(endpoints) || !is_named(endpoints)) {
-    abort("`endpoints` must be a named character vector")
-  }
-  if (!has_name(endpoints, "token")) {
-    abort("`endpoints` must contain a token endpoint")
-  }
+  check_string(id, "`id`")
+  check_string(token_url, "`token_url`")
+  check_string(secret, "`secret`", optional = TRUE)
 
   if (is.character(auth)) {
-    auth <- arg_match(auth)
-    if (auth == "header" && is.null(client$secret)) {
-      abort("`auth = 'header' requires a client with a secret")
+    if (missing(auth)) {
+      auth <- if (is.null(key)) "body" else "jwt_sig"
     }
+    auth <- arg_match(auth)
+
+    if (auth == "header" && is.null(secret)) {
+      abort("`auth = 'header' requires a `secret`")
+    } else if (auth == "jwt_sig") {
+      if (is.null(key)) {
+        abort("`auth = 'jwt_sig' requires a `key`")
+      }
+      if (!has_name(auth_params, "claim")) {
+        abort("`auth = 'jwt_sig' requires a claim specification in `auth_params`")
+      }
+    }
+
     auth <- paste0("oauth_client_req_auth_", auth)
   } else if (!is_function(auth)) {
     abort("`auth` must be a string or function")
@@ -53,37 +74,13 @@ oauth_app <- function(client,
 
   structure(
     list(
-      client = client,
-      endpoints = endpoints,
+      name = name,
+      id = id,
+      secret = secret,
+      key = key,
+      token_url = token_url,
       auth = auth,
       auth_params = auth_params
-    ),
-    class = "httr2_oauth_app"
-  )
-}
-
-oauth_client_name <- function(app) {
-  app$client$name %||% hash(c(httr::parse_url(app$endpoints[[1]])$hostname, app$client$id))
-}
-
-#' @export
-#' @rdname oauth_app
-#' @param client_id Client identifier.
-#' @param client_secret Client secret. This is technically confidential so you
-#'   should avoid storing it in source code where possible. However, many APIs
-#'   require it in order to provide a user friendly authentication experience,
-#'   and the risks of including it are usually low. To make things a little
-#'   safer, I recommend using [obfuscate()] to store an obfuscated version of
-#'   the source.
-#' @param name Optional name for the client. Used when generating cache
-#'   directory. If `NULL`, generated from hash of app hostname and
-#'   `client_id`.
-oauth_client <- function(client_id, client_secret = NULL, name = NULL) {
-  structure(
-    list(
-      id = client_id,
-      secret = client_secret,
-      name = name
     ),
     class = "httr2_oauth_client"
   )
@@ -91,10 +88,11 @@ oauth_client <- function(client_id, client_secret = NULL, name = NULL) {
 
 #' @export
 print.httr2_oauth_client <- function(x, ...) {
-  type <- if (is.null(x$secret)) "public" else "confidental"
-  cli::cli_text("{.cls {class(x)}} ID: {x$id} ({type})")
+  cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
+  redacted <- list_redact(compact(x), c("secret", "key"))
+  cli::cli_dl(redacted)
+  invisible(x)
 }
-
 
 #' OAuth client authentication
 #'
@@ -122,14 +120,13 @@ print.httr2_oauth_client <- function(x, ...) {
 #'   Section 2.2.
 #'
 #' You will generally not call these functions directly but will instead
-#' specify them through the `auth` argument to [oauth_app()]. The `req` and
+#' specify them through the `auth` argument to [oauth_client()]. The `req` and
 #' `client` parameters are automatically filled in; other parameters come from
 #' the `auth_params` argument.
 #' @param req A [request].
-#' @param app An [oauth_app].
 #' @param client An [oauth_client].
-oauth_client_req_auth <- function(req, app) {
-  exec(app$auth, req = req, client = app$client, !!!app$auth_params)
+oauth_client_req_auth <- function(req, client) {
+  exec(client$auth, req = req, client = client, !!!client$auth_params)
 }
 
 #' @export
@@ -137,7 +134,7 @@ oauth_client_req_auth <- function(req, app) {
 oauth_client_req_auth_header <- function(req, client) {
   req_auth_basic(req,
     username = client$id,
-    password = unobfuscate(client$secret, "client secret")
+    password = unobfuscate(client$secret)
   )
 }
 
@@ -146,53 +143,40 @@ oauth_client_req_auth_header <- function(req, client) {
 oauth_client_req_auth_body <- function(req, client) {
   params <- compact(list(
     client_id = client$id,
-    client_secret = unobfuscate(client$secret, "client secret") # might be NULL
+    client_secret = unobfuscate(client$secret) # might be NULL
   ))
-  req_body_form_append(req, params)
+  req_body_form(req, params)
 }
 
-#' @param claims A list of claims passed to [jwt_claim()].
 #' @inheritParams jwt_claim
 #' @export
 #' @rdname oauth_client_req_auth
-oauth_client_req_auth_jwt_sig <- function(req, client, claims, key, size = 256, header = list()) {
-  claims <- jwt_claim(!!!claims)
-  jwt <- jwt_encode_sig(claims, key = key, size = size, header = header)
+oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header = list()) {
+  claim <- exec("jwt_claim", !!!claim)
+  jwt <- jwt_encode_sig(claim, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
   params <- list(
     client_assertion = jwt,
     client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
   )
-  req_body_form_append(req, params)
+  req_body_form(req, params)
 }
 
 # Helpers -----------------------------------------------------------------
 
-check_app <- function(app) {
-  if (!inherits(app, "httr2_oauth_app")) {
-    abort("`app` must be an OAuth app created with `oauth_app()`")
+oauth_flow_check <- function(flow, client,
+                             is_confidential = FALSE,
+                             interactive = FALSE) {
+
+  if (!inherits(client, "httr2_oauth_client")) {
+    abort("`client` must be an OAuth client created with `oauth_client()`")
   }
-}
 
-oauth_flow_check_app <- function(app, flow,
-                                 is_confidential = FALSE,
-                                 endpoints = character(),
-                                 interactive = TRUE) {
-  check_app(app)
-
-  if (is_confidential && is.null(app$client$secret)) {
+  if (is_confidential && is.null(client$secret) && is.null(client$key)) {
     abort(c(
       glue("Can't use this `app` with OAuth 2.0 {flow} flow"),
       "`app` must have a confidential client (i.e. `client_secret` is required)"
-    ))
-  }
-
-  missing <- setdiff(endpoints, names(app$endpoints))
-  if (length(missing)) {
-    abort(c(
-      glue("Can't use this `app` with OAuth 2.0 {flow} flow"),
-      glue("`app` lacks endpoints '{missing}'")
     ))
   }
 
@@ -201,9 +185,13 @@ oauth_flow_check_app <- function(app, flow,
   }
 }
 
-app_endpoint <- function(app, endpoint) {
-  if (!has_name(app$endpoints, endpoint)) {
-    abort("app missing endpoint '{endpoint}'")
-  }
-  app$endpoints[[endpoint]]
+oauth_client_get_token <- function(client, grant_type, ...) {
+  req <- request(client$token_url)
+  req <- req_body_form(req, list2(grant_type = grant_type, ...))
+  req <- oauth_client_req_auth(req, client)
+  req <- req_headers(req, Accept = "application/json")
+
+  resp <- oauth_flow_fetch(req)
+  exec(oauth_token, !!!resp)
 }
+

@@ -16,31 +16,48 @@ req_options <- function(.req, ...) {
   .req
 }
 
-#' Set user agent
+#' Set user-agent
 #'
-#' This overrides the default user agent set by httr2 which includes the
+#' This overrides the default user-agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
 #'
 #' @inheritParams req_fetch
-#' @param ua A new user-agent string.
+#' @param string String to be sent in the `User-Agent` header.
+#' @param versions Named character vector used to construct a user-agent
+#'   string using a lightweight convention. If both `string` and `versions`
+#'   are omitted,
 #' @export
 #' @examples
+#' # Default user-agent:
 #' request("http://example.com") %>% req_dry_run()
-#' request("http://example.com") %>% req_user_agent("MyPackage") %>% req_dry_run()
-req_user_agent <- function(req, ua) {
+#'
+#' request("http://example.com") %>% req_user_agent("MyString") %>% req_dry_run()
+#'
+#' # If you're wrapping in an API in a package, it's polite to set the
+#' # user agent to identify your package.
+#' request("http://example.com") %>%
+#'   req_user_agent(versions = c("MyPackage" = "1.1.2")) %>%
+#'   req_dry_run()
+req_user_agent <- function(req, string = NULL, versions = NULL) {
   check_request(req)
-  check_string(ua, "`ua`")
+
+  if (is.null(string) && is.null(versions)) {
+    # Used in req_handle() to set default
+    return(req_user_agent(req, versions = c(
+        httr2 = utils::packageVersion("httr2"),
+        `r-curl` = utils::packageVersion("curl"),
+        libcurl = curl::curl_version()$version
+      )))
+  } else if (!is.null(string) && is.null(versions)) {
+    check_string(string, "`string`")
+    ua <- string
+  } else if (!is.null(versions) && is.null(string)) {
+    ua <- paste0(names(versions), "/", versions, collapse = " ")
+  } else {
+    abort("Must supply one of `string` and `versions`")
+  }
 
   req_options(req, useragent = ua)
-}
-
-default_ua <- function() {
-  versions <- c(
-    httr2 = as.character(utils::packageVersion("httr2")),
-    `r-curl` = as.character(utils::packageVersion("curl")),
-    libcurl = curl::curl_version()$version
-  )
-  paste0(names(versions), "/", versions, collapse = " ")
 }
 
 #' Set time limit
@@ -99,11 +116,11 @@ req_verbose <- function(req,
 
   debug <- function(type, msg) {
     switch(type + 1,
-      text =       if (info)            prefix_message("*  ", msg),
-      headerOut =  if (header_resp)     prefix_message("<- ", msg),
-      headerIn =   if (header_req)      prefix_message("-> ", msg, redact = redact_headers),
-      dataOut =    if (body_resp)       prefix_message("<< ", msg),
-      dataIn =     if (body_req)        prefix_message(">> ", msg)
+      text =       if (info)        verbose_message("*  ", msg),
+      headerOut =  if (header_resp) verbose_header("<- ", msg),
+      headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers),
+      dataOut =    if (body_resp)   verbose_message("<< ", msg),
+      dataIn =     if (body_req)    verbose_message(">> ", msg)
     )
   }
   req_options(req, debugfunction = debug, verbose = TRUE)
@@ -111,8 +128,7 @@ req_verbose <- function(req,
 
 # helpers -----------------------------------------------------------------
 
-prefix_message <- function(prefix, x, redact = FALSE) {
-
+verbose_message <- function(prefix, x) {
   if (any(x > 128)) {
     # This doesn't handle unicode, but it seems like most output
     # will be compressed in some way, so displaying bodies is unlikely
@@ -121,11 +137,20 @@ prefix_message <- function(prefix, x, redact = FALSE) {
   } else {
     x <- readBin(x, character())
     lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
-    if (redact) {
-      is_auth <- grepl("^[aA]uthorization: ", lines)
-      lines[is_auth] <- "Authorization: <REDACTED>"
+  }
+  cli::cat_line(prefix, lines)
+}
+
+verbose_header <- function(prefix, x, redact = TRUE) {
+  x <- readBin(x, character())
+  lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
+
+  for (line in lines) {
+    if (grepl(":", line, fixed = TRUE)) {
+      header <- headers_redact(as_headers(line), redact)
+      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", header)
+    } else {
+      cli::cat_line(prefix, line)
     }
   }
-  out <- paste0(prefix, lines, collapse = "\n")
-  cat(out, "\n", sep = "")
 }

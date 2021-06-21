@@ -1,8 +1,7 @@
 #' Send data in request body
 #'
 #' @description
-#' * `req_body_none()` sends an empty body.
-#' * `req_body_file()` sends a local file
+#' * `req_body_file()` sends a local file.
 #' * `req_body_raw()` sends a string or raw vector.
 #' * `req_body_json()` sends JSON encoded data.
 #' * `req_body_form()` sends form encoded data.
@@ -11,7 +10,6 @@
 #' Adding a body to a request will automatically switch the method to POST.
 #'
 #' @inheritParams req_fetch
-#' @export
 #' @examples
 #' req <- request("http://httpbin.org/post")
 #'
@@ -43,75 +41,39 @@
 #' req %>%
 #'   req_body_multipart(list(a = curl::form_file(path), b = "some data")) %>%
 #'   req_dry_run()
-req_body_none <- function(req) {
-  check_request(req)
+#' @name req_body
+#' @aliases NULL
+NULL
 
-  req <- req_body_reset(req)
-  # Must override method, otherwise curl uses HEAD
-  req <- req_method(req, "POST")
-  req_options(req,
-    nobody = TRUE
-  )
+#' @export
+#' @rdname req_body
+#' @param body A literal string or raw vector to send as body.
+req_body_raw <- function(req, body, type = NULL) {
+  check_request(req)
+  if (!is.raw(body) && !is_string(body)) {
+    abort("`body` must be a raw vector or string")
+  }
+
+  req_body(req, data = body, type = type %||% "")
 }
 
 #' @export
-#' @rdname req_body_none
+#' @rdname req_body
 #' @param path Path to file to upload.
 #' @param type Content type. For `req_body_file()`, the default
 #'  will will attempt to guess from the extension of `path`.
 req_body_file <- function(req, path, type = NULL) {
   check_request(req)
-
-  size <- file.info(path)$size
-
-  # Connection leaks if not completely uploaded
-  con <- file(path, "rb")
-  read <- function(nbytes, ...) {
-    if (is.null(con)) {
-      return(raw())
-    }
-    bin <- readBin(con, "raw", nbytes)
-    if (length(bin) < nbytes) {
-      close(con)
-      con <<- NULL
-    }
-    bin
-  }
-
-  req <- req_body_reset(req)
-  req <- req_headers(req, `Content-Type` = type %||% "")
-  req_options(req,
-    post = TRUE,
-    readfunction = read,
-    postfieldsize_large = size,
-  )
-}
-
-#' @export
-#' @rdname req_body_none
-#' @param body A literal string or raw vector to send as body.
-req_body_raw <- function(req, body, type = NULL) {
-  check_request(req)
-
-  if (is_string(body)) {
-    body <- charToRaw(enc2utf8(body))
-  }
-  if (!is.raw(body)) {
-    abort("`body` must be a raw vector or string")
+  if (!file.exists(path)) {
+    abort("`path` does not exist")
   }
 
   # Need to override default content-type "application/x-www-form-urlencoded"
-  req <- req_body_reset(req)
-  req <- req_headers(req, `Content-Type` = type %||% "")
-  req_options(req,
-    post = TRUE,
-    postfieldsize = length(body),
-    postfields = body
-  )
+  req_body(req, data = new_path(path), type = type %||% "")
 }
 
 #' @export
-#' @rdname req_body_none
+#' @rdname req_body
 #' @param data Data to include in body. For `req_body_json()` this can
 #'   be any R data structure that can be serialised to JSON, for
 #'   `req_body_form()` it should be a named list of simple values,
@@ -129,52 +91,134 @@ req_body_json <- function(req, data,
                           null = "null",
                           ...) {
   check_request(req)
-
+  check_body_data(data)
   check_installed("jsonlite")
-  json <- jsonlite::toJSON(data,
-    auto_unbox = TRUE,
-    digits = 22,
+
+  params <- list2(
+    auto_unbox = auto_unbox,
+    digits = digits,
     null = null,
     ...
   )
-  req_body_raw(req, json, "application/json")
+  data <- modify_list(req$body$data, !!!data)
+  req_body(req, data = data, type = "json", params = params)
 }
 
 #' @export
-#' @rdname req_body_none
+#' @rdname req_body
 req_body_form <- function(req, data) {
   check_request(req)
-
   check_body_data(data)
-  req <- req_body_reset(req)
-  req_body_raw(req, httr:::compose_query(data), "application/x-www-form-urlencoded")
+
+  data <- modify_list(req$body$data, !!!data)
+  req_body(req, data = data, type = "form")
 }
-
-# Hacky way to append data to body. Not exported, but used by OAuth app
-# authentication to make it easier to decouple req generation from auth
-req_body_form_append <- function(req, data) {
-  data_query <- httr:::compose_query(data)
-
-  if (is.null(req$options$postfields)) {
-    body <- data_query
-  } else {
-    body <- paste0(rawToChar(req$options$postfields), "&", data_query)
-  }
-
-  req_body_raw(req, body, "application/x-www-form-urlencoded")
-}
-
 
 #' @export
-#' @rdname req_body_none
+#' @rdname req_body
 req_body_multipart <- function(req, data) {
   check_request(req)
-
   check_body_data(data)
-  req <- req_body_reset(req)
-  # fields must be character, raw, curl::form_file, or curl::form_data
-  req$fields <- data
+
+  data <- modify_list(req$body$data, !!!data)
+  # data must be character, raw, curl::form_file, or curl::form_data
+  req_body(req, data = data, type = "multipart")
+}
+
+# General structure -------------------------------------------------------
+
+req_body <- function(req, data, type = NULL, params = list()) {
+  req$body <- list(
+    data = data,
+    type = type,
+    params = params
+  )
   req
+}
+
+req_body_info <- function(req) {
+  if (is.null(req$body)) {
+    "empty"
+  } else {
+    data <- req$body$data
+    if (is.raw(data)) {
+      glue("{length(data)} bytes of raw data")
+    } else if (is_string(data)) {
+      glue("a string")
+    } else if (is_path(data)) {
+      glue("path '{data}'")
+    } else if (is.list(data)) {
+      glue("{req$body$type} encoded data")
+    } else {
+      "invalid"
+    }
+  }
+}
+
+req_body_apply <- function(req) {
+  if (is.null(req$body)) {
+    return(req)
+  }
+
+  data <- req$body$data
+  type <- req$body$type
+
+  if (is_path(data)) {
+    size <- file.info(data)$size
+    con <- file(data, "rb")
+    # Leaks connection if request doesn't complete
+    read <- function(nbytes, ...) {
+      if (is.null(con)) {
+        raw()
+      } else {
+        out <- readBin(con, "raw", nbytes)
+        if (length(out) < nbytes) {
+          close(con)
+          con <<- NULL
+        }
+        out
+      }
+    }
+    req <- req_options(req,
+      post = TRUE,
+      readfunction = read,
+      postfieldsize_large = size
+    )
+  } else if (is.raw(data) || is_string(data)) {
+    req <- req_body_apply_raw(req, data)
+  } else if (is.list(data)) {
+    data <- unobfuscate(data)
+    if (type == "multipart") {
+      type <- NULL
+      req$fields <- data
+    } else if (type == "form") {
+      type <- "application/x-www-form-urlencoded"
+      req <- req_body_apply_raw(req, httr:::compose_query(data))
+    } else if (type == "json") {
+      type <- "application/json"
+      json <- exec(jsonlite::toJSON, data, !!!req$body$params)
+      req <- req_body_apply_raw(req, json)
+    } else {
+      abort("Unsupported request body `type`")
+    }
+  } else {
+    abort("Unsupported request body `data`")
+  }
+
+  # Must set header afterwards
+  req <- req_headers(req, `Content-Type` = type)
+  req
+}
+
+req_body_apply_raw <- function(req, body) {
+  if (is_string(body)) {
+    body <- charToRaw(enc2utf8(body))
+  }
+  req_options(req,
+    post = TRUE,
+    postfieldsize = length(body),
+    postfields = body
+  )
 }
 
 
@@ -187,22 +231,4 @@ check_body_data <- function(data) {
   if (!is_named(data)) {
     abort("All elements of `data` must be named")
   }
-}
-
-req_body_reset <- function(req) {
-  req$fields <- list()
-
-  if (identical(req$method, "POST")) {
-    req$method <- NULL
-  }
-
-  req <- req_headers(req, `Content-Type` = NULL)
-  req <- req_options(req,
-    nobody = NULL,
-    post = NULL,
-    readfunction = NULL,
-    postfields = NULL,
-    postfieldsize_large = NULL
-  )
-  req
 }

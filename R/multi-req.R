@@ -72,7 +72,7 @@ multi_req_fetch <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = F
         method = method,
         url = res$url,
         status_code = res$status_code,
-        headers = curl::parse_headers_list(res$headers),
+        headers = as_headers(res$headers),
         body = body
       )
       out[[i]] <<- tryCatch(resp_check_status(resp), error = function(err) {

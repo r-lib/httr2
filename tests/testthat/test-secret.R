@@ -28,8 +28,28 @@ test_that("can unobfuscate obfuscated string", {
   expect_equal(unobfuscate(x), "test")
 })
 
-test_that("unobfuscate serves as argument checker", {
+test_that("unobfuscate operates recursively", {
   expect_equal(unobfuscate(NULL), NULL)
   expect_equal(unobfuscate("x"), "x")
-  expect_snapshot(unobfuscate(1, "`x`"), error = TRUE)
+  expect_equal(unobfuscate(list(list(obfuscated("ZlWk7g")))), list(list("test")))
+})
+
+test_that("secret_has_key returns FALSE/TRUE", {
+  withr::local_envvar(ENVVAR_THAT_DOES_EXIST = "1")
+  expect_equal(secret_has_key("ENVVAR_THAT_DOESNT_EXIST"), FALSE)
+  expect_equal(secret_has_key("ENVVAR_THAT_DOES_EXIST"), TRUE)
+})
+
+
+test_that("can coerce to a key", {
+  expect_equal(as_key(I("YWJj")), charToRaw("abc"))
+  expect_equal(as_key(as.raw(c(1, 2, 3))), as.raw(c(1, 2, 3)))
+
+  withr::local_envvar(KEY = "YWJj", TESTTHAT = "false")
+  expect_equal(as_key("KEY"), charToRaw("abc"))
+
+  expect_snapshot(error = TRUE, {
+    as_key("ENVVAR_THAT_DOESNT_EXIST")
+    as_key(1)
+  })
 })

@@ -2,20 +2,32 @@
 % Please edit documentation in R/req-options.R
 \name{req_user_agent}
 \alias{req_user_agent}
-\title{Set user agent}
+\title{Set user-agent}
 \usage{
-req_user_agent(req, ua)
+req_user_agent(req, string = NULL, versions = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{ua}{A new user-agent string.}
+\item{string}{String to be sent in the \code{User-Agent} header.}
+
+\item{versions}{Named character vector used to construct a user-agent
+string using a lightweight convention. If both \code{string} and \code{versions}
+are omitted,}
 }
 \description{
-This overrides the default user agent set by httr2 which includes the
+This overrides the default user-agent set by httr2 which includes the
 version numbers of httr2, the curl package, and libcurl.
 }
 \examples{
+# Default user-agent:
 request("http://example.com") \%>\% req_dry_run()
-request("http://example.com") \%>\% req_user_agent("MyPackage") \%>\% req_dry_run()
+
+request("http://example.com") \%>\% req_user_agent("MyString") \%>\% req_dry_run()
+
+# If you're wrapping in an API in a package, it's polite to set the
+# user agent to identify your package.
+request("http://example.com") \%>\%
+  req_user_agent(versions = c("MyPackage" = "1.1.2")) \%>\%
+  req_dry_run()
 }

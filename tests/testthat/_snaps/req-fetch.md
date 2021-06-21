@@ -5,7 +5,7 @@
         req_user_agent("test") %>% req_dry_run()
     Output
       POST / HTTP/1.1
-      Host:example.com
+      Host: example.com
       User-Agent: test
       Accept: */*
       Accept-Encoding: deflate, gzip
@@ -21,7 +21,7 @@
         req_user_agent("test") %>% req_dry_run()
     Output
       GET / HTTP/1.1
-      Host:example.com
+      Host: example.com
       User-Agent: test
       Accept: */*
       Accept-Encoding: deflate, gzip

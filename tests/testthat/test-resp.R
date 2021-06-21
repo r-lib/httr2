@@ -9,7 +9,7 @@ test_that("respinse has basic print method", {
 
 test_that("response adds date if not provided by server", {
   resp <- response(headers = "Test: 1")
-  expect_named(resp_headers(resp), c("test", "date"))
+  expect_named(resp_headers(resp), c("Test", "Date"))
 })
 
 test_that("check_response produces helpful error", {

@@ -15,10 +15,13 @@ test_that("invalid token test is specific", {
 # Cache -------------------------------------------------------------------
 
 test_that("can store in memory", {
-  client <- oauth_client("x", name = "httr2-test")
-  app <- oauth_app(client, endpoints = c(token = "test"))
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
 
-  cache <- cache_mem(app, NULL)
+  cache <- cache_mem(client, NULL)
   withr::defer(cache$clear())
 
   expect_equal(cache$get(), NULL)
@@ -29,10 +32,13 @@ test_that("can store in memory", {
 })
 
 test_that("can store on disk", {
-  client <- oauth_client("x", name = "httr2-test")
-  app <- oauth_app(client, endpoints = c(token = "test"))
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
 
-  cache <- cache_disk(app, NULL)
+  cache <- cache_disk(client, NULL)
   withr::defer(cache$clear())
 
   expect_equal(cache$get(), NULL)
@@ -40,4 +46,12 @@ test_that("can store on disk", {
   expect_equal(cache$get(), 1)
   cache$clear()
   expect_equal(cache$get(), NULL)
+})
+
+test_that("can prune old files", {
+  path <- withr::local_tempdir()
+  touch(file.path(path, "a-token.rds"), Sys.time() - 86400 * 1)
+  touch(file.path(path, "b-token.rds"), Sys.time() - 86400 * 2)
+  cache_disk_prune(2, path)
+  expect_equal(dir(path), "a-token.rds")
 })

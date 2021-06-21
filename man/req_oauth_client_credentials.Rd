@@ -4,16 +4,17 @@
 \alias{req_oauth_client_credentials}
 \title{OAuth authentication with client credentials}
 \usage{
-req_oauth_client_credentials(req, app, scope = NULL, token_params = list())
+req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_client_credentials]{oauth_flow_client_credentials()}} to generate an access token,

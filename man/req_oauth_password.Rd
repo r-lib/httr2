@@ -6,7 +6,7 @@
 \usage{
 req_oauth_password(
   req,
-  app,
+  client,
   username,
   password = NULL,
   cache_disk = FALSE,
@@ -17,7 +17,7 @@ req_oauth_password(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{app}{An \code{\link[=oauth_app]{oauth_app()}}.}
+\item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{username}{User name.}
 
@@ -28,11 +28,13 @@ interactively.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk.}
+storing access credentials on disk. Cached tokens are automatically
+deleted 30 days after creation.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{token_params}{List containing additional parameters passed to \code{oauth_flow_access_token()}.}
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
 }
 \description{
 This uses \code{\link[=oauth_flow_password]{oauth_flow_password()}} to generate an access token, which is

@@ -104,7 +104,7 @@ req_fetch1 <- function(req, path = NULL, handle = NULL) {
     method = req_method_get(req),
     url = res$url,
     status_code = res$status_code,
-    headers = curl::parse_headers_list(res$headers),
+    headers = as_headers(res$headers),
     body = body
   )
   the$last_response <- resp
@@ -171,7 +171,8 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 
   if (!quiet) {
     debug <- function(type, msg) {
-      if (type %in% c(2L, 4L)) prefix_message("", msg, redact = redact_headers)
+      if (type == 2L) verbose_header("", msg, redact = redact_headers)
+      if (type == 4L) verbose_message("", msg)
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
   }
@@ -233,16 +234,17 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
     method = req_method_get(req),
     url = data$url,
     status_code = data$status_code,
-    headers = curl::parse_headers_list(data$headers),
+    headers = as_headers(data$headers),
     body = NULL
   )
 }
 
 req_handle <- function(req) {
   req <- req_method_apply(req)
+  req <- req_body_apply(req)
 
   if (!has_name(req$options, "useragent")) {
-    req <- req_user_agent(req, default_ua())
+    req <- req_user_agent(req)
   }
 
   handle <- curl::new_handle()

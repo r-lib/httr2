@@ -50,11 +50,13 @@ sys_sleep <- function(seconds) {
   invisible()
 }
 
-check_string <- function(x, name) {
+check_string <- function(x, name, optional = TRUE) {
   if (is_string(x) && !is.na(x)) {
     return()
   }
-
+  if (optional && is.null(x)) {
+    return()
+  }
   abort(glue("{name} must be a string"))
 }
 
@@ -134,8 +136,11 @@ parse_http_date <- function(x) {
   out
 }
 
-touch <- function(path) {
-  Sys.setFileTime(path, Sys.time())
+touch <- function(path, time = Sys.time()) {
+  if (!file.exists(path)) {
+    file.create(path)
+  }
+  Sys.setFileTime(path, time)
 }
 
 local_write_lines <- function(..., .env = caller_env()) {

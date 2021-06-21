@@ -12,12 +12,17 @@ test_that("can add header called req", {
   expect_equal(req$options, list(req = 1))
 })
 
-test_that("can override default user agent", {
-  req1 <- request("http://example.com")
-  req2 <- req1 %>% req_user_agent("abc")
+test_that("can set user agent with string or version", {
+  ua <- function(...) {
+    request("http://example.com") %>%
+      req_user_agent(...) %>%
+      .$options %>%
+      .$useragent
+  }
 
-  expect_equal(req_dry_run(req1, TRUE)$headers$`user-agent`, default_ua())
-  expect_equal(req_dry_run(req2, TRUE)$headers$`user-agent`, "abc")
+  expect_match(ua(), "libcurl")
+  expect_equal(ua("abc"), "abc")
+  expect_equal(ua(versions = c(x = 1)), "x/1")
 })
 
 test_that("can set timeout", {
