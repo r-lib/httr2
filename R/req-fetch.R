@@ -1,4 +1,4 @@
-#' Simulate a request
+#' Perform a request
 #'
 #' @description
 #' After preparing a request, call `req_fetch()` to perform it, fetching

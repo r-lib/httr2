@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-fetch.R
 \name{req_fetch}
 \alias{req_fetch}
-\title{Simulate a request}
+\title{Perform a request}
 \usage{
 req_fetch(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L))
 }
