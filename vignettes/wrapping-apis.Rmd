@@ -37,7 +37,7 @@ library(httr2)
 faker_status <- request("https://fakerapi.it/api/v1") %>% 
   req_url_path_append("images") %>% 
   req_error(is_error = ~ FALSE) %>% 
-  req_fetch() %>% 
+  req_perform() %>% 
   resp_status()
 faker_ok <- faker_status < 400
 ```
@@ -53,7 +53,7 @@ resp <- req %>%
   req_url_path_append("images") %>% 
   # Add set _width and _quantity query parameters
   req_url_query(`_width` = 380, `_quantity` = 1) %>% 
-  req_fetch()
+  req_perform()
 
 # The result comes back as JSON
 resp %>% resp_body_json() %>% str()
@@ -67,7 +67,7 @@ If you fetch a URL that returns an unsuccesful HTTP response, you'll get an erro
 ```{r, error = TRUE, eval = faker_ok}
 req %>% 
   req_url_path_append("invalid") %>% 
-  req_fetch()
+  req_perform()
 ```
 
 To see what's going on, you'll need to use `req_error()` to turn off the default behaviour that turns HTTP errors into R errors:
@@ -76,7 +76,7 @@ To see what's going on, you'll need to use `req_error()` to turn off the default
 resp <- req %>% 
   req_url_path_append("imagesasf") %>% 
   req_error(is_error = ~ FALSE) %>% 
-  req_fetch()
+  req_perform()
 ```
 
 Now you can look at the response body:
@@ -116,7 +116,7 @@ req_faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL
   request("https://fakerapi.it/api/v1") %>% 
     req_url_path_append(resource) %>% 
     req_url_query(!!!params) %>% 
-    req_fetch() %>% 
+    req_perform() %>% 
     resp_body_json()
 }
 
@@ -160,7 +160,7 @@ This allows now allows us to perform a test request and look at the response:
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = my_key, isbn = 9780307476463) %>% 
-  req_fetch()
+  req_perform()
 resp
 ```
 
@@ -187,7 +187,7 @@ Section 5.3 of [rfc6750](https://datatracker.ietf.org/doc/html/rfc6750#section-5
 > If bearer tokens are passed in page URLs, attackers might be able to steal them from the history data, logs, or other unsecured locations.
 
 httr2 makes no efforts to redact confidential information stored in query parameters.
-This means it's relatively easy to leak your key if you use `req_fetch(verbose = 1)` or `req_dry_run()`.
+This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)` or `req_dry_run()`.
 This just means you'll need to be a little cautious if you need to get help with a reprex; you'll need to manually redact the key.
 
 ### Error handling
@@ -199,7 +199,7 @@ For example, if we deliberately supply an invalid key:
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
-  req_fetch()
+  req_perform()
 ```
 
 To see if there's any extra useful information we can again suppress the default error and inspect the result:
@@ -209,7 +209,7 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
   req_error(is_error = ~ FALSE) %>% 
-  req_fetch()
+  req_perform()
 resp
 resp %>% resp_body_json()
 ```
@@ -230,7 +230,7 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_error(info = function(resp) {
     resp %>% resp_body_json() %>% .$fault %>% .$faultstring
   }) %>% 
-  req_fetch()
+  req_perform()
 ```
 
 ### Rate limits
@@ -276,7 +276,7 @@ nytimes_books <- function(api_key, path, ...) {
       resp %>% resp_body_json() %>% .$fault %>% .$faultstring
     }) %>% 
     req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") %>% 
-    req_fetch() %>% 
+    req_perform() %>% 
     resp_body_json()
 }
 

@@ -6,7 +6,7 @@ test_that("can send file", {
 
   resp <- request_test("/post") %>%
     req_body_file(path, type = "text/plain") %>%
-    req_fetch()
+    req_perform()
 
   json <- resp_body_json(resp)
   expect_equal(json$headers$`Content-Type`, "text/plain")
@@ -16,7 +16,7 @@ test_that("can send file", {
 test_that("can send string", {
   resp <- request_httpbin("/post") %>%
     req_body_raw("test") %>%
-    req_fetch()
+    req_perform()
 
   json <- resp_body_json(resp)
   expect_equal(json$headers$`Content-Type`, NULL)
@@ -28,20 +28,20 @@ test_that("can send named list as json/form/multipart", {
 
   resp <- request_test("/post") %>%
     req_body_json(data) %>%
-    req_fetch()
+    req_perform()
   json <- resp_body_json(resp)
   expect_equal(json$json, data)
 
   resp <- request_test("/post") %>%
     req_body_form(data) %>%
-    req_fetch()
+    req_perform()
   json <- resp_body_json(resp)
   expect_equal(json$headers$`Content-Type`, "application/x-www-form-urlencoded")
   expect_equal(json$form, data)
 
   resp <- request_test("/post") %>%
     req_body_multipart(data) %>%
-    req_fetch()
+    req_perform()
   json <- resp_body_json(resp)
   expect_match(json$headers$`Content-Type`, "multipart/form-data; boundary=-")
   expect_equal(json$form, list(a = "1", b = "2"))
@@ -63,7 +63,7 @@ test_that("can upload file with multipart", {
 
   resp <- request_httpbin("/post") %>%
     req_body_multipart(list(file = curl::form_file(path))) %>%
-    req_fetch()
+    req_perform()
   json <- resp_body_json(resp)
   expect_match(json$files$file, "this is a test\n")
 })

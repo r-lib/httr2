@@ -67,10 +67,10 @@ You can see what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 ```
 
-And perform the request, getting back a response, with `req_fetch()`:
+And perform the request, getting back a response, with `req_perform()`:
 
 ```{r}
-resp <- req_fetch(req)
+resp <- req_perform(req)
 resp
 ```
 
@@ -85,7 +85,7 @@ resp %>% resp_body_html()
 ## Major differences to httr
 
 -   You can now create and modify a request without performing it.
-    This means that there's now a single function to perform and request and fetch the result: `req_fetch()`.
+    This means that there's now a single function to perform and request and fetch the result: `req_perform()`.
     (If you want to handle the response as it streams in, instead use `req_stream()`).
     This replaces `httr::GET()`, `POST()`, `DELETE()`, `VERB()`, ....
     You can preview a request without sending it with `req_dry_run()`.

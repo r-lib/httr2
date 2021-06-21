@@ -27,7 +27,7 @@
 #'    returns the number of seconds to wait. If the heading is not found,
 #'    it will return `NA`.
 #'
-#' @param resp An HTTP response object, as created by [req_fetch()].
+#' @param resp An HTTP response object, as created by [req_perform()].
 #' @export
 resp_headers <- function(resp) {
   check_response(resp)
@@ -58,7 +58,7 @@ resp_content_type <- function(resp) {
 #' @export
 #' @rdname resp_headers
 resp_date <- function(resp) {
-  # Date header always added by req_fetch()
+  # Date header always added by req_perform()
   parse_http_date(resp_header(resp, "Date"))
 }
 

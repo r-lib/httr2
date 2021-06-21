@@ -42,6 +42,6 @@ different components of the HTTP requests and responses:
 }
 }
 \seealso{
-\code{\link[=req_fetch]{req_fetch()}} which exposes a limited subset of these options
+\code{\link[=req_perform]{req_perform()}} which exposes a limited subset of these options
 through the \code{verbosity} argument.
 }

@@ -12,7 +12,7 @@ request(base_url)
 \description{
 To perform a HTTP request, first create a request object with \code{request()},
 then define its behaviour with \code{req_} functions, then perform the request
-and fetch the response with \code{\link[=req_fetch]{req_fetch()}}.
+and fetch the response with \code{\link[=req_perform]{req_perform()}}.
 }
 \examples{
 request("http://r-project.org")

@@ -1,8 +1,8 @@
 #' Perform multiple requests in parallel
 #'
 #' @description
-#' This variation on [req_fetch()] performs multiple requests in parallel.
-#' Unlike `req_fetch()` it always succeeds; it will never throw an error.
+#' This variation on [req_perform()] performs multiple requests in parallel.
+#' Unlike `req_perform()` it always succeeds; it will never throw an error.
 #' Instead it will return error objects, which are your responsibility to
 #' handle.
 #'
@@ -18,8 +18,8 @@
 #' * Does not attempt retries as described by [req_retry()].
 #' * Consults the cache set by [req_cache()] before/after all requests.
 #'
-#' In general, where [req_fetch()] might make multiple requests due to retries
-#' or OAuth failures, `multi_req_fetch()` will make only make 1.
+#' In general, where [req_perform()] might make multiple requests due to retries
+#' or OAuth failures, `multi_req_perform()` will make only make 1.
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional list of paths, if you want to download the request
@@ -43,19 +43,19 @@
 #'   request("https://httpbin.org/delay/1")
 #' )
 #' # But it's much faster if you request in parallel
-#' system.time(resps <- multi_req_fetch(reqs))
+#' system.time(resps <- multi_req_perform(reqs))
 #'
 #' reqs <- list(
 #'   request("https://httpbin.org/status/200"),
 #'   request("https://httpbin.org/status/400"),
 #'   request("FAILURE")
 #' )
-#' # multi_req_fetch() will always succeed
-#' resps <- multi_req_fetch(reqs)
+#' # multi_req_perform() will always succeed
+#' resps <- multi_req_perform(reqs)
 #' # you'll need to inspect the results to figure out which requests fails
 #' fail <- vapply(resps, inherits, "error", FUN.VALUE = logical(1))
 #' resps[fail]
-multi_req_fetch <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
+multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   if (!is.null(paths)) {
     if (length(reqs) != length(paths)) {
       abort("If supplied, `paths` must be the same length as `requests`")

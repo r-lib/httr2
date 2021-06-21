@@ -85,10 +85,10 @@ req %>% req_dry_run()
 #> Accept-Encoding: deflate, gzip
 ```
 
-And perform the request, getting back a response, with `req_fetch()`:
+And perform the request, getting back a response, with `req_perform()`:
 
 ``` r
-resp <- req_fetch(req)
+resp <- req_perform(req)
 resp
 #> <httr2_response>
 #> GET https://www.r-project.org/
@@ -115,10 +115,10 @@ resp %>% resp_body_html()
 
 -   You can now create and modify a request without performing it. This
     means that there’s now a single function to perform and request and
-    fetch the result: `req_fetch()`. (If you want to handle the response
-    as it streams in, instead use `req_stream()`). This replaces
-    `httr::GET()`, `POST()`, `DELETE()`, `VERB()`, …. You can preview a
-    request without sending it with `req_dry_run()`.
+    fetch the result: `req_perform()`. (If you want to handle the
+    response as it streams in, instead use `req_stream()`). This
+    replaces `httr::GET()`, `POST()`, `DELETE()`, `VERB()`, …. You can
+    preview a request without sending it with `req_dry_run()`.
 
 -   HTTP errors are automatically converted into R errors. Use
     `req_error()` to override the defaults (which turn all 4xx and 5xx

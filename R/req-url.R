@@ -6,7 +6,7 @@
 #' * `req_url_path()` modifies the path
 #' * `req_url_path_append()` adds to the path
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
 #' @return A modified HTTP [request].
 #' @export

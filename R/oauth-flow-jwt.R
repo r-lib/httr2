@@ -6,7 +6,7 @@
 #' The token is cached in memory.
 #'
 #' @export
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @inheritParams oauth_flow_bearer_jwt
 req_oauth_bearer_jwt <- function(req, client,
                           claim,

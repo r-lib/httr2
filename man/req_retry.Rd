@@ -18,7 +18,7 @@ req_retry(
 
 \item{max_tries, max_seconds}{Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
-\code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_fetch]{req_fetch()}}
+\code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
 will not retry.}
 
 \item{is_transient}{A predicate function that takes a single argument
@@ -34,10 +34,10 @@ that a precise wait time is not available that the \code{backoff} strategy
 should be used instead..}
 }
 \description{
-\code{req_retry()} alters \code{\link[=req_fetch]{req_fetch()}} so that it will automatically retry
+\code{req_retry()} alters \code{\link[=req_perform]{req_perform()}} so that it will automatically retry
 in the case of failure. To activate it, you must specify either the total
 number of requests to make with \code{max_tries} or the total amount of time
-to spend with \code{max_seconds}. Then \code{req_fetch()} will retry if:
+to spend with \code{max_seconds}. Then \code{req_perform()} will retry if:
 \itemize{
 \item The either the HTTP request or HTTP response doesn't complete successfully
 leading to an error from curl, the lower-level library that httr uses to
@@ -49,7 +49,7 @@ conveys transient-ness with some other property of the response), you can
 override the default with \code{is_transient}.
 }
 
-It's a bad idea to immediately retry a request, so \code{req_fetch()} will
+It's a bad idea to immediately retry a request, so \code{req_perform()} will
 wait a little before trying again:
 \itemize{
 \item If the response contains the \code{Retry-After} header, httr2 will wait the

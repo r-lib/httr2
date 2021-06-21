@@ -21,7 +21,7 @@ req_options <- function(.req, ...) {
 #' This overrides the default user-agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param string String to be sent in the `User-Agent` header.
 #' @param versions Named character vector used to construct a user-agent
 #'   string using a lightweight convention. If both `string` and `versions`
@@ -64,7 +64,7 @@ req_user_agent <- function(req, string = NULL, versions = NULL) {
 #'
 #' An error will be thrown if the request does not complete in the time limit.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param seconds Maximum number of seconds to wait
 #' @export
 #' @examples
@@ -92,7 +92,7 @@ req_timeout <- function(req, seconds) {
 #' * `->` response headers
 #' * `>>` response body
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param header_req,header_resp Show request/response headers?
 #' @param body_req,body_resp Should request/response bodies? When the response
 #'   body is compressed, this will show the number of bytes recevied in
@@ -102,7 +102,7 @@ req_timeout <- function(req, seconds) {
 #' @param redact_headers Redact confidential data in the headers? Currently
 #'   redacts the contents of the Authorization header to prevent you from
 #'   accidentally leaking credentials when debugging/reprexing.
-#' @seealso [req_fetch()] which exposes a limited subset of these options
+#' @seealso [req_perform()] which exposes a limited subset of these options
 #'   through the `verbosity` argument.
 #' @export
 req_verbose <- function(req,

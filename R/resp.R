@@ -1,7 +1,7 @@
 #' Create a new HTTP response
 #'
 #' Generally, you should not need to call this function directly; you'll
-#' get a real HTTP response by calling [req_fetch()] and friends. This
+#' get a real HTTP response by calling [req_perform()] and friends. This
 #' function is provided primarily for testing, and a place to describe
 #' the key components of a response.
 #'
@@ -86,7 +86,7 @@ print.httr2_response <- function(x,...) {
 #' @param resp A HTTP [response]
 #' @export
 #' @examples
-#' resp <- request("https://httpbin.org/json") %>% req_fetch()
+#' resp <- request("https://httpbin.org/json") %>% req_perform()
 #' resp %>% resp_raw()
 resp_raw <- function(resp) {
   cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))

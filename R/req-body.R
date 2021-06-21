@@ -9,7 +9,7 @@
 #'
 #' Adding a body to a request will automatically switch the method to POST.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @examples
 #' req <- request("http://httpbin.org/post")
 #'

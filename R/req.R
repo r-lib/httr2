@@ -2,7 +2,7 @@
 #'
 #' To perform a HTTP request, first create a request object with `request()`,
 #' then define its behaviour with `req_` functions, then perform the request
-#' and fetch the response with [req_fetch()].
+#' and fetch the response with [req_perform()].
 #'
 #' @param base_url Base URL for request.
 #' @export

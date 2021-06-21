@@ -24,9 +24,9 @@ reference:
 - title: Perform a request and get a response
   contents:
   - req_dry_run
-  - req_fetch
+  - req_perform
   - req_stream
-  - multi_req_fetch
+  - multi_req_perform
   - last_request
 
 - subtitle: Control the process

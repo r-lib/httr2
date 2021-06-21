@@ -16,6 +16,6 @@ least the body, and HTTP/2 can also compress the headers), but it conveys
 the same information.
 }
 \examples{
-resp <- request("https://httpbin.org/json") \%>\% req_fetch()
+resp <- request("https://httpbin.org/json") \%>\% req_perform()
 resp \%>\% resp_raw()
 }

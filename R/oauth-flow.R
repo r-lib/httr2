@@ -1,6 +1,6 @@
 oauth_flow_fetch <- function(req) {
   req <- req_error(req, is_error = ~ FALSE)
-  resp <- req_fetch(req)
+  resp <- req_perform(req)
 
   # This is rather more flexible than what the spec requires, and should
   # hopefully be general enough to handle most token endpoints. However,

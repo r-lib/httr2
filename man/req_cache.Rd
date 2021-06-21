@@ -12,14 +12,14 @@ req_cache(req, path, use_on_error = FALSE, debug = FALSE)
 \item{path}{Path to cache directory}
 
 \item{use_on_error}{If the request errors, and there's a cache response,
-should \code{req_fetch()} return that instead of generating an error?}
+should \code{req_perform()} return that instead of generating an error?}
 
 \item{debug}{When \code{TRUE} will emit useful messages telling you about
 cache hits and misses. This can be helpful to understand whether or
 not caching is actually doing anything for your use case.}
 }
 \description{
-Use \code{req_fetch()} to automatically cache HTTP requests. Most API requests
+Use \code{req_perform()} to automatically cache HTTP requests. Most API requests
 are not cacheable, but when possible (often when downloading larger files)
 it can make a big difference. \code{req_cache()} caches responses to GET requests
 that have status code 200 and at least one of the standard caching headers

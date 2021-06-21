@@ -25,7 +25,7 @@ resp_encoding(resp)
 resp_retry_after(resp)
 }
 \arguments{
-\item{resp}{An HTTP response object, as created by \code{\link[=req_fetch]{req_fetch()}}.}
+\item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{header}{Header name (case insensitive)}
 }
