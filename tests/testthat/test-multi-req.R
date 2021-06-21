@@ -7,7 +7,8 @@ test_that("requests happen in parallel", {
     request_test("/delay/:secs", secs = 0.5),
   )
   time <- system.time(multi_req_fetch(reqs))
-  expect_lt(time[[3]], 1)
+  # GHA MacOS builder seems to be particularly slow
+  expect_lt(time[[3]], 1.5)
 })
 
 test_that("both curl and HTTP errors become errors", {
