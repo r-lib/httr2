@@ -1,9 +1,11 @@
 #' Perform a request
 #'
 #' @description
-#' After preparing a request, call `req_perform()` to perform it, fetching
-#' the results back to R. One call to `req_perform()` may perform multiple
-#' HTTP requests:
+#' After preparing a [request], call `req_perform()` to perform it, fetching
+#' the results back to R as a [response].
+#'
+#' # Requests
+#' Note that one call to `req_perform()` may perform multiple HTTP requests:
 #'
 #' * If the `url` is redirected with a 301, 302, 303, or 307, curl will
 #'   automatically follow the `Location` header to the new location.
@@ -11,6 +13,10 @@
 #' * If you have configured retries with [req_retry()] and the request
 #'   fails with a transient problem, `req_perform()` will try again after
 #'   waiting a bit. See [req_retry()] for details.
+#'
+#' * If you are using OAuth, and the cached token has expired, `req_perform()`
+#'   will get a new token either using the refresh token (if available)
+#'   or by running the OAuth flow.
 #'
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
@@ -22,7 +28,6 @@
 #'   * 1: show headers
 #'   * 2: show headers and bodies
 #'   * 3: show headers, bodies, and curl status messages.
-#'
 #' @returns Returns an HTTP response with successful status code. Will
 #'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
