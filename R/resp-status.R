@@ -140,43 +140,20 @@ resp_auth_message <- function(resp) {
   }
 
   www_auth <- parse_www_authenticate(www_auth)
-  params <- www_auth$params
   if (www_auth$scheme != "Bearer") {
     return(NULL)
   }
 
-  if (has_name(params, "error")) {
-    msg <- glue("OAuth error: {params$error}")
-    if (has_name(params, "error_description")) {
-      msg <- paste0(msg, " - ", params$error_description)
+  if (has_name(www_auth, "error")) {
+    msg <- glue("OAuth error: {www_auth$error}")
+    if (has_name(www_auth, "error_description")) {
+      msg <- paste0(msg, " - ", www_auth$error_description)
     }
   } else {
     msg <- "OAuth error"
   }
 
-  non_error <- params[!grepl("^error", names(params))]
+  non_error <- www_auth[!grepl("^error|^scheme$", names(www_auth))]
   msg <- c(msg, paste0(names(non_error), ": ", non_error))
   msg
-}
-
-parse_www_authenticate <- function(x) {
-  pieces_m <- regexpr(" ", x, fixed = TRUE)
-  pieces <- regmatches(x, pieces_m, invert = TRUE)[[1]]
-
-  # Use scan to deal with quoted strings. It loses the quotes, but it's
-  # ok because the field name can't be a quoted string so there's no ambiguity
-  # about who the = belongs to.
-  params <- scan(text = pieces[[2]], what = character(), sep = ",", quiet = TRUE, quote = '"')
-
-  equals <- regexpr("=", params, fixed = TRUE)
-  param_pieces <- regmatches(params, equals, invert = TRUE)
-  param_pieces <- param_pieces[lengths(param_pieces) == 2]
-
-  param_val <- trimws(map_chr(param_pieces, "[[", 2))
-  param_name <- trimws(map_chr(param_pieces, "[[", 1))
-
-  list(
-    scheme = pieces[[1]],
-    params = set_names(as.list(param_val), param_name)
-  )
 }
