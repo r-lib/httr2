@@ -8,7 +8,7 @@ reference:
   subtitle: Create and modify
   contents:
   - request
-  - req_body_none
+  - req_body
   - req_headers
   - req_method
   - req_template
