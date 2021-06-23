@@ -125,7 +125,7 @@ req_verbosity <- function(req, verbosity) {
     req,
     req_verbose(req),
     req_verbose(req, body_req = TRUE, body_resp = TRUE),
-    req_verbose(req, body_req = TRUE, body_resp = TRUE, info = TRUE),
+    req_verbose(req, body_req = TRUE, body_resp = TRUE, info = TRUE)
   )
 }
 
