@@ -41,7 +41,7 @@ new_response <- function(method, url, status_code, headers, body) {
   headers <- as_headers(headers)
   # ensure we always have a date field
   if (!"date" %in% tolower(names(headers))) {
-    headers$Date <- httr::http_date(Sys.time())
+    headers$Date <- http_date()
   }
 
   structure(

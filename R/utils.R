@@ -125,13 +125,18 @@ local_time <- function(x, tz = "UTC") {
   out
 }
 
+http_date <- function(x = Sys.time()) {
+  withr::local_locale(LC_TIME = "C")
+  strftime(x, "%a, %d %b %Y %H:%M:%S", tz = "UTC", usetz = TRUE)
+}
+
 parse_http_date <- function(x) {
   check_string(x, "`x`")
 
   withr::local_locale(LC_TIME = "C")
 
   # https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.1.1
-  out <- as.POSIXct(strptime(x, "%a, %d %b %Y %H:%M:%S", tz = "GMT"))
+  out <- as.POSIXct(strptime(x, "%a, %d %b %Y %H:%M:%S", tz = "UTC"))
   attr(out, "tzone") <- NULL
   out
 }
