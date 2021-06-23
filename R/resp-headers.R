@@ -92,3 +92,31 @@ resp_retry_after <- function(resp) {
     as.numeric(val)
   }
 }
+
+#' Parse link url from a response
+#'
+#' This parses the `Link` header, extracting the url corresponding to the
+#' specified `rel`. Returns `NULL` if not present.
+#'
+#' @export
+#' @inheritParams resp_headers
+#' @param rel "rel" value for which to retrieve url
+#' @export
+#' @examples
+#' resp <- request("https://api.github.com/search/code") %>%
+#'   req_url_query(q = "addClass user:mozilla") %>%
+#'   req_perform()
+#' resp_link_url(resp, "next")
+resp_link_url <- function(resp, rel) {
+  if (!resp_header_exists(resp, "Link")) {
+    return()
+  }
+
+  links <- parse_link(resp_header(resp, "Link"))
+  sel <- map_lgl(links, ~ .$rel == rel)
+  if (sum(sel) != 1L) {
+    return()
+  }
+
+  links[[which(sel)]]$url
+}
