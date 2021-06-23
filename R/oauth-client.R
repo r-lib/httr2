@@ -98,7 +98,7 @@ print.httr2_oauth_client <- function(x, ...) {
 #'
 #' @description
 #' `oauth_client_req_auth()` authenticates a request using the authentication
-#' strategy defined by the `auth` and `auth_param` arguments to [oauth_app()].
+#' strategy defined by the `auth` and `auth_param` arguments to [oauth_client()].
 #' This used to authenticate the client as part of the OAuth flow, **not**
 #' to authenticate a request on behalf of a user.
 #'
