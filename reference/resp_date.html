@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract headers from a response — resp_headers • httr2</title>
+<title>Extract request date from response — resp_date • httr2</title>
 
 
 <!-- jquery -->
@@ -39,14 +39,9 @@
 
 
 
-<meta property="og:title" content="Extract headers from a response — resp_headers" />
-<meta property="og:description" content="
-
-resp_headers() retrieves a list of all headers.
-resp_header() retrieves a single header.
-resp_header_exists() checks if a header is present.
-
-" />
+<meta property="og:title" content="Extract request date from response — resp_date" />
+<meta property="og:description" content="All responses contain a request date in the Date header; if not provided
+by the server will be automatically added by httr2." />
 
 
 
@@ -129,26 +124,17 @@ resp_header_exists() checks if a header is present.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract headers from a response</h1>
+    <h1>Extract request date from response</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp-headers.R'><code>R/resp-headers.R</code></a></small>
-    <div class="hidden name"><code>resp_headers.Rd</code></div>
+    <div class="hidden name"><code>resp_date.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
-<ul>
-<li><p><code>resp_headers()</code> retrieves a list of all headers.</p></li>
-<li><p><code>resp_header()</code> retrieves a single header.</p></li>
-<li><p><code>resp_header_exists()</code> checks if a header is present.</p></li>
-</ul>
-
+    <p>All responses contain a request date in the <code>Date</code> header; if not provided
+by the server will be automatically added by httr2.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>resp_headers</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
-
-<span class='fu'>resp_header</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span>
-
-<span class='fu'>resp_header_exists</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>resp_date</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,10 +142,6 @@ resp_header_exists() checks if a header is present.
     <tr>
       <th>resp</th>
       <td><p>An HTTP response object, as created by <code><a href='req_perform.html'>req_perform()</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>header</th>
-      <td><p>Header name (case insensitive)</p></td>
     </tr>
     </table>
 

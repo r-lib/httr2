@@ -130,10 +130,22 @@
     <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resp_content_type.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/resp_date.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_headers.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resp_link_url.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_raw.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/resp_retry_after.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>

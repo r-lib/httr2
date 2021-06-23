@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract headers from a response — resp_headers • httr2</title>
+<title>Parse link url from a response — resp_link_url • httr2</title>
 
 
 <!-- jquery -->
@@ -39,14 +39,9 @@
 
 
 
-<meta property="og:title" content="Extract headers from a response — resp_headers" />
-<meta property="og:description" content="
-
-resp_headers() retrieves a list of all headers.
-resp_header() retrieves a single header.
-resp_header_exists() checks if a header is present.
-
-" />
+<meta property="og:title" content="Parse link url from a response — resp_link_url" />
+<meta property="og:description" content="This parses the Link header, extracting the url corresponding to the
+specified rel. Returns NULL if not present." />
 
 
 
@@ -129,26 +124,17 @@ resp_header_exists() checks if a header is present.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract headers from a response</h1>
+    <h1>Parse link url from a response</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp-headers.R'><code>R/resp-headers.R</code></a></small>
-    <div class="hidden name"><code>resp_headers.Rd</code></div>
+    <div class="hidden name"><code>resp_link_url.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
-<ul>
-<li><p><code>resp_headers()</code> retrieves a list of all headers.</p></li>
-<li><p><code>resp_header()</code> retrieves a single header.</p></li>
-<li><p><code>resp_header_exists()</code> checks if a header is present.</p></li>
-</ul>
-
+    <p>This parses the <code>Link</code> header, extracting the url corresponding to the
+specified <code>rel</code>. Returns <code>NULL</code> if not present.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>resp_headers</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span>
-
-<span class='fu'>resp_header</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span>
-
-<span class='fu'>resp_header_exists</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>header</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>resp_link_url</span><span class='op'>(</span><span class='va'>resp</span>, <span class='va'>rel</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,12 +144,19 @@ resp_header_exists() checks if a header is present.
       <td><p>An HTTP response object, as created by <code><a href='req_perform.html'>req_perform()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>header</th>
-      <td><p>Header name (case insensitive)</p></td>
+      <th>rel</th>
+      <td><p>"rel" value for which to retrieve url</p></td>
     </tr>
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='va'>resp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://api.github.com/search/code"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_url.html'>req_url_query</a></span><span class='op'>(</span>q <span class='op'>=</span> <span class='st'>"addClass user:mozilla"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='req_perform.html'>req_perform</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>resp_link_url</span><span class='op'>(</span><span class='va'>resp</span>, <span class='st'>"next"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "https://api.github.com/search/code?q=addClass+user%3Amozilla&amp;page=2"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
