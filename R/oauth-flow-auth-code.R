@@ -163,14 +163,16 @@ oauth_flow_auth_code_url <- function(client,
                                      scope = NULL,
                                      state = NULL,
                                      auth_params = list()) {
-  httr::modify_url(auth_url, query = list2(
+  url <- url_parse(auth_url)
+  url$query <- modify_list(url$query,
     response_type = "code",
     client_id = client$id,
     redirect_uri = redirect_uri,
     scope = scope,
     state = state,
     !!!auth_params
-  ))
+  )
+  url_build(url)
 }
 
 #' @export
@@ -223,8 +225,7 @@ oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410) {
 # https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.1
 # Spaces are first replaced by +
 parse_form_urlencoded <- function(query) {
-  query <- gsub("^\\?", "", query)
-  query <- httr:::parse_query(query)
+  query <- query_parse(query)
   query[] <- gsub("+", " ", query, fixed = TRUE)
   query
 }

@@ -19,7 +19,7 @@ req_throttle <- function(req, rate, realm = NULL) {
   delay <- 1 / rate
 
   throttle_delay <- function(req) {
-    realm <- realm %||% httr::parse_url(req$url)$hostname
+    realm <- realm %||% url_parse(req$url)$hostname
     last <- the$throttle[[realm]]
 
     if (is.null(last)) {

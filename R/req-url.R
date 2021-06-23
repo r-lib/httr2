@@ -25,11 +25,8 @@
 #'   req_url("http://google.com")
 req_url <- function(req, url) {
   check_request(req)
+  check_string(url, "`url`")
 
-  if (inherits(url, "url")) {
-    # Temporary fudging
-    url <- httr::build_url(url)
-  }
   req$url <- url
   req
 }
@@ -39,10 +36,7 @@ req_url <- function(req, url) {
 #' @param ... Name-value pairs that provide query parameters.
 req_url_query <- function(req, ...) {
   check_request(req)
-
-  url <- httr::parse_url(req$url)
-  url$query <- modify_list(url$query, ...)
-  req_url(req, url)
+  req_url(req, url_modify(req$url, query = list2(...)))
 }
 
 #' @export
@@ -51,11 +45,11 @@ req_url_query <- function(req, ...) {
 req_url_path <- function(req, path) {
   check_request(req)
   check_string(path, "`path`")
+  if (!grepl("^/", path)) {
+    path <- paste0("/", path)
+  }
 
-  url <- httr::parse_url(req$url)
-  url$path <- path
-
-  req_url(req, url)
+  req_url(req, url_modify(req$url, path = path))
 }
 
 #' @export
@@ -64,7 +58,12 @@ req_url_path_append <- function(req, path) {
   check_request(req)
   check_string(path, "`path`")
 
-  url <- httr::parse_url(req$url)
-  url$path <- paste0(url$path, "/", path)
-  req_url(req, url)
+  url <- url_parse(req$url)
+
+  if (!grepl("^/", path) && (is.null(url$path) || !grepl("/$", url$path))) {
+    path <- paste0("/", path)
+  }
+
+  url$path <- paste0(url$path, path)
+  req_url(req, url_build(url))
 }

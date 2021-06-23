@@ -48,6 +48,7 @@ reference:
   contents:
   - secrets
   - obfuscate
+  - url_parse
   - with_verbosity
 
 - title: OAuth

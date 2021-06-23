@@ -50,7 +50,10 @@ parse_delim <- function(x, delim, quote = "\"", ...) {
 parse_name_equals_value <- function(x) {
   loc <- regexpr("=", x, fixed = TRUE)
   pieces <- regmatches(x, loc, invert = TRUE)
-  pieces <- pieces[lengths(pieces) == 2]
+
+  # If only one piece, assume it's a field name with empty value
+  expand <- function(x) if (length(x) == 1) c(x, "") else x
+  pieces <- map(pieces, expand)
 
   val <- trimws(map_chr(pieces, "[[", 2))
   name <- trimws(map_chr(pieces, "[[", 1))
@@ -65,4 +68,10 @@ parse_in_half <- function(x, pattern) {
   } else {
     regmatches(x, loc, invert = TRUE)[[1]]
   }
+}
+
+parse_match <- function(x, pattern) {
+  m <- regexec(pattern, x, perl = TRUE)
+  pieces <- regmatches(x, m)[[1]][-1]
+  ifelse(pieces != "", as.list(pieces), list())
 }
