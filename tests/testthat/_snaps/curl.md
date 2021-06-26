@@ -46,3 +46,19 @@
       request("http://x.com") %>% 
         req_perform(verbosity = 1)
 
+# can translate data
+
+    Code
+      curl_translate("curl http://example.com --data abcdef")
+    Output
+      request("http://example.com") %>% 
+        req_body_raw("abcdef", "application/x-www-form-urlencoded") %>% 
+        req_perform()
+    Code
+      curl_translate(
+        "curl http://example.com --data abcdef -H Content-Type:text/plain")
+    Output
+      request("http://example.com") %>% 
+        req_body_raw("abcdef", "text/plain") %>% 
+        req_perform()
+

@@ -89,12 +89,23 @@ test_that("can translate to httr calls", {
   })
 })
 
+test_that("can translate data", {
+  expect_snapshot({
+    curl_translate("curl http://example.com --data abcdef")
+    curl_translate("curl http://example.com --data abcdef -H Content-Type:text/plain")
+  })
+})
+
 test_that("can evaluate simple calls", {
   request_test("/get") # hack to start server
 
   resp <- curl_translate_eval(glue("curl {the$test_app$url()}/get -H A:1"))
   body <- resp_body_json(resp)
   expect_equal(body$headers$A, "1")
+
+  resp <- curl_translate_eval(glue("curl {the$test_app$url()}/post --data A=1"))
+  body <- resp_body_json(resp)
+  expect_equal(body$form$A, "1")
 
   resp <- curl_translate_eval(glue("curl {the$test_app$url()}/delete -X delete"))
   body <- resp_body_json(resp)

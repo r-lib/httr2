@@ -32,12 +32,22 @@ curl_translate <- function(cmd) {
     out <- add_line(out, glue('req_method("{data$method}")'))
   }
 
-  if (!is.null(data$headers)) {
+  # Content type set with data
+  type <- data$headers$`Content-Type`
+  data$headers$`Content-Type` <- NULL
+
+  if (length(data$headers) > 0) {
     names <- quote_name(names(data$headers))
     values <- encodeString(unlist(data$headers), quote = '"')
     args <- paste0("  ", names, " = ", values, ",\n", collapse = "")
 
     out <- add_line(out, paste0("req_headers(\n", args, ")"))
+  }
+
+  if (!identical(data$data, "")) {
+    type <- encodeString(type %||% "application/x-www-form-urlencoded", quote = '"')
+    body <- encodeString(data$data, quote = '"')
+    out <- add_line(out, glue("req_body_raw({body}, {type})"))
   }
 
   if (!is.null(data$auth)) {
