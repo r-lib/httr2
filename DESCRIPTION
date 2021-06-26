@@ -27,6 +27,7 @@ Suggests:
     knitr,
     askpass,
     covr,
+    docopt,
     httpuv,
     jose,
     jsonlite,
