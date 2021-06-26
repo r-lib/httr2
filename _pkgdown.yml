@@ -46,6 +46,7 @@ reference:
 
 - title: Miscellaenous helpers
   contents:
+  - curl_translate
   - secrets
   - obfuscate
   - url_parse
