@@ -88,3 +88,19 @@ test_that("can translate to httr calls", {
     curl_translate("curl http://x.com --verbose")
   })
 })
+
+test_that("can evaluate simple calls", {
+  request_test("/get") # hack to start server
+
+  resp <- curl_translate_eval(glue("curl {the$test_app$url()}/get -H A:1"))
+  body <- resp_body_json(resp)
+  expect_equal(body$headers$A, "1")
+
+  resp <- curl_translate_eval(glue("curl {the$test_app$url()}/delete -X delete"))
+  body <- resp_body_json(resp)
+  expect_equal(body$method, "delete")
+
+  resp <- curl_translate_eval(glue("curl {the$test_app$url()}//basic-auth/u/p -u u:p"))
+  body <- resp_body_json(resp)
+  expect_true(body$authenticated)
+})

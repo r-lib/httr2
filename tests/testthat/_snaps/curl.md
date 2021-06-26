@@ -11,38 +11,38 @@
       curl_translate("curl http://x.com")
     Output
       request("http://x.com") %>% 
-        req_fetch()
+        req_perform()
     Code
       curl_translate("curl http://x.com -X DELETE")
     Output
       request("http://x.com") %>% 
         req_method("DELETE") %>% 
-        req_fetch()
+        req_perform()
     Code
       curl_translate("curl http://x.com -H A:1")
     Output
       request("http://x.com") %>% 
-        req_header(
+        req_headers(
           A = "1",
         ) %>% 
-        req_fetch()
+        req_perform()
     Code
       curl_translate("curl http://x.com -H 'A B:1'")
     Output
       request("http://x.com") %>% 
-        req_header(
+        req_headers(
           `A B` = "1",
         ) %>% 
-        req_fetch()
+        req_perform()
     Code
       curl_translate("curl http://x.com -u u:p")
     Output
       request("http://x.com") %>% 
-        req_auth("u", "p") %>% 
-        req_fetch()
+        req_auth_basic("u", "p") %>% 
+        req_perform()
     Code
       curl_translate("curl http://x.com --verbose")
     Output
       request("http://x.com") %>% 
-        req_fetch(verbosity = 1)
+        req_perform(verbosity = 1)
 

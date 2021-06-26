@@ -37,17 +37,17 @@ curl_translate <- function(cmd) {
     values <- encodeString(unlist(data$headers), quote = '"')
     args <- paste0("  ", names, " = ", values, ",\n", collapse = "")
 
-    out <- add_line(out, paste0("req_header(\n", args, ")"))
+    out <- add_line(out, paste0("req_headers(\n", args, ")"))
   }
 
   if (!is.null(data$auth)) {
-    out <- add_line(out, glue('req_auth("{data$auth[[1]]}", "{data$auth[[2]]}")'))
+    out <- add_line(out, glue('req_auth_basic("{data$auth[[1]]}", "{data$auth[[2]]}")'))
   }
 
   if (data$verbose) {
-    out <- add_line(out, "req_fetch(verbosity = 1)")
+    out <- add_line(out, "req_perform(verbosity = 1)")
   } else {
-    out <- add_line(out, "req_fetch()")
+    out <- add_line(out, "req_perform()")
   }
   out <- paste0(out, "\n")
 
@@ -66,6 +66,10 @@ curl_help <- function() {
   cat(curl_opts)
 }
 
+curl_translate_eval <- function(cmd, env = caller_env()) {
+  code <- curl_translate(cmd)
+  eval(parse_expr(code), envir = env)
+}
 
 curl_normalize <- function(cmd) {
   args <- curl_args(cmd)
