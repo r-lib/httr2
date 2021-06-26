@@ -10,6 +10,9 @@
 #' Use `curl_help()` to see the supported options, and `curl_translate()`
 #' to translate a curl invocation copy and pasted from elsewhere.
 #'
+#' Inspired by [curlconverter](https://github.com/hrbrmstr/curlconverter)
+#' written by [Bob Rudis](http://rud.is/b).
+#'
 #' @param cmd Call to curl
 #' @export
 #' @examples

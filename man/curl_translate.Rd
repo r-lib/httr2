@@ -21,6 +21,9 @@ equivalents.
 
 Use \code{curl_help()} to see the supported options, and \code{curl_translate()}
 to translate a curl invocation copy and pasted from elsewhere.
+
+Inspired by \href{https://github.com/hrbrmstr/curlconverter}{curlconverter}
+written by \href{http://rud.is/b}{Bob Rudis}.
 }
 \examples{
 curl_translate("curl http://example.com")
