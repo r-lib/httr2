@@ -185,8 +185,6 @@ curl_args <- function(cmd) {
 
 # Helpers -----------------------------------------------------------------
 
-
-
 is_syntactic <- function(x) {
   x == make.names(x)
 }
