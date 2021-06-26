@@ -1,4 +1,22 @@
-
+#' Translate curl syntax to httr2
+#'
+#' @description
+#' The curl command line tool is commonly to demonstrate HTTP APIs and can
+#' easily be be generated from browser developer tools. `curl_translate()`
+#' implements a partial, but frequently used, subset of curl functionality
+#' allowing you to automatically translate curl invocations into their httr2
+#' equivalents.
+#'
+#' Use `curl_help()` to see the supported options, and `curl_translate()`
+#' to translate a curl invocation copy and pasted from elsewhere.
+#'
+#' @param cmd Call to curl
+#' @export
+#' @examples
+#' curl_translate("curl http://example.com")
+#' curl_translate("curl http://example.com -X DELETE")
+#' curl_translate("curl http://example.com --header A:1 --header B:2")
+#' curl_translate("curl http://example.com --verbose")
 curl_translate <- function(cmd) {
   data <- curl_normalize(cmd)
 
@@ -32,6 +50,8 @@ curl_translate <- function(cmd) {
   cat(out, "\n", sep ="")
 }
 
+#' @rdname curl_translate
+#' @export
 curl_help <- function() {
   cat(curl_opts)
 }
