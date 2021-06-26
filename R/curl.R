@@ -49,8 +49,15 @@ curl_translate <- function(cmd) {
   } else {
     out <- add_line(out, "req_fetch()")
   }
+  out <- paste0(out, "\n")
 
-  cat(out, "\n", sep ="")
+  structure(out, class = "httr2_cmd")
+}
+
+#' @export
+print.httr2_cmd <- function(x, ...) {
+  cat(x)
+  invisible(x)
 }
 
 #' @rdname curl_translate
@@ -58,6 +65,7 @@ curl_translate <- function(cmd) {
 curl_help <- function() {
   cat(curl_opts)
 }
+
 
 curl_normalize <- function(cmd) {
   args <- curl_args(cmd)
