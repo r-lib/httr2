@@ -40,12 +40,12 @@ test_that("headers are parsed", {
 test_that("user-agent and referer become headers", {
   expect_equal(
     curl_normalize("curl http://x.com -A test")$headers,
-    list("user-agent" = "test")
+    as_headers(list("user-agent" = "test"))
   )
 
   expect_equal(
     curl_normalize("curl http://x.com -e test")$headers,
-    list("referer" = "test")
+    as_headers(list("referer" = "test"))
   )
 })
 

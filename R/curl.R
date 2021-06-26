@@ -89,7 +89,7 @@ curl_normalize <- function(cmd) {
   if (has_name(args, "--header")) {
     headers <- as_headers(args[["--header"]])
   } else {
-    headers <- NULL
+    headers <- as_headers(list())
   }
   if (has_name(args, "--referer")) {
     headers[["referer"]] <- args[["--referer"]]
