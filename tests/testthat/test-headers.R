@@ -12,7 +12,10 @@ test_that("as_headers errors on invalid types", {
 })
 
 test_that("has nice print method", {
-  expect_snapshot(as_headers(c("X:1", "Y: 2", "Z:")))
+  expect_snapshot({
+    as_headers(c("X:1", "Y: 2", "Z:"))
+    as_headers(list())
+  })
 })
 
 test_that("subsetting is case insensitive", {

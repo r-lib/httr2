@@ -30,7 +30,10 @@ new_headers <- function(x) {
 
 #' @export
 print.httr2_headers <- function(x, ..., redact = TRUE) {
-  cli::cat_line(cli::style_bold(names(x)), ": ", headers_redact(x, redact))
+  cli::cli_text("{.cls {class(x)}}")
+  if (length(x) > 0) {
+    cli::cat_line(cli::style_bold(names(x)), ": ", headers_redact(x, redact))
+  }
   invisible(x)
 }
 
