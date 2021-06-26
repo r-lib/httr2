@@ -2,18 +2,21 @@
 #'
 #' @description
 #' The curl command line tool is commonly to demonstrate HTTP APIs and can
-#' easily be be generated from browser developer tools. `curl_translate()`
-#' implements a partial, but frequently used, subset of curl functionality
-#' allowing you to automatically translate curl invocations into their httr2
-#' equivalents.
-#'
+#' easily be be generated from
+#' [browser developer tools](https://everything.curl.dev/usingcurl/copyas).
+#' `curl_translate()` saves you the pain of manually translating these calls
+#' by implementing a partial, but frequently used, subset of curl options.
 #' Use `curl_help()` to see the supported options, and `curl_translate()`
 #' to translate a curl invocation copy and pasted from elsewhere.
 #'
 #' Inspired by [curlconverter](https://github.com/hrbrmstr/curlconverter)
 #' written by [Bob Rudis](http://rud.is/b).
 #'
-#' @param cmd Call to curl
+#' @param cmd Call to curl. If omitted and the clipr package is installed,
+#'   will be retrieved from the clipboard.
+#' @return A string containing the translated httr2 code. If the input
+#'   was copied from the clipboard, the translation will be copied back
+#'   to the clipboard.
 #' @export
 #' @examples
 #' curl_translate("curl http://example.com")
@@ -21,6 +24,16 @@
 #' curl_translate("curl http://example.com --header A:1 --header B:2")
 #' curl_translate("curl http://example.com --verbose")
 curl_translate <- function(cmd) {
+  if (missing(cmd)) {
+    if (is_interactive() && is_installed("clipr")) {
+      clip <- TRUE
+      cmd <- clipr::read_clip()
+    } else {
+      abort("Must supply `cmd`")
+    }
+  } else {
+    clip <- FALSE
+  }
   data <- curl_normalize(cmd)
 
   out <- glue('request("{data$url}")')
@@ -60,6 +73,11 @@ curl_translate <- function(cmd) {
     out <- add_line(out, "req_perform()")
   }
   out <- paste0(out, "\n")
+
+  if (clip) {
+    cli::cli_alert_success("Copying to clipboard:")
+    clipr::write_clip(out)
+  }
 
   structure(out, class = "httr2_cmd")
 }

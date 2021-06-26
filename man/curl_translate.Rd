@@ -10,15 +10,15 @@ curl_translate(cmd)
 curl_help()
 }
 \arguments{
-\item{cmd}{Call to curl}
+\item{cmd}{Call to curl. If omitted and the clipr package is installed,
+will be retrieved from the clipboard.}
 }
 \description{
 The curl command line tool is commonly to demonstrate HTTP APIs and can
-easily be be generated from browser developer tools. \code{curl_translate()}
-implements a partial, but frequently used, subset of curl functionality
-allowing you to automatically translate curl invocations into their httr2
-equivalents.
-
+easily be be generated from
+\href{https://everything.curl.dev/usingcurl/copyas}{browser developer tools}.
+\code{curl_translate()} saves you the pain of manually translating these calls
+by implementing a partial, but frequently used, subset of curl options.
 Use \code{curl_help()} to see the supported options, and \code{curl_translate()}
 to translate a curl invocation copy and pasted from elsewhere.
 
