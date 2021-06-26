@@ -73,5 +73,10 @@ parse_in_half <- function(x, pattern) {
 parse_match <- function(x, pattern) {
   m <- regexec(pattern, x, perl = TRUE)
   pieces <- regmatches(x, m)[[1]][-1]
-  ifelse(pieces != "", as.list(pieces), list())
+  map(pieces, empty_to_null)
 }
+
+empty_to_null <- function(x) {
+  if (x == "") NULL else x
+}
+
