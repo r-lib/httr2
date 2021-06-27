@@ -32,6 +32,7 @@ curl_translate <- function(cmd) {
       abort("Must supply `cmd`")
     }
   } else {
+    check_string(cmd, "`cmd`")
     clip <- FALSE
   }
   data <- curl_normalize(cmd)
@@ -204,7 +205,7 @@ curl_args <- function(cmd) {
 
   pieces <- parse_in_half(cmd, " ")
   if (pieces[[1]] != "curl") {
-    abort("Expecting call to curl")
+    abort(glue("Expecting call to curl not '{pieces[[1]]}'"))
   }
   if (grepl("'", cmd)) {
     args <- parse_delim(pieces[[2]], " ", quote = "'")
