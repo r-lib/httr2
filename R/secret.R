@@ -75,7 +75,9 @@ secret_encrypt <- function(x, key) {
   check_string(x, "`x`")
   key <- as_key(key)
 
-  base64_url_encode(openssl::aes_ctr_encrypt(charToRaw(x), key, iv = httr_iv))
+  salt <- openssl::rand_bytes(16)
+  value <- openssl::aes_ctr_encrypt(charToRaw(x), key)
+  base64_url_encode(c(attr(value, "iv"), value))
 }
 #' @export
 #' @rdname secrets
@@ -84,7 +86,11 @@ secret_decrypt <- function(encrypted, key) {
   check_string(encrypted, "`encrypted`")
   key <- as_key(key)
 
-  rawToChar(openssl::aes_ctr_decrypt(base64_url_decode(encrypted), key, iv = httr_iv))
+  bytes <- base64_url_decode(encrypted)
+  salt <- bytes[1:16]
+  value <- bytes[-(1:16)]
+
+  rawToChar(openssl::aes_ctr_decrypt(value, key, iv = salt))
 }
 
 #' @export
@@ -93,8 +99,11 @@ secret_decrypt <- function(encrypted, key) {
 secret_read_rds <- function(path, key) {
   key <- as_key(key)
 
-  x_enc <- readBin(path, "raw", file.size(path))
-  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = httr_iv)
+  x_raw <- readBin(path, "raw", file.size(path))
+  salt <- x_raw[1:16]
+
+  x_enc <- x_raw[-(1:16)]
+  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = salt)
   x <- memDecompress(x_cmp, "bzip2")
   unserialize(x)
 }
@@ -106,9 +115,8 @@ secret_write_rds <- function(x, path, key) {
 
   x <- serialize(x, NULL, version = 2)
   x_cmp <- memCompress(x, "bzip2")
-  x_enc <- openssl::aes_ctr_encrypt(x_cmp, key, iv = httr_iv)
-  attr(x_enc, "iv") <- NULL # writeBin uses is.vector()
-  writeBin(x_enc, path)
+  x_enc <- openssl::aes_ctr_encrypt(x_cmp, key)
+  writeBin(c(attr(x_enc, "iv"), x_enc), path)
 }
 
 #' @export
@@ -158,7 +166,11 @@ secret_get_key <- function(envvar) {
 #' @export
 #' @examples
 #' obfuscate("good morning")
-#' obfuscated("dV-4_vKoUp90pP_M")
+#'
+#' # Every time you obfuscate you'll get a different value because it
+#' # includes 16 bytes of random data which protects against certain types of
+#' # brute force attack
+#' obfuscate("good morning")
 obfuscate <- function(x) {
   check_string(x, "`x`")
 
@@ -214,10 +226,3 @@ as_key <- function(x) {
     ))
   }
 }
-
-# Fixed iv is not good idea in general, but fine here since we're not
-# worried about dictionary attacks
-httr_iv <- as.raw(c(
-  0x4d, 0x11, 0x18, 0x6f, 0x51, 0xf1, 0x5a, 0x36,
-  0x12, 0x74, 0x9b, 0x54, 0x0e, 0x13, 0x33, 0x3c
-))

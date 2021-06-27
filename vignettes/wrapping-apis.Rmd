@@ -147,7 +147,7 @@ Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/
 I don't want to share my API key with the whole world so I've encrypted it with `secret_encrypt()` and I'll decrypt it for this vignette with `secret_decrypt()`:
 
 ```{r, eval = nyt_ok}
-my_key <- secret_decrypt("hbYctm6bwp7_V37UFOAX-7uel5QN4cRWzoQpGCqCk9I", "HTTR2_KEY")
+my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
 The encryption and decryption relies on a key stored in the `HTTR2_KEY` environment variable.
