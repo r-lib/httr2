@@ -75,7 +75,6 @@ secret_encrypt <- function(x, key) {
   check_string(x, "`x`")
   key <- as_key(key)
 
-  salt <- openssl::rand_bytes(16)
   value <- openssl::aes_ctr_encrypt(charToRaw(x), key)
   base64_url_encode(c(attr(value, "iv"), value))
 }
@@ -87,10 +86,10 @@ secret_decrypt <- function(encrypted, key) {
   key <- as_key(key)
 
   bytes <- base64_url_decode(encrypted)
-  salt <- bytes[1:16]
+  iv <- bytes[1:16]
   value <- bytes[-(1:16)]
 
-  rawToChar(openssl::aes_ctr_decrypt(value, key, iv = salt))
+  rawToChar(openssl::aes_ctr_decrypt(value, key, iv = iv))
 }
 
 #' @export
@@ -100,10 +99,10 @@ secret_read_rds <- function(path, key) {
   key <- as_key(key)
 
   x_raw <- readBin(path, "raw", file.size(path))
-  salt <- x_raw[1:16]
+  iv <- x_raw[1:16]
 
   x_enc <- x_raw[-(1:16)]
-  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = salt)
+  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = iv)
   x <- memDecompress(x_cmp, "bzip2")
   unserialize(x)
 }
