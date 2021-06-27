@@ -17,21 +17,19 @@ test_that("encryption and decryption of object is symmetric", {
   expect_equal(x1, x2)
 })
 
-
 test_that("can unobfuscate obfuscated string", {
-  expect_snapshot({
-    obfuscate("test")
-    obfuscated("ZlWk7g")
-  })
-
-  x <- obfuscated("ZlWk7g")
+  x <- obfuscated("qw6Ua_n2LR_xzuk2uqp2dhb5OaE")
   expect_equal(unobfuscate(x), "test")
+})
+
+test_that("obfuscated strings are hidden", {
+  expect_snapshot(obfuscated("abcdef"))
 })
 
 test_that("unobfuscate operates recursively", {
   expect_equal(unobfuscate(NULL), NULL)
   expect_equal(unobfuscate("x"), "x")
-  expect_equal(unobfuscate(list(list(obfuscated("ZlWk7g")))), list(list("test")))
+  expect_equal(unobfuscate(list(list(obfuscated("qw6Ua_n2LR_xzuk2uqp2dhb5OaE")))), list(list("test")))
 })
 
 test_that("secret_has_key returns FALSE/TRUE", {

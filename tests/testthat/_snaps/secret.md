@@ -1,11 +1,7 @@
-# can unobfuscate obfuscated string
+# obfuscated strings are hidden
 
     Code
-      obfuscate("test")
-    Output
-      obfuscated("ZlWk7g")
-    Code
-      obfuscated("ZlWk7g")
+      obfuscated("abcdef")
     Output
       <OBFUSCATED>
 
