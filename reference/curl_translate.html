@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Show the raw response — resp_raw • httr2</title>
+<title>Translate curl syntax to httr2 — curl_translate • httr2</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,16 @@
 
 
 
-<meta property="og:title" content="Show the raw response — resp_raw" />
-<meta property="og:description" content="The reconstruct the HTTP message that httr2 received from the server.
-It's unlikely to be exactly the same (because most servers compress at
-least the body, and HTTP/2 can also compress the headers), but it conveys
-the same information." />
+<meta property="og:title" content="Translate curl syntax to httr2 — curl_translate" />
+<meta property="og:description" content="The curl command line tool is commonly to demonstrate HTTP APIs and can
+easily be be generated from
+browser developer tools.
+curl_translate() saves you the pain of manually translating these calls
+by implementing a partial, but frequently used, subset of curl options.
+Use curl_help() to see the supported options, and curl_translate()
+to translate a curl invocation copy and pasted from elsewhere.
+Inspired by curlconverter
+written by Bob Rudis." />
 
 
 
@@ -126,63 +131,56 @@ the same information." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Show the raw response</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/resp.R'><code>R/resp.R</code></a></small>
-    <div class="hidden name"><code>resp_raw.Rd</code></div>
+    <h1>Translate curl syntax to httr2</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/httr2/blob/master/R/curl.R'><code>R/curl.R</code></a></small>
+    <div class="hidden name"><code>curl_translate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The reconstruct the HTTP message that httr2 received from the server.
-It's unlikely to be exactly the same (because most servers compress at
-least the body, and HTTP/2 can also compress the headers), but it conveys
-the same information.</p>
+    <p>The curl command line tool is commonly to demonstrate HTTP APIs and can
+easily be be generated from
+<a href='https://everything.curl.dev/usingcurl/copyas'>browser developer tools</a>.
+<code>curl_translate()</code> saves you the pain of manually translating these calls
+by implementing a partial, but frequently used, subset of curl options.
+Use <code>curl_help()</code> to see the supported options, and <code>curl_translate()</code>
+to translate a curl invocation copy and pasted from elsewhere.</p>
+<p>Inspired by <a href='https://github.com/hrbrmstr/curlconverter'>curlconverter</a>
+written by <a href='http://rud.is/b'>Bob Rudis</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>resp_raw</span><span class='op'>(</span><span class='va'>resp</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>curl_translate</span><span class='op'>(</span><span class='va'>cmd</span><span class='op'>)</span>
+
+<span class='fu'>curl_help</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>resp</th>
-      <td><p>A HTTP <a href='response.html'>response</a></p></td>
+      <th>cmd</th>
+      <td><p>Call to curl. If omitted and the clipr package is installed,
+will be retrieved from the clipboard.</p></td>
     </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>resp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/json"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'><a href='req_perform.html'>req_perform</a></span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>resp</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='fu'>resp_raw</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> HTTP/1.1 200 OK</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>date</span>: Thu, 01 Jul 2021 22:37:44 GMT</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>content-type</span>: application/json</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>content-length</span>: 429</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>server</span>: gunicorn/19.9.0</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>access-control-allow-origin</span>: *</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>access-control-allow-credentials</span>: true</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> {</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   "slideshow": {</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     "author": "Yours Truly", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     "date": "date of publication", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     "slides": [</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       {</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "title": "Wake up to WonderWidgets!", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "type": "all"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       }, </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       {</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "items": [</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>           "Why &lt;em&gt;WonderWidgets&lt;/em&gt; are great", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>           "Who &lt;em&gt;buys&lt;/em&gt; WonderWidgets"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         ], </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "title": "Overview", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "type": "all"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ], </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     "title": "Sample Slide Show"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+    <pre class="examples"><span class='r-in'><span class='fu'>curl_translate</span><span class='op'>(</span><span class='st'>"curl http://example.com"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> request("http://example.com") %&gt;% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   req_perform()</span>
+<span class='r-in'><span class='fu'>curl_translate</span><span class='op'>(</span><span class='st'>"curl http://example.com -X DELETE"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> request("http://example.com") %&gt;% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   req_method("DELETE") %&gt;% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   req_perform()</span>
+<span class='r-in'><span class='fu'>curl_translate</span><span class='op'>(</span><span class='st'>"curl http://example.com --header A:1 --header B:2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> request("http://example.com") %&gt;% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   req_headers(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     A = "1",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     B = "2",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ) %&gt;% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   req_perform()</span>
+<span class='r-in'><span class='fu'>curl_translate</span><span class='op'>(</span><span class='st'>"curl http://example.com --verbose"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> request("http://example.com") %&gt;% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   req_perform(verbosity = 1)</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
