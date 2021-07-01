@@ -26,7 +26,9 @@ Imports:
 Suggests:
     knitr,
     askpass,
+    clipr,
     covr,
+    docopt,
     httpuv,
     jose,
     jsonlite,
