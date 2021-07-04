@@ -38,3 +38,9 @@ test_that("new_headers checks inputs", {
     new_headers(list(1))
   })
 })
+
+test_that("can flatten repeated inputs", {
+  expect_equal(headers_flatten(list()), character())
+  expect_equal(headers_flatten(list(x = 1)), c(x = "1"))
+  expect_equal(headers_flatten(list(x = 1:2)), c(x = "1", x = "2"))
+})

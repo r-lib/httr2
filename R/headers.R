@@ -45,6 +45,10 @@ headers_redact <- function(x, redact = TRUE) {
   }
 }
 
+headers_flatten <- function(x) {
+  set_names(as.character(unlist(x, use.names = FALSE)), rep(names(x), lengths(x)))
+}
+
 list_redact <- function(x, names, case_sensitive = TRUE) {
   if (case_sensitive) {
     i <- match(names, names(x))

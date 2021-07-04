@@ -13,6 +13,11 @@ curl_help()
 \item{cmd}{Call to curl. If omitted and the clipr package is installed,
 will be retrieved from the clipboard.}
 }
+\value{
+A string containing the translated httr2 code. If the input
+was copied from the clipboard, the translation will be copied back
+to the clipboard.
+}
 \description{
 The curl command line tool is commonly to demonstrate HTTP APIs and can
 easily be be generated from

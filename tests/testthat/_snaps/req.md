@@ -20,6 +20,19 @@
       POST https://example.com
       Body: multipart encoded data
 
+# individually prints repeated headers
+
+    Code
+      request("https://example.com") %>% req_headers(A = 1:3)
+    Message <cliMessage>
+      <httr2_request>
+      GET https://example.com
+      Headers:
+      * A: '1'
+      * A: '2'
+      * A: '3'
+      Body: empty
+
 # check_request() gives useful error
 
     Code
