@@ -11,7 +11,7 @@
       * port: 80
       * path: /path
       * query:
-        ( ) a: 1
-        ( ) b: 2
+        * a: 1
+        * b: 2
       * fragment: frag
 
