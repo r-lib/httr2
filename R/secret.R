@@ -7,7 +7,7 @@
 #' but should not be available to package users.
 #'
 #' * `secret_encrypt()` and `secret_decrypt()` work with individual strings
-#' * `secret_read_rds()` and `secret_write_rds()` work with `.rds` files
+#' * `secret_write_rds()` and `secret_read_rds()` work with `.rds` files
 #' * `secret_make_key()` generates a random string to use as a key.
 #' * `secret_has_key()` returns `TRUE` if the key is available; you can
 #'   use it in examples and vignettes that you want to evaluate on your CI,
@@ -94,28 +94,34 @@ secret_decrypt <- function(encrypted, key) {
 
 #' @export
 #' @rdname secrets
-#' @param path Path to `.rds` file
-secret_read_rds <- function(path, key) {
-  key <- as_key(key)
-
-  x_raw <- readBin(path, "raw", file.size(path))
-  iv <- x_raw[1:16]
-
-  x_enc <- x_raw[-(1:16)]
-  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = iv)
-  x <- memDecompress(x_cmp, "bzip2")
-  unserialize(x)
+secret_write_rds <- function(x, path, key) {
+  writeBin(secret_serialize(x, key), path)
 }
-
 #' @export
 #' @rdname secrets
-secret_write_rds <- function(x, path, key) {
+#' @param path Path to `.rds` file
+secret_read_rds <- function(path, key) {
+  x <- readBin(path, "raw", file.size(path))
+  secret_unserialize(x, key)
+}
+
+secret_serialize <- function(x, key) {
   key <- as_key(key)
 
   x <- serialize(x, NULL, version = 2)
   x_cmp <- memCompress(x, "bzip2")
   x_enc <- openssl::aes_ctr_encrypt(x_cmp, key)
-  writeBin(c(attr(x_enc, "iv"), x_enc), path)
+  c(attr(x_enc, "iv"), x_enc)
+}
+secret_unserialize <- function(encrypted, key) {
+  key <- as_key(key)
+
+  iv <- encrypted[1:16]
+
+  x_enc <- encrypted[-(1:16)]
+  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = iv)
+  x <- memDecompress(x_cmp, "bzip2")
+  unserialize(x)
 }
 
 #' @export
