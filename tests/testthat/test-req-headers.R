@@ -13,7 +13,7 @@ test_that("can add header called req", {
 })
 
 test_that("can add repeated headers", {
-  resp <- request_test("/get") %>%
+  resp <- request_test() %>%
     req_headers(a = c("a", "b")) %>%
     req_dry_run(quiet = TRUE)
   # https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2

@@ -1,5 +1,5 @@
 test_that("success request returns response", {
-  resp <- request_test("/get") %>% req_perform()
+  resp <- request_test() %>% req_perform()
   expect_s3_class(resp, "httr2_response")
 })
 
@@ -45,7 +45,7 @@ test_that("can cache requests with etags", {
 test_that("req_perform() will throttle requests", {
   throttle_reset()
 
-  req <- request_test("/get") %>% req_throttle(10 / 1)
+  req <- request_test() %>% req_throttle(10 / 1)
   cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
   expect_null(cnd)
 
@@ -55,7 +55,7 @@ test_that("req_perform() will throttle requests", {
 })
 
 test_that("can retrieve last request and response", {
-  req <- request_test("/get")
+  req <- request_test()
   resp <- req_perform(req)
 
   expect_equal(last_request(), req)

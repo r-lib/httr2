@@ -48,7 +48,7 @@ test_that("can send named list as json/form/multipart", {
 })
 
 test_that("can modify body data", {
-  req1 <- request_test("/GET") %>% req_body_form(list(a = 1))
+  req1 <- request_test() %>% req_body_form(list(a = 1))
   req2 <- req1 %>% req_body_form(list(b = 2))
 
   expect_equal(req1$body$data, list(a = 1))

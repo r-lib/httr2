@@ -9,6 +9,6 @@ test_that("can send username/password", {
 })
 
 test_that("can send bearer token", {
-  req <- req_auth_bearer_token(request_test("/get"), "abc")
+  req <- req_auth_bearer_token(request_test(), "abc")
   expect_equal(req$headers$Authorization, "Bearer abc")
 })

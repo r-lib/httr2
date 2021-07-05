@@ -97,7 +97,7 @@ test_that("can translate data", {
 })
 
 test_that("can evaluate simple calls", {
-  request_test("/get") # hack to start server
+  request_test() # hack to start server
 
   resp <- curl_translate_eval(glue("curl {the$test_app$url()}/get -H A:1"))
   body <- resp_body_json(resp)
