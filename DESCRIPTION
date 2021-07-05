@@ -20,6 +20,7 @@ Imports:
     glue,
     magrittr,
     openssl,
+    R6,
     rappdirs,
     rlang,
     withr
