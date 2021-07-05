@@ -83,10 +83,10 @@ MultiRequest <- R6::R6Class("MultiRequest", public = list(
         abort("If supplied, `paths` must be the same length as `req`")
       }
     }
-    n <- length(reqs)
-    self$reqs <- expand(self$reqs, n)
-    self$paths <- expand(self$paths, n)
-    self$resps <- expand(self$resps, n)
+    n <- length(self$reqs) + length(reqs)
+    self$reqs <- set_length(self$reqs, n)
+    self$paths <- set_length(self$paths, n)
+    self$resps <- set_length(self$resps, n)
 
     for (i in seq_along(reqs)) {
       self$add_request(reqs[[i]], paths[[i]])
@@ -175,15 +175,7 @@ MultiRequest <- R6::R6Class("MultiRequest", public = list(
   }
 ))
 
-expand <- function(x, n, value) {
-  if (length(x) >= n) {
-    return(x)
-  }
-
-  if (missing(value)) {
-    length(x) <- n
-    x
-  } else {
-    c(x, rep(value, n - length(x)))
-  }
+set_length <- function(x, n) {
+  length(x) <- n
+  x
 }
