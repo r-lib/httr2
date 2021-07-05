@@ -49,7 +49,7 @@ test_that("req_perform() will throttle requests", {
   cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
   expect_null(cnd)
 
-  cnd <- req %>% req_perform("/get") %>% catch_cnd("httr2_sleep")
+  cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
   expect_s3_class(cnd, "httr2_sleep")
   expect_gt(cnd$seconds, 0.002)
 })
