@@ -10,14 +10,16 @@
 #' @param url URL response came from; might not be the same as the URL in
 #'   the request if there were any redirects.
 #' @param method HTTP method used to retrieve the response.
-#' @param headers A list of HTTP headers.
+#' @param headers HTTP headers. Can be supplied as a raw or character vector
+#'   which will be parsed using the standard rules, or a named list.
 #' @param body Response, if any, contained in the response body.
 #' @export
 #' @examples
 #' response()
 #' response(404, method = "POST")
+#' response(headers = c("Content-Type: text/html", "Content-Length: 300"))
 response <- function(status_code = 200,
-                     url = "http://example.com",
+                     url = "https://example.com",
                      method = "GET",
                      headers = list(),
                      body = NULL) {
