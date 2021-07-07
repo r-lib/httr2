@@ -202,7 +202,7 @@ or OAuth failures, <code>multi_req_perform()</code> will make only make 1.</p>
 <span class='r-in'><span class='co'># But it's much faster if you request in parallel</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>resps</span> <span class='op'>&lt;-</span> <span class='fu'>multi_req_perform</span><span class='op'>(</span><span class='va'>reqs</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.500   0.884   1.390 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.465   0.828   1.539 </span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>reqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
 <span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/status/200"</span><span class='op'>)</span>,</span>
@@ -219,7 +219,7 @@ or OAuth failures, <code>multi_req_perform()</code> will make only make 1.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> HTTP 400 Bad Request.</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Backtrace:</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #555555;'>  1. </span>pkgdown::deploy_to_branch(new_process = FALSE)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #555555;'> 37. </span>httr2::resp_check_status(resp)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #555555;'> 38. </span>httr2::resp_check_status(resp)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>&lt;error/httr2_failed&gt;</span></span>

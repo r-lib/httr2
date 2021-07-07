@@ -140,7 +140,7 @@ the key components of a response.</p>
 
     <pre class="usage"><span class='fu'>response</span><span class='op'>(</span>
   status_code <span class='op'>=</span> <span class='fl'>200</span>,
-  url <span class='op'>=</span> <span class='st'>"http://example.com"</span>,
+  url <span class='op'>=</span> <span class='st'>"https://example.com"</span>,
   method <span class='op'>=</span> <span class='st'>"GET"</span>,
   headers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   body <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -164,7 +164,8 @@ the request if there were any redirects.</p></td>
     </tr>
     <tr>
       <th>headers</th>
-      <td><p>A list of HTTP headers.</p></td>
+      <td><p>HTTP headers. Can be supplied as a raw or character vector
+which will be parsed using the standard rules, or a named list.</p></td>
     </tr>
     <tr>
       <th>body</th>
@@ -176,15 +177,21 @@ the request if there were any redirects.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='fu'>response</span><span class='op'>(</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> http://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> https://example.com</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 200 OK</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: NA</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: Empty</span>
 <span class='r-in'><span class='fu'>response</span><span class='op'>(</span><span class='fl'>404</span>, method <span class='op'>=</span> <span class='st'>"POST"</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>POST</span> http://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>POST</span> https://example.com</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 404 Not Found</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: NA</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: Empty</span>
+<span class='r-in'><span class='fu'>response</span><span class='op'>(</span>headers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Content-Type: text/html"</span>, <span class='st'>"Content-Length: 300"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>&lt;httr2_response&gt;</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>GET</span> https://example.com</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Status</span>: 200 OK</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Content-Type</span>: text/html</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>Body</span>: Empty</span>
 </pre>
   </div>
