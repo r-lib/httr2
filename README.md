@@ -135,7 +135,7 @@ resp %>% resp_body_html()
     flows and create your own.
 
 -   You can manage encrypted secrets often needed for testing with
-    `secret_encrpyt()` and friends. You can obfuscate mildly
+    `secret_encrypt()` and friends. You can obfuscate mildly
     confidential data (like many client secrets) with `obfuscate()`,
     preventing them being scraped from published code.
 
