@@ -108,42 +108,42 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># We start by creating a request that uses the base API url</span>
 <span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span>
-<span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">%&gt;%</span> 
+<span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="co"># Then we add on the images path</span>
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="co"># Add set _width and _quantity query parameters</span>
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_width` <span class="op">=</span> <span class="fl">380</span>, `_quantity` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_width` <span class="op">=</span> <span class="fl">380</span>, `_quantity` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="co"># The result comes back as JSON</span>
-<span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; List of 4</span>
 <span class="co">#&gt;  $ status: chr "OK"</span>
 <span class="co">#&gt;  $ code  : int 200</span>
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Libero quos ut et et."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Consequatur quia dolore maiores. Ipsa placeat molestiae unde earum quisquam id sed. Et et aut voluptatem voluptatem aliquid."</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Tenetur est incidunt sunt in."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Nobis modi rem perspiciatis. Natus dolorem voluptas ipsa qui. Officia autem id a veritatis est. Est non quas no"| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></code></pre></div>
 <div id="errors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#errors" class="anchor"></a>Errors</h3>
 <p>Next it’s worth a little experimentation to see if we get any useful information from errors. If you fetch a URL that returns an unsuccesful HTTP response, you’ll get an error so you can’t further inspect the body:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Error: HTTP 404 Not Found.</span></code></pre></div>
 <p>To see what’s going on, you’ll need to use <code><a href="../reference/req_error.html">req_error()</a></code> to turn off the default behaviour that turns HTTP errors into R errors:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"imagesasf"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"imagesasf"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>Now you can look at the response body:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; $status</span>
 <span class="co">#&gt; [1] "Not found"</span>
 <span class="co">#&gt; </span>
@@ -154,7 +154,7 @@
 <span class="co">#&gt; [1] 0</span></code></pre></div>
 <p>It doesn’t look like there’s anything useful there so I’ll double check the headers:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_headers&gt;</span>
 <span class="co">#&gt; Server: nginx</span>
 <span class="co">#&gt; Content-Type: application/json</span>
@@ -163,7 +163,7 @@
 <span class="co">#&gt; Vary: Accept-Encoding</span>
 <span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
 <span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Tue, 31 Aug 2021 20:36:03 GMT</span>
+<span class="co">#&gt; Date: Tue, 31 Aug 2021 20:53:38 GMT</span>
 <span class="co">#&gt; Access-Control-Allow-Origin: *</span>
 <span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
 <span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
@@ -187,10 +187,10 @@
   <span class="op">)</span>
   <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span>
   
-  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span>
 
@@ -207,14 +207,14 @@
 <span class="co">#&gt; $data</span>
 <span class="co">#&gt; $data[[1]]</span>
 <span class="co">#&gt; $data[[1]]$title</span>
-<span class="co">#&gt; [1] "Quas ducimus nulla at magni."</span>
+<span class="co">#&gt; [1] "Eos quidem omnis ut ut non."</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data[[1]]$description</span>
-<span class="co">#&gt; [1] "Atque inventore quo enim deserunt. Commodi qui recusandae esse. Corporis asperiores at dolorem dolore dolore cupiditate minus. Nihil a est quam."</span>
+<span class="co">#&gt; [1] "Perspiciatis odit consectetur id vel. Atque quo perspiciatis libero. Praesentium porro officiis dolor."</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $data[[1]]$url</span>
 <span class="co">#&gt; [1] "http://placeimg.com/300/480/any"</span></code></pre></div>
-<p>There’s only one trick to notice here — <code><a href="../reference/req_url.html">req_url_query()</a></code> uses dynamic dots, so we can use <code>!!!</code> to convert (e.g.) <code>req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")</code> into <code><a href="../reference/req_url.html">req_url_query(req, `_quantity` = 1, `_locale` = "en_US")</a></code>.</p>
+<p>There’s only one trick to notice here — <code><a href="../reference/req_url.html">req_url_query()</a></code> uses dynamic dots, so we can use <code>!!!</code> to convert (e.g.) <code>req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")</code> into <code>req_url_query(req, `_quantity` = 1, `_locale` = "en_US")</code>.</p>
 <p>In most cases, this function will be for internal use only, as you’ll continue to make a function for each endpoint useful to the R programmer. In some cases, you might want to export this function sot that the experienced user can call endpoints that you haven’t yet wrapped.</p>
 <p>To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame. I’d suggest keeping that code in a separate function since it’s likely to vary by endpoint.</p>
 </div>
@@ -233,15 +233,15 @@
 <p>The encryption and decryption relies on a key stored in the <code>HTTR2_KEY</code> environment variable. This is set up on my computer and on GitHub actions where this vignette is often run, but it won’t be available on your computer or on CRAN. In the source of this vignette I store whether or not it’s available in <code>nyt_ok &lt;- secret_has_key("HTTR2_KEY")</code>, and then use <code>eval = nyt_ok</code> in each chunk so that the code is only run when possible.</p>
 <p>This now allows us to perform a test request and look at the response:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="va">my_key</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="va">my_key</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resp</span></code></pre></div>
 <p>Like most modern APIs, this one returns the results as JSON:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>Before we start wrapping this up into a function lets explore what happens with errors.</p>
 <div id="security-considerations" class="section level3">
@@ -251,37 +251,37 @@
 <blockquote>
 <p><strong>Don’t pass bearer tokens in page URLs</strong>: Bearer tokens SHOULD NOT be passed in page URLs (for example, as query string parameters). Instead, bearer tokens SHOULD be passed in HTTP message headers or message bodies for which confidentiality measures are taken. Browsers, web servers, and other software may not adequately secure URLs in the browser history, web server logs, and other data structures. If bearer tokens are passed in page URLs, attackers might be able to steal them from the history data, logs, or other unsecured locations.</p>
 </blockquote>
-<p>httr2 makes no efforts to redact confidential information stored in query parameters. This means it’s relatively easy to leak your key if you use <code><a href="../reference/req_perform.html">req_perform(verbose = 1)</a></code> or <code><a href="../reference/req_dry_run.html">req_dry_run()</a></code>. This just means you’ll need to be a little cautious if you need to get help with a reprex; you’ll need to manually redact the key.</p>
+<p>httr2 makes no efforts to redact confidential information stored in query parameters. This means it’s relatively easy to leak your key if you use <code>req_perform(verbose = 1)</code> or <code><a href="../reference/req_dry_run.html">req_dry_run()</a></code>. This just means you’ll need to be a little cautious if you need to get help with a reprex; you’ll need to manually redact the key.</p>
 </div>
 <div id="error-handling" class="section level3">
 <h3 class="hasAnchor">
 <a href="#error-handling" class="anchor"></a>Error handling</h3>
 <p>What happens if there’s an error? For example, if we deliberately supply an invalid key:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>To see if there’s any extra useful information we can again suppress the default error and inspect the result:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resp</span>
-<span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>It looks like there’s some useful additional info in the <code>faultstring</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span></code></pre></div>
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span></code></pre></div>
 <p>To add that information to future errors we can use the <code>info</code> argument to <code><a href="../reference/req_error.html">req_error()</a></code>. Once we do that and re-fetch the request, we see the additional information displayed in the R error:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>info <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span>
-  <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+    <span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span>
+  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="rate-limits" class="section level3">
@@ -293,15 +293,15 @@
 </blockquote>
 <p>Since the docs don’t mention that the use of <code>Retry-After</code> header, we’ll use <code><a href="../reference/req_throttle.html">req_throttle()</a></code> to ensure we don’t make more than 10 requests every 60s:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span></code></pre></div>
 <p>This limit is automatically shared across all requests made to <code>api.nytimes.com</code>. Since the docs suggest the rate limit applies per API, you might want to use the <code>realm</code> argument to be a bit more specific:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span></code></pre></div>
 <p>Many APIs return additional information about how long to wait when the rate limit is exceeded. So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.</p>
 </div>
@@ -311,14 +311,14 @@
 <p>Putting together all the pieces above yields a function something like this:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">api_key</span>, <span class="va">path</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="va">...</span>, `api-key` <span class="op">=</span> <span class="va">api_key</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="va">...</span>, `api-key` <span class="op">=</span> <span class="va">api_key</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>info <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
-      <span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span>
-    <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+      <span class="va">resp</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span>
+    <span class="op">}</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span>
 
@@ -365,7 +365,7 @@
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
-<span class="co">#&gt; obfuscated("q8Sm5Zv6TsLpqIvEG-8aoD2X5M3Jcg")</span></code></pre></div>
+<span class="co">#&gt; obfuscated("tGtMWQEJg4NeUpCizo4Z18YiFriAkA")</span></code></pre></div>
 <p>Then use the client id from the website along with the obfuscated secret to create a client:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
