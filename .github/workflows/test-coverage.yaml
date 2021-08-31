@@ -14,7 +14,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       HTTR2_KEY: ${{ secrets.HTTR2_KEY }}
-      TMPDIR: ${{ runner.temp }}
 
     steps:
       - uses: actions/checkout@v2
@@ -28,6 +27,8 @@ jobs:
           extra-packages: covr
 
       - name: Test coverage
+        env:
+          TMPDIR: ${{ runner.temp }}
         run: covr::codecov()
         shell: Rscript {0}
 
