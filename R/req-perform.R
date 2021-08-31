@@ -23,7 +23,8 @@
 #'   large responses since it avoids storing the response in memory.
 #' @param mock A mocking function. If supplied, this function is called
 #'   with the request. It should return either `NULL` (if it doesn't want to
-#'   handle the request) or a [response] (if it does).
+#'   handle the request) or a [response] (if it does). See [with_mock()]/
+#'   `local_mock()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
 #'   around `req_verbose()` that uses an integer to control vebosity:
 #'
@@ -46,8 +47,9 @@ req_perform <- function(
   check_request(req)
 
   if (!is.null(mock)) {
+    mock <- as_function(mock)
     mock_resp <- mock(req)
-    if (is.null(mock_resp)) {
+    if (!is.null(mock_resp)) {
       return(mock_resp)
     }
   }
@@ -153,7 +155,7 @@ req_verbosity <- function(req, verbosity) {
 #' `last_response()` will be `NULL`.
 #'
 #' @export
-last_response <- function() { %>%
+last_response <- function() {
   the$last_response
 }
 

@@ -54,6 +54,7 @@ reference:
   - secrets
   - obfuscate
   - url_parse
+  - with_mock
 
 - title: OAuth
   desc: >
