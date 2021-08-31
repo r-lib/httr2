@@ -116,7 +116,7 @@ check_content_type <- function(
 
   abort(c(
     glue("Unexpected content type '{content_type}'"),
-    glue("Expecting '{type}'"),
+    glue("Expecting {type}"),
     if (!is.null(suffix)) glue("Or suffix '{suffix}'"),
     i = "Override check with `check_type = FALSE`"
   ))
