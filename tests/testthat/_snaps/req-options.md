@@ -4,7 +4,7 @@
     -> Host: http://example.com
     -> User-Agent: verbose
     -> Accept: */*
-    -> Accept-Encoding: deflate, gzip
+    -> Accept-Encoding: gzip
     -> Content-Length: 17
     -> 
     >> This is some text
