@@ -48,7 +48,7 @@ The first line of the request contains three important pieces of information:
     Here's its GET, the most common verb, indicating that we want to *get* some data.
     Other verbs include POST, to send data, PUT, to update an existing resource, and DELETE, to delete resources.
 
--   The **path**,which is the url stripped of details that server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).
+-   The **path**, which is the url stripped of details that the server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).
 
 -   The version of the HTTP protocol.
     This is unimportant for our purposes and it's handled at a lower layer in the stack.
