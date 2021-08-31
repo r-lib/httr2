@@ -89,7 +89,7 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>httr2 is a ground-up rewrite of <a href="https://httr.r-lib.org">httr</a> that provides a pipeable API (with an explicit request object) and solves more problems that making API wrappers a pain (e.g. rate-limiting, retries, OAuth, storing secrets needed for testing, …).</p>
+<p>httr2 is a ground-up rewrite of <a href="https://httr.r-lib.org">httr</a> that provides a pipeable API (with an explicit request object) and solves more problems making API wrappers a pain (e.g. rate-limiting, retries, OAuth, storing secrets needed for testing, …).</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -113,7 +113,7 @@
 <p>You can tailor this request with the <code>req_</code> family of functions:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Add custom headers</span>
-<span class="va">req</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_headers.html">req_headers</a></span><span class="op">(</span><span class="st">"Accept"</span> <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_headers.html">req_headers</a></span><span class="op">(</span><span class="st">"Accept"</span> <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
 <span class="co">#&gt; GET https://r-project.org</span>
 <span class="co">#&gt; Headers:</span>
@@ -121,13 +121,13 @@
 <span class="co">#&gt; Body: empty</span>
 
 <span class="co"># Add a body, turning it into a POST</span>
-<span class="va">req</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
 <span class="co">#&gt; POST https://r-project.org</span>
 <span class="co">#&gt; Body: json encoded data</span>
 
 <span class="co"># Automatically retry if the request fails</span>
-<span class="va">req</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_retry.html">req_retry</a></span><span class="op">(</span>max_tries <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_retry.html">req_retry</a></span><span class="op">(</span>max_tries <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
 <span class="co">#&gt; GET https://r-project.org</span>
 <span class="co">#&gt; Body: empty</span>
@@ -135,13 +135,13 @@
 <span class="co">#&gt; • retry_max_tries: 5</span>
 
 <span class="co"># Change the HTTP method</span>
-<span class="va">req</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
+<span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
 <span class="co">#&gt; PATCH https://r-project.org</span>
 <span class="co">#&gt; Body: empty</span></code></pre></div>
 <p>You can see what httr2 will send to the server with <code><a href="reference/req_dry_run.html">req_dry_run()</a></code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">req</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; GET / HTTP/1.1</span>
 <span class="co">#&gt; Host: r-project.org</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1</span>
@@ -158,11 +158,11 @@
 <span class="co">#&gt; Body: In memory (6089 bytes)</span></code></pre></div>
 <p>The <code>resp_</code> functions make it easy to work with the response:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "text/html"</span>
-<span class="va">resp</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; [1] "OK"</span>
-<span class="va">resp</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_body_raw.html">resp_body_html</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">resp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/resp_body_raw.html">resp_body_html</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; {html_document}</span>
 <span class="co">#&gt; &lt;html lang="en"&gt;</span>
 <span class="co">#&gt; [1] &lt;head&gt;\n&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8 ...</span>
@@ -176,7 +176,7 @@
 <li><p>HTTP errors are automatically converted into R errors. Use <code><a href="reference/req_error.html">req_error()</a></code> to override the defaults (which turn all 4xx and 5xx responses into errors) or to add additional details to the error message.</p></li>
 <li><p>You can automatically retry if the request fails or encounters a transient HTTP error (e.g. a 429 rate limit request). <code><a href="reference/req_retry.html">req_retry()</a></code> defines the maximum number of retries, which errors are transient, and how long to wait between tries.</p></li>
 <li><p>OAuth support has been totally overhauled to directly support many more flows and to make it much easier to both customise the built-in flows and create your own.</p></li>
-<li><p>You can manage encrypted secrets often needed for testing with <code>secret_encrpyt()</code> and friends. You can obfuscate mildly confidential data (like many client secrets) with <code><a href="reference/obfuscate.html">obfuscate()</a></code>, preventing them being scraped from published code.</p></li>
+<li><p>You can manage encrypted secrets often needed for testing with <code><a href="reference/secrets.html">secret_encrypt()</a></code> and friends. You can obfuscate mildly confidential data (like many client secrets) with <code><a href="reference/obfuscate.html">obfuscate()</a></code>, preventing them being scraped from published code.</p></li>
 <li><p>You can automatically cache all cacheable results with <code><a href="reference/req_cache.html">req_cache()</a></code>. Relatively few API responses are cacheable, but when they are it typically makes a big difference.</p></li>
 </ul>
 </div>

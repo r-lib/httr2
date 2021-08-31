@@ -192,40 +192,38 @@ the requests.</p></li>
 or OAuth failures, <code>multi_req_perform()</code> will make only make 1.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'># Requesting these 4 pages one at a time would take four seconds:</span></span>
-<span class='r-in'><span class='va'>reqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>,</span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>,</span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>,</span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='op'>)</span></span>
-<span class='r-in'><span class='co'># But it's much faster if you request in parallel</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>resps</span> <span class='op'>&lt;-</span> <span class='fu'>multi_req_perform</span><span class='op'>(</span><span class='va'>reqs</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   0.465   0.828   1.539 </span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>reqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/status/200"</span><span class='op'>)</span>,</span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/status/400"</span><span class='op'>)</span>,</span>
-<span class='r-in'>  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"FAILURE"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='op'>)</span></span>
-<span class='r-in'><span class='co'># multi_req_perform() will always succeed</span></span>
-<span class='r-in'><span class='va'>resps</span> <span class='op'>&lt;-</span> <span class='fu'>multi_req_perform</span><span class='op'>(</span><span class='va'>reqs</span><span class='op'>)</span></span>
-<span class='r-in'><span class='co'># you'll need to inspect the results to figure out which requests fails</span></span>
-<span class='r-in'><span class='va'>fail</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>vapply</a></span><span class='op'>(</span><span class='va'>resps</span>, <span class='va'>inherits</span>, <span class='st'>"error"</span>, FUN.VALUE <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/logical.html'>logical</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>resps</span><span class='op'>[</span><span class='va'>fail</span><span class='op'>]</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>&lt;error/httr2_http_400&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> HTTP 400 Bad Request.</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>Backtrace:</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #555555;'>  1. </span>pkgdown::deploy_to_branch(new_process = FALSE)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #555555;'> 38. </span>httr2::resp_check_status(resp)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='font-weight: bold;'>&lt;error/httr2_failed&gt;</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Could not resolve host: FAILURE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-</pre>
+    <pre class="examples"><div class='input'><span class='co'># Requesting these 4 pages one at a time would take four seconds:</span>
+<span class='va'>reqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>,
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>,
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>,
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/delay/1"</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='co'># But it's much faster if you request in parallel</span>
+<span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='va'>resps</span> <span class='op'>&lt;-</span> <span class='fu'>multi_req_perform</span><span class='op'>(</span><span class='va'>reqs</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    user  system elapsed 
+#&gt;   0.494   0.878   1.371 </div><div class='input'>
+<span class='va'>reqs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/status/200"</span><span class='op'>)</span>,
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"https://httpbin.org/status/400"</span><span class='op'>)</span>,
+  <span class='fu'><a href='request.html'>request</a></span><span class='op'>(</span><span class='st'>"FAILURE"</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='co'># multi_req_perform() will always succeed</span>
+<span class='va'>resps</span> <span class='op'>&lt;-</span> <span class='fu'>multi_req_perform</span><span class='op'>(</span><span class='va'>reqs</span><span class='op'>)</span>
+<span class='co'># you'll need to inspect the results to figure out which requests fails</span>
+<span class='va'>fail</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>vapply</a></span><span class='op'>(</span><span class='va'>resps</span>, <span class='va'>inherits</span>, <span class='st'>"error"</span>, FUN.VALUE <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/logical.html'>logical</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>resps</span><span class='op'>[</span><span class='va'>fail</span><span class='op'>]</span>
+</div><div class='output co'>#&gt; [[1]]
+#&gt; <span style='font-weight: bold;'>&lt;error/httr2_http_400&gt;</span>
+#&gt; HTTP 400 Bad Request.
+#&gt; <span style='font-weight: bold;'>Backtrace:</span>
+#&gt; <span style='color: #555555;'>  1. </span>pkgdown::deploy_to_branch(new_process = FALSE)
+#&gt; <span style='color: #555555;'> 38. </span>httr2::resp_check_status(resp)
+#&gt; 
+#&gt; [[2]]
+#&gt; <span style='font-weight: bold;'>&lt;error/httr2_failed&gt;</span>
+#&gt; Could not resolve host: FAILURE
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

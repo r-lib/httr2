@@ -174,15 +174,13 @@ code. <code>obfuscated()</code> returns an S3 class marking the string as obfusc
 so it can be unobfuscated when needed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>obfuscate</span><span class='op'>(</span><span class='st'>"good morning"</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> obfuscated("f784aEJeSm_6C7fAX_SHelY5yhmU9A0e254PFw")</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Every time you obfuscate you'll get a different value because it</span></span>
-<span class='r-in'><span class='co'># includes 16 bytes of random data which protects against certain types of</span></span>
-<span class='r-in'><span class='co'># brute force attack</span></span>
-<span class='r-in'><span class='fu'>obfuscate</span><span class='op'>(</span><span class='st'>"good morning"</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> obfuscated("4ne3LHoMXBzEGbmTgDtAt2gDNXBWQ4g891-hjA")</span>
-</pre>
+    <pre class="examples"><div class='input'><span class='fu'>obfuscate</span><span class='op'>(</span><span class='st'>"good morning"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; obfuscated("IMMf9arV6U9JtqFbxh5868c8Ri-etkxq7XHH7Q")</div><div class='input'>
+<span class='co'># Every time you obfuscate you'll get a different value because it</span>
+<span class='co'># includes 16 bytes of random data which protects against certain types of</span>
+<span class='co'># brute force attack</span>
+<span class='fu'>obfuscate</span><span class='op'>(</span><span class='st'>"good morning"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; obfuscated("Yep9ch-o-5neJiis0oLu5WDstBmo1Oors70DCA")</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
