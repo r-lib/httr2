@@ -28,3 +28,8 @@ jobs:
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: find . -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
