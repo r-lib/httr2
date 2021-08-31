@@ -13,8 +13,8 @@ coverage](https://codecov.io/gh/r-lib/httr2/branch/master/graph/badge.svg)](http
 
 httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that
 provides a pipeable API (with an explicit request object) and solves
-more problems that making API wrappers a pain (e.g. rate-limiting,
-retries, OAuth, storing secrets needed for testing, …).
+more problems making API wrappers a pain (e.g. rate-limiting, retries,
+OAuth, storing secrets needed for testing, …).
 
 ## Installation
 
@@ -135,7 +135,7 @@ resp %>% resp_body_html()
     flows and create your own.
 
 -   You can manage encrypted secrets often needed for testing with
-    `secret_encrpyt()` and friends. You can obfuscate mildly
+    `secret_encrypt()` and friends. You can obfuscate mildly
     confidential data (like many client secrets) with `obfuscate()`,
     preventing them being scraped from published code.
 

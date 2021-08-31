@@ -97,7 +97,7 @@ We'll have another go later with an API that does provide more details.
 ### Making a function
 
 Once you've got the basics, you can wrap it up into a function.
-You'll need to decide if you want to returning a request or perform the request and return the result.
+You'll need to decide if you want to return a request or perform the request and return the result.
 The first gives you more flexibility, but the user will need to add two more calls; the second is easier but less flexible.
 
 Use defaults.
@@ -154,7 +154,7 @@ The encryption and decryption relies on a key stored in the `HTTR2_KEY` environm
 This is set up on my computer and on GitHub actions where this vignette is often run, but it won't be available on your computer or on CRAN.
 In the source of this vignette I store whether or not it's available in `nyt_ok <- secret_has_key("HTTR2_KEY")`, and then use `eval = nyt_ok` in each chunk so that the code is only run when possible.
 
-This allows now allows us to perform a test request and look at the response:
+This now allows us to perform a test request and look at the response:
 
 ```{r, eval = nyt_ok}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
@@ -324,7 +324,7 @@ Rate limiting: <https://docs.github.com/en/rest/overview/resources-in-the-rest-a
 
 ## App that uses OAuth
 
-If the API provides access to a website where the user already has an account (think twitter, instagram, facebook, google, etc), it's likely to use OAuth to allow you app to authenticate on behalf of the user.
+If the API provides access to a website where the user already has an account (think twitter, instagram, facebook, google, etc), it's likely to use OAuth to allow you to authenticate on behalf of the user.
 OAuth[^2] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
 You've almost certainly used this before on the web; it's used in most cases where one website wants to use another website on your behalf.
 
