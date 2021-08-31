@@ -27,12 +27,5 @@ jobs:
           extra-packages: covr
 
       - name: Test coverage
-        env:
-          TMPDIR: ${{ runner.temp }}
         run: covr::codecov()
         shell: Rscript {0}
-
-      - name: Show testthat output
-        if: always()
-        run: find ${{ runner.temp }} -name 'testthat.Rout*' -exec cat '{}' \; || true
-        shell: bash
