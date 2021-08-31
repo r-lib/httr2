@@ -31,5 +31,5 @@ jobs:
 
       - name: Show testthat output
         if: always()
-        run: find . -name 'testthat.Rout*' -exec cat '{}' \; || true
+        run: find ${{ runner.temp }} -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
