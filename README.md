@@ -11,9 +11,9 @@ coverage](https://codecov.io/gh/r-lib/httr2/branch/master/graph/badge.svg)](http
 <!-- badges: end -->
 
 httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that
-provides a pipeable API (with an explicit request object) and solves
-more problems making API wrappers a pain (e.g. rate-limiting, retries,
-OAuth, storing secrets needed for testing, …).
+provides a pipeable API with an explicit request object that solves more
+problems felt by packages that wrap APIs (e.g. built-in rate-limiting,
+retries, OAuth, secure secrets, and more).
 
 ## Installation
 
@@ -27,13 +27,11 @@ devtools::install_github("r-lib/httr2")
 
 ## Usage
 
+To use httr2, start by creating a **request**:
+
 ``` r
 library(httr2)
-```
 
-To use httr2, start by creating a request:
-
-``` r
 req <- request("https://r-project.org")
 req
 #> <httr2_request>
@@ -73,7 +71,7 @@ req %>% req_method("PATCH")
 #> Body: empty
 ```
 
-You can see what httr2 will send to the server with `req_dry_run()`:
+And see exactly what httr2 will send to the server with `req_dry_run()`:
 
 ``` r
 req %>% req_dry_run()
@@ -84,7 +82,7 @@ req %>% req_dry_run()
 #> Accept-Encoding: deflate, gzip
 ```
 
-And perform the request, getting back a response, with `req_perform()`:
+Use `req_perform()` to perform the request, retrieving a **response**:
 
 ``` r
 resp <- req_perform(req)
@@ -96,7 +94,8 @@ resp
 #> Body: In memory (6085 bytes)
 ```
 
-The `resp_` functions make it easy to work with the response:
+The `resp_` functions help you extract various useful components of the
+response:
 
 ``` r
 resp %>% resp_content_type()
@@ -113,11 +112,11 @@ resp %>% resp_body_html()
 ## Major differences to httr
 
 -   You can now create and modify a request without performing it. This
-    means that there’s now a single function to perform and request and
+    means that there’s now a single function to perform the request and
     fetch the result: `req_perform()`. (If you want to handle the
-    response as it streams in, instead use `req_stream()`). This
-    replaces `httr::GET()`, `POST()`, `DELETE()`, `VERB()`, …. You can
-    preview a request without sending it with `req_dry_run()`.
+    response as it streams in, use `req_stream()` instead).
+    `req_perform()` replaces `httr::GET()`, `httr::POST()`,
+    `httr::DELETE()`, and more.
 
 -   HTTP errors are automatically converted into R errors. Use
     `req_error()` to override the defaults (which turn all 4xx and 5xx
@@ -131,12 +130,12 @@ resp %>% resp_body_html()
 
 -   OAuth support has been totally overhauled to directly support many
     more flows and to make it much easier to both customise the built-in
-    flows and create your own.
+    flows and to create your own.
 
--   You can manage encrypted secrets often needed for testing with
+-   You can manage secrets (often needed for testing) with
     `secret_encrypt()` and friends. You can obfuscate mildly
-    confidential data (like many client secrets) with `obfuscate()`,
-    preventing them being scraped from published code.
+    confidential data with `obfuscate()`, preventing it from being
+    scraped from published code.
 
 -   You can automatically cache all cacheable results with
     `req_cache()`. Relatively few API responses are cacheable, but when
