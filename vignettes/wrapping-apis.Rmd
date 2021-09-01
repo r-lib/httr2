@@ -14,16 +14,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-A common use for httr2 is wrapping up a useful API and exposing it in an R package: you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument.
-This vignette will show you how, starting with a very simple API that doesn't need authentication, and working our way up in complexity.
+A common use for httr2 is wrapping up a useful API and exposing it in an R package where each API endpoint (i.e. a URL with parameters) becomes an R function with documented arguments.
+This vignette will show you how, starting with a very simple API that doesn't need authentication, then slowly working up in complexity.
 
 Along the way, you'll learn about how to:
 
--   Ensure that HTTP errors expose as much detail in the R error.
+-   Expose important details from HTTP errors in R errors.
 
--   Wrap up details of authentication to provide a user friendly experience.
+-   Wrap up authentication details to provide a user friendly experience.
 
 -   Consistently throttle the rate of requests or dynamically respond to rate limiting headers sent by the server.
+
+I assume you're familiar with the basics of building a package.
+If not, you might want to reading the "[The Whole Game](https://r-pkgs.org/whole-game.html)" chapter of [R packages](https://r-pkgs.org) first.
 
 ```{r setup}
 library(httr2)
@@ -61,8 +64,8 @@ resp %>% resp_body_json() %>% str()
 
 ### Errors
 
-Next it's worth a little experimentation to see if we get any useful information from errors.
-If you fetch a URL that returns an unsuccesful HTTP response, you'll get an error so you can't further inspect the body:
+It's always worth a little early experimentation to see if we get any useful information from errors.
+The httr2 details get in your way here because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:
 
 ```{r, error = TRUE, eval = faker_ok}
 req %>% 
@@ -70,7 +73,7 @@ req %>%
   req_perform()
 ```
 
-To see what's going on, you'll need to use `req_error()` to turn off the default behaviour that turns HTTP errors into R errors:
+To see what's going on, you need to start by using `req_error()` to suppress the automatic generation of R errors:
 
 ```{r, eval = faker_ok}
 resp <- req %>% 
@@ -91,20 +94,37 @@ It doesn't look like there's anything useful there so I'll double check the head
 resp %>% resp_headers()
 ```
 
-It doesn't look like we're getting any more useful information, so we can leave the default as is.
+It doesn't look like we're getting any more useful information, so we can leave the `req_error()` default as is.
 We'll have another go later with an API that does provide more details.
 
-### Making a function
+### User agent
 
-Once you've got the basics, you can wrap it up into a function.
-You'll need to decide if you want to return a request or perform the request and return the result.
-The first gives you more flexibility, but the user will need to add two more calls; the second is easier but less flexible.
+When making a package that calls an API it's considered polite to set a user agent, so that if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
+You can do this with the `req_user_agent()` function:
 
-Use defaults.
-Automatically add underscores.
+```{r}
+req %>%
+  req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
+  req_dry_run()
+```
+
+### Core request function
+
+Once you've successful made a few requests, it's worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.
+
+For faker, I spent a little with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
+
+-   Every URL is of the form [`https://fakerapi.it/api/v1`](https://fakerapi.it/api/v1)`/{resource}`, and data is passed to the resource with query parameters.
+    All parameters start with `_`.
+
+-   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed` which have default values of `en_US`, `1` and `null` respectively.
+
+-   All endpoints return JSON data.
+
+This lead me to construct the following function:
 
 ```{r, eval = faker_ok}
-req_faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
+faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
   params <- list(
     ...,
     quantity = quantity,
@@ -116,24 +136,87 @@ req_faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL
   request("https://fakerapi.it/api/v1") %>% 
     req_url_path_append(resource) %>% 
     req_url_query(!!!params) %>% 
+    req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
     req_perform() %>% 
     resp_body_json()
 }
 
-req_faker("images", width = 300)
+str(faker("images", width = 300))
 ```
 
-There's only one trick to notice here --- `req_url_query()` uses dynamic dots, so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US") `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
+There's one trick to notice here --- `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US") `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
 
-In most cases, this function will be for internal use only, as you'll continue to make a function for each endpoint useful to the R programmer.
-In some cases, you might want to export this function sot that the experienced user can call endpoints that you haven't yet wrapped.
+Here I've decided to make my central function perform the request and parse the result.
+If the API you are wrapping is more variable, you may want to return a request object that the caller can modify before fetching the response.
 
-To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame.
-I'd suggest keeping that code in a separate function since it's likely to vary by endpoint.
+### Wrapping individual endpoints
 
-### User agent
+`faker()` is quite general --- it's a good tool for the package developer because you can read the faker documentation and translate it to a function call.
+But it's not very friendly for the package user who might not know anything about web APIs.
+So typically the next step in the process is to wrap up some individual endpoints with their own functions.
 
-Before we go on, Polite to set a user agent --- <https://github.com/r-lib/httr2/issues/43>.
+For example, let's take the persons endpoint which has three additional parameters: `gender` (male or female), `birthday_start`, and `birthday_end`.
+A simple wrapper would start something like this:
+
+```{r, eval = faker_ok}
+faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NULL, quantity = 1, locale = "en_US", seed = NULL) {
+  faker(
+    "persons",
+    gender = gender,
+    birthday_start = birthday_start,
+    birthday_end = birthday_end,
+    quantity = quantity,
+    locale = locale,
+    seed = seed
+  )  
+}
+str(faker_person("male"))
+```
+
+We could make it more user friendly by checking the input types, and returning the result as a tibble.
+I did a quick and dirty conversion using purrr; depending on your needs you could use base R code or `tidyr::hoist()`.
+
+```{r, eval = faker_ok}
+library(purrr)
+
+faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NULL, quantity = 1, locale = "en_US", seed = NULL) {
+  if (!is.null(gender)) {
+    gender <- match.arg(gender, c("male", "female"))
+  }
+  if (!is.null(birthday_start)) {
+    if (!inherits(birthday_start, "Date")) {
+      stop("`birthday_start` must be a date")
+    }
+    birthday_start <- format(birthday_start, "%Y-%m-%d")
+  }
+  if (!is.null(birthday_end)) {
+    if (!inherits(birthday_end, "Date")) {
+      stop("`birthday_end` must be a date")
+    }
+    birthday_end <- format(birthday_end, "%Y-%m-%d")
+  }
+  
+  json <- faker(
+    "persons",
+    gender = gender,
+    birthday_start = birthday_start,
+    birthday_end = birthday_end,
+    quantity = quantity,
+    locale = locale,
+    seed = seed
+  )  
+  
+  tibble::tibble(
+    firstname = map_chr(json$data, "firstname"),
+    lastname = map_chr(json$data, "lastname"),
+    email = map_chr(json$data, "email"),
+    gender = map_chr(json$data, "gender")
+  )
+}
+faker_person("male", quantity = 5)
+```
+
+The next steps would be to export and document this function; but I'll leave that up to you.
 
 ## App with API key
 
@@ -143,18 +226,71 @@ nyt_ok <- secret_has_key("HTTR2_KEY") &&
   identical(Sys.getenv("RSPM"), "")
 ```
 
-Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview). It requires a very simple authentication --- you include the API key in the query of every request.
-I don't want to share my API key with the whole world so I've encrypted it with `secret_encrypt()` and I'll decrypt it for this vignette with `secret_decrypt()`:
+Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview). It requires a very simple authentication with an API key that's included in every request.
+When you're wrapping an API that has a key you're going to face two struggles:
+
+-   How do you test your package without sharing your key with the whole world?
+
+-   How do you allow your users to supply their own key, without having to pass it to every function?
+
+I'll start by tackling the first problem because otherwise there's no way for me to show how the API works in this vignette 😃.
+We'll come back to the second at the very end of this section, because it's easiest to tackle once we have a function in place.
+
+### Encrypting secrets
+
+httr2 provides the `secret_decrypt()` and `secret_decrpyt()` functions that use asymmetric cryptography.
+To use them you need to first create a "key" that's used to lock and unlock the secrets.
+The best key is random because there's no way for anyone to guess it.
+httr2 provides `secret_make_key()` to make a secure key for you:
+
+```{r}
+secret_make_key()
+```
+
+(Don't copy and paste this key; run `secret_make_key()` yourself to make your own personal key.)
+
+Now you need to make this key available in the places were you want to unlock the secrets.
+httr2 provides tools to retrieve keys from environment variables because this is a common way of communicating these sort of secrets.
+So start by opening your `.Renviron` (e.g. with `usethis::edit_r_environ()`) and add a line like:
+
+    YOURPACKAGE_KEY=key_that_you_generated_above
+
+Another place you'll probably want to provide the key is in your Github actions.
+This is a two step process:
+
+1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
+
+2.  Share the secret with the workflows that need it by adding a line to the appropriate workflow:
+
+    ``` yaml
+        env:
+          HTTR2_KEY: ${{ secrets.HTTR2_KEY }}
+    ```
+
+    You can see how httr2 does it in <https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml>.
+
+Now you can encrypt your API key and store it in your tests --- there's no way for anyone to decrypt it unless they have your key.
+
+```{r}
+x <- secret_encrypt("my-secret", "HTTR2_KEY")
+x
+secret_decrypt(x, "HTTR2_KEY")
+```
+
+So now you can understand how the following code works:
 
 ```{r, eval = nyt_ok}
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
-The encryption and decryption relies on a key stored in the `HTTR2_KEY` environment variable.
-This is set up on my computer and on GitHub actions where this vignette is often run, but it won't be available on your computer or on CRAN.
-In the source of this vignette I store whether or not it's available in `nyt_ok <- secret_has_key("HTTR2_KEY")`, and then use `eval = nyt_ok` in each chunk so that the code is only run when possible.
+Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `nyt_ok <- secret_has_key("HTTR2_KEY")`, then use `eval = nyt_ok` in each chunk so that the code is only run when possible.
 
-This now allows us to perform a test request and look at the response:
+When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
+That means your tests will automatically pass on CRAN.
+
+### Basic request
+
+Now lets perform a test request and look at the response:
 
 ```{r, eval = nyt_ok}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
@@ -172,11 +308,13 @@ resp %>%
   str()
 ```
 
-Before we start wrapping this up into a function lets explore what happens with errors.
+Before we start wrapping this up into a function lets consider the security implications and what happens with errors.
 
 ### Security considerations
 
 Note that including an API key in a query is a relatively insecure method; if an API uses it its typically because the key is relatively easy to create or gives relatively few privileges.
+Here it only takes a couple of minutes to generate your own NYTimes API key, so there's little incentive for someone to try and steal yours.
+
 Section 5.3 of [rfc6750](https://datatracker.ietf.org/doc/html/rfc6750#section-5.3) has this to say about passing bearer tokens[^1] in the URL:
 
 [^1]: A bearer token is a little different to an access key but the distinction isn't important here.
@@ -422,7 +560,7 @@ They just return a token (rather than authenticating a request) so they're easy 
 ### Token caching
 
 Token caching.
-Many acess tokens also have a refresh token, which is a way to get new access tokens.
+Many access tokens also have a refresh token, which is a way to get new access tokens.
 httr2 can cache these tokens.
 If the token has expired and has a refresh token, we automatically refresh before the first request.
 If the request errors with a 401 and error `invalid_token` then we try the refresh token if available, otherwise re-run the full flow.
