@@ -288,6 +288,16 @@ Since most people won't have this key, n the source of this vignette I also chec
 When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
 That means your tests will automatically pass on CRAN.
 
+### Security considerations
+
+Note that including an API key in a query is a relatively insecure; if an API uses it, its typically because the key is relatively easy to create or gives relatively few privileges.
+Here it only takes a couple of minutes to generate your own NYTimes API key, so there's little incentive for someone to try and steal yours.
+
+The main problem of storing credentials in the url is that it's easily revealable, because httr2 makes no efforts to redact confidential information stored in query parameters.
+This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)`, `req_dry_run()`, or even just print the request object.
+
+All in all, this mean you need to be a little cautious if you need to get help with a reprex; you'll need to manually redact the key.
+
 ### Basic request
 
 Now lets perform a test request and look at the response:
@@ -308,25 +318,7 @@ resp %>%
   str()
 ```
 
-Before we start wrapping this up into a function lets consider the security implications and what happens with errors.
-
-### Security considerations
-
-Note that including an API key in a query is a relatively insecure method; if an API uses it its typically because the key is relatively easy to create or gives relatively few privileges.
-Here it only takes a couple of minutes to generate your own NYTimes API key, so there's little incentive for someone to try and steal yours.
-
-Section 5.3 of [rfc6750](https://datatracker.ietf.org/doc/html/rfc6750#section-5.3) has this to say about passing bearer tokens[^1] in the URL:
-
-[^1]: A bearer token is a little different to an access key but the distinction isn't important here.
-
-> **Don't pass bearer tokens in page URLs**: Bearer tokens SHOULD NOT be passed in page URLs (for example, as query string parameters).
-> Instead, bearer tokens SHOULD be passed in HTTP message headers or message bodies for which confidentiality measures are taken.
-> Browsers, web servers, and other software may not adequately secure URLs in the browser history, web server logs, and other data structures.
-> If bearer tokens are passed in page URLs, attackers might be able to steal them from the history data, logs, or other unsecured locations.
-
-httr2 makes no efforts to redact confidential information stored in query parameters.
-This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)` or `req_dry_run()`.
-This just means you'll need to be a little cautious if you need to get help with a reprex; you'll need to manually redact the key.
+Before we start wrapping this up into a function lets consider what happens with errors.
 
 ### Error handling
 
@@ -359,6 +351,7 @@ resp %>% resp_body_json() %>% .$fault %>% .$faultstring
 ```
 
 To add that information to future errors we can use the `info` argument to `req_error()`.
+This should be a function that takes a response and returns a character vector of additional information to include in the error.
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
 ```{r, eval = nyt_ok, error = TRUE}
@@ -373,13 +366,17 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
 
 ### Rate limits
 
-The [frequently asked questions](https://developer.nytimes.com/faq#a11) also mentions rate limits:
+Another common source of errors is rate-limiting --- this is used by many servers to prevent one unruly client consuming too many resources.
+The [frequently asked questions](https://developer.nytimes.com/faq#a11) page describes the rate limits for the NYT APIs:
 
 > Yes, there are two rate limits per API: 4,000 requests per day and 10 requests per minute.
 > You should sleep 6 seconds between calls to avoid hitting the per minute rate limit.
 > If you need a higher rate limit, please contact us at [code\@nytimes.com](mailto:code@nytimes.com){.email}.
 
-Since the docs don't mention that the use of `Retry-After` header, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
+Many APIs return additional information about how long to wait when the rate limit is exceeded (often using the `Retry-After` header).
+So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.
+That means we can't use `req_retry()`, which automatically waits the amount of time the server requests.
+Instead, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
 
 ```{r, eval = nyt_ok}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
@@ -388,7 +385,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_throttle(10 / 60)
 ```
 
-This limit is automatically shared across all requests made to `api.nytimes.com`.
+By default, `req_throttle()` shares the limit across all requests made to to host (i.e. `api.nytimes.com`).
 Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
 
 ```{r, eval = nyt_ok}
@@ -397,9 +394,6 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
   req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books")
 ```
-
-Many APIs return additional information about how long to wait when the rate limit is exceeded.
-So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.
 
 ### Wrapping it up
 
@@ -422,12 +416,20 @@ drunk <- nytimes_books(my_key, "/reviews.json", isbn = "0316453382")
 drunk$results[[1]]$summary
 ```
 
-Again, for a real package, you'd want to spend some time converting the nested list into a more user friendly data structure.
+To finish this up for a real package, you'd want to:
+
+-   Add explicits argument and check that they're correct type.
+
+-   Export and document the function.
+
+-   Converted the nested list into a more user friendly data structure (probably a data frame with one row per review).
+
+You'd also want to provide some convenient way for the user to supply their own API key.
 
 ### API key
 
-If you were going to put this into a package, you'd need to think about some convenient interface for supplying the API key.
-An environment variable is a good place to start because they're easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
+A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
+Then you'd write a function to retrieve the API key, returning a helpful message if it's not found:
 
 ```{r, eval = nyt_ok}
 get_api_key <- function() {
@@ -437,14 +439,40 @@ get_api_key <- function() {
   }
   key
 }
+```
 
-req_nytimes_books <- function(path, ..., api_key = get_api_key()) {
+Then you could modify `nytimes_books()` to use `get_api_key()` as the default value for `api_key`.
+Since the argument is now optional, we can move it to end of the argument list, since it'll only be needed in exceptional circumstances.
+
+```{r, eval = FALSE}
+nytimes_books <- function(path, ..., api_key = get_api_key()) {
   ...
 }
 ```
 
-Since the `api_key` is no longer required, we can make it the last argument to the function.
-It's still available to override and document, but it'll only be needed in exceptional circumstances.
+You might extend `get_api_key()` to also consult your encrypted key to make it easier to write tests:
+
+```{r}
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
+
+testing_key <- function() {
+  secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
+}
+
+get_api_key <- function() {
+  key <- Sys.getenv("NYTIMES_KEY")
+  if (identical(key, "")) {
+    if (is_testing()) {
+      testing_key()
+    } else {
+      stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")  
+    }
+  }
+  key
+}
+```
 
 ## Sending data & HTTP methods
 
@@ -463,10 +491,10 @@ Rate limiting: <https://docs.github.com/en/rest/overview/resources-in-the-rest-a
 ## App that uses OAuth
 
 If the API provides access to a website where the user already has an account (think twitter, instagram, facebook, google, etc), it's likely to use OAuth to allow you to authenticate on behalf of the user.
-OAuth[^2] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
+OAuth[^1] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
 You've almost certainly used this before on the web; it's used in most cases where one website wants to use another website on your behalf.
 
-[^2]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
+[^1]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
 
 ### OAuth clients
