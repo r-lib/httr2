@@ -37,12 +37,18 @@ library(httr2)
 ```{r, include = FALSE}
 # Seems to return 500s from time-to-time, so avoid any problems
 # by only evaluating other chunks if a simple request succeeds.
-faker_status <- request("https://fakerapi.it/api/v1") %>% 
+faker_status_images <- request("https://fakerapi.it/api/v1") %>% 
   req_url_path_append("images") %>% 
   req_error(is_error = ~ FALSE) %>% 
   req_perform() %>% 
   resp_status()
-faker_ok <- faker_status < 400
+faker_status_persons <- request("https://fakerapi.it/api/v1") %>% 
+  req_url_path_append("persons") %>% 
+  req_error(is_error = ~ FALSE) %>% 
+  req_perform() %>% 
+  resp_status()
+
+faker_ok <- faker_status_images < 400 && faker_status_persons < 400
 ```
 
 We'll start with a very simple API, [faker API](https://fakerapi.it/en){.uri}, which provides a collection of techniques for generating fake data.
@@ -73,18 +79,10 @@ req %>%
   req_perform()
 ```
 
-To see what's going on, you need to start by using `req_error()` to suppress the automatic generation of R errors:
+You can access the failed response with `last_response()`:
 
 ```{r, eval = faker_ok}
-resp <- req %>% 
-  req_url_path_append("imagesasf") %>% 
-  req_error(is_error = ~ FALSE) %>% 
-  req_perform()
-```
-
-Now you can look at the response body:
-
-```{r, eval = faker_ok}
+resp <- last_response()
 resp %>% resp_body_json()
 ```
 
@@ -102,7 +100,7 @@ We'll have another go later with an API that does provide more details.
 When making a package that calls an API it's considered polite to set a user agent, so that if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
 You can do this with the `req_user_agent()` function:
 
-```{r}
+```{r, eval = faker_ok}
 req %>%
   req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
   req_dry_run()
@@ -221,7 +219,7 @@ The next steps would be to export and document this function; but I'll leave tha
 ## App with API key
 
 ```{r include = FALSE}
-nyt_ok <- secret_has_key("HTTR2_KEY") && 
+has_auth <- secret_has_key("HTTR2_KEY") && 
   # Don't run in R CMD check on GHA
   identical(Sys.getenv("RSPM"), "")
 ```
@@ -279,11 +277,11 @@ secret_decrypt(x, "HTTR2_KEY")
 
 So now you can understand how the following code works:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
-Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `nyt_ok <- secret_has_key("HTTR2_KEY")`, then use `eval = nyt_ok` in each chunk so that the code is only run when possible.
+Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `has_auth <- secret_has_key("HTTR2_KEY")`, then use `eval = has_auth` in each chunk so that the code is only run when possible.
 
 When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
 That means your tests will automatically pass on CRAN.
@@ -302,7 +300,7 @@ All in all, this mean you need to be a little cautious if you need to get help w
 
 Now lets perform a test request and look at the response:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = my_key, isbn = 9780307476463) %>% 
@@ -312,7 +310,7 @@ resp
 
 Like most modern APIs, this one returns the results as JSON:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 resp %>% 
   resp_body_json() %>% 
   str()
@@ -325,7 +323,7 @@ Before we start wrapping this up into a function lets consider what happens with
 What happens if there's an error?
 For example, if we deliberately supply an invalid key:
 
-```{r, eval = nyt_ok, error = TRUE}
+```{r, eval = has_auth, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -334,7 +332,7 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
 
 To see if there's any extra useful information we can again suppress the default error and inspect the result:
 
-```{r, eval = nyt_ok, error = TRUE}
+```{r, eval = has_auth, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -346,7 +344,7 @@ resp %>% resp_body_json()
 
 It looks like there's some useful additional info in the `faultstring`:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 resp %>% resp_body_json() %>% .$fault %>% .$faultstring
 ```
 
@@ -354,7 +352,7 @@ To add that information to future errors we can use the `info` argument to `req_
 This should be a function that takes a response and returns a character vector of additional information to include in the error.
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
-```{r, eval = nyt_ok, error = TRUE}
+```{r, eval = has_auth, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -378,7 +376,7 @@ So I deliberately violated the rate limit by quickly making 11 requests; unfortu
 That means we can't use `req_retry()`, which automatically waits the amount of time the server requests.
 Instead, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -388,7 +386,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
 By default, `req_throttle()` shares the limit across all requests made to to host (i.e. `api.nytimes.com`).
 Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -399,7 +397,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
 
 Putting together all the pieces above yields a function something like this:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") %>% 
     req_url_path_append("/reviews.json") %>% 
@@ -431,7 +429,7 @@ You'd also want to provide some convenient way for the user to supply their own 
 A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
 Then you'd write a function to retrieve the API key, returning a helpful message if it's not found:
 
-```{r, eval = nyt_ok}
+```{r, eval = has_auth}
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (identical(key, "")) {
@@ -478,15 +476,72 @@ get_api_key <- function() {
 
 <https://docs.github.com/en/rest/reference/gists#star-a-gist>
 
-Just use basic auth: <https://docs.github.com/en/rest/overview/other-authentication-methods#basic-authentication> username + token.
+### Errors
+
+```{r, error = TRUE}
+resp <- request("https://api.github.com/gists") %>% 
+  req_url_query(since = "yesterday") %>% 
+  req_headers(Authorization = paste("token", gitcreds::gitcreds_get()$password)) %>% 
+  req_error(is_error = ~ FALSE) %>% 
+  req_perform()
+resp %>% resp_body_json()
+
+gh_error_info <- function(resp) {
+  body <- resp_body_json(resp)
+  c(body$message, paste0("See docs at <", body$documentation_url, ">"))
+}
+gh_error_info(resp)
+
+request("https://api.github.com/gists") %>% 
+  req_url_query(since = "yesterday") %>% 
+  req_headers(Authorization = paste("token", gitcreds::gitcreds_get()$password)) %>% 
+  req_error(info = gh_error_info) %>% 
+  req_perform()
+```
+
+### Authentication
+
 Good example of why tokens: you can have many different tokens, each which can do different things, and can be revoked without affecting any other token or requiring you to change your password.
 
-Need to be a little careful with tokens in env vars.
-Any R package could use.
-But this doesn't really pose any additional threat: an R package can run any code, so it's already very powerful.
-If you are worried about this attack vector you need to resolve it by ensuring that the process that runs R is locked down (e.g. run in a container or other VM).
+I created a personal access token specifically for this purpose that can only access gists; so worse case scenario is that you can modify my gists.
+But I can easily revoke, without breaking any of my other tokens.
 
-Rate limiting: <https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>
+```{r, eval = has_auth}
+token <- secret_decrypt("Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g", "HTTR2_KEY")
+```
+
+```{r, eval = has_auth}
+req <- request("https://api.github.com/gists") %>% 
+  req_headers(Authorization = paste("token", token)) %>% 
+  req_headers(Accept = "application/vnd.github.v3+json") 
+```
+
+Note that the Authorization header is automatically redacted:
+
+```{r, eval = has_auth}
+req
+req %>% req_dry_run()
+```
+
+### Rate-limiting
+
+[<https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting){.uri}
+
+```{r, eval = has_auth}
+github_is_transient <- function(resp) {
+  resp_status(resp) == 403 &&
+    identical(resp_header(resp, "X-RateLimit-Remaining"), "0")
+}
+github_after <- function(resp) {
+  time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
+  time - unclass(Sys.time())
+}
+request("http://api.github.com") %>%
+  req_retry(
+    is_transient = github_is_transient,
+    after = github_after
+  )
+```
 
 ## App that uses OAuth
 
