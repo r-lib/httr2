@@ -16,12 +16,11 @@ knitr::opts_chunk$set(
 
 A common use for httr2 is wrapping up a useful API and exposing it in an R package where each API endpoint (i.e. a URL with parameters) becomes an R function with documented arguments.
 This vignette will show you how, starting with a very simple API that doesn't need authentication, then slowly working up in complexity.
-
 Along the way, you'll learn about how to:
 
 -   Expose important details from HTTP errors in R errors.
 
--   Wrap up authentication details to provide a user friendly experience.
+-   Handle various types of authentication.
 
 -   Consistently throttle the rate of requests or dynamically respond to rate limiting headers sent by the server.
 
@@ -32,7 +31,7 @@ If not, you might want to reading the "[The Whole Game](https://r-pkgs.org/whole
 library(httr2)
 ```
 
-## Basics
+## Faker API
 
 ```{r, include = FALSE}
 # Seems to return 500s from time-to-time, so avoid any problems
@@ -216,7 +215,7 @@ faker_person("male", quantity = 5)
 
 The next steps would be to export and document this function; but I'll leave that up to you.
 
-## App with API key
+## NYTimes Books API
 
 ```{r include = FALSE}
 has_auth <- secret_has_key("HTTR2_KEY") && 
@@ -416,7 +415,7 @@ drunk$results[[1]]$summary
 
 To finish this up for a real package, you'd want to:
 
--   Add explicits argument and check that they're correct type.
+-   Add explicit arguments and check that they're correct type.
 
 -   Export and document the function.
 
@@ -424,7 +423,7 @@ To finish this up for a real package, you'd want to:
 
 You'd also want to provide some convenient way for the user to supply their own API key.
 
-### API key
+### User supplied key
 
 A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
 Then you'd write a function to retrieve the API key, returning a helpful message if it's not found:
@@ -472,95 +471,238 @@ get_api_key <- function() {
 }
 ```
 
-## Sending data & HTTP methods
+## Github Gists API
 
-<https://docs.github.com/en/rest/reference/gists#star-a-gist>
-
-### Errors
-
-```{r, error = TRUE}
-resp <- request("https://api.github.com/gists") %>% 
-  req_url_query(since = "yesterday") %>% 
-  req_headers(Authorization = paste("token", gitcreds::gitcreds_get()$password)) %>% 
-  req_error(is_error = ~ FALSE) %>% 
-  req_perform()
-resp %>% resp_body_json()
-
-gh_error_info <- function(resp) {
-  body <- resp_body_json(resp)
-  c(body$message, paste0("See docs at <", body$documentation_url, ">"))
-}
-gh_error_info(resp)
-
-request("https://api.github.com/gists") %>% 
-  req_url_query(since = "yesterday") %>% 
-  req_headers(Authorization = paste("token", gitcreds::gitcreds_get()$password)) %>% 
-  req_error(info = gh_error_info) %>% 
-  req_perform()
-```
+Next we'll take a look at an API that can make changes, not just retrieve data: [GitHub's gist API](https://docs.github.com/en/rest/reference/gists).
+This uses different HTTP methods to perform different actions, like creating, updating, and deleting gists.
+But before we can get to those, lets handle authentication, rate-limiting, and errors.
 
 ### Authentication
 
-Good example of why tokens: you can have many different tokens, each which can do different things, and can be revoked without affecting any other token or requiring you to change your password.
+The easiest way to authenticate with a GitHub API is to use a personal access token.
+A token is an alternative to a username and password.
+You have one username + password per site; you can have one token per use case.
+This lets each use case have a minimal set of permissions, and you can easily revoke one token without affecting any other use case.
 
-I created a personal access token specifically for this purpose that can only access gists; so worse case scenario is that you can modify my gists.
-But I can easily revoke, without breaking any of my other tokens.
+I created a personal access token specifically for this vignette that can only access gists, and as in the last example, stored an encrypted version in this vignette:
 
 ```{r, eval = has_auth}
 token <- secret_decrypt("Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g", "HTTR2_KEY")
 ```
 
+If you want to run this vignette yourself, you'll need to create a new token in your [GitHub settings](https://github.com/settings/tokens); just make sure it includes the "gist" scope.
+
+To authenticate a request with the token, we need to put it in the `Authorization` header with a ["token" prefix](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication):
+
 ```{r, eval = has_auth}
 req <- request("https://api.github.com/gists") %>% 
-  req_headers(Authorization = paste("token", token)) %>% 
-  req_headers(Accept = "application/vnd.github.v3+json") 
+  req_headers(Authorization = paste("token", token))
+
+req %>% req_perform()
 ```
 
-Note that the Authorization header is automatically redacted:
+Because the authorization header usually contains secret information, httr2 automatically redacts it[^1]:
+
+[^1]: Again, it's still possible to extract it with a little extra work but httr2 tries to help you avoid revealing it by accident.
+    httr protects you from yourself, not from someone deliberately trying to find the secret.
 
 ```{r, eval = has_auth}
 req
 req %>% req_dry_run()
 ```
 
+### Errors
+
+Once you've got authentication working, it's always a good idea to work on errors next, since that will help you debug any failed requests.
+In my experience APIs rarely do a good job of documenting their errors, so you'll often have to do a little experimentation.
+Here I'll construct a deliberately malformed query and see what happens:
+
+```{r, eval = has_auth, error = TRUE}
+resp <- request("https://api.github.com/gists") %>% 
+  req_url_query(since = "abcdef") %>% 
+  req_headers(Authorization = paste("token", token)) %>% 
+  req_perform()
+```
+
+As expected, I get an HTTP error.
+But does the response contain any useful information?
+Let's take a look:
+
+```{r, eval = has_auth}
+resp <- last_response()
+resp
+resp %>% resp_body_json()
+```
+
+That body looks pretty useful!
+So let's write a function that extracts the data and formats it for presentation to the user:
+
+```{r, eval = has_auth}
+github_error_info <- function(resp) {
+  body <- resp_body_json(resp)
+  
+  message <- body$message
+  if (!is.null(body$documentation_url)) {
+    message <- c(message, paste0("See docs at <", body$documentation_url, ">"))
+  }
+  message
+}
+github_error_info(resp)
+```
+
+Now I can pass this function to the `info` argument of `req_error()` and it will be automatically included in the error when a request fails:
+
+```{r, eval = has_auth, error = TRUE}
+request("https://api.github.com/gists") %>% 
+  req_url_query(since = "yesterday") %>% 
+  req_headers(Authorization = paste("token", token)) %>% 
+  req_error(info = github_error_info) %>% 
+  req_perform()
+```
+
+Notice that each element of the character vector produced by `gh_error_info()` becomes a bullet in the resulting error.
+
 ### Rate-limiting
 
-[<https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting>](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting){.uri}
+While we're thinking about errors, it's useful to look at what happens if the requests are rate limited.
+Luckily, GitHub consistently uses response headers to provide information about the remaining [rate limits](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting).
+
+```{r, eval = has_auth}
+resp <- req %>% req_perform() 
+resp %>% resp_headers("ratelimit")
+```
+
+We can teach httr2 about this so it can automatically wait for a reset if the rate limit is hit.
+We need to define two functions.
+The first tells us whether or not a response has a transient error, i.e. it's worth waiting and trying again.
+For GitHub, when the rate limit is [exceeded](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting), the response has a 403 status and a `X-RateLimit-Remaining: 0` header:
 
 ```{r, eval = has_auth}
 github_is_transient <- function(resp) {
-  resp_status(resp) == 403 &&
-    identical(resp_header(resp, "X-RateLimit-Remaining"), "0")
+  resp_status(resp) == 403 && 
+    resp_header(resp, "X-RateLimit-Remaining") == "0"
 }
+github_is_transient(resp)
+```
+
+Then we need a function tells how to long wait.
+GitHub tells us the absolute time in seconds so we convert that to an offset:
+
+```{r, eval = has_auth}
 github_after <- function(resp) {
   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
   time - unclass(Sys.time())
 }
+github_after(resp)
+```
+
+We then pass functions to `req_retry()` so httr2 has all the information it needs to handle rate-limiting automatically:
+
+```{r, eval = has_auth}
 request("http://api.github.com") %>%
   req_retry(
     is_transient = github_is_transient,
-    after = github_after
+    after = github_after,
+    max_seconds = 60
   )
 ```
 
-## App that uses OAuth
+You also need to supply either `max_tries` or `max_seconds` in order to activate `req_retry()`.
 
-If the API provides access to a website where the user already has an account (think twitter, instagram, facebook, google, etc), it's likely to use OAuth to allow you to authenticate on behalf of the user.
-OAuth[^1] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
+### Wrapping it all up
+
+Let's wrap up everything we've learned so far into a single function that creates a request:
+
+```{r, eval = has_auth}
+req_github <- function(token) {
+  request("https://api.github.com/gists") %>% 
+    req_headers(Authorization = paste("token", token)) %>% 
+    req_error(info = github_error_info) %>% 
+    req_retry(
+      is_transient = github_is_transient,
+      after = github_after
+    )
+}
+
+# Check it works:
+req_github(token) %>% 
+  req_perform()
+```
+
+We'll use this as the basis to solve the next challenge: uploading a gist.
+
+### Sending data
+
+To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist) we need to send a `POST` request with a body that contains data encodedd as JSON.
+httr2 provides one function that does both of these things: `req_body_json()`:
+
+```{r, eval = has_auth}
+req <- req_github(token) %>% 
+  req_body_json(list(
+    description = "This is my cool gist!",
+    files = list(test.R = list(content = "print('Hi!')")),
+    public = FALSE
+  ))
+req %>% req_dry_run()
+```
+
+Depending on the API you're wrapping, you might need to send data in a different way.
+`req_body_form()` and `req_body_multipart()` make it easier to encode data in two other common forms.
+If the API requires something different you can use `req_body_raw()`.
+
+Typically, the API will return some useful data about the resource you've just created.
+Here I'll extract the gist ID so we can use it in the next examples, culminating with deleting the gist so I don't end up with a bunch of duplicated gists 😃.
+
+```{r, eval = has_auth}
+resp <- req %>% req_perform()
+id <- resp %>% resp_body_json() %>% .$id
+id
+```
+
+### Changing a gist
+
+Actually, that description wasn't very true and I want to change it.
+To do so, I need to again send JSON encoded data, but this time I need to use the `PATCH` verb.
+So after adding the data to request, I use `req_method()` to override the default method:
+
+```{r, eval = has_auth}
+req <- req_github(token) %>% 
+  req_url_path_append(id) %>% 
+  req_body_json(list(description = "This is a lame gist")) %>% 
+  req_method("PATCH")
+req %>% req_dry_run()
+```
+
+### Deleting a gist
+
+Deleting a gist is similar, except we don't send any data, we just need to adjust the default method from `GET` to `DELETE`.
+
+```{r, eval = has_auth}
+req <- req_github(token) %>% 
+  req_url_path_append(id) %>% 
+  req_method("DELETE")
+req %>% req_dry_run()
+req %>% req_perform()
+```
+
+## OAuth
+
+If the API provides access to a website where the user already has an account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it's likely to use OAuth to allow you to authenticate on behalf of the user.
+OAuth[^2] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
 You've almost certainly used this before on the web; it's used in most cases where one website wants to use another website on your behalf.
 
-[^1]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
+[^2]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
 
-### OAuth clients
+### Clients
 
-The first step in working with any OAuth api is to create a client or app.
+The first step in working with any OAuth api is to create a client.
 This involves you registering for a developer account on the APIs website and creating a new OAuth app.
-The process varies from API to API, but at the end of it you'll be a client id and in most cases a client secret.
+The process varies from API to API, but at the end of it you'll get a client id and in most cases a client secret.
 
 If the API provides a way to authenticate without the client secret, you should leave it out of your package.
 But in most cases, you'll need to include the secret in the package.
-You can use `obfuscate()` to hide the secret; again this is not bullet proof but for most people it will be easier to create a new client than try and reuse yours.
+You can use `obfuscate()` to hide the secret; this is not bulletproof but in most cases it'll be easier create a new client than try and steal yours.
 It is unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it (generally the worst they can do is use up your rate limits).
 
 To obfuscate a secret, call `obfuscate()`:
@@ -569,44 +711,38 @@ To obfuscate a secret, call `obfuscate()`:
 obfuscate("secret")
 ```
 
-Then use the client id from the website along with the obfuscated secret to create a client:
+Then use the client id from the website along with the obfuscated secret to create a client.
+The following code shows a GitHub OAuth app that I created specifically for this vignette:
 
 ```{r}
 client <- oauth_client(
-  id = "client_id", 
-  secret = obfuscated("YVW06Lex"),
-  token = "https://accounts.google.com/o/oauth2/token"
+  id = "28acfec0674bb3da9f38",
+  secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test"
 )
+```
+
+You need to figure out the `token_url` from the [documentation](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps).
+I wish I could give good advice about how to find it 😞.
+
+Note that if you print the client the secret is automatically redacted:
+
+```{r}
 client
 ```
 
-Note that when you print the client, httr2 automatically redacts the secret --- this is part of the general effort that httr2 makes to prevent you from accidentally exposing any confidential information in logs or reprexes.
+### Flows
 
-### OAuth app
+Once you have a client you need to use it with a **flow** in order to get a token.
+OAuth provides a number of different "flows", the most common is the "authorisation code" flow, which is implemented by `req_oauth_auth_code()`.
+You can try it out by running this code:
 
-Once you have a client, you'll need to collect a little more information to create an OAuth app.
-An app is the combination of the information about your client and some general information about the API.
-(From the perspective of the API client and app are synonymous because it's only thinking of itself).
+```{r, eval = FALSE}
+token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+```
 
-The information you'll need varies a little depending on the flow you're using, but for the most common case it will look something like this.
-You'll pass the client that you created above, as long as a list of authentication endpoints.
-In the most common case, you'll need to supply `token` and `authorization` endpoints.
-
-Depending on how the API is set up, you may also need to change the `auth` parameter.
-We'll come back to that shortly.
-
-### OAuth flows
-
-OAuth provides a number of different "flows".
-The most common is the "authorisation code" flow, which is implemented by `req_oauth_auth_code()`.
-It goes something like this:
-
--   Client makes authorisation request to resource owner, and it returns an authorisation grant (four types are defined in this rfc: authorisation code, implicit, resource owner password credentials, and client credentials).
-
--   Client makes authorisation grant to authorisation server (which can be different to resource server, even though that appears to be rare in practice) which returns access token.
-
--   Client uses access token to access protected resources.
-    `req_auth_bearer_token()`
+This flow can't be used inside a vignette because it's designed specifically for interactive use: it will open a webpage on Github that requires you to interactively confirm it's ok for this app to use your GitHub account.
 
 Other flows provide different ways getting the token:
 
@@ -627,23 +763,60 @@ This is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-th
 
 When wrapping an API, you'll need to carefully read the documentation to figure out which flows are available.
 Typically you'll want to use the auth code flow, but if it's not available you'll need to carefully consider the others.
-
 An additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec.
 If your initial attempt doesn't work, you're going to need to do some sleuthing.
-This is going to be moderately painful but unfortunately there's no way around it.
-I recommend using `with_verbose()` so you can see exactly what httr2 is sending to the server.
+This is going to be painful but unfortunately there's no way around it.
+I recommend using `with_verbosity()` so you can see exactly what httr2 is sending to the server.
 You'll then need to carefully compare this to the API documentation and play spot the difference.
 
-To get started, I recommend first working with the lower-level `oauth_flow_*()` functions.
-They just return a token (rather than authenticating a request) so they're easy to work with as you get the system up and running.
+### Tokens
+
+The point of a flow is to get a token.
+You can use `req_auth_bearer_token()` to authorise a request with the access token stored inside the token object:
 
 ```{r, eval = FALSE}
+request("https://api.github.com/user") %>% 
+  req_auth_bearer_token(token$access_token) %>% 
+  req_perform() %>% 
+  resp_body_json() %>%
+  .$name
+#> [1] "Hadley Wickham"
 ```
 
-### Token caching
+However, in most cases you won't want to do this, but instead allow httr2 to manage the whole process, by switching from `oauth_flow_{name}` to `req_oauth_{name}`:
 
-Token caching.
-Many access tokens also have a refresh token, which is a way to get new access tokens.
-httr2 can cache these tokens.
-If the token has expired and has a refresh token, we automatically refresh before the first request.
-If the request errors with a 401 and error `invalid_token` then we try the refresh token if available, otherwise re-run the full flow.
+```{r, eval = FALSE}
+request("https://api.github.com/user") %>% 
+  req_oauth_auth_code(client, auth_url = "https://github.com/login/oauth/authorize") %>% 
+  req_perform() %>% 
+  resp_body_json()
+```
+
+This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token.
+httr2 will automatically refresh the token in two cases:
+
+-   The token includes an expiry date that's in the past.
+
+-   The request returns a 401 status code and
+
+If the access token has expired, httr will automatically retry automatically refresh before the first request.
+If the request errors with a 401 and `invalid_token` error in the `WWW-authenticate` header.
+
+### Caching
+
+By default, `req_oauth_auth_code()` and friends will cache the token in memory, so that multiple requests in the same session all use the same token.
+In some cases, you may want to save the token so that it's automatically used across sessions.
+This is easy to do (just set `cache_disk = TRUE` in `req_oauth_auth_code()`) but you need to carefully consider the consequences of saving the users credentials on disk.
+
+httr2 does the best it can to save these credentials securely.
+They are stored in a directory that should only be accessible to the current user, and in `.rds` format which is hard to read from tools other than R.
+Nevertheless, saving
+
+You can see which clients have cached tokens by looking in the cache directory used by httr:
+
+```{r}
+dir(rappdirs::user_cache_dir("httr2"), recursive = TRUE)
+```
+
+httr2 automatically deletes any cached tokens that are older than 30 days whenever it's loaded.
+This means that you'll need to re-auth at least once a month, but prevents tokens for hanging around on disk long after you've forgotten you created them.
