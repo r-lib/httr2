@@ -221,6 +221,7 @@ The next steps would be to export and document this function; but I'll leave tha
 has_auth <- secret_has_key("HTTR2_KEY") && 
   # Don't run in R CMD check on GHA
   identical(Sys.getenv("RSPM"), "")
+knitr::opts_chunk$set(eval = has_auth)
 ```
 
 Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview). It requires a very simple authentication with an API key that's included in every request.
@@ -276,11 +277,11 @@ secret_decrypt(x, "HTTR2_KEY")
 
 So now you can understand how the following code works:
 
-```{r, eval = has_auth}
+```{r}
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
-Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `has_auth <- secret_has_key("HTTR2_KEY")`, then use `eval = has_auth` in each chunk so that the code is only run when possible.
+Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `has_auth <- secret_has_key("HTTR2_KEY")`, then use `knitr::opts_chunk(eval = has_auth)` so that the code is only run when possible.
 
 When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
 That means your tests will automatically pass on CRAN.
@@ -299,7 +300,7 @@ All in all, this mean you need to be a little cautious if you need to get help w
 
 Now lets perform a test request and look at the response:
 
-```{r, eval = has_auth}
+```{r}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = my_key, isbn = 9780307476463) %>% 
@@ -309,7 +310,7 @@ resp
 
 Like most modern APIs, this one returns the results as JSON:
 
-```{r, eval = has_auth}
+```{r}
 resp %>% 
   resp_body_json() %>% 
   str()
@@ -322,7 +323,7 @@ Before we start wrapping this up into a function lets consider what happens with
 What happens if there's an error?
 For example, if we deliberately supply an invalid key:
 
-```{r, eval = has_auth, error = TRUE}
+```{r, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -331,7 +332,7 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
 
 To see if there's any extra useful information we can again suppress the default error and inspect the result:
 
-```{r, eval = has_auth, error = TRUE}
+```{r, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -343,7 +344,7 @@ resp %>% resp_body_json()
 
 It looks like there's some useful additional info in the `faultstring`:
 
-```{r, eval = has_auth}
+```{r}
 resp %>% resp_body_json() %>% .$fault %>% .$faultstring
 ```
 
@@ -351,7 +352,7 @@ To add that information to future errors we can use the `info` argument to `req_
 This should be a function that takes a response and returns a character vector of additional information to include in the error.
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
-```{r, eval = has_auth, error = TRUE}
+```{r, error = TRUE}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -375,7 +376,7 @@ So I deliberately violated the rate limit by quickly making 11 requests; unfortu
 That means we can't use `req_retry()`, which automatically waits the amount of time the server requests.
 Instead, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
 
-```{r, eval = has_auth}
+```{r}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -385,7 +386,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
 By default, `req_throttle()` shares the limit across all requests made to to host (i.e. `api.nytimes.com`).
 Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
 
-```{r, eval = has_auth}
+```{r}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
@@ -396,7 +397,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
 
 Putting together all the pieces above yields a function something like this:
 
-```{r, eval = has_auth}
+```{r}
 nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") %>% 
     req_url_path_append("/reviews.json") %>% 
@@ -428,7 +429,7 @@ You'd also want to provide some convenient way for the user to supply their own 
 A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
 Then you'd write a function to retrieve the API key, returning a helpful message if it's not found:
 
-```{r, eval = has_auth}
+```{r}
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (identical(key, "")) {
@@ -486,7 +487,7 @@ This lets each use case have a minimal set of permissions, and you can easily re
 
 I created a personal access token specifically for this vignette that can only access gists, and as in the last example, stored an encrypted version in this vignette:
 
-```{r, eval = has_auth}
+```{r}
 token <- secret_decrypt("Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g", "HTTR2_KEY")
 ```
 
@@ -494,7 +495,7 @@ If you want to run this vignette yourself, you'll need to create a new token in 
 
 To authenticate a request with the token, we need to put it in the `Authorization` header with a ["token" prefix](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication):
 
-```{r, eval = has_auth}
+```{r}
 req <- request("https://api.github.com/gists") %>% 
   req_headers(Authorization = paste("token", token))
 
@@ -506,7 +507,7 @@ Because the authorization header usually contains secret information, httr2 auto
 [^1]: Again, it's still possible to extract it with a little extra work but httr2 tries to help you avoid revealing it by accident.
     httr protects you from yourself, not from someone deliberately trying to find the secret.
 
-```{r, eval = has_auth}
+```{r}
 req
 req %>% req_dry_run()
 ```
@@ -517,7 +518,7 @@ Once you've got authentication working, it's always a good idea to work on error
 In my experience APIs rarely do a good job of documenting their errors, so you'll often have to do a little experimentation.
 Here I'll construct a deliberately malformed query and see what happens:
 
-```{r, eval = has_auth, error = TRUE}
+```{r, error = TRUE}
 resp <- request("https://api.github.com/gists") %>% 
   req_url_query(since = "abcdef") %>% 
   req_headers(Authorization = paste("token", token)) %>% 
@@ -528,7 +529,7 @@ As expected, I get an HTTP error.
 But does the response contain any useful information?
 Let's take a look:
 
-```{r, eval = has_auth}
+```{r}
 resp <- last_response()
 resp
 resp %>% resp_body_json()
@@ -537,7 +538,7 @@ resp %>% resp_body_json()
 That body looks pretty useful!
 So let's write a function that extracts the data and formats it for presentation to the user:
 
-```{r, eval = has_auth}
+```{r}
 github_error_info <- function(resp) {
   body <- resp_body_json(resp)
   
@@ -552,7 +553,7 @@ github_error_info(resp)
 
 Now I can pass this function to the `info` argument of `req_error()` and it will be automatically included in the error when a request fails:
 
-```{r, eval = has_auth, error = TRUE}
+```{r, error = TRUE}
 request("https://api.github.com/gists") %>% 
   req_url_query(since = "yesterday") %>% 
   req_headers(Authorization = paste("token", token)) %>% 
@@ -567,7 +568,7 @@ Notice that each element of the character vector produced by `gh_error_info()` b
 While we're thinking about errors, it's useful to look at what happens if the requests are rate limited.
 Luckily, GitHub consistently uses response headers to provide information about the remaining [rate limits](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting).
 
-```{r, eval = has_auth}
+```{r}
 resp <- req %>% req_perform() 
 resp %>% resp_headers("ratelimit")
 ```
@@ -577,7 +578,7 @@ We need to define two functions.
 The first tells us whether or not a response has a transient error, i.e. it's worth waiting and trying again.
 For GitHub, when the rate limit is [exceeded](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting), the response has a 403 status and a `X-RateLimit-Remaining: 0` header:
 
-```{r, eval = has_auth}
+```{r}
 github_is_transient <- function(resp) {
   resp_status(resp) == 403 && 
     resp_header(resp, "X-RateLimit-Remaining") == "0"
@@ -588,7 +589,7 @@ github_is_transient(resp)
 Then we need a function tells how to long wait.
 GitHub tells us the absolute time in seconds so we convert that to an offset:
 
-```{r, eval = has_auth}
+```{r}
 github_after <- function(resp) {
   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
   time - unclass(Sys.time())
@@ -598,7 +599,7 @@ github_after(resp)
 
 We then pass functions to `req_retry()` so httr2 has all the information it needs to handle rate-limiting automatically:
 
-```{r, eval = has_auth}
+```{r}
 request("http://api.github.com") %>%
   req_retry(
     is_transient = github_is_transient,
@@ -613,7 +614,7 @@ You also need to supply either `max_tries` or `max_seconds` in order to activate
 
 Let's wrap up everything we've learned so far into a single function that creates a request:
 
-```{r, eval = has_auth}
+```{r}
 req_github <- function(token) {
   request("https://api.github.com/gists") %>% 
     req_headers(Authorization = paste("token", token)) %>% 
@@ -636,7 +637,7 @@ We'll use this as the basis to solve the next challenge: uploading a gist.
 To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist) we need to send a `POST` request with a body that contains data encodedd as JSON.
 httr2 provides one function that does both of these things: `req_body_json()`:
 
-```{r, eval = has_auth}
+```{r}
 req <- req_github(token) %>% 
   req_body_json(list(
     description = "This is my cool gist!",
@@ -653,7 +654,7 @@ If the API requires something different you can use `req_body_raw()`.
 Typically, the API will return some useful data about the resource you've just created.
 Here I'll extract the gist ID so we can use it in the next examples, culminating with deleting the gist so I don't end up with a bunch of duplicated gists 😃.
 
-```{r, eval = has_auth}
+```{r}
 resp <- req %>% req_perform()
 id <- resp %>% resp_body_json() %>% .$id
 id
@@ -665,7 +666,7 @@ Actually, that description wasn't very true and I want to change it.
 To do so, I need to again send JSON encoded data, but this time I need to use the `PATCH` verb.
 So after adding the data to request, I use `req_method()` to override the default method:
 
-```{r, eval = has_auth}
+```{r}
 req <- req_github(token) %>% 
   req_url_path_append(id) %>% 
   req_body_json(list(description = "This is a lame gist")) %>% 
@@ -677,7 +678,7 @@ req %>% req_dry_run()
 
 Deleting a gist is similar, except we don't send any data, we just need to adjust the default method from `GET` to `DELETE`.
 
-```{r, eval = has_auth}
+```{r}
 req <- req_github(token) %>% 
   req_url_path_append(id) %>% 
   req_method("DELETE")
