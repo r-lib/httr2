@@ -219,8 +219,8 @@ The next steps would be to export and document this function; but I'll leave tha
 
 ```{r include = FALSE}
 has_auth <- secret_has_key("HTTR2_KEY") && 
-  # Don't run in R CMD check on GHA
-  identical(Sys.getenv("RSPM"), "")
+  # Don't run in R CMD check on GHA because it hits NYTimes rate limits
+  !identical(Sys.getenv("GITHUB_WORKFLOW"), "R-CMD-check")
 knitr::opts_chunk$set(eval = has_auth)
 ```
 
