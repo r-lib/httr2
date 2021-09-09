@@ -10,8 +10,8 @@ test_that("can customise what statuses are errors", {
 
 test_that("can customise error info", {
   req <- request_test()
-  expect_equal(error_info(req, response(404)), NULL)
+  expect_equal(error_body(req, response(404)), NULL)
 
-  req <- req %>% req_error(info = ~ "Hi!")
-  expect_equal(error_info(req, response(404)), "Hi!")
+  req <- req %>% req_error(body = ~ "Hi!")
+  expect_equal(error_body(req, response(404)), "Hi!")
 })

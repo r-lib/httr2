@@ -4,7 +4,7 @@
 \alias{req_error}
 \title{Control handling of HTTP errors}
 \usage{
-req_error(req, is_error = NULL, info = NULL)
+req_error(req, is_error = NULL, body = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -13,10 +13,10 @@ req_error(req, is_error = NULL, info = NULL)
 response) and returns \code{TRUE} or \code{FALSE} indicating whether or not an
 R error should signalled.}
 
-\item{info}{A callback function that takes a single argument (the response)
-and returns a character vector of additional information about the error.
-This vector is passed along to the \code{message} argument of \code{\link[rlang:abort]{rlang::abort()}}
-so you can use any formatting that it supports.}
+\item{body}{A callback function that takes a single argument (the response)
+and returns a character vector of additional information to include in the
+body of the error. This vector is passed along to the \code{message} argument
+of \code{\link[rlang:abort]{rlang::abort()}} so you can use any formatting that it supports.}
 }
 \value{
 An HTTP \link{request}.

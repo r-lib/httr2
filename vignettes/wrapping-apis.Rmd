@@ -348,7 +348,7 @@ It looks like there's some useful additional info in the `faultstring`:
 resp %>% resp_body_json() %>% .$fault %>% .$faultstring
 ```
 
-To add that information to future errors we can use the `info` argument to `req_error()`.
+To add that information to future errors we can use the `body` argument to `req_error()`.
 This should be a function that takes a response and returns a character vector of additional information to include in the error.
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
@@ -356,7 +356,7 @@ Once we do that and re-fetch the request, we see the additional information disp
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
-  req_error(info = function(resp) {
+  req_error(body = function(resp) {
     resp %>% resp_body_json() %>% .$fault %>% .$faultstring
   }) %>% 
   req_perform()
@@ -402,7 +402,7 @@ nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") %>% 
     req_url_path_append("/reviews.json") %>% 
     req_url_query(..., `api-key` = api_key) %>% 
-    req_error(info = function(resp) {
+    req_error(body = function(resp) {
       resp %>% resp_body_json() %>% .$fault %>% .$faultstring
     }) %>% 
     req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") %>% 
@@ -539,7 +539,7 @@ That body looks pretty useful!
 So let's write a function that extracts the data and formats it for presentation to the user:
 
 ```{r}
-github_error_info <- function(resp) {
+github_error_body <- function(resp) {
   body <- resp_body_json(resp)
   
   message <- body$message
@@ -548,20 +548,20 @@ github_error_info <- function(resp) {
   }
   message
 }
-github_error_info(resp)
+github_error_body(resp)
 ```
 
-Now I can pass this function to the `info` argument of `req_error()` and it will be automatically included in the error when a request fails:
+Now I can pass this function to the `body` argument of `req_error()` and it will be automatically included in the error when a request fails:
 
 ```{r, error = TRUE}
 request("https://api.github.com/gists") %>% 
   req_url_query(since = "yesterday") %>% 
   req_headers(Authorization = paste("token", token)) %>% 
-  req_error(info = github_error_info) %>% 
+  req_error(body = github_error_body) %>% 
   req_perform()
 ```
 
-Notice that each element of the character vector produced by `gh_error_info()` becomes a bullet in the resulting error.
+Notice that each element of the character vector produced by `gh_error_body()` becomes a bullet in the resulting error.
 
 ### Rate-limiting
 
@@ -619,7 +619,7 @@ Let's wrap up everything we've learned so far into a single function that create
 req_github <- function(token) {
   request("https://api.github.com/gists") %>% 
     req_headers(Authorization = paste("token", token)) %>% 
-    req_error(info = github_error_info) %>% 
+    req_error(body = github_error_body) %>% 
     req_retry(
       is_transient = github_is_transient,
       after = github_after
