@@ -21,6 +21,10 @@
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
+#' @param mock A mocking function. If supplied, this function is called
+#'   with the request. It should return either `NULL` (if it doesn't want to
+#'   handle the request) or a [response] (if it does). See [with_mock()]/
+#'   `local_mock()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
 #'   around `req_verbose()` that uses an integer to control vebosity:
 #'
@@ -34,8 +38,22 @@
 #' @examples
 #' request("https://google.com") %>%
 #'   req_perform()
-req_perform <- function(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L)) {
+req_perform <- function(
+      req,
+      path = NULL,
+      verbosity = getOption("httr2_verbosity", 0L),
+      mock = getOption("httr2_mock", NULL)
+  ) {
   check_request(req)
+
+  if (!is.null(mock)) {
+    mock <- as_function(mock)
+    mock_resp <- mock(req)
+    if (!is.null(mock_resp)) {
+      return(mock_resp)
+    }
+  }
+
   req <- req_verbosity(req, verbosity)
   req <- auth_oauth_sign(req)
 

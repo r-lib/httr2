@@ -4,7 +4,12 @@
 \alias{req_perform}
 \title{Perform a request}
 \usage{
-req_perform(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L))
+req_perform(
+  req,
+  path = NULL,
+  verbosity = getOption("httr2_verbosity", 0L),
+  mock = getOption("httr2_mock", NULL)
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -20,6 +25,11 @@ around \code{req_verbose()} that uses an integer to control vebosity:
 \item 2: show headers and bodies
 \item 3: show headers, bodies, and curl status messages.
 }}
+
+\item{mock}{A mocking function. If supplied, this function is called
+with the request. It should return either \code{NULL} (if it doesn't want to
+handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
+\code{local_mock()} for more details.}
 }
 \value{
 Returns an HTTP response with successful status code. Will

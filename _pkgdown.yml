@@ -16,11 +16,12 @@ reference:
   - req_url
   - req_user_agent
 
-- subtitle: Debugging
+- subtitle: Debugging/testing
   contents:
   - last_request
   - req_dry_run
   - req_verbose
+  - with_mock
   - with_verbosity
 
 - subtitle: Authentication
