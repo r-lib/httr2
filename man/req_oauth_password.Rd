@@ -28,8 +28,8 @@ interactively.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are automatically
-deleted 30 days after creation.}
+storing access credentials on disk. Cached tokens are encrypted and
+automatically deleted 30 days after creation.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

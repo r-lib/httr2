@@ -99,10 +99,10 @@ cache_disk <- function(client, key) {
   app_path <- file.path(rappdirs::user_cache_dir("httr2"), client$name)
   dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
-  path <- file.path(app_path, paste0(hash(key), "-token.rds"))
+  path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
   list(
-    get = function() if (file.exists(path)) readRDS(path) else NULL,
-    set = function(token) saveRDS(token, path),
+    get = function() if (file.exists(path)) secret_read_rds(path, obfuscate_key()) else NULL,
+    set = function(token) secret_write_rds(token, path, obfuscate_key()),
     clear = function() if (file.exists(path)) file.remove(path)
   )
 }
