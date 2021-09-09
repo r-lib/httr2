@@ -15,6 +15,8 @@ It should return either \code{NULL} (if it doesn't want to handle the request)
 or a \link{response} (if it does).}
 
 \item{code}{Code to execute in the temporary environment.}
+
+\item{env}{Environment to use for scoping changes.}
 }
 \description{
 Mocking allows you to selectively and temporarily replace the response

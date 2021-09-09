@@ -8,6 +8,7 @@
 #'   It should return either `NULL` (if it doesn't want to handle the request)
 #'   or a [response] (if it does).
 #' @param code Code to execute in the temporary environment.
+#' @param env Environment to use for scoping changes.
 #' @export
 with_mock <- function(mock, code) {
   withr::with_options(list(httr2_mock = mock), code)
