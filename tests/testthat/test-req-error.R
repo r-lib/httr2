@@ -15,3 +15,8 @@ test_that("can customise error info", {
   req <- req %>% req_error(body = ~ "Hi!")
   expect_equal(error_body(req, response(404)), "Hi!")
 })
+
+test_that("failing callback still generates useful body", {
+  req <- request_test() %>% req_error(body = ~ abort("This is an error!"))
+  expect_snapshot_output(error_body(req, response(404)))
+})

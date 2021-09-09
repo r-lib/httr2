@@ -33,5 +33,14 @@ error_is_error <- function(req, resp) {
 }
 
 error_body <- function(req, resp) {
-  req_policy_call(req, "error_body", list(resp), default = NULL)
+  tryCatch(
+    req_policy_call(req, "error_body", list(resp), default = NULL),
+    error = function(cnd) {
+      cnd <- cnd_entrace(cnd)
+      c(
+        "`body` callback defined in req_error() failed with error:",
+        conditionMessage(cnd)
+      )
+    }
+  )
 }
