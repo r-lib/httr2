@@ -6,7 +6,6 @@
       <httr2_response>
       GET https://example.com
       Status: 200 OK
-      Content-Type: NA
       Body: Empty
     Code
       response(200, headers = "Content-Type: text/html")
@@ -22,7 +21,6 @@
       <httr2_response>
       GET https://example.com
       Status: 200 OK
-      Content-Type: NA
       Body: In memory (6 bytes)
     Code
       response(200, body = new_path("/test"))
@@ -30,7 +28,6 @@
       <httr2_response>
       GET https://example.com
       Status: 200 OK
-      Content-Type: NA
       Body: On disk 'body'
 
 # check_response produces helpful error

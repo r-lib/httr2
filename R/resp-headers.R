@@ -6,10 +6,17 @@
 #' * `resp_header_exists()` checks if a header is present.
 #'
 #' @param resp An HTTP response object, as created by [req_perform()].
+#' @param filter A regular expression used to filter the header names.
+#'   `NULL`, the default, returns all headers.
 #' @export
-resp_headers <- function(resp) {
+resp_headers <- function(resp, filter = NULL) {
   check_response(resp)
-  resp$headers
+
+  if (is.null(filter)) {
+    resp$headers
+  } else {
+    resp$headers[grepl(filter, names(resp$headers), perl = TRUE, ignore.case = TRUE)]
+  }
 }
 
 #' @export

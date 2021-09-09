@@ -64,7 +64,9 @@ print.httr2_response <- function(x,...) {
   cli::cli_text("{.cls {class(x)}}")
   cli::cli_text("{.strong {x$method}} {x$url}")
   cli::cli_text("{.field Status}: {x$status_code} {resp_status_desc(x)}")
-  cli::cli_text("{.field Content-Type}: {resp_content_type(x)}")
+  if (resp_header_exists(x, "Content-Type")) {
+    cli::cli_text("{.field Content-Type}: {resp_content_type(x)}")
+  }
 
   body <- x$body
   if (is.null(body)) {

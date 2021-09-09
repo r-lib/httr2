@@ -51,6 +51,11 @@ print.httr2_token <- function(x, ...) {
   if (has_name(redacted, "expires_at")) {
     redacted$expires_at <- format(.POSIXct(x$expires_at))
   }
+
+  # https://github.com/r-lib/cli/issues/347
+  is_empty <- map_lgl(redacted, ~ .x == "")
+  redacted[is_empty] <- "''"
+
   cli::cli_dl(compact(redacted))
 
   invisible(x)
