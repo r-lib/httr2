@@ -586,8 +586,9 @@ github_is_transient <- function(resp) {
 github_is_transient(resp)
 ```
 
-Then we need a function tells how to long wait.
-GitHub tells us the absolute time in seconds so we convert that to an offset:
+Then we need a function tells how long to wait.
+GitHub tells us when the rate limit resets (as number of seconds since 1970-01-01) in the `X-RateLimit-Reset` header.
+To convert that to a number of seconds to wait we first convert it to a number (since HTTP headers are always strings), then subtract off the current time (in number of seconds since 1970-01-01):
 
 ```{r}
 github_after <- function(resp) {
