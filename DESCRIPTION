@@ -35,8 +35,10 @@ Suggests:
     jose,
     jsonlite,
     knitr,
+    purrr,
     rmarkdown,
     testthat (>= 3.0.0),
+    tibble,
     webfakes,
     xml2
 VignetteBuilder: 
