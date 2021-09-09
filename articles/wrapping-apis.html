@@ -9,7 +9,7 @@
 <title>Wrapping APIs • httr2</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="../deps/bs3compat-0.2.5.1/tabs.js"></script><script src="../deps/bs3compat-0.2.5.1/bs3compat.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="../deps/bs3compat-0.3.0/transition.js"></script><script src="../deps/bs3compat-0.3.0/tabs.js"></script><script src="../deps/bs3compat-0.3.0/bs3compat.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <link href="../syntax-highlighting.css" rel="stylesheet">
@@ -75,18 +75,18 @@
 
     
     
-<p>A common use for httr2 is wrapping up a useful API and exposing it in an R package: you want to take an API endpoint (i.e. a URL with parameters) and wrap it up into an R function where each endpoint parameter corresponds to a documented function argument. This vignette will show you how, starting with a very simple API that doesn’t need authentication, and working our way up in complexity.</p>
-<p>Along the way, you’ll learn about how to:</p>
+<p>A common use for httr2 is wrapping up a useful API and exposing it in an R package where each API endpoint (i.e. a URL with parameters) becomes an R function with documented arguments. This vignette will show you how, starting with a very simple API that doesn’t need authentication, then slowly working up in complexity. Along the way, you’ll learn about how to:</p>
 <ul>
-<li><p>Ensure that HTTP errors expose as much detail in the R error.</p></li>
-<li><p>Wrap up details of authentication to provide a user friendly experience.</p></li>
+<li><p>Expose important details from HTTP errors in R errors.</p></li>
+<li><p>Handle various types of authentication.</p></li>
 <li><p>Consistently throttle the rate of requests or dynamically respond to rate limiting headers sent by the server.</p></li>
 </ul>
+<p>I assume you’re familiar with the basics of building a package. If not, you might want to reading the “<a href="https://r-pkgs.org/whole-game.html" class="external-link">The Whole Game</a>” chapter of <a href="https://r-pkgs.org" class="external-link">R packages</a> first.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></code></pre></div>
-<div id="basics" class="section level2">
+<div id="faker-api" class="section level2">
 <h2 class="hasAnchor">
-<a href="#basics" class="anchor" aria-hidden="true"></a>Basics</h2>
+<a href="#faker-api" class="anchor" aria-hidden="true"></a>Faker API</h2>
 <p>We’ll start with a very simple API, <a href="https://fakerapi.it/en" class="external-link uri">faker API</a>, which provides a collection of techniques for generating fake data. Before we start writing the sort of functions that you might put in a package, we’ll perform a request just to see how the basics work:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># We start by creating a request that uses the base API url</span>
@@ -99,69 +99,46 @@
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="co"># The result comes back as JSON</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; List of 4</span>
-<span class="co">#&gt;  $ status: chr "OK"</span>
-<span class="co">#&gt;  $ code  : int 200</span>
-<span class="co">#&gt;  $ total : int 1</span>
-<span class="co">#&gt;  $ data  :List of 1</span>
-<span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Quos fugiat placeat rerum."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Inventore iure necessitatibus distinctio eum pariatur. Magni consequatur mollitia quisquam qui ut et quo. Ut be"| __truncated__</span>
-<span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></code></pre></div>
+<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div id="errors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#errors" class="anchor" aria-hidden="true"></a>Errors</h3>
-<p>Next it’s worth a little experimentation to see if we get any useful information from errors. If you fetch a URL that returns an unsuccesful HTTP response, you’ll get an error so you can’t further inspect the body:</p>
+<p>It’s always worth a little early experimentation to see if we get any useful information from errors. The httr2 details get in your way here because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Error: HTTP 404 Not Found.</span></code></pre></div>
-<p>To see what’s going on, you’ll need to use <code><a href="../reference/req_error.html">req_error()</a></code> to turn off the default behaviour that turns HTTP errors into R errors:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"imagesasf"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>is_error <span class="op">=</span> <span class="op">~</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Now you can look at the response body:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; $status</span>
-<span class="co">#&gt; [1] "Not found"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $code</span>
-<span class="co">#&gt; [1] 404</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $total</span>
-<span class="co">#&gt; [1] 0</span></code></pre></div>
+<p>You can access the failed response with <code><a href="../reference/last_response.html">last_response()</a></code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>It doesn’t look like there’s anything useful there so I’ll double check the headers:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;httr2_headers&gt;</span>
-<span class="co">#&gt; Server: nginx</span>
-<span class="co">#&gt; Content-Type: application/json</span>
-<span class="co">#&gt; Transfer-Encoding: chunked</span>
-<span class="co">#&gt; Connection: keep-alive</span>
-<span class="co">#&gt; Vary: Accept-Encoding</span>
-<span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
-<span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Wed, 01 Sep 2021 13:40:06 GMT</span>
-<span class="co">#&gt; Access-Control-Allow-Origin: *</span>
-<span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
-<span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
-<span class="co">#&gt; Access-Control-Max-Age: 86400</span>
-<span class="co">#&gt; Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With</span>
-<span class="co">#&gt; Content-Encoding: gzip</span></code></pre></div>
-<p>It doesn’t look like we’re getting any more useful information, so we can leave the default as is. We’ll have another go later with an API that does provide more details.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>It doesn’t look like we’re getting any more useful information, so we can leave the <code><a href="../reference/req_error.html">req_error()</a></code> default as is. We’ll have another go later with an API that does provide more details.</p>
 </div>
-<div id="making-a-function" class="section level3">
+<div id="user-agent" class="section level3">
 <h3 class="hasAnchor">
-<a href="#making-a-function" class="anchor" aria-hidden="true"></a>Making a function</h3>
-<p>Once you’ve got the basics, you can wrap it up into a function. You’ll need to decide if you want to return a request or perform the request and return the result. The first gives you more flexibility, but the user will need to add two more calls; the second is easier but less flexible.</p>
-<p>Use defaults. Automatically add underscores.</p>
+<a href="#user-agent" class="anchor" aria-hidden="true"></a>User agent</h3>
+<p>When making a package that calls an API it’s considered polite to set a user agent, so that if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to. You can do this with the <code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> function:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"httr2 (http://httr2.r-lib.org)"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="core-request-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#core-request-function" class="anchor" aria-hidden="true"></a>Core request function</h3>
+<p>Once you’ve successful made a few requests, it’s worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.</p>
+<p>For faker, I spent a little with the <a href="https://fakerapi.it/en#basic-usage" class="external-link">documentation</a> noting some commonalities:</p>
+<ul>
+<li><p>Every URL is of the form <a href="https://fakerapi.it/api/v1" class="external-link"><code>https://fakerapi.it/api/v1</code></a><code>/{resource}</code>, and data is passed to the resource with query parameters. All parameters start with <code>_</code>.</p></li>
+<li><p>Every resource has three common query parameters: <code>_locale</code>, <code>_quantity</code>, and <code>_seed</code> which have default values of <code>en_US</code>, <code>1</code> and <code>null</code> respectively.</p></li>
+<li><p>All endpoints return JSON data.</p></li>
+</ul>
+<p>This lead me to construct the following function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req_faker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resource</span>, <span class="va">...</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
+<code class="sourceCode R"><span class="va">faker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resource</span>, <span class="va">...</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
     <span class="va">...</span>,
     quantity <span class="op">=</span> <span class="va">quantity</span>,
@@ -173,80 +150,149 @@
   <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"httr2 (http://httr2.r-lib.org)"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="fu">req_faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
-<span class="co">#&gt; $status</span>
-<span class="co">#&gt; [1] "OK"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $code</span>
-<span class="co">#&gt; [1] 200</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $total</span>
-<span class="co">#&gt; [1] 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data</span>
-<span class="co">#&gt; $data[[1]]</span>
-<span class="co">#&gt; $data[[1]]$title</span>
-<span class="co">#&gt; [1] "Rerum velit qui explicabo."</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data[[1]]$description</span>
-<span class="co">#&gt; [1] "Eos maxime sint quos atque eligendi numquam. Cupiditate animi veniam ad pariatur temporibus iusto cumque. Ut commodi et et autem. Qui molestiae quis ipsum."</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $data[[1]]$url</span>
-<span class="co">#&gt; [1] "http://placeimg.com/300/480/any"</span></code></pre></div>
-<p>There’s only one trick to notice here — <code><a href="../reference/req_url.html">req_url_query()</a></code> uses dynamic dots, so we can use <code>!!!</code> to convert (e.g.) <code>req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")</code> into <code>req_url_query(req, `_quantity` = 1, `_locale` = "en_US")</code>.</p>
-<p>In most cases, this function will be for internal use only, as you’ll continue to make a function for each endpoint useful to the R programmer. In some cases, you might want to export this function sot that the experienced user can call endpoints that you haven’t yet wrapped.</p>
-<p>To make the app more convenient for R users, you might continue by adding functions that convert the nested list into a data frame. I’d suggest keeping that code in a separate function since it’s likely to vary by endpoint.</p>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>There’s one trick to notice here — <code><a href="../reference/req_url.html">req_url_query()</a></code> uses <a href="https://rlang.r-lib.org/reference/dyn-dots.html" class="external-link">dynamic dots</a>, so we can use <code>!!!</code> to convert (e.g.) <code>req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")</code> into <code>req_url_query(req, `_quantity` = 1, `_locale` = "en_US")</code>.</p>
+<p>Here I’ve decided to make my central function perform the request and parse the result. If the API you are wrapping is more variable, you may want to return a request object that the caller can modify before fetching the response.</p>
 </div>
-<div id="user-agent" class="section level3">
+<div id="wrapping-individual-endpoints" class="section level3">
 <h3 class="hasAnchor">
-<a href="#user-agent" class="anchor" aria-hidden="true"></a>User agent</h3>
-<p>Before we go on, Polite to set a user agent — <a href="https://github.com/r-lib/httr2/issues/43" class="external-link uri">https://github.com/r-lib/httr2/issues/43</a>.</p>
-</div>
-</div>
-<div id="app-with-api-key" class="section level2">
-<h2 class="hasAnchor">
-<a href="#app-with-api-key" class="anchor" aria-hidden="true"></a>App with API key</h2>
-<p>Next we’ll take a look at the NYTimes <a href="https://developer.nytimes.com/docs/books-product/1/overview" class="external-link">Books API</a>. It requires a very simple authentication — you include the API key in the query of every request. I don’t want to share my API key with the whole world so I’ve encrypted it with <code><a href="../reference/secrets.html">secret_encrypt()</a></code> and I’ll decrypt it for this vignette with <code><a href="../reference/secrets.html">secret_decrypt()</a></code>:</p>
+<a href="#wrapping-individual-endpoints" class="anchor" aria-hidden="true"></a>Wrapping individual endpoints</h3>
+<p><code>faker()</code> is quite general — it’s a good tool for the package developer because you can read the faker documentation and translate it to a function call. But it’s not very friendly for the package user who might not know anything about web APIs. So typically the next step in the process is to wrap up some individual endpoints with their own functions.</p>
+<p>For example, let’s take the persons endpoint which has three additional parameters: <code>gender</code> (male or female), <code>birthday_start</code>, and <code>birthday_end</code>. A simple wrapper would start something like this:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">my_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="st">"4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV"</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span></code></pre></div>
-<p>The encryption and decryption relies on a key stored in the <code>HTTR2_KEY</code> environment variable. This is set up on my computer and on GitHub actions where this vignette is often run, but it won’t be available on your computer or on CRAN. In the source of this vignette I store whether or not it’s available in <code>nyt_ok &lt;- secret_has_key("HTTR2_KEY")</code>, and then use <code>eval = nyt_ok</code> in each chunk so that the code is only run when possible.</p>
-<p>This now allows us to perform a test request and look at the response:</p>
+<code class="sourceCode R"><span class="va">faker_person</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gender</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_start</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_end</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu">faker</span><span class="op">(</span>
+    <span class="st">"persons"</span>,
+    gender <span class="op">=</span> <span class="va">gender</span>,
+    birthday_start <span class="op">=</span> <span class="va">birthday_start</span>,
+    birthday_end <span class="op">=</span> <span class="va">birthday_end</span>,
+    quantity <span class="op">=</span> <span class="va">quantity</span>,
+    locale <span class="op">=</span> <span class="va">locale</span>,
+    seed <span class="op">=</span> <span class="va">seed</span>
+  <span class="op">)</span>  
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>We could make it more user friendly by checking the input types, and returning the result as a tibble. I did a quick and dirty conversion using purrr; depending on your needs you could use base R code or <code>tidyr::hoist()</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org" class="external-link">purrr</a></span><span class="op">)</span>
+
+<span class="va">faker_person</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gender</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_start</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">birthday_end</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">quantity</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">locale</span> <span class="op">=</span> <span class="st">"en_US"</span>, <span class="va">seed</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">gender</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">gender</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">gender</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">birthday_start</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">birthday_start</span>, <span class="st">"Date"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"`birthday_start` must be a date"</span><span class="op">)</span>
+    <span class="op">}</span>
+    <span class="va">birthday_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">birthday_start</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">birthday_end</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">birthday_end</span>, <span class="st">"Date"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"`birthday_end` must be a date"</span><span class="op">)</span>
+    <span class="op">}</span>
+    <span class="va">birthday_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">birthday_end</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span>
+  <span class="op">}</span>
+  
+  <span class="va">json</span> <span class="op">&lt;-</span> <span class="fu">faker</span><span class="op">(</span>
+    <span class="st">"persons"</span>,
+    gender <span class="op">=</span> <span class="va">gender</span>,
+    birthday_start <span class="op">=</span> <span class="va">birthday_start</span>,
+    birthday_end <span class="op">=</span> <span class="va">birthday_end</span>,
+    quantity <span class="op">=</span> <span class="va">quantity</span>,
+    locale <span class="op">=</span> <span class="va">locale</span>,
+    seed <span class="op">=</span> <span class="va">seed</span>
+  <span class="op">)</span>  
+  
+  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>
+    firstname <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"firstname"</span><span class="op">)</span>,
+    lastname <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"lastname"</span><span class="op">)</span>,
+    email <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"email"</span><span class="op">)</span>,
+    gender <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"gender"</span><span class="op">)</span>
+  <span class="op">)</span>
+<span class="op">}</span>
+<span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<p>The next steps would be to export and document this function; but I’ll leave that up to you.</p>
+</div>
+</div>
+<div id="nytimes-books-api" class="section level2">
+<h2 class="hasAnchor">
+<a href="#nytimes-books-api" class="anchor" aria-hidden="true"></a>NYTimes Books API</h2>
+<p>Next we’ll take a look at the NYTimes <a href="https://developer.nytimes.com/docs/books-product/1/overview" class="external-link">Books API</a>. It requires a very simple authentication with an API key that’s included in every request. When you’re wrapping an API that has a key you’re going to face two struggles:</p>
+<ul>
+<li><p>How do you test your package without sharing your key with the whole world?</p></li>
+<li><p>How do you allow your users to supply their own key, without having to pass it to every function?</p></li>
+</ul>
+<p>I’ll start by tackling the first problem because otherwise there’s no way for me to show how the API works in this vignette 😃. We’ll come back to the second at the very end of this section, because it’s easiest to tackle once we have a function in place.</p>
+<div id="encrypting-secrets" class="section level3">
+<h3 class="hasAnchor">
+<a href="#encrypting-secrets" class="anchor" aria-hidden="true"></a>Encrypting secrets</h3>
+<p>httr2 provides the <code><a href="../reference/secrets.html">secret_decrypt()</a></code> and <code>secret_decrpyt()</code> functions that use asymmetric cryptography. To use them you need to first create a “key” that’s used to lock and unlock the secrets. The best key is random because there’s no way for anyone to guess it. httr2 provides <code><a href="../reference/secrets.html">secret_make_key()</a></code> to make a secure key for you:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>(Don’t copy and paste this key; run <code><a href="../reference/secrets.html">secret_make_key()</a></code> yourself to make your own personal key.)</p>
+<p>Now you need to make this key available in the places were you want to unlock the secrets. httr2 provides tools to retrieve keys from environment variables because this is a common way of communicating these sort of secrets. So start by opening your <code>.Renviron</code> (e.g. with <code>usethis::edit_r_environ()</code>) and add a line like:</p>
+<pre><code>YOURPACKAGE_KEY=key_that_you_generated_above</code></pre>
+<p>Another place you’ll probably want to provide the key is in your Github actions. This is a two step process:</p>
+<ol style="list-style-type: decimal">
+<li><p>Add the key to your <a href="https://docs.github.com/en/actions/reference/encrypted-secrets" class="external-link">repository secrets</a>.</p></li>
+<li>
+<p>Share the secret with the workflows that need it by adding a line to the appropriate workflow:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1"></a><span class="at">    </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="at">      </span><span class="fu">HTTR2_KEY</span><span class="kw">:</span><span class="at"> ${{ secrets.HTTR2_KEY }}</span></span></code></pre></div>
+<p>You can see how httr2 does it in <a href="https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml" class="external-link uri">https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml</a>.</p>
+</li>
+</ol>
+<p>Now you can encrypt your API key and store it in your tests — there’s no way for anyone to decrypt it unless they have your key.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"my-secret"</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span>
+<span class="va">x</span>
+<span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span></code></pre></div>
+<p>So now you can understand how the following code works:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">my_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="st">"4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV"</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span></code></pre></div>
+<p>Since most people won’t have this key, n the source of this vignette I also check whether or not it’s available with <code>has_auth &lt;- secret_has_key("HTTR2_KEY")</code>, then use <code>knitr::opts_chunk(eval = has_auth)</code> so that the code is only run when possible.</p>
+<p>When <code><a href="../reference/secrets.html">secret_decrypt()</a></code> is run in tests, it will automatically skip the test if the key isn’t found. That means your tests will automatically pass on CRAN.</p>
+</div>
+<div id="security-considerations" class="section level3">
+<h3 class="hasAnchor">
+<a href="#security-considerations" class="anchor" aria-hidden="true"></a>Security considerations</h3>
+<p>Note that including an API key in a query is a relatively insecure; if an API uses it, its typically because the key is relatively easy to create or gives relatively few privileges. Here it only takes a couple of minutes to generate your own NYTimes API key, so there’s little incentive for someone to try and steal yours.</p>
+<p>The main problem of storing credentials in the url is that it’s easily revealable, because httr2 makes no efforts to redact confidential information stored in query parameters. This means it’s relatively easy to leak your key if you use <code>req_perform(verbose = 1)</code>, <code><a href="../reference/req_dry_run.html">req_dry_run()</a></code>, or even just print the request object.</p>
+<p>All in all, this mean you need to be a little cautious if you need to get help with a reprex; you’ll need to manually redact the key.</p>
+</div>
+<div id="basic-request" class="section level3">
+<h3 class="hasAnchor">
+<a href="#basic-request" class="anchor" aria-hidden="true"></a>Basic request</h3>
+<p>Now lets perform a test request and look at the response:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="va">my_key</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resp</span></code></pre></div>
 <p>Like most modern APIs, this one returns the results as JSON:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Before we start wrapping this up into a function lets explore what happens with errors.</p>
-<div id="security-considerations" class="section level3">
-<h3 class="hasAnchor">
-<a href="#security-considerations" class="anchor" aria-hidden="true"></a>Security considerations</h3>
-<p>Note that including an API key in a query is a relatively insecure method; if an API uses it its typically because the key is relatively easy to create or gives relatively few privileges. Section 5.3 of <a href="https://datatracker.ietf.org/doc/html/rfc6750#section-5.3" class="external-link">rfc6750</a> has this to say about passing bearer tokens<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;A bearer token is a little different to an access key but the distinction isn’t important here.&lt;/p&gt;"><sup>1</sup></a> in the URL:</p>
-<blockquote>
-<p><strong>Don’t pass bearer tokens in page URLs</strong>: Bearer tokens SHOULD NOT be passed in page URLs (for example, as query string parameters). Instead, bearer tokens SHOULD be passed in HTTP message headers or message bodies for which confidentiality measures are taken. Browsers, web servers, and other software may not adequately secure URLs in the browser history, web server logs, and other data structures. If bearer tokens are passed in page URLs, attackers might be able to steal them from the history data, logs, or other unsecured locations.</p>
-</blockquote>
-<p>httr2 makes no efforts to redact confidential information stored in query parameters. This means it’s relatively easy to leak your key if you use <code>req_perform(verbose = 1)</code> or <code><a href="../reference/req_dry_run.html">req_dry_run()</a></code>. This just means you’ll need to be a little cautious if you need to get help with a reprex; you’ll need to manually redact the key.</p>
+<p>Before we start wrapping this up into a function lets consider what happens with errors.</p>
 </div>
 <div id="error-handling" class="section level3">
 <h3 class="hasAnchor">
 <a href="#error-handling" class="anchor" aria-hidden="true"></a>Error handling</h3>
 <p>What happens if there’s an error? For example, if we deliberately supply an invalid key:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>To see if there’s any extra useful information we can again suppress the default error and inspect the result:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -255,10 +301,10 @@
 <span class="va">resp</span>
 <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>It looks like there’s some useful additional info in the <code>faultstring</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">fault</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">faultstring</span></code></pre></div>
-<p>To add that information to future errors we can use the <code>info</code> argument to <code><a href="../reference/req_error.html">req_error()</a></code>. Once we do that and re-fetch the request, we see the additional information displayed in the R error:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>To add that information to future errors we can use the <code>info</code> argument to <code><a href="../reference/req_error.html">req_error()</a></code>. This should be a function that takes a response and returns a character vector of additional information to include in the error. Once we do that and re-fetch the request, we see the additional information displayed in the R error:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -270,29 +316,28 @@
 <div id="rate-limits" class="section level3">
 <h3 class="hasAnchor">
 <a href="#rate-limits" class="anchor" aria-hidden="true"></a>Rate limits</h3>
-<p>The <a href="https://developer.nytimes.com/faq#a11" class="external-link">frequently asked questions</a> also mentions rate limits:</p>
+<p>Another common source of errors is rate-limiting — this is used by many servers to prevent one unruly client consuming too many resources. The <a href="https://developer.nytimes.com/faq#a11" class="external-link">frequently asked questions</a> page describes the rate limits for the NYT APIs:</p>
 <blockquote>
 <p>Yes, there are two rate limits per API: 4,000 requests per day and 10 requests per minute. You should sleep 6 seconds between calls to avoid hitting the per minute rate limit. If you need a higher rate limit, please contact us at <a href="mailto:code@nytimes.com" class="email">code@nytimes.com</a>.</p>
 </blockquote>
-<p>Since the docs don’t mention that the use of <code>Retry-After</code> header, we’ll use <code><a href="../reference/req_throttle.html">req_throttle()</a></code> to ensure we don’t make more than 10 requests every 60s:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>Many APIs return additional information about how long to wait when the rate limit is exceeded (often using the <code>Retry-After</code> header). So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers. That means we can’t use <code><a href="../reference/req_retry.html">req_retry()</a></code>, which automatically waits the amount of time the server requests. Instead, we’ll use <code><a href="../reference/req_throttle.html">req_throttle()</a></code> to ensure we don’t make more than 10 requests every 60s:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span></code></pre></div>
-<p>This limit is automatically shared across all requests made to <code>api.nytimes.com</code>. Since the docs suggest the rate limit applies per API, you might want to use the <code>realm</code> argument to be a bit more specific:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>By default, <code><a href="../reference/req_throttle.html">req_throttle()</a></code> shares the limit across all requests made to to host (i.e. <code>api.nytimes.com</code>). Since the docs suggest the rate limit applies per API, you might want to use the <code>realm</code> argument to be a bit more specific:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span></code></pre></div>
-<p>Many APIs return additional information about how long to wait when the rate limit is exceeded. So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.</p>
 </div>
 <div id="wrapping-it-up" class="section level3">
 <h3 class="hasAnchor">
 <a href="#wrapping-it-up" class="anchor" aria-hidden="true"></a>Wrapping it up</h3>
 <p>Putting together all the pieces above yields a function something like this:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">api_key</span>, <span class="va">path</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -307,80 +352,237 @@
 
 <span class="va">drunk</span> <span class="op">&lt;-</span> <span class="fu">nytimes_books</span><span class="op">(</span><span class="va">my_key</span>, <span class="st">"/reviews.json"</span>, isbn <span class="op">=</span> <span class="st">"0316453382"</span><span class="op">)</span>
 <span class="va">drunk</span><span class="op">$</span><span class="va">results</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">summary</span></code></pre></div>
-<p>Again, for a real package, you’d want to spend some time converting the nested list into a more user friendly data structure.</p>
+<p>To finish this up for a real package, you’d want to:</p>
+<ul>
+<li><p>Add explicit arguments and check that they’re correct type.</p></li>
+<li><p>Export and document the function.</p></li>
+<li><p>Converted the nested list into a more user friendly data structure (probably a data frame with one row per review).</p></li>
+</ul>
+<p>You’d also want to provide some convenient way for the user to supply their own API key.</p>
 </div>
-<div id="api-key" class="section level3">
+<div id="user-supplied-key" class="section level3">
 <h3 class="hasAnchor">
-<a href="#api-key" class="anchor" aria-hidden="true"></a>API key</h3>
-<p>If you were going to put this into a package, you’d need to think about some convenient interface for supplying the API key. An environment variable is a good place to start because they’re easy to set without typing anything in the console (which can get accidentally shared via your <code>.Rhistory</code>) and are easily set in automated processes.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<a href="#user-supplied-key" class="anchor" aria-hidden="true"></a>User supplied key</h3>
+<p>A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your <code>.Rhistory</code>) and are easily set in automated processes. Then you’d write a function to retrieve the API key, returning a helpful message if it’s not found:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">get_api_key</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NYTIMES_KEY"</span><span class="op">)</span>
   <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">key</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var"</span><span class="op">)</span>
   <span class="op">}</span>
   <span class="va">key</span>
-<span class="op">}</span>
-
-<span class="va">req_nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span>, <span class="va">...</span>, <span class="va">api_key</span> <span class="op">=</span> <span class="fu">get_api_key</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+<span class="op">}</span></code></pre></div>
+<p>Then you could modify <code>nytimes_books()</code> to use <code>get_api_key()</code> as the default value for <code>api_key</code>. Since the argument is now optional, we can move it to end of the argument list, since it’ll only be needed in exceptional circumstances.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span>, <span class="va">...</span>, <span class="va">api_key</span> <span class="op">=</span> <span class="fu">get_api_key</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">...</span>
 <span class="op">}</span></code></pre></div>
-<p>Since the <code>api_key</code> is no longer required, we can make it the last argument to the function. It’s still available to override and document, but it’ll only be needed in exceptional circumstances.</p>
+<p>You might extend <code>get_api_key()</code> to also consult your encrypted key to make it easier to write tests:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">is_testing</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"TESTTHAT"</span><span class="op">)</span>, <span class="st">"true"</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">testing_key</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="st">"4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV"</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">get_api_key</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NYTIMES_KEY"</span><span class="op">)</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">key</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="fu">is_testing</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+      <span class="fu">testing_key</span><span class="op">(</span><span class="op">)</span>
+    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+      <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var"</span><span class="op">)</span>  
+    <span class="op">}</span>
+  <span class="op">}</span>
+  <span class="va">key</span>
+<span class="op">}</span></code></pre></div>
 </div>
 </div>
-<div id="sending-data-http-methods" class="section level2">
+<div id="github-gists-api" class="section level2">
 <h2 class="hasAnchor">
-<a href="#sending-data-http-methods" class="anchor" aria-hidden="true"></a>Sending data &amp; HTTP methods</h2>
-<p><a href="https://docs.github.com/en/rest/reference/gists#star-a-gist" class="external-link uri">https://docs.github.com/en/rest/reference/gists#star-a-gist</a></p>
-<p>Just use basic auth: <a href="https://docs.github.com/en/rest/overview/other-authentication-methods#basic-authentication" class="external-link uri">https://docs.github.com/en/rest/overview/other-authentication-methods#basic-authentication</a> username + token. Good example of why tokens: you can have many different tokens, each which can do different things, and can be revoked without affecting any other token or requiring you to change your password.</p>
-<p>Need to be a little careful with tokens in env vars. Any R package could use. But this doesn’t really pose any additional threat: an R package can run any code, so it’s already very powerful. If you are worried about this attack vector you need to resolve it by ensuring that the process that runs R is locked down (e.g. run in a container or other VM).</p>
-<p>Rate limiting: <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link uri">https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting</a></p>
-</div>
-<div id="app-that-uses-oauth" class="section level2">
-<h2 class="hasAnchor">
-<a href="#app-that-uses-oauth" class="anchor" aria-hidden="true"></a>App that uses OAuth</h2>
-<p>If the API provides access to a website where the user already has an account (think twitter, instagram, facebook, google, etc), it’s likely to use OAuth to allow you to authenticate on behalf of the user. OAuth<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Here I’ll only talk about OAuth 2.0 which is the only version in common use today. OAuth 1.0 is largely only of historical interest.&lt;/p&gt;"><sup>2</sup></a> is an authentication framework that’s designed so that you don’t have to share your username and password with an app; instead the app asks for permission to use your account. You’ve almost certainly used this before on the web; it’s used in most cases where one website wants to use another website on your behalf.</p>
-<div id="oauth-clients" class="section level3">
+<a href="#github-gists-api" class="anchor" aria-hidden="true"></a>Github Gists API</h2>
+<p>Next we’ll take a look at an API that can make changes, not just retrieve data: <a href="https://docs.github.com/en/rest/reference/gists" class="external-link">GitHub’s gist API</a>. This uses different HTTP methods to perform different actions, like creating, updating, and deleting gists. But before we can get to those, lets handle authentication, rate-limiting, and errors.</p>
+<div id="authentication" class="section level3">
 <h3 class="hasAnchor">
-<a href="#oauth-clients" class="anchor" aria-hidden="true"></a>OAuth clients</h3>
-<p>The first step in working with any OAuth api is to create a client or app. This involves you registering for a developer account on the APIs website and creating a new OAuth app. The process varies from API to API, but at the end of it you’ll be a client id and in most cases a client secret.</p>
-<p>If the API provides a way to authenticate without the client secret, you should leave it out of your package. But in most cases, you’ll need to include the secret in the package. You can use <code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; again this is not bullet proof but for most people it will be easier to create a new client than try and reuse yours. It is unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there’s not much harm they can do with it (generally the worst they can do is use up your rate limits).</p>
+<a href="#authentication" class="anchor" aria-hidden="true"></a>Authentication</h3>
+<p>The easiest way to authenticate with a GitHub API is to use a personal access token. A token is an alternative to a username and password. You have one username + password per site; you can have one token per use case. This lets each use case have a minimal set of permissions, and you can easily revoke one token without affecting any other use case.</p>
+<p>I created a personal access token specifically for this vignette that can only access gists, and as in the last example, stored an encrypted version in this vignette:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="st">"Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g"</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span></code></pre></div>
+<p>If you want to run this vignette yourself, you’ll need to create a new token in your <a href="https://github.com/settings/tokens" class="external-link">GitHub settings</a>; just make sure it includes the “gist” scope.</p>
+<p>To authenticate a request with the token, we need to put it in the <code>Authorization</code> header with a <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication" class="external-link">“token” prefix</a>:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>Because the authorization header usually contains secret information, httr2 automatically redacts it<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Again, it’s still possible to extract it with a little extra work but httr2 tries to help you avoid revealing it by accident. httr protects you from yourself, not from someone deliberately trying to find the secret.&lt;/p&gt;"><sup>1</sup></a>:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span>
+<span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="errors-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#errors-1" class="anchor" aria-hidden="true"></a>Errors</h3>
+<p>Once you’ve got authentication working, it’s always a good idea to work on errors next, since that will help you debug any failed requests. In my experience APIs rarely do a good job of documenting their errors, so you’ll often have to do a little experimentation. Here I’ll construct a deliberately malformed query and see what happens:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"abcdef"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>As expected, I get an HTTP error. But does the response contain any useful information? Let’s take a look:</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">resp</span>
+<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>That body looks pretty useful! So let’s write a function that extracts the data and formats it for presentation to the user:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">github_error_info</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">body</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span>
+  
+  <span class="va">message</span> <span class="op">&lt;-</span> <span class="va">body</span><span class="op">$</span><span class="va">message</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">body</span><span class="op">$</span><span class="va">documentation_url</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">message</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">message</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"See docs at &lt;"</span>, <span class="va">body</span><span class="op">$</span><span class="va">documentation_url</span>, <span class="st">"&gt;"</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">message</span>
+<span class="op">}</span>
+<span class="fu">github_error_info</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></code></pre></div>
+<p>Now I can pass this function to the <code>info</code> argument of <code><a href="../reference/req_error.html">req_error()</a></code> and it will be automatically included in the error when a request fails:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"yesterday"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>info <span class="op">=</span> <span class="va">github_error_info</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>Notice that each element of the character vector produced by <code>gh_error_info()</code> becomes a bullet in the resulting error.</p>
+</div>
+<div id="rate-limiting" class="section level3">
+<h3 class="hasAnchor">
+<a href="#rate-limiting" class="anchor" aria-hidden="true"></a>Rate-limiting</h3>
+<p>While we’re thinking about errors, it’s useful to look at what happens if the requests are rate limited. Luckily, GitHub consistently uses response headers to provide information about the remaining <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">rate limits</a>.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> 
+<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="st">"ratelimit"</span><span class="op">)</span></code></pre></div>
+<p>We can teach httr2 about this so it can automatically wait for a reset if the rate limit is hit. We need to define two functions. The first tells us whether or not a response has a transient error, i.e. it’s worth waiting and trying again. For GitHub, when the rate limit is <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">exceeded</a>, the response has a 403 status and a <code>X-RateLimit-Remaining: 0</code> header:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">github_is_transient</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">403</span> <span class="op">&amp;&amp;</span> 
+    <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="va">resp</span>, <span class="st">"X-RateLimit-Remaining"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"0"</span>
+<span class="op">}</span>
+<span class="fu">github_is_transient</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></code></pre></div>
+<p>Then we need a function tells how to long wait. GitHub tells us the absolute time in seconds so we convert that to an offset:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">github_after</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="va">resp</span>, <span class="st">"X-RateLimit-Reset"</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">time</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu">github_after</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></code></pre></div>
+<p>We then pass functions to <code><a href="../reference/req_retry.html">req_retry()</a></code> so httr2 has all the information it needs to handle rate-limiting automatically:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"http://api.github.com"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/req_retry.html">req_retry</a></span><span class="op">(</span>
+    is_transient <span class="op">=</span> <span class="va">github_is_transient</span>,
+    after <span class="op">=</span> <span class="va">github_after</span>,
+    max_seconds <span class="op">=</span> <span class="fl">60</span>
+  <span class="op">)</span></code></pre></div>
+<p>You also need to supply either <code>max_tries</code> or <code>max_seconds</code> in order to activate <code><a href="../reference/req_retry.html">req_retry()</a></code>.</p>
+</div>
+<div id="wrapping-it-all-up" class="section level3">
+<h3 class="hasAnchor">
+<a href="#wrapping-it-all-up" class="anchor" aria-hidden="true"></a>Wrapping it all up</h3>
+<p>Let’s wrap up everything we’ve learned so far into a single function that creates a request:</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req_github</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>info <span class="op">=</span> <span class="va">github_error_info</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="../reference/req_retry.html">req_retry</a></span><span class="op">(</span>
+      is_transient <span class="op">=</span> <span class="va">github_is_transient</span>,
+      after <span class="op">=</span> <span class="va">github_after</span>
+    <span class="op">)</span>
+<span class="op">}</span>
+
+<span class="co"># Check it works:</span>
+<span class="fu">req_github</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>We’ll use this as the basis to solve the next challenge: uploading a gist.</p>
+</div>
+<div id="sending-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#sending-data" class="anchor" aria-hidden="true"></a>Sending data</h3>
+<p>To <a href="https://docs.github.com/en/rest/reference/gists#create-a-gist" class="external-link">create a gist</a> we need to send a <code>POST</code> request with a body that contains data encodedd as JSON. httr2 provides one function that does both of these things: <code><a href="../reference/req_body.html">req_body_json()</a></code>:</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_github</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    description <span class="op">=</span> <span class="st">"This is my cool gist!"</span>,
+    files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>test.R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>content <span class="op">=</span> <span class="st">"print('Hi!')"</span><span class="op">)</span><span class="op">)</span>,
+    public <span class="op">=</span> <span class="cn">FALSE</span>
+  <span class="op">)</span><span class="op">)</span>
+<span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>Depending on the API you’re wrapping, you might need to send data in a different way. <code><a href="../reference/req_body.html">req_body_form()</a></code> and <code><a href="../reference/req_body.html">req_body_multipart()</a></code> make it easier to encode data in two other common forms. If the API requires something different you can use <code><a href="../reference/req_body.html">req_body_raw()</a></code>.</p>
+<p>Typically, the API will return some useful data about the resource you’ve just created. Here I’ll extract the gist ID so we can use it in the next examples, culminating with deleting the gist so I don’t end up with a bunch of duplicated gists 😃.</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">id</span> <span class="op">&lt;-</span> <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">id</span>
+<span class="va">id</span></code></pre></div>
+</div>
+<div id="changing-a-gist" class="section level3">
+<h3 class="hasAnchor">
+<a href="#changing-a-gist" class="anchor" aria-hidden="true"></a>Changing a gist</h3>
+<p>Actually, that description wasn’t very true and I want to change it. To do so, I need to again send JSON encoded data, but this time I need to use the <code>PATCH</code> verb. So after adding the data to request, I use <code><a href="../reference/req_method.html">req_method()</a></code> to override the default method:</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_github</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> <span class="st">"This is a lame gist"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
+<span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="deleting-a-gist" class="section level3">
+<h3 class="hasAnchor">
+<a href="#deleting-a-gist" class="anchor" aria-hidden="true"></a>Deleting a gist</h3>
+<p>Deleting a gist is similar, except we don’t send any data, we just need to adjust the default method from <code>GET</code> to <code>DELETE</code>.</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_github</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"DELETE"</span><span class="op">)</span>
+<span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div id="oauth" class="section level2">
+<h2 class="hasAnchor">
+<a href="#oauth" class="anchor" aria-hidden="true"></a>OAuth</h2>
+<p>If the API provides access to a website where the user already has an account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it’s likely to use OAuth to allow you to authenticate on behalf of the user. OAuth<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Here I’ll only talk about OAuth 2.0 which is the only version in common use today. OAuth 1.0 is largely only of historical interest.&lt;/p&gt;"><sup>2</sup></a> is an authentication framework that’s designed so that you don’t have to share your username and password with an app; instead the app asks for permission to use your account. You’ve almost certainly used this before on the web; it’s used in most cases where one website wants to use another website on your behalf.</p>
+<div id="clients" class="section level3">
+<h3 class="hasAnchor">
+<a href="#clients" class="anchor" aria-hidden="true"></a>Clients</h3>
+<p>The first step in working with any OAuth api is to create a client. This involves you registering for a developer account on the APIs website and creating a new OAuth app. The process varies from API to API, but at the end of it you’ll get a client id and in most cases a client secret.</p>
+<p>If the API provides a way to authenticate without the client secret, you should leave it out of your package. But in most cases, you’ll need to include the secret in the package. You can use <code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; this is not bulletproof but in most cases it’ll be easier create a new client than try and steal yours. It is unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there’s not much harm they can do with it (generally the worst they can do is use up your rate limits).</p>
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
-<span class="co">#&gt; obfuscated("tdRpazRRTjaEVypNQoeFmVU2MzrLBw")</span></code></pre></div>
-<p>Then use the client id from the website along with the obfuscated secret to create a client:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></code></pre></div>
+<p>Then use the client id from the website along with the obfuscated secret to create a client. The following code shows a GitHub OAuth app that I created specifically for this vignette:</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
-  id <span class="op">=</span> <span class="st">"client_id"</span>, 
-  secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"YVW06Lex"</span><span class="op">)</span>,
-  token <span class="op">=</span> <span class="st">"https://accounts.google.com/o/oauth2/token"</span>
-<span class="op">)</span>
-<span class="va">client</span>
-<span class="co">#&gt; &lt;httr2_oauth_client&gt;</span>
-<span class="co">#&gt; name: 741ee61ebc1fc0f8fedcf12647c95cb3</span>
-<span class="co">#&gt; id: client_id</span>
-<span class="co">#&gt; secret: &lt;REDACTED&gt;</span>
-<span class="co">#&gt; token_url: https://accounts.google.com/o/oauth2/token</span>
-<span class="co">#&gt; auth: oauth_client_req_auth_body</span></code></pre></div>
-<p>Note that when you print the client, httr2 automatically redacts the secret — this is part of the general effort that httr2 makes to prevent you from accidentally exposing any confidential information in logs or reprexes.</p>
+  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,
+  secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,
+  token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,
+  name <span class="op">=</span> <span class="st">"hadley-oauth-test"</span>
+<span class="op">)</span></code></pre></div>
+<p>You need to figure out the <code>token_url</code> from the <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps" class="external-link">documentation</a>. I wish I could give good advice about how to find it 😞.</p>
+<p>Note that if you print the client the secret is automatically redacted:</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">client</span></code></pre></div>
 </div>
-<div id="oauth-app" class="section level3">
+<div id="flows" class="section level3">
 <h3 class="hasAnchor">
-<a href="#oauth-app" class="anchor" aria-hidden="true"></a>OAuth app</h3>
-<p>Once you have a client, you’ll need to collect a little more information to create an OAuth app. An app is the combination of the information about your client and some general information about the API. (From the perspective of the API client and app are synonymous because it’s only thinking of itself).</p>
-<p>The information you’ll need varies a little depending on the flow you’re using, but for the most common case it will look something like this. You’ll pass the client that you created above, as long as a list of authentication endpoints. In the most common case, you’ll need to supply <code>token</code> and <code>authorization</code> endpoints.</p>
-<p>Depending on how the API is set up, you may also need to change the <code>auth</code> parameter. We’ll come back to that shortly.</p>
-</div>
-<div id="oauth-flows" class="section level3">
-<h3 class="hasAnchor">
-<a href="#oauth-flows" class="anchor" aria-hidden="true"></a>OAuth flows</h3>
-<p>OAuth provides a number of different “flows”. The most common is the “authorisation code” flow, which is implemented by <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. It goes something like this:</p>
-<ul>
-<li><p>Client makes authorisation request to resource owner, and it returns an authorisation grant (four types are defined in this rfc: authorisation code, implicit, resource owner password credentials, and client credentials).</p></li>
-<li><p>Client makes authorisation grant to authorisation server (which can be different to resource server, even though that appears to be rare in practice) which returns access token.</p></li>
-<li><p>Client uses access token to access protected resources. <code><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token()</a></code></p></li>
-</ul>
+<a href="#flows" class="anchor" aria-hidden="true"></a>Flows</h3>
+<p>Once you have a client you need to use it with a <strong>flow</strong> in order to get a token. OAuth provides a number of different “flows”, the most common is the “authorisation code” flow, which is implemented by <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. You can try it out by running this code:</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_flow_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span></code></pre></div>
+<p>This flow can’t be used inside a vignette because it’s designed specifically for interactive use: it will open a webpage on Github that requires you to interactively confirm it’s ok for this app to use your GitHub account.</p>
 <p>Other flows provide different ways getting the token:</p>
 <ul>
 <li><p><code><a href="../reference/req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user).</p></li>
@@ -390,14 +592,41 @@
 <li><p><code><a href="../reference/req_oauth_refresh.html">req_oauth_refresh()</a></code> works directly with a refresh token that you’ve got elsewhere. It’s useful for testing.</p></li>
 </ul>
 <p>There’s one historically important OAuth flows that httr2 doesn’t support: the implicit grant flow. This is now <a href="https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead" class="external-link">mostly deprecated</a> and was never a particularly good fit for native applications because it relies on a technique for returning the access token that only works inside a web browser.</p>
-<p>When wrapping an API, you’ll need to carefully read the documentation to figure out which flows are available. Typically you’ll want to use the auth code flow, but if it’s not available you’ll need to carefully consider the others.</p>
-<p>An additional wrinkle is that many APIs don’t implement the flow in exactly the same way as the spec. If your initial attempt doesn’t work, you’re going to need to do some sleuthing. This is going to be moderately painful but unfortunately there’s no way around it. I recommend using <code>with_verbose()</code> so you can see exactly what httr2 is sending to the server. You’ll then need to carefully compare this to the API documentation and play spot the difference.</p>
-<p>To get started, I recommend first working with the lower-level <code>oauth_flow_*()</code> functions. They just return a token (rather than authenticating a request) so they’re easy to work with as you get the system up and running.</p>
+<p>When wrapping an API, you’ll need to carefully read the documentation to figure out which flows are available. Typically you’ll want to use the auth code flow, but if it’s not available you’ll need to carefully consider the others. An additional wrinkle is that many APIs don’t implement the flow in exactly the same way as the spec. If your initial attempt doesn’t work, you’re going to need to do some sleuthing. This is going to be painful but unfortunately there’s no way around it. I recommend using <code><a href="../reference/with_verbosity.html">with_verbosity()</a></code> so you can see exactly what httr2 is sending to the server. You’ll then need to carefully compare this to the API documentation and play spot the difference.</p>
 </div>
-<div id="token-caching" class="section level3">
+<div id="tokens" class="section level3">
 <h3 class="hasAnchor">
-<a href="#token-caching" class="anchor" aria-hidden="true"></a>Token caching</h3>
-<p>Token caching. Many acess tokens also have a refresh token, which is a way to get new access tokens. httr2 can cache these tokens. If the token has expired and has a refresh token, we automatically refresh before the first request. If the request errors with a 401 and error <code>invalid_token</code> then we try the refresh token if available, otherwise re-run the full flow.</p>
+<a href="#tokens" class="anchor" aria-hidden="true"></a>Tokens</h3>
+<p>The point of a flow is to get a token. You can use <code><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token()</a></code> to authorise a request with the access token stored inside the token object:</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token</a></span><span class="op">(</span><span class="va">token</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="va">.</span><span class="op">$</span><span class="va">name</span>
+<span class="co">#&gt; [1] "Hadley Wickham"</span></code></pre></div>
+<p>However, in most cases you won’t want to do this, but instead allow httr2 to manage the whole process, by switching from <code>oauth_flow_{name}</code> to <code>req_oauth_{name}</code>:</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token. httr2 will automatically refresh the token in two cases:</p>
+<ul>
+<li><p>The token includes an expiry date that’s in the past.</p></li>
+<li><p>The request returns a 401 status code and</p></li>
+</ul>
+<p>If the access token has expired, httr will automatically retry automatically refresh before the first request. If the request errors with a 401 and <code>invalid_token</code> error in the <code>WWW-authenticate</code> header.</p>
+</div>
+<div id="caching" class="section level3">
+<h3 class="hasAnchor">
+<a href="#caching" class="anchor" aria-hidden="true"></a>Caching</h3>
+<p>By default, <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> and friends will cache the token in memory, so that multiple requests in the same session all use the same token. In some cases, you may want to save the token so that it’s automatically used across sessions. This is easy to do (just set <code>cache_disk = TRUE</code> in <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>) but you need to carefully consider the consequences of saving the users credentials on disk.</p>
+<p>httr2 does the best it can to save these credentials securely. They are stored in a directory that should only be accessible to the current user, and in <code>.rds</code> format which is hard to read from tools other than R. Nevertheless, saving</p>
+<p>You can see which clients have cached tokens by looking in the cache directory used by httr:</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu">rappdirs</span><span class="fu">::</span><span class="fu"><a href="https://rappdirs.r-lib.org/reference/user_cache_dir.html" class="external-link">user_cache_dir</a></span><span class="op">(</span><span class="st">"httr2"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>httr2 automatically deletes any cached tokens that are older than 30 days whenever it’s loaded. This means that you’ll need to re-auth at least once a month, but prevents tokens for hanging around on disk long after you’ve forgotten you created them.</p>
 </div>
 </div>
 

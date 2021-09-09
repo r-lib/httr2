@@ -9,7 +9,7 @@
 <title>httr2 • httr2</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="../deps/bs3compat-0.2.5.1/tabs.js"></script><script src="../deps/bs3compat-0.2.5.1/bs3compat.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="../deps/bs3compat-0.3.0/transition.js"></script><script src="../deps/bs3compat-0.3.0/tabs.js"></script><script src="../deps/bs3compat-0.3.0/bs3compat.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <link href="../syntax-highlighting.css" rel="stylesheet">
@@ -99,11 +99,11 @@
 <span class="co">#&gt; Accept-Encoding: deflate, gzip, br</span></code></pre></div>
 <p>The first line of the request contains three important pieces of information:</p>
 <ul>
-<li><p>The HTTP <strong>method</strong>, which is a verb that tells the server what you want to do. Here’s its GET, the most common verb, indicating that we want to <em>get</em> some data. Other verbs include POST, to send data, PUT, to update an existing resource, and DELETE, to delete resources.</p></li>
-<li><p>The <strong>path</strong>, which is the url stripped of details that the server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).</p></li>
-<li><p>The version of the HTTP protocol. This is unimportant for our purposes and it’s handled at a lower layer in the stack.</p></li>
+<li><p>The HTTP <strong>method</strong>, which is a verb that tells the server what you want to do. Here’s its GET, the most common verb, indicating that we want to <em>get</em> a resource. Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.</p></li>
+<li><p>The <strong>path</strong>, which is the URL stripped of details that the server already knows, i.e. the protocol (<code>http</code> or <code>https</code>), the host (<code>httpbin.org</code>), and the port (not used here).</p></li>
+<li><p>The version of the HTTP protocol. This is unimportant for our purposes because it’s handled at a lower level.</p></li>
 </ul>
-<p>The following lines specify the HTTP <strong>headers</strong>, a series of name-value pairs separated by “:”. The headers in this request were automatically added by httr2, but you can override them or add your own with <code><a href="../reference/req_headers.html">req_headers()</a></code>:</p>
+<p>The following lines specify the HTTP <strong>headers</strong>, a series of name-value pairs separated by <code>:</code>. The headers in this request were automatically added by httr2, but you can override them or add your own with <code><a href="../reference/req_headers.html">req_headers()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>
@@ -136,11 +136,11 @@
 <span class="co">#&gt; {"x":1,"y":"a"}</span></code></pre></div>
 <p>What’s changed?</p>
 <ul>
-<li><p>The method has changed from GET to POST. POST is the standard method for sending data to a website, and is automatically used whenever you add a body. If you need to use a different method, call <code><a href="../reference/req_method.html">req_method()</a></code>.</p></li>
+<li><p>The method has changed from GET to POST. POST is the standard method for sending data to a website, and is automatically used whenever you add a body. Use <code><a href="../reference/req_method.html">req_method()</a></code> to for a different method.</p></li>
 <li><p>There are two new headers: <code>Content-Type</code> and <code>Content-Length</code>. They tell the server how to interpret the body — it’s encoded as JSON and is 15 bytes long.</p></li>
 <li><p>We have a body, consisting of some JSON.</p></li>
 </ul>
-<p>Different servers need data stored in different formats so httr2 provides a selection of common options. For example, <code><a href="../reference/req_body.html">req_body_form()</a></code> uses the same encoding used when you submit a form from your browser:</p>
+<p>Different servers want data encoded differently so httr2 provides a selection of common formats. For example, <code><a href="../reference/req_body.html">req_body_form()</a></code> uses the encoding used when you submit a form from a web browser:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/req_body.html">req_body_form</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -165,17 +165,17 @@
 <span class="co">#&gt; Accept: */*</span>
 <span class="co">#&gt; Accept-Encoding: deflate, gzip, br</span>
 <span class="co">#&gt; Content-Length: 228</span>
-<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------dfa814a7fe14d040</span>
+<span class="co">#&gt; Content-Type: multipart/form-data; boundary=------------------------1ca33212e8abdc28</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; --------------------------dfa814a7fe14d040</span>
+<span class="co">#&gt; --------------------------1ca33212e8abdc28</span>
 <span class="co">#&gt; Content-Disposition: form-data; name="x"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; 1</span>
-<span class="co">#&gt; --------------------------dfa814a7fe14d040</span>
+<span class="co">#&gt; --------------------------1ca33212e8abdc28</span>
 <span class="co">#&gt; Content-Disposition: form-data; name="y"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; a</span>
-<span class="co">#&gt; --------------------------dfa814a7fe14d040--</span></code></pre></div>
+<span class="co">#&gt; --------------------------1ca33212e8abdc28--</span></code></pre></div>
 <p>If you need to send data encoded in a different form, you can use <code><a href="../reference/req_body.html">req_body_raw()</a></code> to add the data to the body and set the <code>Content-Type</code> header.</p>
 </div>
 <div id="perform-a-request-and-fetch-the-response" class="section level2">
@@ -195,7 +195,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; HTTP/1.1 200 OK</span>
-<span class="co">#&gt; date: Wed, 01 Sep 2021 13:40:02 GMT</span>
+<span class="co">#&gt; date: Thu, 09 Sep 2021 20:43:01 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>
@@ -239,7 +239,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_headers&gt;</span>
-<span class="co">#&gt; date: Wed, 01 Sep 2021 13:40:02 GMT</span>
+<span class="co">#&gt; date: Thu, 09 Sep 2021 20:43:01 GMT</span>
 <span class="co">#&gt; content-type: application/json</span>
 <span class="co">#&gt; content-length: 429</span>
 <span class="co">#&gt; server: gunicorn/19.9.0</span>
@@ -279,17 +279,18 @@
 <span class="co">#&gt; Error: HTTP 404 Not Found.</span>
 <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/500"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Error: HTTP 500 Internal Server Error.</span></code></pre></div>
-<p>This is another important difference with httr, which required that you explicitly call <code><a href="https://httr.r-lib.org/reference/stop_for_status.html" class="external-link">httr::stop_for_status()</a></code> to turn HTTP errors into R errors. Revert to the httr behaviour with <code>req_error(req, is_error = ~ FALSE)</code>.</p>
+<p>This is another important difference to httr, which required that you explicitly call <code><a href="https://httr.r-lib.org/reference/stop_for_status.html" class="external-link">httr::stop_for_status()</a></code> to turn HTTP errors into R errors. You can revert to the httr behaviour with <code>req_error(req, is_error = ~ FALSE)</code>.</p>
 </div>
 <div id="control-the-request-process" class="section level2">
 <h2 class="hasAnchor">
 <a href="#control-the-request-process" class="anchor" aria-hidden="true"></a>Control the request process</h2>
-<p>A number of <code>req_</code> functions don’t directly affect how the request is sent but affect the process of submitting the request and handling the response. I won’t give any details here, but you should be aware of the following important functions:</p>
+<p>A number of <code>req_</code> functions don’t directly affect the HTTP request but instead control the overall process of submitting a request and handling the response. These include:</p>
 <ul>
 <li><p><code><a href="../reference/req_cache.html">req_cache()</a></code> sets up a cache so if repeated requests return the same results, you can avoid a trip to the server.</p></li>
 <li><p><code><a href="../reference/req_throttle.html">req_throttle()</a></code> will automatically add a small delay before each request so you can avoid hammering a server with many requests.</p></li>
 <li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> sets up a retry strategy so that if the request either fails or you get a transient HTTP error, it’ll automatically retry after a short delay.</p></li>
 </ul>
+<p>For more details see their documentation, as well as examples of the usage in real APIs in <code>vignette("wrapping-apis.Rmd")</code>.</p>
 </div>
   </div>
  <div class="col-md-3 d-none d-md-block" id="pkgdown-sidebar">
