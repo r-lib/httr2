@@ -1,9 +1,14 @@
 # obfuscated strings are hidden
 
     Code
-      obfuscated("abcdef")
+      x <- obfuscated("abcdef")
+      x
     Output
       <OBFUSCATED>
+    Code
+      str(x)
+    Output
+       <OBFUSCATED>
 
 # can coerce to a key
 

@@ -23,7 +23,11 @@ test_that("can unobfuscate obfuscated string", {
 })
 
 test_that("obfuscated strings are hidden", {
-  expect_snapshot(obfuscated("abcdef"))
+  expect_snapshot({
+    x <- obfuscated("abcdef")
+    x
+    str(x)
+  })
 })
 
 test_that("unobfuscate operates recursively", {

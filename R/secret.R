@@ -191,13 +191,13 @@ obfuscated <- function(x) {
 }
 
 #' @export
-format.httr2_obfuscated <- function(x, ...) {
-  "<OBFUSCATED>"
+str.httr2_obfuscated <- function(object, ...) {
+  cat(" <OBFUSCATED>\n")
 }
 
 #' @export
 print.httr2_obfuscated <- function(x, ...) {
-  cat(format(x), "\n", sep = "")
+  cat("<OBFUSCATED>\n", sep = "")
   invisible(x)
 }
 
