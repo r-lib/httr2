@@ -61,7 +61,7 @@ be useful to expose to the user.</p>
     </div>
 
     <div id="ref-usage" class="ref-usage section level2 sourceCode">
-    <pre class="sourceCode r"><code><span class="fu">req_error</span><span class="op">(</span><span class="va">req</span>, is_error <span class="op">=</span> <span class="cn">NULL</span>, info <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre>
+    <pre class="sourceCode r"><code><span class="fu">req_error</span><span class="op">(</span><span class="va">req</span>, is_error <span class="op">=</span> <span class="cn">NULL</span>, body <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre>
     </div>
 
     <h2>Arguments</h2>
@@ -71,11 +71,11 @@ be useful to expose to the user.</p>
       <dd class="col-sm-9" id="ref-arguments desc"><p>A predicate function that takes a single argument (the
 response) and returns <code>TRUE</code> or <code>FALSE</code> indicating whether or not an
 R error should signalled.</p></dd>
-    <dt class="col-sm-3 section level2" id="pkg-arg-info">info</dt>
+    <dt class="col-sm-3 section level2" id="pkg-arg-body">body</dt>
       <dd class="col-sm-9" id="ref-arguments desc"><p>A callback function that takes a single argument (the response)
-and returns a character vector of additional information about the error.
-This vector is passed along to the <code>message</code> argument of <code><a href="https://rlang.r-lib.org/reference/abort.html">rlang::abort()</a></code>
-so you can use any formatting that it supports.</p></dd>
+and returns a character vector of additional information to include in the
+body of the error. This vector is passed along to the <code>message</code> argument
+of <code><a href="https://rlang.r-lib.org/reference/abort.html">rlang::abort()</a></code> so you can use any formatting that it supports.</p></dd>
     </dl><div class="ref-section section level2" id="section-value">
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value" aria-hidden="true"></a>Value</h2>
 
