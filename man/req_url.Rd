@@ -20,7 +20,8 @@ req_url_path_append(req, path)
 
 \item{url}{New URL; completely replaces existing.}
 
-\item{...}{Name-value pairs that provide query parameters.}
+\item{...}{Name-value pairs that provide query parameters. Each value
+must be a length-1 atomic vector.}
 
 \item{path}{Path to replace or append to existing path.}
 }

@@ -38,3 +38,11 @@ test_that("can modify query params iteratively", {
   expect_equal(req_url_query(req, a = 2)$url, "http://example.com/?a=2&b=2")
   expect_equal(req_url_query(req, b = NULL)$url, "http://example.com/?a=1")
 })
+
+test_that("query components must be length 1", {
+  expect_snapshot(error = TRUE, {
+    req <- request("http://example.com/")
+    req %>% req_url_query(a = mean)
+    req %>% req_url_query(a = letters)
+  })
+})

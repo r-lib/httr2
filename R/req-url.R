@@ -33,7 +33,8 @@ req_url <- function(req, url) {
 
 #' @export
 #' @rdname req_url
-#' @param ... Name-value pairs that provide query parameters.
+#' @param ... Name-value pairs that provide query parameters. Each value
+#'   must be a length-1 atomic vector.
 req_url_query <- function(req, ...) {
   check_request(req)
 

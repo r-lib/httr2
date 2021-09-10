@@ -167,6 +167,14 @@ query_build <- function(x) {
     return(NULL)
   }
 
+  bad_val <- lengths(x) != 1 | !map_lgl(x, is_atomic)
+  if (any(bad_val)) {
+    abort(c(
+      "Query parameters must be length 1 atomic vectors.",
+      paste0("Problems: ", paste0(names(x)[bad_val], collapse =", "))
+    ))
+  }
+
   names <- curl::curl_escape(names(x))
   values <- map_chr(x, curl::curl_escape)
 
