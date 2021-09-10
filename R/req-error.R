@@ -33,5 +33,19 @@ error_is_error <- function(req, resp) {
 }
 
 error_body <- function(req, resp) {
-  req_policy_call(req, "error_body", list(resp), default = NULL)
+  # TODO: revisit once rlang has better support for this
+  tryCatch(
+    req_policy_call(req, "error_body", list(resp), default = NULL),
+    error = function(cnd) {
+      msg <- c(
+        "",
+        "Additionally, req_error(body = ) failed with error:",
+        gsub("\n", "\n  ", conditionMessage(cnd))
+      )
+      if (utils::packageVersion("rlang") >= "0.4.11.9001") {
+        names(msg)[[3]] <- " "
+      }
+      msg
+    }
+  )
 }
