@@ -42,7 +42,7 @@ error_body <- function(req, resp) {
         "Additionally, req_error(body = ) failed with error:",
         gsub("\n", "\n  ", conditionMessage(cnd))
       )
-      if (packageVersion("rlang") >= "0.4.11.9001") {
+      if (utils::packageVersion("rlang") >= "0.4.11.9001") {
         names(msg)[[3]] <- " "
       }
       msg
