@@ -158,11 +158,15 @@ query_parse <- function(x) {
 }
 
 query_build <- function(x) {
-  if (!is_named(x) || !is_list(x)) {
+  if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
     abort("Query must be a named list")
   }
 
   x <- compact(x)
+  if (length(x) == 0) {
+    return(NULL)
+  }
+
   names <- curl::curl_escape(names(x))
   values <- map_chr(x, curl::curl_escape)
 

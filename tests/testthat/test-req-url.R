@@ -25,3 +25,16 @@ test_that("can set query params", {
   expect_equal(req_url_query(req, a = 1, b = 2, c = NULL)$url, "http://example.com/?a=1&b=2")
   expect_equal(req_url_query(req, !!!list(a = 1, b = 2))$url, "http://example.com/?a=1&b=2")
 })
+
+test_that("empty query doesn't affect url", {
+  req <- request("http://example.com/")
+  expect_equal(req_url_query(req)$url, "http://example.com/")
+  expect_equal(req_url_query(req, a = NULL)$url, "http://example.com/")
+})
+
+test_that("can modify query params iteratively", {
+  req <- request("http://example.com/?a=1&b=2")
+  expect_equal(req_url_query(req, c = 3)$url, "http://example.com/?a=1&b=2&c=3")
+  expect_equal(req_url_query(req, a = 2)$url, "http://example.com/?a=2&b=2")
+  expect_equal(req_url_query(req, b = NULL)$url, "http://example.com/?a=1")
+})

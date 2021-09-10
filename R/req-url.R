@@ -36,7 +36,11 @@ req_url <- function(req, url) {
 #' @param ... Name-value pairs that provide query parameters.
 req_url_query <- function(req, ...) {
   check_request(req)
-  req_url(req, url_modify(req$url, query = list2(...)))
+
+  url <- url_parse(req$url)
+  url$query <- modify_list(url$query, ...)
+
+  req_url(req, url_build(url))
 }
 
 #' @export
