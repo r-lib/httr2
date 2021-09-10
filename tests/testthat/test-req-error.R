@@ -19,4 +19,10 @@ test_that("can customise error info", {
 test_that("failing callback still generates useful body", {
   req <- request_test() %>% req_error(body = ~ abort("This is an error!"))
   expect_snapshot_output(error_body(req, response(404)))
+
+  expect_snapshot(error = TRUE, {
+    req <- request("https://httpbin.org/status/404")
+    req <- req %>% req_error(body = ~ resp_body_json(.x)$error)
+    req %>% req_perform()
+  })
 })
