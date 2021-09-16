@@ -146,7 +146,7 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
 str(faker("images", width = 300))
 ```
 
-There's one trick to notice here --- `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US") `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
+There's one trick to notice here --- `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")) `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
 
 JENNY COMMENT HERE
 
