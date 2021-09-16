@@ -70,7 +70,7 @@ resp %>% resp_body_json() %>% str()
 ### Errors
 
 It's always worth a little early experimentation to see if we get any useful information from errors.
-JENNY COMMENT HERE The httr2 details get in your way here, because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:
+The httr2 defaults get in your way here, because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:
 
 ```{r, error = TRUE, eval = faker_ok}
 req %>% 
@@ -78,7 +78,7 @@ req %>%
   req_perform()
 ```
 
-You can access the failed response with `last_response()`:
+However, you can access the last response (successful or not) with `last_response()`:
 
 ```{r, eval = faker_ok}
 resp <- last_response()
@@ -117,7 +117,7 @@ For faker, I spent a little with the [documentation](https://fakerapi.it/en#basi
 -   Every URL is of the form [`https://fakerapi.it/api/v1`](https://fakerapi.it/api/v1)`/{resource}`, and data is passed to the resource with query parameters.
     All parameters start with `_`.
 
--   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed` which have default values of `en_US`, `1`, and `null` respectively.
+-   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed` which have default values of `en_US`, `10`, and `null` respectively.
 
 -   All endpoints return JSON data.
 
@@ -161,7 +161,7 @@ So typically the next step in the process is to wrap up some individual endpoint
 
 JENNY COMMENT HERE
 
-For example, let's take the persons endpoint which has three additional parameters: `gender` (male or female), `birthday_start`, and `birthday_end`.
+For example, let's take the `persons` endpoint which has three additional parameters: `gender` (male or female), `birthday_start`, and `birthday_end`.
 A simple wrapper would start something like this:
 
 ```{r, eval = faker_ok}
@@ -233,8 +233,7 @@ has_auth <- secret_has_key("HTTR2_KEY") &&
 knitr::opts_chunk$set(eval = has_auth)
 ```
 
-Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview).
-It requires a very simple authentication with an API key that's included in every request.
+Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview). It requires a very simple authentication with an API key that's included in every request.
 When you're wrapping an API that has a key you're going to face two struggles:
 
 -   How do you test your package without sharing your key with the whole world?
@@ -293,9 +292,8 @@ So now you can understand how the following code works:
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
-JENNY COMMENT HERE
-
-Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `has_auth <- secret_has_key("HTTR2_KEY")`, then use `knitr::opts_chunk(eval = has_auth)` so that the code is only run when possible.
+To make this vignette work everywhere (e.g. on CRAN which won't have have this key), I first figure out whether it's available with `has_auth <- secret_has_key("HTTR2_KEY")`.
+Then I do `knitr::opts_chunk(eval = has_auth)` so that all future chunks are only evaluated if the key is available.
 
 When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
 That means that your auth-requiring tests will automatically be skipped on CRAN.
@@ -346,16 +344,10 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_perform()
 ```
 
-To see if there's any extra useful information we can again suppress the default error and inspect the result:
+To see if there's any extra useful information we can again look at `last_response():`
 
-JENNY COMMENT HERE
-
-```{r, error = TRUE}
-resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
-  req_url_path_append("/reviews.json") %>% 
-  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
-  req_error(is_error = ~ FALSE) %>% 
-  req_perform()
+```{r}
+resp <- last_response()
 resp
 resp %>% resp_body_json()
 ```
@@ -371,12 +363,14 @@ This should be a function that takes a response and returns a character vector o
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
 ```{r, error = TRUE}
+nytimes_error_body <- function(resp) {
+  resp %>% resp_body_json() %>% .$fault %>% .$faultstring
+}
+
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
-  req_error(body = function(resp) {
-    resp %>% resp_body_json() %>% .$fault %>% .$faultstring
-  }) %>% 
+  req_error(body = nytimes_error_body) %>% 
   req_perform()
 ```
 
@@ -388,8 +382,6 @@ The [frequently asked questions](https://developer.nytimes.com/faq#a11) page des
 > Yes, there are two rate limits per API: 4,000 requests per day and 10 requests per minute.
 > You should sleep 6 seconds between calls to avoid hitting the per minute rate limit.
 > If you need a higher rate limit, please contact us at [code\@nytimes.com](mailto:code@nytimes.com){.email}.
-
-JENNY SARCASTIC AND BITTER COMMENT HERE
 
 Many APIs return additional information about how long to wait when the rate limit is exceeded (often using the `Retry-After` header).
 So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.
@@ -416,7 +408,6 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
 ### Wrapping it up
 
 Putting together all the pieces above yields a function something like this:
-
 
 ```{r}
 nytimes_books <- function(api_key, path, ...) {
@@ -466,8 +457,6 @@ get_api_key <- function() {
 Then you could modify `nytimes_books()` to use `get_api_key()` as the default value for `api_key`.
 Since the argument is now optional, we can move it to end of the argument list, since it'll only be needed in exceptional circumstances.
 
-JENNY COMMENT HERE
-
 ```{r, eval = FALSE}
 nytimes_books <- function(path, ..., api_key = get_api_key()) {
   ...
@@ -488,8 +477,7 @@ testing_key <- function() {
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (identical(key, "")) {
-    if (is_testing()) {
-      # JENNY COMMENT HERE
+    if (is_testing() && secret_has_key("HTTR2_KEY")) {
       testing_key()
     } else {
       stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")  
@@ -568,10 +556,8 @@ resp %>% resp_body_json()
 That body looks pretty useful!
 So let's write a function that extracts the data and formats it for presentation to the user:
 
-JENNY COMMENT HERE
-
 ```{r}
-github_error_body <- function(resp) {
+gist_error_body <- function(resp) {
   body <- resp_body_json(resp)
   
   message <- body$message
@@ -580,7 +566,7 @@ github_error_body <- function(resp) {
   }
   message
 }
-github_error_body(resp)
+gist_error_body(resp)
 ```
 
 Now I can pass this function to the `body` argument of `req_error()` and it will be automatically included in the error when a request fails:
@@ -589,7 +575,7 @@ Now I can pass this function to the `body` argument of `req_error()` and it will
 request("https://api.github.com/gists") %>% 
   req_url_query(since = "yesterday") %>% 
   req_headers(Authorization = paste("token", token)) %>% 
-  req_error(body = github_error_body) %>% 
+  req_error(body = gist_error_body) %>% 
   req_perform()
 ```
 
@@ -611,11 +597,11 @@ The first tells us whether or not a response has a transient error, i.e. it's wo
 For GitHub, when the rate limit is [exceeded](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting), the response has a 403 status and a `X-RateLimit-Remaining: 0` header:
 
 ```{r}
-github_is_transient <- function(resp) {
+gist_is_transient <- function(resp) {
   resp_status(resp) == 403 && 
     resp_header(resp, "X-RateLimit-Remaining") == "0"
 }
-github_is_transient(resp)
+gist_is_transient(resp)
 ```
 
 Then we need a function tells how long to wait.
@@ -623,11 +609,11 @@ GitHub tells us when the rate limit resets (as number of seconds since 1970-01-0
 To convert that to a number of seconds to wait we first convert it to a number (since HTTP headers are always strings), then subtract off the current time (in number of seconds since 1970-01-01):
 
 ```{r}
-github_after <- function(resp) {
+gist_after <- function(resp) {
   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
   time - unclass(Sys.time())
 }
-github_after(resp)
+gist_after(resp)
 ```
 
 We then pass functions to `req_retry()` so httr2 has all the information it needs to handle rate-limiting automatically:
@@ -648,7 +634,7 @@ You also need to supply either `max_tries` or `max_seconds` in order to activate
 Let's wrap up everything we've learned so far into a single function that creates a request:
 
 ```{r}
-req_github <- function(token) {
+req_gist <- function(token) {
   request("https://api.github.com/gists") %>% 
     req_headers(Authorization = paste("token", token)) %>% 
     req_error(body = github_error_body) %>% 
@@ -659,7 +645,7 @@ req_github <- function(token) {
 }
 
 # Check it works:
-req_github(token) %>% 
+req_gist(token) %>% 
   req_perform()
 ```
 
@@ -667,13 +653,11 @@ We'll use this as the basis to solve the next challenge: uploading a gist.
 
 ### Sending data
 
-To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist) we need to send a `POST` request with a body that contains data encoded as JSON.
+To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist) we need to change the method to `POST` and add a body that contains data encoded as JSON.
 httr2 provides one function that does both of these things: `req_body_json()`:
 
-JENNY COMMENT HERE
-
 ```{r}
-req <- req_github(token) %>% 
+req <- req_gist(token) %>% 
   req_body_json(list(
     description = "This is my cool gist!",
     files = list(test.R = list(content = "print('Hi!')")),
@@ -702,7 +686,7 @@ To do so, I need to again send JSON encoded data, but this time I need to use th
 So after adding the data to request, I use `req_method()` to override the default method:
 
 ```{r}
-req <- req_github(token) %>% 
+req <- req_gist(token) %>% 
   req_url_path_append(id) %>% 
   req_body_json(list(description = "This is a lame gist")) %>% 
   req_method("PATCH")
@@ -714,7 +698,7 @@ req %>% req_dry_run()
 Deleting a gist is similar, except we don't send any data, we just need to adjust the default method from `GET` to `DELETE`.
 
 ```{r}
-req <- req_github(token) %>% 
+req <- req_gist(token) %>% 
   req_url_path_append(id) %>% 
   req_method("DELETE")
 req %>% req_dry_run()
@@ -786,7 +770,8 @@ This flow can't be used inside a vignette because it's designed specifically for
 
 Other flows provide different ways of getting the token:
 
--   `req_oauth_client_credentials()` is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user). JENNY COMMENT HERE
+-   `req_oauth_client_credentials()` is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user).
+    JENNY COMMENT HERE
 
 -   `req_oauth_device()` uses the "device" flow which is designed for devices like TVs that don't have an easy way to enter data.
     It also works well from the console.
@@ -833,16 +818,7 @@ request("https://api.github.com/user") %>%
 ```
 
 This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token.
-httr2 will automatically refresh the token in two cases:
-
--   The token includes an expiry date that's in the past.
-
--   The request returns a 401 status code.
-
-JENNY COMMENT HERE
-
-If the access token has expired, httr2 will automatically retry automatically refresh before the first request.
-If the request errors with a 401 and `invalid_token` error in the `WWW-authenticate` header.
+httr2 will automatically refresh the token if its expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
 
 ### Caching
 
