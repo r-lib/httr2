@@ -25,7 +25,7 @@ Along the way, you'll learn about how to:
 -   Consistently throttle the rate of requests or dynamically respond to rate limiting headers sent by the server.
 
 I assume you're familiar with the basics of building a package.
-If not, you might want to reading the "[The Whole Game](https://r-pkgs.org/whole-game.html)" chapter of [R packages](https://r-pkgs.org) first.
+If not, you might want to read the "[The Whole Game](https://r-pkgs.org/whole-game.html)" chapter of [R packages](https://r-pkgs.org) first.
 
 ```{r setup}
 library(httr2)
@@ -59,7 +59,7 @@ req <- request("https://fakerapi.it/api/v1")
 resp <- req %>% 
   # Then we add on the images path
   req_url_path_append("images") %>% 
-  # Add set _width and _quantity query parameters
+  # Add query parameters _width and _quantity
   req_url_query(`_width` = 380, `_quantity` = 1) %>% 
   req_perform()
 
@@ -70,7 +70,7 @@ resp %>% resp_body_json() %>% str()
 ### Errors
 
 It's always worth a little early experimentation to see if we get any useful information from errors.
-The httr2 details get in your way here because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:
+The httr2 defaults get in your way here, because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:
 
 ```{r, error = TRUE, eval = faker_ok}
 req %>% 
@@ -78,14 +78,15 @@ req %>%
   req_perform()
 ```
 
-You can access the failed response with `last_response()`:
+However, you can access the last response (successful or not) with `last_response()`:
 
 ```{r, eval = faker_ok}
 resp <- last_response()
 resp %>% resp_body_json()
 ```
 
-It doesn't look like there's anything useful there so I'll double check the headers:
+It doesn't look like there's anything useful there.
+Sometimes useful info is returned in the headers, so let's check:
 
 ```{r, eval = faker_ok}
 resp %>% resp_headers()
@@ -96,25 +97,25 @@ We'll have another go later with an API that does provide more details.
 
 ### User agent
 
-When making a package that calls an API it's considered polite to set a user agent, so that if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
+If you're wrapping this code into a package, it's considered polite to set a user agent, so that, if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
 You can do this with the `req_user_agent()` function:
 
 ```{r, eval = faker_ok}
 req %>%
-  req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
+  req_user_agent("my_package_name (http://my.package.web.site)") %>% 
   req_dry_run()
 ```
 
 ### Core request function
 
-Once you've successful made a few requests, it's worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.
+Once you've made a few successful requests, it's worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.
 
 For faker, I spent a little with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
 
 -   Every URL is of the form [`https://fakerapi.it/api/v1`](https://fakerapi.it/api/v1)`/{resource}`, and data is passed to the resource with query parameters.
     All parameters start with `_`.
 
--   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed` which have default values of `en_US`, `1` and `null` respectively.
+-   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed`.
 
 -   All endpoints return JSON data.
 
@@ -133,7 +134,7 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
   request("https://fakerapi.it/api/v1") %>% 
     req_url_path_append(resource) %>% 
     req_url_query(!!!params) %>% 
-    req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
+    req_user_agent("my_package_name (http://my.package.web.site)") %>% 
     req_perform() %>% 
     resp_body_json()
 }
@@ -141,10 +142,20 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
 str(faker("images", width = 300))
 ```
 
-There's one trick to notice here --- `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US") `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
+I've made a few important choices here:
 
-Here I've decided to make my central function perform the request and parse the result.
-If the API you are wrapping is more variable, you may want to return a request object that the caller can modify before fetching the response.
+-   I've decided to supply default values for the `quantity` and `locale` parameters.
+    This makes my function easier to demo in this vignette.
+
+-   I've used a default of `NULL` for the `seed` argument.
+    `req_url_query()` will automatically drop `NULL` arguments so this means that no default value is sent to the API, but when you read the function definition you can still see that `seed` is accepted.
+
+-   I automatically all prefix query parameters with `_` because argument names starting with `_` are hard to type in R.
+
+-   My function generates the request, performs it, and extracts the body of the response.
+    This works well for simple cases, but for more complex APIs you might want to return a request object that can be modified before being performed.
+
+I also used one cool trick: `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")) `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
 
 ### Wrapping individual endpoints
 
@@ -152,7 +163,7 @@ If the API you are wrapping is more variable, you may want to return a request o
 But it's not very friendly for the package user who might not know anything about web APIs.
 So typically the next step in the process is to wrap up some individual endpoints with their own functions.
 
-For example, let's take the persons endpoint which has three additional parameters: `gender` (male or female), `birthday_start`, and `birthday_end`.
+For example, let's take the `persons` endpoint which has three additional parameters: `gender` (male or female), `birthday_start`, and `birthday_end`.
 A simple wrapper would start something like this:
 
 ```{r, eval = faker_ok}
@@ -213,7 +224,93 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
 faker_person("male", quantity = 5)
 ```
 
-The next steps would be to export and document this function; but I'll leave that up to you.
+The next steps would be to export and document this function; I'll leave that up to you.
+
+## Secret management
+
+We need to take a quick break from APIs to talk about secrets.
+Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
+And even if you expect that your users will usually provide this information, you're still going to need your own credentials in order to actually test your package.
+
+This system is probably overkill if you only have one secret that you need to share in one or two places.
+But you almost invariably accumulate more secrets over time, and more people and computers that you need to share them with, so I think spending a little time to understand this system and set up it for your package will pay off in the long term.
+
+### Basics
+
+httr2 provides `secret_encrypt()` and `secret_decrypt()` to scramble secrets so that you can include them in your public source code without worrying that others can read them.
+There are three basic steps to this process:
+
+1.  You create an **encryption** key with `secret_make_key()` that is used to scramble and descramble secrets using symmetric cryptography:
+
+    ```{r}
+    key <- secret_make_key()
+    key
+    ```
+
+    (Note that `secret_make_key()` uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R's RNG settings, and there's no way to make it reproducible.)
+
+2.  You scramble your secrets with `secret_encrypt()` and store the resulting text directly in the source code of your package:
+
+    ```{r}
+    secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
+    secret_scrambled
+    ```
+
+3.  When needed, you descramble the the secret using `secret_decrypt()`:
+
+    ```{r}
+    secret_decrypt(secret_scrambled, key)
+    ```
+
+### Package keys and secrets
+
+You can create any number of encryption keys, but I highly recommend that you create one key per package, which I'll call the **package** key.
+In this section, I'll show you how to store that key so that you (and your automated tests) can use it, but no one else can.
+
+httr2 is built around the notion that this key should live in an environment variable.
+So the first step is to make your package key available on your local development machine by adding a line to your your user-level `.Renviron` (which you can easily open with `usethis::edit_r_environ()`):
+
+    YOURPACKAGE_KEY=key_you_generated_with_secret_make_key
+
+```{r, include = FALSE}
+Sys.setenv(YOURPACKAGE_KEY = secret_make_key())
+```
+
+Now (after you restart R), you'll be able to take advantage of a special `secret_encrypt()` and `secret_decrypt()` feature: the `key` argument can be the name of an environment variable, instead of the encryption key itself.
+In fact, this is most natural usage.
+
+```{r}
+secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
+secret_scrambled
+secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
+```
+
+You'll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it.
+This requires two steps:
+
+1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
+
+2.  Share the key with the workflows that need it by adding a line to the appropriate workflow:
+
+    ``` yaml
+        env:
+          YOURPACKAGE_KEY: ${{ secrets.YOURPACKAGE_KEY }}
+    ```
+
+    You can see how httr2 does it in [its GitHub workflow](https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml){.uri}.
+
+Other continuous integration platforms will offer similar ways to make a key available as a secure environment variable.
+
+### When the package key isn't available
+
+There are a few important cases where your code won't have access to your package key: on CRAN, on the personal machines of external contributors, and in automated checks on their PRs.
+So if you want to share your package on CRAN or make it easy for others to contribute, you need to make sure that your examples, vignettes, and tests all work without error:
+
+-   In vignettes, you can run `knitr::opts_chunk(eval = secret_has_key("YOURPACKAGE_KEY"))` so that chunks are only evaluated if your key is available.
+
+-   In examples, you can surround code blocks that require your key with `if (httr2::secret_has_key("YOURPACKAGE_KEY")) {}`
+
+-   You don't need to do anything in tests because when `secret_decrypt()` is run by testhat, it will automatically `skip()` the test if the key isn't available.
 
 ## NYTimes Books API
 
@@ -231,74 +328,27 @@ When you're wrapping an API that has a key you're going to face two struggles:
 
 -   How do you allow your users to supply their own key, without having to pass it to every function?
 
-I'll start by tackling the first problem because otherwise there's no way for me to show how the API works in this vignette 😃.
-We'll come back to the second at the very end of this section, because it's easiest to tackle once we have a function in place.
-
-### Encrypting secrets
-
-httr2 provides the `secret_decrypt()` and `secret_decrpyt()` functions that use asymmetric cryptography.
-To use them you need to first create a "key" that's used to lock and unlock the secrets.
-The best key is random because there's no way for anyone to guess it.
-httr2 provides `secret_make_key()` to make a secure key for you:
-
-```{r}
-secret_make_key()
-```
-
-(Don't copy and paste this key; run `secret_make_key()` yourself to make your own personal key.)
-
-Now you need to make this key available in the places were you want to unlock the secrets.
-httr2 provides tools to retrieve keys from environment variables because this is a common way of communicating these sort of secrets.
-So start by opening your `.Renviron` (e.g. with `usethis::edit_r_environ()`) and add a line like:
-
-    YOURPACKAGE_KEY=key_that_you_generated_above
-
-Another place you'll probably want to provide the key is in your Github actions.
-This is a two step process:
-
-1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
-
-2.  Share the secret with the workflows that need it by adding a line to the appropriate workflow:
-
-    ``` yaml
-        env:
-          HTTR2_KEY: ${{ secrets.HTTR2_KEY }}
-    ```
-
-    You can see how httr2 does it in <https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml>.
-
-Now you can encrypt your API key and store it in your tests --- there's no way for anyone to decrypt it unless they have your key.
-
-```{r}
-x <- secret_encrypt("my-secret", "HTTR2_KEY")
-x
-secret_decrypt(x, "HTTR2_KEY")
-```
-
-So now you can understand how the following code works:
+So now you can understand how the following code works to get my NYTimes Book API key:
 
 ```{r}
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
-Since most people won't have this key, n the source of this vignette I also check whether or not it's available with `has_auth <- secret_has_key("HTTR2_KEY")`, then use `knitr::opts_chunk(eval = has_auth)` so that the code is only run when possible.
-
-When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
-That means your tests will automatically pass on CRAN.
+I'll start by tackling the first problem because otherwise there's no way for me to show how the API works in this vignette 😃.
+We'll come back to the second at the very end of this section, because it's easiest to tackle once we have a function in place.
 
 ### Security considerations
 
-Note that including an API key in a query is a relatively insecure; if an API uses it, its typically because the key is relatively easy to create or gives relatively few privileges.
+Note that including an API key as a query parameter is relatively insecure; if an API uses this method of auth, it's typically because the key is relatively easy to create or gives relatively few privileges.
 Here it only takes a couple of minutes to generate your own NYTimes API key, so there's little incentive for someone to try and steal yours.
 
-The main problem of storing credentials in the url is that it's easily revealable, because httr2 makes no efforts to redact confidential information stored in query parameters.
+The main problem of conveying credentials via the url is that it's easily exposed, because httr2 makes no efforts to redact confidential information stored in query parameters.
 This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)`, `req_dry_run()`, or even just print the request object.
-
-All in all, this mean you need to be a little cautious if you need to get help with a reprex; you'll need to manually redact the key.
+And indeed, you'll see that in the examples below --- this is bad practice for a real package, but I think it's ok here because the key doesn't allow you to do anything valuable and it makes teaching APIs so much easier.
 
 ### Basic request
 
-Now lets perform a test request and look at the response:
+Now let's perform a test request and look at the response:
 
 ```{r}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
@@ -316,7 +366,7 @@ resp %>%
   str()
 ```
 
-Before we start wrapping this up into a function lets consider what happens with errors.
+Before we start wrapping this up into a function, let's consider what happens with errors.
 
 ### Error handling
 
@@ -330,14 +380,10 @@ resp <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_perform()
 ```
 
-To see if there's any extra useful information we can again suppress the default error and inspect the result:
+To see if there's any extra useful information we can again look at `last_response():`
 
-```{r, error = TRUE}
-resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
-  req_url_path_append("/reviews.json") %>% 
-  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
-  req_error(is_error = ~ FALSE) %>% 
-  req_perform()
+```{r}
+resp <- last_response()
 resp
 resp %>% resp_body_json()
 ```
@@ -353,12 +399,14 @@ This should be a function that takes a response and returns a character vector o
 Once we do that and re-fetch the request, we see the additional information displayed in the R error:
 
 ```{r, error = TRUE}
+nytimes_error_body <- function(resp) {
+  resp %>% resp_body_json() %>% .$fault %>% .$faultstring
+}
+
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
   req_url_path_append("/reviews.json") %>% 
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
-  req_error(body = function(resp) {
-    resp %>% resp_body_json() %>% .$fault %>% .$faultstring
-  }) %>% 
+  req_error(body = nytimes_error_body) %>% 
   req_perform()
 ```
 
@@ -374,7 +422,7 @@ The [frequently asked questions](https://developer.nytimes.com/faq#a11) page des
 Many APIs return additional information about how long to wait when the rate limit is exceeded (often using the `Retry-After` header).
 So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.
 That means we can't use `req_retry()`, which automatically waits the amount of time the server requests.
-Instead, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
+Instead, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60 seconds:
 
 ```{r}
 req <- request("https://api.nytimes.com/svc/books/v3") %>% 
@@ -383,7 +431,7 @@ req <- request("https://api.nytimes.com/svc/books/v3") %>%
   req_throttle(10 / 60)
 ```
 
-By default, `req_throttle()` shares the limit across all requests made to to host (i.e. `api.nytimes.com`).
+By default, `req_throttle()` shares the limit across all requests made to the host (i.e. `api.nytimes.com`).
 Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
 
 ```{r}
@@ -402,9 +450,7 @@ nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") %>% 
     req_url_path_append("/reviews.json") %>% 
     req_url_query(..., `api-key` = api_key) %>% 
-    req_error(body = function(resp) {
-      resp %>% resp_body_json() %>% .$fault %>% .$faultstring
-    }) %>% 
+    req_error(body = nytimes_error_body) %>% 
     req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") %>% 
     req_perform() %>% 
     resp_body_json()
@@ -416,15 +462,15 @@ drunk$results[[1]]$summary
 
 To finish this up for a real package, you'd want to:
 
--   Add explicit arguments and check that they're correct type.
+-   Add explicit arguments and check that they have the correct type.
 
 -   Export and document the function.
 
--   Converted the nested list into a more user friendly data structure (probably a data frame with one row per review).
+-   Convert the nested list into a more user-friendly data structure (probably a data frame with one row per review).
 
 You'd also want to provide some convenient way for the user to supply their own API key.
 
-### User supplied key
+### User-supplied key
 
 A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
 Then you'd write a function to retrieve the API key, returning a helpful message if it's not found:
@@ -448,17 +494,9 @@ nytimes_books <- function(path, ..., api_key = get_api_key()) {
 }
 ```
 
-You might extend `get_api_key()` to also consult your encrypted key to make it easier to write tests:
+It's a good idea to extend `get_api_key()` to automatically use your encrypted key to make it easier to write tests:
 
 ```{r}
-is_testing <- function() {
-  identical(Sys.getenv("TESTTHAT"), "true")
-}
-
-testing_key <- function() {
-  secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
-}
-
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (identical(key, "")) {
@@ -470,13 +508,21 @@ get_api_key <- function() {
   }
   key
 }
+
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
+
+testing_key <- function() {
+  secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
+}
 ```
 
 ## Github Gists API
 
-Next we'll take a look at an API that can make changes, not just retrieve data: [GitHub's gist API](https://docs.github.com/en/rest/reference/gists).
+Next we'll take a look at an API that can make changes on behalf of a user, not just retrieve data: [GitHub's gist API](https://docs.github.com/en/rest/reference/gists).
 This uses different HTTP methods to perform different actions, like creating, updating, and deleting gists.
-But before we can get to those, lets handle authentication, rate-limiting, and errors.
+But before we can get to those, let's handle authentication, rate-limiting, and errors.
 
 ### Authentication
 
@@ -485,13 +531,14 @@ A token is an alternative to a username and password.
 You have one username + password per site; you can have one token per use case.
 This lets each use case have a minimal set of permissions, and you can easily revoke one token without affecting any other use case.
 
-I created a personal access token specifically for this vignette that can only access gists, and as in the last example, stored an encrypted version in this vignette:
+I created a personal access token specifically for this vignette that can only access gists, and, as in the last example, stored an encrypted version in this vignette:
 
 ```{r}
 token <- secret_decrypt("Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g", "HTTR2_KEY")
 ```
 
 If you want to run this vignette yourself, you'll need to create a new token in your [GitHub settings](https://github.com/settings/tokens); just make sure it includes the "gist" scope.
+It's also a good idea to give every token a descriptive name, that reminds you of its motivating use case.
 
 To authenticate a request with the token, we need to put it in the `Authorization` header with a ["token" prefix](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication):
 
@@ -504,8 +551,8 @@ req %>% req_perform()
 
 Because the authorization header usually contains secret information, httr2 automatically redacts it[^1]:
 
-[^1]: Again, it's still possible to extract it with a little extra work but httr2 tries to help you avoid revealing it by accident.
-    httr protects you from yourself, not from someone deliberately trying to find the secret.
+[^1]: Again, it's still possible to extract it with a little extra work, but httr2 tries to help you avoid revealing it by accident.
+    httr2 protects you from yourself, not from someone deliberately trying to find the secret.
 
 ```{r}
 req
@@ -516,7 +563,10 @@ req %>% req_dry_run()
 
 Once you've got authentication working, it's always a good idea to work on errors next, since that will help you debug any failed requests.
 In my experience APIs rarely do a good job of documenting their errors, so you'll often have to do a little experimentation.
-Here I'll construct a deliberately malformed query and see what happens:
+To add to the pain, in large APIs different endpoints often return different amounts of information in different forms.
+You'll typically need to tackle your error handling iteratively, improving your code each time you encounter a new problem.
+
+While GitHub does [document its errors](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#client-errors), I'm sufficiently distrustful that I still want to construct a deliberately malformed query and see what happens:
 
 ```{r, error = TRUE}
 resp <- request("https://api.github.com/gists") %>% 
@@ -525,9 +575,8 @@ resp <- request("https://api.github.com/gists") %>%
   req_perform()
 ```
 
-As expected, I get an HTTP error.
-But does the response contain any useful information?
-Let's take a look:
+As documented I get a 422 "Unprocessable Entity" error.
+But the response is rather different to documentation which suggests there should be a string `message` and a list of `errors`:
 
 ```{r}
 resp <- last_response()
@@ -535,11 +584,10 @@ resp
 resp %>% resp_body_json()
 ```
 
-That body looks pretty useful!
-So let's write a function that extracts the data and formats it for presentation to the user:
+I'll proceed anyway, writing a function that extracts the data and formats it for presentation to the user:
 
 ```{r}
-github_error_body <- function(resp) {
+gist_error_body <- function(resp) {
   body <- resp_body_json(resp)
   
   message <- body$message
@@ -548,7 +596,7 @@ github_error_body <- function(resp) {
   }
   message
 }
-github_error_body(resp)
+gist_error_body(resp)
 ```
 
 Now I can pass this function to the `body` argument of `req_error()` and it will be automatically included in the error when a request fails:
@@ -557,7 +605,7 @@ Now I can pass this function to the `body` argument of `req_error()` and it will
 request("https://api.github.com/gists") %>% 
   req_url_query(since = "yesterday") %>% 
   req_headers(Authorization = paste("token", token)) %>% 
-  req_error(body = github_error_body) %>% 
+  req_error(body = gist_error_body) %>% 
   req_perform()
 ```
 
@@ -579,11 +627,11 @@ The first tells us whether or not a response has a transient error, i.e. it's wo
 For GitHub, when the rate limit is [exceeded](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting), the response has a 403 status and a `X-RateLimit-Remaining: 0` header:
 
 ```{r}
-github_is_transient <- function(resp) {
+gist_is_transient <- function(resp) {
   resp_status(resp) == 403 && 
     resp_header(resp, "X-RateLimit-Remaining") == "0"
 }
-github_is_transient(resp)
+gist_is_transient(resp)
 ```
 
 Then we need a function tells how long to wait.
@@ -591,11 +639,11 @@ GitHub tells us when the rate limit resets (as number of seconds since 1970-01-0
 To convert that to a number of seconds to wait we first convert it to a number (since HTTP headers are always strings), then subtract off the current time (in number of seconds since 1970-01-01):
 
 ```{r}
-github_after <- function(resp) {
+gist_after <- function(resp) {
   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
   time - unclass(Sys.time())
 }
-github_after(resp)
+gist_after(resp)
 ```
 
 We then pass functions to `req_retry()` so httr2 has all the information it needs to handle rate-limiting automatically:
@@ -603,8 +651,8 @@ We then pass functions to `req_retry()` so httr2 has all the information it need
 ```{r}
 request("http://api.github.com") %>%
   req_retry(
-    is_transient = github_is_transient,
-    after = github_after,
+    is_transient = gist_is_transient,
+    after = gist_after,
     max_seconds = 60
   )
 ```
@@ -616,18 +664,18 @@ You also need to supply either `max_tries` or `max_seconds` in order to activate
 Let's wrap up everything we've learned so far into a single function that creates a request:
 
 ```{r}
-req_github <- function(token) {
+req_gist <- function(token) {
   request("https://api.github.com/gists") %>% 
     req_headers(Authorization = paste("token", token)) %>% 
-    req_error(body = github_error_body) %>% 
+    req_error(body = gist_error_body) %>% 
     req_retry(
-      is_transient = github_is_transient,
-      after = github_after
+      is_transient = gist_is_transient,
+      after = gist_after
     )
 }
 
 # Check it works:
-req_github(token) %>% 
+req_gist(token) %>% 
   req_perform()
 ```
 
@@ -635,11 +683,11 @@ We'll use this as the basis to solve the next challenge: uploading a gist.
 
 ### Sending data
 
-To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist) we need to send a `POST` request with a body that contains data encodedd as JSON.
+To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist) we need to change the method to `POST` and add a body that contains data encoded as JSON.
 httr2 provides one function that does both of these things: `req_body_json()`:
 
 ```{r}
-req <- req_github(token) %>% 
+req <- req_gist(token) %>% 
   req_body_json(list(
     description = "This is my cool gist!",
     files = list(test.R = list(content = "print('Hi!')")),
@@ -668,7 +716,7 @@ To do so, I need to again send JSON encoded data, but this time I need to use th
 So after adding the data to request, I use `req_method()` to override the default method:
 
 ```{r}
-req <- req_github(token) %>% 
+req <- req_gist(token) %>% 
   req_url_path_append(id) %>% 
   req_body_json(list(description = "This is a lame gist")) %>% 
   req_method("PATCH")
@@ -680,7 +728,7 @@ req %>% req_dry_run()
 Deleting a gist is similar, except we don't send any data, we just need to adjust the default method from `GET` to `DELETE`.
 
 ```{r}
-req <- req_github(token) %>% 
+req <- req_gist(token) %>% 
   req_url_path_append(id) %>% 
   req_method("DELETE")
 req %>% req_dry_run()
@@ -689,23 +737,30 @@ req %>% req_perform()
 
 ## OAuth
 
-If the API provides access to a website where the user already has an account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it's likely to use OAuth to allow you to authenticate on behalf of the user.
-OAuth[^2] is an authentication framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
+If the API provides access to a website where the user already has an account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it's likely to use OAuth to allow you to authorise on behalf of the user.
+OAuth[^2] is an authorisation framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
 You've almost certainly used this before on the web; it's used in most cases where one website wants to use another website on your behalf.
 
 [^2]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
 
+OAuth is a broad framework that's has many many many different variants which makes it hard to provide generalisable advice.
+The following advice draws on my experience working with a number of OAuth using APIs, but don't be surprised if you need to do something slightly different for the API you're working with.
+
 ### Clients
 
-The first step in working with any OAuth api is to create a client.
-This involves you registering for a developer account on the APIs website and creating a new OAuth app.
+The first step in working with any OAuth API is to create a client.
+This involves you registering for a developer account on the API's website and creating a new OAuth app.
 The process varies from API to API, but at the end of it you'll get a client id and in most cases a client secret.
 
-If the API provides a way to authenticate without the client secret, you should leave it out of your package.
+(You'll definitely need this for testing your package, and you'll probably also baked it into your package for the convenience of your users. Bundling the app is user friendly, but not always possible, particularly if rate limits are enforced on a per-app rather than per-user basis. You should always provide some way for the user to provide their own app.)
+
+If the API provides a way to authenticate your app without the client secret, you should leave it out of your package.
 But in most cases, you'll need to include the secret in the package.
-You can use `obfuscate()` to hide the secret; this is not bulletproof but in most cases it'll be easier create a new client than try and steal yours.
-It is unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it (generally the worst they can do is use up your rate limits).
+You can use `obfuscate()` to hide the secret; this is not bulletproof[^3], but in most cases it'll be easier create a new client than try and steal yours.
+Additionally, it's unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it.
+
+[^3]: It uses `secret_encrypt()` with a special encryption key that's bundled with httr2.
 
 To obfuscate a secret, call `obfuscate()`:
 
@@ -744,11 +799,12 @@ You can try it out by running this code:
 token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
 ```
 
-This flow can't be used inside a vignette because it's designed specifically for interactive use: it will open a webpage on Github that requires you to interactively confirm it's ok for this app to use your GitHub account.
+This flow can't be used inside a vignette because it's designed specifically for interactive use: it will open a webpage on GitHub that requires you to interactively confirm it's OK for this app to use your GitHub account.
 
-Other flows provide different ways getting the token:
+Other flows provide different ways of getting the token:
 
 -   `req_oauth_client_credentials()` is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user).
+    This is typically need if you want to support **service accounts**, which are used in non-interactive environments.
 
 -   `req_oauth_device()` uses the "device" flow which is designed for devices like TVs that don't have an easy way to enter data.
     It also works well from the console.
@@ -757,19 +813,19 @@ Other flows provide different ways getting the token:
 
 -   `req_oauth_password()` exchanges a user name and password for an access token.
 
--   `req_oauth_refresh()` works directly with a refresh token that you've got elsewhere.
+-   `req_oauth_refresh()` works directly with a refresh token that you already have.
     It's useful for testing.
 
-There's one historically important OAuth flows that httr2 doesn't support: the implicit grant flow.
+There's one historically important OAuth flow that httr2 doesn't support: the implicit grant flow.
 This is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead) and was never a particularly good fit for native applications because it relies on a technique for returning the access token that only works inside a web browser.
 
 When wrapping an API, you'll need to carefully read the documentation to figure out which flows are available.
 Typically you'll want to use the auth code flow, but if it's not available you'll need to carefully consider the others.
 An additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec.
 If your initial attempt doesn't work, you're going to need to do some sleuthing.
-This is going to be painful but unfortunately there's no way around it.
+This is going to be painful, but unfortunately there's no way around it.
 I recommend using `with_verbosity()` so you can see exactly what httr2 is sending to the server.
-You'll then need to carefully compare this to the API documentation and play spot the difference.
+You'll then need to carefully compare this to the API documentation and play "spot the difference".
 
 ### Tokens
 
@@ -795,24 +851,17 @@ request("https://api.github.com/user") %>%
 ```
 
 This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token.
-httr2 will automatically refresh the token in two cases:
-
--   The token includes an expiry date that's in the past.
-
--   The request returns a 401 status code and
-
-If the access token has expired, httr will automatically retry automatically refresh before the first request.
-If the request errors with a 401 and `invalid_token` error in the `WWW-authenticate` header.
+httr2 will automatically refresh the token if its expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
 
 ### Caching
 
 By default, `req_oauth_auth_code()` and friends will cache the token in memory, so that multiple requests in the same session all use the same token.
 In some cases, you may want to save the token so that it's automatically used across sessions.
-This is easy to do (just set `cache_disk = TRUE` in `req_oauth_auth_code()`) but you need to carefully consider the consequences of saving the users credentials on disk.
+This is easy to do (just set `cache_disk = TRUE` in `req_oauth_auth_code()`) but you need to carefully consider the consequences of saving the user's credentials on disk.
 
 httr2 does the best it can to save these credentials securely.
 They are stored in a local cache directory (`rappdirs::user_cache_dir("httr2"))` that should only be accessible to the current user, and are encrypted so they will be hard for any package other than httr2 to read.
-However, there's no way to protect another R code from using httr2 to access them, so if you do choose to cache tokens, you should inform the user and give them the ability to opt-out.
+However, there's no way to prevent other R code from using httr2 to access them, so if you do choose to cache tokens, you should inform the user and give them the ability to opt-out.
 
 You can see which clients have cached tokens by looking in the cache directory used by httr:
 
