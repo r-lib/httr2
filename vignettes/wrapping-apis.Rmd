@@ -284,7 +284,7 @@ secret
 secret_decrypt(secret, "YOURPACKAGE_KEY")
 ```
 
-You'll also need to make the key available in your GitHub Actions so your automated tests can use it.
+You'll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it.
 This requires two steps:
 
 1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
@@ -302,8 +302,8 @@ Other continuous integration platforms will offer similar ways to make secrets a
 
 ### When the package key isn't available
 
-There's an important computer that won't have your package key: CRAN.
-That means if you want to share your package on CRAN, you need to make sure that your examples, vignettes, and tests all work without error.
+There are a few important cases where your code won't have access to your package key: on CRAN, on the personal machines of external contributors, and in automated checks on their PRs.
+So if you want to share your package on CRAN or make it easy for others to contribute, you need to make sure that your examples, vignettes, and tests all work without error:
 
 -   In vignettes, you can run `knitr::opts_chunk(eval = secret_has_key("YOURPACKAGE_KEY"))` so that chunks are only evaluated if your key is available.
 
