@@ -8,6 +8,12 @@
 #'
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
+#' @param ... For `req_url_query()`: Name-value pairs that provide query
+#'   parameters. Each value must be either length-1 atomic vector or `NULL`
+#'   (which is automatically dropped).
+#'
+#'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
+#'   components that will be combined with `/`.
 #' @return A modified HTTP [request].
 #' @export
 #' @examples
@@ -33,8 +39,6 @@ req_url <- function(req, url) {
 
 #' @export
 #' @rdname req_url
-#' @param ... Name-value pairs that provide query parameters. Each value
-#'   must be a length-1 atomic vector.
 req_url_query <- function(req, ...) {
   check_request(req)
 
@@ -46,10 +50,10 @@ req_url_query <- function(req, ...) {
 
 #' @export
 #' @rdname req_url
-#' @param path Path to replace or append to existing path.
-req_url_path <- function(req, path) {
+req_url_path <- function(req, ...) {
   check_request(req)
-  check_string(path, "`path`")
+  path <- paste(..., sep = "/")
+
   if (!grepl("^/", path)) {
     path <- paste0("/", path)
   }
@@ -59,9 +63,9 @@ req_url_path <- function(req, path) {
 
 #' @export
 #' @rdname req_url
-req_url_path_append <- function(req, path) {
+req_url_path_append <- function(req, ...) {
   check_request(req)
-  check_string(path, "`path`")
+  path <- paste(..., sep = "/")
 
   url <- url_parse(req$url)
 
