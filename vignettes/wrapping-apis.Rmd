@@ -229,11 +229,11 @@ The next steps would be to export and document this function; I'll leave that up
 ## Secret management
 
 We need to take a quick break from APIs to talk about secrets.
-Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way typically with a username and password or an API key.
+Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
 And even if you expect that your users will usually provide this information, you're still going to need your own credentials in order to actually test your package.
 
 This system is probably overkill if you only have one secret that you need to share in one or two places.
-But you almost invariably accumulate more secrets over time, and more people and computers that you need to share it with, so I think spending little time to understand this system and set up it for your package will pay off in the long term.
+But you almost invariably accumulate more secrets over time, and more people and computers that you need to share them with, so I think spending a little time to understand this system and set up it for your package will pay off in the long term.
 
 ### Basics
 
@@ -252,19 +252,19 @@ There are three basic steps to this process:
 2.  You scramble your secrets with `secret_encrypt()` and store the resulting text directly in the source code of your package:
 
     ```{r}
-    secret <- secret_encrypt("this is a secret message", key)
-    secret
+    secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
+    secret_scrambled
     ```
 
 3.  When needed, you descramble the the secret using `secret_decrypt()`:
 
     ```{r}
-    secret_decrypt(secret, key)
+    secret_decrypt(secret_scrambled, key)
     ```
 
-### Package secrets
+### Package keys and secrets
 
-You can create an number of encryption keys, but I highly recommend that you create one key per package, which I'll call the **package** key.
+You can create any number of encryption keys, but I highly recommend that you create one key per package, which I'll call the **package** key.
 In this section, I'll show you how to store that key so that you (and your automated tests) can use it, but no one else can.
 
 httr2 is built around the notion that this key should live in an environment variable.
@@ -276,12 +276,13 @@ So the first step is to make your package key available on your local developmen
 Sys.setenv(YOURPACKAGE_KEY = secret_make_key())
 ```
 
-Now (after you restart R), you'll be able to take advantage of a special `secret_encrypt()` and `secret_decrypt()` feature: the encryption key can be the name of an environment variable.
+Now (after you restart R), you'll be able to take advantage of a special `secret_encrypt()` and `secret_decrypt()` feature: the `key` argument can be the name of an environment variable, instead of the encryption key itself.
+In fact, this is most natural usage.
 
 ```{r}
-secret <- secret_encrypt("my personal secret", "YOURPACKAGE_KEY")
-secret
-secret_decrypt(secret, "YOURPACKAGE_KEY")
+secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
+secret_scrambled
+secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
 ```
 
 You'll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it.
@@ -289,7 +290,7 @@ This requires two steps:
 
 1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
 
-2.  Share the secret with the workflows that need it by adding a line to the appropriate workflow:
+2.  Share the key with the workflows that need it by adding a line to the appropriate workflow:
 
     ``` yaml
         env:
@@ -298,7 +299,7 @@ This requires two steps:
 
     You can see how httr2 does it in [its GitHub workflow](https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml){.uri}.
 
-Other continuous integration platforms will offer similar ways to make secrets available in environment variables.
+Other continuous integration platforms will offer similar ways to make a key available as a secure environment variable.
 
 ### When the package key isn't available
 
