@@ -97,16 +97,14 @@ We'll have another go later with an API that does provide more details.
 
 ### User agent
 
-When making a package that calls an API it's considered polite to set a user agent, so that, if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
+If you're wrapping this code into a package, it's considered polite to set a user agent, so that, if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
 You can do this with the `req_user_agent()` function:
 
 ```{r, eval = faker_ok}
 req %>%
-  req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
+  req_user_agent("my_package_name (http://my.package.web.site)") %>% 
   req_dry_run()
 ```
-
-JENNY COMMENT HERE
 
 ### Core request function
 
@@ -117,13 +115,11 @@ For faker, I spent a little with the [documentation](https://fakerapi.it/en#basi
 -   Every URL is of the form [`https://fakerapi.it/api/v1`](https://fakerapi.it/api/v1)`/{resource}`, and data is passed to the resource with query parameters.
     All parameters start with `_`.
 
--   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed` which have default values of `en_US`, `10`, and `null` respectively.
+-   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed`.
 
 -   All endpoints return JSON data.
 
 This lead me to construct the following function:
-
-JENNY COMMENT HERE
 
 ```{r, eval = faker_ok}
 faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
@@ -138,7 +134,7 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
   request("https://fakerapi.it/api/v1") %>% 
     req_url_path_append(resource) %>% 
     req_url_query(!!!params) %>% 
-    req_user_agent("httr2 (http://httr2.r-lib.org)") %>% 
+    req_user_agent("my_package_name (http://my.package.web.site)") %>% 
     req_perform() %>% 
     resp_body_json()
 }
@@ -146,20 +142,26 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
 str(faker("images", width = 300))
 ```
 
-There's one trick to notice here --- `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")) `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
+I've made a few important choices here:
 
-JENNY COMMENT HERE
+-   I've decided to supply default values for the `quantity` and `locale` parameters.
+    This makes my function easier to demo in this vignette.
 
-Here I've decided to make my central function perform the request and parse the result.
-If the API you are wrapping is more variable, you may want to return a request object that the caller can modify before fetching the response.
+-   I've used a default of `NULL` for the `seed` argument.
+    `req_url_query()` will automatically drop `NULL` arguments so this means that no default value is sent to the API, but when you read the function definition you can still see that `seed` is accepted.
+
+-   I automatically all prefix query parameters with `_` because argument names starting with `_` are hard to type in R.
+
+-   My function generates the request, performs it, and extracts the body of the response.
+    This works well for simple cases, but for more complex APIs you might want to return a request object that can be modified before being performed.
+
+I also used one cool trick: `req_url_query()` uses [dynamic dots](https://rlang.r-lib.org/reference/dyn-dots.html), so we can use `!!!` to convert (e.g.) `` req_url_query(req, !!!list(`_quantity` = 1, `_locale` = "en_US")) `` into `` req_url_query(req, `_quantity` = 1, `_locale` = "en_US") ``.
 
 ### Wrapping individual endpoints
 
 `faker()` is quite general --- it's a good tool for the package developer because you can read the faker documentation and translate it to a function call.
 But it's not very friendly for the package user who might not know anything about web APIs.
 So typically the next step in the process is to wrap up some individual endpoints with their own functions.
-
-JENNY COMMENT HERE
 
 For example, let's take the `persons` endpoint which has three additional parameters: `gender` (male or female), `birthday_start`, and `birthday_end`.
 A simple wrapper would start something like this:
@@ -222,7 +224,92 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
 faker_person("male", quantity = 5)
 ```
 
-The next steps would be to export and document this function; but I'll leave that up to you.
+The next steps would be to export and document this function; I'll leave that up to you.
+
+## Secret management
+
+We need to take a quick break from APIs to talk about secrets.
+Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way typically with a username and password or an API key.
+And even if you expect that your users will usually provide this information, you're still going to need your own credentials in order to actually test your package.
+
+This system is probably overkill if you only have one secret that you need to share in one or two places.
+But you almost invariably accumulate more secrets over time, and more people and computers that you need to share it with, so I think spending little time to understand this system and set up it for your package will pay off in the long term.
+
+### Basics
+
+httr2 provides `secret_encrypt()` and `secret_decrypt()` to scramble secrets so that you can include them in your public source code without worrying that others can read them.
+There are three basic steps to this process:
+
+1.  You create an **encryption** key with `secret_make_key()` that is used to scramble and descramble secrets using symmetric cryptography:
+
+    ```{r}
+    key <- secret_make_key()
+    key
+    ```
+
+    (Note that `secret_make_key()` uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R's RNG settings, and there's no way to make it reproducible.)
+
+2.  You scramble your secrets with `secret_encrypt()` and store the resulting text directly in the source code of your package:
+
+    ```{r}
+    secret <- secret_encrypt("this is a secret message", key)
+    secret
+    ```
+
+3.  When needed, you descramble the the secret using `secret_decrypt()`:
+
+    ```{r}
+    secret_decrypt(secret, key)
+    ```
+
+### Package secrets
+
+You can create an number of encryption keys, but I highly recommend that you create one key per package, which I'll call the **package** key.
+In this section, I'll show you how to store that key so that you (and your automated tests) can use it, but no one else can.
+
+httr2 is built around the notion that this key should live in an environment variable.
+So the first step is to make your package key available on your local development machine by adding a line to your your user-level `.Renviron` (which you can easily open with `usethis::edit_r_environ()`):
+
+    YOURPACKAGE_KEY=key_you_generated_with_secret_make_key
+
+```{r, include = FALSE}
+Sys.setenv(YOURPACKAGE_KEY = secret_make_key())
+```
+
+Now (after you restart R), you'll be able to take advantage of a special `secret_encrypt()` and `secret_decrypt()` feature: the encryption key can be the name of an environment variable.
+
+```{r}
+secret <- secret_encrypt("my personal secret", "YOURPACKAGE_KEY")
+secret
+secret_decrypt(secret, "YOURPACKAGE_KEY")
+```
+
+You'll also need to make the key available in your GitHub Actions so your automated tests can use it.
+This requires two steps:
+
+1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
+
+2.  Share the secret with the workflows that need it by adding a line to the appropriate workflow:
+
+    ``` yaml
+        env:
+          YOURPACKAGE_KEY: ${{ secrets.YOURPACKAGE_KEY }}
+    ```
+
+    You can see how httr2 does it in [its GitHub workflow](https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml){.uri}.
+
+Other continuous integration platforms will offer similar ways to make secrets available in environment variables.
+
+### When the package key isn't available
+
+There's an important computer that won't have your package key: CRAN.
+That means if you want to share your package on CRAN, you need to make sure that your examples, vignettes, and tests all work without error.
+
+-   In vignettes, you can run `knitr::opts_chunk(eval = secret_has_key("YOURPACKAGE_KEY"))` so that chunks are only evaluated if your key is available.
+
+-   In examples, you can surround code blocks that require your key with `if (httr2::secret_has_key("YOURPACKAGE_KEY")) {}`
+
+-   You don't need to do anything in tests because when `secret_decrypt()` is run by testhat, it will automatically `skip()` the test if the key isn't available.
 
 ## NYTimes Books API
 
@@ -240,63 +327,14 @@ When you're wrapping an API that has a key you're going to face two struggles:
 
 -   How do you allow your users to supply their own key, without having to pass it to every function?
 
-I'll start by tackling the first problem because otherwise there's no way for me to show how the API works in this vignette 😃.
-We'll come back to the second at the very end of this section, because it's easiest to tackle once we have a function in place.
-
-### Encrypting secrets
-
-httr2 provides the `secret_encrypt()` and `secret_decrypt()` functions that use symmetric cryptography.
-To use them you need to first create a "key" that's used to lock and unlock the secrets.
-The best key is random because there's no way for anyone to guess it.
-httr2 provides `secret_make_key()` to make a secure key for you:
-
-```{r}
-secret_make_key()
-```
-
-(Don't copy and paste this key; run `secret_make_key()` yourself to make your own personal key.)
-
-Now you need to make this key available in the places were you want to unlock the secrets.
-httr2 provides tools to retrieve keys from environment variables because this is a common way of communicating these sort of secrets.
-So start by opening your user-level `.Renviron` (e.g. with `usethis::edit_r_environ()`) and add a line like:
-
-    YOURPACKAGE_KEY=key_that_you_generated_above
-
-Another place you'll probably want to provide the key is in your GitHub Actions.
-This is a two step process:
-
-1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
-
-2.  Share the secret with the workflows that need it by adding a line to the appropriate workflow:
-
-    ``` yaml
-        env:
-          YOURPACKAGE_KEY: ${{ secrets.YOURPACKAGE_KEY }}
-    ```
-
-    You can see how httr2 does it in <https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml>.
-
-Now you can encrypt your API key and store it in your tests --- there's no way for anyone to decrypt it unless they have your key.
-
-JENNY COMMENT HERE
-
-```{r}
-x_enc <- secret_encrypt("API-key-from-NYTimes-Books", "HTTR2_KEY")
-x_enc
-secret_decrypt(x_enc, "HTTR2_KEY")
-```
-
-So now you can understand how the following code works:
+So now you can understand how the following code works to get my NYTimes Book API key:
 
 ```{r}
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
-To make this vignette work everywhere (e.g. on CRAN which won't have have this key), I first figure out whether it's available with `has_auth <- secret_has_key("HTTR2_KEY")`.
-Then I do `knitr::opts_chunk(eval = has_auth)` so that all future chunks are only evaluated if the key is available.
-
-When `secret_decrypt()` is run in tests, it will automatically skip the test if the key isn't found.
-That means that your auth-requiring tests will automatically be skipped on CRAN.
+I'll start by tackling the first problem because otherwise there's no way for me to show how the API works in this vignette 😃.
+We'll come back to the second at the very end of this section, because it's easiest to tackle once we have a function in place.
 
 ### Security considerations
 
@@ -305,14 +343,11 @@ Here it only takes a couple of minutes to generate your own NYTimes API key, so 
 
 The main problem of conveying credentials via the url is that it's easily exposed, because httr2 makes no efforts to redact confidential information stored in query parameters.
 This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)`, `req_dry_run()`, or even just print the request object.
-
-All in all, this means you need to be a little cautious if you need to get help with a reprex; you'll need to manually redact the key.
+And indeed, you'll see that in the examples below --- this is bad practice for a real package, but I think it's ok here because the key doesn't allow you to do anything valuable and it makes teaching APIs so much easier.
 
 ### Basic request
 
 Now let's perform a test request and look at the response:
-
-JENNY COMMENT HERE
 
 ```{r}
 resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
@@ -442,8 +477,6 @@ You'd also want to provide some convenient way for the user to supply their own 
 A good place to start is an environment variable, because environment variables are easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
 Then you'd write a function to retrieve the API key, returning a helpful message if it's not found:
 
-JENNY COMMENT HERE
-
 ```{r}
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
@@ -463,27 +496,27 @@ nytimes_books <- function(path, ..., api_key = get_api_key()) {
 }
 ```
 
-You might extend `get_api_key()` to also consult your encrypted key to make it easier to write tests:
+It's a good idea to extend `get_api_key()` to automatically use your encrypted key to make it easier to write tests:
 
 ```{r}
-is_testing <- function() {
-  identical(Sys.getenv("TESTTHAT"), "true")
-}
-
-testing_key <- function() {
-  secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
-}
-
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (identical(key, "")) {
-    if (is_testing() && secret_has_key("HTTR2_KEY")) {
+    if (is_testing()) {
       testing_key()
     } else {
       stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")  
     }
   }
   key
+}
+
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
+
+testing_key <- function() {
+  secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 }
 ```
 
@@ -621,8 +654,8 @@ We then pass functions to `req_retry()` so httr2 has all the information it need
 ```{r}
 request("http://api.github.com") %>%
   req_retry(
-    is_transient = github_is_transient,
-    after = github_after,
+    is_transient = gist_is_transient,
+    after = gist_after,
     max_seconds = 60
   )
 ```
@@ -637,10 +670,10 @@ Let's wrap up everything we've learned so far into a single function that create
 req_gist <- function(token) {
   request("https://api.github.com/gists") %>% 
     req_headers(Authorization = paste("token", token)) %>% 
-    req_error(body = github_error_body) %>% 
+    req_error(body = gist_error_body) %>% 
     req_retry(
-      is_transient = github_is_transient,
-      after = github_after
+      is_transient = gist_is_transient,
+      after = gist_after
     )
 }
 
