@@ -14,8 +14,8 @@ url_build(url)
 for \code{url_build()} a url to turn back into a string.}
 }
 \value{
-A URL is a S3 list with class \code{httr2_url} and elements scheme,
-hostname, port, path, fragment, query, username, password.
+A URL: a S3 list with class \code{httr2_url} and elements \code{scheme},
+\code{hostname}, \code{port}, \code{path}, \code{fragment}, \code{query}, \code{username}, \code{password}.
 }
 \description{
 \code{url_parse()} parses a URL into its component pieces; \code{url_build()} does

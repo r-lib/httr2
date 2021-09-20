@@ -79,3 +79,14 @@ no incentive to steal your client credentials if it takes less time to
 create a new client than find your client secret.
 }
 
+\examples{
+client <- oauth_client(
+  id = "28acfec0674bb3da9f38",
+  secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test"
+)
+
+request("https://api.github.com/user") \%>\%
+  req_oauth_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+}

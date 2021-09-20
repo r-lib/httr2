@@ -36,6 +36,8 @@
 #'   defining a package for use in a package, I recommend that you use
 #'   the package name.
 #' @export
+#' @examples
+#' oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")
 oauth_client <- function(
                          id,
                          token_url,
@@ -125,6 +127,40 @@ print.httr2_oauth_client <- function(x, ...) {
 #' the `auth_params` argument.
 #' @param req A [request].
 #' @param client An [oauth_client].
+#' @examples
+#' # Show what the various forms of client authentication look like
+#' req <- request("https://example.com/whoami")
+#'
+#' client1 <- oauth_client(
+#'   id = "12345",
+#'   secret = "56789",
+#'   token_url = "https://example.com/oauth/access_token",
+#'   name = "oauth-example",
+#'   auth = "body" # the default
+#' )
+#' # calls oauth_client_req_auth_body()
+#' req_dry_run(oauth_client_req_auth(req, client1))
+#'
+#' client2 <- oauth_client(
+#'   id = "12345",
+#'   secret = "56789",
+#'   token_url = "https://example.com/oauth/access_token",
+#'   name = "oauth-example",
+#'   auth = "header"
+#' )
+#' # calls oauth_client_req_auth_header()
+#' req_dry_run(oauth_client_req_auth(req, client2))
+#'
+#' client3 <- oauth_client(
+#'   id = "12345",
+#'   key = openssl::rsa_keygen(),
+#'   token_url = "https://example.com/oauth/access_token",
+#'   name = "oauth-example",
+#'   auth = "jwt_sig",
+#'   auth_params = list(claim = jwt_claim())
+#' )
+#' # calls oauth_client_req_auth_header_jwt_sig()
+#' req_dry_run(oauth_client_req_auth(req, client3))
 oauth_client_req_auth <- function(req, client) {
   exec(client$auth, req = req, client = client, !!!client$auth_params)
 }

@@ -11,6 +11,9 @@ req_timeout(req, seconds)
 
 \item{seconds}{Maximum number of seconds to wait}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 An error will be thrown if the request does not complete in the time limit.
 }

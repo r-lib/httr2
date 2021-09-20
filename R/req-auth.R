@@ -9,6 +9,7 @@
 #'   calling this function as it will be captured by `.Rhistory`. Instead,
 #'   leave it unset and the default behaviour will prompt you for it
 #'   interactively.
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' req <- request("http://example.com") %>% req_auth_basic("hadley", "SECRET")
@@ -44,7 +45,11 @@ req_auth_basic <- function(req, username, password = NULL) {
 #'   The OAuth 2.0 Authorization Framework: Bearer Token Usage
 #' @inheritParams req_perform
 #' @param token A bearer token
+#' @returns A modified HTTP [request].
 #' @export
+#' @examples
+#' req <- request("http://example.com") %>% req_auth_bearer_token("sdaljsdf093lkfs")
+#' req
 req_auth_bearer_token <- function(req, token) {
   check_request(req)
   check_string(token, "`token`")

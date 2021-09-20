@@ -5,6 +5,7 @@
 #'
 #' @inheritParams req_perform
 #' @param method Custom HTTP method
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' request("http://httpbin.org") %>% req_method("PATCH")

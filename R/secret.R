@@ -38,6 +38,12 @@
 #'     the skips have actually gone away.
 #'
 #' @name secrets
+#' @returns
+#' * `secret_decrypt()` and `secret_encrypt()` return strings.
+#' * `secret_write_rds()` returns `x` invisibly; `secret_read_rds()`
+#'   returns the saved object.
+#' * `secret_make_key()` returns a string with class `AsIs`.
+#' * `secret_has_key()` returns `TRUE` or `FALSE`.
 #' @aliases NULL
 #' @examples
 #' key <- secret_make_key()
@@ -47,9 +53,10 @@
 #' secret_read_rds(path, key)
 #'
 #' # While you can manage the key explicitly in a variable, it's much
-#' # easier to store in an env variable. In real life, you should NEVER
-#' # use `Sys.setenv()` to create this env var (instead using .Renviron or
-#' # similar) but I need to do it here since it's an example
+#' # easier to store in an environment variable. In real life, you should
+#' # NEVER use `Sys.setenv()` to create this env var because you will
+#' # also store the secret in your `.Rhistory`. Instead add it to your
+#' # .Renviron using `usethis::edit_r_environ()` or similar.
 #' Sys.setenv("MY_KEY" = key)
 #'
 #' x <- secret_encrypt("This is a secret", "MY_KEY")
@@ -96,6 +103,7 @@ secret_decrypt <- function(encrypted, key) {
 #' @rdname secrets
 secret_write_rds <- function(x, path, key) {
   writeBin(secret_serialize(x, key), path)
+  invisible(x)
 }
 #' @export
 #' @rdname secrets
@@ -165,7 +173,7 @@ secret_get_key <- function(envvar) {
 #'   and `req_body_multipart()`.
 #'
 #' @param x A string to obfuscate, or mark as obfuscated.
-#' @return `obfuscate()` prints the `obfuscated()` call to include in your
+#' @returns `obfuscate()` prints the `obfuscated()` call to include in your
 #'   code. `obfuscated()` returns an S3 class marking the string as obfuscated
 #'   so it can be unobfuscated when needed.
 #' @export

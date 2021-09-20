@@ -17,6 +17,9 @@ and a path containing variables labelled like either \verb{:foo} or \code{{foo}}
 \item{.env}{Environment in which to look for template variables not found
 in \code{...}. Expert use only.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 Many APIs document their methods with a lightweight template mechanism
 that looks like \code{GET /user/{user}} or \verb{POST /organisation/:org}. This

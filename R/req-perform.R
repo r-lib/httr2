@@ -32,7 +32,7 @@
 #'   * 1: show headers
 #'   * 2: show headers and bodies
 #'   * 3: show headers, bodies, and curl status messages.
-#' @returns Returns an HTTP response with successful status code. Will
+#' @returns Returns an HTTP [response] with successful status code. Will
 #'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
 #' @examples
@@ -154,7 +154,12 @@ req_verbosity <- function(req, verbosity) {
 #' occur. If the request did not succeed (or no requests have been made)
 #' `last_response()` will be `NULL`.
 #'
+#' @returns An HTTP [response]/[request].
 #' @export
+#' @examples
+#' invisible(request("http://httr2.r-lib.org") %>% req_perform())
+#' last_request()
+#' last_response()
 last_response <- function() {
   the$last_response
 }
@@ -223,6 +228,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to processs stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
+#' @returns An HTTP [response].
 #' @export
 #' @examples
 #' show_bytes <- function(x) {

@@ -7,7 +7,10 @@
 resp_raw(resp)
 }
 \arguments{
-\item{resp}{A HTTP \link{response}}
+\item{resp}{An HTTP \link{response}}
+}
+\value{
+\code{resp} (invisibly).
 }
 \description{
 The reconstruct the HTTP message that httr2 received from the server.

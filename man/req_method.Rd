@@ -11,6 +11,9 @@ req_method(req, method)
 
 \item{method}{Custom HTTP method}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 Use this function to use a custom HTTP method like "HEAD",
 "DELETE", "PATCH", "UPDATE", or "OPTIONS".

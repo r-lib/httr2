@@ -35,6 +35,14 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \item{...}{Other argumented passed on to \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}} and
 \code{\link[xml2:read_xml]{xml2::read_xml()}} respectively.}
 }
+\value{
+\itemize{
+\item \code{resp_body_raw()} returns a raw vector.
+\item \code{resp_body_string()} returns a string.
+\item \code{resp_body_json()} returns NULL, an atomic vector, or list.
+\item \code{resp_body_html()} and \code{resp_body_xml()} return an \code{xml2::xml_document}
+}
+}
 \description{
 \itemize{
 \item \code{resp_body_raw()} returns the raw bytes.
@@ -47,4 +55,15 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \code{resp_body_json()} and \code{resp_body_xml()} check that the content-type header
 is correct; if the server returns an incorrect type you can suppress the
 check with \code{check_type = FALSE}.
+}
+\examples{
+resp <- request("https://httr2.r-lib.org") \%>\% req_perform()
+resp
+
+resp \%>\% resp_body_raw()
+resp \%>\% resp_body_string()
+
+if (requireNamespace("xml2", quietly = TRUE)) {
+  resp \%>\% resp_body_html()
+}
 }

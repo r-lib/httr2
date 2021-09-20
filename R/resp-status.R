@@ -18,8 +18,20 @@
 #'   You can stop them from being turned into R errors with [req_error()],
 #'   e.g. `req %>% req_error(is_error = ~ FALSE)`.
 #'
+#' @return
+#' * `resp_status()` returns a scalar integer
+#' * `resp_status_desc()` returns a string
+#' * `resp_is_error()` returns `TRUE` or `FALSE`
+#' * `resp_check_status()` invisibly returns the response if it's ok;
+#'   otherwise it throws an error with class `httr2_http_{status}`.
 #' @inheritParams resp_headers
 #' @export
+#' @examples
+#' # An HTTP status code you're unlikely to see in the wild:
+#' resp <- response(418)
+#' resp %>% resp_is_error()
+#' resp %>% resp_status()
+#' resp %>% resp_status_desc()
 resp_status <- function(resp) {
   check_response(resp)
   resp$status_code

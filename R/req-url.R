@@ -14,7 +14,7 @@
 #'
 #'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
 #'   components that will be combined with `/`.
-#' @return A modified HTTP [request].
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' req <- request("http://example.com")

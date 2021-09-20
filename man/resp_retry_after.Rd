@@ -9,9 +9,20 @@ resp_retry_after(resp)
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 }
+\value{
+Scalar double giving the number of seconds to wait before retrying
+a request.
+}
 \description{
 Computes how many seconds you should wait before retrying a request by
 inspecting the \code{Retry-After} header. It parses both forms (absolute and
 relative) and returns the number of seconds to wait. If the heading is not
 found, it will return \code{NA}.
+}
+\examples{
+resp <- response(headers = "Retry-After: 30")
+resp \%>\% resp_retry_after()
+
+resp <- response(headers = "Retry-After: Mon, 20 Sep 2025 21:44:05 UTC")
+resp \%>\% resp_retry_after()
 }

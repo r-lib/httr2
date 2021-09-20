@@ -11,12 +11,19 @@ req_auth_bearer_token(req, token)
 
 \item{token}{A bearer token}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 A bearer token gives the bearer access to confidential resources
 (so you should keep them secure like you would with a user name and
 password). They are usually produced by some large authentication scheme
 (like the various OAuth 2.0 flows), but you are sometimes given then
 directly.
+}
+\examples{
+req <- request("http://example.com") \%>\% req_auth_bearer_token("sdaljsdf093lkfs")
+req
 }
 \seealso{
 \href{https://datatracker.ietf.org/doc/html/rfc6750}{RFC750}

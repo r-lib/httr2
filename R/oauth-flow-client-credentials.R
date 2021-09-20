@@ -8,6 +8,7 @@
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_client_credentials
+#'
 req_oauth_client_credentials <- function(req, client,
                                          scope = NULL,
                                          token_params = list()

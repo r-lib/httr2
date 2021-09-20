@@ -32,7 +32,7 @@ handle the request) or a \link{response} (if it does). See \code{\link[=with_moc
 \code{local_mock()} for more details.}
 }
 \value{
-Returns an HTTP response with successful status code. Will
+Returns an HTTP \link{response} with successful status code. Will
 throw an error for 4xx and 5xx responses; override with \code{\link[=req_error]{req_error()}}.
 }
 \description{

@@ -18,6 +18,9 @@ should \code{req_perform()} return that instead of generating an error?}
 cache hits and misses. This can be helpful to understand whether or
 not caching is actually doing anything for your use case.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 Use \code{req_perform()} to automatically cache HTTP requests. Most API requests
 are not cacheable, but when possible (often when downloading larger files)
@@ -30,4 +33,14 @@ is still up-to-date, but it will not need to re-download the body value.
 
 To learn more about HTTP caching, I recommend the MDN article
 \href{https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching}{HTTP caching}.
+}
+\examples{
+# GitHub uses HTTP caching, so if you have to download files
+# you can make sure it's only downloaded once. Here I set
+# debug = TRUE so you can see what's happening.
+url <- "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv"
+req <- request(url) \%>\% req_cache(tempdir(), debug = TRUE)
+
+resp <- req \%>\% req_perform()
+resp <- req \%>\% req_perform()
 }

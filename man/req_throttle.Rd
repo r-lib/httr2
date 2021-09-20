@@ -17,9 +17,17 @@ is \code{15 / 60}.}
 \item{realm}{An unique identifier that for throttle pool. If not supplied,
 defaults to the hostname of the request.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_perform]{req_perform()}} never
 exceed a specified rate.
+}
+\examples{
+# Ensure server will never recieve more than 10 requests a minute
+request("https://example.com") \%>\%
+  req_throttle(rate = 10 / 60)
 }
 \seealso{
 \code{\link[=req_retry]{req_retry()}} for another way of handling rate-limited APIs.

@@ -33,6 +33,9 @@ returns either a number of seconds to wait or \code{NULL}, which indicates
 that a precise wait time is not available that the \code{backoff} strategy
 should be used instead..}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 \code{req_retry()} alters \code{\link[=req_perform]{req_perform()}} so that it will automatically retry
 in the case of failure. To activate it, you must specify either the total

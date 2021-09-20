@@ -7,8 +7,8 @@
 #'
 #' @param url For `url_parse()` a string to parse into a url;
 #'   for `url_build()` a url to turn back into a string.
-#' @return A URL is a S3 list with class `httr2_url` and elements scheme,
-#'   hostname, port, path, fragment, query, username, password.
+#' @returns A URL: a S3 list with class `httr2_url` and elements `scheme`,
+#'   `hostname`, `port`, `path`, `fragment`, `query`, `username`, `password`.
 #' @export
 #' @examples
 #' url_parse("http://google.com/")

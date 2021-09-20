@@ -20,7 +20,17 @@
 #' @param debug When `TRUE` will emit useful messages telling you about
 #'   cache hits and misses. This can be helpful to understand whether or
 #'   not caching is actually doing anything for your use case.
+#' @returns A modified HTTP [request].
 #' @export
+#' @examples
+#' # GitHub uses HTTP caching, so if you have to download files
+#' # you can make sure it's only downloaded once. Here I set
+#' # debug = TRUE so you can see what's happening.
+#' url <- "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv"
+#' req <- request(url) %>% req_cache(tempdir(), debug = TRUE)
+#'
+#' resp <- req %>% req_perform()
+#' resp <- req %>% req_perform()
 req_cache <- function(req, path, use_on_error = FALSE, debug = FALSE) {
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
   req_policies(req,

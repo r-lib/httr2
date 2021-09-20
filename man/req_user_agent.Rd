@@ -15,6 +15,9 @@ req_user_agent(req, string = NULL, versions = NULL)
 string using a lightweight convention. If both \code{string} and \code{versions}
 are omitted,}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This overrides the default user-agent set by httr2 which includes the
 version numbers of httr2, the curl package, and libcurl.

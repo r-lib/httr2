@@ -16,6 +16,9 @@ calling this function as it will be captured by \code{.Rhistory}. Instead,
 leave it unset and the default behaviour will prompt you for it
 interactively.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This sets the Authorization header. See details at
 \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization}.

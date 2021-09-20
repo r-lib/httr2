@@ -55,3 +55,38 @@ specify them through the \code{auth} argument to \code{\link[=oauth_client]{oaut
 \code{client} parameters are automatically filled in; other parameters come from
 the \code{auth_params} argument.
 }
+\examples{
+# Show what the various forms of client authentication look like
+req <- request("https://example.com/whoami")
+
+client1 <- oauth_client(
+  id = "12345",
+  secret = "56789",
+  token_url = "https://example.com/oauth/access_token",
+  name = "oauth-example",
+  auth = "body" # the default
+)
+# calls oauth_client_req_auth_body()
+req_dry_run(oauth_client_req_auth(req, client1))
+
+client2 <- oauth_client(
+  id = "12345",
+  secret = "56789",
+  token_url = "https://example.com/oauth/access_token",
+  name = "oauth-example",
+  auth = "header"
+)
+# calls oauth_client_req_auth_header()
+req_dry_run(oauth_client_req_auth(req, client2))
+
+client3 <- oauth_client(
+  id = "12345",
+  key = openssl::rsa_keygen(),
+  token_url = "https://example.com/oauth/access_token",
+  name = "oauth-example",
+  auth = "jwt_sig",
+  auth_params = list(claim = jwt_claim())
+)
+# calls oauth_client_req_auth_header_jwt_sig()
+req_dry_run(oauth_client_req_auth(req, client3))
+}

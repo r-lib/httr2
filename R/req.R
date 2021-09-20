@@ -5,6 +5,7 @@
 #' and fetch the response with [req_perform()].
 #'
 #' @param base_url Base URL for request.
+#' @returns An HTTP response: an S3 list with class `httr2_request`.
 #' @export
 #' @examples
 #' request("http://r-project.org")

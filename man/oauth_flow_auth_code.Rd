@@ -91,6 +91,18 @@ components as needed for PKCE, as defined in
 \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
 }
 }
+\examples{
+client <- oauth_client(
+  id = "28acfec0674bb3da9f38",
+  secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test"
+)
+if (interactive()) {
+  token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+  token
+}
+}
 \seealso{
 Other OAuth flows: 
 \code{\link{oauth_flow_bearer_jwt}()},

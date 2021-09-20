@@ -58,3 +58,6 @@ mechanism. A client consists of at least a \code{client_id}, and also often
 a \code{client_secret}. You'll get these values when you create the client on
 the API's website.
 }
+\examples{
+oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")
+}
