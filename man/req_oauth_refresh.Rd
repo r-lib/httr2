@@ -27,6 +27,9 @@ is to look in \code{HTTR_REFRESH_TOKEN}.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, which is
 then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
@@ -40,4 +43,9 @@ token. If this happens, \code{oauth_flow_refresh()} will error, and you'll have
 to create a new refresh token following the same procedure you did to get
 the first token (so it's a good idea to document what you did the first time
 because you might need to do it again).
+}
+\examples{
+client <- oauth_client("example", "https://example.com/get_token")
+req <- request("https://example.com")
+req \%>\% req_oauth_refresh(client)
 }

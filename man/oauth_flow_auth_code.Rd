@@ -69,6 +69,9 @@ listens for authorization responses is transient.)}
 
 \item{query}{List of query parameters returned by \code{oauth_flow_auth_code_listen()}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 These functions implement the OAuth authorization code flow, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{rfc6749},
@@ -115,3 +118,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

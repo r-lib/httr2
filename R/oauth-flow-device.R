@@ -9,6 +9,12 @@
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
+#' @returns A modified HTTP [request].
+#' @examples
+#' client <- oauth_client("example", "https://example.com/get_token")
+#' req <- request("https://example.com")
+#'
+#' req %>% req_oauth_device(client)
 req_oauth_device <- function(req, client,
                              cache_disk = FALSE,
                              cache_key = NULL,
@@ -36,8 +42,11 @@ req_oauth_device <- function(req, client,
 #' but it also works well from within R.
 #'
 #' @inheritParams oauth_flow_auth_code
+#' @returns An [oauth_token].
 #' @export
 #' @family OAuth flows
+#' @keywords internal
+#' @keywords internal
 oauth_flow_device <- function(client,
                               auth_url,
                               scope = NULL,

@@ -16,8 +16,17 @@ req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This uses \code{\link[=oauth_flow_client_credentials]{oauth_flow_client_credentials()}} to generate an access token,
 which is then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token is cached in memory.
+}
+\examples{
+client <- oauth_client("example", "https://example.com/get_token")
+req <- request("https://example.com")
+
+req \%>\% req_oauth_client_credentials(client)
 }

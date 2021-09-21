@@ -36,10 +36,21 @@ automatically deleted 30 days after creation.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This uses \code{\link[=oauth_flow_password]{oauth_flow_password()}} to generate an access token, which is
 then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token, not the password is automatically cached (either in memory
 or on disk); the password is used once to get the token and is then
 discarded.
+}
+\examples{
+client <- oauth_client("example", "https://example.com/get_token")
+req <- request("https://example.com")
+
+if (interactive()) {
+  req \%>\% req_oauth_password(client, "username")
+}
 }

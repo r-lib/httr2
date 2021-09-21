@@ -35,6 +35,7 @@
 #'   directory. If `NULL`, generated from hash of `client_id`. If you're
 #'   defining a package for use in a package, I recommend that you use
 #'   the package name.
+#' @return An OAuth client: An S3 list with class `httr2_oauth_client`.
 #' @export
 #' @examples
 #' oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")
@@ -127,6 +128,7 @@ print.httr2_oauth_client <- function(x, ...) {
 #' the `auth_params` argument.
 #' @param req A [request].
 #' @param client An [oauth_client].
+#' @return A modified HTTP [request].
 #' @export
 #' @examples
 #' # Show what the various forms of client authentication look like

@@ -40,3 +40,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_password}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

@@ -51,6 +51,9 @@ directory. If \code{NULL}, generated from hash of \code{client_id}. If you're
 defining a package for use in a package, I recommend that you use
 the package name.}
 }
+\value{
+An OAuth client: An S3 list with class \code{httr2_oauth_client}.
+}
 \description{
 An OAuth app is the combination of a client, a set of endpoints
 (i.e. urls where various requests should be sent), and an authentication

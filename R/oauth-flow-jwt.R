@@ -8,6 +8,13 @@
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_bearer_jwt
+#' @returns A modified HTTP [request].
+#' @examples
+#' client <- oauth_client("example", "https://example.com/get_token")
+#' claim <- jwt_claim()
+#' req <- request("https://example.com")
+#'
+#' req %>% req_oauth_bearer_jwt(client, claim)
 req_oauth_bearer_jwt <- function(req, client,
                           claim,
                           signature = "jwt_encode_sig",
@@ -37,7 +44,6 @@ req_oauth_bearer_jwt <- function(req, client,
 #' used primarily in automated environments.
 #'
 #' @inheritParams oauth_flow_auth_code
-#' @export
 #' @family OAuth flows
 #' @param claim A list of claims. If all elements of the claim set are static
 #'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
@@ -47,6 +53,9 @@ req_oauth_bearer_jwt <- function(req, client,
 #' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
 #'   `size`, `header`.
+#' @returns An [oauth_token].
+#' @export
+#' @keywords internal
 oauth_flow_bearer_jwt <- function(client,
                            claim,
                            signature = "jwt_encode_sig",

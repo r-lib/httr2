@@ -28,6 +28,9 @@ Only for HMAC/RSA, not applicable for ECDSA keys.}
 \item{header}{A named list giving additional fields to include in the
 JWT header.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 \code{oauth_client_req_auth()} authenticates a request using the authentication
 strategy defined by the \code{auth} and \code{auth_param} arguments to \code{\link[=oauth_client]{oauth_client()}}.

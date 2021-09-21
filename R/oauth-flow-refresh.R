@@ -17,6 +17,11 @@
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_refresh
+#' @returns A modified HTTP [request].
+#' @examples
+#' client <- oauth_client("example", "https://example.com/get_token")
+#' req <- request("https://example.com")
+#' req %>% req_oauth_refresh(client)
 req_oauth_refresh <- function(req, client,
                               refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
                               scope = NULL,
@@ -49,6 +54,7 @@ req_oauth_refresh <- function(req, client,
 #'   is to look in `HTTR_REFRESH_TOKEN`.
 #' @family OAuth flows
 #' @export
+#' @keywords internal
 oauth_flow_refresh <- function(client,
                                refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
                                scope = NULL,

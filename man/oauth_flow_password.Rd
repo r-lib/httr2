@@ -27,6 +27,9 @@ interactively.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 This function implements the OAuth resource owner password flow, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{rfc6749},
@@ -42,3 +45,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}
+\keyword{internal}
