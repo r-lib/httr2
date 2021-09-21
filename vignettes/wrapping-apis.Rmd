@@ -499,14 +499,15 @@ It's a good idea to extend `get_api_key()` to automatically use your encrypted k
 ```{r}
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
-  if (identical(key, "")) {
-    if (is_testing()) {
-      testing_key()
-    } else {
-      stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")  
-    }
+  if (!identical(key, "")) {
+    return(key)
   }
-  key
+  
+  if (is_testing()) {
+    return(testing_key())
+  } else {
+    stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var") 
+  }
 }
 
 is_testing <- function() {
