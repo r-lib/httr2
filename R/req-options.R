@@ -31,10 +31,8 @@ req_options <- function(.req, ...) {
 #' version numbers of httr2, the curl package, and libcurl.
 #'
 #' @inheritParams req_perform
-#' @param string String to be sent in the `User-Agent` header.
-#' @param versions Named character vector used to construct a user-agent
-#'   string using a lightweight convention. If both `string` and `versions`
-#'   are omitted, the user-agent will sets to the default.
+#' @param string String to be sent in the `User-Agent` header. If `NULL`,
+#'   will user default.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -46,28 +44,23 @@ req_options <- function(.req, ...) {
 #' # If you're wrapping in an API in a package, it's polite to set the
 #' # user agent to identify your package.
 #' request("http://example.com") %>%
-#'   req_user_agent(versions = c("MyPackage" = "1.1.2")) %>%
+#'   req_user_agent("MyPackage (http://mypackage.com)") %>%
 #'   req_dry_run()
-req_user_agent <- function(req, string = NULL, versions = NULL) {
+req_user_agent <- function(req, string = NULL) {
   check_request(req)
 
-  if (is.null(string) && is.null(versions)) {
-    # Used in req_handle() to set default
-    return(req_user_agent(req, versions = c(
-        httr2 = utils::packageVersion("httr2"),
-        `r-curl` = utils::packageVersion("curl"),
-        libcurl = curl::curl_version()$version
-      )))
-  } else if (!is.null(string) && is.null(versions)) {
-    check_string(string, "`string`")
-    ua <- string
-  } else if (!is.null(versions) && is.null(string)) {
-    ua <- paste0(names(versions), "/", versions, collapse = " ")
+  if (is.null(string)) {
+    versions <- c(
+      httr2 = utils::packageVersion("httr2"),
+      `r-curl` = utils::packageVersion("curl"),
+      libcurl = curl::curl_version()$version
+    )
+    string <- paste0(names(versions), "/", versions, collapse = " ")
   } else {
-    abort("Must supply one of `string` and `versions`")
+    check_string(string, "`string`")
   }
 
-  req_options(req, useragent = ua)
+  req_options(req, useragent = string)
 }
 
 #' Set time limit for a request

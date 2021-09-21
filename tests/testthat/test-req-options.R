@@ -12,7 +12,7 @@ test_that("can add header called req", {
   expect_equal(req$options, list(req = 1))
 })
 
-test_that("can set user agent with string or version", {
+test_that("can set user agent", {
   ua <- function(...) {
     request("http://example.com") %>%
       req_user_agent(...) %>%
@@ -22,7 +22,6 @@ test_that("can set user agent with string or version", {
 
   expect_match(ua(), "libcurl")
   expect_equal(ua("abc"), "abc")
-  expect_equal(ua(versions = c(x = 1)), "x/1")
 })
 
 test_that("can set timeout", {

@@ -4,16 +4,13 @@
 \alias{req_user_agent}
 \title{Set user-agent for a request}
 \usage{
-req_user_agent(req, string = NULL, versions = NULL)
+req_user_agent(req, string = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{string}{String to be sent in the \code{User-Agent} header.}
-
-\item{versions}{Named character vector used to construct a user-agent
-string using a lightweight convention. If both \code{string} and \code{versions}
-are omitted, the user-agent will sets to the default.}
+\item{string}{String to be sent in the \code{User-Agent} header. If \code{NULL},
+will user default.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -31,6 +28,6 @@ request("http://example.com") \%>\% req_user_agent("MyString") \%>\% req_dry_run
 # If you're wrapping in an API in a package, it's polite to set the
 # user agent to identify your package.
 request("http://example.com") \%>\%
-  req_user_agent(versions = c("MyPackage" = "1.1.2")) \%>\%
+  req_user_agent("MyPackage (http://mypackage.com)") \%>\%
   req_dry_run()
 }
