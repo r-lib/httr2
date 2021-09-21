@@ -41,7 +41,7 @@
 #'   resp_body_json(resp)$error
 #' }
 #' request("http://example.com") %>%
-#'   req_error(body = extra_info)
+#'   req_error(body = error_body)
 #' # Learn more in vignette("wrapping-apis")
 req_error <- function(req,
                       is_error = NULL,
