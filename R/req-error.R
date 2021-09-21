@@ -14,8 +14,35 @@
 #'   and returns a character vector of additional information to include in the
 #'   body of the error. This vector is passed along to the `message` argument
 #'   of [rlang::abort()] so you can use any formatting that it supports.
-#' @returns An HTTP [request].
+#' @returns A modified HTTP [request].
 #' @export
+#' @examples
+#' # Performing this request usually generates an error because httr2
+#' # converts HTTP errors into R errors:
+#' req <- request("http://httpbin.org/404")
+#' try(req %>% req_perform())
+#' # You can still retrieve it with last_response()
+#' last_response()
+#'
+#' # But you might want to suppress this behaviour:
+#' resp <- req %>%
+#'   req_error(is_error = function(resp) FALSE) %>%
+#'   req_perform()
+#' resp
+#'
+#' # Or perhaps you're working with a server that routinely uses the
+#' # wrong HTTP error codes only 500s are really errors
+#' request("http://example.com") %>%
+#'   req_error(is_error = function(resp) resp_status(resp) == 500)
+#'
+#' # Most typically you'll use req_error() to add additional information
+#' # extracted from the response body (or sometimes header):
+#' error_body <- function(resp) {
+#'   resp_body_json(resp)$error
+#' }
+#' request("http://example.com") %>%
+#'   req_error(body = error_body)
+#' # Learn more in vignette("wrapping-apis")
 req_error <- function(req,
                       is_error = NULL,
                       body = NULL) {

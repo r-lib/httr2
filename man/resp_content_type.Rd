@@ -12,6 +12,11 @@ resp_encoding(resp)
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 }
+\value{
+A string. If no content type is specified \code{resp_content_type()}
+will return a character \code{NA}; if no encoding is specified,
+\code{resp_encoding()} will return \code{"UTF-8"}.
+}
 \description{
 \code{resp_content_type()} returns the just the type and subtype of the
 from the \code{Content-Type} header. If \code{Content-Type} is not provided; it
@@ -22,4 +27,14 @@ returns \code{NA}. Used by \code{\link[=resp_body_json]{resp_body_json()}}, \cod
 types, as parsed from the \code{charset} parameter of the \code{Content-Type}
 header. If that header is not found, not valid, or no charset parameter
 is found, returns \code{UTF-8}. Used by \code{\link[=resp_body_string]{resp_body_string()}}.
+}
+\examples{
+resp <- response(header = "Content-type: text/html; charset=utf-8")
+resp \%>\% resp_content_type()
+resp \%>\% resp_encoding()
+
+# No Content-Type header
+resp <- response()
+resp \%>\% resp_content_type()
+resp \%>\% resp_encoding()
 }

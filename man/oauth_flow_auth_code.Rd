@@ -69,6 +69,9 @@ listens for authorization responses is transient.)}
 
 \item{query}{List of query parameters returned by \code{oauth_flow_auth_code_listen()}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 These functions implement the OAuth authorization code flow, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{rfc6749},
@@ -91,6 +94,21 @@ components as needed for PKCE, as defined in
 \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
 }
 }
+\examples{
+client <- oauth_client(
+  id = "28acfec0674bb3da9f38",
+  secret = obfuscated(paste0(
+     "J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnv",
+     "PeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"
+  )),
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test"
+)
+if (interactive()) {
+  token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+  token
+}
+}
 \seealso{
 Other OAuth flows: 
 \code{\link{oauth_flow_bearer_jwt}()},
@@ -100,3 +118,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

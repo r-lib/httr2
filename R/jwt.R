@@ -21,7 +21,11 @@
 #' @param jti JWT ID claim. Provides a unique identifier for the JWT.
 #'   If omitted, uses a random 32-byte sequence encoded with base64url.
 #' @param ... Any additional claims to include in the claim set.
+#' @returns An S3 list with class `jwt_claim`.
 #' @export
+#' @examples
+#' claim <- jwt_claim()
+#' str(claim)
 jwt_claim <- function(iss = NULL,
                           sub = NULL,
                           aud = NULL,

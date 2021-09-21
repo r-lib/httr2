@@ -26,14 +26,16 @@
 #'   handle the request) or a [response] (if it does). See [with_mock()]/
 #'   `local_mock()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
-#'   around `req_verbose()` that uses an integer to control vebosity:
+#'   around `req_verbose()` that uses an integer to control verbosity:
 #'
 #'   * 0: no output
 #'   * 1: show headers
 #'   * 2: show headers and bodies
 #'   * 3: show headers, bodies, and curl status messages.
-#' @returns Returns an HTTP response with successful status code. Will
-#'   throw an error for 4xx and 5xx responses; override with [req_error()].
+#' @returns If request is successful (i.e. the request was successfully
+#'   performed and a response with HTTP status code <400 was recieved), an HTTP
+#'   [response]; otherwise throws an error. Override this behaviour with
+#'   [req_error()].
 #' @export
 #' @examples
 #' request("https://google.com") %>%
@@ -154,7 +156,12 @@ req_verbosity <- function(req, verbosity) {
 #' occur. If the request did not succeed (or no requests have been made)
 #' `last_response()` will be `NULL`.
 #'
+#' @returns An HTTP [response]/[request].
 #' @export
+#' @examples
+#' invisible(request("http://httr2.r-lib.org") %>% req_perform())
+#' last_request()
+#' last_response()
 last_response <- function() {
   the$last_response
 }
@@ -223,6 +230,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to processs stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
+#' @returns An HTTP [response].
 #' @export
 #' @examples
 #' show_bytes <- function(x) {

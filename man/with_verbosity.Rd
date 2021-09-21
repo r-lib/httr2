@@ -10,13 +10,16 @@ with_verbosity(code, verbosity = 1)
 \item{code}{Code to execture}
 
 \item{verbosity}{How much information to print? This is a wrapper
-around \code{req_verbose()} that uses an integer to control vebosity:
+around \code{req_verbose()} that uses an integer to control verbosity:
 \itemize{
 \item 0: no output
 \item 1: show headers
 \item 2: show headers and bodies
 \item 3: show headers, bodies, and curl status messages.
 }}
+}
+\value{
+The result of evaluating \code{code}.
 }
 \description{
 \code{with_verbose()} is useful for debugging httr2 code buried deep inside

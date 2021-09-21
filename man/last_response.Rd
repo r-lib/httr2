@@ -9,9 +9,17 @@ last_response()
 
 last_request()
 }
+\value{
+An HTTP \link{response}/\link{request}.
+}
 \description{
 These functions retrieve the most recent request made by httr2 and
 the response it received, to facilitate debugging problems \emph{after} they
 occur. If the request did not succeed (or no requests have been made)
 \code{last_response()} will be \code{NULL}.
+}
+\examples{
+invisible(request("http://httr2.r-lib.org") \%>\% req_perform())
+last_request()
+last_response()
 }

@@ -34,6 +34,15 @@ the raw vector in directly.}
 
 \item{path}{Path to \code{.rds} file}
 }
+\value{
+\itemize{
+\item \code{secret_decrypt()} and \code{secret_encrypt()} return strings.
+\item \code{secret_write_rds()} returns \code{x} invisibly; \code{secret_read_rds()}
+returns the saved object.
+\item \code{secret_make_key()} returns a string with class \code{AsIs}.
+\item \code{secret_has_key()} returns \code{TRUE} or \code{FALSE}.
+}
+}
 \description{
 httr2 provides a handful of functions designed for working with confidential
 data. These are useful because testing packages that use httr2 often
@@ -79,9 +88,10 @@ secret_write_rds(mtcars, path, key = key)
 secret_read_rds(path, key)
 
 # While you can manage the key explicitly in a variable, it's much
-# easier to store in an env variable. In real life, you should NEVER
-# use `Sys.setenv()` to create this env var (instead using .Renviron or
-# similar) but I need to do it here since it's an example
+# easier to store in an environment variable. In real life, you should
+# NEVER use `Sys.setenv()` to create this env var because you will
+# also store the secret in your `.Rhistory`. Instead add it to your
+# .Renviron using `usethis::edit_r_environ()` or similar.
 Sys.setenv("MY_KEY" = key)
 
 x <- secret_encrypt("This is a secret", "MY_KEY")

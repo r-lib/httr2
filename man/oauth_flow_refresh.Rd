@@ -24,6 +24,9 @@ is to look in \code{HTTR_REFRESH_TOKEN}.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 This function generates an access token from a refresh token, following
 the process described in
@@ -40,3 +43,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_password}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

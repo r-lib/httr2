@@ -9,7 +9,19 @@ resp_date(resp)
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 }
+\value{
+A \code{POSIXct} date-time.
+}
 \description{
 All responses contain a request date in the \code{Date} header; if not provided
 by the server will be automatically added by httr2.
+}
+\examples{
+resp <- response(headers = "Date: Wed, 01 Jan 2020 09:23:15 UTC")
+resp \%>\% resp_date()
+
+# If server doesn't add header (unusual), you get the time the request
+# was created:
+resp <- response()
+resp \%>\% resp_date()
 }

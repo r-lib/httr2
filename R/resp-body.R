@@ -1,4 +1,4 @@
-#' Extract the body from the response
+#' Extract body from response
 #'
 #' @description
 #' * `resp_body_raw()` returns the raw bytes.
@@ -12,7 +12,22 @@
 #' check with `check_type = FALSE`.
 #'
 #' @param resp A response object.
+#' @returns
+#' * `resp_body_raw()` returns a raw vector.
+#' * `resp_body_string()` returns a string.
+#' * `resp_body_json()` returns NULL, an atomic vector, or list.
+#' * `resp_body_html()` and `resp_body_xml()` return an `xml2::xml_document`
 #' @export
+#' @examples
+#' resp <- request("https://httr2.r-lib.org") %>% req_perform()
+#' resp
+#'
+#' resp %>% resp_body_raw()
+#' resp %>% resp_body_string()
+#'
+#' if (requireNamespace("xml2", quietly = TRUE)) {
+#'   resp %>% resp_body_html()
+#' }
 resp_body_raw <- function(resp) {
   check_response(resp)
 

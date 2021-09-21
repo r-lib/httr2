@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-method.R
 \name{req_method}
 \alias{req_method}
-\title{Set HTTP method}
+\title{Set HTTP method in request}
 \usage{
 req_method(req, method)
 }
@@ -10,6 +10,9 @@ req_method(req, method)
 \item{req}{A \link{request}.}
 
 \item{method}{Custom HTTP method}
+}
+\value{
+A modified HTTP \link{request}.
 }
 \description{
 Use this function to use a custom HTTP method like "HEAD",

@@ -1,4 +1,4 @@
-#' Set method/path from a template
+#' Set request method/path from a template
 #'
 #' @description
 #' Many APIs document their methods with a lightweight template mechanism
@@ -12,6 +12,7 @@
 #' @param ... Template variables.
 #' @param .env Environment in which to look for template variables not found
 #'   in `...`. Expert use only.
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' httpbin <- request("http://httpbin.org")

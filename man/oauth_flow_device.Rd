@@ -25,6 +25,9 @@ the documentation.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 These functions implement the OAuth device flow, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc8628}{rfc8628}. It's designed
@@ -41,3 +44,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

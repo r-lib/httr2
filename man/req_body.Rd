@@ -44,6 +44,9 @@ or an empty list (\code{"list"}).}
 
 \item{...}{Other arguments passed on to \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 \itemize{
 \item \code{req_body_file()} sends a local file.

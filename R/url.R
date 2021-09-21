@@ -5,10 +5,13 @@
 #' [rfc3986](https://tools.ietf.org/html/rfc3986) for details of parsing
 #' algorithm.
 #'
-#' @param url For `url_parse()` a string to parse into a url;
-#'   for `url_build()` a url to turn back into a string.
-#' @return A URL is a S3 list with class `httr2_url` and elements scheme,
-#'   hostname, port, path, fragment, query, username, password.
+#' @param url For `url_parse()` a string to parse into a URL;
+#'   for `url_build()` a URL to turn back into a string.
+#' @returns
+#' * `url_build()` returns a string.
+#' * `url_parse()` returns a URL: a S3 list with class `httr2_url`
+#'   and elements `scheme`, `hostname`, `port`, `path`, `fragment`, `query`,
+#'   `username`, `password`.
 #' @export
 #' @examples
 #' url_parse("http://google.com/")

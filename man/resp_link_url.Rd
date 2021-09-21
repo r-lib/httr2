@@ -2,22 +2,31 @@
 % Please edit documentation in R/resp-headers.R
 \name{resp_link_url}
 \alias{resp_link_url}
-\title{Parse link url from a response}
+\title{Parse link URL from a response}
 \usage{
 resp_link_url(resp, rel)
 }
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 
-\item{rel}{"rel" value for which to retrieve url}
+\item{rel}{The "link relation type" value for which to retrieve a URL.}
+}
+\value{
+Either a string providing a URL, if the specified \code{rel} exists, or
+\code{NULL} if not.
 }
 \description{
-This parses the \code{Link} header, extracting the url corresponding to the
-specified \code{rel}. Returns \code{NULL} if not present.
+Parses URLs out of the the \code{Link} header as defined by
+\href{https://datatracker.ietf.org/doc/html/rfc8288}{rfc8288}.
 }
 \examples{
-resp <- request("https://api.github.com/search/code") \%>\%
-  req_url_query(q = "addClass user:mozilla") \%>\%
-  req_perform()
+# Simulate response from GitHub code search
+resp <- response(headers = paste0("Link: ",
+  '<https://api.github.com/search/code?q=addClass+user\%3Amozilla&page=2>; rel="next",',
+  '<https://api.github.com/search/code?q=addClass+user\%3Amozilla&page=34>; rel="last"'
+))
+
 resp_link_url(resp, "next")
+resp_link_url(resp, "last")
+resp_link_url(resp, "prev")
 }

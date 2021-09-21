@@ -14,7 +14,7 @@
 #'
 #' @param cmd Call to curl. If omitted and the clipr package is installed,
 #'   will be retrieved from the clipboard.
-#' @return A string containing the translated httr2 code. If the input
+#' @returns A string containing the translated httr2 code. If the input
 #'   was copied from the clipboard, the translation will be copied back
 #'   to the clipboard.
 #' @export

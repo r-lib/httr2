@@ -17,6 +17,9 @@ worth of data to process. It must return \code{TRUE} to continue streaming.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
 }
+\value{
+An HTTP \link{response}.
+}
 \description{
 After preparing a request, call \code{req_stream()} to perform the request
 and handle the result with a streaming callback. This is useful for

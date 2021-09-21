@@ -18,7 +18,7 @@ req_perform(
 large responses since it avoids storing the response in memory.}
 
 \item{verbosity}{How much information to print? This is a wrapper
-around \code{req_verbose()} that uses an integer to control vebosity:
+around \code{req_verbose()} that uses an integer to control verbosity:
 \itemize{
 \item 0: no output
 \item 1: show headers
@@ -32,8 +32,10 @@ handle the request) or a \link{response} (if it does). See \code{\link[=with_moc
 \code{local_mock()} for more details.}
 }
 \value{
-Returns an HTTP response with successful status code. Will
-throw an error for 4xx and 5xx responses; override with \code{\link[=req_error]{req_error()}}.
+If request is successful (i.e. the request was successfully
+performed and a response with HTTP status code <400 was recieved), an HTTP
+\link{response}; otherwise throws an error. Override this behaviour with
+\code{\link[=req_error]{req_error()}}.
 }
 \description{
 After preparing a \link{request}, call \code{req_perform()} to perform it, fetching

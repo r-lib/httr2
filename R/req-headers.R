@@ -8,7 +8,7 @@
 #'   * Use `NULL` to reset a value to httr's default
 #'   * Use `""` to remove a header
 #'   * Use a character vector to repeat a header.
-#'
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' req <- request("http://example.com")

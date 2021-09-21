@@ -20,10 +20,30 @@ resp_header_exists(resp, header)
 
 \item{header}{Header name (case insensitive)}
 }
+\value{
+\itemize{
+\item \code{resp_headers()} returns a list.
+\item \code{resp_header()} returns a string if the header exists and \code{NULL} otherwise.
+\item \code{resp_header_exists()} returns \code{TRUE} or \code{FALSE}.
+}
+}
 \description{
 \itemize{
 \item \code{resp_headers()} retrieves a list of all headers.
 \item \code{resp_header()} retrieves a single header.
 \item \code{resp_header_exists()} checks if a header is present.
 }
+}
+\examples{
+resp <- request("https://httr2.r-lib.org") \%>\% req_perform()
+resp \%>\% resp_headers()
+resp \%>\% resp_headers("x-")
+
+resp \%>\% resp_header_exists("server")
+resp \%>\% resp_header("server")
+# Headers are case insensitive
+resp \%>\% resp_header("SERVER")
+
+# Returns NULL if header doesn't exist
+resp \%>\% resp_header("this-header-doesnt-exist")
 }

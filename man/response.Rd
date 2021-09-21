@@ -25,6 +25,9 @@ which will be parsed using the standard rules, or a named list.}
 
 \item{body}{Response, if any, contained in the response body.}
 }
+\value{
+An HTTP response: an S3 list with class \code{httr2_response}.
+}
 \description{
 Generally, you should not need to call this function directly; you'll
 get a real HTTP response by calling \code{\link[=req_perform]{req_perform()}} and friends. This

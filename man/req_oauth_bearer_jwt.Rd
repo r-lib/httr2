@@ -35,8 +35,18 @@ callback function which should call \code{jwt_claim()}.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This uses \code{\link[=oauth_flow_bearer_jwt]{oauth_flow_bearer_jwt()}} to generate an access token which is then
 used to authenticate the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token is cached in memory.
+}
+\examples{
+client <- oauth_client("example", "https://example.com/get_token")
+claim <- jwt_claim()
+req <- request("https://example.com")
+
+req \%>\% req_oauth_bearer_jwt(client, claim)
 }

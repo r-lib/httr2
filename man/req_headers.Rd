@@ -16,6 +16,9 @@ req_headers(.req, ...)
 \item Use a character vector to repeat a header.
 }}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 \code{req_headers()} allows you to set the value of any header.
 }

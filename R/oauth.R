@@ -14,6 +14,7 @@
 #'   * `clear()` removes the token from the cache
 #' @param flow Function used to generate the access token.
 #' @param flow_params List of parameters to call `flow` with.
+#' @returns An [oauth_token].
 #' @keywords internal
 #' @export
 req_oauth <- function(req, flow, flow_params, cache) {

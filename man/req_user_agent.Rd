@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-options.R
 \name{req_user_agent}
 \alias{req_user_agent}
-\title{Set user-agent}
+\title{Set user-agent for a request}
 \usage{
 req_user_agent(req, string = NULL, versions = NULL)
 }
@@ -13,7 +13,10 @@ req_user_agent(req, string = NULL, versions = NULL)
 
 \item{versions}{Named character vector used to construct a user-agent
 string using a lightweight convention. If both \code{string} and \code{versions}
-are omitted,}
+are omitted, the user-agent will sets to the default.}
+}
+\value{
+A modified HTTP \link{request}.
 }
 \description{
 This overrides the default user-agent set by httr2 which includes the

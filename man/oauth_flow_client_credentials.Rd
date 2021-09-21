@@ -14,6 +14,9 @@ oauth_flow_client_credentials(client, scope = NULL, token_params = list())
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 This function implements the OAuth client credentials flow, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.4}{rfc6749},
@@ -29,3 +32,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

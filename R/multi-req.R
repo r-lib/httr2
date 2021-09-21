@@ -31,7 +31,7 @@
 #'   hit an error. Set this to `TRUE` to stop all requests as soon as you
 #'   hit an error. Responses that were never performed will have class
 #'   `httr2_cancelled` in the result.
-#' @return A list the same length as `reqs` where each element is either a
+#' @returns A list the same length as `reqs` where each element is either a
 #'   [response] or an `error`.
 #' @export
 #' @examples

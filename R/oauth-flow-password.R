@@ -10,6 +10,14 @@
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
+#' @returns A modified HTTP [request].
+#' @examples
+#' client <- oauth_client("example", "https://example.com/get_token")
+#' req <- request("https://example.com")
+#'
+#' if (interactive()) {
+#'   req %>% req_oauth_password(client, "username")
+#' }
 req_oauth_password <- function(req, client,
                                username,
                                password = NULL,
@@ -40,6 +48,8 @@ req_oauth_password <- function(req, client,
 #' @inheritParams req_auth_basic
 #' @export
 #' @family OAuth flows
+#' @returns An [oauth_token].
+#' @keywords internal
 oauth_flow_password <- function(client,
                                 username,
                                 password = NULL,
