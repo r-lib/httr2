@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-template.R
 \name{req_template}
 \alias{req_template}
-\title{Set method/path from a template}
+\title{Set request method/path from a template}
 \usage{
 req_template(req, template, ..., .env = parent.frame())
 }

@@ -1,4 +1,4 @@
-#' Retrieve response status
+#' Extract HTTP status from response
 #'
 #' @description
 #' * `resp_status()` retrieves the numeric HTTP status code

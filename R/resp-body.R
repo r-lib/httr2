@@ -1,4 +1,4 @@
-#' Extract the body from the response
+#' Extract body from response
 #'
 #' @description
 #' * `resp_body_raw()` returns the raw bytes.

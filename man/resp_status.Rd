@@ -5,7 +5,7 @@
 \alias{resp_status_desc}
 \alias{resp_is_error}
 \alias{resp_check_status}
-\title{Retrieve response status}
+\title{Extract HTTP status from response}
 \usage{
 resp_status(resp)
 

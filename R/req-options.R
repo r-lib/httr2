@@ -25,7 +25,7 @@ req_options <- function(.req, ...) {
   .req
 }
 
-#' Set user-agent
+#' Set user-agent for a request
 #'
 #' This overrides the default user-agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
@@ -70,7 +70,7 @@ req_user_agent <- function(req, string = NULL, versions = NULL) {
   req_options(req, useragent = ua)
 }
 
-#' Set time limit
+#' Set time limit for a request
 #'
 #' An error will be thrown if the request does not complete in the time limit.
 #'

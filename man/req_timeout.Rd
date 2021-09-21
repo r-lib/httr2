@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-options.R
 \name{req_timeout}
 \alias{req_timeout}
-\title{Set time limit}
+\title{Set time limit for a request}
 \usage{
 req_timeout(req, seconds)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-options.R
 \name{req_user_agent}
 \alias{req_user_agent}
-\title{Set user-agent}
+\title{Set user-agent for a request}
 \usage{
 req_user_agent(req, string = NULL, versions = NULL)
 }

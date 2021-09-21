@@ -1,4 +1,4 @@
-#' Set method/path from a template
+#' Set request method/path from a template
 #'
 #' @description
 #' Many APIs document their methods with a lightweight template mechanism

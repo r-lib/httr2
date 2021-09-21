@@ -6,7 +6,7 @@
 \alias{resp_body_json}
 \alias{resp_body_html}
 \alias{resp_body_xml}
-\title{Extract the body from the response}
+\title{Extract body from response}
 \usage{
 resp_body_raw(resp)
 
