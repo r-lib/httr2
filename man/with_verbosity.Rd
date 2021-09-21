@@ -18,6 +18,9 @@ around \code{req_verbose()} that uses an integer to control verbosity:
 \item 3: show headers, bodies, and curl status messages.
 }}
 }
+\value{
+The result of evaluating \code{code}.
+}
 \description{
 \code{with_verbose()} is useful for debugging httr2 code buried deep inside
 another package because it allows you to see exactly what's been sent

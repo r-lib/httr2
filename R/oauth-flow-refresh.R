@@ -53,6 +53,7 @@ req_oauth_refresh <- function(req, client,
 #'   we recommend placing in an environment variable; the default behaviour
 #'   is to look in `HTTR_REFRESH_TOKEN`.
 #' @family OAuth flows
+#' @returns An [oauth_token].
 #' @export
 #' @keywords internal
 oauth_flow_refresh <- function(client,

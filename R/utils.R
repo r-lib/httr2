@@ -108,6 +108,7 @@ base64_url_rand <- function(bytes = 32) {
 #'
 #' @inheritParams req_perform
 #' @param code Code to execture
+#' @returns The result of evaluating `code`.
 #' @export
 #' @examples
 #' fun <- function() {

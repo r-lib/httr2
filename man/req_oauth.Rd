@@ -22,6 +22,9 @@ cached yet.
 \item \code{clear()} removes the token from the cache
 }}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 This is a low-level helper for automatically authenticating a request with
 an OAuth flow, caching the access token and refreshing it where possible.
