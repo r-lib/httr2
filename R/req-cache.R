@@ -25,7 +25,10 @@
 #' @export
 #' @examples
 #' # GitHub uses HTTP caching for all raw files.
-#' url <- "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv"
+#' url <- paste0(
+#'   "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/",
+#'   "master/inst/extdata/penguins.csv"
+#' )
 #' # Here I set debug = TRUE so you can see what's happening
 #' req <- request(url) %>% req_cache(tempdir(), debug = TRUE)
 #'

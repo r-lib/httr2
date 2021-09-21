@@ -94,7 +94,10 @@ components as needed for PKCE, as defined in
 \examples{
 client <- oauth_client(
   id = "28acfec0674bb3da9f38",
-  secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+  secret = obfuscated(paste0(
+     "J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnv",
+     "PeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"
+  )),
   token_url = "https://github.com/login/oauth/access_token",
   name = "hadley-oauth-test"
 )
