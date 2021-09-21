@@ -69,12 +69,27 @@ is <code>15 / 60</code>.</p></dd>
     <dt class="col-sm-3 section level2" id="pkg-arg-realm">realm</dt>
       <dd class="col-sm-9" id="ref-arguments desc"><p>An unique identifier that for throttle pool. If not supplied,
 defaults to the hostname of the request.</p></dd>
-    </dl><div class="ref-section section level2" id="section-see-also">
+    </dl><div class="ref-section section level2" id="section-value">
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value" aria-hidden="true"></a>Value</h2>
+
+    <p>A modified HTTP <a href="request.html">request</a>.</p>
+    </div>
+    <div class="ref-section section level2" id="section-see-also">
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also" aria-hidden="true"></a>See also</h2>
 
     <div class="dont-index"><p><code><a href="req_retry.html">req_retry()</a></code> for another way of handling rate-limited APIs.</p></div>
     </div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples" aria-hidden="true"></a>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Ensure server will never recieve more than 10 requests a minute</span></span>
+<span class="r-in"><span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://example.com"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">req_throttle</span><span class="op">(</span>rate <span class="op">=</span> <span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://example.com</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">throttle_delay</span>: a function</span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="sticky-top">

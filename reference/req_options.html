@@ -67,7 +67,22 @@ httr2.</p>
     <dt class="col-sm-3 section level2" id="pkg-arg-...">...</dt>
       <dd class="col-sm-9" id="ref-arguments desc"><p>Name-value pairs. The name should be a valid curl option,
 as found in <code><a href="https://rdrr.io/pkg/curl/man/curl_options.html">curl::curl_options()</a></code>.</p></dd>
-    </dl></div>
+    </dl><div class="ref-section section level2" id="section-value">
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value" aria-hidden="true"></a>Value</h2>
+
+    <p>A modified HTTP <a href="request.html">request</a>.</p>
+    </div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples" aria-hidden="true"></a>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># req_options() allows you to access curl options that are not otherwise</span></span>
+<span class="r-in"><span class="co"># exposed by httr2. For example, in very special cases you may need to</span></span>
+<span class="r-in"><span class="co"># turn off SSL verification. This is generally a bad idea so httr2 doesn't</span></span>
+<span class="r-in"><span class="co"># provide a convenient wrapper, but if you really know what you're doing</span></span>
+<span class="r-in"><span class="co"># you can still access this libcurl option:</span></span>
+<span class="r-in"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://example.com"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">req_options</span><span class="op">(</span>ssl_verifypeer <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+</code></pre></div>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="sticky-top">
     <nav id="toc"><h2 data-toc-skip>Contents</h2>

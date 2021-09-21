@@ -117,7 +117,23 @@ Only for HMAC/RSA, not applicable for ECDSA keys.</p></dd>
 JWT header.</p></dd>
     <dt class="col-sm-3 section level2" id="pkg-arg-secret">secret</dt>
       <dd class="col-sm-9" id="ref-arguments desc"><p>String or raw vector with a secret passphrase.</p></dd>
-    </dl></div>
+    </dl><div class="ref-section section level2" id="section-value">
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value" aria-hidden="true"></a>Value</h2>
+
+    <p>An S3 list with class <code>jwt_claim</code>.</p>
+    </div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples" aria-hidden="true"></a>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">claim</span> <span class="op">&lt;-</span> <span class="fu">jwt_claim</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">claim</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ exp: num 1.63e+09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ nbf: num 1.63e+09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ iat: num 1.63e+09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ jti: chr "PuvBEiGPqoKhblPtBNrgNS6Jv0hjJYNUOHsXBVgwL08"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:2] "jwt_claim" "list"</span>
+</code></pre></div>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="sticky-top">
     <nav id="toc"><h2 data-toc-skip>Contents</h2>

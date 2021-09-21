@@ -82,7 +82,63 @@ resp_header_exists() checks if a header is present.
 <code>NULL</code>, the default, returns all headers.</p></dd>
     <dt class="col-sm-3 section level2" id="pkg-arg-header">header</dt>
       <dd class="col-sm-9" id="ref-arguments desc"><p>Header name (case insensitive)</p></dd>
-    </dl></div>
+    </dl><div class="ref-section section level2" id="section-value">
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value" aria-hidden="true"></a>Value</h2>
+
+    
+<ul><li><p><code>resp_headers()</code> returns a list.</p></li>
+<li><p><code>resp_header()</code> returns a string if the header exists and <code>NULL</code> otherwise.</p></li>
+<li><p><code>resp_header_exists()</code> returns <code>TRUE</code> or <code>FALSE</code>.</p></li>
+</ul></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples" aria-hidden="true"></a>Examples</h2>
+    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://httr2.r-lib.org"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_headers</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">server</span>: GitHub.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-type</span>: text/html; charset=utf-8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">last-modified</span>: Tue, 21 Sep 2021 13:27:24 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">etag</span>: W/"6149ddbc-48c1"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">expires</span>: Tue, 21 Sep 2021 13:37:46 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">cache-control</span>: max-age=600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-encoding</span>: gzip</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-github-request-id</span>: FDA8:296A:19DCF0:30AE8C:6149DDD2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-ranges</span>: bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">date</span>: Tue, 21 Sep 2021 13:39:32 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">via</span>: 1.1 varnish</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">age</span>: 26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-served-by</span>: cache-bwi5032-BWI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache</span>: HIT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache-hits</span>: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-timer</span>: S1632231573.634172,VS0,VE0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">vary</span>: Accept-Encoding</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-fastly-request-id</span>: ed3b54f3c6e2ce5f095d751cdea7a470ce457cc6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 5239</span>
+<span class="r-in"><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_headers</span><span class="op">(</span><span class="st">"x-"</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-github-request-id</span>: FDA8:296A:19DCF0:30AE8C:6149DDD2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-served-by</span>: cache-bwi5032-BWI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache</span>: HIT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache-hits</span>: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-timer</span>: S1632231573.634172,VS0,VE0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-fastly-request-id</span>: ed3b54f3c6e2ce5f095d751cdea7a470ce457cc6</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_header_exists</span><span class="op">(</span><span class="st">"server"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_header</span><span class="op">(</span><span class="st">"server"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GitHub.com"</span>
+<span class="r-in"><span class="co"># Headers are case insensitive</span></span>
+<span class="r-in"><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_header</span><span class="op">(</span><span class="st">"SERVER"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GitHub.com"</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Returns NULL if header doesn't exist</span></span>
+<span class="r-in"><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_header</span><span class="op">(</span><span class="st">"this-header-doesnt-exist"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+</code></pre></div>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="sticky-top">
     <nav id="toc"><h2 data-toc-skip>Contents</h2>

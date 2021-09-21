@@ -71,7 +71,7 @@ the results back to R as a <a href="response.html">response</a>.</p>
 large responses since it avoids storing the response in memory.</p></dd>
     <dt class="col-sm-3 section level2" id="pkg-arg-verbosity">verbosity</dt>
       <dd class="col-sm-9" id="ref-arguments desc"><p>How much information to print? This is a wrapper
-around <code><a href="req_verbose.html">req_verbose()</a></code> that uses an integer to control vebosity:</p><ul><li><p>0: no output</p></li>
+around <code><a href="req_verbose.html">req_verbose()</a></code> that uses an integer to control verbosity:</p><ul><li><p>0: no output</p></li>
 <li><p>1: show headers</p></li>
 <li><p>2: show headers and bodies</p></li>
 <li><p>3: show headers, bodies, and curl status messages.</p></li>
@@ -84,8 +84,10 @@ handle the request) or a <a href="response.html">response</a> (if it does). See 
     </dl><div class="ref-section section level2" id="section-value">
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value" aria-hidden="true"></a>Value</h2>
 
-    <p>Returns an HTTP response with successful status code. Will
-throw an error for 4xx and 5xx responses; override with <code><a href="req_error.html">req_error()</a></code>.</p>
+    <p>If request is successful (i.e. the request was successfully
+performed and a response with HTTP status code &lt;400 was recieved), an HTTP
+<a href="response.html">response</a>; otherwise throws an error. Override this behaviour with
+<code><a href="req_error.html">req_error()</a></code>.</p>
     </div>
     <div class="ref-section section level2" id="section-requests">
     <h2 class="hasAnchor" id="requests"><a class="anchor" href="#requests" aria-hidden="true"></a>Requests</h2>
@@ -107,7 +109,7 @@ or by running the OAuth flow.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://www.google.com/</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (13987 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (14052 bytes)</span>
 </code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
