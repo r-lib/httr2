@@ -127,6 +127,7 @@ print.httr2_oauth_client <- function(x, ...) {
 #' the `auth_params` argument.
 #' @param req A [request].
 #' @param client An [oauth_client].
+#' @export
 #' @examples
 #' # Show what the various forms of client authentication look like
 #' req <- request("https://example.com/whoami")
