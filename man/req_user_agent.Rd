@@ -13,7 +13,7 @@ req_user_agent(req, string = NULL, versions = NULL)
 
 \item{versions}{Named character vector used to construct a user-agent
 string using a lightweight convention. If both \code{string} and \code{versions}
-are omitted,}
+are omitted, the user-agent will sets to the default.}
 }
 \value{
 A modified HTTP \link{request}.

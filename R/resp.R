@@ -83,10 +83,10 @@ print.httr2_response <- function(x,...) {
 
 #' Show the raw response
 #'
-#' The reconstruct the HTTP message that httr2 received from the server.
-#' It's unlikely to be exactly the same (because most servers compress at
-#' least the body, and HTTP/2 can also compress the headers), but it conveys
-#' the same information.
+#' This function reconstructs the HTTP message that httr2 received from the
+#' server. It's unlikely to be exactly byte-for-byte identical (because most
+#' servers compress at least the body, and HTTP/2 can also compress the
+#' headers), but it conveys the same information.
 #'
 #' @param resp An HTTP [response]
 #' @returns `resp` (invisibly).
@@ -103,7 +103,6 @@ resp_raw <- function(resp) {
   }
 
   invisible(resp)
-
 }
 
 is_response <- function(x) {

@@ -50,6 +50,10 @@ req_auth_basic <- function(req, username, password = NULL) {
 #' @examples
 #' req <- request("http://example.com") %>% req_auth_bearer_token("sdaljsdf093lkfs")
 #' req
+#'
+#' # httr2 does its best to redact the Authorization header so that you don't
+#' # accidentally reveal confidential data. Use `redact_headers` to reveal it:
+#' print(req, redact_headers = FALSE)
 req_auth_bearer_token <- function(req, token) {
   check_request(req)
   check_string(token, "`token`")

@@ -13,10 +13,10 @@ resp_raw(resp)
 \code{resp} (invisibly).
 }
 \description{
-The reconstruct the HTTP message that httr2 received from the server.
-It's unlikely to be exactly the same (because most servers compress at
-least the body, and HTTP/2 can also compress the headers), but it conveys
-the same information.
+This function reconstructs the HTTP message that httr2 received from the
+server. It's unlikely to be exactly byte-for-byte identical (because most
+servers compress at least the body, and HTTP/2 can also compress the
+headers), but it conveys the same information.
 }
 \examples{
 resp <- request("https://httpbin.org/json") \%>\% req_perform()

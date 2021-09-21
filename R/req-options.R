@@ -34,7 +34,7 @@ req_options <- function(.req, ...) {
 #' @param string String to be sent in the `User-Agent` header.
 #' @param versions Named character vector used to construct a user-agent
 #'   string using a lightweight convention. If both `string` and `versions`
-#'   are omitted,
+#'   are omitted, the user-agent will sets to the default.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples

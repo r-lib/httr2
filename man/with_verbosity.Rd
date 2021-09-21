@@ -10,7 +10,7 @@ with_verbosity(code, verbosity = 1)
 \item{code}{Code to execture}
 
 \item{verbosity}{How much information to print? This is a wrapper
-around \code{req_verbose()} that uses an integer to control vebosity:
+around \code{req_verbose()} that uses an integer to control verbosity:
 \itemize{
 \item 0: no output
 \item 1: show headers

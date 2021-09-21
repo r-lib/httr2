@@ -10,12 +10,16 @@ url_parse(url)
 url_build(url)
 }
 \arguments{
-\item{url}{For \code{url_parse()} a string to parse into a url;
-for \code{url_build()} a url to turn back into a string.}
+\item{url}{For \code{url_parse()} a string to parse into a URL;
+for \code{url_build()} a URL to turn back into a string.}
 }
 \value{
-A URL: a S3 list with class \code{httr2_url} and elements \code{scheme},
-\code{hostname}, \code{port}, \code{path}, \code{fragment}, \code{query}, \code{username}, \code{password}.
+\itemize{
+\item \code{url_build()} returns a string.
+\item \code{url_parse()} returns a URL: a S3 list with class \code{httr2_url}
+and elements \code{scheme}, \code{hostname}, \code{port}, \code{path}, \code{fragment}, \code{query},
+\code{username}, \code{password}.
+}
 }
 \description{
 \code{url_parse()} parses a URL into its component pieces; \code{url_build()} does

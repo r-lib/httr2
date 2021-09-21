@@ -2,13 +2,14 @@
 #'
 #' @description
 #' Use `req_perform()` to automatically cache HTTP requests. Most API requests
-#' are not cacheable, but when possible (often when downloading larger files)
-#' it can make a big difference. `req_cache()` caches responses to GET requests
-#' that have status code 200 and at least one of the standard caching headers
-#' (e.g. `Expires`, `Etag`, `Last-Modified`, `Cache-Control`), unless caching
-#' has been expressly prohibited with `Cache-Control: no-store`. Typically,
-#' a request will still be sent to the server to check that the cached value
-#' is still up-to-date, but it will not need to re-download the body value.
+#' are not cacheable, but static files often are.
+#'
+#' `req_cache()` caches responses to GET requests that have status code 200 and
+#' at least one of the standard caching headers (e.g. `Expires`,
+#' `Etag`, `Last-Modified`, `Cache-Control`), unless caching has been expressly
+#' prohibited with `Cache-Control: no-store`. Typically, a request will still
+#' be sent to the server to check that the cached value is still up-to-date,
+#' but it will not need to re-download the body value.
 #'
 #' To learn more about HTTP caching, I recommend the MDN article
 #' [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching).
@@ -23,13 +24,15 @@
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
-#' # GitHub uses HTTP caching, so if you have to download files
-#' # you can make sure it's only downloaded once. Here I set
-#' # debug = TRUE so you can see what's happening.
+#' # GitHub uses HTTP caching for all raw files.
 #' url <- "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv"
+#' # Here I set debug = TRUE so you can see what's happening
 #' req <- request(url) %>% req_cache(tempdir(), debug = TRUE)
 #'
+#' # First request downloads the data
 #' resp <- req %>% req_perform()
+#'
+#' # Second request retrieves it from the cache
 #' resp <- req %>% req_perform()
 req_cache <- function(req, path, use_on_error = FALSE, debug = FALSE) {
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
