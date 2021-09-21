@@ -112,7 +112,7 @@ Once you've made a few successful requests, it's worth seeing if you can figure 
 
 For faker, I spent a little with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
 
--   Every URL is of the form [`https://fakerapi.it/api/v1`](https://fakerapi.it/api/v1)`/{resource}`, and data is passed to the resource with query parameters.
+-   Every URL is of the form `https://fakerapi.it/api/v1/{resource}`, and data is passed to the resource with query parameters.
     All parameters start with `_`.
 
 -   Every resource has three common query parameters: `_locale`, `_quantity`, and `_seed`.

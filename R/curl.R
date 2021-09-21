@@ -10,7 +10,7 @@
 #' to translate a curl invocation copy and pasted from elsewhere.
 #'
 #' Inspired by [curlconverter](https://github.com/hrbrmstr/curlconverter)
-#' written by [Bob Rudis](http://rud.is/b).
+#' written by [Bob Rudis](https://rud.is/b/).
 #'
 #' @param cmd Call to curl. If omitted and the clipr package is installed,
 #'   will be retrieved from the clipboard.
