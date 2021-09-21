@@ -106,8 +106,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Dolores similique labore qui."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Debitis a officiis rerum eos. Perferendis ipsa nostrum nam nam ad maxime. Illum laudantium architecto odio ut."</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Hic est quo quia est."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Enim tenetur sit recusandae. Nulla eveniet distinctio et modi amet. Officiis tempore qui et voluptas doloribus "| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></code></pre></div>
 <div id="errors" class="section level3">
 <h3 class="hasAnchor">
@@ -141,7 +141,7 @@
 <span class="co">#&gt; Vary: Accept-Encoding</span>
 <span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
 <span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Tue, 21 Sep 2021 13:46:18 GMT</span>
+<span class="co">#&gt; Date: Tue, 21 Sep 2021 13:58:21 GMT</span>
 <span class="co">#&gt; Access-Control-Allow-Origin: *</span>
 <span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
 <span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
@@ -200,8 +200,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Dolore optio qui maiores."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Ut quia voluptatem beatae nostrum ducimus. Vel velit laborum corporis. Qui cupiditate nesciunt vel."</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Nisi nemo nesciunt quidem."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Voluptatem velit aut eos molestias cupiditate. Dolor aliquam quidem incidunt quia eum ut qui. Placeat amet sint nisi sint."</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -236,23 +236,23 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 9</span>
-<span class="co">#&gt;   .. ..$ firstname: chr "Arnoldo"</span>
-<span class="co">#&gt;   .. ..$ lastname : chr "King"</span>
-<span class="co">#&gt;   .. ..$ email    : chr "dkunze@hotmail.com"</span>
-<span class="co">#&gt;   .. ..$ phone    : chr "+4091243223913"</span>
-<span class="co">#&gt;   .. ..$ birthday : chr "1937-07-27"</span>
+<span class="co">#&gt;   .. ..$ firstname: chr "Gino"</span>
+<span class="co">#&gt;   .. ..$ lastname : chr "Hettinger"</span>
+<span class="co">#&gt;   .. ..$ email    : chr "emmet88@yahoo.com"</span>
+<span class="co">#&gt;   .. ..$ phone    : chr "+4554433000684"</span>
+<span class="co">#&gt;   .. ..$ birthday : chr "2000-01-21"</span>
 <span class="co">#&gt;   .. ..$ gender   : chr "male"</span>
 <span class="co">#&gt;   .. ..$ address  :List of 9</span>
-<span class="co">#&gt;   .. .. ..$ street        : chr "17112 Frami Plains Apt. 950"</span>
-<span class="co">#&gt;   .. .. ..$ streetName    : chr "Hahn Ramp"</span>
-<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "2034"</span>
-<span class="co">#&gt;   .. .. ..$ city          : chr "Lake Ellieside"</span>
-<span class="co">#&gt;   .. .. ..$ zipcode       : chr "78467"</span>
-<span class="co">#&gt;   .. .. ..$ country       : chr "Liberia"</span>
-<span class="co">#&gt;   .. .. ..$ county_code   : chr "PA"</span>
-<span class="co">#&gt;   .. .. ..$ latitude      : num 88.4</span>
-<span class="co">#&gt;   .. .. ..$ longitude     : num -121</span>
-<span class="co">#&gt;   .. ..$ website  : chr "http://okeefe.org"</span>
+<span class="co">#&gt;   .. .. ..$ street        : chr "9423 Fisher Neck Suite 003"</span>
+<span class="co">#&gt;   .. .. ..$ streetName    : chr "Willms Station"</span>
+<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "15589"</span>
+<span class="co">#&gt;   .. .. ..$ city          : chr "Jonesshire"</span>
+<span class="co">#&gt;   .. .. ..$ zipcode       : chr "87520"</span>
+<span class="co">#&gt;   .. .. ..$ country       : chr "Samoa"</span>
+<span class="co">#&gt;   .. .. ..$ county_code   : chr "SJ"</span>
+<span class="co">#&gt;   .. .. ..$ latitude      : num 8.8</span>
+<span class="co">#&gt;   .. .. ..$ longitude     : num -104</span>
+<span class="co">#&gt;   .. ..$ website  : chr "http://willms.com"</span>
 <span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and returning the result as a tibble. I did a quick and dirty conversion using purrr; depending on your needs you could use base R code or <code>tidyr::hoist()</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -294,13 +294,13 @@
 <span class="op">}</span>
 <span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 × 4</span>
-<span class="co">#&gt;   firstname lastname  email                      gender</span>
-<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                      &lt;chr&gt; </span>
-<span class="co">#&gt; 1 Cielo     Bogan     dare.giuseppe@baumbach.org male  </span>
-<span class="co">#&gt; 2 Lucas     Heaney    eulalia.rogahn@huels.org   male  </span>
-<span class="co">#&gt; 3 Gregory   Lueilwitz tia47@goyette.com          male  </span>
-<span class="co">#&gt; 4 Isadore   Anderson  frederik94@hotmail.com     male  </span>
-<span class="co">#&gt; 5 Cristian  Osinski   camila68@fay.info          male</span></code></pre></div>
+<span class="co">#&gt;   firstname lastname email                         gender</span>
+<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                         &lt;chr&gt; </span>
+<span class="co">#&gt; 1 Kameron   Hackett  art.reynolds@hotmail.com      male  </span>
+<span class="co">#&gt; 2 Ephraim   Hoppe    michele79@fadel.net           male  </span>
+<span class="co">#&gt; 3 Morton    Lowe     darrell.bogisich@turcotte.biz male  </span>
+<span class="co">#&gt; 4 Kyler     Volkman  klind@hotmail.com             male  </span>
+<span class="co">#&gt; 5 Perry     Herzog   garrett84@gmail.com           male</span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll leave that up to you.</p>
 </div>
 </div>
@@ -319,7 +319,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">key</span>
-<span class="co">#&gt; [1] "OPcborEGX7repr-vc26pmA"</span></code></pre></div>
+<span class="co">#&gt; [1] "cj4v85U1ClaJtKUiDw9YfQ"</span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R’s RNG settings, and there’s no way to make it reproducible.)</p>
 </li>
 <li>
@@ -327,7 +327,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "gSMP_5kJ50HZwcBUCQpCgdo4M8iY6vqwkdtCUus0TfWrUkkBrPzeyN_o51qcZuwAlw"</span></code></pre></div>
+<span class="co">#&gt; [1] "9KR1rPCp9B1kOsourD5Ve6llw014SbUV4sFN2JkCnAoz7v7kauFhUTpWkPyvas276Q"</span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the the secret using <code><a href="../reference/secrets.html">secret_decrypt()</a></code>:</p>
@@ -347,7 +347,7 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "MN08_RuVHjPERFG-VBkjLd-_feTJsHbgoZUHvByoBSHfMRMYC3dwl_iNqzLC_Stx7g"</span>
+<span class="co">#&gt; [1] "zyF9yyB4Vtu_959cgA0lC3zDg4F44QEJaEpSU90mT01vkk_ibN7EapcWh2ijgmnjNw"</span>
 <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="co">#&gt; [1] "secret I need to work with an API"</span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it. This requires two steps:</p>
@@ -566,8 +566,17 @@
 <code class="sourceCode R"><span class="va">nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span>, <span class="va">...</span>, <span class="va">api_key</span> <span class="op">=</span> <span class="fu">get_api_key</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">...</span>
 <span class="op">}</span></code></pre></div>
-<p>It’s a good idea to extend <code>get_api_key()</code> to automatically use your encrypted key to make it easier to write tests:</p>
+<p>You can make this approach a little more user friendly by providing a helper that set’s the environment variable:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">set_api_key</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">key</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">key</span> <span class="op">&lt;-</span> <span class="fu">askpass</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/askpass/man/askpass.html" class="external-link">askpass</a></span><span class="op">(</span><span class="st">"Please enter your API key"</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span><span class="st">"NYTIMES_KEY"</span> <span class="op">=</span> <span class="va">key</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>Using askpass (or similar) here is good practice since you don’t want to encourage the user to type their secret key into the console, as mentioned above.</p>
+<p>It’s a good idea to extend <code>get_api_key()</code> to automatically use your encrypted key to make it easier to write tests:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">get_api_key</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NYTIMES_KEY"</span><span class="op">)</span>
   <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">key</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -599,11 +608,11 @@
 <a href="#authentication" class="anchor" aria-hidden="true"></a>Authentication</h3>
 <p>The easiest way to authenticate with a GitHub API is to use a personal access token. A token is an alternative to a username and password. You have one username + password per site; you can have one token per use case. This lets each use case have a minimal set of permissions, and you can easily revoke one token without affecting any other use case.</p>
 <p>I created a personal access token specifically for this vignette that can only access gists, and, as in the last example, stored an encrypted version in this vignette:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="st">"Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g"</span>, <span class="st">"HTTR2_KEY"</span><span class="op">)</span></code></pre></div>
 <p>If you want to run this vignette yourself, you’ll need to create a new token in your <a href="https://github.com/settings/tokens" class="external-link">GitHub settings</a>; just make sure it includes the “gist” scope. It’s also a good idea to give every token a descriptive name, that reminds you of its motivating use case.</p>
 <p>To authenticate a request with the token, we need to put it in the <code>Authorization</code> header with a <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication" class="external-link">“token” prefix</a>:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span>
 
@@ -614,7 +623,7 @@
 <span class="co">#&gt; Content-Type: application/json</span>
 <span class="co">#&gt; Body: In memory (68160 bytes)</span></code></pre></div>
 <p>Because the authorization header usually contains secret information, httr2 automatically redacts it<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Again, it’s still possible to extract it with a little extra work, but httr2 tries to help you avoid revealing it by accident. httr2 protects you from yourself, not from someone deliberately trying to find the secret.&lt;/p&gt;"><sup>1</sup></a>:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span>
 <span class="co">#&gt; &lt;httr2_request&gt;</span>
 <span class="co">#&gt; GET https://api.github.com/gists</span>
@@ -634,14 +643,14 @@
 <a href="#errors-1" class="anchor" aria-hidden="true"></a>Errors</h3>
 <p>Once you’ve got authentication working, it’s always a good idea to work on errors next, since that will help you debug any failed requests. In my experience APIs rarely do a good job of documenting their errors, so you’ll often have to do a little experimentation. To add to the pain, in large APIs different endpoints often return different amounts of information in different forms. You’ll typically need to tackle your error handling iteratively, improving your code each time you encounter a new problem.</p>
 <p>While GitHub does <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#client-errors" class="external-link">document its errors</a>, I’m sufficiently distrustful that I still want to construct a deliberately malformed query and see what happens:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"abcdef"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Error: HTTP 422 Unprocessable Entity.</span></code></pre></div>
 <p>As documented I get a 422 “Unprocessable Entity” error. But the response is rather different to documentation which suggests there should be a string <code>message</code> and a list of <code>errors</code>:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">resp</span>
 <span class="co">#&gt; &lt;httr2_response&gt;</span>
@@ -656,7 +665,7 @@
 <span class="co">#&gt; $documentation_url</span>
 <span class="co">#&gt; [1] "https://docs.github.com/v3/gists/#parameters"</span></code></pre></div>
 <p>I’ll proceed anyway, writing a function that extracts the data and formats it for presentation to the user:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gist_error_body</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">body</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span>
   
@@ -670,7 +679,7 @@
 <span class="co">#&gt; [1] "Invalid since parameter: 'abcdef'. Must be an ISO 8601 timestamp."</span>
 <span class="co">#&gt; [2] "See docs at &lt;https://docs.github.com/v3/gists/#parameters&gt;"</span></code></pre></div>
 <p>Now I can pass this function to the <code>body</code> argument of <code><a href="../reference/req_error.html">req_error()</a></code> and it will be automatically included in the error when a request fails:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"yesterday"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -685,17 +694,17 @@
 <h3 class="hasAnchor">
 <a href="#rate-limiting" class="anchor" aria-hidden="true"></a>Rate-limiting</h3>
 <p>While we’re thinking about errors, it’s useful to look at what happens if the requests are rate limited. Luckily, GitHub consistently uses response headers to provide information about the remaining <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">rate limits</a>.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> 
 <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="st">"ratelimit"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_headers&gt;</span>
 <span class="co">#&gt; x-ratelimit-limit: 5000</span>
-<span class="co">#&gt; x-ratelimit-remaining: 4846</span>
+<span class="co">#&gt; x-ratelimit-remaining: 4821</span>
 <span class="co">#&gt; x-ratelimit-reset: 1632232740</span>
-<span class="co">#&gt; x-ratelimit-used: 154</span>
+<span class="co">#&gt; x-ratelimit-used: 179</span>
 <span class="co">#&gt; x-ratelimit-resource: core</span></code></pre></div>
 <p>We can teach httr2 about this so it can automatically wait for a reset if the rate limit is hit. We need to define two functions. The first tells us whether or not a response has a transient error, i.e. it’s worth waiting and trying again. For GitHub, when the rate limit is <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">exceeded</a>, the response has a 403 status and a <code>X-RateLimit-Remaining: 0</code> header:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gist_is_transient</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">403</span> <span class="op">&amp;&amp;</span> 
     <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="va">resp</span>, <span class="st">"X-RateLimit-Remaining"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"0"</span>
@@ -703,15 +712,15 @@
 <span class="fu">gist_is_transient</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span>
 <span class="co">#&gt; [1] FALSE</span></code></pre></div>
 <p>Then we need a function tells how long to wait. GitHub tells us when the rate limit resets (as number of seconds since 1970-01-01) in the <code>X-RateLimit-Reset</code> header. To convert that to a number of seconds to wait we first convert it to a number (since HTTP headers are always strings), then subtract off the current time (in number of seconds since 1970-01-01):</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gist_after</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="va">resp</span>, <span class="st">"X-RateLimit-Reset"</span><span class="op">)</span><span class="op">)</span>
   <span class="va">time</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="fu">gist_after</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span>
-<span class="co">#&gt; [1] 755.4275</span></code></pre></div>
+<span class="co">#&gt; [1] 32.43298</span></code></pre></div>
 <p>We then pass functions to <code><a href="../reference/req_retry.html">req_retry()</a></code> so httr2 has all the information it needs to handle rate-limiting automatically:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"http://api.github.com"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/req_retry.html">req_retry</a></span><span class="op">(</span>
     is_transient <span class="op">=</span> <span class="va">gist_is_transient</span>,
@@ -731,7 +740,7 @@
 <h3 class="hasAnchor">
 <a href="#wrapping-it-all-up" class="anchor" aria-hidden="true"></a>Wrapping it all up</h3>
 <p>Let’s wrap up everything we’ve learned so far into a single function that creates a request:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req_gist</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
     <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -756,7 +765,7 @@
 <h3 class="hasAnchor">
 <a href="#sending-data" class="anchor" aria-hidden="true"></a>Sending data</h3>
 <p>To <a href="https://docs.github.com/en/rest/reference/gists#create-a-gist" class="external-link">create a gist</a> we need to change the method to <code>POST</code> and add a body that contains data encoded as JSON. httr2 provides one function that does both of these things: <code><a href="../reference/req_body.html">req_body_json()</a></code>:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
     description <span class="op">=</span> <span class="st">"This is my cool gist!"</span>,
@@ -776,23 +785,23 @@
 <span class="co">#&gt; {"description":"This is my cool gist!","files":{"test.R":{"content":"print('Hi!')"}},"public":false}</span></code></pre></div>
 <p>Depending on the API you’re wrapping, you might need to send data in a different way. <code><a href="../reference/req_body.html">req_body_form()</a></code> and <code><a href="../reference/req_body.html">req_body_multipart()</a></code> make it easier to encode data in two other common forms. If the API requires something different you can use <code><a href="../reference/req_body.html">req_body_raw()</a></code>.</p>
 <p>Typically, the API will return some useful data about the resource you’ve just created. Here I’ll extract the gist ID so we can use it in the next examples, culminating with deleting the gist so I don’t end up with a bunch of duplicated gists 😃.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">id</span> <span class="op">&lt;-</span> <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">id</span>
 <span class="va">id</span>
-<span class="co">#&gt; [1] "79ec5de03f469796454e63abd6a31ba0"</span></code></pre></div>
+<span class="co">#&gt; [1] "d72b4f78b937668c7d82918b61bda138"</span></code></pre></div>
 </div>
 <div id="changing-a-gist" class="section level3">
 <h3 class="hasAnchor">
 <a href="#changing-a-gist" class="anchor" aria-hidden="true"></a>Changing a gist</h3>
 <p>Actually, that description wasn’t very true and I want to change it. To do so, I need to again send JSON encoded data, but this time I need to use the <code>PATCH</code> verb. So after adding the data to request, I use <code><a href="../reference/req_method.html">req_method()</a></code> to override the default method:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> <span class="st">"This is a lame gist"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; PATCH /gists/79ec5de03f469796454e63abd6a31ba0 HTTP/1.1</span>
+<span class="co">#&gt; PATCH /gists/d72b4f78b937668c7d82918b61bda138 HTTP/1.1</span>
 <span class="co">#&gt; Host: api.github.com</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.2 libcurl/7.68.0</span>
 <span class="co">#&gt; Accept: */*</span>
@@ -807,12 +816,12 @@
 <h3 class="hasAnchor">
 <a href="#deleting-a-gist" class="anchor" aria-hidden="true"></a>Deleting a gist</h3>
 <p>Deleting a gist is similar, except we don’t send any data, we just need to adjust the default method from <code>GET</code> to <code>DELETE</code>.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"DELETE"</span><span class="op">)</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; DELETE /gists/79ec5de03f469796454e63abd6a31ba0 HTTP/1.1</span>
+<span class="co">#&gt; DELETE /gists/d72b4f78b937668c7d82918b61bda138 HTTP/1.1</span>
 <span class="co">#&gt; Host: api.github.com</span>
 <span class="co">#&gt; User-Agent: httr2/0.0.0.9000 r-curl/4.3.2 libcurl/7.68.0</span>
 <span class="co">#&gt; Accept: */*</span>
@@ -820,7 +829,7 @@
 <span class="co">#&gt; Authorization: &lt;REDACTED&gt;</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_response&gt;</span>
-<span class="co">#&gt; DELETE https://api.github.com/gists/79ec5de03f469796454e63abd6a31ba0</span>
+<span class="co">#&gt; DELETE https://api.github.com/gists/d72b4f78b937668c7d82918b61bda138</span>
 <span class="co">#&gt; Status: 204 No Content</span></code></pre></div>
 </div>
 </div>
@@ -836,11 +845,11 @@
 <p>(You’ll definitely need this for testing your package, and you’ll probably also baked it into your package for the convenience of your users. Bundling the app is user friendly, but not always possible, particularly if rate limits are enforced on a per-app rather than per-user basis. You should always provide some way for the user to provide their own app.)</p>
 <p>If the API provides a way to authenticate your app without the client secret, you should leave it out of your package. But in most cases, you’ll need to include the secret in the package. You can use <code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; this is not bulletproof<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;It uses &lt;code&gt;&lt;a href="../reference/secrets.html"&gt;secret_encrypt()&lt;/a&gt;&lt;/code&gt; with a special encryption key that’s bundled with httr2.&lt;/p&gt;'><sup>3</sup></a>, but in most cases it’ll be easier create a new client than try and steal yours. Additionally, it’s unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there’s not much harm they can do with it.</p>
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
-<span class="co">#&gt; obfuscated("uUEbrHZUDeOiiKq0TOB_jtQJqWB28g")</span></code></pre></div>
-<p>Then use the client id from the website along with the obfuscated secret to create a client. The following code shows a GitHub OAuth app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
+<span class="co">#&gt; obfuscated("3fdpmv1ZybE9eMuoYzQOabPguEDzJQ")</span></code></pre></div>
+<p>Then use the client id from the website along with the obfuscated secret to create a client. The following code shows a GitHub OAuth app that I created specifically for this vignette:</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
   id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,
   secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,
@@ -849,7 +858,7 @@
 <span class="op">)</span></code></pre></div>
 <p>You need to figure out the <code>token_url</code> from the <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps" class="external-link">documentation</a>. I wish I could give good advice about how to find it 😞.</p>
 <p>Note that if you print the client the secret is automatically redacted:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span>
 <span class="co">#&gt; &lt;httr2_oauth_client&gt;</span>
 <span class="co">#&gt;   name: hadley-oauth-test</span>
@@ -862,7 +871,7 @@
 <h3 class="hasAnchor">
 <a href="#flows" class="anchor" aria-hidden="true"></a>Flows</h3>
 <p>Once you have a client you need to use it with a <strong>flow</strong> in order to get a token. OAuth provides a number of different “flows”, the most common is the “authorisation code” flow, which is implemented by <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. You can try it out by running this code:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_flow_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span></code></pre></div>
 <p>This flow can’t be used inside a vignette because it’s designed specifically for interactive use: it will open a webpage on GitHub that requires you to interactively confirm it’s OK for this app to use your GitHub account.</p>
 <p>Other flows provide different ways of getting the token:</p>
@@ -880,7 +889,7 @@
 <h3 class="hasAnchor">
 <a href="#tokens" class="anchor" aria-hidden="true"></a>Tokens</h3>
 <p>The point of a flow is to get a token. You can use <code><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token()</a></code> to authorise a request with the access token stored inside the token object:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token</a></span><span class="op">(</span><span class="va">token</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -888,7 +897,7 @@
   <span class="va">.</span><span class="op">$</span><span class="va">name</span>
 <span class="co">#&gt; [1] "Hadley Wickham"</span></code></pre></div>
 <p>However, in most cases you won’t want to do this, but instead allow httr2 to manage the whole process, by switching from <code>oauth_flow_{name}</code> to <code>req_oauth_{name}</code>:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -901,7 +910,7 @@
 <p>By default, <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> and friends will cache the token in memory, so that multiple requests in the same session all use the same token. In some cases, you may want to save the token so that it’s automatically used across sessions. This is easy to do (just set <code>cache_disk = TRUE</code> in <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>) but you need to carefully consider the consequences of saving the user’s credentials on disk.</p>
 <p>httr2 does the best it can to save these credentials securely. They are stored in a local cache directory (<code>rappdirs::user_cache_dir("httr2"))</code> that should only be accessible to the current user, and are encrypted so they will be hard for any package other than httr2 to read. However, there’s no way to prevent other R code from using httr2 to access them, so if you do choose to cache tokens, you should inform the user and give them the ability to opt-out.</p>
 <p>You can see which clients have cached tokens by looking in the cache directory used by httr:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu">rappdirs</span><span class="fu">::</span><span class="fu"><a href="https://rappdirs.r-lib.org/reference/user_cache_dir.html" class="external-link">user_cache_dir</a></span><span class="op">(</span><span class="st">"httr2"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; character(0)</span></code></pre></div>
 <p>httr2 automatically deletes any cached tokens that are older than 30 days whenever it’s loaded. This means that you’ll need to re-auth at least once a month, but prevents tokens for hanging around on disk long after you’ve forgotten you created them.</p>
