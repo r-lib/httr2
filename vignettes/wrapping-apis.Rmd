@@ -229,7 +229,7 @@ The next steps would be to export and document this function; I'll leave that up
 ## Secret management
 
 We need to take a quick break from APIs to talk about secrets.
-Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
+Secrets are important, because every API (except for very simple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
 And even if you expect that your users will usually provide this information, you're still going to need your own credentials in order to actually test your package.
 
 This system is probably overkill if you only have one secret that you need to share in one or two places.
