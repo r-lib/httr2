@@ -97,7 +97,7 @@ pool_run <- function(pool, perfs, cancel_on_error = FALSE) {
 }
 
 # Wrap up all components of request -> response in a single object
-Performance <- R6::R6Class("Performance", public = list(
+Performance <- R6Class("Performance", public = list(
   req = NULL,
   path = NULL,
 
