@@ -97,7 +97,7 @@ We'll have another go later with an API that does provide more details.
 
 ### User agent
 
-If you're wrapping this code into a package, it's considered polite to set a user agent, so that, if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
+If you're wrapping this code into a package, it's considered polite to set a user agent, so that, if your package accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
 You can do this with the `req_user_agent()` function:
 
 ```{r, eval = faker_ok}
@@ -229,7 +229,7 @@ The next steps would be to export and document this function; I'll leave that up
 ## Secret management
 
 We need to take a quick break from APIs to talk about secrets.
-Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
+Secrets are important, because every API (except for very simple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
 And even if you expect that your users will usually provide this information, you're still going to need your own credentials in order to actually test your package.
 
 This system is probably overkill if you only have one secret that you need to share in one or two places.
@@ -310,7 +310,7 @@ So if you want to share your package on CRAN or make it easy for others to contr
 
 -   In examples, you can surround code blocks that require your key with `if (httr2::secret_has_key("YOURPACKAGE_KEY")) {}`
 
--   You don't need to do anything in tests because when `secret_decrypt()` is run by testhat, it will automatically `skip()` the test if the key isn't available.
+-   You don't need to do anything in tests because when `secret_decrypt()` is run by testthat, it will automatically `skip()` the test if the key isn't available.
 
 ## NYTimes Books API
 
@@ -494,7 +494,7 @@ nytimes_books <- function(path, ..., api_key = get_api_key()) {
 }
 ```
 
-You can make this approach a little more user friendly by providing a helper that set's the environment variable:
+You can make this approach a little more user friendly by providing a helper that sets the environment variable:
 
 ```{r}
 set_api_key <- function(key = NULL) {
