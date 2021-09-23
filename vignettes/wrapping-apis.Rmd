@@ -494,7 +494,7 @@ nytimes_books <- function(path, ..., api_key = get_api_key()) {
 }
 ```
 
-You can make this approach a little more user friendly by providing a helper that set's the environment variable:
+You can make this approach a little more user friendly by providing a helper that sets the environment variable:
 
 ```{r}
 set_api_key <- function(key = NULL) {
