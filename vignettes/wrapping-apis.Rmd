@@ -97,7 +97,7 @@ We'll have another go later with an API that does provide more details.
 
 ### User agent
 
-If you're wrapping this code into a package, it's considered polite to set a user agent, so that, if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
+If you're wrapping this code into a package, it's considered polite to set a user agent, so that, if your package accidentally does something horribly wrong, the developers of the website can figure out who to reach out to.
 You can do this with the `req_user_agent()` function:
 
 ```{r, eval = faker_ok}
