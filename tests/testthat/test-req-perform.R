@@ -43,6 +43,7 @@ test_that("can cache requests with etags", {
 })
 
 test_that("req_perform() will throttle requests", {
+  skip_on_cran()
   throttle_reset()
 
   req <- request_test() %>% req_throttle(10 / 1)
