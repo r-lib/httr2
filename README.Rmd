@@ -25,11 +25,10 @@ httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that provides a p
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install httr from CRAN with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("r-lib/httr2")
+install.packages("httr2")
 ```
 
 ## Usage

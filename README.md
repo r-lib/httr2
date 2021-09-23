@@ -17,12 +17,10 @@ retries, OAuth, secure secrets, and more).
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install httr from CRAN with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("r-lib/httr2")
+install.packages("httr2")
 ```
 
 ## Usage
