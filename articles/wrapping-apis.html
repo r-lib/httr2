@@ -106,8 +106,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Sit unde officiis ducimus."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Omnis labore voluptas qui. Explicabo recusandae sunt sint ab dolores atque sunt. Sed dolores inventore ut corpo"| __truncated__</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Quia et aliquid voluptatem."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Quibusdam excepturi nesciunt ut saepe. Velit sit cum eum perspiciatis enim fugit. Eum sit molestias consectetur"| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></code></pre></div>
 <div id="errors" class="section level3">
 <h3 class="hasAnchor">
@@ -141,7 +141,7 @@
 <span class="co">#&gt; Vary: Accept-Encoding</span>
 <span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
 <span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Thu, 23 Sep 2021 12:28:27 GMT</span>
+<span class="co">#&gt; Date: Thu, 23 Sep 2021 12:31:26 GMT</span>
 <span class="co">#&gt; Access-Control-Allow-Origin: *</span>
 <span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
 <span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
@@ -200,8 +200,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Est sit et quas aut enim quo."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Est veritatis est quaerat iste. Alias qui deserunt tempora magnam nulla enim. Sed inventore a placeat iste nulla et."</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Nam omnis voluptatem rem ut."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Corrupti provident recusandae esse quis sapiente ex rerum. Explicabo et laudantium laboriosam architecto dolor "| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -236,23 +236,23 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 9</span>
-<span class="co">#&gt;   .. ..$ firstname: chr "Enos"</span>
-<span class="co">#&gt;   .. ..$ lastname : chr "Hettinger"</span>
-<span class="co">#&gt;   .. ..$ email    : chr "dariana84@gmail.com"</span>
-<span class="co">#&gt;   .. ..$ phone    : chr "+6872790641073"</span>
-<span class="co">#&gt;   .. ..$ birthday : chr "1950-09-15"</span>
+<span class="co">#&gt;   .. ..$ firstname: chr "Orin"</span>
+<span class="co">#&gt;   .. ..$ lastname : chr "Harber"</span>
+<span class="co">#&gt;   .. ..$ email    : chr "nhauck@yahoo.com"</span>
+<span class="co">#&gt;   .. ..$ phone    : chr "+7025358654818"</span>
+<span class="co">#&gt;   .. ..$ birthday : chr "1965-09-01"</span>
 <span class="co">#&gt;   .. ..$ gender   : chr "male"</span>
 <span class="co">#&gt;   .. ..$ address  :List of 9</span>
-<span class="co">#&gt;   .. .. ..$ street        : chr "6358 Borer Mountain"</span>
-<span class="co">#&gt;   .. .. ..$ streetName    : chr "Marvin Radial"</span>
-<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "56569"</span>
-<span class="co">#&gt;   .. .. ..$ city          : chr "Collierfort"</span>
-<span class="co">#&gt;   .. .. ..$ zipcode       : chr "93288-9153"</span>
-<span class="co">#&gt;   .. .. ..$ country       : chr "Bahrain"</span>
-<span class="co">#&gt;   .. .. ..$ county_code   : chr "MF"</span>
-<span class="co">#&gt;   .. .. ..$ latitude      : num -87.6</span>
-<span class="co">#&gt;   .. .. ..$ longitude     : num 109</span>
-<span class="co">#&gt;   .. ..$ website  : chr "http://roberts.biz"</span>
+<span class="co">#&gt;   .. .. ..$ street        : chr "7830 Jackson Islands"</span>
+<span class="co">#&gt;   .. .. ..$ streetName    : chr "Laurianne Alley"</span>
+<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "79329"</span>
+<span class="co">#&gt;   .. .. ..$ city          : chr "New Francescaland"</span>
+<span class="co">#&gt;   .. .. ..$ zipcode       : chr "51102-9292"</span>
+<span class="co">#&gt;   .. .. ..$ country       : chr "Ireland"</span>
+<span class="co">#&gt;   .. .. ..$ county_code   : chr "BM"</span>
+<span class="co">#&gt;   .. .. ..$ latitude      : num 58.1</span>
+<span class="co">#&gt;   .. .. ..$ longitude     : num -1.67</span>
+<span class="co">#&gt;   .. ..$ website  : chr "http://hegmann.com"</span>
 <span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and returning the result as a tibble. I did a quick and dirty conversion using purrr; depending on your needs you could use base R code or <code>tidyr::hoist()</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -294,13 +294,13 @@
 <span class="op">}</span>
 <span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 × 4</span>
-<span class="co">#&gt;   firstname lastname  email                         gender</span>
-<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                         &lt;chr&gt; </span>
-<span class="co">#&gt; 1 Gaston    Schumm    cayla.pfannerstill@blanda.com male  </span>
-<span class="co">#&gt; 2 Ole       Daugherty evalyn.aufderhar@yahoo.com    male  </span>
-<span class="co">#&gt; 3 Wilber    Skiles    ebotsford@feest.info          male  </span>
-<span class="co">#&gt; 4 Alf       Towne     lennie39@hickle.com           male  </span>
-<span class="co">#&gt; 5 Davion    Boehm     wilhelm38@yahoo.com           male</span></code></pre></div>
+<span class="co">#&gt;   firstname lastname   email                         gender</span>
+<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;                         &lt;chr&gt; </span>
+<span class="co">#&gt; 1 Gayle     Haley      daniela.lindgren@damore.com   male  </span>
+<span class="co">#&gt; 2 Percival  Skiles     jaskolski.lurline@hotmail.com male  </span>
+<span class="co">#&gt; 3 Deion     Keeling    ellsworth92@mraz.biz          male  </span>
+<span class="co">#&gt; 4 Rex       Jakubowski gaylord.ayla@carroll.net      male  </span>
+<span class="co">#&gt; 5 Jerrod    Abernathy  nikita20@skiles.org           male</span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll leave that up to you.</p>
 </div>
 </div>
@@ -319,7 +319,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">key</span>
-<span class="co">#&gt; [1] "2pdFpEkUeacJ3i_mIN0kgA"</span></code></pre></div>
+<span class="co">#&gt; [1] "SoXajx412Nb1wPLmCTDtZQ"</span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R’s RNG settings, and there’s no way to make it reproducible.)</p>
 </li>
 <li>
@@ -327,7 +327,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "LK79XkSV3347Y1hauiD_oaM0nLhEMrmqoBXQq7ecqTp7aMEJ1BD6HJ5uXx3bB03PSg"</span></code></pre></div>
+<span class="co">#&gt; [1] "tKccJN2KszCx55KGYOtt8V8HRn6DSyOKph7lzlGYpcIS2aXcji-zKDfio3ZoSCECrQ"</span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the the secret using <code><a href="../reference/secrets.html">secret_decrypt()</a></code>:</p>
@@ -347,7 +347,7 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "Ku-sTsm7VbPt-5nmv7ww3eVKN6Z0vUC_Kbt2sORszGbPbYs-Pa--lzZhUY1c46sFnw"</span>
+<span class="co">#&gt; [1] "M7VRLsOkdYDo3HV8Iy2AUNPiZk8-xkEMEd5Ug7mGl6jFb7QAGXwXuB4SbSQ4Xd_8TQ"</span>
 <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="co">#&gt; [1] "secret I need to work with an API"</span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it. This requires two steps:</p>
@@ -699,9 +699,9 @@
 <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="st">"ratelimit"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_headers&gt;</span>
 <span class="co">#&gt; x-ratelimit-limit: 5000</span>
-<span class="co">#&gt; x-ratelimit-remaining: 4982</span>
+<span class="co">#&gt; x-ratelimit-remaining: 4970</span>
 <span class="co">#&gt; x-ratelimit-reset: 1632401606</span>
-<span class="co">#&gt; x-ratelimit-used: 18</span>
+<span class="co">#&gt; x-ratelimit-used: 30</span>
 <span class="co">#&gt; x-ratelimit-resource: core</span></code></pre></div>
 <p>We can teach httr2 about this so it can automatically wait for a reset if the rate limit is hit. We need to define two functions. The first tells us whether or not a response has a transient error, i.e. it’s worth waiting and trying again. For GitHub, when the rate limit is <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">exceeded</a>, the response has a 403 status and a <code>X-RateLimit-Remaining: 0</code> header:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
@@ -718,7 +718,7 @@
   <span class="va">time</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="fu">gist_after</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span>
-<span class="co">#&gt; [1] 1489.538</span></code></pre></div>
+<span class="co">#&gt; [1] 1312.293</span></code></pre></div>
 <p>We then pass functions to <code><a href="../reference/req_retry.html">req_retry()</a></code> so httr2 has all the information it needs to handle rate-limiting automatically:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"http://api.github.com"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
@@ -789,7 +789,7 @@
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">id</span> <span class="op">&lt;-</span> <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">id</span>
 <span class="va">id</span>
-<span class="co">#&gt; [1] "52566ee6ff4220459ab2441ef8db4574"</span></code></pre></div>
+<span class="co">#&gt; [1] "6de840e7f208a167ee4e7a5d75554ff4"</span></code></pre></div>
 </div>
 <div id="changing-a-gist" class="section level3">
 <h3 class="hasAnchor">
@@ -801,7 +801,7 @@
   <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> <span class="st">"This is a lame gist"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; PATCH /gists/52566ee6ff4220459ab2441ef8db4574 HTTP/1.1</span>
+<span class="co">#&gt; PATCH /gists/6de840e7f208a167ee4e7a5d75554ff4 HTTP/1.1</span>
 <span class="co">#&gt; Host: api.github.com</span>
 <span class="co">#&gt; User-Agent: httr2/0.1.0 r-curl/4.3.2 libcurl/7.68.0</span>
 <span class="co">#&gt; Accept: */*</span>
@@ -821,7 +821,7 @@
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"DELETE"</span><span class="op">)</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; DELETE /gists/52566ee6ff4220459ab2441ef8db4574 HTTP/1.1</span>
+<span class="co">#&gt; DELETE /gists/6de840e7f208a167ee4e7a5d75554ff4 HTTP/1.1</span>
 <span class="co">#&gt; Host: api.github.com</span>
 <span class="co">#&gt; User-Agent: httr2/0.1.0 r-curl/4.3.2 libcurl/7.68.0</span>
 <span class="co">#&gt; Accept: */*</span>
@@ -829,7 +829,7 @@
 <span class="co">#&gt; Authorization: &lt;REDACTED&gt;</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_response&gt;</span>
-<span class="co">#&gt; DELETE https://api.github.com/gists/52566ee6ff4220459ab2441ef8db4574</span>
+<span class="co">#&gt; DELETE https://api.github.com/gists/6de840e7f208a167ee4e7a5d75554ff4</span>
 <span class="co">#&gt; Status: 204 No Content</span></code></pre></div>
 </div>
 </div>
@@ -847,7 +847,7 @@
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
-<span class="co">#&gt; obfuscated("bA1-62JGEExf37Z0Psl6EBesOiIxUw")</span></code></pre></div>
+<span class="co">#&gt; obfuscated("jAVrl5mUYH4w6BamzdWxpAr2o_6YBA")</span></code></pre></div>
 <p>Then use the client id from the website along with the obfuscated secret to create a client. The following code shows a GitHub OAuth app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
