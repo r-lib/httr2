@@ -310,7 +310,7 @@ So if you want to share your package on CRAN or make it easy for others to contr
 
 -   In examples, you can surround code blocks that require your key with `if (httr2::secret_has_key("YOURPACKAGE_KEY")) {}`
 
--   You don't need to do anything in tests because when `secret_decrypt()` is run by testhat, it will automatically `skip()` the test if the key isn't available.
+-   You don't need to do anything in tests because when `secret_decrypt()` is run by testthat, it will automatically `skip()` the test if the key isn't available.
 
 ## NYTimes Books API
 
