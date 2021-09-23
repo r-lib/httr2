@@ -109,8 +109,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Et velit enim exercitationem."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Sit fugit ad quasi qui qui ut. Facere officia vel molestiae corrupti aut ut commodi in. Nisi eveniet iusto eaque consequatur."</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Voluptates ipsum et quis."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Quis vel vel et. Soluta dolorem libero sit suscipit quos corporis dolorum. Sint voluptates voluptatibus tempori"| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></code></pre></div>
 <div id="errors" class="section level3">
 <h3 class="hasAnchor">
@@ -144,7 +144,7 @@
 <span class="co">#&gt; Vary: Accept-Encoding</span>
 <span class="co">#&gt; X-Powered-By: PHP/7.3.16</span>
 <span class="co">#&gt; Cache-Control: no-cache, private</span>
-<span class="co">#&gt; Date: Thu, 23 Sep 2021 13:26:44 GMT</span>
+<span class="co">#&gt; Date: Thu, 23 Sep 2021 17:39:42 GMT</span>
 <span class="co">#&gt; Access-Control-Allow-Origin: *</span>
 <span class="co">#&gt; Access-Control-Allow-Methods: GET</span>
 <span class="co">#&gt; Access-Control-Allow-Credentials: true</span>
@@ -156,7 +156,7 @@
 <div id="user-agent" class="section level3">
 <h3 class="hasAnchor">
 <a href="#user-agent" class="anchor" aria-hidden="true"></a>User agent</h3>
-<p>If you’re wrapping this code into a package, it’s considered polite to set a user agent, so that, if your app accidentally does something horribly wrong, the developers of the website can figure out who to reach out to. You can do this with the <code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> function:</p>
+<p>If you’re wrapping this code into a package, it’s considered polite to set a user agent, so that, if your package accidentally does something horribly wrong, the developers of the website can figure out who to reach out to. You can do this with the <code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
@@ -203,8 +203,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Et culpa dolor quod."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Tenetur dolorum labore delectus. Odio et qui praesentium aliquam eum doloribus autem accusamus. Iusto accusamus"| __truncated__</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Aut natus ad hic earum."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Placeat non est incidunt sed ad in sequi. Omnis eos minima eum nostrum laudantium neque dolorem voluptatem. Vol"| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -239,23 +239,23 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 9</span>
-<span class="co">#&gt;   .. ..$ firstname: chr "Clyde"</span>
-<span class="co">#&gt;   .. ..$ lastname : chr "Mitchell"</span>
-<span class="co">#&gt;   .. ..$ email    : chr "gziemann@yahoo.com"</span>
-<span class="co">#&gt;   .. ..$ phone    : chr "+8231727261194"</span>
-<span class="co">#&gt;   .. ..$ birthday : chr "1961-06-12"</span>
+<span class="co">#&gt;   .. ..$ firstname: chr "Bell"</span>
+<span class="co">#&gt;   .. ..$ lastname : chr "Gottlieb"</span>
+<span class="co">#&gt;   .. ..$ email    : chr "theodora.shanahan@hoeger.com"</span>
+<span class="co">#&gt;   .. ..$ phone    : chr "+7651283102939"</span>
+<span class="co">#&gt;   .. ..$ birthday : chr "2001-01-12"</span>
 <span class="co">#&gt;   .. ..$ gender   : chr "male"</span>
 <span class="co">#&gt;   .. ..$ address  :List of 9</span>
-<span class="co">#&gt;   .. .. ..$ street        : chr "821 Magdalen Bridge"</span>
-<span class="co">#&gt;   .. .. ..$ streetName    : chr "Trever Crossing"</span>
-<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "26075"</span>
-<span class="co">#&gt;   .. .. ..$ city          : chr "New Heloise"</span>
-<span class="co">#&gt;   .. .. ..$ zipcode       : chr "44095"</span>
-<span class="co">#&gt;   .. .. ..$ country       : chr "Australia"</span>
-<span class="co">#&gt;   .. .. ..$ county_code   : chr "NE"</span>
-<span class="co">#&gt;   .. .. ..$ latitude      : num -82</span>
-<span class="co">#&gt;   .. .. ..$ longitude     : num 129</span>
-<span class="co">#&gt;   .. ..$ website  : chr "http://douglas.com"</span>
+<span class="co">#&gt;   .. .. ..$ street        : chr "3116 Wiza Groves"</span>
+<span class="co">#&gt;   .. .. ..$ streetName    : chr "Pollich Inlet"</span>
+<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "46278"</span>
+<span class="co">#&gt;   .. .. ..$ city          : chr "Port Malika"</span>
+<span class="co">#&gt;   .. .. ..$ zipcode       : chr "79976-6208"</span>
+<span class="co">#&gt;   .. .. ..$ country       : chr "Hong Kong"</span>
+<span class="co">#&gt;   .. .. ..$ county_code   : chr "KM"</span>
+<span class="co">#&gt;   .. .. ..$ latitude      : num 77.6</span>
+<span class="co">#&gt;   .. .. ..$ longitude     : num 12.4</span>
+<span class="co">#&gt;   .. ..$ website  : chr "http://runolfsdottir.com"</span>
 <span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and returning the result as a tibble. I did a quick and dirty conversion using purrr; depending on your needs you could use base R code or <code>tidyr::hoist()</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -297,20 +297,20 @@
 <span class="op">}</span>
 <span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 × 4</span>
-<span class="co">#&gt;   firstname lastname  email                    gender</span>
-<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                    &lt;chr&gt; </span>
-<span class="co">#&gt; 1 Cornelius Torphy    zhartmann@stiedemann.com male  </span>
-<span class="co">#&gt; 2 Sam       Dicki     swift.marcus@hansen.biz  male  </span>
-<span class="co">#&gt; 3 Ignatius  Halvorson bryon51@lockman.com      male  </span>
-<span class="co">#&gt; 4 Isom      Wisoky    mkiehn@hotmail.com       male  </span>
-<span class="co">#&gt; 5 Rowan     Denesik   wolff.katlyn@yahoo.com   male</span></code></pre></div>
+<span class="co">#&gt;   firstname lastname email                    gender</span>
+<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                    &lt;chr&gt; </span>
+<span class="co">#&gt; 1 Regan     Baumbach jessika04@hotmail.com    male  </span>
+<span class="co">#&gt; 2 Joshua    Jacobi   qoconner@schmitt.biz     male  </span>
+<span class="co">#&gt; 3 Stone     Nicolas  sedrick54@gusikowski.net male  </span>
+<span class="co">#&gt; 4 Reece     Kozey    gordon38@gmail.com       male  </span>
+<span class="co">#&gt; 5 Ryder     Kilback  eryn11@yahoo.com         male</span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll leave that up to you.</p>
 </div>
 </div>
 <div id="secret-management" class="section level2">
 <h2 class="hasAnchor">
 <a href="#secret-management" class="anchor" aria-hidden="true"></a>Secret management</h2>
-<p>We need to take a quick break from APIs to talk about secrets. Secrets are important, because every API (except for very simnple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token. And even if you expect that your users will usually provide this information, you’re still going to need your own credentials in order to actually test your package.</p>
+<p>We need to take a quick break from APIs to talk about secrets. Secrets are important, because every API (except for very simple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token. And even if you expect that your users will usually provide this information, you’re still going to need your own credentials in order to actually test your package.</p>
 <p>This system is probably overkill if you only have one secret that you need to share in one or two places. But you almost invariably accumulate more secrets over time, and more people and computers that you need to share them with, so I think spending a little time to understand this system and set up it for your package will pay off in the long term.</p>
 <div id="basics" class="section level3">
 <h3 class="hasAnchor">
@@ -322,7 +322,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">key</span>
-<span class="co">#&gt; [1] "vzSAKfUKs9hOebuvaXWdcA"</span></code></pre></div>
+<span class="co">#&gt; [1] "ceGoF5PUJHSp5vJak85WpQ"</span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R’s RNG settings, and there’s no way to make it reproducible.)</p>
 </li>
 <li>
@@ -330,7 +330,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "b8SxaC2QEjk7vNlTTgdCa_84LjnRwYquL4mLi97Wa_WnqIyyuwtUjaXNCacxUsvn7A"</span></code></pre></div>
+<span class="co">#&gt; [1] "Zwfuukgpkt66HL0HydikjZ9kmTC74GS2_42qL6DQ4rQHMOIjWmg9ZY-J1aeKNljs6A"</span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the the secret using <code><a href="../reference/secrets.html">secret_decrypt()</a></code>:</p>
@@ -350,7 +350,7 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "iYoGq0mDRCXacJxb3sZflOANqzxIKAYQPI9vmDCnh-Gy3jxsCGc7JKIw2U0A9JsjiQ"</span>
+<span class="co">#&gt; [1] "pND1X7nHh2yDZg_5X1ARCgjH9sCEbsPOuBQ8LIMV93ktRoMrrVkpAYy0UDZiMcPGgA"</span>
 <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="co">#&gt; [1] "secret I need to work with an API"</span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it. This requires two steps:</p>
@@ -372,7 +372,7 @@
 <ul>
 <li><p>In vignettes, you can run <code>knitr::opts_chunk(eval = secret_has_key("YOURPACKAGE_KEY"))</code> so that chunks are only evaluated if your key is available.</p></li>
 <li><p>In examples, you can surround code blocks that require your key with <code>if (httr2::secret_has_key("YOURPACKAGE_KEY")) {}</code></p></li>
-<li><p>You don’t need to do anything in tests because when <code><a href="../reference/secrets.html">secret_decrypt()</a></code> is run by testhat, it will automatically <code>skip()</code> the test if the key isn’t available.</p></li>
+<li><p>You don’t need to do anything in tests because when <code><a href="../reference/secrets.html">secret_decrypt()</a></code> is run by testthat, it will automatically <code>skip()</code> the test if the key isn’t available.</p></li>
 </ul>
 </div>
 </div>
@@ -569,7 +569,7 @@
 <code class="sourceCode R"><span class="va">nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">path</span>, <span class="va">...</span>, <span class="va">api_key</span> <span class="op">=</span> <span class="fu">get_api_key</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">...</span>
 <span class="op">}</span></code></pre></div>
-<p>You can make this approach a little more user friendly by providing a helper that set’s the environment variable:</p>
+<p>You can make this approach a little more user friendly by providing a helper that sets the environment variable:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">set_api_key</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">key</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
   <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -702,9 +702,9 @@
 <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="st">"ratelimit"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_headers&gt;</span>
 <span class="co">#&gt; x-ratelimit-limit: 5000</span>
-<span class="co">#&gt; x-ratelimit-remaining: 4975</span>
-<span class="co">#&gt; x-ratelimit-reset: 1632405592</span>
-<span class="co">#&gt; x-ratelimit-used: 25</span>
+<span class="co">#&gt; x-ratelimit-remaining: 4964</span>
+<span class="co">#&gt; x-ratelimit-reset: 1632421823</span>
+<span class="co">#&gt; x-ratelimit-used: 36</span>
 <span class="co">#&gt; x-ratelimit-resource: core</span></code></pre></div>
 <p>We can teach httr2 about this so it can automatically wait for a reset if the rate limit is hit. We need to define two functions. The first tells us whether or not a response has a transient error, i.e. it’s worth waiting and trying again. For GitHub, when the rate limit is <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">exceeded</a>, the response has a 403 status and a <code>X-RateLimit-Remaining: 0</code> header:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
@@ -721,7 +721,7 @@
   <span class="va">time</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="fu">gist_after</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span>
-<span class="co">#&gt; [1] 1981.365</span></code></pre></div>
+<span class="co">#&gt; [1] 3034.13</span></code></pre></div>
 <p>We then pass functions to <code><a href="../reference/req_retry.html">req_retry()</a></code> so httr2 has all the information it needs to handle rate-limiting automatically:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"http://api.github.com"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
@@ -792,7 +792,7 @@
 <code class="sourceCode R"><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">id</span> <span class="op">&lt;-</span> <span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">id</span>
 <span class="va">id</span>
-<span class="co">#&gt; [1] "785572ceb69dbc156fd4dc9cb4bd1fa7"</span></code></pre></div>
+<span class="co">#&gt; [1] "a328388ce32c3c3b758ee094f2459706"</span></code></pre></div>
 </div>
 <div id="changing-a-gist" class="section level3">
 <h3 class="hasAnchor">
@@ -804,7 +804,7 @@
   <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> <span class="st">"This is a lame gist"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; PATCH /gists/785572ceb69dbc156fd4dc9cb4bd1fa7 HTTP/1.1</span>
+<span class="co">#&gt; PATCH /gists/a328388ce32c3c3b758ee094f2459706 HTTP/1.1</span>
 <span class="co">#&gt; Host: api.github.com</span>
 <span class="co">#&gt; User-Agent: httr2/0.1.0.9000 r-curl/4.3.2 libcurl/7.68.0</span>
 <span class="co">#&gt; Accept: */*</span>
@@ -824,7 +824,7 @@
   <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"DELETE"</span><span class="op">)</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; DELETE /gists/785572ceb69dbc156fd4dc9cb4bd1fa7 HTTP/1.1</span>
+<span class="co">#&gt; DELETE /gists/a328388ce32c3c3b758ee094f2459706 HTTP/1.1</span>
 <span class="co">#&gt; Host: api.github.com</span>
 <span class="co">#&gt; User-Agent: httr2/0.1.0.9000 r-curl/4.3.2 libcurl/7.68.0</span>
 <span class="co">#&gt; Accept: */*</span>
@@ -832,7 +832,7 @@
 <span class="co">#&gt; Authorization: &lt;REDACTED&gt;</span>
 <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; &lt;httr2_response&gt;</span>
-<span class="co">#&gt; DELETE https://api.github.com/gists/785572ceb69dbc156fd4dc9cb4bd1fa7</span>
+<span class="co">#&gt; DELETE https://api.github.com/gists/a328388ce32c3c3b758ee094f2459706</span>
 <span class="co">#&gt; Status: 204 No Content</span></code></pre></div>
 </div>
 </div>
@@ -850,7 +850,7 @@
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span>
-<span class="co">#&gt; obfuscated("pXFHxgBntWJJlPuYDqpAhefGWhoN4Q")</span></code></pre></div>
+<span class="co">#&gt; obfuscated("Tl0XjfN7eQVAPw2eHMDcmnmuw0ZO-A")</span></code></pre></div>
 <p>Then use the client id from the website along with the obfuscated secret to create a client. The following code shows a GitHub OAuth app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span>
