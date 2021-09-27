@@ -23,7 +23,7 @@ A modified HTTP \link{request}.
 }
 \description{
 \code{req_perform()} will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use \code{req_perform()} to either override the
+status code) into R errors. Use \code{req_error()} to either override the
 defaults, or extract additional information from the response that would
 be useful to expose to the user.
 }
