@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 0.1.1
 
 * Fix R CMD check failures on CRAN
 
