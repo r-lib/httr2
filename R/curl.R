@@ -1,8 +1,8 @@
 #' Translate curl syntax to httr2
 #'
 #' @description
-#' The curl command line tool is commonly to demonstrate HTTP APIs and can
-#' easily be be generated from
+#' The curl command line tool is commonly used to demonstrate HTTP APIs and can
+#' easily be generated from
 #' [browser developer tools](https://everything.curl.dev/usingcurl/copyas).
 #' `curl_translate()` saves you the pain of manually translating these calls
 #' by implementing a partial, but frequently used, subset of curl options.

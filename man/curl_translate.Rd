@@ -19,8 +19,8 @@ was copied from the clipboard, the translation will be copied back
 to the clipboard.
 }
 \description{
-The curl command line tool is commonly to demonstrate HTTP APIs and can
-easily be be generated from
+The curl command line tool is commonly used to demonstrate HTTP APIs and can
+easily be generated from
 \href{https://everything.curl.dev/usingcurl/copyas}{browser developer tools}.
 \code{curl_translate()} saves you the pain of manually translating these calls
 by implementing a partial, but frequently used, subset of curl options.
