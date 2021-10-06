@@ -15,7 +15,7 @@
 #' because you might need to do it again).
 #'
 #' @export
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @inheritParams oauth_flow_refresh
 req_oauth_refresh <- function(req, client,
                               refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),

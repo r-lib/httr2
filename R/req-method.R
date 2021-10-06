@@ -3,7 +3,7 @@
 #' Use this function to use a custom HTTP method like "HEAD",
 #' "DELETE", "PATCH", "UPDATE", or "OPTIONS".
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param method Custom HTTP method
 #' @export
 #' @examples

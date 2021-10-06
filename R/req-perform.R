@@ -1,16 +1,22 @@
-#' Simulate a request
+#' Perform a request
 #'
 #' @description
-#' After preparing a request, call `req_fetch()` to perform it, fetching
-#' the results back to R. One call to `req_fetch()` may perform multiple
-#' HTTP requests:
+#' After preparing a [request], call `req_perform()` to perform it, fetching
+#' the results back to R as a [response].
+#'
+#' # Requests
+#' Note that one call to `req_perform()` may perform multiple HTTP requests:
 #'
 #' * If the `url` is redirected with a 301, 302, 303, or 307, curl will
 #'   automatically follow the `Location` header to the new location.
 #'
 #' * If you have configured retries with [req_retry()] and the request
-#'   fails with a transient problem, `req_fetch()` will try again after
+#'   fails with a transient problem, `req_perform()` will try again after
 #'   waiting a bit. See [req_retry()] for details.
+#'
+#' * If you are using OAuth, and the cached token has expired, `req_perform()`
+#'   will get a new token either using the refresh token (if available)
+#'   or by running the OAuth flow.
 #'
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
@@ -22,14 +28,13 @@
 #'   * 1: show headers
 #'   * 2: show headers and bodies
 #'   * 3: show headers, bodies, and curl status messages.
-#'
 #' @returns Returns an HTTP response with successful status code. Will
 #'   throw an error for 4xx and 5xx responses; override with [req_error()].
 #' @export
 #' @examples
 #' request("https://google.com") %>%
-#'   req_fetch()
-req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L)) {
+#'   req_perform()
+req_perform <- function(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L)) {
   check_request(req)
   req <- req_verbosity(req, verbosity)
   req <- auth_oauth_sign(req)
@@ -53,7 +58,7 @@ req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity",
 
     sys_sleep(delay)
     resp <- tryCatch(
-      req_fetch1(req, path = path, handle = handle),
+      req_perform1(req, path = path, handle = handle),
       error = function(err) {
         error_cnd("httr2_failed", message = conditionMessage(err), trace = trace_back())
       }
@@ -88,7 +93,7 @@ req_fetch <- function(req, path = NULL, verbosity = getOption("httr2_verbosity",
   }
 }
 
-req_fetch1 <- function(req, path = NULL, handle = NULL) {
+req_perform1 <- function(req, path = NULL, handle = NULL) {
   the$last_request <- req
   the$last_response <- NULL
 
@@ -120,7 +125,7 @@ req_verbosity <- function(req, verbosity) {
     req,
     req_verbose(req),
     req_verbose(req, body_req = TRUE, body_resp = TRUE),
-    req_verbose(req, body_req = TRUE, body_resp = TRUE, info = TRUE),
+    req_verbose(req, body_req = TRUE, body_resp = TRUE, info = TRUE)
   )
 }
 
@@ -194,7 +199,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 #' and handle the result with a streaming callback. This is useful for
 #' streaming HTTP APIs where potentially the stream never ends.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param callback A single argument callback function. It will be called
 #'   repeatedly with a raw vector whenever there is at least `buffer_kb`
 #'   worth of data to process. It must return `TRUE` to continue streaming.

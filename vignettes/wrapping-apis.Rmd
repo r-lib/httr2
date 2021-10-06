@@ -37,7 +37,7 @@ library(httr2)
 faker_status <- request("https://fakerapi.it/api/v1") %>% 
   req_url_path_append("images") %>% 
   req_error(is_error = ~ FALSE) %>% 
-  req_fetch() %>% 
+  req_perform() %>% 
   resp_status()
 faker_ok <- faker_status < 400
 ```
@@ -53,7 +53,7 @@ resp <- req %>%
   req_url_path_append("images") %>% 
   # Add set _width and _quantity query parameters
   req_url_query(`_width` = 380, `_quantity` = 1) %>% 
-  req_fetch()
+  req_perform()
 
 # The result comes back as JSON
 resp %>% resp_body_json() %>% str()
@@ -67,7 +67,7 @@ If you fetch a URL that returns an unsuccesful HTTP response, you'll get an erro
 ```{r, error = TRUE, eval = faker_ok}
 req %>% 
   req_url_path_append("invalid") %>% 
-  req_fetch()
+  req_perform()
 ```
 
 To see what's going on, you'll need to use `req_error()` to turn off the default behaviour that turns HTTP errors into R errors:
@@ -76,7 +76,7 @@ To see what's going on, you'll need to use `req_error()` to turn off the default
 resp <- req %>% 
   req_url_path_append("imagesasf") %>% 
   req_error(is_error = ~ FALSE) %>% 
-  req_fetch()
+  req_perform()
 ```
 
 Now you can look at the response body:
@@ -116,7 +116,7 @@ req_faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL
   request("https://fakerapi.it/api/v1") %>% 
     req_url_path_append(resource) %>% 
     req_url_query(!!!params) %>% 
-    req_fetch() %>% 
+    req_perform() %>% 
     resp_body_json()
 }
 
@@ -137,48 +137,44 @@ Before we go on, Polite to set a user agent --- <https://github.com/r-lib/httr2/
 
 ## App with API key
 
-Next we'll take a look at the NYTimes API. It requires a very simple authentication --- you include the API key in the query of every request.
-
-To begin with, you can just store you key as a variable.
-I didn't want to just include my API key here so I've obfuscated it using `obfuscate()`:
-
-```{r}
-my_key <- obfuscated("Y2rj85iEepd5gaTPQwEeiQT3g6u6_fabR7Zjth_5sBs")
-# Doesn't work currently - need to add support in req_url_query and req_body?
+```{r include = FALSE}
+nyt_ok <- secret_has_key("HTTR2_KEY") && 
+  # Don't run in R CMD check on GHA
+  identical(Sys.getenv("RSPM"), "")
 ```
 
-This is encrypted but it uses an encryption key that is included in httr2 itself.
-The key is hidden in such a way that it should require a relatively good R programmer a few minutes to figure it out.
-It isn't 100% secured, but it's convenient to use, and for the vast majority of people it'll take less time to create their own API key on developer.nytimes.com.
+Next we'll take a look at the NYTimes [Books API](https://developer.nytimes.com/docs/books-product/1/overview). It requires a very simple authentication --- you include the API key in the query of every request.
+I don't want to share my API key with the whole world so I've encrypted it with `secret_encrypt()` and I'll decrypt it for this vignette with `secret_decrypt()`:
 
-```{r}
-req_nytimes_books <- function(path, ..., api_key = get_api_key()) {
-  request("https://api.nytimes.com/svc/books/v3") %>% 
-    req_url_path_append(path) %>% 
-    req_url_query(..., `api-key` = api_key)
-}
-
-get_api_key <- function() {
-  key <- Sys.getenv("NYTIMES_KEY")
-  if (identical(key, "")) {
-    stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")
-  }
-  key
-}
+```{r, eval = nyt_ok}
+my_key <- secret_decrypt("hbYctm6bwp7_V37UFOAX-7uel5QN4cRWzoQpGCqCk9I", "HTTR2_KEY")
 ```
 
-Show example of error parsing here:
+The encryption and decryption relies on a key stored in the `HTTR2_KEY` environment variable.
+This is set up on my computer and on GitHub actions where this vignette is often run, but it won't be available on your computer or on CRAN.
+In the source of this vignette I store whether or not it's available in `nyt_ok <- secret_has_key("HTTR2_KEY")`, and then use `eval = nyt_ok` in each chunk so that the code is only run when possible.
 
-```{r, error = TRUE}
-req_nytimes_books("/lists/2019-01-20/hardcover-fiction.json", api_key = my_key) %>% 
-  req_fetch(verbosity = 2)
+This allows now allows us to perform a test request and look at the response:
+
+```{r, eval = nyt_ok}
+resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
+  req_url_path_append("/reviews.json") %>% 
+  req_url_query(`api-key` = my_key, isbn = 9780307476463) %>% 
+  req_perform()
+resp
 ```
 
-The API also mentions rate limits:
+Like most modern APIs, this one returns the results as JSON:
 
-> Yes, there are two rate limits per API: 4,000 requests per day and 10 requests per minute.
-> You should sleep 6 seconds between calls to avoid hitting the per minute rate limit.
-> If you need a higher rate limit, please contact us at [code\@nytimes.com](mailto:code@nytimes.com){.email}.
+```{r, eval = nyt_ok}
+resp %>% 
+  resp_body_json() %>% 
+  str()
+```
+
+Before we start wrapping this up into a function lets explore what happens with errors.
+
+### Security considerations
 
 Note that including an API key in a query is a relatively insecure method; if an API uses it its typically because the key is relatively easy to create or gives relatively few privileges.
 Section 5.3 of [rfc6750](https://datatracker.ietf.org/doc/html/rfc6750#section-5.3) has this to say about passing bearer tokens[^1] in the URL:
@@ -191,6 +187,126 @@ Section 5.3 of [rfc6750](https://datatracker.ietf.org/doc/html/rfc6750#section-5
 > If bearer tokens are passed in page URLs, attackers might be able to steal them from the history data, logs, or other unsecured locations.
 
 httr2 makes no efforts to redact confidential information stored in query parameters.
+This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)` or `req_dry_run()`.
+This just means you'll need to be a little cautious if you need to get help with a reprex; you'll need to manually redact the key.
+
+### Error handling
+
+What happens if there's an error?
+For example, if we deliberately supply an invalid key:
+
+```{r, eval = nyt_ok, error = TRUE}
+resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
+  req_url_path_append("/reviews.json") %>% 
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
+  req_perform()
+```
+
+To see if there's any extra useful information we can again suppress the default error and inspect the result:
+
+```{r, eval = nyt_ok, error = TRUE}
+resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
+  req_url_path_append("/reviews.json") %>% 
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
+  req_error(is_error = ~ FALSE) %>% 
+  req_perform()
+resp
+resp %>% resp_body_json()
+```
+
+It looks like there's some useful additional info in the `faultstring`:
+
+```{r, eval = nyt_ok}
+resp %>% resp_body_json() %>% .$fault %>% .$faultstring
+```
+
+To add that information to future errors we can use the `info` argument to `req_error()`.
+Once we do that and re-fetch the request, we see the additional information displayed in the R error:
+
+```{r, eval = nyt_ok, error = TRUE}
+resp <- request("https://api.nytimes.com/svc/books/v3") %>% 
+  req_url_path_append("/reviews.json") %>% 
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
+  req_error(info = function(resp) {
+    resp %>% resp_body_json() %>% .$fault %>% .$faultstring
+  }) %>% 
+  req_perform()
+```
+
+### Rate limits
+
+The [frequently asked questions](https://developer.nytimes.com/faq#a11) also mentions rate limits:
+
+> Yes, there are two rate limits per API: 4,000 requests per day and 10 requests per minute.
+> You should sleep 6 seconds between calls to avoid hitting the per minute rate limit.
+> If you need a higher rate limit, please contact us at [code\@nytimes.com](mailto:code@nytimes.com){.email}.
+
+Since the docs don't mention that the use of `Retry-After` header, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60s:
+
+```{r, eval = nyt_ok}
+req <- request("https://api.nytimes.com/svc/books/v3") %>% 
+  req_url_path_append("/reviews.json") %>% 
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
+  req_throttle(10 / 60)
+```
+
+This limit is automatically shared across all requests made to `api.nytimes.com`.
+Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
+
+```{r, eval = nyt_ok}
+req <- request("https://api.nytimes.com/svc/books/v3") %>% 
+  req_url_path_append("/reviews.json") %>% 
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) %>% 
+  req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books")
+```
+
+Many APIs return additional information about how long to wait when the rate limit is exceeded.
+So I deliberately violated the rate limit by quickly making 11 requests; unfortunately while the response was a standard 429 (Too many requests), it did not include any information about how long to wait in either the response body or the headers.
+
+### Wrapping it up
+
+Putting together all the pieces above yields a function something like this:
+
+```{r, eval = nyt_ok}
+nytimes_books <- function(api_key, path, ...) {
+  request("https://api.nytimes.com/svc/books/v3") %>% 
+    req_url_path_append("/reviews.json") %>% 
+    req_url_query(..., `api-key` = api_key) %>% 
+    req_error(info = function(resp) {
+      resp %>% resp_body_json() %>% .$fault %>% .$faultstring
+    }) %>% 
+    req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") %>% 
+    req_perform() %>% 
+    resp_body_json()
+}
+
+drunk <- nytimes_books(my_key, "/reviews.json", isbn = "0316453382")
+drunk$results[[1]]$summary
+```
+
+Again, for a real package, you'd want to spend some time converting the nested list into a more user friendly data structure.
+
+### API key
+
+If you were going to put this into a package, you'd need to think about some convenient interface for supplying the API key.
+An environment variable is a good place to start because they're easy to set without typing anything in the console (which can get accidentally shared via your `.Rhistory`) and are easily set in automated processes.
+
+```{r, eval = nyt_ok}
+get_api_key <- function() {
+  key <- Sys.getenv("NYTIMES_KEY")
+  if (identical(key, "")) {
+    stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")
+  }
+  key
+}
+
+req_nytimes_books <- function(path, ..., api_key = get_api_key()) {
+  ...
+}
+```
+
+Since the `api_key` is no longer required, we can make it the last argument to the function.
+It's still available to override and document, but it'll only be needed in exceptional circumstances.
 
 ## Sending data & HTTP methods
 

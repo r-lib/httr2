@@ -1,9 +1,9 @@
 #' Throttle a request by automatically adding a delay
 #'
-#' Use `req_throttle()` to ensure that repeated calls to [req_fetch()] never
+#' Use `req_throttle()` to ensure that repeated calls to [req_perform()] never
 #' exceed a specified rate.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param rate Maximum rate, i.e. maximum number of requests per second.
 #'   Usually easiest expressed as a fraction,
 #'   `number_of_requests / number_of_seconds`, e.g. 15 requests per minute

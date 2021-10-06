@@ -26,7 +26,7 @@ the request if there were any redirects.}
 }
 \description{
 Generally, you should not need to call this function directly; you'll
-get a real HTTP response by calling \code{\link[=req_fetch]{req_fetch()}} and friends. This
+get a real HTTP response by calling \code{\link[=req_perform]{req_perform()}} and friends. This
 function is provided primarily for testing, and a place to describe
 the key components of a response.
 }

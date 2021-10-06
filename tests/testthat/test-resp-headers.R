@@ -40,3 +40,16 @@ test_that("can parse both forms of retry-after header", {
   resp_rel <- response()
   expect_equal(resp_retry_after(resp_rel), NA)
 })
+
+test_that("can extract specified link url", {
+  resp <- response(headers = paste0(
+    'Link: <https://example.com/1>; rel="next",',
+    '<https://example.com/2>; rel="last"'
+  ))
+  expect_equal(resp_link_url(resp, "next"), "https://example.com/1")
+  expect_equal(resp_link_url(resp, "last"), "https://example.com/2")
+
+  # Falling back to NULL if not found
+  expect_equal(resp_link_url(resp, "first"), NULL)
+  expect_equal(resp_link_url(response(), "first"), NULL)
+})

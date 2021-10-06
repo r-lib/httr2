@@ -1,10 +1,10 @@
 #' Control when a request will retry, and how long it will wait between tries
 #'
 #' @description
-#' `req_retry()` alters [req_fetch()] so that it will automatically retry
+#' `req_retry()` alters [req_perform()] so that it will automatically retry
 #' in the case of failure. To activate it, you must specify either the total
 #' number of requests to make with `max_tries` or the total amount of time
-#' to spend with `max_seconds`. Then `req_fetch()` will retry if:
+#' to spend with `max_seconds`. Then `req_perform()` will retry if:
 #'
 #' * The either the HTTP request or HTTP response doesn't complete successfully
 #'   leading to an error from curl, the lower-level library that httr uses to
@@ -16,7 +16,7 @@
 #'   conveys transient-ness with some other property of the response), you can
 #'   override the default with `is_transient`.
 #'
-#' It's a bad idea to immediately retry a request, so `req_fetch()` will
+#' It's a bad idea to immediately retry a request, so `req_perform()` will
 #' wait a little before trying again:
 #'
 #' * If the response contains the `Retry-After` header, httr2 will wait the
@@ -31,10 +31,10 @@
 #'   after the second, `runif(1, 1, 8)` after the third, and so on. If you'd
 #'   prefer a different strategy, you can override the default with `backoff`.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param max_tries,max_seconds Cap the maximum number of attempts with
 #'  `max_tries` or the total elapsed time from the first request with
-#'  `max_seconds`. If neither option is supplied (the default), [req_fetch()]
+#'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
 #'  will not retry.
 #' @param is_transient A predicate function that takes a single argument
 #'   (the response) and returns `TRUE` or `FALSE` specifying whether or not

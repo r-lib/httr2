@@ -111,11 +111,11 @@ If you need to send data encoded in a different form, you can use `req_body_raw(
 
 ## Perform a request and fetch the response
 
-To actually perform a request and fetch the response back from the server, call `req_fetch()`:
+To actually perform a request and fetch the response back from the server, call `req_perform()`:
 
 ```{r}
 req <- request("https://httpbin.org/json")
-resp <- req %>% req_fetch()
+resp <- req %>% req_perform()
 resp
 ```
 
@@ -163,8 +163,8 @@ Responses with status codes 4xx and 5xx are HTTP errors.
 httr2 automatically turns these into R errors:
 
 ```{r, error = TRUE}
-request("https://httpbin.org/status/404") %>% req_fetch()
-request("https://httpbin.org/status/500") %>% req_fetch()
+request("https://httpbin.org/status/404") %>% req_perform()
+request("https://httpbin.org/status/500") %>% req_perform()
 ```
 
 This is another important difference with httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.

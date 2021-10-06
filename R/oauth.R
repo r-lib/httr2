@@ -5,7 +5,7 @@
 #' You should only need to use this function if you're implementing your own
 #' OAuth flow.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param cache An object that controls how the token is cached. This should
 #'   be a list containing three functions:
 #'   * `get()` retrieves the token from the cache, returning `NULL` if not

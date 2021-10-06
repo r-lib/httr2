@@ -6,7 +6,7 @@
 #' function makes it easy to copy and paste this snippets and retrieve template
 #' variables either from function arguments or the current environment:
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param template A template string which consists of a optional HTTP method
 #'   and a path containing variables labelled like either `:foo` or `{foo}`.
 #' @param ... Template variables.

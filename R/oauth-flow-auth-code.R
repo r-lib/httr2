@@ -26,7 +26,7 @@
 #' create a new client than find your client secret.
 #'
 #' @export
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param cache_disk Should the access token be cached on disk? This reduces
 #'   the number of times that you need to re-authenticate at the cost of
 #'   storing access credentials on disk. Cached tokens are automatically

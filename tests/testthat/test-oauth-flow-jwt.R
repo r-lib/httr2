@@ -25,7 +25,7 @@ test_that("can generate token and use it automatically", {
   # Can use it in request
   resp <- request("https://openidconnect.googleapis.com/v1/userinfo") %>%
     req_oauth_bearer_jwt(client, claim) %>%
-    req_fetch() %>%
+    req_perform() %>%
     resp_body_json()
 
   expect_type(resp, "list")

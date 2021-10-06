@@ -39,6 +39,7 @@ req <- request("https://r-project.org")
 req
 #> <httr2_request>
 #> GET https://r-project.org
+#> Body: empty
 ```
 
 You can tailor this request with the `req_` family of functions:
@@ -50,22 +51,19 @@ req %>% req_headers("Accept" = "application/json")
 #> GET https://r-project.org
 #> Headers:
 #> • Accept: 'application/json'
+#> Body: empty
 
 # Add a body, turning it into a POST
 req %>% req_body_json(list(x = 1, y = 2))
 #> <httr2_request>
 #> POST https://r-project.org
-#> Headers:
-#> • Content-Type: 'application/json'
-#> Options:
-#> • post: TRUE
-#> • postfieldsize: 13
-#> • postfields: a raw vector
+#> Body: json encoded data
 
 # Automatically retry if the request fails
 req %>% req_retry(max_tries = 5)
 #> <httr2_request>
 #> GET https://r-project.org
+#> Body: empty
 #> Policies:
 #> • retry_max_tries: 5
 
@@ -73,24 +71,24 @@ req %>% req_retry(max_tries = 5)
 req %>% req_method("PATCH")
 #> <httr2_request>
 #> PATCH https://r-project.org
+#> Body: empty
 ```
 
 You can see what httr2 will send to the server with `req_dry_run()`:
 
 ``` r
 req %>% req_dry_run()
-#> -> GET / HTTP/1.1
-#> -> Host: r-project.org
-#> -> User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
-#> -> Accept: */*
-#> -> Accept-Encoding: deflate, gzip
-#> ->
+#> GET / HTTP/1.1
+#> Host: r-project.org
+#> User-Agent: httr2/0.0.0.9000 r-curl/4.3.1 libcurl/7.64.1
+#> Accept: */*
+#> Accept-Encoding: deflate, gzip
 ```
 
-And perform the request, getting back a response, with `req_fetch()`:
+And perform the request, getting back a response, with `req_perform()`:
 
 ``` r
-resp <- req_fetch(req)
+resp <- req_perform(req)
 resp
 #> <httr2_response>
 #> GET https://www.r-project.org/
@@ -117,10 +115,10 @@ resp %>% resp_body_html()
 
 -   You can now create and modify a request without performing it. This
     means that there’s now a single function to perform and request and
-    fetch the result: `req_fetch()`. (If you want to handle the response
-    as it streams in, instead use `req_stream()`). This replaces
-    `httr::GET()`, `POST()`, `DELETE()`, `VERB()`, …. You can preview a
-    request without sending it with `req_dry_run()`.
+    fetch the result: `req_perform()`. (If you want to handle the
+    response as it streams in, instead use `req_stream()`). This
+    replaces `httr::GET()`, `POST()`, `DELETE()`, `VERB()`, …. You can
+    preview a request without sending it with `req_dry_run()`.
 
 -   HTTP errors are automatically converted into R errors. Use
     `req_error()` to override the defaults (which turn all 4xx and 5xx

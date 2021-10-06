@@ -22,8 +22,8 @@ so you can use any formatting that it supports.}
 An HTTP \link{request}.
 }
 \description{
-\code{req_fetch()} will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use \code{req_fetch()} to either override the
+\code{req_perform()} will automatically convert HTTP errors (i.e. any 4xx or 5xx
+status code) into R errors. Use \code{req_perform()} to either override the
 defaults, or extract additional information from the response that would
 be useful to expose to the user.
 }

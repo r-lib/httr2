@@ -27,7 +27,7 @@ test_that("can set user agent with string or version", {
 
 test_that("can set timeout", {
   req <- request_test("/delay/:secs", secs = 1) %>% req_timeout(0.1)
-  expect_error(req_fetch(req), "timed out")
+  expect_error(req_perform(req), "timed out")
 })
 
 test_that("can request verbose record of request", {
@@ -38,9 +38,9 @@ test_that("can request verbose record of request", {
     req_headers("Host" = "http://example.com") %>%
     req_user_agent("verbose") %>%
     req_verbose(header_resp = FALSE, body_req = TRUE)
-  expect_snapshot_output(invisible(req_fetch(req1)))
+  expect_snapshot_output(invisible(req_perform(req1)))
 
   # Lightweight test for everything else
   req2 <- req %>% req_verbose(info = TRUE, body_resp = TRUE)
-  expect_output(req_fetch(req2))
+  expect_output(req_perform(req2))
 })

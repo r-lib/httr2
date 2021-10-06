@@ -18,7 +18,7 @@ is \code{15 / 60}.}
 defaults to the hostname of the request.}
 }
 \description{
-Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_fetch]{req_fetch()}} never
+Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_perform]{req_perform()}} never
 exceed a specified rate.
 }
 \seealso{

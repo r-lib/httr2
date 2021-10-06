@@ -3,7 +3,7 @@
 #' This sets the Authorization header. See details at
 #' <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization>.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param username User name.
 #' @param password Password. You avoid entering the password directly when
 #'   calling this function as it will be captured by `.Rhistory`. Instead,
@@ -42,7 +42,7 @@ req_auth_basic <- function(req, username, password = NULL) {
 #'
 #' @seealso [RFC750](https://datatracker.ietf.org/doc/html/rfc6750)
 #'   The OAuth 2.0 Authorization Framework: Bearer Token Usage
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param token A bearer token
 #' @export
 req_auth_bearer_token <- function(req, token) {

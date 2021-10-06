@@ -106,12 +106,12 @@ base64_url_rand <- function(bytes = 32) {
 #' another package because it allows you to see exactly what's been sent
 #' and requested.
 #'
-#' @inheritParams req_fetch
+#' @inheritParams req_perform
 #' @param code Code to execture
 #' @export
 #' @examples
 #' fun <- function() {
-#'   request("https://httr2.r-lib.org") %>% req_fetch()
+#'   request("https://httr2.r-lib.org") %>% req_perform()
 #' }
 #' with_verbosity(fun())
 with_verbosity <- function(code, verbosity = 1) {
