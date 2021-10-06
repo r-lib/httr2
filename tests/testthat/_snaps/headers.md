@@ -9,10 +9,16 @@
 
     Code
       as_headers(c("X:1", "Y: 2", "Z:"))
+    Message <cliMessage>
+      <httr2_headers>
     Output
       X: 1
       Y: 2
       Z: 
+    Code
+      as_headers(list())
+    Message <cliMessage>
+      <httr2_headers>
 
 # new_headers checks inputs
 

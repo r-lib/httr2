@@ -6,10 +6,33 @@
 #' * `resp_header_exists()` checks if a header is present.
 #'
 #' @param resp An HTTP response object, as created by [req_perform()].
+#' @param filter A regular expression used to filter the header names.
+#'   `NULL`, the default, returns all headers.
+#' @return
+#' * `resp_headers()` returns a list.
+#' * `resp_header()` returns a string if the header exists and `NULL` otherwise.
+#' * `resp_header_exists()` returns `TRUE` or `FALSE`.
 #' @export
-resp_headers <- function(resp) {
+#' @examples
+#' resp <- request("https://httr2.r-lib.org") %>% req_perform()
+#' resp %>% resp_headers()
+#' resp %>% resp_headers("x-")
+#'
+#' resp %>% resp_header_exists("server")
+#' resp %>% resp_header("server")
+#' # Headers are case insensitive
+#' resp %>% resp_header("SERVER")
+#'
+#' # Returns NULL if header doesn't exist
+#' resp %>% resp_header("this-header-doesnt-exist")
+resp_headers <- function(resp, filter = NULL) {
   check_response(resp)
-  resp$headers
+
+  if (is.null(filter)) {
+    resp$headers
+  } else {
+    resp$headers[grepl(filter, names(resp$headers), perl = TRUE, ignore.case = TRUE)]
+  }
 }
 
 #' @export
@@ -34,6 +57,15 @@ resp_header_exists <- function(resp, header) {
 #'
 #' @export
 #' @inheritParams resp_headers
+#' @returns A `POSIXct` date-time.
+#' @examples
+#' resp <- response(headers = "Date: Wed, 01 Jan 2020 09:23:15 UTC")
+#' resp %>% resp_date()
+#'
+#' # If server doesn't add header (unusual), you get the time the request
+#' # was created:
+#' resp <- response()
+#' resp %>% resp_date()
 resp_date <- function(resp) {
   parse_http_date(resp_header(resp, "Date"))
 }
@@ -52,7 +84,19 @@ resp_date <- function(resp) {
 #' is found, returns `UTF-8`. Used by [resp_body_string()].
 #'
 #' @export
+#' @returns A string. If no content type is specified `resp_content_type()`
+#'   will return a character `NA`; if no encoding is specified,
+#'   `resp_encoding()` will return `"UTF-8"`.
 #' @inheritParams resp_headers
+#' @examples
+#' resp <- response(header = "Content-type: text/html; charset=utf-8")
+#' resp %>% resp_content_type()
+#' resp %>% resp_encoding()
+#'
+#' # No Content-Type header
+#' resp <- response()
+#' resp %>% resp_content_type()
+#' resp %>% resp_encoding()
 resp_content_type <- function(resp) {
   if (resp_header_exists(resp, "content-type")) {
     parse_media(resp_header(resp, "content-type"))$type
@@ -79,7 +123,15 @@ resp_encoding <- function(resp) {
 #' found, it will return `NA`.
 #'
 #' @export
+#' @returns Scalar double giving the number of seconds to wait before retrying
+#'   a request.
 #' @inheritParams resp_headers
+#' @examples
+#' resp <- response(headers = "Retry-After: 30")
+#' resp %>% resp_retry_after()
+#'
+#' resp <- response(headers = "Retry-After: Mon, 20 Sep 2025 21:44:05 UTC")
+#' resp %>% resp_retry_after()
 resp_retry_after <- function(resp) {
   # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
   val <- resp_header(resp, "Retry-After")
@@ -93,20 +145,27 @@ resp_retry_after <- function(resp) {
   }
 }
 
-#' Parse link url from a response
+#' Parse link URL from a response
 #'
-#' This parses the `Link` header, extracting the url corresponding to the
-#' specified `rel`. Returns `NULL` if not present.
+#' Parses URLs out of the the `Link` header as defined by
+#' [rfc8288](https://datatracker.ietf.org/doc/html/rfc8288).
 #'
 #' @export
 #' @inheritParams resp_headers
-#' @param rel "rel" value for which to retrieve url
+#' @returns Either a string providing a URL, if the specified `rel` exists, or
+#'   `NULL` if not.
+#' @param rel The "link relation type" value for which to retrieve a URL.
 #' @export
 #' @examples
-#' resp <- request("https://api.github.com/search/code") %>%
-#'   req_url_query(q = "addClass user:mozilla") %>%
-#'   req_perform()
+#' # Simulate response from GitHub code search
+#' resp <- response(headers = paste0("Link: ",
+#'   '<https://api.github.com/search/code?q=addClass+user%3Amozilla&page=2>; rel="next",',
+#'   '<https://api.github.com/search/code?q=addClass+user%3Amozilla&page=34>; rel="last"'
+#' ))
+#'
 #' resp_link_url(resp, "next")
+#' resp_link_url(resp, "last")
+#' resp_link_url(resp, "prev")
 resp_link_url <- function(resp, rel) {
   if (!resp_header_exists(resp, "Link")) {
     return()

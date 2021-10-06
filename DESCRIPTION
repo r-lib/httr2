@@ -1,6 +1,6 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
-Version: 0.0.0.9000
+Version: 0.1.1.9000
 Authors@R: 
     c(person(given = "Hadley",
              family = "Wickham",
@@ -8,42 +8,43 @@ Authors@R:
              email = "hadley@rstudio.com"),
       person(given = "RStudio",
              role = c("cph", "fnd")))
-Description: httr2 is a modern re-imagining on httr designed around a
-    pipeable interface and solving more of the problems that API wrappers
-    need.
+Description: Tools for creating and modifying HTTP requests, then
+    performing them and processing the results. 'httr2' is a modern
+    re-imagining of 'httr' that uses a pipe-based interface and solves
+    more of the problems that API wrapping packages face.
 License: MIT + file LICENSE
 URL: https://httr2.r-lib.org, https://github.com/r-lib/httr2
 BugReports: https://github.com/r-lib/httr2/issues
+Depends: 
+    R (>= 3.4)
 Imports: 
-    cli,
+    cli (>= 3.0.0),
     curl,
-    ellipsis,
     glue,
-    httr,
-    lifecycle,
     magrittr,
     openssl,
+    R6,
     rappdirs,
     rlang,
     withr
 Suggests:
-    knitr,
     askpass,
+    clipr,
     covr,
+    docopt,
     httpuv,
     jose,
     jsonlite,
-    pkgdown,
+    knitr,
+    purrr,
     rmarkdown,
     testthat (>= 3.0.0),
+    tibble,
     webfakes,
     xml2
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
-Remotes: 
-    r-lib/pkgdown
-VignetteBuilder: knitr
-Depends: 
-    R (>= 2.10)
+RoxygenNote: 7.1.2

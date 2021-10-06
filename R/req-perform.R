@@ -21,21 +21,41 @@
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
+#' @param mock A mocking function. If supplied, this function is called
+#'   with the request. It should return either `NULL` (if it doesn't want to
+#'   handle the request) or a [response] (if it does). See [with_mock()]/
+#'   `local_mock()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
-#'   around `req_verbose()` that uses an integer to control vebosity:
+#'   around `req_verbose()` that uses an integer to control verbosity:
 #'
 #'   * 0: no output
 #'   * 1: show headers
 #'   * 2: show headers and bodies
 #'   * 3: show headers, bodies, and curl status messages.
-#' @returns Returns an HTTP response with successful status code. Will
-#'   throw an error for 4xx and 5xx responses; override with [req_error()].
+#' @returns If request is successful (i.e. the request was successfully
+#'   performed and a response with HTTP status code <400 was recieved), an HTTP
+#'   [response]; otherwise throws an error. Override this behaviour with
+#'   [req_error()].
 #' @export
 #' @examples
 #' request("https://google.com") %>%
 #'   req_perform()
-req_perform <- function(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L)) {
+req_perform <- function(
+      req,
+      path = NULL,
+      verbosity = getOption("httr2_verbosity", 0L),
+      mock = getOption("httr2_mock", NULL)
+  ) {
   check_request(req)
+
+  if (!is.null(mock)) {
+    mock <- as_function(mock)
+    mock_resp <- mock(req)
+    if (!is.null(mock_resp)) {
+      return(mock_resp)
+    }
+  }
+
   req <- req_verbosity(req, verbosity)
   req <- auth_oauth_sign(req)
 
@@ -87,7 +107,7 @@ req_perform <- function(req, path = NULL, verbosity = getOption("httr2_verbosity
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_check_status(resp, error_info(req, resp))
+    resp_check_status(resp, error_body(req, resp))
   } else {
     resp
   }
@@ -136,7 +156,12 @@ req_verbosity <- function(req, verbosity) {
 #' occur. If the request did not succeed (or no requests have been made)
 #' `last_response()` will be `NULL`.
 #'
+#' @returns An HTTP [response]/[request].
 #' @export
+#' @examples
+#' invisible(request("http://httr2.r-lib.org") %>% req_perform())
+#' last_request()
+#' last_response()
 last_response <- function() {
   the$last_response
 }
@@ -205,6 +230,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to processs stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
+#' @returns An HTTP [response].
 #' @export
 #' @examples
 #' show_bytes <- function(x) {
@@ -253,7 +279,7 @@ req_handle <- function(req) {
   }
 
   handle <- curl::new_handle()
-  curl::handle_setheaders(handle, .list = req$headers)
+  curl::handle_setheaders(handle, .list = headers_flatten(req$headers))
   curl::handle_setopt(handle, .list = req$options)
   if (length(req$fields) > 0) {
     curl::handle_setform(handle, .list = req$fields)

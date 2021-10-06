@@ -1,6 +1,6 @@
 #' Create an OAuth token
 #'
-#' Creates a S3 object of class <httr2_token> representing an OAuth token
+#' Creates a S3 object of class `<httr2_token>` representing an OAuth token
 #' returned from the access token endpoint.
 #'
 #' @param access_token The access token used to authenticate request
@@ -11,7 +11,12 @@
 #' @param ... Additional components returned by the endpoint
 #' @param .date Date the request was made; used to convert the relative
 #'   `expires_in` to an absolute `expires_at`.
+#' @return An OAuth token: an S3 list with class `httr2_token`.
 #' @export
+#' @examples
+#' oauth_token("abcdef")
+#' oauth_token("abcdef", expires_in = Sys.time() + 3600)
+#' oauth_token("abcdef", refresh_token = "ghijkl")
 oauth_token <- function(
                         access_token,
                         token_type = "bearer",
@@ -51,6 +56,11 @@ print.httr2_token <- function(x, ...) {
   if (has_name(redacted, "expires_at")) {
     redacted$expires_at <- format(.POSIXct(x$expires_at))
   }
+
+  # https://github.com/r-lib/cli/issues/347
+  is_empty <- map_lgl(redacted, ~ .x == "")
+  redacted[is_empty] <- "''"
+
   cli::cli_dl(compact(redacted))
 
   invisible(x)

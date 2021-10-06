@@ -8,6 +8,12 @@
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_client_credentials
+#' @returns A modified HTTP [request].
+#' @examples
+#' client <- oauth_client("example", "https://example.com/get_token")
+#' req <- request("https://example.com")
+#'
+#' req %>% req_oauth_client_credentials(client)
 req_oauth_client_credentials <- function(req, client,
                                          scope = NULL,
                                          token_params = list()
@@ -31,8 +37,10 @@ req_oauth_client_credentials <- function(req, client,
 #' controls directly, not on behalf of an user.
 #'
 #' @inheritParams oauth_flow_auth_code
+#' @returns An [oauth_token].
 #' @export
 #' @family OAuth flows
+#' @keywords internal
 oauth_flow_client_credentials <- function(client,
                                           scope = NULL,
                                           token_params = list()

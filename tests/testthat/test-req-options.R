@@ -12,7 +12,7 @@ test_that("can add header called req", {
   expect_equal(req$options, list(req = 1))
 })
 
-test_that("can set user agent with string or version", {
+test_that("can set user agent", {
   ua <- function(...) {
     request("http://example.com") %>%
       req_user_agent(...) %>%
@@ -22,7 +22,6 @@ test_that("can set user agent with string or version", {
 
   expect_match(ua(), "libcurl")
   expect_equal(ua("abc"), "abc")
-  expect_equal(ua(versions = c(x = 1)), "x/1")
 })
 
 test_that("can set timeout", {
@@ -36,6 +35,7 @@ test_that("can request verbose record of request", {
   # Snapshot test of what can be made reproducible
   req1 <- req %>%
     req_headers("Host" = "http://example.com") %>%
+    req_headers(`Accept-Encoding` = "gzip") %>%
     req_user_agent("verbose") %>%
     req_verbose(header_resp = FALSE, body_req = TRUE)
   expect_snapshot_output(invisible(req_perform(req1)))

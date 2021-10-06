@@ -11,18 +11,21 @@ req_url(req, url)
 
 req_url_query(req, ...)
 
-req_url_path(req, path)
+req_url_path(req, ...)
 
-req_url_path_append(req, path)
+req_url_path_append(req, ...)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
 \item{url}{New URL; completely replaces existing.}
 
-\item{...}{Name-value pairs that provide query parameters.}
+\item{...}{For \code{req_url_query()}: Name-value pairs that provide query
+parameters. Each value must be either length-1 atomic vector or \code{NULL}
+(which is automatically dropped).
 
-\item{path}{Path to replace or append to existing path.}
+For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
+components that will be combined with \code{/}.}
 }
 \value{
 A modified HTTP \link{request}.

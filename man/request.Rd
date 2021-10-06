@@ -9,6 +9,9 @@ request(base_url)
 \arguments{
 \item{base_url}{Base URL for request.}
 }
+\value{
+An HTTP response: an S3 list with class \code{httr2_request}.
+}
 \description{
 To perform a HTTP request, first create a request object with \code{request()},
 then define its behaviour with \code{req_} functions, then perform the request

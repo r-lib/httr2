@@ -4,7 +4,7 @@
 \alias{req_error}
 \title{Control handling of HTTP errors}
 \usage{
-req_error(req, is_error = NULL, info = NULL)
+req_error(req, is_error = NULL, body = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -13,19 +13,47 @@ req_error(req, is_error = NULL, info = NULL)
 response) and returns \code{TRUE} or \code{FALSE} indicating whether or not an
 R error should signalled.}
 
-\item{info}{A callback function that takes a single argument (the response)
-and returns a character vector of additional information about the error.
-This vector is passed along to the \code{message} argument of \code{\link[rlang:abort]{rlang::abort()}}
-so you can use any formatting that it supports.}
+\item{body}{A callback function that takes a single argument (the response)
+and returns a character vector of additional information to include in the
+body of the error. This vector is passed along to the \code{message} argument
+of \code{\link[rlang:abort]{rlang::abort()}} so you can use any formatting that it supports.}
 }
 \value{
-An HTTP \link{request}.
+A modified HTTP \link{request}.
 }
 \description{
 \code{req_perform()} will automatically convert HTTP errors (i.e. any 4xx or 5xx
-status code) into R errors. Use \code{req_perform()} to either override the
+status code) into R errors. Use \code{req_error()} to either override the
 defaults, or extract additional information from the response that would
 be useful to expose to the user.
+}
+\examples{
+# Performing this request usually generates an error because httr2
+# converts HTTP errors into R errors:
+req <- request("http://httpbin.org/404")
+try(req \%>\% req_perform())
+# You can still retrieve it with last_response()
+last_response()
+
+# But you might want to suppress this behaviour:
+resp <- req \%>\%
+  req_error(is_error = function(resp) FALSE) \%>\%
+  req_perform()
+resp
+
+# Or perhaps you're working with a server that routinely uses the
+# wrong HTTP error codes only 500s are really errors
+request("http://example.com") \%>\%
+  req_error(is_error = function(resp) resp_status(resp) == 500)
+
+# Most typically you'll use req_error() to add additional information
+# extracted from the response body (or sometimes header):
+error_body <- function(resp) {
+  resp_body_json(resp)$error
+}
+request("http://example.com") \%>\%
+  req_error(body = error_body)
+# Learn more in vignette("wrapping-apis")
 }
 \seealso{
 \code{\link[=req_retry]{req_retry()}} to control when errors are automatically retried.

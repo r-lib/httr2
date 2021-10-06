@@ -32,6 +32,9 @@ callback function which should call \code{jwt_claim()}.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+An \link{oauth_token}.
+}
 \description{
 This function uses a Bearer JWT as an authorization grant to get an access
 token, as defined by \href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.1}{rfc7523},
@@ -47,3 +50,4 @@ Other OAuth flows:
 \code{\link{oauth_flow_refresh}()}
 }
 \concept{OAuth flows}
+\keyword{internal}

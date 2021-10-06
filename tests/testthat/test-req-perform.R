@@ -1,5 +1,5 @@
 test_that("success request returns response", {
-  resp <- request_test("/get") %>% req_perform()
+  resp <- request_test() %>% req_perform()
   expect_s3_class(resp, "httr2_response")
 })
 
@@ -43,19 +43,20 @@ test_that("can cache requests with etags", {
 })
 
 test_that("req_perform() will throttle requests", {
+  skip_on_cran()
   throttle_reset()
 
-  req <- request_test("/get") %>% req_throttle(10 / 1)
+  req <- request_test() %>% req_throttle(10 / 1)
   cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
   expect_null(cnd)
 
-  cnd <- req %>% req_perform("/get") %>% catch_cnd("httr2_sleep")
+  cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
   expect_s3_class(cnd, "httr2_sleep")
   expect_gt(cnd$seconds, 0.002)
 })
 
 test_that("can retrieve last request and response", {
-  req <- request_test("/get")
+  req <- request_test()
   resp <- req_perform(req)
 
   expect_equal(last_request(), req)
@@ -85,6 +86,7 @@ test_that("req_dry_run() shows body", {
 
   expect_snapshot({
     request("http://example.com") %>%
+      req_headers(`Accept-Encoding` = "gzip") %>%
       req_body_json(list(x = 1, y = TRUE, z = "c")) %>%
       req_user_agent("test") %>%
       req_dry_run()
@@ -94,6 +96,7 @@ test_that("req_dry_run() shows body", {
 test_that("authorization headers are redacted", {
   expect_snapshot({
     request("http://example.com") %>%
+      req_headers(`Accept-Encoding` = "gzip") %>%
       req_auth_basic("user", "password") %>%
       req_user_agent("test") %>%
       req_dry_run()

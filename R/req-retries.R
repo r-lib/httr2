@@ -45,6 +45,7 @@
 #'   returns either a number of seconds to wait or `NULL`, which indicates
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead..
+#' @returns A modified HTTP [request].
 #' @export
 #' @seealso [req_throttle()] if the API has a rate-limit but doesn't expose
 #'   the limits in the response.

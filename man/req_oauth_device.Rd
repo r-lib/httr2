@@ -21,8 +21,8 @@ req_oauth_device(
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are automatically
-deleted 30 days after creation.}
+storing access credentials on disk. Cached tokens are encrypted and
+automatically deleted 30 days after creation.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
@@ -34,9 +34,18 @@ key to disambiguate them.}
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 This uses \code{\link[=oauth_flow_device]{oauth_flow_device()}} to generate an access token, which is
 then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token is automatically cached (either in memory or on disk) to minimise
 the number of times the flow is performed.
+}
+\examples{
+client <- oauth_client("example", "https://example.com/get_token")
+req <- request("https://example.com")
+
+req \%>\% req_oauth_device(client)
 }

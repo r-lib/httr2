@@ -7,7 +7,7 @@
 #' but should not be available to package users.
 #'
 #' * `secret_encrypt()` and `secret_decrypt()` work with individual strings
-#' * `secret_read_rds()` and `secret_write_rds()` work with `.rds` files
+#' * `secret_write_rds()` and `secret_read_rds()` work with `.rds` files
 #' * `secret_make_key()` generates a random string to use as a key.
 #' * `secret_has_key()` returns `TRUE` if the key is available; you can
 #'   use it in examples and vignettes that you want to evaluate on your CI,
@@ -38,6 +38,12 @@
 #'     the skips have actually gone away.
 #'
 #' @name secrets
+#' @returns
+#' * `secret_decrypt()` and `secret_encrypt()` return strings.
+#' * `secret_write_rds()` returns `x` invisibly; `secret_read_rds()`
+#'   returns the saved object.
+#' * `secret_make_key()` returns a string with class `AsIs`.
+#' * `secret_has_key()` returns `TRUE` or `FALSE`.
 #' @aliases NULL
 #' @examples
 #' key <- secret_make_key()
@@ -47,9 +53,10 @@
 #' secret_read_rds(path, key)
 #'
 #' # While you can manage the key explicitly in a variable, it's much
-#' # easier to store in an env variable. In real life, you should NEVER
-#' # use `Sys.setenv()` to create this env var (instead using .Renviron or
-#' # similar) but I need to do it here since it's an example
+#' # easier to store in an environment variable. In real life, you should
+#' # NEVER use `Sys.setenv()` to create this env var because you will
+#' # also store the secret in your `.Rhistory`. Instead add it to your
+#' # .Renviron using `usethis::edit_r_environ()` or similar.
 #' Sys.setenv("MY_KEY" = key)
 #'
 #' x <- secret_encrypt("This is a secret", "MY_KEY")
@@ -75,7 +82,8 @@ secret_encrypt <- function(x, key) {
   check_string(x, "`x`")
   key <- as_key(key)
 
-  base64_url_encode(openssl::aes_ctr_encrypt(charToRaw(x), key, iv = httr_iv))
+  value <- openssl::aes_ctr_encrypt(charToRaw(x), key)
+  base64_url_encode(c(attr(value, "iv"), value))
 }
 #' @export
 #' @rdname secrets
@@ -84,31 +92,44 @@ secret_decrypt <- function(encrypted, key) {
   check_string(encrypted, "`encrypted`")
   key <- as_key(key)
 
-  rawToChar(openssl::aes_ctr_decrypt(base64_url_decode(encrypted), key, iv = httr_iv))
-}
+  bytes <- base64_url_decode(encrypted)
+  iv <- bytes[1:16]
+  value <- bytes[-(1:16)]
 
-#' @export
-#' @rdname secrets
-#' @param path Path to `.rds` file
-secret_read_rds <- function(path, key) {
-  key <- as_key(key)
-
-  x_enc <- readBin(path, "raw", file.size(path))
-  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = httr_iv)
-  x <- memDecompress(x_cmp, "bzip2")
-  unserialize(x)
+  rawToChar(openssl::aes_ctr_decrypt(value, key, iv = iv))
 }
 
 #' @export
 #' @rdname secrets
 secret_write_rds <- function(x, path, key) {
+  writeBin(secret_serialize(x, key), path)
+  invisible(x)
+}
+#' @export
+#' @rdname secrets
+#' @param path Path to `.rds` file
+secret_read_rds <- function(path, key) {
+  x <- readBin(path, "raw", file.size(path))
+  secret_unserialize(x, key)
+}
+
+secret_serialize <- function(x, key) {
   key <- as_key(key)
 
   x <- serialize(x, NULL, version = 2)
   x_cmp <- memCompress(x, "bzip2")
-  x_enc <- openssl::aes_ctr_encrypt(x_cmp, key, iv = httr_iv)
-  attr(x_enc, "iv") <- NULL # writeBin uses is.vector()
-  writeBin(x_enc, path)
+  x_enc <- openssl::aes_ctr_encrypt(x_cmp, key)
+  c(attr(x_enc, "iv"), x_enc)
+}
+secret_unserialize <- function(encrypted, key) {
+  key <- as_key(key)
+
+  iv <- encrypted[1:16]
+
+  x_enc <- encrypted[-(1:16)]
+  x_cmp <- openssl::aes_ctr_decrypt(x_enc, key, iv = iv)
+  x <- memDecompress(x_cmp, "bzip2")
+  unserialize(x)
 }
 
 #' @export
@@ -152,13 +173,17 @@ secret_get_key <- function(envvar) {
 #'   and `req_body_multipart()`.
 #'
 #' @param x A string to obfuscate, or mark as obfuscated.
-#' @return `obfuscate()` prints the `obfuscated()` call to include in your
+#' @returns `obfuscate()` prints the `obfuscated()` call to include in your
 #'   code. `obfuscated()` returns an S3 class marking the string as obfuscated
 #'   so it can be unobfuscated when needed.
 #' @export
 #' @examples
 #' obfuscate("good morning")
-#' obfuscated("dV-4_vKoUp90pP_M")
+#'
+#' # Every time you obfuscate you'll get a different value because it
+#' # includes 16 bytes of random data which protects against certain types of
+#' # brute force attack
+#' obfuscate("good morning")
 obfuscate <- function(x) {
   check_string(x, "`x`")
 
@@ -174,13 +199,13 @@ obfuscated <- function(x) {
 }
 
 #' @export
-format.httr2_obfuscated <- function(x, ...) {
-  "<OBFUSCATED>"
+str.httr2_obfuscated <- function(object, ...) {
+  cat(" <OBFUSCATED>\n")
 }
 
 #' @export
 print.httr2_obfuscated <- function(x, ...) {
-  cat(format(x), "\n", sep = "")
+  cat("<OBFUSCATED>\n", sep = "")
   invisible(x)
 }
 
@@ -214,10 +239,3 @@ as_key <- function(x) {
     ))
   }
 }
-
-# Fixed iv is not good idea in general, but fine here since we're not
-# worried about dictionary attacks
-httr_iv <- as.raw(c(
-  0x4d, 0x11, 0x18, 0x6f, 0x51, 0xf1, 0x5a, 0x36,
-  0x12, 0x74, 0x9b, 0x54, 0x0e, 0x13, 0x33, 0x3c
-))

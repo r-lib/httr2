@@ -6,7 +6,7 @@
 \alias{resp_header_exists}
 \title{Extract headers from a response}
 \usage{
-resp_headers(resp)
+resp_headers(resp, filter = NULL)
 
 resp_header(resp, header)
 
@@ -15,7 +15,17 @@ resp_header_exists(resp, header)
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 
+\item{filter}{A regular expression used to filter the header names.
+\code{NULL}, the default, returns all headers.}
+
 \item{header}{Header name (case insensitive)}
+}
+\value{
+\itemize{
+\item \code{resp_headers()} returns a list.
+\item \code{resp_header()} returns a string if the header exists and \code{NULL} otherwise.
+\item \code{resp_header_exists()} returns \code{TRUE} or \code{FALSE}.
+}
 }
 \description{
 \itemize{
@@ -23,4 +33,17 @@ resp_header_exists(resp, header)
 \item \code{resp_header()} retrieves a single header.
 \item \code{resp_header_exists()} checks if a header is present.
 }
+}
+\examples{
+resp <- request("https://httr2.r-lib.org") \%>\% req_perform()
+resp \%>\% resp_headers()
+resp \%>\% resp_headers("x-")
+
+resp \%>\% resp_header_exists("server")
+resp \%>\% resp_header("server")
+# Headers are case insensitive
+resp \%>\% resp_header("SERVER")
+
+# Returns NULL if header doesn't exist
+resp \%>\% resp_header("this-header-doesnt-exist")
 }

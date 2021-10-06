@@ -28,9 +28,12 @@ Only for HMAC/RSA, not applicable for ECDSA keys.}
 \item{header}{A named list giving additional fields to include in the
 JWT header.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 \code{oauth_client_req_auth()} authenticates a request using the authentication
-strategy defined by the \code{auth} and \code{auth_param} arguments to \code{\link[=oauth_app]{oauth_app()}}.
+strategy defined by the \code{auth} and \code{auth_param} arguments to \code{\link[=oauth_client]{oauth_client()}}.
 This used to authenticate the client as part of the OAuth flow, \strong{not}
 to authenticate a request on behalf of a user.
 
@@ -54,4 +57,39 @@ You will generally not call these functions directly but will instead
 specify them through the \code{auth} argument to \code{\link[=oauth_client]{oauth_client()}}. The \code{req} and
 \code{client} parameters are automatically filled in; other parameters come from
 the \code{auth_params} argument.
+}
+\examples{
+# Show what the various forms of client authentication look like
+req <- request("https://example.com/whoami")
+
+client1 <- oauth_client(
+  id = "12345",
+  secret = "56789",
+  token_url = "https://example.com/oauth/access_token",
+  name = "oauth-example",
+  auth = "body" # the default
+)
+# calls oauth_client_req_auth_body()
+req_dry_run(oauth_client_req_auth(req, client1))
+
+client2 <- oauth_client(
+  id = "12345",
+  secret = "56789",
+  token_url = "https://example.com/oauth/access_token",
+  name = "oauth-example",
+  auth = "header"
+)
+# calls oauth_client_req_auth_header()
+req_dry_run(oauth_client_req_auth(req, client2))
+
+client3 <- oauth_client(
+  id = "12345",
+  key = openssl::rsa_keygen(),
+  token_url = "https://example.com/oauth/access_token",
+  name = "oauth-example",
+  auth = "jwt_sig",
+  auth_params = list(claim = jwt_claim())
+)
+# calls oauth_client_req_auth_header_jwt_sig()
+req_dry_run(oauth_client_req_auth(req, client3))
 }

@@ -10,14 +10,17 @@
 #' @param url URL response came from; might not be the same as the URL in
 #'   the request if there were any redirects.
 #' @param method HTTP method used to retrieve the response.
-#' @param headers A list of HTTP headers.
+#' @param headers HTTP headers. Can be supplied as a raw or character vector
+#'   which will be parsed using the standard rules, or a named list.
 #' @param body Response, if any, contained in the response body.
+#' @returns An HTTP response: an S3 list with class `httr2_response`.
 #' @export
 #' @examples
 #' response()
 #' response(404, method = "POST")
+#' response(headers = c("Content-Type: text/html", "Content-Length: 300"))
 response <- function(status_code = 200,
-                     url = "http://example.com",
+                     url = "https://example.com",
                      method = "GET",
                      headers = list(),
                      body = NULL) {
@@ -41,7 +44,7 @@ new_response <- function(method, url, status_code, headers, body) {
   headers <- as_headers(headers)
   # ensure we always have a date field
   if (!"date" %in% tolower(names(headers))) {
-    headers$Date <- httr::http_date(Sys.time())
+    headers$Date <- http_date()
   }
 
   structure(
@@ -62,7 +65,9 @@ print.httr2_response <- function(x,...) {
   cli::cli_text("{.cls {class(x)}}")
   cli::cli_text("{.strong {x$method}} {x$url}")
   cli::cli_text("{.field Status}: {x$status_code} {resp_status_desc(x)}")
-  cli::cli_text("{.field Content-Type}: {resp_content_type(x)}")
+  if (resp_header_exists(x, "Content-Type")) {
+    cli::cli_text("{.field Content-Type}: {resp_content_type(x)}")
+  }
 
   body <- x$body
   if (is.null(body)) {
@@ -78,12 +83,13 @@ print.httr2_response <- function(x,...) {
 
 #' Show the raw response
 #'
-#' The reconstruct the HTTP message that httr2 received from the server.
-#' It's unlikely to be exactly the same (because most servers compress at
-#' least the body, and HTTP/2 can also compress the headers), but it conveys
-#' the same information.
+#' This function reconstructs the HTTP message that httr2 received from the
+#' server. It's unlikely to be exactly byte-for-byte identical (because most
+#' servers compress at least the body, and HTTP/2 can also compress the
+#' headers), but it conveys the same information.
 #'
-#' @param resp A HTTP [response]
+#' @param resp An HTTP [response]
+#' @returns `resp` (invisibly).
 #' @export
 #' @examples
 #' resp <- request("https://httpbin.org/json") %>% req_perform()
@@ -96,6 +102,7 @@ resp_raw <- function(resp) {
     cli::cat_line(resp_body_string(resp))
   }
 
+  invisible(resp)
 }
 
 is_response <- function(x) {

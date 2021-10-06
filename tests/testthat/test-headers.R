@@ -12,7 +12,10 @@ test_that("as_headers errors on invalid types", {
 })
 
 test_that("has nice print method", {
-  expect_snapshot(as_headers(c("X:1", "Y: 2", "Z:")))
+  expect_snapshot({
+    as_headers(c("X:1", "Y: 2", "Z:"))
+    as_headers(list())
+  })
 })
 
 test_that("subsetting is case insensitive", {
@@ -34,4 +37,10 @@ test_that("new_headers checks inputs", {
     new_headers(1)
     new_headers(list(1))
   })
+})
+
+test_that("can flatten repeated inputs", {
+  expect_equal(headers_flatten(list()), character())
+  expect_equal(headers_flatten(list(x = 1)), c(x = "1"))
+  expect_equal(headers_flatten(list(x = 1:2)), c(x = "1", x = "2"))
 })

@@ -28,7 +28,15 @@ used to cheaply get a new access token when this one expires.}
 \item{.date}{Date the request was made; used to convert the relative
 \code{expires_in} to an absolute \code{expires_at}.}
 }
+\value{
+An OAuth token: an S3 list with class \code{httr2_token}.
+}
 \description{
-Creates a S3 object of class <httr2_token> representing an OAuth token
+Creates a S3 object of class \verb{<httr2_token>} representing an OAuth token
 returned from the access token endpoint.
+}
+\examples{
+oauth_token("abcdef")
+oauth_token("abcdef", expires_in = Sys.time() + 3600)
+oauth_token("abcdef", refresh_token = "ghijkl")
 }

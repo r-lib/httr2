@@ -5,7 +5,7 @@
 \alias{resp_status_desc}
 \alias{resp_is_error}
 \alias{resp_check_status}
-\title{Retrieve response status}
+\title{Extract HTTP status from response}
 \usage{
 resp_status(resp)
 
@@ -20,6 +20,15 @@ resp_check_status(resp, info = NULL)
 
 \item{info}{A character vector of additional information to include in
 the error message. Passed to \code{\link[rlang:abort]{rlang::abort()}}.}
+}
+\value{
+\itemize{
+\item \code{resp_status()} returns a scalar integer
+\item \code{resp_status_desc()} returns a string
+\item \code{resp_is_error()} returns \code{TRUE} or \code{FALSE}
+\item \code{resp_check_status()} invisibly returns the response if it's ok;
+otherwise it throws an error with class \verb{httr2_http_\{status\}}.
+}
 }
 \description{
 \itemize{
@@ -41,4 +50,11 @@ have deliberately suppressed redirects with
 You can stop them from being turned into R errors with \code{\link[=req_error]{req_error()}},
 e.g. \code{req \%>\% req_error(is_error = ~ FALSE)}.
 }
+}
+\examples{
+# An HTTP status code you're unlikely to see in the wild:
+resp <- response(418)
+resp \%>\% resp_is_error()
+resp \%>\% resp_status()
+resp \%>\% resp_status_desc()
 }

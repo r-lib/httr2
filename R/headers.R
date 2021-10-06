@@ -30,7 +30,10 @@ new_headers <- function(x) {
 
 #' @export
 print.httr2_headers <- function(x, ..., redact = TRUE) {
-  cli::cat_line(cli::style_bold(names(x)), ": ", headers_redact(x, redact))
+  cli::cli_text("{.cls {class(x)}}")
+  if (length(x) > 0) {
+    cli::cat_line(cli::style_bold(names(x)), ": ", headers_redact(x, redact))
+  }
   invisible(x)
 }
 
@@ -40,6 +43,10 @@ headers_redact <- function(x, redact = TRUE) {
   } else {
     list_redact(x, "Authorization", case_sensitive = FALSE)
   }
+}
+
+headers_flatten <- function(x) {
+  set_names(as.character(unlist(x, use.names = FALSE)), rep(names(x), lengths(x)))
 }
 
 list_redact <- function(x, names, case_sensitive = TRUE) {

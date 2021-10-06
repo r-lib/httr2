@@ -10,8 +10,13 @@
 #'   is `15 / 60`.
 #' @param realm An unique identifier that for throttle pool. If not supplied,
 #'   defaults to the hostname of the request.
+#' @returns A modified HTTP [request].
 #' @seealso [req_retry()] for another way of handling rate-limited APIs.
 #' @export
+#' @examples
+#' # Ensure server will never recieve more than 10 requests a minute
+#' request("https://example.com") %>%
+#'   req_throttle(rate = 10 / 60)
 req_throttle <- function(req, rate, realm = NULL) {
   check_request(req)
   check_number(rate, "`rate`")
@@ -19,7 +24,7 @@ req_throttle <- function(req, rate, realm = NULL) {
   delay <- 1 / rate
 
   throttle_delay <- function(req) {
-    realm <- realm %||% httr::parse_url(req$url)$hostname
+    realm <- realm %||% url_parse(req$url)$hostname
     last <- the$throttle[[realm]]
 
     if (is.null(last)) {

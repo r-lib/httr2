@@ -8,7 +8,13 @@
 #'
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
-#' @return A modified HTTP [request].
+#' @param ... For `req_url_query()`: Name-value pairs that provide query
+#'   parameters. Each value must be either length-1 atomic vector or `NULL`
+#'   (which is automatically dropped).
+#'
+#'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
+#'   components that will be combined with `/`.
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' req <- request("http://example.com")
@@ -25,46 +31,48 @@
 #'   req_url("http://google.com")
 req_url <- function(req, url) {
   check_request(req)
+  check_string(url, "`url`")
 
-  if (inherits(url, "url")) {
-    # Temporary fudging
-    url <- httr::build_url(url)
-  }
   req$url <- url
   req
 }
 
 #' @export
 #' @rdname req_url
-#' @param ... Name-value pairs that provide query parameters.
 req_url_query <- function(req, ...) {
   check_request(req)
 
-  url <- httr::parse_url(req$url)
+  url <- url_parse(req$url)
   url$query <- modify_list(url$query, ...)
-  req_url(req, url)
+
+  req_url(req, url_build(url))
 }
 
 #' @export
 #' @rdname req_url
-#' @param path Path to replace or append to existing path.
-req_url_path <- function(req, path) {
+req_url_path <- function(req, ...) {
   check_request(req)
-  check_string(path, "`path`")
+  path <- paste(..., sep = "/")
 
-  url <- httr::parse_url(req$url)
-  url$path <- path
+  if (!grepl("^/", path)) {
+    path <- paste0("/", path)
+  }
 
-  req_url(req, url)
+  req_url(req, url_modify(req$url, path = path))
 }
 
 #' @export
 #' @rdname req_url
-req_url_path_append <- function(req, path) {
+req_url_path_append <- function(req, ...) {
   check_request(req)
-  check_string(path, "`path`")
+  path <- paste(..., sep = "/")
 
-  url <- httr::parse_url(req$url)
-  url$path <- paste0(url$path, "/", path)
-  req_url(req, url)
+  url <- url_parse(req$url)
+
+  if (!grepl("^/", path) && (is.null(url$path) || !grepl("/$", url$path))) {
+    path <- paste0("/", path)
+  }
+
+  url$path <- paste0(url$path, path)
+  req_url(req, url_build(url))
 }

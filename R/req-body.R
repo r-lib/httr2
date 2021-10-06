@@ -10,6 +10,7 @@
 #' Adding a body to a request will automatically switch the method to POST.
 #'
 #' @inheritParams req_perform
+#' @returns A modified HTTP [request].
 #' @examples
 #' req <- request("http://httpbin.org/post")
 #'
@@ -193,7 +194,7 @@ req_body_apply <- function(req) {
       req$fields <- data
     } else if (type == "form") {
       type <- "application/x-www-form-urlencoded"
-      req <- req_body_apply_raw(req, httr:::compose_query(data))
+      req <- req_body_apply_raw(req, query_build(data))
     } else if (type == "json") {
       type <- "application/json"
       json <- exec(jsonlite::toJSON, data, !!!req$body$params)

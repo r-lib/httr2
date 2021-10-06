@@ -45,15 +45,15 @@ req %>% req_dry_run()
 The first line of the request contains three important pieces of information:
 
 -   The HTTP **method**, which is a verb that tells the server what you want to do.
-    Here's its GET, the most common verb, indicating that we want to *get* some data.
-    Other verbs include POST, to send data, PUT, to update an existing resource, and DELETE, to delete resources.
+    Here's its GET, the most common verb, indicating that we want to *get* a resource.
+    Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.
 
--   The **path**,which is the url stripped of details that server already knows, i.e. the protocol (http or https), the host (httpbin.org) and the port (not used here).
+-   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`httpbin.org`), and the port (not used here).
 
 -   The version of the HTTP protocol.
-    This is unimportant for our purposes and it's handled at a lower layer in the stack.
+    This is unimportant for our purposes because it's handled at a lower level.
 
-The following lines specify the HTTP **headers**, a series of name-value pairs separated by ":".
+The following lines specify the HTTP **headers**, a series of name-value pairs separated by `:`.
 The headers in this request were automatically added by httr2, but you can override them or add your own with `req_headers()`:
 
 ```{r}
@@ -83,15 +83,15 @@ What's changed?
 
 -   The method has changed from GET to POST.
     POST is the standard method for sending data to a website, and is automatically used whenever you add a body.
-    If you need to use a different method, call `req_method()`.
+    Use `req_method()` to for a different method.
 
 -   There are two new headers: `Content-Type` and `Content-Length`.
     They tell the server how to interpret the body --- it's encoded as JSON and is 15 bytes long.
 
 -   We have a body, consisting of some JSON.
 
-Different servers need data stored in different formats so httr2 provides a selection of common options.
-For example, `req_body_form()` uses the same encoding used when you submit a form from your browser:
+Different servers want data encoded differently so httr2 provides a selection of common formats.
+For example, `req_body_form()` uses the encoding used when you submit a form from a web browser:
 
 ```{r}
 req %>%
@@ -167,16 +167,18 @@ request("https://httpbin.org/status/404") %>% req_perform()
 request("https://httpbin.org/status/500") %>% req_perform()
 ```
 
-This is another important difference with httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.
-Revert to the httr behaviour with `req_error(req, is_error = ~ FALSE)`.
+This is another important difference to httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.
+You can revert to the httr behaviour with `req_error(req, is_error = ~ FALSE)`.
 
 ## Control the request process
 
-A number of `req_` functions don't directly affect how the request is sent but affect the process of submitting the request and handling the response.
-I won't give any details here, but you should be aware of the following important functions:
+A number of `req_` functions don't directly affect the HTTP request but instead control the overall process of submitting a request and handling the response.
+These include:
 
 -   `req_cache()` sets up a cache so if repeated requests return the same results, you can avoid a trip to the server.
 
 -   `req_throttle()` will automatically add a small delay before each request so you can avoid hammering a server with many requests.
 
 -   `req_retry()` sets up a retry strategy so that if the request either fails or you get a transient HTTP error, it'll automatically retry after a short delay.
+
+For more details see their documentation, as well as examples of the usage in real APIs in `vignette("wrapping-apis.Rmd")`.

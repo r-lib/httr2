@@ -8,3 +8,5 @@
 ^docs$
 ^pkgdown$
 ^vignettes/articles$
+^cran-comments\.md$
+^CRAN-RELEASE$

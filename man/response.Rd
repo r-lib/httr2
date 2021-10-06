@@ -6,7 +6,7 @@
 \usage{
 response(
   status_code = 200,
-  url = "http://example.com",
+  url = "https://example.com",
   method = "GET",
   headers = list(),
   body = NULL
@@ -20,9 +20,13 @@ the request if there were any redirects.}
 
 \item{method}{HTTP method used to retrieve the response.}
 
-\item{headers}{A list of HTTP headers.}
+\item{headers}{HTTP headers. Can be supplied as a raw or character vector
+which will be parsed using the standard rules, or a named list.}
 
 \item{body}{Response, if any, contained in the response body.}
+}
+\value{
+An HTTP response: an S3 list with class \code{httr2_response}.
 }
 \description{
 Generally, you should not need to call this function directly; you'll
@@ -33,5 +37,6 @@ the key components of a response.
 \examples{
 response()
 response(404, method = "POST")
+response(headers = c("Content-Type: text/html", "Content-Length: 300"))
 }
 \keyword{internal}

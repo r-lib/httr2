@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-template.R
 \name{req_template}
 \alias{req_template}
-\title{Set method/path from a template}
+\title{Set request method/path from a template}
 \usage{
 req_template(req, template, ..., .env = parent.frame())
 }
@@ -16,6 +16,9 @@ and a path containing variables labelled like either \verb{:foo} or \code{{foo}}
 
 \item{.env}{Environment in which to look for template variables not found
 in \code{...}. Expert use only.}
+}
+\value{
+A modified HTTP \link{request}.
 }
 \description{
 Many APIs document their methods with a lightweight template mechanism

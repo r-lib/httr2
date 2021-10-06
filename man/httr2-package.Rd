@@ -6,9 +6,10 @@
 \alias{httr2-package}
 \title{httr2: Perform HTTP Requests and Process the Responses}
 \description{
-httr2 is a modern re-imagining on httr designed around a
-    pipeable interface and solving more of the problems that API wrappers
-    need.
+Tools for creating and modifying HTTP requests, then
+    performing them and processing the results. 'httr2' is a modern
+    re-imagining of 'httr' that uses a pipe-based interface and solves
+    more of the problems that API wrapping packages face.
 }
 \seealso{
 Useful links:

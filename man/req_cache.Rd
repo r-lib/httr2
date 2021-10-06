@@ -18,16 +18,35 @@ should \code{req_perform()} return that instead of generating an error?}
 cache hits and misses. This can be helpful to understand whether or
 not caching is actually doing anything for your use case.}
 }
+\value{
+A modified HTTP \link{request}.
+}
 \description{
 Use \code{req_perform()} to automatically cache HTTP requests. Most API requests
-are not cacheable, but when possible (often when downloading larger files)
-it can make a big difference. \code{req_cache()} caches responses to GET requests
-that have status code 200 and at least one of the standard caching headers
-(e.g. \code{Expires}, \code{Etag}, \code{Last-Modified}, \code{Cache-Control}), unless caching
-has been expressly prohibited with \code{Cache-Control: no-store}. Typically,
-a request will still be sent to the server to check that the cached value
-is still up-to-date, but it will not need to re-download the body value.
+are not cacheable, but static files often are.
+
+\code{req_cache()} caches responses to GET requests that have status code 200 and
+at least one of the standard caching headers (e.g. \code{Expires},
+\code{Etag}, \code{Last-Modified}, \code{Cache-Control}), unless caching has been expressly
+prohibited with \code{Cache-Control: no-store}. Typically, a request will still
+be sent to the server to check that the cached value is still up-to-date,
+but it will not need to re-download the body value.
 
 To learn more about HTTP caching, I recommend the MDN article
 \href{https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching}{HTTP caching}.
+}
+\examples{
+# GitHub uses HTTP caching for all raw files.
+url <- paste0(
+  "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/",
+  "master/inst/extdata/penguins.csv"
+)
+# Here I set debug = TRUE so you can see what's happening
+req <- request(url) \%>\% req_cache(tempdir(), debug = TRUE)
+
+# First request downloads the data
+resp <- req \%>\% req_perform()
+
+# Second request retrieves it from the cache
+resp <- req \%>\% req_perform()
 }

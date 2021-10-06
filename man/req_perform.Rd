@@ -4,7 +4,12 @@
 \alias{req_perform}
 \title{Perform a request}
 \usage{
-req_perform(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L))
+req_perform(
+  req,
+  path = NULL,
+  verbosity = getOption("httr2_verbosity", 0L),
+  mock = getOption("httr2_mock", NULL)
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -13,17 +18,24 @@ req_perform(req, path = NULL, verbosity = getOption("httr2_verbosity", 0L))
 large responses since it avoids storing the response in memory.}
 
 \item{verbosity}{How much information to print? This is a wrapper
-around \code{req_verbose()} that uses an integer to control vebosity:
+around \code{req_verbose()} that uses an integer to control verbosity:
 \itemize{
 \item 0: no output
 \item 1: show headers
 \item 2: show headers and bodies
 \item 3: show headers, bodies, and curl status messages.
 }}
+
+\item{mock}{A mocking function. If supplied, this function is called
+with the request. It should return either \code{NULL} (if it doesn't want to
+handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
+\code{local_mock()} for more details.}
 }
 \value{
-Returns an HTTP response with successful status code. Will
-throw an error for 4xx and 5xx responses; override with \code{\link[=req_error]{req_error()}}.
+If request is successful (i.e. the request was successfully
+performed and a response with HTTP status code <400 was recieved), an HTTP
+\link{response}; otherwise throws an error. Override this behaviour with
+\code{\link[=req_error]{req_error()}}.
 }
 \description{
 After preparing a \link{request}, call \code{req_perform()} to perform it, fetching

@@ -31,7 +31,7 @@
 #'   hit an error. Set this to `TRUE` to stop all requests as soon as you
 #'   hit an error. Responses that were never performed will have class
 #'   `httr2_cancelled` in the result.
-#' @return A list the same length as `reqs` where each element is either a
+#' @returns A list the same length as `reqs` where each element is either a
 #'   [response] or an `error`.
 #' @export
 #' @examples
@@ -58,75 +58,112 @@
 multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   if (!is.null(paths)) {
     if (length(reqs) != length(paths)) {
-      abort("If supplied, `paths` must be the same length as `requests`")
+      abort("If supplied, `paths` must be the same length as `req`")
     }
   }
 
-  out <- rep(list(error_cnd("httr2_cancelled", message = "Request cancelled")), length(reqs))
-  handles <- vector("list", length(reqs))
-  done_i <- function(i, path, method) {
-    force(i)
-    function(res) {
-      body <- if (is.null(path)) res$content else new_path(path)
-      resp <- new_response(
-        method = method,
-        url = res$url,
-        status_code = res$status_code,
-        headers = as_headers(res$headers),
-        body = body
-      )
-      out[[i]] <<- tryCatch(resp_check_status(resp), error = function(err) {
-        if (cancel_on_error) multi_cancel_all(handles)
-        err
-      })
-    }
-  }
-  fail_i <- function(i) {
-    force(i)
-    function(msg) {
-      out[[i]] <<- error_cnd("httr2_failed", message = msg)
-      if (cancel_on_error) multi_cancel_all(handles)
-    }
-  }
-
+  perfs <- vector("list", length(reqs))
   for (i in seq_along(reqs)) {
-    req <- reqs[[i]]
+    perfs[[i]] <- Performance$new(req = reqs[[i]], path = paths[[i]])
+    perfs[[i]]$submit(pool)
+  }
+
+  pool_run(pool, perfs, cancel_on_error = cancel_on_error)
+  map(perfs, ~ .$resp)
+}
+
+pool_run <- function(pool, perfs, cancel_on_error = FALSE) {
+  poll_until_done <- function(pool) {
+    repeat({
+      # TODO: progress bar
+      run <- curl::multi_run(0.1, pool = pool, poll = TRUE)
+      if (run$pending == 0) {
+        break
+      }
+    })
+  }
+
+  cancel <- function(cnd) pool_cancel(pool, perfs)
+  if (!cancel_on_error) {
+    tryCatch(poll_until_done(pool), interrupt = cancel)
+  } else {
+    tryCatch(poll_until_done(pool), interrupt = cancel, `httr2:::failed` = cancel)
+  }
+
+  # Ensuring any pending handles are still completed
+  curl::multi_run(pool = pool)
+
+  invisible()
+}
+
+# Wrap up all components of request -> response in a single object
+Performance <- R6Class("Performance", public = list(
+  req = NULL,
+  path = NULL,
+
+  handle = NULL,
+  resp = NULL,
+  pool = NULL,
+
+  initialize = function(req, path = NULL) {
+    self$req <- req
+    self$path <- path
+
     req <- auth_oauth_sign(req)
     req <- cache_pre_fetch(req)
     if (is_response(req)) {
-      out[[i]] <- req
-      next
+      self$resp <- req
+    } else {
+      self$handle <- req_handle(req)
+      curl::handle_setopt(self$handle, url = req$url)
+    }
+  },
+
+  submit = function(pool = NULL) {
+    if (!is.null(self$resp)) {
+      return()
     }
 
-    handles[[i]] <- req_handle(req)
-    curl::handle_setopt(handles[[i]], url = req$url)
-    curl::multi_add(handles[[i]],
-      pool = pool,
-      data = paths[[i]],
-      done = done_i(i, paths[[i]], req_method_get(req)),
-      fail = fail_i(i)
+    self$pool <- pool
+    self$resp <- error_cnd("httr2_cancelled", message = "Request cancelled")
+    curl::multi_add(self$handle,
+      pool = self$pool,
+      data = self$path,
+      done = self$succeed,
+      fail = self$fail
     )
-  }
+    invisible(self)
+  },
 
-  tryCatch(
-    while(curl::multi_run(0.1, pool = pool, poll = TRUE)$pending > 0) {
-      # TODO: update progress spinner
-    },
-    interrupt = function(cnd) {
-      multi_cancel_all(handles)
-      invokeRestart("abort")
+  succeed = function(res) {
+    body <- if (is.null(self$path)) res$content else new_path(self$path)
+    resp <- new_response(
+      method = req_method_get(self$req),
+      url = res$url,
+      status_code = res$status_code,
+      headers = as_headers(res$headers),
+      body = body
+    )
+    resp <- cache_post_fetch(self$reqs, resp, path = self$paths)
+
+    self$resp <- tryCatch(resp_check_status(resp), error = identity)
+    if (is_error(self$resp)) {
+      signal("", class = "httr2:::failed")
     }
-  )
+  },
 
-  for (i in seq_along(reqs)) {
-    out[[i]] <- cache_post_fetch(reqs[[i]], out[[i]], path = paths[[i]])
+  fail = function(msg) {
+    self$resp <- error_cnd("httr2_failed", message = msg)
+    signal("", class = "httr2:::failed")
+  },
+
+  cancel = function() {
+    if (!is.null(self$handle)) {
+      curl::multi_cancel(self$handle)
+    }
   }
+))
 
-  out
-}
-
-multi_cancel_all <- function(handles) {
-  for (handle in handles) {
-    curl::multi_cancel(handle)
-  }
+pool_cancel <- function(pool, perfs) {
+  walk(perfs, ~ .x$cancel())
 }

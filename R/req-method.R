@@ -1,10 +1,11 @@
-#' Set HTTP method
+#' Set HTTP method in request
 #'
 #' Use this function to use a custom HTTP method like "HEAD",
 #' "DELETE", "PATCH", "UPDATE", or "OPTIONS".
 #'
 #' @inheritParams req_perform
 #' @param method Custom HTTP method
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' request("http://httpbin.org") %>% req_method("PATCH")

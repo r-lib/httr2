@@ -8,7 +8,16 @@
 #' @param ... Name-value pairs. The name should be a valid curl option,
 #'   as found in [curl::curl_options()].
 #' @keywords internal
+#' @returns A modified HTTP [request].
 #' @export
+#' @examples
+#' # req_options() allows you to access curl options that are not otherwise
+#' # exposed by httr2. For example, in very special cases you may need to
+#' # turn off SSL verification. This is generally a bad idea so httr2 doesn't
+#' # provide a convenient wrapper, but if you really know what you're doing
+#' # you can still access this libcurl option:
+#' req <- request("https://example.com") %>%
+#'   req_options(ssl_verifypeer = 0)
 req_options <- function(.req, ...) {
   check_request(.req)
 
@@ -16,16 +25,15 @@ req_options <- function(.req, ...) {
   .req
 }
 
-#' Set user-agent
+#' Set user-agent for a request
 #'
 #' This overrides the default user-agent set by httr2 which includes the
 #' version numbers of httr2, the curl package, and libcurl.
 #'
 #' @inheritParams req_perform
-#' @param string String to be sent in the `User-Agent` header.
-#' @param versions Named character vector used to construct a user-agent
-#'   string using a lightweight convention. If both `string` and `versions`
-#'   are omitted,
+#' @param string String to be sent in the `User-Agent` header. If `NULL`,
+#'   will user default.
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' # Default user-agent:
@@ -36,36 +44,32 @@ req_options <- function(.req, ...) {
 #' # If you're wrapping in an API in a package, it's polite to set the
 #' # user agent to identify your package.
 #' request("http://example.com") %>%
-#'   req_user_agent(versions = c("MyPackage" = "1.1.2")) %>%
+#'   req_user_agent("MyPackage (http://mypackage.com)") %>%
 #'   req_dry_run()
-req_user_agent <- function(req, string = NULL, versions = NULL) {
+req_user_agent <- function(req, string = NULL) {
   check_request(req)
 
-  if (is.null(string) && is.null(versions)) {
-    # Used in req_handle() to set default
-    return(req_user_agent(req, versions = c(
-        httr2 = utils::packageVersion("httr2"),
-        `r-curl` = utils::packageVersion("curl"),
-        libcurl = curl::curl_version()$version
-      )))
-  } else if (!is.null(string) && is.null(versions)) {
-    check_string(string, "`string`")
-    ua <- string
-  } else if (!is.null(versions) && is.null(string)) {
-    ua <- paste0(names(versions), "/", versions, collapse = " ")
+  if (is.null(string)) {
+    versions <- c(
+      httr2 = utils::packageVersion("httr2"),
+      `r-curl` = utils::packageVersion("curl"),
+      libcurl = curl::curl_version()$version
+    )
+    string <- paste0(names(versions), "/", versions, collapse = " ")
   } else {
-    abort("Must supply one of `string` and `versions`")
+    check_string(string, "`string`")
   }
 
-  req_options(req, useragent = ua)
+  req_options(req, useragent = string)
 }
 
-#' Set time limit
+#' Set time limit for a request
 #'
 #' An error will be thrown if the request does not complete in the time limit.
 #'
 #' @inheritParams req_perform
 #' @param seconds Maximum number of seconds to wait
+#' @returns A modified HTTP [request].
 #' @export
 #' @examples
 #' # Give up after at most 10 seconds
@@ -95,7 +99,7 @@ req_timeout <- function(req, seconds) {
 #' @inheritParams req_perform
 #' @param header_req,header_resp Show request/response headers?
 #' @param body_req,body_resp Should request/response bodies? When the response
-#'   body is compressed, this will show the number of bytes recevied in
+#'   body is compressed, this will show the number of bytes received in
 #'   each "chunk".
 #' @param info Show informational text from curl? This is mainly useful
 #'   for debugging https and auth problems, so is disabled by default.
@@ -103,8 +107,20 @@ req_timeout <- function(req, seconds) {
 #'   redacts the contents of the Authorization header to prevent you from
 #'   accidentally leaking credentials when debugging/reprexing.
 #' @seealso [req_perform()] which exposes a limited subset of these options
-#'   through the `verbosity` argument.
+#'   through the `verbosity` argument and [with_verbosity()] which allows you
+#'   to control the verbosity of requests deeper within the call stack.
+#' @returns A modified HTTP [request].
 #' @export
+#' @examples
+#' # Use `req_verbose()` to see the headers that are sent back and forth when
+#' # making a request
+#' resp <- request("https://httr2.r-lib.org") %>%
+#'   req_verbose() %>%
+#'   req_perform()
+#'
+#' # Or use one of the convenient shortcuts:
+#' resp <- request("https://httr2.r-lib.org") %>%
+#'   req_perform(verbosity = 1)
 req_verbose <- function(req,
                         header_req = TRUE,
                         header_resp = TRUE,

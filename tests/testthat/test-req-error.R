@@ -1,5 +1,5 @@
 test_that("can customise what statuses are errors", {
-  req <- request_test("/get")
+  req <- request_test()
   expect_equal(error_is_error(req, response(404)), TRUE)
   expect_equal(error_is_error(req, response(200)), FALSE)
 
@@ -9,9 +9,20 @@ test_that("can customise what statuses are errors", {
 })
 
 test_that("can customise error info", {
-  req <- request_test("/get")
-  expect_equal(error_info(req, response(404)), NULL)
+  req <- request_test()
+  expect_equal(error_body(req, response(404)), NULL)
 
-  req <- req %>% req_error(info = ~ "Hi!")
-  expect_equal(error_info(req, response(404)), "Hi!")
+  req <- req %>% req_error(body = ~ "Hi!")
+  expect_equal(error_body(req, response(404)), "Hi!")
+})
+
+test_that("failing callback still generates useful body", {
+  req <- request_test() %>% req_error(body = ~ abort("This is an error!"))
+  expect_snapshot_output(error_body(req, response(404)))
+
+  expect_snapshot(error = TRUE, {
+    req <- request("https://httpbin.org/status/404")
+    req <- req %>% req_error(body = ~ resp_body_json(.x)$error)
+    req %>% req_perform()
+  })
 })

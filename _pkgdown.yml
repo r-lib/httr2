@@ -8,13 +8,21 @@ reference:
   subtitle: Create and modify
   contents:
   - request
-  - req_body_none
+  - req_body
   - req_headers
   - req_method
   - req_template
   - req_timeout
   - req_url
   - req_user_agent
+
+- subtitle: Debugging/testing
+  contents:
+  - last_request
+  - req_dry_run
+  - req_verbose
+  - with_mock
+  - with_verbosity
 
 - subtitle: Authentication
   contents:
@@ -23,11 +31,9 @@ reference:
 
 - title: Perform a request and get a response
   contents:
-  - req_dry_run
   - req_perform
   - req_stream
   - multi_req_perform
-  - last_request
 
 - subtitle: Control the process
   desc: >
@@ -38,7 +44,6 @@ reference:
   - req_error
   - req_throttle
   - req_retry
-  - req_verbose
 
 - title: Handle the response
   contents:
@@ -46,9 +51,10 @@ reference:
 
 - title: Miscellaenous helpers
   contents:
+  - curl_translate
   - secrets
   - obfuscate
-  - with_verbosity
+  - url_parse
 
 - title: OAuth
   desc: >

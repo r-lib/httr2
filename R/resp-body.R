@@ -1,4 +1,4 @@
-#' Extract the body from the response
+#' Extract body from response
 #'
 #' @description
 #' * `resp_body_raw()` returns the raw bytes.
@@ -12,7 +12,22 @@
 #' check with `check_type = FALSE`.
 #'
 #' @param resp A response object.
+#' @returns
+#' * `resp_body_raw()` returns a raw vector.
+#' * `resp_body_string()` returns a string.
+#' * `resp_body_json()` returns NULL, an atomic vector, or list.
+#' * `resp_body_html()` and `resp_body_xml()` return an `xml2::xml_document`
 #' @export
+#' @examples
+#' resp <- request("https://httr2.r-lib.org") %>% req_perform()
+#' resp
+#'
+#' resp %>% resp_body_raw()
+#' resp %>% resp_body_string()
+#'
+#' if (requireNamespace("xml2", quietly = TRUE)) {
+#'   resp %>% resp_body_html()
+#' }
 resp_body_raw <- function(resp) {
   check_response(resp)
 
@@ -50,7 +65,11 @@ resp_body_string <- function(resp, encoding = NULL) {
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
   check_response(resp)
   check_installed("jsonlite")
-  check_content_type(resp, "application/json", check_type)
+  check_content_type(resp,
+    types = "application/json",
+    suffix = "+json",
+    check_type = check_type
+  )
 
   text <- resp_body_string(resp, "UTF-8")
   jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
@@ -61,7 +80,9 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 resp_body_html <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_content_type(resp, c("text/html", "application/xhtml+xml"), check_type)
+  check_content_type(resp,
+    types = c("text/html", "application/xhtml+xml"),
+    check_type = check_type)
 
   xml2::read_html(resp$body, ...)
 }
@@ -71,15 +92,34 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_content_type(resp, c("application/xml", "text/xml"), check_type)
+  check_content_type(resp,
+    types = c("application/xml", "text/xml"),
+    suffix = "+xml",
+    check_type = check_type
+  )
 
   xml2::read_xml(resp$body, ...)
 }
 
 # Helpers -----------------------------------------------------------------
 
-check_content_type <- function(resp, types, check_type = TRUE) {
-  if (!check_type || resp_content_type(resp) %in% types) {
+check_content_type <- function(
+    resp,
+    types,
+    suffix = NULL,
+    check_type = TRUE) {
+
+  if (!check_type) {
+    return()
+  }
+
+  content_type <- resp_content_type(resp)
+  if (content_type %in% types) {
+    return()
+  }
+
+  # https://datatracker.ietf.org/doc/html/rfc6838#section-4.2.8
+  if (!is.null(suffix) && endsWith(content_type, suffix)) {
     return()
   }
 
@@ -88,8 +128,11 @@ check_content_type <- function(resp, types, check_type = TRUE) {
   } else {
     type <- paste0("'", types, "'")
   }
+
   abort(c(
-    glue("Declared content type is not {type}"),
+    glue("Unexpected content type '{content_type}'"),
+    glue("Expecting {type}"),
+    if (!is.null(suffix)) glue("Or suffix '{suffix}'"),
     i = "Override check with `check_type = FALSE`"
   ))
 }

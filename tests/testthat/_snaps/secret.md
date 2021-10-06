@@ -1,13 +1,14 @@
-# can unobfuscate obfuscated string
+# obfuscated strings are hidden
 
     Code
-      obfuscate("test")
-    Output
-      obfuscated("ZlWk7g")
-    Code
-      obfuscated("ZlWk7g")
+      x <- obfuscated("abcdef")
+      x
     Output
       <OBFUSCATED>
+    Code
+      str(x)
+    Output
+       <OBFUSCATED>
 
 # can coerce to a key
 

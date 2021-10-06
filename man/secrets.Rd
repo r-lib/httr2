@@ -4,8 +4,8 @@
 \alias{secret_make_key}
 \alias{secret_encrypt}
 \alias{secret_decrypt}
-\alias{secret_read_rds}
 \alias{secret_write_rds}
+\alias{secret_read_rds}
 \alias{secret_has_key}
 \title{Secret management}
 \usage{
@@ -15,9 +15,9 @@ secret_encrypt(x, key)
 
 secret_decrypt(encrypted, key)
 
-secret_read_rds(path, key)
-
 secret_write_rds(x, path, key)
+
+secret_read_rds(path, key)
 
 secret_has_key(key)
 }
@@ -34,6 +34,15 @@ the raw vector in directly.}
 
 \item{path}{Path to \code{.rds} file}
 }
+\value{
+\itemize{
+\item \code{secret_decrypt()} and \code{secret_encrypt()} return strings.
+\item \code{secret_write_rds()} returns \code{x} invisibly; \code{secret_read_rds()}
+returns the saved object.
+\item \code{secret_make_key()} returns a string with class \code{AsIs}.
+\item \code{secret_has_key()} returns \code{TRUE} or \code{FALSE}.
+}
+}
 \description{
 httr2 provides a handful of functions designed for working with confidential
 data. These are useful because testing packages that use httr2 often
@@ -41,7 +50,7 @@ requires some confidential data that needs to be available for testing,
 but should not be available to package users.
 \itemize{
 \item \code{secret_encrypt()} and \code{secret_decrypt()} work with individual strings
-\item \code{secret_read_rds()} and \code{secret_write_rds()} work with \code{.rds} files
+\item \code{secret_write_rds()} and \code{secret_read_rds()} work with \code{.rds} files
 \item \code{secret_make_key()} generates a random string to use as a key.
 \item \code{secret_has_key()} returns \code{TRUE} if the key is available; you can
 use it in examples and vignettes that you want to evaluate on your CI,
@@ -79,9 +88,10 @@ secret_write_rds(mtcars, path, key = key)
 secret_read_rds(path, key)
 
 # While you can manage the key explicitly in a variable, it's much
-# easier to store in an env variable. In real life, you should NEVER
-# use `Sys.setenv()` to create this env var (instead using .Renviron or
-# similar) but I need to do it here since it's an example
+# easier to store in an environment variable. In real life, you should
+# NEVER use `Sys.setenv()` to create this env var because you will
+# also store the secret in your `.Rhistory`. Instead add it to your
+# .Renviron using `usethis::edit_r_environ()` or similar.
 Sys.setenv("MY_KEY" = key)
 
 x <- secret_encrypt("This is a secret", "MY_KEY")
