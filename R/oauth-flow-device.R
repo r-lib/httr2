@@ -61,7 +61,7 @@ oauth_flow_device <- function(client,
   # Azure provides a message that we might want to print?
   # Google uses verification_url instead of verification_uri
   if (is_interactive() && has_name(request, "verification_uri_complete")) {
-    inform(glue("A browser window should have been opened. Otherwise, visit <{request$verification_uri_complete>.\nOnce requested, enter code {request$user_code}"))
+    inform(glue("A browser window should have been opened. Otherwise, visit <{request$verification_uri_complete}>.\nOnce requested, enter code {request$user_code}"))
     utils::browseURL(request$verification_uri_complete)
   } else {
     url <- request$verification_uri %||% request$verification_url
