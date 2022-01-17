@@ -52,7 +52,7 @@ oauth_flow_device <- function(client,
                               scope = NULL,
                               auth_params = list(),
                               token_params = list()) {
-  oauth_flow_check("device", client, interactive = TRUE)
+  oauth_flow_check("device", client)
 
   request <- oauth_flow_device_request(client, auth_url, scope, auth_params)
 
