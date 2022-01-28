@@ -41,6 +41,11 @@ req_oauth_device <- function(req, client,
 #' authenticated an app on your TV, this is probably the flow you've used),
 #' but it also works well from within R.
 #'
+#' This specification allows also some subspecifications:
+#' * `oauth_flow_auth_code_pkce()` is also reused here to generate code
+#'   verifier, method, and challenge components as needed for PKCE, as
+#'   defined in [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
+#'
 #' @inheritParams oauth_flow_auth_code
 #' @returns An [oauth_token].
 #' @export
@@ -49,10 +54,18 @@ req_oauth_device <- function(req, client,
 #' @keywords internal
 oauth_flow_device <- function(client,
                               auth_url,
+                              pkce = FALSE,
                               scope = NULL,
                               auth_params = list(),
                               token_params = list()) {
   oauth_flow_check("device", client, interactive = TRUE)
+
+  if (pkce) {
+    code <- oauth_flow_auth_code_pkce()
+    auth_params$code_challenge <- code$challenge
+    auth_params$code_challenge_method <- code$method
+    token_params$code_verifier <- code$verifier
+  }
 
   request <- oauth_flow_device_request(client, auth_url, scope, auth_params)
 
@@ -60,9 +73,14 @@ oauth_flow_device <- function(client,
   # https://datatracker.ietf.org/doc/html/rfc8628#section-3.3
   # Azure provides a message that we might want to print?
   # Google uses verification_url instead of verification_uri
+  # verification_uri_complete is optional, it would ship the user
+  # code in the uri https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
   if (is_interactive() && has_name(request, "verification_uri_complete")) {
     inform(glue("Use code {request$user_code}"))
     utils::browseURL(request$verification_uri_complete)
+  } else if (is_interactive() && has_name(request, "verification_uri")) {
+    inform(glue("Use code {request$user_code}"))
+    utils::browseURL(request$verification_uri)
   } else {
     url <- request$verification_uri %||% request$verification_url
     inform(glue("Visit <{url}> and enter code {request$user_code}"))
