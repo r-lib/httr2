@@ -79,7 +79,7 @@ oauth_flow_device <- function(client,
 
   if (is_interactive()) {
     inform(glue("Use code {request$user_code}"))
-    utils::browseURL(request$verification_uri_complete)
+    utils::browseURL(url)
   } else {
     inform(glue("Visit <{url}> and enter code {request$user_code}"))
   }
