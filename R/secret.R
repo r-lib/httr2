@@ -140,7 +140,7 @@ secret_has_key <- function(key) {
   !identical(key, "")
 }
 
-secret_get_key <- function(envvar) {
+secret_get_key <- function(envvar, call = caller_env()) {
   key <- Sys.getenv(envvar)
 
   if (identical(key, "")) {
@@ -148,7 +148,7 @@ secret_get_key <- function(envvar) {
     if (is_testing()) {
       testthat::skip(msg)
     } else {
-      abort(msg)
+      abort(msg, call = call)
     }
   }
 

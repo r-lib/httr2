@@ -15,7 +15,7 @@
     Code
       as_key("ENVVAR_THAT_DOESNT_EXIST")
     Condition
-      Error in `secret_get_key()` at httr2/R/secret.R:233:4:
+      Error in `as_key()`:
       ! Can't find envvar ENVVAR_THAT_DOESNT_EXIST
     Code
       as_key(1)
