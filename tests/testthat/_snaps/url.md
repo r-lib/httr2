@@ -2,7 +2,7 @@
 
     Code
       url_parse("http://user:pass@example.com:80/path?a=1&b=2#frag")
-    Message <cliMessage>
+    Message
       <httr2_url> http://user:pass@example.com:80/path?a=1&b=2#frag
       * scheme: http
       * hostname: example.com
