@@ -7,6 +7,7 @@
 oauth_flow_device(
   client,
   auth_url,
+  pkce = FALSE,
   scope = NULL,
   auth_params = list(),
   token_params = list()
@@ -17,6 +18,9 @@ oauth_flow_device(
 
 \item{auth_url}{Authorization url; you'll need to discover this by reading
 the documentation.}
+
+\item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
+security and should always be used if supported by the server.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
@@ -34,6 +38,13 @@ by \href{https://datatracker.ietf.org/doc/html/rfc8628}{rfc8628}. It's designed
 for devices that don't have access to a web browser (if you've ever
 authenticated an app on your TV, this is probably the flow you've used),
 but it also works well from within R.
+
+This specification allows also some subspecifications:
+\itemize{
+\item \code{oauth_flow_auth_code_pkce()} is also reused here to generate code
+verifier, method, and challenge components as needed for PKCE, as
+defined in \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
+}
 }
 \seealso{
 Other OAuth flows: 

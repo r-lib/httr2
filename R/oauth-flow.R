@@ -12,7 +12,7 @@ oauth_flow_fetch <- function(req) {
     body <- NULL
   }
 
-  if (has_name(body, "access_token") && resp_status(resp) == 200) {
+  if ((has_name(body, "access_token") || has_name(body, "device_code")) && resp_status(resp) == 200) {
     body
   } else if (has_name(body, "error")) {
     oauth_flow_abort(body$error, body$error_description, body$error_uri)
