@@ -1,13 +1,10 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
 Version: 0.1.1.9000
-Authors@R: 
-    c(person(given = "Hadley",
-             family = "Wickham",
-             role = c("aut", "cre"),
-             email = "hadley@rstudio.com"),
-      person(given = "RStudio",
-             role = c("cph", "fnd")))
+Authors@R: c(
+    person("Hadley", "Wickham", , "hadley@rstudio.com", role = c("aut", "cre")),
+    person("RStudio", role = c("cph", "fnd"))
+  )
 Description: Tools for creating and modifying HTTP requests, then
     performing them and processing the results. 'httr2' is a modern
     re-imagining of 'httr' that uses a pipe-based interface and solves
