@@ -102,7 +102,7 @@ base64_url_rand <- function(bytes = 32) {
 
 #' Temporarily set verbosity for all requests
 #'
-#' `with_verbose()` is useful for debugging httr2 code buried deep inside
+#' `with_verbosity()` is useful for debugging httr2 code buried deep inside
 #' another package because it allows you to see exactly what's been sent
 #' and requested.
 #'
