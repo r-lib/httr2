@@ -2,14 +2,15 @@
 
     Code
       as_headers(1)
-    Error <rlang_error>
-      `headers` must be a list, character vector, or raw
+    Condition
+      Error in `as_headers()`:
+      ! `headers` must be a list, character vector, or raw
 
 # has nice print method
 
     Code
       as_headers(c("X:1", "Y: 2", "Z:"))
-    Message <cliMessage>
+    Message
       <httr2_headers>
     Output
       X: 1
@@ -17,17 +18,19 @@
       Z: 
     Code
       as_headers(list())
-    Message <cliMessage>
+    Message
       <httr2_headers>
 
 # new_headers checks inputs
 
     Code
       new_headers(1)
-    Error <rlang_error>
-      `x` must be a list
+    Condition
+      Error in `new_headers()`:
+      ! `x` must be a list
     Code
       new_headers(list(1))
-    Error <rlang_error>
-      All elements of `x` must be named
+    Condition
+      Error in `new_headers()`:
+      ! All elements of `x` must be named
 
