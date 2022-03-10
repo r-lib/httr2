@@ -22,7 +22,7 @@ around \code{req_verbose()} that uses an integer to control verbosity:
 The result of evaluating \code{code}.
 }
 \description{
-\code{with_verbose()} is useful for debugging httr2 code buried deep inside
+\code{with_verbosity()} is useful for debugging httr2 code buried deep inside
 another package because it allows you to see exactly what's been sent
 and requested.
 }
