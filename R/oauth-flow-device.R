@@ -75,14 +75,12 @@ oauth_flow_device <- function(client,
   # Google uses verification_url instead of verification_uri
   # verification_uri_complete is optional, it would ship the user
   # code in the uri https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
-  if (is_interactive() && has_name(request, "verification_uri_complete")) {
+  url <- request$verification_uri_complete %||% request$verification_uri %||% request$verification_url
+
+  if (is_interactive()) {
     inform(glue("Use code {request$user_code}"))
     utils::browseURL(request$verification_uri_complete)
-  } else if (is_interactive() && has_name(request, "verification_uri")) {
-    inform(glue("Use code {request$user_code}"))
-    utils::browseURL(request$verification_uri)
   } else {
-    url <- request$verification_uri %||% request$verification_url
     inform(glue("Visit <{url}> and enter code {request$user_code}"))
   }
 
