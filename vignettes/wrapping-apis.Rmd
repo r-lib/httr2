@@ -256,7 +256,7 @@ There are three basic steps to this process:
     secret_scrambled
     ```
 
-3.  When needed, you descramble the the secret using `secret_decrypt()`:
+3.  When needed, you descramble the secret using `secret_decrypt()`:
 
     ```{r}
     secret_decrypt(secret_scrambled, key)
