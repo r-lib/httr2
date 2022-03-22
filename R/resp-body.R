@@ -58,7 +58,7 @@ resp_body_string <- function(resp, encoding = NULL) {
 #'   `FALSE` to suppress the automated check
 #' @param simplifyVector Should JSON arrays containing only primitives (i.e.
 #'   booleans, numbers, and strings) be caused to atomic vectors?
-#' @param ... Other argumented passed on to [jsonlite::fromJSON()] and
+#' @param ... Other arguments passed on to [jsonlite::fromJSON()] and
 #'   [xml2::read_xml()] respectively.
 #' @rdname resp_body_raw
 #' @export
