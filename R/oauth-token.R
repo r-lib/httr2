@@ -32,7 +32,7 @@ oauth_token <- function(
 
   if (!is.null(expires_in)) {
     # Store as unix time to avoid worrying about type coercions in cache
-    expires_at <- as.numeric(.date) + expires_in
+    expires_at <- as.numeric(.date) + as.numeric(expires_in)
   } else {
     expires_at <- NULL
   }
