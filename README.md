@@ -45,7 +45,7 @@ req %>% req_headers("Accept" = "application/json")
 #> <httr2_request>
 #> GET https://r-project.org
 #> Headers:
-#> • Accept: 'application/json'
+#> * Accept: 'application/json'
 #> Body: empty
 
 # Add a body, turning it into a POST
@@ -60,7 +60,7 @@ req %>% req_retry(max_tries = 5)
 #> GET https://r-project.org
 #> Body: empty
 #> Policies:
-#> • retry_max_tries: 5
+#> * retry_max_tries: 5
 
 # Change the HTTP method
 req %>% req_method("PATCH")
@@ -75,7 +75,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.0.0.9000 r-curl/4.3.2 libcurl/7.64.1
+#> User-Agent: httr2/0.1.1.9000 r-curl/4.3.2 libcurl/7.64.1
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -89,7 +89,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6085 bytes)
+#> Body: In memory (6389 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
@@ -149,5 +149,5 @@ httr2 wouldn’t be possible without
 [Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
 Bryan](https://jennybryan.org) and [Craig
 Citro](https://research.google/people/CraigCitro/) who have given me
-much useful feedback on the both design of the internals and the user
+much useful feedback on both the design of the internals and the user
 facing API.
