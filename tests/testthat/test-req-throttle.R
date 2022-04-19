@@ -17,7 +17,7 @@ test_that("throttling causes expected average request rate", {
   trimmed <- mean(elapsed, trim = 0.2)
 
   expect_gt(trimmed, 0.09)
-  expect_lt(trimmed, 0.13)
+  expect_lt(trimmed, 0.14)
 })
 
 test_that("realm defaults to hostname but can be overridden", {
