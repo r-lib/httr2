@@ -46,7 +46,7 @@ test_that("req_perform() will throttle requests", {
   skip_on_cran()
   throttle_reset()
 
-  req <- request_test() %>% req_throttle(10 / 1)
+  req <- request_test() %>% req_throttle(2 / 1)
   cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
   expect_null(cnd)
 
