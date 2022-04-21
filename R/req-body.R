@@ -101,7 +101,9 @@ req_body_json <- function(req, data,
     null = null,
     ...
   )
-  data <- modify_list(req$body$data, !!!data)
+
+  data <- merge_body_data(req$body$data, data)
+
   req_body(req, data = data, type = "json", params = params)
 }
 
@@ -111,7 +113,8 @@ req_body_form <- function(req, data) {
   check_request(req)
   check_body_data(data)
 
-  data <- modify_list(req$body$data, !!!data)
+  data <- merge_body_data(req$body$data, data)
+
   req_body(req, data = data, type = "form")
 }
 
@@ -121,7 +124,8 @@ req_body_multipart <- function(req, data) {
   check_request(req)
   check_body_data(data)
 
-  data <- modify_list(req$body$data, !!!data)
+  data <- merge_body_data(req$body$data, data)
+
   # data must be character, raw, curl::form_file, or curl::form_data
   req_body(req, data = data, type = "multipart")
 }
@@ -232,4 +236,17 @@ check_body_data <- function(data) {
   if (!is_named(data)) {
     abort("All elements of `data` must be named")
   }
+}
+
+merge_body_data <- function(old, new) {
+
+  if (!is.object(new) && !is.object(old)) {
+    return(modify_list(old, !!!new))
+  }
+
+  if (length(old)) {
+    warn(glue::glue("Replacing existing body, {friendly_type_of(old)}, with {friendly_type_of(new)}"))
+  }
+
+  new
 }

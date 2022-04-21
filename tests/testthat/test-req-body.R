@@ -47,6 +47,28 @@ test_that("can send named list as json/form/multipart", {
   expect_equal(json$form, list(a = "1", b = "2"))
 })
 
+test_that("class attribute is preserved", {
+  req <- request_test() %>% req_body_json(mtcars)
+  expect_equal(req$body$data, mtcars)
+})
+
+test_that("warns on body replacement", {
+
+  req <- request_test() %>% req_body_json(mtcars)
+
+  expect_warning(
+    req %>% req_body_json(list(a = 1)),
+    "Replacing existing body, a <data.frame> object, with a list"
+  )
+
+  req <- request_test() %>% req_body_json(list(a = 1))
+
+  expect_warning(
+    req %>% req_body_json(mtcars),
+    "Replacing existing body, a list, with a <data.frame> object"
+  )
+})
+
 test_that("can modify body data", {
   req1 <- request_test() %>% req_body_form(list(a = 1))
   req2 <- req1 %>% req_body_form(list(b = 2))
