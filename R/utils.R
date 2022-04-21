@@ -21,15 +21,16 @@ bullets_with_header <- function(header, x) {
   cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
 }
 
-modify_list <- function(.x, ...) {
+modify_list <- function(.x, ..., .compact = TRUE) {
   dots <- list2(...)
   if (length(dots) == 0) return(.x)
 
   if (!is_named(dots)) {
     abort("All components of ... must be named")
   }
-  .x[names(dots)] <- dots
-  out <- compact(.x)
+
+  out <- replace2(.x, dots) %>% compact()
+
   if (length(out) == 0) {
     names(out) <- NULL
   }
@@ -37,6 +38,24 @@ modify_list <- function(.x, ...) {
   out
 }
 
+# Replace elements in `x` with elements in `y`, preserving the original ordering
+# where applicable, and preserving duplicates found in `y`.
+replace2 <- function(x, y) {
+
+  for (nm in unique(names(y))) {
+
+    xi <- which(names(x) == nm)
+    yi <- which(names(y) == nm)
+
+    x[xi[seq_along(xi) <= length(yi)]] <- y[yi[seq_along(yi) <= length(xi)]]
+
+    x[xi[seq_along(xi) > length(yi)]] <- NULL
+
+    x <- c(x, y[yi[seq_along(yi) > length(xi)]])
+  }
+
+  x
+}
 
 sys_sleep <- function(seconds) {
   check_number(seconds, "`seconds`")
