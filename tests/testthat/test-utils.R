@@ -9,7 +9,7 @@ test_that("modify list adds, removes, and overrides", {
   expect_snapshot(modify_list(x, a = 1, 2), error = TRUE)
 })
 
-test_that("`modify_list()` preserves duplicates in `y`", {
+test_that("`modify_list()` preserves duplicates in `...`", {
   x <- list(x = 1, y = 2)
   expect_equal(modify_list(x, y = 3, y = 4), list(x = 1, y = 3, y = 4))
 })
