@@ -47,10 +47,14 @@ replace2 <- function(x, y) {
     xi <- which(names(x) == nm)
     yi <- which(names(y) == nm)
 
+    # Replace all occurrences of `nm` in `x` with the same number of occurrences
+    # from `y`.
     x[xi[seq_along(xi) <= length(yi)]] <- y[yi[seq_along(yi) <= length(xi)]]
 
+    # If there is a leftover on the part of `x`, it is dropped.
     x[xi[seq_along(xi) > length(yi)]] <- NULL
 
+    # If leftover happens on the part of `y`, it is appended.
     x <- c(x, y[yi[seq_along(yi) > length(xi)]])
   }
 
