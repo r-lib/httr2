@@ -288,5 +288,5 @@ req_handle <- function(req) {
   handle
 }
 
-new_path <- function(x) structure(x, class = "httr_path")
-is_path <- function(x) inherits(x, "httr_path")
+new_path <- function(x) structure(x, class = "httr2_path")
+is_path <- function(x) inherits(x, "httr2_path")
