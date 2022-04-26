@@ -66,7 +66,7 @@ the results back to R as a <a href="response.html">response</a>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">req_perform</span><span class="op">(</span>
   <span class="va">req</span>,
   path <span class="op">=</span> <span class="cn">NULL</span>,
-  verbosity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"httr2_verbosity"</span>, <span class="fl">0L</span><span class="op">)</span>,
+  verbosity <span class="op">=</span> <span class="cn">NULL</span>,
   mock <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"httr2_mock"</span>, <span class="cn">NULL</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -84,7 +84,8 @@ around <code><a href="req_verbose.html">req_verbose()</a></code> that uses an in
 <li><p>1: show headers</p></li>
 <li><p>2: show headers and bodies</p></li>
 <li><p>3: show headers, bodies, and curl status messages.</p></li>
-</ul></dd>
+</ul><p>Use <code><a href="with_verbosity.html">with_verbosity()</a></code> to control the verbosity of requests that
+you can't affect directly.</p></dd>
 <dt>mock</dt>
 <dd><p>A mocking function. If supplied, this function is called
 with the request. It should return either <code>NULL</code> (if it doesn't want to
@@ -118,7 +119,7 @@ or by running the OAuth flow.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://www.google.com/</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (14910 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (14917 bytes)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
