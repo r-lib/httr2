@@ -43,6 +43,10 @@ performed and a response with HTTP status code <400 was recieved), an HTTP
 \description{
 After preparing a \link{request}, call \code{req_perform()} to perform it, fetching
 the results back to R as a \link{response}.
+
+The default HTTP method is \code{GET} unless a body (set by \link{req_body_json} and
+friends) is present, in which case it will be \code{POST}. You can override
+these defaults with \code{\link[=req_method]{req_method()}}.
 }
 \section{Requests}{
 Note that one call to \code{req_perform()} may perform multiple HTTP requests:

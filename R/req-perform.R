@@ -4,6 +4,10 @@
 #' After preparing a [request], call `req_perform()` to perform it, fetching
 #' the results back to R as a [response].
 #'
+#' The default HTTP method is `GET` unless a body (set by [req_body_json] and
+#' friends) is present, in which case it will be `POST`. You can override
+#' these defaults with [req_method()].
+#'
 #' # Requests
 #' Note that one call to `req_perform()` may perform multiple HTTP requests:
 #'
