@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_headers()` will now override `Content-Type` set by `req_body_*()` (#116)
+
 * `req_url_query()` never uses scientific notation for queries (#93)
 
 * `req_perform()` now respects `httr::with_verbose()` (#85)
