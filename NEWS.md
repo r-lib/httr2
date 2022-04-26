@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `response()` now defaults `body` to `raw(0)` for consistency with real
+  responses (#100).
+
 * `httr_path` class renamed to `httr2_path` to correctly match package name 
   (#99).
 
