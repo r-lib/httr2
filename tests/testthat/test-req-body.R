@@ -69,8 +69,8 @@ test_that("can upload file with multipart", {
 })
 
 test_that("can override body content type", {
-  req <- request_test("/post") |>
-    req_body_raw('{"x":"y"}') |>
+  req <- request_test("/post") %>%
+    req_body_raw('{"x":"y"}') %>%
     req_headers("content-type" = "application/json")
   resp <- req_perform(req)
   headers <- resp_body_json(resp)$headers
