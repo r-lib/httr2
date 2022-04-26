@@ -49,3 +49,6 @@ test_that("empty queries become NULL", {
   expect_equal(query_parse(""), NULL)
 })
 
+test_that("doubles never use scientific notation", {
+  expect_equal(query_build(list(x = 1e9)), "x=1000000000")
+})
