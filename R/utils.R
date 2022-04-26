@@ -120,6 +120,21 @@ with_verbosity <- function(code, verbosity = 1) {
   code
 }
 
+httr2_verbosity <- function() {
+  x <- getOption("httr2_verbosity")
+  if (!is.null(x)) {
+    return(x)
+  }
+
+  # Hackish fallback for httr::with_verbose
+  old <- getOption("httr_config")
+  if (!is.null(old$options$debugfunction)) {
+    1
+  } else {
+    0
+  }
+}
+
 local_time <- function(x, tz = "UTC") {
   out <- as.POSIXct(x, tz = tz)
   attr(out, "tzone") <- NULL

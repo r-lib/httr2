@@ -71,6 +71,11 @@ test_that("can last response is NULL if it fails", {
   expect_equal(last_response(), NULL)
 })
 
+test_that("checks verbosity value", {
+  req <- request_test()
+  expect_snapshot(req_perform(req, verbosity = 1.5), error = TRUE)
+})
+
 # dry run -----------------------------------------------------------------
 
 test_that("req_dry_run() returns useful data", {

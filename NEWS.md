@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_perform()` now respects `httr::with_verbose()` (#85)
+
 * `response()` now defaults `body` to `raw(0)` for consistency with real
   responses (#100).
 
