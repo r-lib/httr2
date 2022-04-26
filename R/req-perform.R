@@ -115,7 +115,7 @@ req_perform <- function(
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_check_status(resp, error_body(req, resp))
+    resp_abort(resp, error_body(req, resp))
   } else {
     resp
   }

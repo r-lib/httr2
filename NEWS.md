@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_error()` can now correct force successful HTTP statuses to fail (#98).
+
 * `req_headers()` will now override `Content-Type` set by `req_body_*()` (#116)
 
 * `req_url_query()` never uses scientific notation for queries (#93)
