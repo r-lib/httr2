@@ -21,22 +21,28 @@ bullets_with_header <- function(header, x) {
   cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
 }
 
-modify_list <- function(.x, ...) {
+modify_list_dots <- function(.x, ...) {
   dots <- list2(...)
-  if (length(dots) == 0) return(.x)
-
-  if (!is_named(dots)) {
+  if (length(dots) > 0 && !is_named(dots)) {
     abort("All components of ... must be named")
   }
-  .x[names(dots)] <- dots
-  out <- compact(.x)
+
+  modify_list(.x, dots)
+}
+
+modify_list <- function(x, y) {
+  if (length(x) == 0) return(compact(y))
+  if (length(y) == 0) return(compact(x))
+
+  out <- x[!names(x) %in% names(y)]
+  out <- c(out, compact(y))
+
   if (length(out) == 0) {
     names(out) <- NULL
   }
 
   out
 }
-
 
 sys_sleep <- function(seconds) {
   check_number(seconds, "`seconds`")

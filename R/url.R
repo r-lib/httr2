@@ -70,7 +70,7 @@ url_parse <- function(url) {
 
 url_modify <- function(url, ...) {
   url <- url_parse(url)
-  url <- modify_list(url, ...)
+  url <- modify_list_dots(url, ...)
   url_build(url)
 }
 

@@ -1,5 +1,10 @@
 # httr2 (development version)
 
+* `req_body_form()`, `req_body_multipart()`, and `req_url_query()` now 
+  support multiple arguments with the same name (#97, #107).
+
+* `req_body_*()` now maintains the type of the `data` (#95).
+
 * Added PKCE support to `oauth_flow_device()` (@flahn, #92).
 
 # httr2 0.1.1

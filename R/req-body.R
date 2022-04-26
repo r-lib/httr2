@@ -101,7 +101,7 @@ req_body_json <- function(req, data,
     null = null,
     ...
   )
-  data <- modify_list(req$body$data, !!!data)
+  data <- modify_list(req$body$data, data)
   req_body(req, data = data, type = "json", params = params)
 }
 
@@ -111,7 +111,7 @@ req_body_form <- function(req, data) {
   check_request(req)
   check_body_data(data)
 
-  data <- modify_list(req$body$data, !!!data)
+  data <- modify_list(req$body$data, data)
   req_body(req, data = data, type = "form")
 }
 
@@ -121,7 +121,7 @@ req_body_multipart <- function(req, data) {
   check_request(req)
   check_body_data(data)
 
-  data <- modify_list(req$body$data, !!!data)
+  data <- modify_list(req$body$data, data)
   # data must be character, raw, curl::form_file, or curl::form_data
   req_body(req, data = data, type = "multipart")
 }

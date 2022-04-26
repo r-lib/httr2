@@ -1,6 +1,6 @@
 req_policies <- function(.req, ...) {
   check_request(.req)
-  .req$policies <- modify_list(.req$policies, ...)
+  .req$policies <- modify_list_dots(.req$policies, ...)
   .req
 }
 

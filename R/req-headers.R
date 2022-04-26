@@ -42,6 +42,6 @@
 req_headers <- function(.req, ...) {
   check_request(.req)
 
-  .req$headers <- modify_list(.req$headers, ...)
+  .req$headers <- modify_list_dots(.req$headers, ...)
   .req
 }
