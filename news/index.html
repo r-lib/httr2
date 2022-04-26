@@ -55,7 +55,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/req_url.html">req_url_query()</a></code> never uses scientific notation for queries (<a href="https://github.com/r-lib/httr2/issues/93" class="external-link">#93</a>)</p></li>
+<ul><li><p><code><a href="../reference/req_headers.html">req_headers()</a></code> will now override <code>Content-Type</code> set by <code>req_body_*()</code> (<a href="https://github.com/r-lib/httr2/issues/116" class="external-link">#116</a>)</p></li>
+<li><p><code><a href="../reference/req_url.html">req_url_query()</a></code> never uses scientific notation for queries (<a href="https://github.com/r-lib/httr2/issues/93" class="external-link">#93</a>)</p></li>
 <li><p><code><a href="../reference/req_perform.html">req_perform()</a></code> now respects <code><a href="https://httr.r-lib.org/reference/with_config.html" class="external-link">httr::with_verbose()</a></code> (<a href="https://github.com/r-lib/httr2/issues/85" class="external-link">#85</a>)</p></li>
 <li><p><code><a href="../reference/response.html">response()</a></code> now defaults <code>body</code> to <code>raw(0)</code> for consistency with real responses (<a href="https://github.com/r-lib/httr2/issues/100" class="external-link">#100</a>).</p></li>
 <li><p><code>httr_path</code> class renamed to <code>httr2_path</code> to correctly match package name (<a href="https://github.com/r-lib/httr2/issues/99" class="external-link">#99</a>).</p></li>
