@@ -230,10 +230,10 @@ The next steps would be to export and document this function; I'll leave that up
 
 We need to take a quick break from APIs to talk about secrets.
 Secrets are important, because every API (except for very simple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
-And even if you expect that your users will usually provide this information, you're still going to need your own credentials in order to actually test your package.
+And even if you plan to require your users to supply this information, you'll still need to record your own credentials in order to test your own package.
 
-This system is probably overkill if you only have one secret that you need to share in one or two places.
-But you almost invariably accumulate more secrets over time, and more people and computers that you need to share them with, so I think spending a little time to understand this system and set up it for your package will pay off in the long term.
+This system described below is likely to be overkill if you have one secret that only needs to be shared in a couple of places: you can just put it in your `.Renviron` and access it with `Sys.getenv()`.
+But you will probably accumulate more secrets over time, and you'll need to figure out how to share them with other people and other computers, so I think spending a little time to understand this system and set up it for your package will pay off in the long term.
 
 ### Basics
 
