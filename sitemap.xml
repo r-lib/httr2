@@ -130,6 +130,9 @@
     <loc>https://httr2.r-lib.org/reference/req_perform.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_proxy.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/req_retry.html</loc>
   </url>
   <url>
