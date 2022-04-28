@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/r-lib/httr2/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/httr2/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg)](https://codecov.io/gh/r-lib/httr2?branch=main)
+coverage](https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/httr2?branch=main)
 <!-- badges: end -->
 
 httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that
