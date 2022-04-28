@@ -9,6 +9,13 @@ test_that("modify list adds, removes, and overrides", {
   expect_snapshot(modify_list(x, a = 1, 2), error = TRUE)
 })
 
+test_that("replacement affects all components with name", {
+  x <- list(a = 1, a = 2)
+  expect_equal(modify_list(x, a = NULL), list())
+  expect_equal(modify_list(x, a = 3), list(a = 3))
+  expect_equal(modify_list(x, a = 3, a = 4), list(a = 3, a =4))
+})
+
 test_that("can check arg types", {
   expect_snapshot(error = TRUE, {
     check_string(1, "x")

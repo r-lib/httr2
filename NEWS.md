@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_body_form()`, `req_body_multipart()`, and `req_url_query()` now 
+  support multiple arguments with the same name (#97, #107).
+
 * `req_throttle()` correctly sets throttle rate (@jchrom, #101).
 
 * `req_error()` can now correct force successful HTTP statuses to fail (#98).

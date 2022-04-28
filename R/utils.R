@@ -28,8 +28,10 @@ modify_list <- function(.x, ...) {
   if (!is_named(dots)) {
     abort("All components of ... must be named")
   }
-  .x[names(dots)] <- dots
-  out <- compact(.x)
+
+  out <- .x[!names(.x) %in% names(dots)]
+  out <- c(out, compact(dots))
+
   if (length(out) == 0) {
     names(out) <- NULL
   }
