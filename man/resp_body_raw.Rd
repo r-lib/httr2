@@ -32,7 +32,7 @@ always re-encoded to UTF-8.}
 \item{simplifyVector}{Should JSON arrays containing only primitives (i.e.
 booleans, numbers, and strings) be caused to atomic vectors?}
 
-\item{...}{Other argumented passed on to \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}} and
+\item{...}{Other arguments passed on to \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}} and
 \code{\link[xml2:read_xml]{xml2::read_xml()}} respectively.}
 }
 \value{

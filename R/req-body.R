@@ -162,7 +162,15 @@ req_body_apply <- function(req) {
   }
 
   data <- req$body$data
-  type <- req$body$type
+
+  # Respect existing Content-Type if set
+  type_idx <- match("content-type", tolower(names(req$headers)))
+  if (!is.na(type_idx)) {
+    type <- req$headers[[type_idx]]
+    req$headers <- req$headers[-type_idx]
+  } else {
+    type <- req$body$type
+  }
 
   if (is_path(data)) {
     size <- file.info(data)$size

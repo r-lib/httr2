@@ -2,7 +2,7 @@
 
     Code
       oauth_token(access_token = "secret", refresh_token = "secret", id_token = "secret")
-    Message <cliMessage>
+    Message
       <httr2_token>
       token_type: bearer
       access_token: <REDACTED>

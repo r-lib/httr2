@@ -2,14 +2,14 @@
 
     Code
       response(200)
-    Message <cliMessage>
+    Message
       <httr2_response>
       GET https://example.com
       Status: 200 OK
       Body: Empty
     Code
       response(200, headers = "Content-Type: text/html")
-    Message <cliMessage>
+    Message
       <httr2_response>
       GET https://example.com
       Status: 200 OK
@@ -17,14 +17,14 @@
       Body: Empty
     Code
       response(200, body = charToRaw("abcdef"))
-    Message <cliMessage>
+    Message
       <httr2_response>
       GET https://example.com
       Status: 200 OK
       Body: In memory (6 bytes)
     Code
       response(200, body = new_path("/test"))
-    Message <cliMessage>
+    Message
       <httr2_response>
       GET https://example.com
       Status: 200 OK
@@ -34,6 +34,7 @@
 
     Code
       check_response(1)
-    Error <rlang_error>
-      `resp` must be an HTTP response object
+    Condition
+      Error in `check_response()`:
+      ! `resp` must be an HTTP response object
 

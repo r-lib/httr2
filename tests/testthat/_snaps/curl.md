@@ -2,8 +2,9 @@
 
     Code
       curl_args("echo foo")
-    Error <rlang_error>
-      Expecting call to curl not 'echo'
+    Condition
+      Error in `curl_args()`:
+      ! Expecting call to curl not 'echo'
 
 # can translate to httr calls
 

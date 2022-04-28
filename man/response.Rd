@@ -9,7 +9,7 @@ response(
   url = "https://example.com",
   method = "GET",
   headers = list(),
-  body = NULL
+  body = raw()
 )
 }
 \arguments{

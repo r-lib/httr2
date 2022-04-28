@@ -49,10 +49,13 @@ test_that("can send named list as json/form/multipart", {
 
 test_that("can modify body data", {
   req1 <- request_test() %>% req_body_form(list(a = 1))
-  req2 <- req1 %>% req_body_form(list(b = 2))
-
   expect_equal(req1$body$data, list(a = 1))
+
+  req2 <- req1 %>% req_body_form(list(b = 2))
   expect_equal(req2$body$data, list(a = 1, b = 2))
+
+  req3 <- req1 %>% req_body_form(list(a = 3, a = 4))
+  expect_equal(req3$body$data, list(a = 3, a = 4))
 })
 
 test_that("can upload file with multipart", {
@@ -66,4 +69,14 @@ test_that("can upload file with multipart", {
     req_perform()
   json <- resp_body_json(resp)
   expect_match(json$files$file, "this is a test\n")
+})
+
+test_that("can override body content type", {
+  req <- request_test("/post") %>%
+    req_body_raw('{"x":"y"}') %>%
+    req_headers("content-type" = "application/json")
+  resp <- req_perform(req)
+  headers <- resp_body_json(resp)$headers
+  expect_equal(headers$`Content-Type`, "application/json")
+  expect_equal(headers$`content-type`, NULL)
 })
