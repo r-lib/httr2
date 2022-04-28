@@ -7,6 +7,10 @@
   `req_url_query()`, taking name-value pairs in `...`. Supplying a single
   `list()` is now deprecated and will be removed in a future version.
 
+* The `oauth_flow_device()` flow is a little more user friendly.
+
+* Implement `req_proxy()` (owenjonesuob, #77).
+
 * `req_body_form()`, `req_body_multipart()`, and `req_url_query()` now 
   support multiple arguments with the same name (#97, #107).
 
