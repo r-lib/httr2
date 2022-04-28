@@ -9,7 +9,7 @@
 \usage{
 req_url(req, url)
 
-req_url_query(req, ...)
+req_url_query(.req, ...)
 
 req_url_path(req, ...)
 
@@ -19,6 +19,8 @@ req_url_path_append(req, ...)
 \item{req}{A \link{request}.}
 
 \item{url}{New URL; completely replaces existing.}
+
+\item{.req}{A \link{request}.}
 
 \item{...}{For \code{req_url_query()}: Name-value pairs that provide query
 parameters. Each value must be either length-1 atomic vector or \code{NULL}

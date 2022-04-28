@@ -14,9 +14,9 @@ req_body_file(req, path, type = NULL)
 
 req_body_json(req, data, auto_unbox = TRUE, digits = 22, null = "null", ...)
 
-req_body_form(req, ...)
+req_body_form(.req, ...)
 
-req_body_multipart(req, ...)
+req_body_multipart(.req, ...)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -45,6 +45,8 @@ strings or objects produced by \code{\link[curl:multipart]{curl::form_file()}}/\
 
 For \code{req_body_json()}, additional arguments passed on to
 \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
+
+\item{.req}{A \link{request}.}
 }
 \value{
 A modified HTTP \link{request}.

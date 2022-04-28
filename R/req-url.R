@@ -39,13 +39,13 @@ req_url <- function(req, url) {
 
 #' @export
 #' @rdname req_url
-req_url_query <- function(req, ...) {
-  check_request(req)
+req_url_query <- function(.req, ...) {
+  check_request(.req)
 
-  url <- url_parse(req$url)
+  url <- url_parse(.req$url)
   url$query <- modify_list(url$query, ...)
 
-  req_url(req, url_build(url))
+  req_url(.req, url_build(url))
 }
 
 #' @export

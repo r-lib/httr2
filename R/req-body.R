@@ -107,21 +107,21 @@ req_body_json <- function(req, data,
 #'
 #'   For `req_body_json()`, additional arguments passed on to
 #'   [jsonlite::toJSON()].
-req_body_form <- function(req, ...) {
-  check_request(req)
+req_body_form <- function(.req, ...) {
+  check_request(.req)
 
-  data <- modify_body_data(req$body$data, ...)
-  req_body(req, data = data, type = "form")
+  data <- modify_body_data(.req$body$data, ...)
+  req_body(.req, data = data, type = "form")
 }
 
 #' @export
 #' @rdname req_body
-req_body_multipart <- function(req, ...) {
-  check_request(req)
+req_body_multipart <- function(.req, ...) {
+  check_request(.req)
 
-  data <- modify_body_data(req$body$data, ...)
+  data <- modify_body_data(.req$body$data, ...)
   # data must be character, raw, curl::form_file, or curl::form_data
-  req_body(req, data = data, type = "multipart")
+  req_body(.req, data = data, type = "multipart")
 }
 
 modify_body_data <- function(data, ...) {
