@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* The `oauth_flow_device()` flow is a little more user friendly.
+
 * Implement `req_proxy()` (owenjonesuob, #77).
 
 * `req_body_form()`, `req_body_multipart()`, and `req_url_query()` now 

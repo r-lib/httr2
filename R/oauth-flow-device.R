@@ -78,7 +78,8 @@ oauth_flow_device <- function(client,
   url <- request$verification_uri_complete %||% request$verification_uri %||% request$verification_url
 
   if (is_interactive()) {
-    inform(glue("Use code {request$user_code}"))
+    cli::cli_alert("Copy {.strong {request$user_code}} and paste when requested by the browser")
+    readline("Press <enter> to proceed:")
     utils::browseURL(url)
   } else {
     inform(glue("Visit <{url}> and enter code {request$user_code}"))
@@ -107,12 +108,17 @@ oauth_flow_device_request <- function(client, auth_url, scope, auth_params) {
 # Device Access Token Request
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.4
 oauth_flow_device_poll <- function(client, request, token_params) {
+  cli::cli_progress_step("Waiting for response from server", spinner = TRUE)
+
   delay <- request$interval %||% 5
   deadline <- Sys.time() + request$expires_in
 
   token <- NULL
   while (Sys.time() < deadline) {
-    sys_sleep(delay) # Waiting for confirmation :spinner
+    for (i in 1:20) {
+      cli::cli_progress_update()
+      sys_sleep(delay / 20)
+    }
 
     tryCatch(
       {
@@ -129,6 +135,6 @@ oauth_flow_device_poll <- function(client, request, token_params) {
       }
     )
   }
-
+  cli::cli_progress_done()
   token
 }
