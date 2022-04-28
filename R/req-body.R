@@ -110,7 +110,7 @@ req_body_json <- function(req, data,
 req_body_form <- function(req, ...) {
   check_request(req)
 
-  data <- update_data(req$body$data, ...)
+  data <- modify_body_data(req$body$data, ...)
   req_body(req, data = data, type = "form")
 }
 
@@ -119,15 +119,15 @@ req_body_form <- function(req, ...) {
 req_body_multipart <- function(req, ...) {
   check_request(req)
 
-  data <- update_data(req$body$data, ...)
+  data <- modify_body_data(req$body$data, ...)
   # data must be character, raw, curl::form_file, or curl::form_data
   req_body(req, data = data, type = "multipart")
 }
 
-update_data <- function(data, ...) {
+modify_body_data <- function(data, ...) {
   dots <- list2(...)
   if (length(dots) == 1 && !is_named(dots) && is.list(dots[[1]])) {
-    warn("req_body_form() no longer takes a list, instead supply named arguments in ...")
+    warn("This function longers takes a list, instead supply named arguments in ...", call = caller_env())
     modify_list(data, !!!dots[[1]])
   } else {
     modify_list(data, ...)
