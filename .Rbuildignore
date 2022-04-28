@@ -10,3 +10,4 @@
 ^vignettes/articles$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
+^revdep$
