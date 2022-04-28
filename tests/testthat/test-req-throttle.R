@@ -6,6 +6,20 @@ test_that("throttling causes delay", {
   expect_true(throttle_delay(req) > 0.005)
 })
 
+test_that("throttling causes expected average request rate", {
+  skip_on_cran()
+  throttle_reset()
+
+  req <- request_test() %>% req_throttle(10)
+
+  elapsed <- replicate(20, system.time(req_perform(req)))["elapsed", ]
+
+  trimmed <- mean(elapsed, trim = 0.2)
+
+  expect_gt(trimmed, 0.09)
+  expect_lt(trimmed, 0.14)
+})
+
 test_that("realm defaults to hostname but can be overridden", {
   throttle_reset()
   expect_equal(the$throttle, list())

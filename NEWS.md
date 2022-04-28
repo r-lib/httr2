@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_throttle()` correctly sets throttle rate (@jchrom, #101).
+
 * `req_error()` can now correct force successful HTTP statuses to fail (#98).
 
 * `req_headers()` will now override `Content-Type` set by `req_body_*()` (#116)
