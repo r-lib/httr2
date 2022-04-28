@@ -4,6 +4,10 @@
 #' After preparing a [request], call `req_perform()` to perform it, fetching
 #' the results back to R as a [response].
 #'
+#' The default HTTP method is `GET` unless a body (set by [req_body_json] and
+#' friends) is present, in which case it will be `POST`. You can override
+#' these defaults with [req_method()].
+#'
 #' # Requests
 #' Note that one call to `req_perform()` may perform multiple HTTP requests:
 #'
@@ -32,6 +36,9 @@
 #'   * 1: show headers
 #'   * 2: show headers and bodies
 #'   * 3: show headers, bodies, and curl status messages.
+#'
+#'   Use [with_verbosity()] to control the verbosity of requests that
+#'   you can't affect directly.
 #' @returns If request is successful (i.e. the request was successfully
 #'   performed and a response with HTTP status code <400 was recieved), an HTTP
 #'   [response]; otherwise throws an error. Override this behaviour with
@@ -43,10 +50,11 @@
 req_perform <- function(
       req,
       path = NULL,
-      verbosity = getOption("httr2_verbosity", 0L),
+      verbosity = NULL,
       mock = getOption("httr2_mock", NULL)
   ) {
   check_request(req)
+  verbosity <- verbosity %||% httr2_verbosity()
 
   if (!is.null(mock)) {
     mock <- as_function(mock)
@@ -110,7 +118,7 @@ req_perform <- function(
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_check_status(resp, error_body(req, resp))
+    resp_abort(resp, error_body(req, resp))
   } else {
     resp
   }
@@ -141,7 +149,7 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
 
 req_verbosity <- function(req, verbosity) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
-    abort("verbosity must 0, 1, 2, or 3")
+    abort("`verbosity` must 0, 1, 2, or 3")
   }
 
   switch(verbosity + 1,
@@ -291,5 +299,11 @@ req_handle <- function(req) {
   handle
 }
 
-new_path <- function(x) structure(x, class = "httr_path")
-is_path <- function(x) inherits(x, "httr_path")
+new_path <- function(x) structure(x, class = "httr2_path")
+is_path <- function(x) inherits(x, "httr2_path")
+
+check_verbosity <- function(x) {
+  if (!is_integerish(x, n = 1)) {
+    abort("`verbosity` must be a single integer")
+  }
+}

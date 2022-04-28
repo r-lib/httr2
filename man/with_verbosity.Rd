@@ -16,7 +16,10 @@ around \code{req_verbose()} that uses an integer to control verbosity:
 \item 1: show headers
 \item 2: show headers and bodies
 \item 3: show headers, bodies, and curl status messages.
-}}
+}
+
+Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
+you can't affect directly.}
 }
 \value{
 The result of evaluating \code{code}.

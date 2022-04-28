@@ -256,7 +256,7 @@ There are three basic steps to this process:
     secret_scrambled
     ```
 
-3.  When needed, you descramble the the secret using `secret_decrypt()`:
+3.  When needed, you descramble the secret using `secret_decrypt()`:
 
     ```{r}
     secret_decrypt(secret_scrambled, key)
@@ -343,7 +343,7 @@ Note that including an API key as a query parameter is relatively insecure; if a
 Here it only takes a couple of minutes to generate your own NYTimes API key, so there's little incentive for someone to try and steal yours.
 
 The main problem of conveying credentials via the url is that it's easily exposed, because httr2 makes no efforts to redact confidential information stored in query parameters.
-This means it's relatively easy to leak your key if you use `req_perform(verbose = 1)`, `req_dry_run()`, or even just print the request object.
+This means it's relatively easy to leak your key if you use `req_perform(verbosity = 1)`, `req_dry_run()`, or even just print the request object.
 And indeed, you'll see that in the examples below --- this is bad practice for a real package, but I think it's ok here because the key doesn't allow you to do anything valuable and it makes teaching APIs so much easier.
 
 ### Basic request

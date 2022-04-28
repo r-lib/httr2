@@ -23,7 +23,7 @@ response <- function(status_code = 200,
                      url = "https://example.com",
                      method = "GET",
                      headers = list(),
-                     body = NULL) {
+                     body = raw()) {
 
   headers <- as_headers(headers)
 
@@ -70,10 +70,10 @@ print.httr2_response <- function(x,...) {
   }
 
   body <- x$body
-  if (is.null(body)) {
-    cli::cli_text("{.field Body}: Empty")
-  } else if (is_path(body)) {
+  if (is_path(body)) {
     cli::cli_text("{.field Body}: On disk {.path body}")
+  } else if (length(body) == 0) {
+    cli::cli_text("{.field Body}: Empty")
   } else if (length(body) > 0) {
     cli::cli_text("{.field Body}: In memory ({length(body)} bytes)")
   }

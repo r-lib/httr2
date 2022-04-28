@@ -7,7 +7,7 @@
 req_perform(
   req,
   path = NULL,
-  verbosity = getOption("httr2_verbosity", 0L),
+  verbosity = NULL,
   mock = getOption("httr2_mock", NULL)
 )
 }
@@ -24,7 +24,10 @@ around \code{req_verbose()} that uses an integer to control verbosity:
 \item 1: show headers
 \item 2: show headers and bodies
 \item 3: show headers, bodies, and curl status messages.
-}}
+}
+
+Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
+you can't affect directly.}
 
 \item{mock}{A mocking function. If supplied, this function is called
 with the request. It should return either \code{NULL} (if it doesn't want to
@@ -40,6 +43,10 @@ performed and a response with HTTP status code <400 was recieved), an HTTP
 \description{
 After preparing a \link{request}, call \code{req_perform()} to perform it, fetching
 the results back to R as a \link{response}.
+
+The default HTTP method is \code{GET} unless a body (set by \link{req_body_json} and
+friends) is present, in which case it will be \code{POST}. You can override
+these defaults with \code{\link[=req_method]{req_method()}}.
 }
 \section{Requests}{
 Note that one call to \code{req_perform()} may perform multiple HTTP requests:

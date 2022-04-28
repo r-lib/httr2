@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/r-lib/httr2/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/httr2/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/r-lib/httr2/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/httr2?branch=master)
+coverage](https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg)](https://codecov.io/gh/r-lib/httr2?branch=main)
 <!-- badges: end -->
 
 httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that
@@ -45,7 +45,7 @@ req %>% req_headers("Accept" = "application/json")
 #> <httr2_request>
 #> GET https://r-project.org
 #> Headers:
-#> * Accept: 'application/json'
+#> • Accept: 'application/json'
 #> Body: empty
 
 # Add a body, turning it into a POST
@@ -60,7 +60,7 @@ req %>% req_retry(max_tries = 5)
 #> GET https://r-project.org
 #> Body: empty
 #> Policies:
-#> * retry_max_tries: 5
+#> • retry_max_tries: 5
 
 # Change the HTTP method
 req %>% req_method("PATCH")
@@ -75,7 +75,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.1.1.9000 r-curl/4.3.2 libcurl/7.64.1
+#> User-Agent: httr2/0.1.1 r-curl/4.3.2 libcurl/7.79.1
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -89,7 +89,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6389 bytes)
+#> Body: In memory (6158 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the

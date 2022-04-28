@@ -1,7 +1,8 @@
 #' Set HTTP method in request
 #'
-#' Use this function to use a custom HTTP method like "HEAD",
-#' "DELETE", "PATCH", "UPDATE", or "OPTIONS".
+#' Use this function to use a custom HTTP method like `HEAD`,
+#' `DELETE`, `PATCH`, `UPDATE`, or `OPTIONS`. The default method is
+#' `GET` for requests without a body, and `POST` for requests with a body.
 #'
 #' @inheritParams req_perform
 #' @param method Custom HTTP method

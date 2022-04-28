@@ -15,6 +15,13 @@ test_that("curl and http errors become errors", {
   expect_error(req_perform(req), class = "httr2_http_429")
 })
 
+test_that("can force successful HTTP statuses to error", {
+  req <- request_test("/status/:status", status = 200) %>%
+    req_error(is_error = function(resp) TRUE)
+
+  expect_error(req_perform(req), class = "httr2_http_200")
+})
+
 test_that("persistent HTTP errors only get single attempt", {
   req <- request_test("/status/:status", status = 404) %>%
     req_retry(max_tries = 5)
@@ -69,6 +76,11 @@ test_that("can last response is NULL if it fails", {
 
   expect_equal(last_request(), req)
   expect_equal(last_response(), NULL)
+})
+
+test_that("checks verbosity value", {
+  req <- request_test()
+  expect_snapshot(req_perform(req, verbosity = 1.5), error = TRUE)
 })
 
 # dry run -----------------------------------------------------------------

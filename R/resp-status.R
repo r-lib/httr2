@@ -63,9 +63,13 @@ resp_is_error <- function(resp) {
 resp_check_status <- function(resp, info = NULL) {
   check_response(resp)
   if (!resp_is_error(resp)) {
-    return(invisible(resp))
+    invisible(resp)
+  } else {
+    resp_abort(resp, info)
   }
+}
 
+resp_abort <- function(resp, info = NULL) {
   status <- resp_status(resp)
   desc <- resp_status_desc(resp)
   message <- glue("HTTP {status} {desc}.")
