@@ -90,9 +90,9 @@ Adding a body to a request will automatically switch the method to POST."><!-- m
 
 <span class="fu">req_body_json</span><span class="op">(</span><span class="va">req</span>, <span class="va">data</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>, digits <span class="op">=</span> <span class="fl">22</span>, null <span class="op">=</span> <span class="st">"null"</span>, <span class="va">...</span><span class="op">)</span>
 
-<span class="fu">req_body_form</span><span class="op">(</span><span class="va">req</span>, <span class="va">data</span><span class="op">)</span>
+<span class="fu">req_body_form</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span>
 
-<span class="fu">req_body_multipart</span><span class="op">(</span><span class="va">req</span>, <span class="va">data</span><span class="op">)</span></code></pre></div>
+<span class="fu">req_body_multipart</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -107,11 +107,7 @@ will will attempt to guess from the extension of <code>path</code>.</p></dd>
 <dt>path</dt>
 <dd><p>Path to file to upload.</p></dd>
 <dt>data</dt>
-<dd><p>Data to include in body. For <code>req_body_json()</code> this can
-be any R data structure that can be serialised to JSON, for
-<code>req_body_form()</code> it should be a named list of simple values,
-and <code>req_body_multipart()</code> it should be a named list containing
-strings or objects produced by <code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_file()</a></code>/<code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_data()</a></code>.</p></dd>
+<dd><p>Data to include in body.</p></dd>
 <dt>auto_unbox</dt>
 <dd><p>Should length-1 vectors be automatically "unboxed" to
 JSON scalars?</p></dd>
@@ -121,7 +117,12 @@ JSON scalars?</p></dd>
 <dd><p>Should <code>NULL</code> be translated to JSON's null (<code>"null"</code>)
 or an empty list (<code>"list"</code>).</p></dd>
 <dt>...</dt>
-<dd><p>Other arguments passed on to <code><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">jsonlite::toJSON()</a></code>.</p></dd>
+<dd><p>Name-data pairs used send data in the body. For
+<code>req_body_form()</code>, the values must be strings (or things easily
+coerced to string); for <code>req_body_multipart()</code> the values must be
+strings or objects produced by <code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_file()</a></code>/<code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_data()</a></code>.</p>
+<p>For <code>req_body_json()</code>, additional arguments passed on to
+<code><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">jsonlite::toJSON()</a></code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -134,7 +135,7 @@ or an empty list (<code>"list"</code>).</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Most APIs expect small amounts of data in either form or json encoded:</span></span>
 <span class="r-in"><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">req_body_form</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"A simple text string"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">req_body_form</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"A simple text string"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: httpbin.org</span>
@@ -197,7 +198,7 @@ or an empty list (<code>"list"</code>).</p></dd>
 <span class="r-in"><span class="co"># You can send multiple files, or a mix of files and data</span></span>
 <span class="r-in"><span class="co"># with multipart encoding</span></span>
 <span class="r-in"><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">req_body_multipart</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">form_file</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>, b <span class="op">=</span> <span class="st">"some data"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">req_body_multipart</span><span class="op">(</span>a <span class="op">=</span> <span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">form_file</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>, b <span class="op">=</span> <span class="st">"some data"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: httpbin.org</span>
@@ -205,10 +206,10 @@ or an empty list (<code>"list"</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------db1486e462e2ddb5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------cb12824cfda45b03</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------db1486e462e2ddb5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file28162faf5bcd"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------cb12824cfda45b03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file275237c0de02"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-Type: application/octet-stream</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a</span>
@@ -218,11 +219,11 @@ or an empty list (<code>"list"</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> e</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------db1486e462e2ddb5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------cb12824cfda45b03</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="b"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> some data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------db1486e462e2ddb5--</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------cb12824cfda45b03--</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
