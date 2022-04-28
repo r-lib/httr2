@@ -55,7 +55,7 @@ req_body_raw <- function(req, body, type = NULL) {
     abort("`body` must be a raw vector or string")
   }
 
-  req_body(req, data = body, type = type %||% "")
+  req_body(req, data = body, type = "raw", content_type = type %||% "")
 }
 
 #' @export
@@ -70,7 +70,7 @@ req_body_file <- function(req, path, type = NULL) {
   }
 
   # Need to override default content-type "application/x-www-form-urlencoded"
-  req_body(req, data = new_path(path), type = type %||% "")
+  req_body(req, data = new_path(path), type = "raw-file", content_type = type %||% "")
 }
 
 #' @export
@@ -136,10 +136,11 @@ modify_body_data <- function(data, ...) {
 
 # General structure -------------------------------------------------------
 
-req_body <- function(req, data, type = NULL, params = list()) {
+req_body <- function(req, data, type = NULL, params = list(), content_type = NULL) {
   req$body <- list(
     data = data,
     type = type,
+    content_type = content_type,
     params = params
   )
   req
@@ -170,17 +171,18 @@ req_body_apply <- function(req) {
   }
 
   data <- req$body$data
+  type <- req$body$type
 
   # Respect existing Content-Type if set
   type_idx <- match("content-type", tolower(names(req$headers)))
   if (!is.na(type_idx)) {
-    type <- req$headers[[type_idx]]
+    content_type <- req$headers[[type_idx]]
     req$headers <- req$headers[-type_idx]
   } else {
-    type <- req$body$type
+    content_type <- req$body$content_type
   }
 
-  if (is_path(data)) {
+  if (type == "raw-file") {
     size <- file.info(data)$size
     con <- file(data, "rb")
     # Leaks connection if request doesn't complete
@@ -201,29 +203,26 @@ req_body_apply <- function(req) {
       readfunction = read,
       postfieldsize_large = size
     )
+  } else if (type == "raw") {
+    req <- req_body_apply_raw(req, data)
   } else if (type == "json") {
-    type <- "application/json"
+    content_type <- "application/json"
     json <- exec(jsonlite::toJSON, data, !!!req$body$params)
     req <- req_body_apply_raw(req, json)
-  } else if (is.raw(data) || is_string(data)) {
-    req <- req_body_apply_raw(req, data)
-  } else if (is.list(data)) {
+  } else if (type == "multipart") {
     data <- unobfuscate(data)
-    if (type == "multipart") {
-      type <- NULL
-      req$fields <- data
-    } else if (type == "form") {
-      type <- "application/x-www-form-urlencoded"
-      req <- req_body_apply_raw(req, query_build(data))
-    } else {
-      abort("Unsupported request body `type`")
-    }
+    content_type <- NULL
+    req$fields <- data
+  } else if (type == "form") {
+    data <- unobfuscate(data)
+    content_type <- "application/x-www-form-urlencoded"
+    req <- req_body_apply_raw(req, query_build(data))
   } else {
-    abort("Unsupported request body `data`")
+    abort("Unsupported request body `type`", .internal = TRUE)
   }
 
   # Must set header afterwards
-  req <- req_headers(req, `Content-Type` = type)
+  req <- req_headers(req, `Content-Type` = content_type)
   req
 }
 
