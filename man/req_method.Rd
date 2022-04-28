@@ -15,8 +15,9 @@ req_method(req, method)
 A modified HTTP \link{request}.
 }
 \description{
-Use this function to use a custom HTTP method like "HEAD",
-"DELETE", "PATCH", "UPDATE", or "OPTIONS".
+Use this function to use a custom HTTP method like \code{HEAD},
+\code{DELETE}, \code{PATCH}, \code{UPDATE}, or \code{OPTIONS}. The default method is
+\code{GET} for requests without a body, and \code{POST} for requests with a body.
 }
 \examples{
 request("http://httpbin.org") \%>\% req_method("PATCH")

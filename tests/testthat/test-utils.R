@@ -23,3 +23,16 @@ test_that("can check arg types", {
     check_number(NA_real_, "x")
   })
 })
+
+test_that("respects httr2 verbosity option", {
+  expect_equal(with_verbosity(httr2_verbosity()), 1)
+})
+
+test_that("respects httr verbose config", {
+  expect_equal(httr2_verbosity(), 0)
+
+  # Simulate effect of httr::with_verbose(httr2_verbosity())
+  config <- list(options = list(debugfunction = identity))
+  withr::local_options(httr_config = config)
+  expect_equal(httr2_verbosity(), 1)
+})

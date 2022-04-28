@@ -178,6 +178,9 @@ query_build <- function(x) {
     ))
   }
 
+  is_double <- map_lgl(x, is.double)
+  x[is_double] <- map_chr(x[is_double], format, scientific = FALSE)
+
   names <- curl::curl_escape(names(x))
   values <- map_chr(x, curl::curl_escape)
 
