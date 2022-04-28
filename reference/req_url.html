@@ -80,7 +80,7 @@ req_url_path_append() adds to the path
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">req_url</span><span class="op">(</span><span class="va">req</span>, <span class="va">url</span><span class="op">)</span>
 
-<span class="fu">req_url_query</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">req_url_query</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="fu">req_url_path</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span>
 
@@ -93,6 +93,8 @@ req_url_path_append() adds to the path
 <dd><p>A <a href="request.html">request</a>.</p></dd>
 <dt>url</dt>
 <dd><p>New URL; completely replaces existing.</p></dd>
+<dt>.req</dt>
+<dd><p>A <a href="request.html">request</a>.</p></dd>
 <dt>...</dt>
 <dd><p>For <code>req_url_query()</code>: Name-value pairs that provide query
 parameters. Each value must be either length-1 atomic vector or <code>NULL</code>

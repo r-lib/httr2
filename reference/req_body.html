@@ -90,9 +90,9 @@ Adding a body to a request will automatically switch the method to POST."><!-- m
 
 <span class="fu">req_body_json</span><span class="op">(</span><span class="va">req</span>, <span class="va">data</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>, digits <span class="op">=</span> <span class="fl">22</span>, null <span class="op">=</span> <span class="st">"null"</span>, <span class="va">...</span><span class="op">)</span>
 
-<span class="fu">req_body_form</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">req_body_form</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span><span class="op">)</span>
 
-<span class="fu">req_body_multipart</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">req_body_multipart</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -123,6 +123,8 @@ coerced to string); for <code>req_body_multipart()</code> the values must be
 strings or objects produced by <code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_file()</a></code>/<code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_data()</a></code>.</p>
 <p>For <code>req_body_json()</code>, additional arguments passed on to
 <code><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">jsonlite::toJSON()</a></code>.</p></dd>
+<dt>.req</dt>
+<dd><p>A <a href="request.html">request</a>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -206,10 +208,10 @@ strings or objects produced by <code><a href="https://rdrr.io/pkg/curl/man/multi
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------cb12824cfda45b03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------f6cca1a001ccd376</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------cb12824cfda45b03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file275237c0de02"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------f6cca1a001ccd376</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file277b4928d19e"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-Type: application/octet-stream</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a</span>
@@ -219,11 +221,11 @@ strings or objects produced by <code><a href="https://rdrr.io/pkg/curl/man/multi
 <span class="r-out co"><span class="r-pr">#&gt;</span> e</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------cb12824cfda45b03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------f6cca1a001ccd376</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="b"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> some data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------cb12824cfda45b03--</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------f6cca1a001ccd376--</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
