@@ -14,9 +14,9 @@ req_body_file(req, path, type = NULL)
 
 req_body_json(req, data, auto_unbox = TRUE, digits = 22, null = "null", ...)
 
-req_body_form(req, data)
+req_body_form(req, ...)
 
-req_body_multipart(req, data)
+req_body_multipart(req, ...)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -28,11 +28,7 @@ will will attempt to guess from the extension of \code{path}.}
 
 \item{path}{Path to file to upload.}
 
-\item{data}{Data to include in body. For \code{req_body_json()} this can
-be any R data structure that can be serialised to JSON, for
-\code{req_body_form()} it should be a named list of simple values,
-and \code{req_body_multipart()} it should be a named list containing
-strings or objects produced by \code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.}
+\item{data}{Data to include in body.}
 
 \item{auto_unbox}{Should length-1 vectors be automatically "unboxed" to
 JSON scalars?}
@@ -42,7 +38,13 @@ JSON scalars?}
 \item{null}{Should \code{NULL} be translated to JSON's null (\code{"null"})
 or an empty list (\code{"list"}).}
 
-\item{...}{Other arguments passed on to \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
+\item{...}{Name-data pairs used send data in the body. For
+\code{req_body_form()}, the values must be strings (or things easily
+coerced to string); for \code{req_body_multipart()} the values must be
+strings or objects produced by \code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
+
+For \code{req_body_json()}, additional arguments passed on to
+\code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -63,7 +65,7 @@ req <- request("http://httpbin.org/post")
 
 # Most APIs expect small amounts of data in either form or json encoded:
 req \%>\%
-  req_body_form(list(x = "A simple text string")) \%>\%
+  req_body_form(x = "A simple text string") \%>\%
   req_dry_run()
 
 req \%>\%
@@ -87,6 +89,6 @@ req \%>\%
 # You can send multiple files, or a mix of files and data
 # with multipart encoding
 req \%>\%
-  req_body_multipart(list(a = curl::form_file(path), b = "some data")) \%>\%
+  req_body_multipart(a = curl::form_file(path), b = "some data") \%>\%
   req_dry_run()
 }

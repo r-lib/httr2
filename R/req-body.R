@@ -16,7 +16,7 @@
 #'
 #' # Most APIs expect small amounts of data in either form or json encoded:
 #' req %>%
-#'   req_body_form(list(x = "A simple text string")) %>%
+#'   req_body_form(x = "A simple text string") %>%
 #'   req_dry_run()
 #'
 #' req %>%
@@ -40,7 +40,7 @@
 #' # You can send multiple files, or a mix of files and data
 #' # with multipart encoding
 #' req %>%
-#'   req_body_multipart(list(a = curl::form_file(path), b = "some data")) %>%
+#'   req_body_multipart(a = curl::form_file(path), b = "some data") %>%
 #'   req_dry_run()
 #' @name req_body
 #' @aliases NULL
@@ -75,24 +75,18 @@ req_body_file <- function(req, path, type = NULL) {
 
 #' @export
 #' @rdname req_body
-#' @param data Data to include in body. For `req_body_json()` this can
-#'   be any R data structure that can be serialised to JSON, for
-#'   `req_body_form()` it should be a named list of simple values,
-#'   and `req_body_multipart()` it should be a named list containing
-#'   strings or objects produced by [curl::form_file()]/[curl::form_data()].
+#' @param data Data to include in body.
 #' @param auto_unbox Should length-1 vectors be automatically "unboxed" to
 #'   JSON scalars?
 #' @param digits How many digits of precision should numbers use in JSON?
 #' @param null Should `NULL` be translated to JSON's null (`"null"`)
 #'   or an empty list (`"list"`).
-#' @param ... Other arguments passed on to [jsonlite::toJSON()].
 req_body_json <- function(req, data,
                           auto_unbox = TRUE,
                           digits = 22,
                           null = "null",
                           ...) {
   check_request(req)
-  check_body_data(data)
   check_installed("jsonlite")
 
   params <- list2(
@@ -101,29 +95,43 @@ req_body_json <- function(req, data,
     null = null,
     ...
   )
-  data <- modify_list(req$body$data, !!!data)
   req_body(req, data = data, type = "json", params = params)
 }
 
 #' @export
 #' @rdname req_body
-req_body_form <- function(req, data) {
+#' @param ... Name-data pairs used send data in the body. For
+#'   `req_body_form()`, the values must be strings (or things easily
+#'   coerced to string); for `req_body_multipart()` the values must be
+#'   strings or objects produced by [curl::form_file()]/[curl::form_data()].
+#'
+#'   For `req_body_json()`, additional arguments passed on to
+#'   [jsonlite::toJSON()].
+req_body_form <- function(req, ...) {
   check_request(req)
-  check_body_data(data)
 
-  data <- modify_list(req$body$data, !!!data)
+  data <- update_data(req$body$data, ...)
   req_body(req, data = data, type = "form")
 }
 
 #' @export
 #' @rdname req_body
-req_body_multipart <- function(req, data) {
+req_body_multipart <- function(req, ...) {
   check_request(req)
-  check_body_data(data)
 
-  data <- modify_list(req$body$data, !!!data)
+  data <- update_data(req$body$data, ...)
   # data must be character, raw, curl::form_file, or curl::form_data
   req_body(req, data = data, type = "multipart")
+}
+
+update_data <- function(data, ...) {
+  dots <- list2(...)
+  if (length(dots) == 1 && !is_named(dots) && is.list(dots[[1]])) {
+    warn("req_body_form() no longer takes a list, instead supply named arguments in ...")
+    modify_list(data, !!!dots[[1]])
+  } else {
+    modify_list(data, ...)
+  }
 }
 
 # General structure -------------------------------------------------------
@@ -193,6 +201,10 @@ req_body_apply <- function(req) {
       readfunction = read,
       postfieldsize_large = size
     )
+  } else if (type == "json") {
+    type <- "application/json"
+    json <- exec(jsonlite::toJSON, data, !!!req$body$params)
+    req <- req_body_apply_raw(req, json)
   } else if (is.raw(data) || is_string(data)) {
     req <- req_body_apply_raw(req, data)
   } else if (is.list(data)) {
@@ -203,10 +215,6 @@ req_body_apply <- function(req) {
     } else if (type == "form") {
       type <- "application/x-www-form-urlencoded"
       req <- req_body_apply_raw(req, query_build(data))
-    } else if (type == "json") {
-      type <- "application/json"
-      json <- exec(jsonlite::toJSON, data, !!!req$body$params)
-      req <- req_body_apply_raw(req, json)
     } else {
       abort("Unsupported request body `type`")
     }
@@ -228,16 +236,4 @@ req_body_apply_raw <- function(req, body) {
     postfieldsize = length(body),
     postfields = body
   )
-}
-
-
-# Helpers -----------------------------------------------------------------
-
-check_body_data <- function(data) {
-  if (!is.list(data)) {
-    abort("`data` must be a list")
-  }
-  if (!is_named(data)) {
-    abort("All elements of `data` must be named")
-  }
 }

@@ -95,7 +95,7 @@ For example, `req_body_form()` uses the encoding used when you submit a form fro
 
 ```{r}
 req %>%
-  req_body_form(list(x = "1", y = "a")) %>% 
+  req_body_form(x = "1", y = "a") %>% 
   req_dry_run()
 ```
 
@@ -103,7 +103,7 @@ And `req_body_multipart()` uses the multipart encoding which is particularly imp
 
 ```{r}
 req %>%
-  req_body_multipart(list(x = "1", y = "a")) %>% 
+  req_body_multipart(x = "1", y = "a") %>% 
   req_dry_run()
 ```
 

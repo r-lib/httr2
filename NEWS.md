@@ -1,5 +1,12 @@
 # httr2 (development version)
 
+* `req_body_json()` now overrides the existing JSON body, rather than 
+  attempting to merge with the previous value (#95, #115).
+
+* `req_body_form()`, `req_body_multipart()`, now match the interface of 
+  `req_url_query()`, taking name-value pairs in `...`. Supplying a single
+  `list()` is now deprecated and will be removed in a future version.
+
 * `req_body_form()`, `req_body_multipart()`, and `req_url_query()` now 
   support multiple arguments with the same name (#97, #107).
 
