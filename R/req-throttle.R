@@ -45,7 +45,7 @@ throttle_reset <- function() {
   invisible()
 }
 throttle_touch <- function(realm) {
-  env_bind(the, throttle = modify_list(the$throttle, list2(!!realm := unix_time())))
+  env_bind(the, throttle = modify_list(the$throttle, !!realm := unix_time()))
 }
 
 throttle_delay <- function(req) {

@@ -21,7 +21,7 @@
 req_options <- function(.req, ...) {
   check_request(.req)
 
-  .req$options <- modify_list_dots(.req$options, ...)
+  .req$options <- modify_list(.req$options, ...)
   .req
 }
 

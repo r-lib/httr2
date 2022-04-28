@@ -47,11 +47,6 @@ test_that("can send named list as json/form/multipart", {
   expect_equal(json$form, list(a = "1", b = "2"))
 })
 
-test_that("body data preserves data frame", {
-  req1 <- request_test() %>% req_body_form(mtcars)
-  expect_equal(req1$body$data, mtcars)
-})
-
 test_that("can modify body data", {
   req1 <- request_test() %>% req_body_form(list(a = 1))
   expect_equal(req1$body$data, list(a = 1))

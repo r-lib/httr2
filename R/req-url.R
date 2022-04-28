@@ -43,7 +43,7 @@ req_url_query <- function(req, ...) {
   check_request(req)
 
   url <- url_parse(req$url)
-  url$query <- modify_list_dots(url$query, ...)
+  url$query <- modify_list(url$query, ...)
 
   req_url(req, url_build(url))
 }

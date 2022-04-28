@@ -194,14 +194,14 @@ oauth_flow_auth_code_url <- function(client,
                                      state = NULL,
                                      auth_params = list()) {
   url <- url_parse(auth_url)
-  url$query <- modify_list(url$query, list2(
+  url$query <- modify_list(url$query,
     response_type = "code",
     client_id = client$id,
     redirect_uri = redirect_uri,
     scope = scope,
     state = state,
     !!!auth_params
-  ))
+  )
   url_build(url)
 }
 
