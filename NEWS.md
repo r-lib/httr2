@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 0.2.0
 
 ## New features
 
