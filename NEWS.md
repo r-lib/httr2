@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* Implement `req_proxy()` (owenjonesuob, #77).
+
 * `req_body_form()`, `req_body_multipart()`, and `req_url_query()` now 
   support multiple arguments with the same name (#97, #107).
 

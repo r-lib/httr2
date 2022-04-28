@@ -44,3 +44,12 @@ test_that("can request verbose record of request", {
   req2 <- req %>% req_verbose(info = TRUE, body_resp = TRUE)
   expect_output(req_perform(req2))
 })
+
+test_that("req_proxy gives helpful errors", {
+  req <- request_test("/get")
+  expect_snapshot(error = TRUE, {
+    req %>% req_proxy(port = "abc")
+    req %>% req_proxy("abc", auth = "bsc")
+  })
+
+})
