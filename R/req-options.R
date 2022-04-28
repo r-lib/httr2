@@ -91,13 +91,14 @@ req_timeout <- function(req, seconds) {
 #' @param url,port Location of proxy.
 #' @param username,password Login details for proxy, if needed.
 #' @param auth Type of HTTP authentication to use. Should be one of the
-#'   following: basic, digest, digest_ie, gssnegotiate, ntlm, any.
+#'   following: `basic`, digest, digest_ie, gssnegotiate, ntlm, any.
 #' @examples
-#' # See http://www.hidemyass.com/proxy-list for a list of public proxies
-#' # to test with
-#' # request("http://had.co.nz") %>%
-#' #   req_proxy("64.251.21.73", 8080) %>%
-#' #   req_perform()
+#' # Proxy from https://www.proxynova.com/proxy-server-list/
+#' \dontrun{
+#' request("http://hadley.nz") %>%
+#'   req_proxy("20.116.130.70", 3128) %>%
+#'   req_perform()
+#' }
 #' @export
 req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, auth = "basic") {
 
@@ -107,7 +108,11 @@ req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, a
     proxyuserpwd <- NULL
   }
 
-  if (!is.null(port)) stopifnot(is.numeric(port))
+  if (!is.null(port)) {
+    if (!is_integerish(port)) {
+      abort("`port` must be a number")
+    }
+  }
 
   req_options(
     req,
@@ -207,9 +212,7 @@ verbose_header <- function(prefix, x, redact = TRUE) {
   }
 }
 
-
 auth_flags <- function(x = "basic") {
-
   constants <- c(
     basic = 1,
     digest = 2,
@@ -218,8 +221,6 @@ auth_flags <- function(x = "basic") {
     digest_ie = 16,
     any = -17
   )
-
-  x <- match.arg(x, names(constants))
-
-  constants[[x]]
+  idx <- arg_match0(x, names(constants), arg_nm = "auth", error_call = caller_env())
+  constants[[]]
 }

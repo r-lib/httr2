@@ -21,15 +21,16 @@ req_proxy(
 \item{username, password}{Login details for proxy, if needed.}
 
 \item{auth}{Type of HTTP authentication to use. Should be one of the
-following: basic, digest, digest_ie, gssnegotiate, ntlm, any.}
+following: \code{basic}, digest, digest_ie, gssnegotiate, ntlm, any.}
 }
 \description{
 Use a proxy for a request
 }
 \examples{
-# See http://www.hidemyass.com/proxy-list for a list of public proxies
-# to test with
-# request("http://had.co.nz") \%>\%
-#   req_proxy("64.251.21.73", 8080) \%>\%
-#   req_perform()
+# Proxy from https://www.proxynova.com/proxy-server-list/
+\dontrun{
+request("http://hadley.nz") \%>\%
+  req_proxy("20.116.130.70", 3128) \%>\%
+  req_perform()
+}
 }
