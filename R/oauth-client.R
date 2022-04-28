@@ -180,11 +180,10 @@ oauth_client_req_auth_header <- function(req, client) {
 #' @export
 #' @rdname oauth_client_req_auth
 oauth_client_req_auth_body <- function(req, client) {
-  params <- compact(list(
+  req_body_form(req,
     client_id = client$id,
     client_secret = unobfuscate(client$secret) # might be NULL
-  ))
-  req_body_form(req, params)
+  )
 }
 
 #' @inheritParams jwt_claim
@@ -195,11 +194,10 @@ oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header
   jwt <- jwt_encode_sig(claim, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
-  params <- list(
+  req_body_form(req,
     client_assertion = jwt,
     client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
   )
-  req_body_form(req, params)
 }
 
 # Helpers -----------------------------------------------------------------
@@ -226,7 +224,7 @@ oauth_flow_check <- function(flow, client,
 
 oauth_client_get_token <- function(client, grant_type, ...) {
   req <- request(client$token_url)
-  req <- req_body_form(req, list2(grant_type = grant_type, ...))
+  req <- req_body_form(req, grant_type = grant_type, ...)
   req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 

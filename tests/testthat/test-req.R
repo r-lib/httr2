@@ -3,7 +3,7 @@ test_that("req has basic print method", {
     req <- request("https://example.com")
     req
     req %>% req_body_raw("Test")
-    req %>% req_body_multipart(list("Test" = 1))
+    req %>% req_body_multipart("Test" = 1)
   })
 })
 

@@ -98,7 +98,7 @@ oauth_flow_device <- function(client,
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
 oauth_flow_device_request <- function(client, auth_url, scope, auth_params) {
   req <- request(auth_url)
-  req <- req_body_form(req, list2(scope = scope, !!!auth_params))
+  req <- req_body_form(req, scope = scope, !!!auth_params)
   req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 

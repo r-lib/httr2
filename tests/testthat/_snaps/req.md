@@ -14,7 +14,7 @@
       POST https://example.com
       Body: a string
     Code
-      req %>% req_body_multipart(list(Test = 1))
+      req %>% req_body_multipart(Test = 1)
     Message
       <httr2_request>
       POST https://example.com

@@ -23,9 +23,11 @@ test_that("can send string", {
   expect_equal(json$data, "test")
 })
 
-test_that("can send named list as json/form/multipart", {
-  data <- list(a = "1", b = "2")
+test_that("can send any type of object as json", {
+  req <- request_test("/post") %>% req_body_json(mtcars)
+  expect_equal(req$body$data, mtcars)
 
+  data <- list(a = "1", b = "2")
   resp <- request_test("/post") %>%
     req_body_json(data) %>%
     req_perform()
@@ -33,14 +35,24 @@ test_that("can send named list as json/form/multipart", {
   expect_equal(json$json, data)
 
   resp <- request_test("/post") %>%
-    req_body_form(data) %>%
+    req_body_json(letters) %>%
+    req_perform()
+  json <- resp_body_json(resp)
+  expect_equal(json$json, as.list(letters))
+})
+
+test_that("can send named elements as form/multipart", {
+  data <- list(a = "1", b = "2")
+
+  resp <- request_test("/post") %>%
+    req_body_form(!!!data) %>%
     req_perform()
   json <- resp_body_json(resp)
   expect_equal(json$headers$`Content-Type`, "application/x-www-form-urlencoded")
   expect_equal(json$form, data)
 
   resp <- request_test("/post") %>%
-    req_body_multipart(data) %>%
+    req_body_multipart(!!!data) %>%
     req_perform()
   json <- resp_body_json(resp)
   expect_match(json$headers$`Content-Type`, "multipart/form-data; boundary=-")
@@ -48,14 +60,24 @@ test_that("can send named list as json/form/multipart", {
 })
 
 test_that("can modify body data", {
-  req1 <- request_test() %>% req_body_form(list(a = 1))
+  req1 <- request_test() %>% req_body_form(a = 1)
   expect_equal(req1$body$data, list(a = 1))
 
-  req2 <- req1 %>% req_body_form(list(b = 2))
+  req2 <- req1 %>% req_body_form(b = 2)
   expect_equal(req2$body$data, list(a = 1, b = 2))
 
-  req3 <- req1 %>% req_body_form(list(a = 3, a = 4))
+  req3 <- req1 %>% req_body_form(a = 3, a = 4)
   expect_equal(req3$body$data, list(a = 3, a = 4))
+})
+
+test_that("req_body_form() and req_body_multipart() accept list() with warning", {
+  req <- request_test()
+  expect_snapshot({
+    req1 <- req %>% req_body_form(list(x = "x"))
+    req2 <- req %>% req_body_multipart(list(x = "x"))
+  })
+  expect_equal(req1$body$data, list(x = "x"))
+  expect_equal(req2$body$data, list(x = "x"))
 })
 
 test_that("can upload file with multipart", {
@@ -65,7 +87,7 @@ test_that("can upload file with multipart", {
   writeLines("this is a test", path)
 
   resp <- request_httpbin("/post") %>%
-    req_body_multipart(list(file = curl::form_file(path))) %>%
+    req_body_multipart(file = curl::form_file(path)) %>%
     req_perform()
   json <- resp_body_json(resp)
   expect_match(json$files$file, "this is a test\n")
