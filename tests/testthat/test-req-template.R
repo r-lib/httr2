@@ -9,6 +9,12 @@ test_that("can set method and path", {
   expect_equal(req$method, "PATCH")
 })
 
+test_that("can set method and append path", {
+  req <- request("http://test.com/x") %>% req_template("PATCH /y", .append = TRUE)
+  expect_equal(req$url, "http://test.com/x/y")
+  expect_equal(req$method, "PATCH")
+})
+
 test_that("can use args or env", {
   x <- "x"
   req <- request("http://test.com") %>% req_template("/:x")
