@@ -3,8 +3,16 @@
 #' @description
 #' Many APIs document their methods with a lightweight template mechanism
 #' that looks like `GET /user/{user}` or `POST /organisation/:org`. This
-#' function makes it easy to copy and paste this snippets and retrieve template
-#' variables either from function arguments or the current environment:
+#' function makes it easy to copy and paste these snippets and retrieve template
+#' variables either from function arguments or the current environment.
+#'
+#' @section Modifying existing path:
+#'
+#' When `.append = FALSE` (the default), any existing path in `req` is replaced
+#' with the one generated from `template`. This approach should be preferred
+#' as it is more transparent. If `req` has a path component you wish to keep,
+#' you can set `.append = TRUE`. But beware of chaining multiple `req_template()`
+#' calls, as this may lead to code that is hard to understand and reason about.
 #'
 #' @inheritParams req_perform
 #' @param template A template string which consists of a optional HTTP method
@@ -12,6 +20,8 @@
 #' @param ... Template variables.
 #' @param .env Environment in which to look for template variables not found
 #'   in `...`. Expert use only.
+#' @param .append If `FALSE` (the default), the templated path wholly replaces
+#'   existing path (if any). `TRUE` it appends the existing path (if any).
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -23,7 +33,13 @@
 #' # or you retrieve from the current environment
 #' n <- 200
 #' httpbin %>% req_template("GET /bytes/{n}")
-req_template <- function(req, template, ..., .env = parent.frame()) {
+#'
+#' # Existing path is preserved if `.append = TRUE`
+#' httpbin2 <- request("http://httpbin.org/cookies")
+#' name <- "id"
+#' value <- "a3fWa"
+#' httpbin2 %>% req_template("GET /set/{name}/{value}", .append = TRUE)
+req_template <- function(req, template, ..., .env = parent.frame(), .append = FALSE) {
   check_request(req)
   check_string(template, "`template`")
 
@@ -46,6 +62,11 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
   }
 
   path <- template_process(template, dots, .env)
+
+  if (.append) (
+    return(req_url_path_append(req, path))
+  )
+
   req_url_path(req, path)
 }
 

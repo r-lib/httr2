@@ -4,7 +4,7 @@
 \alias{req_template}
 \title{Set request method/path from a template}
 \usage{
-req_template(req, template, ..., .env = parent.frame())
+req_template(req, template, ..., .env = parent.frame(), .append = FALSE)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -16,6 +16,9 @@ and a path containing variables labelled like either \verb{:foo} or \code{{foo}}
 
 \item{.env}{Environment in which to look for template variables not found
 in \code{...}. Expert use only.}
+
+\item{.append}{If \code{FALSE} (the default), the templated path wholly replaces
+existing path (if any). \code{TRUE} it appends the existing path (if any).}
 }
 \value{
 A modified HTTP \link{request}.
@@ -23,9 +26,19 @@ A modified HTTP \link{request}.
 \description{
 Many APIs document their methods with a lightweight template mechanism
 that looks like \code{GET /user/{user}} or \verb{POST /organisation/:org}. This
-function makes it easy to copy and paste this snippets and retrieve template
-variables either from function arguments or the current environment:
+function makes it easy to copy and paste these snippets and retrieve template
+variables either from function arguments or the current environment.
 }
+\section{Modifying existing path}{
+
+
+When \code{.append = FALSE} (the default), any existing path in \code{req} is replaced
+with the one generated from \code{template}. This approach should be preferred
+as it is more transparent. If \code{req} has a path component you wish to keep,
+you can set \code{.append = TRUE}. But beware of chaining multiple \code{req_template()}
+calls, as this may lead to code that is hard to understand and reason about.
+}
+
 \examples{
 httpbin <- request("http://httpbin.org")
 
@@ -35,4 +48,10 @@ httpbin \%>\% req_template("GET /bytes/{n}", n = 100)
 # or you retrieve from the current environment
 n <- 200
 httpbin \%>\% req_template("GET /bytes/{n}")
+
+# Existing path is preserved if `.append = TRUE`
+httpbin2 <- request("http://httpbin.org/cookies")
+name <- "id"
+value <- "a3fWa"
+httpbin2 \%>\% req_template("GET /set/{name}/{value}", .append = TRUE)
 }
