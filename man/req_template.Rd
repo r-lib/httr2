@@ -23,8 +23,13 @@ A modified HTTP \link{request}.
 \description{
 Many APIs document their methods with a lightweight template mechanism
 that looks like \code{GET /user/{user}} or \verb{POST /organisation/:org}. This
-function makes it easy to copy and paste this snippets and retrieve template
-variables either from function arguments or the current environment:
+function makes it easy to copy and paste such snippets and retrieve template
+variables either from function arguments or the current environment.
+
+The result is used to set the request path or, if one already exists, to append
+it. This is useful when the existing path needs to be kept, but chaining
+multiple \code{req_template()} calls should probably be avoided, as it might lead
+to code that is hard to understand.
 }
 \examples{
 httpbin <- request("http://httpbin.org")
@@ -35,4 +40,10 @@ httpbin \%>\% req_template("GET /bytes/{n}", n = 100)
 # or you retrieve from the current environment
 n <- 200
 httpbin \%>\% req_template("GET /bytes/{n}")
+
+# Existing path is preserved:
+httpbin_cookies <- request("http://httpbin.org/cookies")
+name <- "id"
+value <- "a3fWa"
+httpbin_cookies \%>\% req_template("GET /set/{name}/{value}")
 }

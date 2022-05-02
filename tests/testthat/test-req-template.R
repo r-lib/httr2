@@ -18,6 +18,11 @@ test_that("can use args or env", {
   expect_equal(req$url, "http://test.com/y")
 })
 
+test_that("will append rather than replace path", {
+  req <- request("http://test.com/x") %>% req_template("PATCH /y")
+  expect_equal(req$url, "http://test.com/x/y")
+})
+
 test_that("generates useful errors", {
   req <- request("http://test.com")
 
