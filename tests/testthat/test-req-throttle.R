@@ -1,4 +1,5 @@
 test_that("throttling causes delay", {
+  skip_on_cran()
   throttle_reset()
 
   req <- request_test() %>% req_throttle(50 / 1)
