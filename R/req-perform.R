@@ -260,7 +260,7 @@ req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   stop_time <- Sys.time() + timeout_sec
 
   stream <- curl::curl(req$url, handle = handle)
-  open(stream, "rb")
+  open(stream, "rbf")
   withr::defer(close(stream))
 
   continue <- TRUE
