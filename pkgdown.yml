@@ -2,9 +2,9 @@ pandoc: 2.14.2
 pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
-  httr2: httr2.html
   wrapping-apis: wrapping-apis.html
-last_built: 2022-05-03T18:44Z
+  httr2: httr2.html
+last_built: 2022-05-03T19:13Z
 urls:
   reference: https://httr2.r-lib.org/reference
   article: https://httr2.r-lib.org/articles
