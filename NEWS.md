@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_template()` now appends the path instead of replacing it (@jchrom, #133)
+
 # httr2 0.2.0
 
 ## New features
@@ -36,8 +38,6 @@
 
 * `response()` now defaults `body` to `raw(0)` for consistency with real
   responses (#100).
-  
-* `req_template()` now appends the path instead of replacing it (@jchrom, #133)
   
 # httr2 0.1.1
 
