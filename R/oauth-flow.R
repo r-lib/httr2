@@ -8,8 +8,8 @@ oauth_flow_fetch <- function(req) {
   # especially since you might be able to give better errors.
   if (resp_content_type(resp) == "application/json") {
     body <- resp_body_json(resp)
-    
-    if(has_name(body, "expires_in")) {
+
+    if (has_name(body, "expires_in")) {
       body$expires_in <- as.numeric(body$expires_in)
     }
   } else {

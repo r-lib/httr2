@@ -28,7 +28,7 @@ oauth_token <- function(
 
   check_string(access_token, "`access_token`")
   check_string(token_type, "`token_type`")
-  if(!is.null(expires_in)) {
+  if (!is.null(expires_in)) {
     check_number(expires_in, "`expires_in`")
   }
   # TODO: should tokens always store their scope?
