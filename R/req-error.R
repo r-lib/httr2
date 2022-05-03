@@ -42,7 +42,7 @@
 #' }
 #' request("http://example.com") %>%
 #'   req_error(body = error_body)
-#' # Learn more in vignette("wrapping-apis")
+#' # Learn more in https://httr2.r-lib.org/articles/wrapping-apis.html
 req_error <- function(req,
                       is_error = NULL,
                       body = NULL) {
