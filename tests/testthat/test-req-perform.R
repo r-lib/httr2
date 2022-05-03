@@ -49,19 +49,6 @@ test_that("can cache requests with etags", {
   expect_condition(resp2 <- req_perform(req), class = "httr2_cache_not_modified")
 })
 
-test_that("req_perform() will throttle requests", {
-  skip_on_cran()
-  throttle_reset()
-
-  req <- request_test() %>% req_throttle(2 / 1)
-  cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
-  expect_null(cnd)
-
-  cnd <- req %>% req_perform() %>% catch_cnd("httr2_sleep")
-  expect_s3_class(cnd, "httr2_sleep")
-  expect_gt(cnd$seconds, 0.002)
-})
-
 test_that("can retrieve last request and response", {
   req <- request_test()
   resp <- req_perform(req)
