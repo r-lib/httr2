@@ -127,7 +127,7 @@ or OAuth failures, <code>multi_req_perform()</code> will make only make 1.</p>
 <span class="r-in"><span class="co"># But it's much faster if you request in parallel</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">multi_req_perform</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.911   0.419   1.328 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1.107   0.488   1.593 </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">reqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/200"</span><span class="op">)</span>,</span>
