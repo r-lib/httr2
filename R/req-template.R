@@ -6,10 +6,9 @@
 #' function makes it easy to copy and paste such snippets and retrieve template
 #' variables either from function arguments or the current environment.
 #'
-#' The result is used to set the request path or, if one already exists, to append
-#' it. This is useful when the existing path needs to be kept, but chaining
-#' multiple `req_template()` calls should probably be avoided, as it might lead
-#' to code that is hard to understand.
+#' `req_template()` will append to the existing path so that you can set a
+#' base url in the initial [request()]. This means that you'll generally want
+#' to avoid `req_template()` calls to the same request.
 #'
 #' @inheritParams req_perform
 #' @param template A template string which consists of a optional HTTP method
