@@ -53,7 +53,7 @@ error_body <- function(resp) {
 }
 request("http://example.com") \%>\%
   req_error(body = error_body)
-# Learn more in vignette("wrapping-apis")
+# Learn more in https://httr2.r-lib.org/articles/wrapping-apis.html
 }
 \seealso{
 \code{\link[=req_retry]{req_retry()}} to control when errors are automatically retried.
