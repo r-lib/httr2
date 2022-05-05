@@ -15,6 +15,7 @@ test_that("automatically adds /", {
   expect_equal(req_url_path_append(req1, "index.html")$url, "http://example.com/index.html")
   expect_equal(req_url_path_append(req1, "/index.html")$url, "http://example.com/index.html")
   expect_equal(req_url_path_append(req2, "index.html")$url, "http://example.com/index.html")
+  expect_equal(req_url_path_append(req2, "/index.html")$url, "http://example.com/index.html")
 })
 
 test_that("can append multiple components", {
