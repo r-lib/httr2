@@ -7,7 +7,7 @@ request_test <- function(template = "/get", ...) {
   }
 
   req <- request(the$test_app$url())
-  req <- req_template(req, sub("^/", "", template), ..., .env = caller_env())
+  req <- req_template(req, template, ..., .env = caller_env())
   req
 }
 
