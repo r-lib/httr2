@@ -69,10 +69,11 @@ req_url_path_append <- function(req, ...) {
 
   url <- url_parse(req$url)
 
+  # Ensure we don't add duplicate /s
   if (!grepl("^/", path)) {
     path <- paste0("/", path)
   }
-
   url$path <- paste0(sub("/$", "", url$path), path)
+
   req_url(req, url_build(url))
 }
