@@ -8,7 +8,7 @@
 #'
 #' `req_template()` will append to the existing path so that you can set a
 #' base url in the initial [request()]. This means that you'll generally want
-#' to avoid `req_template()` calls to the same request.
+#' to avoid multiple `req_template()` calls on the same request.
 #'
 #' @inheritParams req_perform
 #' @param template A template string which consists of a optional HTTP method
