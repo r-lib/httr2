@@ -28,7 +28,7 @@ variables either from function arguments or the current environment.
 
 \code{req_template()} will append to the existing path so that you can set a
 base url in the initial \code{\link[=request]{request()}}. This means that you'll generally want
-to avoid \code{req_template()} calls to the same request.
+to avoid multiple \code{req_template()} calls on the same request.
 }
 \examples{
 httpbin <- request("http://httpbin.org")
