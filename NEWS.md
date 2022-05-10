@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* "Wrapping APIs" is now an article, not a vignette.
+
 * `req_template()` now appends the path instead of replacing it (@jchrom, #133)
 
 # httr2 0.2.0
