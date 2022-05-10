@@ -3,8 +3,12 @@
 #' @description
 #' Many APIs document their methods with a lightweight template mechanism
 #' that looks like `GET /user/{user}` or `POST /organisation/:org`. This
-#' function makes it easy to copy and paste this snippets and retrieve template
-#' variables either from function arguments or the current environment:
+#' function makes it easy to copy and paste such snippets and retrieve template
+#' variables either from function arguments or the current environment.
+#'
+#' `req_template()` will append to the existing path so that you can set a
+#' base url in the initial [request()]. This means that you'll generally want
+#' to avoid multiple `req_template()` calls on the same request.
 #'
 #' @inheritParams req_perform
 #' @param template A template string which consists of a optional HTTP method
@@ -23,6 +27,12 @@
 #' # or you retrieve from the current environment
 #' n <- 200
 #' httpbin %>% req_template("GET /bytes/{n}")
+#'
+#' # Existing path is preserved:
+#' httpbin_cookies <- request("http://httpbin.org/cookies")
+#' name <- "id"
+#' value <- "a3fWa"
+#' httpbin_cookies %>% req_template("GET /set/{name}/{value}")
 req_template <- function(req, template, ..., .env = parent.frame()) {
   check_request(req)
   check_string(template, "`template`")
@@ -46,7 +56,7 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
   }
 
   path <- template_process(template, dots, .env)
-  req_url_path(req, path)
+  req_url_path_append(req, path)
 }
 
 template_process <- function(template, dots = list(), env = parent.frame()) {
