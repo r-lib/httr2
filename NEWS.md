@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_proxy()` now uses the appropriate authentication option (@jl5000).
+
 # httr2 0.2.1
 
 * "Wrapping APIs" is now an article, not a vignette.
