@@ -53,3 +53,9 @@ test_that("req_proxy gives helpful errors", {
   })
 
 })
+
+test_that("auth_flags gives correct constant", {
+  expect_equal(auth_flags("digest"), 2)
+  expect_equal(auth_flags("ntlm"), 8)
+  expect_equal(auth_flags("any"), -17)
+})

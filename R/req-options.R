@@ -222,5 +222,5 @@ auth_flags <- function(x = "basic") {
     any = -17
   )
   idx <- arg_match0(x, names(constants), arg_nm = "auth", error_call = caller_env())
-  constants[[]]
+  constants[[idx]]
 }
