@@ -110,7 +110,7 @@ req %>%
 
 Once you've made a few successful requests, it's worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.
 
-For faker, I spent a little with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
+For faker, I spent a little time with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
 
 -   Every URL is of the form `https://fakerapi.it/api/v1/{resource}`, and data is passed to the resource with query parameters.
     All parameters start with `_`.
