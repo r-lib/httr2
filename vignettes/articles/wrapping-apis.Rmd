@@ -758,7 +758,7 @@ You've almost certainly used this before on the web; it's used in most cases whe
 [^2]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
 
-OAuth is a broad framework that's has many many many different variants which makes it hard to provide generalisable advice.
+OAuth is a broad framework that has many many many different variants which makes it hard to provide generalisable advice.
 The following advice draws on my experience working with a number of OAuth using APIs, but don't be surprised if you need to do something slightly different for the API you're working with.
 
 ### Clients
