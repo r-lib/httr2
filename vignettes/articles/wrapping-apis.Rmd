@@ -865,7 +865,7 @@ request("https://api.github.com/user") %>%
 ```
 
 This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token.
-httr2 will automatically refresh the token if its expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
+httr2 will automatically refresh the token if it's expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
 
 ### Caching
 
