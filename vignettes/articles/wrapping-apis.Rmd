@@ -771,7 +771,7 @@ The process varies from API to API, but at the end of it you'll get a client id 
 
 If the API provides a way to authenticate your app without the client secret, you should leave it out of your package.
 But in most cases, you'll need to include the secret in the package.
-You can use `obfuscate()` to hide the secret; this is not bulletproof[^3], but in most cases it'll be easier create a new client than try and steal yours.
+You can use `obfuscate()` to hide the secret; this is not bulletproof[^3], but in most cases it'll be easier to create a new client than try and steal yours.
 Additionally, it's unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it.
 
 [^3]: It uses `secret_encrypt()` with a special encryption key that's bundled with httr2.
