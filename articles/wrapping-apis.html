@@ -116,8 +116,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Nemo odio est est."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Commodi excepturi dolorem voluptatem ea asperiores ut. Temporibus ut sit velit architecto qui saepe veritatis n"| __truncated__</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Qui magni ut quam ut qui et."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Et sed omnis iure. Et doloremque est et voluptas. Nemo aliquid inventore fugit et omnis molestias deserunt maxime."</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></code></pre></div>
 <div class="section level3">
 <h3 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a>
@@ -152,7 +152,7 @@
 <span class="co">#&gt; <span style="font-weight: bold;">Vary</span>: Accept-Encoding</span>
 <span class="co">#&gt; <span style="font-weight: bold;">X-Powered-By</span>: PHP/7.3.16</span>
 <span class="co">#&gt; <span style="font-weight: bold;">Cache-Control</span>: no-cache, private</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Fri, 20 May 2022 00:32:41 GMT</span>
+<span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 31 May 2022 14:02:55 GMT</span>
 <span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Origin</span>: *</span>
 <span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Methods</span>: GET</span>
 <span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Credentials</span>: true</span>
@@ -179,7 +179,7 @@
 <h3 id="core-request-function">Core request function<a class="anchor" aria-label="anchor" href="#core-request-function"></a>
 </h3>
 <p>Once you’ve made a few successful requests, it’s worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.</p>
-<p>For faker, I spent a little with the <a href="https://fakerapi.it/en#basic-usage" class="external-link">documentation</a> noting some commonalities:</p>
+<p>For faker, I spent a little time with the <a href="https://fakerapi.it/en#basic-usage" class="external-link">documentation</a> noting some commonalities:</p>
 <ul>
 <li><p>Every URL is of the form <code>https://fakerapi.it/api/v1/{resource}</code>, and data is passed to the resource with query parameters. All parameters start with <code>_</code>.</p></li>
 <li><p>Every resource has three common query parameters: <code>_locale</code>, <code>_quantity</code>, and <code>_seed</code>.</p></li>
@@ -211,8 +211,8 @@
 <span class="co">#&gt;  $ total : int 1</span>
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 3</span>
-<span class="co">#&gt;   .. ..$ title      : chr "Aut facere sint nihil."</span>
-<span class="co">#&gt;   .. ..$ description: chr "Maiores et rerum consequatur ut. Sit aliquid sed natus."</span>
+<span class="co">#&gt;   .. ..$ title      : chr "Aut sequi dolorem eos eaque."</span>
+<span class="co">#&gt;   .. ..$ description: chr "Voluptas dolor hic cumque unde et non. Sed commodi laboriosam harum eos iusto. Nihil aut et aut. Qui cupiditate"| __truncated__</span>
 <span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -248,24 +248,24 @@
 <span class="co">#&gt;  $ data  :List of 1</span>
 <span class="co">#&gt;   ..$ :List of 10</span>
 <span class="co">#&gt;   .. ..$ id       : int 1</span>
-<span class="co">#&gt;   .. ..$ firstname: chr "Heber"</span>
-<span class="co">#&gt;   .. ..$ lastname : chr "Beahan"</span>
-<span class="co">#&gt;   .. ..$ email    : chr "corine46@yahoo.com"</span>
-<span class="co">#&gt;   .. ..$ phone    : chr "+9057104944595"</span>
-<span class="co">#&gt;   .. ..$ birthday : chr "1936-10-17"</span>
+<span class="co">#&gt;   .. ..$ firstname: chr "Edison"</span>
+<span class="co">#&gt;   .. ..$ lastname : chr "Wisoky"</span>
+<span class="co">#&gt;   .. ..$ email    : chr "wilber.ebert@daugherty.net"</span>
+<span class="co">#&gt;   .. ..$ phone    : chr "+7894477622248"</span>
+<span class="co">#&gt;   .. ..$ birthday : chr "2011-03-01"</span>
 <span class="co">#&gt;   .. ..$ gender   : chr "male"</span>
 <span class="co">#&gt;   .. ..$ address  :List of 10</span>
 <span class="co">#&gt;   .. .. ..$ id            : int 0</span>
-<span class="co">#&gt;   .. .. ..$ street        : chr "77874 Schmeler Forge Suite 155"</span>
-<span class="co">#&gt;   .. .. ..$ streetName    : chr "Mayer Trail"</span>
-<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "6920"</span>
-<span class="co">#&gt;   .. .. ..$ city          : chr "West Edside"</span>
-<span class="co">#&gt;   .. .. ..$ zipcode       : chr "88236"</span>
-<span class="co">#&gt;   .. .. ..$ country       : chr "Sao Tome and Principe"</span>
-<span class="co">#&gt;   .. .. ..$ county_code   : chr "GF"</span>
-<span class="co">#&gt;   .. .. ..$ latitude      : num 87.3</span>
-<span class="co">#&gt;   .. .. ..$ longitude     : num 97.2</span>
-<span class="co">#&gt;   .. ..$ website  : chr "http://nienow.info"</span>
+<span class="co">#&gt;   .. .. ..$ street        : chr "6050 Reynolds Cove"</span>
+<span class="co">#&gt;   .. .. ..$ streetName    : chr "Vicente Brook"</span>
+<span class="co">#&gt;   .. .. ..$ buildingNumber: chr "93282"</span>
+<span class="co">#&gt;   .. .. ..$ city          : chr "New Zita"</span>
+<span class="co">#&gt;   .. .. ..$ zipcode       : chr "93552"</span>
+<span class="co">#&gt;   .. .. ..$ country       : chr "Brazil"</span>
+<span class="co">#&gt;   .. .. ..$ county_code   : chr "MW"</span>
+<span class="co">#&gt;   .. .. ..$ latitude      : num -62.8</span>
+<span class="co">#&gt;   .. .. ..$ longitude     : num 23.7</span>
+<span class="co">#&gt;   .. ..$ website  : chr "http://kunze.com"</span>
 <span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and returning the result as a tibble. I did a quick and dirty conversion using purrr; depending on your needs you could use base R code or <code>tidyr::hoist()</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -307,13 +307,13 @@
 <span class="op">}</span>
 <span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span>
-<span class="co">#&gt;   firstname lastname  email                          gender</span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Donato    Ortiz     crooks.alba@bechtelar.com      male  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Sheridan  Little    bethany.frami@becker.org       male  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Abner     Prohaska  cummerata.bertrand@smitham.biz male  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Donny     Simonis   gmcdermott@gmail.com           male  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Wilburn   Schroeder amber.morissette@okuneva.com   male</span></code></pre></div>
+<span class="co">#&gt;   firstname lastname   email                       gender</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Stefan    Boehm      rmccullough@hotmail.com     male  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Randall   Mohr       alycia.mckenzie@hotmail.com male  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Nathaniel Keeling    zhartmann@hotmail.com       male  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Favian    Konopelski ritchie.luther@herman.net   male  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Clint     Upton      whermiston@yahoo.com        male</span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll leave that up to you.</p>
 </div>
 </div>
@@ -332,7 +332,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">key</span>
-<span class="co">#&gt; [1] "M6f2zwZt1PbQRhgMxhB3SA"</span></code></pre></div>
+<span class="co">#&gt; [1] "RkGjLCB93wlKxx5G5GkcqQ"</span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R’s RNG settings, and there’s no way to make it reproducible.)</p>
 </li>
 <li>
@@ -340,7 +340,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "fs2zUDM72cH4Z5i12dr-Sw8WXr1pCIWolu1nVY5P8fgks-eAlVvF4ZeW_bDntzwJDQ"</span></code></pre></div>
+<span class="co">#&gt; [1] "Psdmjn9d2aaTVpWzp5FhMIoHLG4JIhgSs2oMXGmkbki6bT2MZh80wz7x2vpbz10B3A"</span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the secret using <code><a href="../reference/secrets.html">secret_decrypt()</a></code>:</p>
@@ -360,7 +360,7 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="va">secret_scrambled</span>
-<span class="co">#&gt; [1] "39yDsJQqBHuqrlhHk_J4GRMqUDjflTAIyVBSuTJg_byTadG-bS-2WJHFm7hsHpQlbw"</span>
+<span class="co">#&gt; [1] "I8F0Iukssm12CXeFQtF9BdsuyptZ_68OwBRMV9MKMMme7e6kUn3k5Wief4XxPJ5Zzw"</span>
 <span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span>
 <span class="co">#&gt; [1] "secret I need to work with an API"</span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it. This requires two steps:</p>
@@ -701,13 +701,13 @@
 <h2 id="oauth">OAuth<a class="anchor" aria-label="anchor" href="#oauth"></a>
 </h2>
 <p>If the API provides access to a website where the user already has an account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it’s likely to use OAuth to allow you to authorise on behalf of the user. OAuth<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Here I’ll only talk about OAuth 2.0 which is the only version in common use today. OAuth 1.0 is largely only of historical interest.&lt;/p&gt;"><sup>2</sup></a> is an authorisation framework that’s designed so that you don’t have to share your username and password with an app; instead the app asks for permission to use your account. You’ve almost certainly used this before on the web; it’s used in most cases where one website wants to use another website on your behalf.</p>
-<p>OAuth is a broad framework that’s has many many many different variants which makes it hard to provide generalisable advice. The following advice draws on my experience working with a number of OAuth using APIs, but don’t be surprised if you need to do something slightly different for the API you’re working with.</p>
+<p>OAuth is a broad framework that has many many many different variants which makes it hard to provide generalisable advice. The following advice draws on my experience working with a number of OAuth using APIs, but don’t be surprised if you need to do something slightly different for the API you’re working with.</p>
 <div class="section level3">
 <h3 id="clients">Clients<a class="anchor" aria-label="anchor" href="#clients"></a>
 </h3>
 <p>The first step in working with any OAuth API is to create a client. This involves you registering for a developer account on the API’s website and creating a new OAuth app. The process varies from API to API, but at the end of it you’ll get a client id and in most cases a client secret.</p>
 <p>(You’ll definitely need this for testing your package, and you’ll probably also baked it into your package for the convenience of your users. Bundling the app is user friendly, but not always possible, particularly if rate limits are enforced on a per-app rather than per-user basis. You should always provide some way for the user to provide their own app.)</p>
-<p>If the API provides a way to authenticate your app without the client secret, you should leave it out of your package. But in most cases, you’ll need to include the secret in the package. You can use <code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; this is not bulletproof<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;It uses &lt;code&gt;&lt;a href="../reference/secrets.html"&gt;secret_encrypt()&lt;/a&gt;&lt;/code&gt; with a special encryption key that’s bundled with httr2.&lt;/p&gt;'><sup>3</sup></a>, but in most cases it’ll be easier create a new client than try and steal yours. Additionally, it’s unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there’s not much harm they can do with it.</p>
+<p>If the API provides a way to authenticate your app without the client secret, you should leave it out of your package. But in most cases, you’ll need to include the secret in the package. You can use <code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; this is not bulletproof<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;It uses &lt;code&gt;&lt;a href="../reference/secrets.html"&gt;secret_encrypt()&lt;/a&gt;&lt;/code&gt; with a special encryption key that’s bundled with httr2.&lt;/p&gt;'><sup>3</sup></a>, but in most cases it’ll be easier to create a new client than try and steal yours. Additionally, it’s unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there’s not much harm they can do with it.</p>
 <p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></code></pre></div>
@@ -759,7 +759,7 @@
   <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token. httr2 will automatically refresh the token if its expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there’s an <code>invalid_token</code> error in the <code>WWW-authenticate</code> header.</p>
+<p>This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token. httr2 will automatically refresh the token if it’s expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there’s an <code>invalid_token</code> error in the <code>WWW-authenticate</code> header.</p>
 </div>
 <div class="section level3">
 <h3 id="caching">Caching<a class="anchor" aria-label="anchor" href="#caching"></a>
