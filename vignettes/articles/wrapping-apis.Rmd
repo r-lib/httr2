@@ -552,7 +552,7 @@ token <- secret_decrypt("Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3b
 ```
 
 If you want to run this vignette yourself, you'll need to create a new token in your [GitHub settings](https://github.com/settings/tokens); just make sure it includes the "gist" scope.
-It's also a good idea to give every token a descriptive name, that reminds you of its motivating use case.
+It's also a good idea to give every token a descriptive name, that reminds you of its motivating use case, and of where to update it when you have to re-generate it because it expired.
 
 To authenticate a request with the token, we need to put it in the `Authorization` header with a ["token" prefix](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication):
 
