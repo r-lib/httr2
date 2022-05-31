@@ -110,7 +110,7 @@ req %>%
 
 Once you've made a few successful requests, it's worth seeing if you can figure out the general pattern so you can wrap it up into a function that will become the core of your package.
 
-For faker, I spent a little with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
+For faker, I spent a little time with the [documentation](https://fakerapi.it/en#basic-usage) noting some commonalities:
 
 -   Every URL is of the form `https://fakerapi.it/api/v1/{resource}`, and data is passed to the resource with query parameters.
     All parameters start with `_`.
@@ -758,7 +758,7 @@ You've almost certainly used this before on the web; it's used in most cases whe
 [^2]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
 
-OAuth is a broad framework that's has many many many different variants which makes it hard to provide generalisable advice.
+OAuth is a broad framework that has many many many different variants which makes it hard to provide generalisable advice.
 The following advice draws on my experience working with a number of OAuth using APIs, but don't be surprised if you need to do something slightly different for the API you're working with.
 
 ### Clients
@@ -771,7 +771,7 @@ The process varies from API to API, but at the end of it you'll get a client id 
 
 If the API provides a way to authenticate your app without the client secret, you should leave it out of your package.
 But in most cases, you'll need to include the secret in the package.
-You can use `obfuscate()` to hide the secret; this is not bulletproof[^3], but in most cases it'll be easier create a new client than try and steal yours.
+You can use `obfuscate()` to hide the secret; this is not bulletproof[^3], but in most cases it'll be easier to create a new client than try and steal yours.
 Additionally, it's unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it.
 
 [^3]: It uses `secret_encrypt()` with a special encryption key that's bundled with httr2.
@@ -865,7 +865,7 @@ request("https://api.github.com/user") %>%
 ```
 
 This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token.
-httr2 will automatically refresh the token if its expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
+httr2 will automatically refresh the token if it's expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
 
 ### Caching
 
