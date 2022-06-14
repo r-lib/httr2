@@ -55,3 +55,8 @@ test_that("query components must be length 1", {
     req %>% req_url_query(a = letters)
   })
 })
+
+test_that("can escape a query to not automatically input ascii codes",{
+  req <- request("http://example.com/")
+  expect_equal(req_url_query(req, c = I("2,3"))$url, "http://example.com/?c=2,3")
+})
