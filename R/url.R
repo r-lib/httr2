@@ -182,7 +182,7 @@ query_build <- function(x) {
   x[is_double] <- map_chr(x[is_double], format, scientific = FALSE)
 
   names <- curl::curl_escape(names(x))
-  values <- map_chr(x, curl::curl_escape)
+  values <- map_chr(x, encode)
 
   paste0(names, "=", values, collapse = "&")
 }

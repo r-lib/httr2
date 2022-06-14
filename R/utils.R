@@ -171,3 +171,9 @@ local_write_lines <- function(..., .env = caller_env()) {
   writeLines(c(...), path)
   path
 }
+
+## taken right from: https://github.com/r-lib/httr/
+encode <- function(x) {
+  if (inherits(x, "AsIs")) return(x)
+  curl::curl_escape(x)
+}
