@@ -10,7 +10,8 @@
 #' @param url New URL; completely replaces existing.
 #' @param ... For `req_url_query()`: Name-value pairs that provide query
 #'   parameters. Each value must be either length-1 atomic vector or `NULL`
-#'   (which is automatically dropped).
+#'   (which is automatically dropped). Query values can be wrapped in `I`
+#'   to escape ascii codes.
 #'
 #'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
 #'   components that will be combined with `/`.

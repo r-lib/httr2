@@ -19,7 +19,7 @@ req_body_form(.req, ...)
 req_body_multipart(.req, ...)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req, .req}{A \link{request}.}
 
 \item{body}{A literal string or raw vector to send as body.}
 
@@ -45,8 +45,6 @@ strings or objects produced by \code{\link[curl:multipart]{curl::form_file()}}/\
 
 For \code{req_body_json()}, additional arguments passed on to
 \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
-
-\item{.req}{A \link{request}.}
 }
 \value{
 A modified HTTP \link{request}.

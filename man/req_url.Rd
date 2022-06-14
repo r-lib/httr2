@@ -16,15 +16,14 @@ req_url_path(req, ...)
 req_url_path_append(req, ...)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req, .req}{A \link{request}.}
 
 \item{url}{New URL; completely replaces existing.}
 
-\item{.req}{A \link{request}.}
-
 \item{...}{For \code{req_url_query()}: Name-value pairs that provide query
 parameters. Each value must be either length-1 atomic vector or \code{NULL}
-(which is automatically dropped).
+(which is automatically dropped). Query values can be wrapped in \code{I}
+to escape ascii codes.
 
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}
