@@ -182,7 +182,15 @@ query_build <- function(x) {
   x[is_double] <- map_chr(x[is_double], format, scientific = FALSE)
 
   names <- curl::curl_escape(names(x))
-  values <- map_chr(x, encode)
+  values <- map_chr(x, url_escape)
 
   paste0(names, "=", values, collapse = "&")
+}
+
+url_escape <- function(x) {
+  if (inherits(x, "AsIs")) {
+    x
+  } else {
+    curl::curl_escape(x)
+  }
 }

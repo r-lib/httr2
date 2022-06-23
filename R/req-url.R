@@ -9,9 +9,9 @@
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
 #' @param ... For `req_url_query()`: Name-value pairs that provide query
-#'   parameters. Each value must be either length-1 atomic vector or `NULL`
-#'   (which is automatically dropped). Query values can be wrapped in `I`
-#'   to escape ascii codes.
+#'   parameters. Each value must be either a length-1 atomic vector
+#'   (which is automatically escaped) or `NULL` (which is silently dropped).
+#'   If your want to opt out of escaping, wrap strings in `I()`.
 #'
 #'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
 #'   components that will be combined with `/`.
