@@ -48,6 +48,11 @@ test_that("can modify query params iteratively", {
   expect_equal(req_url_query(req, b = NULL)$url, "http://example.com/?a=1")
 })
 
+test_that("can opt-out of query escaping", {
+  req <- request("http://example.com/")
+  expect_equal(req_url_query(req, a = I(","))$url, "http://example.com/?a=,")
+})
+
 test_that("query components must be length 1", {
   expect_snapshot(error = TRUE, {
     req <- request("http://example.com/")

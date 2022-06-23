@@ -52,3 +52,7 @@ test_that("empty queries become NULL", {
 test_that("doubles never use scientific notation", {
   expect_equal(query_build(list(x = 1e9)), "x=1000000000")
 })
+
+test_that("can opt out of escaping", {
+  expect_equal(query_build(list(x = I(","))), "x=,")
+})

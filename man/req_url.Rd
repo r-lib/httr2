@@ -21,8 +21,9 @@ req_url_path_append(req, ...)
 \item{url}{New URL; completely replaces existing.}
 
 \item{...}{For \code{req_url_query()}: Name-value pairs that provide query
-parameters. Each value must be either length-1 atomic vector or \code{NULL}
-(which is automatically dropped).
+parameters. Each value must be either a length-1 atomic vector
+(which is automatically escaped) or \code{NULL} (which is silently dropped).
+If you want to opt out of escaping, wrap strings in \code{I()}.
 
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}

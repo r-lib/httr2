@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_url_query()` can now opt out of escaping with `I()` (@boshek, #152).
+
 * `req_proxy()` now uses the appropriate authentication option (@jl5000).
 
 # httr2 0.2.1
