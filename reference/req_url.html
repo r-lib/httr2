@@ -89,22 +89,27 @@ req_url_path_append() adds to the path
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>req</dt>
+    <dl><dt>req, .req</dt>
 <dd><p>A <a href="request.html">request</a>.</p></dd>
+
+
 <dt>url</dt>
 <dd><p>New URL; completely replaces existing.</p></dd>
-<dt>.req</dt>
-<dd><p>A <a href="request.html">request</a>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>For <code>req_url_query()</code>: Name-value pairs that provide query
 parameters. Each value must be either length-1 atomic vector or <code>NULL</code>
 (which is automatically dropped).</p>
 <p>For <code>req_url_path()</code> and <code>req_url_path_append()</code>: A sequence of path
 components that will be combined with <code>/</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A modified HTTP <a href="request.html">request</a>.</p>
+    
+
+<p>A modified HTTP <a href="request.html">request</a>.</p>
     </div>
 
     <div class="section level2">
@@ -140,7 +145,7 @@ components that will be combined with <code>/</code>.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

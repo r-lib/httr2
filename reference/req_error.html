@@ -76,19 +76,26 @@ be useful to expose to the user.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>req</dt>
 <dd><p>A <a href="request.html">request</a>.</p></dd>
+
+
 <dt>is_error</dt>
 <dd><p>A predicate function that takes a single argument (the
 response) and returns <code>TRUE</code> or <code>FALSE</code> indicating whether or not an
 R error should signalled.</p></dd>
+
+
 <dt>body</dt>
 <dd><p>A callback function that takes a single argument (the response)
 and returns a character vector of additional information to include in the
 body of the error. This vector is passed along to the <code>message</code> argument
 of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code> so you can use any formatting that it supports.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A modified HTTP <a href="request.html">request</a>.</p>
+    
+
+<p>A modified HTTP <a href="request.html">request</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -157,7 +164,7 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

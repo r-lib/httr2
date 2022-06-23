@@ -87,8 +87,12 @@ the API's website.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>id</dt>
 <dd><p>Client identifier.</p></dd>
+
+
 <dt>token_url</dt>
 <dd><p>Url to retrieve an access token.</p></dd>
+
+
 <dt>secret</dt>
 <dd><p>Client secret. For most apps, this is technically confidential
 so in principle you should avoid storing it in source code. However, many
@@ -96,10 +100,14 @@ APIs require it in order to provide a user friendly authentication
 experience, and the risks of including it are usually low. To make things
 a little safer, I recommend using <code><a href="obfuscate.html">obfuscate()</a></code> when recorded the client
 secret in public code.</p></dd>
+
+
 <dt>key</dt>
 <dd><p>Client key. As an alternative to using a <code>secret</code>, you can
 instead supply a confidential private key. This should never be included
 in a package.</p></dd>
+
+
 <dt>auth</dt>
 <dd><p>Authentication mechanism used by the client to prove itself to
 the API. Can be one of three built-in methods ("body", "header", or "jwt"),
@@ -111,18 +119,25 @@ the contents of <code>auth_params</code>.</p>
 will generate a JWT, and include it in a <code>client_assertion</code> field in the
 body.</p>
 <p>See <code><a href="oauth_client_req_auth.html">oauth_client_req_auth()</a></code> for more details.</p></dd>
+
+
 <dt>auth_params</dt>
 <dd><p>Additional parameters passed to the function specified
 by <code>auth</code>.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>Optional name for the client. Used when generating cache
 directory. If <code>NULL</code>, generated from hash of <code>client_id</code>. If you're
 defining a package for use in a package, I recommend that you use
 the package name.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An OAuth client: An S3 list with class <code>httr2_oauth_client</code>.</p>
+    
+
+<p>An OAuth client: An S3 list with class <code>httr2_oauth_client</code>.</p>
     </div>
 
     <div class="section level2">
@@ -147,7 +162,7 @@ the package name.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

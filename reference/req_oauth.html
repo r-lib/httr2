@@ -76,10 +76,16 @@ OAuth flow.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>req</dt>
 <dd><p>A <a href="request.html">request</a>.</p></dd>
+
+
 <dt>flow</dt>
 <dd><p>Function used to generate the access token.</p></dd>
+
+
 <dt>flow_params</dt>
 <dd><p>List of parameters to call <code>flow</code> with.</p></dd>
+
+
 <dt>cache</dt>
 <dd><p>An object that controls how the token is cached. This should
 be a list containing three functions:</p><ul><li><p><code><a href="https://rdrr.io/r/base/get.html" class="external-link">get()</a></code> retrieves the token from the cache, returning <code>NULL</code> if not
@@ -87,10 +93,13 @@ cached yet.</p></li>
 <li><p><code>set()</code> saves the token to the cache.</p></li>
 <li><p><code>clear()</code> removes the token from the cache</p></li>
 </ul></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An <a href="oauth_token.html">oauth_token</a>.</p>
+    
+
+<p>An <a href="oauth_token.html">oauth_token</a>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -104,7 +113,7 @@ cached yet.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

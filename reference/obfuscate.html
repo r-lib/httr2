@@ -99,10 +99,13 @@ and <code><a href="req_body.html">req_body_multipart()</a></code>.</p></li>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>A string to obfuscate, or mark as obfuscated.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>obfuscate()</code> prints the <code>obfuscated()</code> call to include in your
+    
+
+<p><code>obfuscate()</code> prints the <code>obfuscated()</code> call to include in your
 code. <code>obfuscated()</code> returns an S3 class marking the string as obfuscated
 so it can be unobfuscated when needed.</p>
     </div>
@@ -110,13 +113,13 @@ so it can be unobfuscated when needed.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("ga0JSsY-lm733b11M4XuZmZEA1urFTFJBLQOzQ")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("UHYWGgc_XRM7a6PqNH5ebRdiVvAJusR4oTn7dg")</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Every time you obfuscate you'll get a different value because it</span></span>
 <span class="r-in"><span class="co"># includes 16 bytes of random data which protects against certain types of</span></span>
 <span class="r-in"><span class="co"># brute force attack</span></span>
 <span class="r-in"><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("Ua_b7SuK8Y92NVi0Y516J3ZkvckLFC4uoFLetg")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("Xui3aaxxObPVyX-cjb8ytKCaq6VwvJqCy3494Q")</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -130,7 +133,7 @@ so it can be unobfuscated when needed.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

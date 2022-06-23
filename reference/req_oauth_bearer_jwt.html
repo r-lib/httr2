@@ -81,28 +81,43 @@ The token is cached in memory.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>req</dt>
 <dd><p>A <a href="request.html">request</a>.</p></dd>
+
+
 <dt>client</dt>
 <dd><p>An <code><a href="oauth_client.html">oauth_client()</a></code>.</p></dd>
+
+
 <dt>claim</dt>
 <dd><p>A list of claims. If all elements of the claim set are static
 apart from <code>iat</code>, <code>nbf</code>, <code>exp</code>, or <code>jti</code>, provide a list and
 <code><a href="jwt_claim.html">jwt_claim()</a></code> will automatically fill in the dynamic components.
 If other components need to vary, you can instead provide a zero-argument
 callback function which should call <code><a href="jwt_claim.html">jwt_claim()</a></code>.</p></dd>
+
+
 <dt>signature</dt>
 <dd><p>Function use to sign <code>claim</code>, e.g. <code><a href="jwt_claim.html">jwt_encode_sig()</a></code>.</p></dd>
+
+
 <dt>signature_params</dt>
 <dd><p>Additional arguments passed to <code>signature</code>, e.g.
 <code>size</code>, <code>header</code>.</p></dd>
+
+
 <dt>scope</dt>
 <dd><p>Scopes to be requested from the resource owner.</p></dd>
+
+
 <dt>token_params</dt>
 <dd><p>List containing additional parameters passed to the
 <code>token_url</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A modified HTTP <a href="request.html">request</a>.</p>
+    
+
+<p>A modified HTTP <a href="request.html">request</a>.</p>
     </div>
 
     <div class="section level2">
@@ -130,7 +145,7 @@ callback function which should call <code><a href="jwt_claim.html">jwt_claim()</
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>
