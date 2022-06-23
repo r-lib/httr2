@@ -23,7 +23,7 @@ req_url_path_append(req, ...)
 \item{...}{For \code{req_url_query()}: Name-value pairs that provide query
 parameters. Each value must be either a length-1 atomic vector
 (which is automatically escaped) or \code{NULL} (which is silently dropped).
-If your want to opt out of escaping, wrap strings in \code{I()}.
+If you want to opt out of escaping, wrap strings in \code{I()}.
 
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}

@@ -11,7 +11,7 @@
 #' @param ... For `req_url_query()`: Name-value pairs that provide query
 #'   parameters. Each value must be either a length-1 atomic vector
 #'   (which is automatically escaped) or `NULL` (which is silently dropped).
-#'   If your want to opt out of escaping, wrap strings in `I()`.
+#'   If you want to opt out of escaping, wrap strings in `I()`.
 #'
 #'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
 #'   components that will be combined with `/`.
