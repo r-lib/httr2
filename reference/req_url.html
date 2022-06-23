@@ -99,8 +99,9 @@ req_url_path_append() adds to the path
 
 <dt>...</dt>
 <dd><p>For <code>req_url_query()</code>: Name-value pairs that provide query
-parameters. Each value must be either length-1 atomic vector or <code>NULL</code>
-(which is automatically dropped).</p>
+parameters. Each value must be either a length-1 atomic vector
+(which is automatically escaped) or <code>NULL</code> (which is silently dropped).
+If you want to opt out of escaping, wrap strings in <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code>.</p>
 <p>For <code>req_url_path()</code> and <code>req_url_path_append()</code>: A sequence of path
 components that will be combined with <code>/</code>.</p></dd>
 
