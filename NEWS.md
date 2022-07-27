@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `curl_translate()` can now handle curl copied from Chrome developer tools
+  (@mgirlich, #161).
+
 * `req_url_query()` can now opt out of escaping with `I()` (@boshek, #152).
 
 * `req_proxy()` now uses the appropriate authentication option (@jl5000).

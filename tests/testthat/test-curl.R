@@ -30,6 +30,13 @@ test_that("captures key components of call", {
   expect_equal(curl_args("curl 'http://example.com' --verbose")$`--verbose`,  TRUE)
 })
 
+test_that("can handle line breaks", {
+  expect_equal(
+    curl_args("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")$`--header`,
+    c("A: 1", "B: 2")
+  )
+})
+
 test_that("headers are parsed", {
   expect_equal(
     curl_normalize("curl http://x.com -H 'A: 1'")$headers,
