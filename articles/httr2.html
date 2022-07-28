@@ -8,9 +8,9 @@
 <meta name="description" content="httr2">
 <title>httr2 • httr2</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="../deps/_Source%20Sans%20Pro-0.4.1/font.css" rel="stylesheet">
-<link href="../deps/_Source%20Code%20Pro-0.4.1/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.2/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="httr2">
@@ -87,26 +87,26 @@
     
 <p>The goal of this document is show you the basics of httr2. You’ll learn how to create and submit HTTP requests and work with the HTTP responses that you get back. httr2 is designed to map closely to the underlying HTTP protocol, which I’ll explain as we go along. For more details, I also recommend “<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" class="external-link">An overview of HTTP</a>” from MDN.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="create-a-request">Create a request<a class="anchor" aria-label="anchor" href="#create-a-request"></a>
 </h2>
 <p>In httr2, you start by creating a request. If you’re familiar with httr, this a big change: with httr you could only submit a request, immediately receiving a response. Having an explicit request object makes it easier to build up a complex request piece by piece and works well with the pipe.</p>
 <p>Every request starts with a URL:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span><span class="op">)</span>
-<span class="va">req</span>
-<span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="co">#&gt; <span style="font-weight: bold;">GET</span> https://httpbin.org/get</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Body</span>: empty</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/get"</span><span class="op">)</span></span>
+<span><span class="va">req</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">GET</span> https://httpbin.org/get</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Body</span>: empty</span></span></code></pre></div>
 <p>We can see exactly what this request will send to the server with a dry run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; GET /get HTTP/1.1</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span>
-<span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; GET /get HTTP/1.1</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span></span></code></pre></div>
 <p>The first line of the request contains three important pieces of information:</p>
 <ul>
 <li><p>The HTTP <strong>method</strong>, which is a verb that tells the server what you want to do. Here’s its GET, the most common verb, indicating that we want to <em>get</em> a resource. Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.</p></li>
@@ -115,35 +115,35 @@
 </ul>
 <p>The following lines specify the HTTP <strong>headers</strong>, a series of name-value pairs separated by <code>:</code>. The headers in this request were automatically added by httr2, but you can override them or add your own with <code><a href="../reference/req_headers.html">req_headers()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>
-    Name <span class="op">=</span> <span class="st">"Hadley"</span>, 
-    `Shoe-Size` <span class="op">=</span> <span class="st">"11"</span>, 
-    Accept <span class="op">=</span> <span class="st">"application/json"</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; GET /get HTTP/1.1</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span>
-<span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Name</span>: Hadley</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Shoe-Size</span>: 11</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: application/json</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span></span>
+<span>    Name <span class="op">=</span> <span class="st">"Hadley"</span>, </span>
+<span>    `Shoe-Size` <span class="op">=</span> <span class="st">"11"</span>, </span>
+<span>    Accept <span class="op">=</span> <span class="st">"application/json"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; GET /get HTTP/1.1</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Name</span>: Hadley</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Shoe-Size</span>: 11</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: application/json</span></span></code></pre></div>
 <p>Header names are case-insensitive, and servers will ignore headers that they don’t understand.</p>
 <p>The headers finish with a blank line which is followed by the <strong>body</strong>. The requests above (like all GET requests) don’t have a body, so let’s add one to see what happens. The <code>req_body_*()</code> functions provide a variety of ways to add data to the body. Here we’ll use <code><a href="../reference/req_body.html">req_body_json()</a></code> to add some data encoded as JSON:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; POST /get HTTP/1.1</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span>
-<span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/json</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 15</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; {"x":1,"y":"a"}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; POST /get HTTP/1.1</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/json</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 15</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; {"x":1,"y":"a"}</span></span></code></pre></div>
 <p>What’s changed?</p>
 <ul>
 <li><p>The method has changed from GET to POST. POST is the standard method for sending data to a website, and is automatically used whenever you add a body. Use <code><a href="../reference/req_method.html">req_method()</a></code> to for a different method.</p></li>
@@ -152,40 +152,40 @@
 </ul>
 <p>Different servers want data encoded differently so httr2 provides a selection of common formats. For example, <code><a href="../reference/req_body.html">req_body_form()</a></code> uses the encoding used when you submit a form from a web browser:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body.html">req_body_form</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; POST /get HTTP/1.1</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span>
-<span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 7</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; x=1&amp;y=a</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/req_body.html">req_body_form</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; POST /get HTTP/1.1</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; x=1&amp;y=a</span></span></code></pre></div>
 <p>And <code><a href="../reference/req_body.html">req_body_multipart()</a></code> uses the multipart encoding which is particularly important when you need to send larger amounts of data or complete files:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/req_body.html">req_body_multipart</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; POST /get HTTP/1.1</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span>
-<span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 228</span>
-<span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------0ef8216fc1a16e83</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; --------------------------0ef8216fc1a16e83</span>
-<span class="co">#&gt; Content-Disposition: form-data; name="x"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 1</span>
-<span class="co">#&gt; --------------------------0ef8216fc1a16e83</span>
-<span class="co">#&gt; Content-Disposition: form-data; name="y"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; a</span>
-<span class="co">#&gt; --------------------------0ef8216fc1a16e83--</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/req_body.html">req_body_multipart</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; POST /get HTTP/1.1</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.68.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 228</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------2daef9f395bab65c</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; --------------------------2daef9f395bab65c</span></span>
+<span><span class="co">#&gt; Content-Disposition: form-data; name="x"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1</span></span>
+<span><span class="co">#&gt; --------------------------2daef9f395bab65c</span></span>
+<span><span class="co">#&gt; Content-Disposition: form-data; name="y"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; a</span></span>
+<span><span class="co">#&gt; --------------------------2daef9f395bab65c--</span></span></code></pre></div>
 <p>If you need to send data encoded in a different form, you can use <code><a href="../reference/req_body.html">req_body_raw()</a></code> to add the data to the body and set the <code>Content-Type</code> header.</p>
 </div>
 <div class="section level2">
@@ -193,104 +193,104 @@
 </h2>
 <p>To actually perform a request and fetch the response back from the server, call <code><a href="../reference/req_perform.html">req_perform()</a></code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/json"</span><span class="op">)</span>
-<span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">resp</span>
-<span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="co">#&gt; <span style="font-weight: bold;">GET</span> https://httpbin.org/json</span>
-<span class="co">#&gt; <span style="color: #00BB00;">Status</span>: 200 OK</span>
-<span class="co">#&gt; <span style="color: #00BB00;">Content-Type</span>: application/json</span>
-<span class="co">#&gt; <span style="color: #00BB00;">Body</span>: In memory (429 bytes)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/json"</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">resp</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">GET</span> https://httpbin.org/json</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Status</span>: 200 OK</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Content-Type</span>: application/json</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Body</span>: In memory (429 bytes)</span></span></code></pre></div>
 <p>You can see a simulation of what httr2 actually received with <code><a href="../reference/resp_raw.html">resp_raw()</a></code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; HTTP/1.1 200 OK</span>
-<span class="co">#&gt; <span style="font-weight: bold;">date</span>: Thu, 23 Jun 2022 22:44:39 GMT</span>
-<span class="co">#&gt; <span style="font-weight: bold;">content-type</span>: application/json</span>
-<span class="co">#&gt; <span style="font-weight: bold;">content-length</span>: 429</span>
-<span class="co">#&gt; <span style="font-weight: bold;">server</span>: gunicorn/19.9.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
-<span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-credentials</span>: true</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; {</span>
-<span class="co">#&gt;   "slideshow": {</span>
-<span class="co">#&gt;     "author": "Yours Truly", </span>
-<span class="co">#&gt;     "date": "date of publication", </span>
-<span class="co">#&gt;     "slides": [</span>
-<span class="co">#&gt;       {</span>
-<span class="co">#&gt;         "title": "Wake up to WonderWidgets!", </span>
-<span class="co">#&gt;         "type": "all"</span>
-<span class="co">#&gt;       }, </span>
-<span class="co">#&gt;       {</span>
-<span class="co">#&gt;         "items": [</span>
-<span class="co">#&gt;           "Why &lt;em&gt;WonderWidgets&lt;/em&gt; are great", </span>
-<span class="co">#&gt;           "Who &lt;em&gt;buys&lt;/em&gt; WonderWidgets"</span>
-<span class="co">#&gt;         ], </span>
-<span class="co">#&gt;         "title": "Overview", </span>
-<span class="co">#&gt;         "type": "all"</span>
-<span class="co">#&gt;       }</span>
-<span class="co">#&gt;     ], </span>
-<span class="co">#&gt;     "title": "Sample Slide Show"</span>
-<span class="co">#&gt;   }</span>
-<span class="co">#&gt; }</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; HTTP/1.1 200 OK</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">date</span>: Thu, 28 Jul 2022 17:43:57 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">content-type</span>: application/json</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">content-length</span>: 429</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">server</span>: gunicorn/19.9.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-origin</span>: *</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-credentials</span>: true</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;   "slideshow": {</span></span>
+<span><span class="co">#&gt;     "author": "Yours Truly", </span></span>
+<span><span class="co">#&gt;     "date": "date of publication", </span></span>
+<span><span class="co">#&gt;     "slides": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "title": "Wake up to WonderWidgets!", </span></span>
+<span><span class="co">#&gt;         "type": "all"</span></span>
+<span><span class="co">#&gt;       }, </span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "items": [</span></span>
+<span><span class="co">#&gt;           "Why &lt;em&gt;WonderWidgets&lt;/em&gt; are great", </span></span>
+<span><span class="co">#&gt;           "Who &lt;em&gt;buys&lt;/em&gt; WonderWidgets"</span></span>
+<span><span class="co">#&gt;         ], </span></span>
+<span><span class="co">#&gt;         "title": "Overview", </span></span>
+<span><span class="co">#&gt;         "type": "all"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ], </span></span>
+<span><span class="co">#&gt;     "title": "Sample Slide Show"</span></span>
+<span><span class="co">#&gt;   }</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>An HTTP response has a very similar structure to an HTTP request. The first line gives the version of HTTP used, and a status code that’s optionally followed by a short description. Then we have the headers, followed by a blank line, followed by a body. The majority of responses will have a body, unlike requests.</p>
 <p>You can extract data from the response using the <code>resp_()</code> functions:</p>
 <ul>
 <li>
 <p><code><a href="../reference/resp_status.html">resp_status()</a></code> returns the status code and <code><a href="../reference/resp_status.html">resp_status_desc()</a></code> returns the description:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; [1] 200</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; [1] "OK"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 200</span></span>
+<span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "OK"</span></span></code></pre></div>
 </li>
 <li>
 <p>You can extract all headers with <code><a href="../reference/resp_headers.html">resp_headers()</a></code> or a specific header with <code><a href="../reference/resp_headers.html">resp_header()</a></code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span>
-<span class="co">#&gt; <span style="font-weight: bold;">date</span>: Thu, 23 Jun 2022 22:44:39 GMT</span>
-<span class="co">#&gt; <span style="font-weight: bold;">content-type</span>: application/json</span>
-<span class="co">#&gt; <span style="font-weight: bold;">content-length</span>: 429</span>
-<span class="co">#&gt; <span style="font-weight: bold;">server</span>: gunicorn/19.9.0</span>
-<span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
-<span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-credentials</span>: true</span>
-<span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"Content-Length"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "429"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">date</span>: Thu, 28 Jul 2022 17:43:57 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">content-type</span>: application/json</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">content-length</span>: 429</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">server</span>: gunicorn/19.9.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-origin</span>: *</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">access-control-allow-credentials</span>: true</span></span>
+<span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"Content-Length"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "429"</span></span></code></pre></div>
 <p>Headers are case insensitive:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"ConTEnT-LeNgTH"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "429"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="st">"ConTEnT-LeNgTH"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "429"</span></span></code></pre></div>
 </li>
 <li>
 <p>You can extract the body in various forms using the <code>resp_body_*()</code> family of functions. Since this response returns JSON we can use <code><a href="../reference/resp_body_raw.html">resp_body_json()</a></code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; List of 1</span>
-<span class="co">#&gt;  $ slideshow:List of 4</span>
-<span class="co">#&gt;   ..$ author: chr "Yours Truly"</span>
-<span class="co">#&gt;   ..$ date  : chr "date of publication"</span>
-<span class="co">#&gt;   ..$ slides:List of 2</span>
-<span class="co">#&gt;   .. ..$ :List of 2</span>
-<span class="co">#&gt;   .. .. ..$ title: chr "Wake up to WonderWidgets!"</span>
-<span class="co">#&gt;   .. .. ..$ type : chr "all"</span>
-<span class="co">#&gt;   .. ..$ :List of 3</span>
-<span class="co">#&gt;   .. .. ..$ items:List of 2</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr "Why &lt;em&gt;WonderWidgets&lt;/em&gt; are great"</span>
-<span class="co">#&gt;   .. .. .. ..$ : chr "Who &lt;em&gt;buys&lt;/em&gt; WonderWidgets"</span>
-<span class="co">#&gt;   .. .. ..$ title: chr "Overview"</span>
-<span class="co">#&gt;   .. .. ..$ type : chr "all"</span>
-<span class="co">#&gt;   ..$ title : chr "Sample Slide Show"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 1</span></span>
+<span><span class="co">#&gt;  $ slideshow:List of 4</span></span>
+<span><span class="co">#&gt;   ..$ author: chr "Yours Truly"</span></span>
+<span><span class="co">#&gt;   ..$ date  : chr "date of publication"</span></span>
+<span><span class="co">#&gt;   ..$ slides:List of 2</span></span>
+<span><span class="co">#&gt;   .. ..$ :List of 2</span></span>
+<span><span class="co">#&gt;   .. .. ..$ title: chr "Wake up to WonderWidgets!"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ type : chr "all"</span></span>
+<span><span class="co">#&gt;   .. ..$ :List of 3</span></span>
+<span><span class="co">#&gt;   .. .. ..$ items:List of 2</span></span>
+<span><span class="co">#&gt;   .. .. .. ..$ : chr "Why &lt;em&gt;WonderWidgets&lt;/em&gt; are great"</span></span>
+<span><span class="co">#&gt;   .. .. .. ..$ : chr "Who &lt;em&gt;buys&lt;/em&gt; WonderWidgets"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ title: chr "Overview"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ type : chr "all"</span></span>
+<span><span class="co">#&gt;   ..$ title : chr "Sample Slide Show"</span></span></code></pre></div>
 </li>
 </ul>
 <p>Responses with status codes 4xx and 5xx are HTTP errors. httr2 automatically turns these into R errors:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/404"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `resp_abort()`:</span></span>
-<span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 404 Not Found.</span>
-<span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/500"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `resp_abort()`:</span></span>
-<span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 500 Internal Server Error.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/404"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `resp_abort()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 404 Not Found.</span></span>
+<span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://httpbin.org/status/500"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `resp_abort()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 500 Internal Server Error.</span></span></code></pre></div>
 <p>This is another important difference to httr, which required that you explicitly call <code><a href="https://httr.r-lib.org/reference/stop_for_status.html" class="external-link">httr::stop_for_status()</a></code> to turn HTTP errors into R errors. You can revert to the httr behaviour with <code>req_error(req, is_error = ~ FALSE)</code>.</p>
 </div>
 <div class="section level2">
@@ -319,7 +319,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
   </div></footer>
