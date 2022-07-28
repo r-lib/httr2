@@ -213,6 +213,8 @@ curl_args <- function(cmd) {
     args <- parse_delim(pieces[[2]], " ", quote = '"')
   }
 
+  args <- args[args != "" & args != "\\"]
+
   parsed <- docopt::docopt(curl_opts, args = args, help = FALSE, strict = TRUE)
 
   # Drop default options
