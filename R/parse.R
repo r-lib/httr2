@@ -3,7 +3,11 @@ parse_media <- function(x) {
   pieces <- parse_delim(x, ";")
   params <- parse_name_equals_value(pieces[-1])
 
-  c(list(type = pieces[[1]]), params)
+  if (is_empty(pieces)) {
+    list(type = NA_character_)
+  } else {
+    c(list(type = pieces[[1]]), params)
+  }
 }
 
 parse_www_authenticate <- function(x) {
