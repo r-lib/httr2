@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* Can now print responses where content type is the empty string (@mgirlich, #163).
+
 * `curl_translate()` can now handle curl copied from Chrome developer tools
   (@mgirlich, #161).
 

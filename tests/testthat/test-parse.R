@@ -19,6 +19,8 @@ test_that("can parse media type", {
     parse_media("text/plain; charset=\";\""),
     list(type = "text/plain", charset = ";")
   )
+
+  expect_equal(parse_media(""), list(type = NA_character_))
 })
 
 test_that("can parse authenticate header", {
