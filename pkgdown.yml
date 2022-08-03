@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   wrapping-apis: wrapping-apis.html
   httr2: httr2.html
-last_built: 2022-07-28T17:43Z
+last_built: 2022-08-03T12:33Z
 urls:
   reference: https://httr2.r-lib.org/reference
   article: https://httr2.r-lib.org/articles
