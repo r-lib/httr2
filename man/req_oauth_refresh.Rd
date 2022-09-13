@@ -32,7 +32,7 @@ A modified HTTP \link{request}.
 }
 \description{
 This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
+then used to authenticate the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 This is primarily useful for testing: you can manually execute another OAuth
 flow (e.g. by calling \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or \code{\link[=oauth_flow_device]{oauth_flow_device()}}),
 extract the refresh token from the result, and then save in an environment

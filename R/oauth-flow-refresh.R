@@ -2,7 +2,7 @@
 #'
 #' @description
 #' This uses [oauth_flow_refresh()] to generate an access token, which is
-#' then used to authentication the request with [req_auth_bearer_token()].
+#' then used to authenticate the request with [req_auth_bearer_token()].
 #' This is primarily useful for testing: you can manually execute another OAuth
 #' flow (e.g. by calling [oauth_flow_auth_code()] or [oauth_flow_device()]),
 #' extract the refresh token from the result, and then save in an environment
@@ -67,7 +67,7 @@ oauth_flow_refresh <- function(client,
     token_params = token_params
   )
 
-  # Should generally do this automaitcaly, but in this workflow the token will
+  # Should generally do this automatically, but in this workflow the token will
   # often be stored in an env var or similar
   if (!is.null(token$refresh_token) && token$refresh_token != refresh_token) {
     abort("Refresh token has changed! Please update stored value")
