@@ -46,7 +46,7 @@ auth_oauth_sign <- function(req, reauth = FALSE) {
       if (is.null(token$refresh_token)) {
         token <- exec(flow, !!!flow_params)
       } else {
-        token <- token_refresh(flow$params$client, token)
+        token <- token_refresh(flow_params$client, token$refresh_token)
       }
     }
   }
