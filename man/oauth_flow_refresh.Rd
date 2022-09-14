@@ -6,7 +6,7 @@
 \usage{
 oauth_flow_refresh(
   client,
-  refresh_token = Sys.getenv("HTTR_REFRESH_TOKEN"),
+  refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
   scope = NULL,
   token_params = list()
 )
@@ -17,7 +17,7 @@ oauth_flow_refresh(
 \item{refresh_token}{A refresh token. This is equivalent to a password
 so shouldn't be typed into the console or stored in a script. Instead,
 we recommend placing in an environment variable; the default behaviour
-is to look in \code{HTTR_REFRESH_TOKEN}.}
+is to look in \code{HTTR2_REFRESH_TOKEN}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

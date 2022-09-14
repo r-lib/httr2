@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* The environment variable `HTTR2_REFRESH_TOKEN` replaces the previous `HTTR_REFRESH_TOKEN` (@jennybc, #169).
+
 * OAuth tokens can now be refreshed. One, two, or even more times! (@jennybc, #166)
 
 * Can now print responses where content type is the empty string (@mgirlich, #163).
