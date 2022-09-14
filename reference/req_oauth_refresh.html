@@ -93,7 +93,7 @@ because you might need to do it again).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_oauth_refresh</span><span class="op">(</span></span>
 <span>  <span class="va">req</span>,</span>
 <span>  <span class="va">client</span>,</span>
-<span>  refresh_token <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"HTTR_REFRESH_TOKEN"</span><span class="op">)</span>,</span>
+<span>  refresh_token <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"HTTR2_REFRESH_TOKEN"</span><span class="op">)</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -113,7 +113,7 @@ because you might need to do it again).</p>
 <dd><p>A refresh token. This is equivalent to a password
 so shouldn't be typed into the console or stored in a script. Instead,
 we recommend placing in an environment variable; the default behaviour
-is to look in <code>HTTR_REFRESH_TOKEN</code>.</p></dd>
+is to look in <code>HTTR2_REFRESH_TOKEN</code>.</p></dd>
 
 
 <dt>scope</dt>
