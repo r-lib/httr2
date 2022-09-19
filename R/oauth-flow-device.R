@@ -58,7 +58,6 @@ oauth_flow_device <- function(client,
                               scope = NULL,
                               auth_params = list(),
                               token_params = list()) {
-  oauth_flow_check("device", client, interactive = TRUE)
 
   if (pkce) {
     code <- oauth_flow_auth_code_pkce()
