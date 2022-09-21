@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* disabled check for interactive session `oauth_flow_check(..., interactive)` on device code flow to print URL and device code as intended (@flahn, #170)
+
 * The environment variable `HTTR2_REFRESH_TOKEN` replaces the previous `HTTR_REFRESH_TOKEN` (@jennybc, #169).
 
 * OAuth tokens can now be refreshed. One, two, or even more times! (@jennybc, #166)
