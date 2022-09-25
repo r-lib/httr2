@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 0.2.2
 
 * `curl_translate()` can now handle curl copied from Chrome developer tools
