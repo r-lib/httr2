@@ -29,4 +29,3 @@ httr2.
 req <- request("https://example.com") \%>\%
   req_options(ssl_verifypeer = 0)
 }
-\keyword{internal}

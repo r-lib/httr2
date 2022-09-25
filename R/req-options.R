@@ -7,7 +7,6 @@
 #' @inheritParams req_headers
 #' @param ... Name-value pairs. The name should be a valid curl option,
 #'   as found in [curl::curl_options()].
-#' @keywords internal
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
