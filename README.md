@@ -75,7 +75,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.1.1 r-curl/4.3.2 libcurl/7.79.1
+#> User-Agent: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.79.1
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -89,7 +89,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6158 bytes)
+#> Body: In memory (6307 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
@@ -109,35 +109,34 @@ resp %>% resp_body_html()
 
 ## Major differences to httr
 
--   You can now create and modify a request without performing it. This
-    means that there’s now a single function to perform the request and
-    fetch the result: `req_perform()`. (If you want to handle the
-    response as it streams in, use `req_stream()` instead).
-    `req_perform()` replaces `httr::GET()`, `httr::POST()`,
-    `httr::DELETE()`, and more.
+- You can now create and modify a request without performing it. This
+  means that there’s now a single function to perform the request and
+  fetch the result: `req_perform()`. (If you want to handle the response
+  as it streams in, use `req_stream()` instead). `req_perform()`
+  replaces `httr::GET()`, `httr::POST()`, `httr::DELETE()`, and more.
 
--   HTTP errors are automatically converted into R errors. Use
-    `req_error()` to override the defaults (which turn all 4xx and 5xx
-    responses into errors) or to add additional details to the error
-    message.
+- HTTP errors are automatically converted into R errors. Use
+  `req_error()` to override the defaults (which turn all 4xx and 5xx
+  responses into errors) or to add additional details to the error
+  message.
 
--   You can automatically retry if the request fails or encounters a
-    transient HTTP error (e.g. a 429 rate limit request). `req_retry()`
-    defines the maximum number of retries, which errors are transient,
-    and how long to wait between tries.
+- You can automatically retry if the request fails or encounters a
+  transient HTTP error (e.g. a 429 rate limit request). `req_retry()`
+  defines the maximum number of retries, which errors are transient, and
+  how long to wait between tries.
 
--   OAuth support has been totally overhauled to directly support many
-    more flows and to make it much easier to both customise the built-in
-    flows and to create your own.
+- OAuth support has been totally overhauled to directly support many
+  more flows and to make it much easier to both customise the built-in
+  flows and to create your own.
 
--   You can manage secrets (often needed for testing) with
-    `secret_encrypt()` and friends. You can obfuscate mildly
-    confidential data with `obfuscate()`, preventing it from being
-    scraped from published code.
+- You can manage secrets (often needed for testing) with
+  `secret_encrypt()` and friends. You can obfuscate mildly confidential
+  data with `obfuscate()`, preventing it from being scraped from
+  published code.
 
--   You can automatically cache all cacheable results with
-    `req_cache()`. Relatively few API responses are cacheable, but when
-    they are it typically makes a big difference.
+- You can automatically cache all cacheable results with `req_cache()`.
+  Relatively few API responses are cacheable, but when they are it
+  typically makes a big difference.
 
 ## Acknowledgements
 
