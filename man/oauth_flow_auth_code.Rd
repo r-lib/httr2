@@ -17,7 +17,8 @@ oauth_flow_auth_code(
   token_params = list(),
   host_name = "localhost",
   host_ip = "127.0.0.1",
-  port = httpuv::randomPort()
+  port = httpuv::randomPort(),
+  redirect_uri = NULL
 )
 
 oauth_flow_auth_code_url(
