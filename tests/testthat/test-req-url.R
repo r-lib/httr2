@@ -26,6 +26,8 @@ test_that("can append multiple components", {
 
 test_that("can handle empty path", {
   req <- request("http://example.com/x")
+  expect_equal(req_url_path(req)$url, "http://example.com")
+  expect_equal(req_url_path_append(req)$url, "http://example.com/x")
   expect_equal(req_url_path(req, NULL)$url, "http://example.com")
   expect_equal(req_url_path_append(req, NULL)$url, "http://example.com/x")
 })
