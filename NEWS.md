@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
+
 # httr2 0.2.2
 
 * `curl_translate()` can now handle curl copied from Chrome developer tools
