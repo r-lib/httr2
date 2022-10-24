@@ -30,6 +30,15 @@ test_that("can handle empty path", {
   expect_equal(req_url_path_append(req)$url, "http://example.com/x")
   expect_equal(req_url_path(req, NULL)$url, "http://example.com")
   expect_equal(req_url_path_append(req, NULL)$url, "http://example.com/x")
+
+  expect_equal(req_url_path(req, "")$url, "http://example.com")
+  expect_equal(req_url_path_append(req, "")$url, "http://example.com/x")
+})
+
+test_that("can path vector", {
+  req <- request("http://example.com/x")
+  expect_equal(req_url_path(req, c("a", "b"))$url, "http://example.com/a/b")
+  expect_equal(req_url_path_append(req, c("a", "b"))$url, "http://example.com/x/a/b")
 })
 
 test_that("can set query params", {
