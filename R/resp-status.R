@@ -69,7 +69,7 @@ resp_check_status <- function(resp, info = NULL) {
   }
 }
 
-resp_abort <- function(resp, info = NULL) {
+resp_abort <- function(resp, info = NULL, call = caller_env()) {
   status <- resp_status(resp)
   desc <- resp_status_desc(resp)
   message <- glue("HTTP {status} {desc}.")
@@ -78,7 +78,8 @@ resp_abort <- function(resp, info = NULL) {
     c(message, resp_auth_message(resp), info),
     status = status,
     resp = resp,
-    class = c(glue("httr2_http_{status}"), "httr2_http")
+    class = c(glue("httr2_http_{status}"), "httr2_http"),
+    call = call
   )
 }
 
