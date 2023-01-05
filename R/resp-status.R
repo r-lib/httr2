@@ -59,13 +59,14 @@ resp_is_error <- function(resp) {
 #' @export
 #' @param info A character vector of additional information to include in
 #'   the error message. Passed to [rlang::abort()].
+#' @inheritParams rlang::args_error_context
 #' @rdname resp_status
-resp_check_status <- function(resp, info = NULL) {
+resp_check_status <- function(resp, info = NULL, error_call = caller_env()) {
   check_response(resp)
   if (!resp_is_error(resp)) {
     invisible(resp)
   } else {
-    resp_abort(resp, info)
+    resp_abort(resp, info, call = error_call)
   }
 }
 
