@@ -1,15 +1,16 @@
 # can use custom json type
 
     Code
-      (expect_error(req_body_apply(req_headers(req, `Content-Type` = "application/ld+json2")))
-      )
+      (expect_error(req %>% req_headers(`Content-Type` = "application/ld+json2") %>%
+        req_body_apply()))
     Output
       <error/rlang_error>
       Error in `req_body_apply()`:
       ! Unexpected content type 'application/ld+json2'
       * Expecting 'application/json'
     Code
-      (expect_error(req_body_apply(req_headers(req, `Content-Type` = "app/ld+json"))))
+      (expect_error(req %>% req_headers(`Content-Type` = "app/ld+json") %>%
+        req_body_apply()))
     Output
       <error/rlang_error>
       Error in `req_body_apply()`:

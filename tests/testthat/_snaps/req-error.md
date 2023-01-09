@@ -13,9 +13,8 @@
     Condition
       Error in `req_perform()`:
       ! Failed to parse error body with method defined in req_error()
-      Caused by error in `check_content_type()`:
+      Caused by error in `resp_body_json()`:
       ! Unexpected content type 'text/html'
       Expecting 'application/json'
-      Or suffix '+json'
       i Override check with `check_type = FALSE`
 
