@@ -34,5 +34,5 @@ test_that("content types are checked", {
 
 test_that("check_content_type() can consult suffixes", {
   resp <- response(headers = "Content-type: application/vnd.github-issue.text+json")
-  expect_null(check_content_type(resp, "application/json", suffix = "+json"))
+  expect_null(check_resp_content_type(resp, "application/json"))
 })

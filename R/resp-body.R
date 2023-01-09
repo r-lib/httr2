@@ -65,9 +65,8 @@ resp_body_string <- function(resp, encoding = NULL) {
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
   check_response(resp)
   check_installed("jsonlite")
-  check_content_type(resp,
+  check_resp_content_type(resp,
     types = "application/json",
-    suffix = "+json",
     check_type = check_type
   )
 
@@ -80,7 +79,7 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 resp_body_html <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_content_type(resp,
+  check_resp_content_type(resp,
     types = c("text/html", "application/xhtml+xml"),
     check_type = check_type)
 
@@ -92,9 +91,8 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_content_type(resp,
+  check_resp_content_type(resp,
     types = c("application/xml", "text/xml"),
-    suffix = "+xml",
     check_type = check_type
   )
 
@@ -103,37 +101,70 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
 
 # Helpers -----------------------------------------------------------------
 
-check_content_type <- function(
-    resp,
-    types,
-    suffix = NULL,
-    check_type = TRUE) {
-
+check_resp_content_type <- function(resp,
+                                    types,
+                                    check_type = TRUE,
+                                    call = caller_env()) {
   if (!check_type) {
     return()
   }
 
   content_type <- resp_content_type(resp)
-  if (content_type %in% types) {
+  check_content_type(
+    content_type,
+    types,
+    inform_check_type = TRUE,
+    call = call
+  )
+}
+
+check_content_type <- function(content_type,
+                               valid_types,
+                               inform_check_type,
+                               call = caller_env()) {
+  suffix <- NULL
+  if (content_type %in% valid_types) {
     return()
   }
 
   # https://datatracker.ietf.org/doc/html/rfc6838#section-4.2.8
-  if (!is.null(suffix) && endsWith(content_type, suffix)) {
-    return()
+  valid_types_list <- strsplit(valid_types, "/", fixed = TRUE)
+  for (valid_type in valid_types_list) {
+    type <- valid_type[[1]]
+    subtype <- valid_type[[2]]
+    if (is_content_type(content_type, type, subtype)) {
+      return()
+    }
   }
 
-  if (length(types) > 1) {
-    type <- paste0("one of ", paste0("'", types, "'", collapse = ", "))
+  if (length(valid_types) > 1) {
+    type <- paste0("one of ", paste0("'", valid_types, "'", collapse = ", "))
   } else {
-    type <- paste0("'", types, "'")
+    type <- paste0("'", valid_types, "'")
   }
 
   abort(c(
     glue("Unexpected content type '{content_type}'"),
     glue("Expecting {type}"),
     if (!is.null(suffix)) glue("Or suffix '{suffix}'"),
-    i = "Override check with `check_type = FALSE`"
-  ))
+    i = if (inform_check_type) "Override check with `check_type = FALSE`"
+  ), call = call)
+}
+
+is_content_type <- function(content_type, type, subtype) {
+  if (grepl("+", subtype, fixed = TRUE)) {
+    matches <- identical(paste0(type, "/", subtype), content_type)
+    return(matches)
+  }
+
+  if (!startsWith(content_type, type)) {
+    return(FALSE)
+  }
+
+  if (!endsWith(content_type, subtype)) {
+    return(FALSE)
+  }
+
+  TRUE
 }
 
