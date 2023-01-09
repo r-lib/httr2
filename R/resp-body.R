@@ -128,6 +128,10 @@ check_content_type <- function(content_type,
   }
 
   # https://datatracker.ietf.org/doc/html/rfc6838#section-4.2.8
+  # This only supports a subset of possible media types of the form
+  # <type>/<subtype>
+  # It checks that `content_type` starts with `<type>` and ends with <subtype>
+  # If <subtype> contains a `+` (e.g. "xhtml+xml") it checks for an exact match
   valid_types_list <- strsplit(valid_types, "/", fixed = TRUE)
   for (valid_type in valid_types_list) {
     type <- valid_type[[1]]
