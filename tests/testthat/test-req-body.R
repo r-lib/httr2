@@ -50,8 +50,8 @@ test_that("can use custom json type", {
   expect_equal(req_body_apply(req)$headers$`Content-Type`, content_type)
 
   expect_snapshot({
-    (expect_error(req %>% req_headers(`Content-Type` = "application/ld+json2") |> req_body_apply()))
-    (expect_error(req %>% req_headers(`Content-Type` = "app/ld+json") |> req_body_apply()))
+    (expect_error(req %>% req_headers(`Content-Type` = "application/ld+json2") %>% req_body_apply()))
+    (expect_error(req %>% req_headers(`Content-Type` = "app/ld+json") %>% req_body_apply()))
   })
 })
 
