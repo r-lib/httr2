@@ -1,3 +1,19 @@
+# can use custom json type
+
+    Code
+      (expect_error(req_body_apply(req_headers(req, `Content-Type` = "application/ld+json2")))
+      )
+    Output
+      <error/rlang_error>
+      Error in `req_body_apply()`:
+      ! Content type must end with "json" for a JSON body.
+    Code
+      (expect_error(req_body_apply(req_headers(req, `Content-Type` = "app/ld+json"))))
+    Output
+      <error/rlang_error>
+      Error in `req_body_apply()`:
+      ! Content type must start with "application/" for a JSON body.
+
 # req_body_form() and req_body_multipart() accept list() with warning
 
     Code

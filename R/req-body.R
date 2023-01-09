@@ -206,7 +206,7 @@ req_body_apply <- function(req) {
   } else if (type == "raw") {
     req <- req_body_apply_raw(req, data)
   } else if (type == "json") {
-    content_type <- "application/json"
+    content_type <- check_json_content_type(content_type)
     json <- exec(jsonlite::toJSON, data, !!!req$body$params)
     req <- req_body_apply_raw(req, json)
   } else if (type == "multipart") {
@@ -215,7 +215,7 @@ req_body_apply <- function(req) {
     req$fields <- data
   } else if (type == "form") {
     data <- unobfuscate(data)
-    content_type <- "application/x-www-form-urlencoded"
+    content_type <- check_form_content_type(content_type)
     req <- req_body_apply_raw(req, query_build(data))
   } else {
     abort("Unsupported request body `type`", .internal = TRUE)
@@ -224,6 +224,39 @@ req_body_apply <- function(req) {
   # Must set header afterwards
   req <- req_headers(req, `Content-Type` = content_type)
   req
+}
+
+check_json_content_type <- function(content_type, call = caller_env()) {
+  check_string(content_type)
+
+  if (is.null(content_type) || identical(content_type, "application/json")) {
+    return("application/json")
+  }
+
+  if (!startsWith(content_type, "application/")) {
+    abort('Content type must start with "application/" for a JSON body.', call = call)
+  }
+
+  if (!endsWith(content_type, "+json")) {
+    abort('Content type must end with "json" for a JSON body.', call = call)
+  }
+
+  content_type
+}
+
+check_form_content_type <- function(content_type, call = caller_env()) {
+  check_string(content_type)
+  form_content_type <- "application/x-www-form-urlencoded"
+  content_type <- content_type %||% form_content_type
+
+  if (!identical(content_type, form_content_type)) {
+    abort(
+      'Content type must be "application/x-www-form-urlencoded" for a form body.',
+      call = call
+    )
+  }
+
+  content_type
 }
 
 req_body_apply_raw <- function(req, body) {

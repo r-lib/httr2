@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* Respect custom content type for `req_body_json()` (@mgirlich, #189).
+
 # httr2 0.2.2
 
 * `curl_translate()` can now handle curl copied from Chrome developer tools
