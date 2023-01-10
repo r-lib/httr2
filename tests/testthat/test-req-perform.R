@@ -8,11 +8,15 @@ test_that("curl and http errors become errors", {
   expect_error(req_perform(req), class = "httr2_failed")
 
   req <- request_test("/status/:status", status = 404)
-  expect_error(req_perform(req), class = "httr2_http_404")
+  expect_snapshot(
+    (expect_error(req_perform(req), class = "httr2_http_404"))
+  )
 
   # including transient errors
   req <- request_test("/status/:status", status = 429)
-  expect_error(req_perform(req), class = "httr2_http_429")
+  expect_snapshot(
+    (expect_error(req_perform(req), class = "httr2_http_429"))
+  )
 })
 
 test_that("can force successful HTTP statuses to error", {

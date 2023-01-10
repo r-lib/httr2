@@ -8,7 +8,8 @@ req_perform(
   req,
   path = NULL,
   verbosity = NULL,
-  mock = getOption("httr2_mock", NULL)
+  mock = getOption("httr2_mock", NULL),
+  error_call = current_env()
 )
 }
 \arguments{
@@ -33,6 +34,11 @@ you can't affect directly.}
 with the request. It should return either \code{NULL} (if it doesn't want to
 handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
 \code{local_mock()} for more details.}
+
+\item{error_call}{The execution environment of a currently
+running function, e.g. \code{caller_env()}. The function will be
+mentioned in error messages as the source of the error. See the
+\code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \value{
 If request is successful (i.e. the request was successfully
