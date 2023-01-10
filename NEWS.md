@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_perform()` now has an `error_call` argument and communicates more clearly
+  where the error occurred (@mgirlich, #187).
+
 # httr2 0.2.2
 
 * `curl_translate()` can now handle curl copied from Chrome developer tools
