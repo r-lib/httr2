@@ -33,9 +33,9 @@ parse_content_type <- function(x) {
   match_object <- regexec(regex, x, perl = TRUE)
   match <- regmatches(x, match_object)[[1]]
   list(
-    type = match[["type"]],
-    subtype = match[["subtype"]],
-    suffix = if (match[["suffix"]] != "") match[["suffix"]]
+    type = match[1],
+    subtype = match[2],
+    suffix = if (match[3] != "") match[3]
   )
 }
 
