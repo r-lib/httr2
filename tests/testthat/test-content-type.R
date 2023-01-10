@@ -17,13 +17,6 @@ test_that("can parse content type", {
   )
 })
 
-test_that("", {
-  expect_snapshot({
-    (expect_error(check_content_type("application/ld+json2", "application/json")))
-    (expect_error(check_content_type("app/ld+json", "application/json")))
-  })
-})
-
 test_that("check_content_type() can consult suffixes", {
   expect_no_error(check_content_type("application/json", "application/json"))
   expect_snapshot({
