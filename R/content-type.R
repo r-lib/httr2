@@ -21,22 +21,22 @@ parse_content_type <- function(x) {
   # ```
   stopifnot(length(x) == 1)
   regex <- "^(?<type>application|audio|font|example|image|message|model|multipart|text|video)/(?<subtype>(?:(?:vnd|prs|x)\\.)?(?:[^+;])+)(?:\\+(?<suffix>(?:[^;])+))?(?:;(?<parameters>(?:.)+))?$"
-  match_object <- regexec(regex, x, perl = TRUE)
-  match <- regmatches(x, match_object)[[1]]
-
-  if (is_empty(match)) {
-    list(
+  if (!grepl(regex, x, perl = TRUE)) {
+    out <- list(
       type = NULL,
       subtype = NULL,
       suffix = NULL
     )
-  } else {
-    list(
-      type = match[["type"]],
-      subtype = match[["subtype"]],
-      suffix = if (match[["suffix"]] != "") match[["suffix"]]
-    )
+    return(out)
   }
+
+  match_object <- regexec(regex, x, perl = TRUE)
+  match <- regmatches(x, match_object)[[1]]
+  list(
+    type = match[["type"]],
+    subtype = match[["subtype"]],
+    suffix = if (match[["suffix"]] != "") match[["suffix"]]
+  )
 }
 
 check_content_type <- function(content_type,
