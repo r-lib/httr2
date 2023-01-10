@@ -13,13 +13,15 @@
     Condition
       Error in `resp_body_json()`:
       ! Unexpected content type 'application/xml'
-      Expecting 'application/json'
+      i Expecting 'application/json' or 'application/<subtype>+json'
       i Override check with `check_type = FALSE`
     Code
       request_test("/json") %>% req_perform() %>% resp_body_xml()
     Condition
       Error in `resp_body_xml()`:
       ! Unexpected content type 'application/json'
-      Expecting one of 'application/xml', 'text/xml'
+      i Expecting one of:
+      * 'application/xml' or 'application/<subtype>+xml'
+      * 'text/xml' or 'text/<subtype>+xml'
       i Override check with `check_type = FALSE`
 

@@ -7,15 +7,7 @@
       <error/rlang_error>
       Error in `req_body_apply()`:
       ! Unexpected content type 'application/ld+json2'
-      * Expecting 'application/json'
-    Code
-      (expect_error(req %>% req_headers(`Content-Type` = "app/ld+json") %>%
-        req_body_apply()))
-    Output
-      <error/rlang_error>
-      Error in `req_body_apply()`:
-      ! Unexpected content type 'app/ld+json'
-      * Expecting 'application/json'
+      i Expecting 'application/json' or 'application/<subtype>+json'
 
 # req_body_form() and req_body_multipart() accept list() with warning
 
