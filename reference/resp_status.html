@@ -117,7 +117,7 @@ e.g. <code>req %&gt;% req_error(is_error = ~ FALSE)</code>.</p></li>
 <span></span>
 <span><span class="fu">resp_is_error</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">resp_check_status</span><span class="op">(</span><span class="va">resp</span>, info <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">resp_check_status</span><span class="op">(</span><span class="va">resp</span>, info <span class="op">=</span> <span class="cn">NULL</span>, error_call <span class="op">=</span> <span class="fu">caller_env</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -129,6 +129,13 @@ e.g. <code>req %&gt;% req_error(is_error = ~ FALSE)</code>.</p></li>
 <dt>info</dt>
 <dd><p>A character vector of additional information to include in
 the error message. Passed to <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code>.</p></dd>
+
+
+<dt>error_call</dt>
+<dd><p>The execution environment of a currently
+running function, e.g. <code>caller_env()</code>. The function will be
+mentioned in error messages as the source of the error. See the
+<code>call</code> argument of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">abort()</a></code> for more information.</p></dd>
 
 </dl></div>
     <div class="section level2">
