@@ -59,17 +59,18 @@ resp_is_error <- function(resp) {
 #' @export
 #' @param info A character vector of additional information to include in
 #'   the error message. Passed to [rlang::abort()].
+#' @inheritParams rlang::args_error_context
 #' @rdname resp_status
-resp_check_status <- function(resp, info = NULL) {
+resp_check_status <- function(resp, info = NULL, error_call = caller_env()) {
   check_response(resp)
   if (!resp_is_error(resp)) {
     invisible(resp)
   } else {
-    resp_abort(resp, info)
+    resp_abort(resp, info, call = error_call)
   }
 }
 
-resp_abort <- function(resp, info = NULL) {
+resp_abort <- function(resp, info = NULL, call = caller_env()) {
   status <- resp_status(resp)
   desc <- resp_status_desc(resp)
   message <- glue("HTTP {status} {desc}.")
@@ -78,7 +79,8 @@ resp_abort <- function(resp, info = NULL) {
     c(message, resp_auth_message(resp), info),
     status = status,
     resp = resp,
-    class = c(glue("httr2_http_{status}"), "httr2_http")
+    class = c(glue("httr2_http_{status}"), "httr2_http"),
+    call = call
   )
 }
 
