@@ -39,6 +39,7 @@
 #'
 #'   Use [with_verbosity()] to control the verbosity of requests that
 #'   you can't affect directly.
+#' @inheritParams rlang::args_error_context
 #' @returns If request is successful (i.e. the request was successfully
 #'   performed and a response with HTTP status code <400 was recieved), an HTTP
 #'   [response]; otherwise throws an error. Override this behaviour with
@@ -51,7 +52,8 @@ req_perform <- function(
       req,
       path = NULL,
       verbosity = NULL,
-      mock = getOption("httr2_mock", NULL)
+      mock = getOption("httr2_mock", NULL),
+      error_call = current_env()
   ) {
   check_request(req)
   verbosity <- verbosity %||% httr2_verbosity()
@@ -118,7 +120,7 @@ req_perform <- function(
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_abort(resp, error_body(req, resp))
+    resp_abort(resp, error_body(req, resp), call = error_call)
   } else {
     resp
   }

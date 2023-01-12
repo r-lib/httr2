@@ -13,13 +13,18 @@ resp_status_desc(resp)
 
 resp_is_error(resp)
 
-resp_check_status(resp, info = NULL)
+resp_check_status(resp, info = NULL, error_call = caller_env())
 }
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{info}{A character vector of additional information to include in
 the error message. Passed to \code{\link[rlang:abort]{rlang::abort()}}.}
+
+\item{error_call}{The execution environment of a currently
+running function, e.g. \code{caller_env()}. The function will be
+mentioned in error messages as the source of the error. See the
+\code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
 }
 \value{
 \itemize{
