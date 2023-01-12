@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_url_path()` and `req_url_path_append()` can now handle `NULL` or empty
+  `...` and the elements of `...` can also have length > 1 (@mgirlich, #177).
+
 * `req_perform()` now has an `error_call` argument and communicates more clearly
   where the error occurred (@mgirlich, #187).
 
