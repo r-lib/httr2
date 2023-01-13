@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
+
 * `req_url_path()` and `req_url_path_append()` can now handle `NULL` or empty
   `...` and the elements of `...` can also have length > 1 (@mgirlich, #177).
 
