@@ -3,6 +3,8 @@ parse_content_type <- function(x) {
   #
   # ```
   # library(rex)
+  # # see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types for the
+  # # possible types
   # types <- c("application", "audio", "font", "example", "image", "message", "model", "multipart", "text", "video")
   # regex <- rex(
   #   start,
