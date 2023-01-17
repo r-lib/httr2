@@ -33,7 +33,7 @@ req_oauth_refresh <- function(req, client,
     scope = scope,
     token_params = token_params
   )
-  cache <- cache_mem(client, NULL)
+  cache <- cache_mem(client, refresh_token)
 
   req_oauth(req, "oauth_flow_refresh", params, cache = cache)
 }
