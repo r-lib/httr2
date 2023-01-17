@@ -53,11 +53,7 @@ req_url_query <- function(.req, ...) {
 #' @rdname req_url
 req_url_path <- function(req, ...) {
   check_request(req)
-  path <- paste(..., sep = "/")
-
-  if (!grepl("^/", path)) {
-    path <- paste0("/", path)
-  }
+  path <- dots_to_path(...)
 
   req_url(req, url_modify(req$url, path = path))
 }
@@ -66,15 +62,20 @@ req_url_path <- function(req, ...) {
 #' @rdname req_url
 req_url_path_append <- function(req, ...) {
   check_request(req)
-  path <- paste(..., sep = "/")
+  path <- dots_to_path(...)
 
   url <- url_parse(req$url)
-
-  # Ensure we don't add duplicate /s
-  if (!grepl("^/", path)) {
-    path <- paste0("/", path)
-  }
   url$path <- paste0(sub("/$", "", url$path), path)
 
   req_url(req, url_build(url))
+}
+
+dots_to_path <- function(...) {
+  path <- paste(c(...), collapse = "/")
+  # Ensure we don't add duplicate /s
+  if (path != "" && !grepl("^/", path)) {
+    path <- paste0("/", path)
+  }
+
+  path
 }

@@ -24,6 +24,24 @@ test_that("can append multiple components", {
   expect_equal(req_url_path_append(req, "a", "b")$url, "http://example.com/x/a/b")
 })
 
+test_that("can handle empty path", {
+  req <- request("http://example.com/x")
+  expect_equal(req_url_path(req)$url, "http://example.com")
+  expect_equal(req_url_path_append(req)$url, "http://example.com/x")
+  expect_equal(req_url_path(req, NULL)$url, "http://example.com")
+  expect_equal(req_url_path_append(req, NULL)$url, "http://example.com/x")
+
+  expect_equal(req_url_path(req, "")$url, "http://example.com")
+  expect_equal(req_url_path_append(req, "")$url, "http://example.com/x")
+})
+
+test_that("can handle path vector", {
+  req <- request("http://example.com/x")
+  expect_equal(req_url_path(req, c("a", "b"))$url, "http://example.com/a/b")
+  expect_equal(req_url_path_append(req, c("a", "b"))$url, "http://example.com/x/a/b")
+  expect_equal(req_url_path_append(req, c("a", "b"), NULL)$url, "http://example.com/x/a/b")
+})
+
 test_that("can set query params", {
   req <- request("http://example.com/")
   expect_equal(req_url_query(req, a = 1, b = 2)$url, "http://example.com/?a=1&b=2")
