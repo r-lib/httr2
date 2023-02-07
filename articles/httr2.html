@@ -9,8 +9,8 @@
 <title>httr2 • httr2</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.4/font.css" rel="stylesheet">
-<link href="../deps/Source_Code_Pro-0.4.4/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.5/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.5/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="httr2">
@@ -114,7 +114,7 @@ dry run:</p>
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET /get HTTP/1.1</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/4.3.3 libcurl/7.81.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span></code></pre></div>
 <p>The first line of the request contains three important pieces of
@@ -146,7 +146,7 @@ them or add your own with <code><a href="../reference/req_headers.html">req_head
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET /get HTTP/1.1</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/4.3.3 libcurl/7.81.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Name</span>: Hadley</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Shoe-Size</span>: 11</span></span>
@@ -165,7 +165,7 @@ some data encoded as JSON:</p>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; POST /get HTTP/1.1</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/4.3.3 libcurl/7.81.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/json</span></span>
@@ -192,7 +192,7 @@ uses the encoding used when you submit a form from a web browser:</p>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; POST /get HTTP/1.1</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/4.3.3 libcurl/7.81.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span></span>
@@ -208,21 +208,21 @@ data or complete files:</p>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; POST /get HTTP/1.1</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: httpbin.org</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/4.3.3 libcurl/7.81.0</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 228</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------ca4cbe067f4f23ce</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------e4985fe5bac72743</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; --------------------------ca4cbe067f4f23ce</span></span>
+<span><span class="co">#&gt; --------------------------e4985fe5bac72743</span></span>
 <span><span class="co">#&gt; Content-Disposition: form-data; name="x"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 1</span></span>
-<span><span class="co">#&gt; --------------------------ca4cbe067f4f23ce</span></span>
+<span><span class="co">#&gt; --------------------------e4985fe5bac72743</span></span>
 <span><span class="co">#&gt; Content-Disposition: form-data; name="y"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; a</span></span>
-<span><span class="co">#&gt; --------------------------ca4cbe067f4f23ce--</span></span></code></pre></div>
+<span><span class="co">#&gt; --------------------------e4985fe5bac72743--</span></span></code></pre></div>
 <p>If you need to send data encoded in a different form, you can use
 <code><a href="../reference/req_body.html">req_body_raw()</a></code> to add the data to the body and set the
 <code>Content-Type</code> header.</p>
@@ -246,7 +246,7 @@ server, call <code><a href="../reference/req_perform.html">req_perform()</a></co
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; HTTP/1.1 200 OK</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">date</span>: Fri, 13 Jan 2023 13:34:31 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">date</span>: Tue, 07 Feb 2023 15:12:02 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">content-type</span>: application/json</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">content-length</span>: 429</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">server</span>: gunicorn/19.9.0</span></span>
@@ -297,7 +297,7 @@ specific header with <code><a href="../reference/resp_headers.html">resp_header(
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">date</span>: Fri, 13 Jan 2023 13:34:31 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">date</span>: Tue, 07 Feb 2023 15:12:02 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">content-type</span>: application/json</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">content-length</span>: 429</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">server</span>: gunicorn/19.9.0</span></span>
