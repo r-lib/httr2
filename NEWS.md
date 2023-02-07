@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `sys_sleep()` (used by `req_retry()`) gains a progress bar (#202).
+
 * `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
 
 * `req_url_path()` and `req_url_path_append()` can now handle `NULL` or empty
