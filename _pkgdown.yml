@@ -45,7 +45,7 @@ reference:
 - subtitle: Control the process
   desc: >
     These functions don't modify the HTTP request that is sent to the server,
-    but affect the overall process of `req_fetch()`.
+    but affect the overall process of `req_perform()`.
   contents:
   - req_cache
   - req_error
