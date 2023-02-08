@@ -55,7 +55,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/req_oauth_refresh.html">req_oauth_refresh()</a></code> now respects the <code>refresh_token</code> for caching (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/178" class="external-link">#178</a>).</p></li>
+<ul><li><p><code>sys_sleep()</code> (used by <code><a href="../reference/req_retry.html">req_retry()</a></code> and <code><a href="../reference/req_throttle.html">req_throttle()</a></code>) gains a progress bar (<a href="https://github.com/r-lib/httr2/issues/202" class="external-link">#202</a>).</p></li>
+<li><p><code><a href="../reference/req_perform.html">req_perform()</a></code> now always sleeps before a request, rather than after it.</p></li>
+<li><p><code><a href="../reference/req_oauth_refresh.html">req_oauth_refresh()</a></code> now respects the <code>refresh_token</code> for caching (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/178" class="external-link">#178</a>).</p></li>
 <li><p><code><a href="../reference/req_url.html">req_url_path()</a></code> and <code><a href="../reference/req_url.html">req_url_path_append()</a></code> can now handle <code>NULL</code> or empty <code>...</code> and the elements of <code>...</code> can also have length &gt; 1 (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/177" class="external-link">#177</a>).</p></li>
 <li><p><code><a href="../reference/req_perform.html">req_perform()</a></code> now has an <code>error_call</code> argument and communicates more clearly where the error occurred (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/187" class="external-link">#187</a>).</p></li>
 </ul></div>
