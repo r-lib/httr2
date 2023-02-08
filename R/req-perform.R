@@ -84,7 +84,9 @@ req_perform <- function(
 
   throttle_delay(req)
 
+  delay <- 0
   while(tries < max_tries && Sys.time() < deadline) {
+    sys_sleep(delay)
     n <- n + 1
 
     resp <- tryCatch(
@@ -97,17 +99,14 @@ req_perform <- function(
     if (is_error(resp)) {
       tries <- tries + 1
       delay <- retry_backoff(req, tries)
-      sys_sleep(delay)
     } else if (!reauth && resp_is_invalid_oauth_token(req, resp)) {
       reauth <- TRUE
       req <- auth_oauth_sign(req, TRUE)
       handle <- req_handle(req)
       delay <- 0
-      sys_sleep(delay)
     } else if (retry_is_transient(req, resp)) {
       tries <- tries + 1
       delay <- retry_after(req, resp, tries)
-      sys_sleep(delay)
     } else {
       # done
       break

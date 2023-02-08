@@ -1,6 +1,9 @@
 # httr2 (development version)
 
-* `sys_sleep()` (used by `req_retry()`) gains a progress bar (#202).
+* `sys_sleep()` (used by `req_retry()` and `req_throttle()`) gains a progress 
+  bar (#202).
+  
+* `req_perform()` now always sleeps before a request, rather than after it.
 
 * `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
 
