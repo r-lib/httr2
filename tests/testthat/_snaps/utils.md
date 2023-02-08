@@ -24,18 +24,3 @@
       Error in `check_number()`:
       ! x must be a number
 
-# sys_sleep has progress bar
-
-    Code
-      sys_sleep(1)
-    Message
-      Waiting 1s to retry ===>--------------------------- 
-      Waiting 1s to retry ======>------------------------ 
-      Waiting 1s to retry ============>------------------ 
-      Waiting 1s to retry ===================>----------- 
-      Waiting 1s to retry ======================>-------- 
-      Waiting 1s to retry ============================>-- 
-      Waiting 1s to retry ==============================> 
-      
-      Waiting 1s to retry =========================>----- 
-

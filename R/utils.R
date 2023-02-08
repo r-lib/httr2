@@ -47,6 +47,7 @@ sys_sleep <- function(seconds, fps = 10) {
     return(invisible())
   }
 
+  start <- cur_time()
   signal("", class = "httr2_sleep", seconds = seconds)
 
   cli::cli_progress_bar(
@@ -54,12 +55,9 @@ sys_sleep <- function(seconds, fps = 10) {
     total = seconds * fps
   )
 
-  start <- cur_time()
-  until <- start + seconds
-  while(cur_time() < until) {
-    Sys.sleep(1 / fps)
-    elapsed <- cur_time() - start
-    cli::cli_progress_update(set = elapsed * fps)
+  while({left <- start + seconds - cur_time(); left > 0}) {
+    Sys.sleep(min(1 / fps, left))
+    cli::cli_progress_update(set = (seconds - left) * fps)
   }
   cli::cli_progress_done()
 

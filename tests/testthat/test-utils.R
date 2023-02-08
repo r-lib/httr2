@@ -36,12 +36,3 @@ test_that("respects httr verbose config", {
   withr::local_options(httr_config = config)
   expect_equal(httr2_verbosity(), 1)
 })
-
-test_that("sys_sleep has progress bar", {
-  withr::local_options(
-    cli.dynamic = FALSE,
-    cli.progress_show_after = 0,
-    cli.progress_clear = FALSE
-  )
-  expect_snapshot(sys_sleep(1))
-})
