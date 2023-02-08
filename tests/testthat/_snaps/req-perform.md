@@ -10,9 +10,8 @@
 ---
 
     Code
-      (expect_error(req_perform(req), class = "httr2_http_429"))
-    Output
-      <error/httr2_http_429>
+      req_perform(req)
+    Condition
       Error in `req_perform()`:
       ! HTTP 429 Too Many Requests.
 
