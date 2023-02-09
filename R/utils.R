@@ -51,7 +51,7 @@ sys_sleep <- function(seconds, fps = 10) {
   signal("", class = "httr2_sleep", seconds = seconds)
 
   cli::cli_progress_bar(
-    format = "Waiting {seconds}s to retry {cli::pb_bar}",
+    format = "Waiting {round(seconds)}s to retry {cli::pb_bar}",
     total = seconds * fps
   )
 
