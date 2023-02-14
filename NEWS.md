@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `throttle_status()` to make it a little easier to verify what's happening
+  with throttling.
+
 * `sys_sleep()` (used by `req_retry()` and `req_throttle()`) gains a progress 
   bar (#202).
   

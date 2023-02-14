@@ -1,7 +1,10 @@
 #' Throttle a request by automatically adding a delay
 #'
+#' @description
 #' Use `req_throttle()` to ensure that repeated calls to [req_perform()] never
 #' exceed a specified rate.
+#'
+#' Call `throttle_status()` to see the
 #'
 #' @inheritParams req_perform
 #' @param rate Maximum rate, i.e. maximum number of requests per second.
@@ -14,9 +17,14 @@
 #' @seealso [req_retry()] for another way of handling rate-limited APIs.
 #' @export
 #' @examples
-#' # Ensure server will never recieve more than 10 requests a minute
-#' request("https://example.com") %>%
-#'   req_throttle(rate = 10 / 60)
+#' # Ensure we never send more than 30 requests a minute
+#' req <- request("https://example.com") %>%
+#'   req_throttle(rate = 30 / 60)
+#'
+#' resp <- req_perform(req)
+#' throttle_status()
+#' resp <- req_perform(req)
+#' throttle_status()
 req_throttle <- function(req, rate, realm = NULL) {
   check_request(req)
   check_number(rate, "`rate`")
@@ -39,6 +47,19 @@ req_throttle <- function(req, rate, realm = NULL) {
   }
 
   req_policies(req, throttle_delay = throttle_delay)
+}
+
+#' @export
+#' @rdname req_throttle
+throttle_status <- function() {
+  realms <- sort(names(the$throttle))
+
+  data.frame(
+    realm = realms,
+    last_request = .POSIXct(unlist(the$throttle[realms]) %||% double()),
+    row.names = NULL,
+    stringsAsFactors = FALSE
+  )
 }
 
 throttle_reset <- function() {
