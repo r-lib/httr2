@@ -4,7 +4,7 @@
 #' Use `req_throttle()` to ensure that repeated calls to [req_perform()] never
 #' exceed a specified rate.
 #'
-#' Call `throttle_status()` to see the
+#' Call `throttle_status()` to see the time of the last request per realm.
 #'
 #' @inheritParams req_perform
 #' @param rate Maximum rate, i.e. maximum number of requests per second.
