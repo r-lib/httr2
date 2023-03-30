@@ -14,6 +14,8 @@ test_that("can send file", {
 })
 
 test_that("can send string", {
+  skip_if_offline()
+
   resp <- request_httpbin("/post") %>%
     req_body_raw("test") %>%
     req_perform()
@@ -82,6 +84,7 @@ test_that("req_body_form() and req_body_multipart() accept list() with warning",
 
 test_that("can upload file with multipart", {
   skip_on_os("windows") # fails due to line ending difference
+  skip_if_offline()
 
   path <- tempfile()
   writeLines("this is a test", path)
