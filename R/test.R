@@ -12,6 +12,7 @@ request_test <- function(template = "/get", ...) {
 }
 
 request_httpbin <- function(template, ...) {
+  testthat::skip_if_offline("https://httpbin.org")
   req <- request("https://httpbin.org")
   req <- req_template(req, template, ..., .env = caller_env())
   req
