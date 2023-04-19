@@ -150,7 +150,7 @@ I've made a few important choices here:
 -   I've used a default of `NULL` for the `seed` argument.
     `req_url_query()` will automatically drop `NULL` arguments so this means that no default value is sent to the API, but when you read the function definition you can still see that `seed` is accepted.
 
--   I automatically all prefix query parameters with `_` because argument names starting with `_` are hard to type in R.
+-   I automatically prefix all query parameters with `_` because argument names starting with `_` are hard to type in R.
 
 -   My function generates the request, performs it, and extracts the body of the response.
     This works well for simple cases, but for more complex APIs you might want to return a request object that can be modified before being performed.
