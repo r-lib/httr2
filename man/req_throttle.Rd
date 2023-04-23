@@ -27,7 +27,7 @@ A modified HTTP \link{request}.
 Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_perform]{req_perform()}} never
 exceed a specified rate.
 
-Call \code{throttle_status()} to see the
+Call \code{throttle_status()} to see the status.
 }
 \examples{
 # Ensure we never send more than 30 requests a minute
