@@ -32,7 +32,7 @@ Having an explicit request object makes it easier to build up a complex request 
 Every request starts with a URL:
 
 ```{r}
-req <- request(test_server())
+req <- request(example_url())
 req
 ```
 
@@ -50,7 +50,7 @@ The first line of the request contains three important pieces of information:
     Here's its GET, the most common verb, indicating that we want to *get* a resource.
     Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.
 
--   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`R url_parse(test_server())$port`).
+-   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`R url_parse(example_url())$port`).
 
 -   The version of the HTTP protocol.
     This is unimportant for our purposes because it's handled at a lower level.
@@ -116,7 +116,7 @@ If you need to send data encoded in a different form, you can use `req_body_raw(
 To actually perform a request and fetch the response back from the server, call `req_perform()`:
 
 ```{r}
-req <- request(test_server()) %>% req_url_path("/json")
+req <- request(example_url()) %>% req_url_path("/json")
 resp <- req %>% req_perform()
 resp
 ```
@@ -165,11 +165,11 @@ Responses with status codes 4xx and 5xx are HTTP errors.
 httr2 automatically turns these into R errors:
 
 ```{r, error = TRUE}
-request(test_server()) %>% 
+request(example_url()) %>% 
   req_url_path("/status/404") %>% 
   req_perform()
 
-request(test_server()) %>% 
+request(example_url()) %>% 
   req_url_path("/status/500") %>% 
   req_perform()
 ```

@@ -36,7 +36,7 @@
 #' @export
 #' @examples
 #' # Requesting these 4 pages one at a time would take 2 seconds:
-#' request_base <- request(test_server())
+#' request_base <- request(example_url())
 #' reqs <- list(
 #'   request_base %>% req_url_path("/delay/0.5"),
 #'   request_base %>% req_url_path("/delay/0.5"),

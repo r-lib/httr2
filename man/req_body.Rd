@@ -61,7 +61,7 @@ A modified HTTP \link{request}.
 Adding a body to a request will automatically switch the method to POST.
 }
 \examples{
-req <- request(test_server()) \%>\%
+req <- request(example_url()) \%>\%
   req_url_path("/post")
 
 # Most APIs expect small amounts of data in either form or json encoded:

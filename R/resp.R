@@ -92,7 +92,7 @@ print.httr2_response <- function(x,...) {
 #' @returns `resp` (invisibly).
 #' @export
 #' @examples
-#' resp <- request(test_server()) %>%
+#' resp <- request(example_url()) %>%
 #'   req_url_path("/json") %>%
 #'   req_perform()
 #' resp %>% resp_raw()

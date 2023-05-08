@@ -31,7 +31,7 @@ base url in the initial \code{\link[=request]{request()}}. This means that you'l
 to avoid multiple \code{req_template()} calls on the same request.
 }
 \examples{
-httpbin <- request(test_server())
+httpbin <- request(example_url())
 
 # You can supply template parameters in `...`
 httpbin \%>\% req_template("GET /bytes/{n}", n = 100)
@@ -41,7 +41,7 @@ n <- 200
 httpbin \%>\% req_template("GET /bytes/{n}")
 
 # Existing path is preserved:
-httpbin_test <- request(test_server()) \%>\% req_url_path("/test")
+httpbin_test <- request(example_url()) \%>\% req_url_path("/test")
 name <- "id"
 value <- "a3fWa"
 httpbin_test \%>\% req_template("GET /set/{name}/{value}")

@@ -30,7 +30,7 @@ show_bytes <- function(x) {
   cat("Got ", length(x), " bytes\n", sep = "")
   TRUE
 }
-resp <- request(test_server()) \%>\%
+resp <- request(example_url()) \%>\%
   req_url_path("/stream-bytes/100000") \%>\%
   req_stream(show_bytes, buffer_kb = 32)
 }

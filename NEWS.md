@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* New `test_server()` to launch a local server, making tests and examples 
+* New `example_url()` to launch a local server, making tests and examples 
   more robust.
 
 * New `throttle_status()` to make it a little easier to verify what's happening

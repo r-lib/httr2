@@ -1,16 +1,16 @@
 request_test <- function(template = "/get", ...) {
-  req <- request(test_server())
+  req <- request(example_url())
   req <- req_template(req, template, ..., .env = caller_env())
   req
 }
 
-#' A local server useful for tests and examples
+#' URL too a local server that's useful for tests and examples
 #'
 #' Requires the webfakes package to be installed.
 #'
 #' @keywords internal
 #' @export
-test_server <- function() {
+example_url <- function() {
   check_installed("webfakes")
 
   env_cache(the, "test_app",
