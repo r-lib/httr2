@@ -136,7 +136,7 @@
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET / HTTP/1.1</span></span>
 <span><span class="co">#&gt; Host: r-project.org</span></span>
-<span><span class="co">#&gt; User-Agent: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.79.1</span></span>
+<span><span class="co">#&gt; User-Agent: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.87.0</span></span>
 <span><span class="co">#&gt; Accept: */*</span></span>
 <span><span class="co">#&gt; Accept-Encoding: deflate, gzip</span></span></code></pre></div>
 <p>Use <code><a href="reference/req_perform.html">req_perform()</a></code> to perform the request, retrieving a <strong>response</strong>:</p>
@@ -147,7 +147,7 @@
 <span><span class="co">#&gt; GET https://www.r-project.org/</span></span>
 <span><span class="co">#&gt; Status: 200 OK</span></span>
 <span><span class="co">#&gt; Content-Type: text/html</span></span>
-<span><span class="co">#&gt; Body: In memory (6307 bytes)</span></span></code></pre></div>
+<span><span class="co">#&gt; Body: In memory (6204 bytes)</span></span></code></pre></div>
 <p>The <code>resp_</code> functions help you extract various useful components of the response:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span></span>
