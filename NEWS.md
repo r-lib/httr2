@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 0.2.3
 
 * New `example_url()` to launch a local server, making tests and examples 
   more robust.
