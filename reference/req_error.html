@@ -106,14 +106,14 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Performing this request usually generates an error because httr2</span></span></span>
 <span class="r-in"><span><span class="co"># converts HTTP errors into R errors:</span></span></span>
-<span class="r-in"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="fu"><a href="test_server.html">test_server</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="fu"><a href="example_url.html">example_url</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_path</a></span><span class="op">(</span><span class="st">"/status/404"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error in req_perform(.) : HTTP 404 Not Found.</span>
 <span class="r-in"><span><span class="co"># You can still retrieve it with last_response()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:45799/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:44791/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: Empty</span>
@@ -124,7 +124,7 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">resp</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:45799/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:44791/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: Empty</span>

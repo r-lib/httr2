@@ -31,6 +31,9 @@
     <loc>https://httr2.r-lib.org/reference/curl_translate.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/example_url.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/httr2-package.html</loc>
   </url>
   <url>
@@ -188,9 +191,6 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/secrets.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/test_server.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/throttle_status.html</loc>
