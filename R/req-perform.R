@@ -249,7 +249,8 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 #'   cat("Got ", length(x), " bytes\n", sep = "")
 #'   TRUE
 #' }
-#' resp <- request("http://httpbin.org/stream-bytes/100000") %>%
+#' resp <- request(test_server()) %>%
+#'   req_url_path("/stream-bytes/100000") %>%
 #'   req_stream(show_bytes, buffer_kb = 32)
 req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   check_request(req)

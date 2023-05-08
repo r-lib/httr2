@@ -92,7 +92,9 @@ print.httr2_response <- function(x,...) {
 #' @returns `resp` (invisibly).
 #' @export
 #' @examples
-#' resp <- request("https://httpbin.org/json") %>% req_perform()
+#' resp <- request(test_server()) %>%
+#'   req_url_path("/json") %>%
+#'   req_perform()
 #' resp %>% resp_raw()
 resp_raw <- function(resp) {
   cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))

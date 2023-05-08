@@ -12,7 +12,8 @@
 #' @inheritParams req_perform
 #' @returns A modified HTTP [request].
 #' @examples
-#' req <- request("http://httpbin.org/post")
+#' req <- request(test_server()) %>%
+#'   req_url_path("/post")
 #'
 #' # Most APIs expect small amounts of data in either form or json encoded:
 #' req %>%
