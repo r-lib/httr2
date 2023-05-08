@@ -10,10 +10,3 @@ request_test <- function(template = "/get", ...) {
   req <- req_template(req, template, ..., .env = caller_env())
   req
 }
-
-request_httpbin <- function(template, ...) {
-  req <- request("https://httpbin.org")
-  req <- req_template(req, template, ..., .env = caller_env())
-  req
-}
-
