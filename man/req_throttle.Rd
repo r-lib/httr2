@@ -2,12 +2,9 @@
 % Please edit documentation in R/req-throttle.R
 \name{req_throttle}
 \alias{req_throttle}
-\alias{throttle_status}
 \title{Throttle a request by automatically adding a delay}
 \usage{
 req_throttle(req, rate, realm = NULL)
-
-throttle_status()
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -26,8 +23,6 @@ A modified HTTP \link{request}.
 \description{
 Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_perform]{req_perform()}} never
 exceed a specified rate.
-
-Call \code{throttle_status()} to see the
 }
 \examples{
 # Ensure we never send more than 30 requests a minute

@@ -4,8 +4,6 @@
 #' Use `req_throttle()` to ensure that repeated calls to [req_perform()] never
 #' exceed a specified rate.
 #'
-#' Call `throttle_status()` to see the
-#'
 #' @inheritParams req_perform
 #' @param rate Maximum rate, i.e. maximum number of requests per second.
 #'   Usually easiest expressed as a fraction,
@@ -49,8 +47,14 @@ req_throttle <- function(req, rate, realm = NULL) {
   req_policies(req, throttle_delay = throttle_delay)
 }
 
+#' Display internal throttle status
+#'
+#' Sometimes useful for debugging.
+#'
+#' @return A data frame with two columns: the `realm` and time the
+#'   `last_request` was made.
 #' @export
-#' @rdname req_throttle
+#' @keywords internal
 throttle_status <- function() {
   realms <- sort(names(the$throttle))
 
