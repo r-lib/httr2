@@ -6,19 +6,19 @@
 * New `throttle_status()` to make it a little easier to verify what's happening
   with throttling.
 
-* `sys_sleep()` (used by `req_retry()` and `req_throttle()`) gains a progress 
-  bar (#202).
-  
-* `req_perform()` now always sleeps before a request, rather than after it.
+* `req_oauth_refresh()` now respects the `refresh_token` for caching 
+  (@mgirlich, #178).
 
-* `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
+* `req_perform()` now always sleeps before a request, rather than after it.
+  It also gains an `error_call` argument and communicates more clearly
+  where the error occurred (@mgirlich, #187).
 
 * `req_url_path()` and `req_url_path_append()` can now handle `NULL` or empty
   `...` and the elements of `...` can also have length > 1 (@mgirlich, #177).
 
-* `req_perform()` now has an `error_call` argument and communicates more clearly
-  where the error occurred (@mgirlich, #187).
-
+* `sys_sleep()` (used by `req_retry()` and `req_throttle()`) gains a progress 
+  bar (#202).
+  
 # httr2 0.2.2
 
 * `curl_translate()` can now handle curl copied from Chrome developer tools
