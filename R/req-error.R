@@ -19,7 +19,8 @@
 #' @examples
 #' # Performing this request usually generates an error because httr2
 #' # converts HTTP errors into R errors:
-#' req <- request("http://httpbin.org/404")
+#' req <- request(test_server()) %>%
+#'   req_url_path("/status/404")
 #' try(req %>% req_perform())
 #' # You can still retrieve it with last_response()
 #' last_response()

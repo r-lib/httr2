@@ -20,7 +20,7 @@ Use this function to use a custom HTTP method like \code{HEAD},
 \code{GET} for requests without a body, and \code{POST} for requests with a body.
 }
 \examples{
-request("http://httpbin.org") \%>\% req_method("PATCH")
-request("http://httpbin.org") \%>\% req_method("PUT")
-request("http://httpbin.org") \%>\% req_method("HEAD")
+request(test_server()) \%>\% req_method("PATCH")
+request(test_server()) \%>\% req_method("PUT")
+request(test_server()) \%>\% req_method("HEAD")
 }

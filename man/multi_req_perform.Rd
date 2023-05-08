@@ -49,19 +49,20 @@ or OAuth failures, \code{multi_req_perform()} will make only make 1.
 }
 
 \examples{
-# Requesting these 4 pages one at a time would take four seconds:
+# Requesting these 4 pages one at a time would take 2 seconds:
+request_base <- request(test_server())
 reqs <- list(
-  request("https://httpbin.org/delay/1"),
-  request("https://httpbin.org/delay/1"),
-  request("https://httpbin.org/delay/1"),
-  request("https://httpbin.org/delay/1")
+  request_base \%>\% req_url_path("/delay/0.5"),
+  request_base \%>\% req_url_path("/delay/0.5"),
+  request_base \%>\% req_url_path("/delay/0.5"),
+  request_base \%>\% req_url_path("/delay/0.5")
 )
 # But it's much faster if you request in parallel
 system.time(resps <- multi_req_perform(reqs))
 
 reqs <- list(
-  request("https://httpbin.org/status/200"),
-  request("https://httpbin.org/status/400"),
+  request_base \%>\% req_url_path("/status/200"),
+  request_base \%>\% req_url_path("/status/400"),
   request("FAILURE")
 )
 # multi_req_perform() will always succeed
