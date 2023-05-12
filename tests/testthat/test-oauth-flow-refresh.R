@@ -27,3 +27,12 @@ test_that("cache considers refresh_token", {
   expect_equal(req1$policies$auth_oauth$cache$get(), token)
   expect_equal(req2$policies$auth_oauth$cache$get(), NULL)
 })
+
+test_that("warns if refresh token changes", {
+  client <- oauth_client("example", "https://example.com/get_token")
+  local_mocked_bindings(
+    token_refresh = function(...) list(refresh_token = "def")
+  )
+
+  expect_snapshot(. <- oauth_flow_refresh(client, "abc"))
+})
