@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `obfuscated()` values now display their original call when printed.
+
 # httr2 0.2.3
 
 * New `example_url()` to launch a local server, making tests and examples 
