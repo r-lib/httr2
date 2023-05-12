@@ -8,10 +8,11 @@
 #'
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
-#' @param ... For `req_url_query()`: Name-value pairs that provide query
-#'   parameters. Each value must be either a length-1 atomic vector
-#'   (which is automatically escaped) or `NULL` (which is silently dropped).
-#'   If you want to opt out of escaping, wrap strings in `I()`.
+#' @param ... For `req_url_query()`: <[`dynamic-dots`][rlang::dyn-dots]>
+#'   Name-value pairs that provide query parameters. Each value must be either
+#'   a length-1 atomic vector (which is automatically escaped) or `NULL` (which
+#'   is silently dropped). If you want to opt out of escaping, wrap strings in
+#'   `I()`.
 #'
 #'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
 #'   components that will be combined with `/`.
@@ -30,6 +31,11 @@
 #' # Change complete url
 #' req %>%
 #'   req_url("http://google.com")
+#'
+#' # If you have query parameters in a list, use !!!
+#' params <- list(a = "1", b = "2")
+#' req %>%
+#'   req_url_query(!!!params, c = "3")
 req_url <- function(req, url) {
   check_request(req)
   check_string(url, "`url`")

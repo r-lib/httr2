@@ -101,10 +101,11 @@ req_body_json <- function(req, data,
 
 #' @export
 #' @rdname req_body
-#' @param ... Name-data pairs used send data in the body. For
-#'   `req_body_form()`, the values must be strings (or things easily
-#'   coerced to string); for `req_body_multipart()` the values must be
-#'   strings or objects produced by [curl::form_file()]/[curl::form_data()].
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-data pairs used send
+#'   data in the body. For `req_body_form()`, the values must be strings (or
+#'   things easily coerced to string); for `req_body_multipart()` the values
+#'   must be strings or objects produced by
+#'   [curl::form_file()]/[curl::form_data()].
 #'
 #'   For `req_body_json()`, additional arguments passed on to
 #'   [jsonlite::toJSON()].
