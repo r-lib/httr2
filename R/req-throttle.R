@@ -1,4 +1,4 @@
-#' Throttle a request by automatically adding a delay
+#' Rate limit a request by automatically adding a delay
 #'
 #' @description
 #' Use `req_throttle()` to ensure that repeated calls to [req_perform()] never
