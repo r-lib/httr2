@@ -20,10 +20,11 @@ req_url_path_append(req, ...)
 
 \item{url}{New URL; completely replaces existing.}
 
-\item{...}{For \code{req_url_query()}: Name-value pairs that provide query
-parameters. Each value must be either a length-1 atomic vector
-(which is automatically escaped) or \code{NULL} (which is silently dropped).
-If you want to opt out of escaping, wrap strings in \code{I()}.
+\item{...}{For \code{req_url_query()}: <\code{\link[rlang:dyn-dots]{dynamic-dots}}>
+Name-value pairs that provide query parameters. Each value must be either
+a length-1 atomic vector (which is automatically escaped) or \code{NULL} (which
+is silently dropped). If you want to opt out of escaping, wrap strings in
+\code{I()}.
 
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}
@@ -52,4 +53,9 @@ req \%>\%
 # Change complete url
 req \%>\%
   req_url("http://google.com")
+
+# If you have query parameters in a list, use !!!
+params <- list(a = "1", b = "2")
+req \%>\%
+  req_url_query(!!!params, c = "3")
 }

@@ -3,7 +3,8 @@
 #' `req_headers()` allows you to set the value of any header.
 #'
 #' @param .req A [request].
-#' @param ... Name-value pairs of headers and their values.
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-value pairs of headers
+#'   and their values.
 #'
 #'   * Use `NULL` to reset a value to httr's default
 #'   * Use `""` to remove a header
@@ -39,6 +40,13 @@
 #' req %>%
 #'   req_headers(HeaderName = c("Value 1", "Value 2", "Value 3")) %>%
 #'   req_dry_run()
+#'
+#' # If you have headers in a list, use !!!
+#' headers <- list(HeaderOne = "one", HeaderTwo = "two")
+#' req %>%
+#'    req_headers(!!!headers, HeaderThree = "three") %>%
+#'    req_dry_run()
+#'
 req_headers <- function(.req, ...) {
   check_request(.req)
 

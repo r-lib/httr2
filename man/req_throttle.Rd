@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-throttle.R
 \name{req_throttle}
 \alias{req_throttle}
-\title{Throttle a request by automatically adding a delay}
+\title{Rate limit a request by automatically adding a delay}
 \usage{
 req_throttle(req, rate, realm = NULL)
 }

@@ -8,7 +8,7 @@
 \usage{
 resp_headers(resp, filter = NULL)
 
-resp_header(resp, header)
+resp_header(resp, header, default = NULL)
 
 resp_header_exists(resp, header)
 }
@@ -19,6 +19,8 @@ resp_header_exists(resp, header)
 \code{NULL}, the default, returns all headers.}
 
 \item{header}{Header name (case insensitive)}
+
+\item{default}{Default value to use if header doesn't exist.}
 }
 \value{
 \itemize{
