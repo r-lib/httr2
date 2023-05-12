@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `resp_header()` gains a `default` argument which is returned if the header
+  doesn't exist (#208).
+
 # httr2 0.2.3
 
 * New `example_url()` to launch a local server, making tests and examples 

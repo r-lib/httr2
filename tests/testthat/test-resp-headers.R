@@ -3,15 +3,20 @@ test_that("can extract headers and check for existence", {
   expect_type(resp_headers(resp), "list")
   expect_equal(resp_header(resp, "Content-Type"), "application/json")
   expect_equal(resp_header_exists(resp, "Content-Type"), TRUE)
-
-  expect_equal(resp_header(resp, "non-existent"), NULL)
-  expect_equal(resp_header_exists(resp, "non-existent"), FALSE)
 })
 
 test_that("headers are case-insenstive", {
   resp <- response(headers = "Content-Type: application/json")
   expect_equal(resp_header(resp, "content-type"), "application/json")
   expect_equal(resp_header_exists(resp, "content-type"), TRUE)
+})
+
+test_that("has tools for non-existent headers", {
+  resp <- response()
+
+  expect_equal(resp_header(resp, "non-existent"), NULL)
+  expect_equal(resp_header(resp, "non-existent", "xyz"), "xyz")
+  expect_equal(resp_header_exists(resp, "non-existent"), FALSE)
 })
 
 test_that("can extract content type/encoding", {
