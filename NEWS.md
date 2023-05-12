@@ -2,6 +2,12 @@
 
 * `obfuscated()` values now display their original call when printed.
 
+* `resp_header()` gains a `default` argument which is returned if the header
+  doesn't exist (#208).
+
+* `oauth_flow_refresh()` now only warns if the `refresh_token` changes, making
+  it a little easier to use in manual workflows (#186).
+
 # httr2 0.2.3
 
 * New `example_url()` to launch a local server, making tests and examples 
