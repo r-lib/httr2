@@ -39,10 +39,8 @@ extract the refresh token from the result, and then save in an environment
 variable for future use in automated tests.
 
 When requesting an access token, the server may also return a new refresh
-token. If this happens, \code{oauth_flow_refresh()} will error, and you'll have
-to create a new refresh token following the same procedure you did to get
-the first token (so it's a good idea to document what you did the first time
-because you might need to do it again).
+token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have
+update your stored refresh token.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")
