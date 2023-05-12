@@ -55,7 +55,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/obfuscate.html">obfuscated()</a></code> values now display their original call when printed.</p></li>
+<ul><li><p>New <code><a href="../reference/resp_body_raw.html">resp_has_body()</a></code> returns a <code>TRUE</code> or <code>FALSE</code> depending on whether or not the response has a body (<a href="https://github.com/r-lib/httr2/issues/205" class="external-link">#205</a>).</p></li>
+<li><p>Improve print method for responses with body saved to disk.</p></li>
+<li><p><code><a href="../reference/obfuscate.html">obfuscated()</a></code> values now display their original call when printed.</p></li>
 <li><p><code><a href="../reference/resp_headers.html">resp_header()</a></code> gains a <code>default</code> argument which is returned if the header doesn’t exist (<a href="https://github.com/r-lib/httr2/issues/208" class="external-link">#208</a>).</p></li>
 <li><p><code><a href="../reference/oauth_flow_refresh.html">oauth_flow_refresh()</a></code> now only warns if the <code>refresh_token</code> changes, making it a little easier to use in manual workflows (<a href="https://github.com/r-lib/httr2/issues/186" class="external-link">#186</a>).</p></li>
 </ul></div>
