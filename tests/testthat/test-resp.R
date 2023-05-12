@@ -1,7 +1,8 @@
 test_that("response has basic print method", {
 
   file.create("path-empty")
-  writeLines(letters, "path-content")
+  writeBin("sample content", "path-content")
+
   withr::defer(unlink(c("path-empty", "path-content")))
 
   expect_snapshot({

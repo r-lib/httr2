@@ -35,7 +35,7 @@
       <httr2_response>
       GET https://example.com
       Status: 200 OK
-      Body: On disk 'path-content' (52 bytes)
+      Body: On disk 'path-content' (15 bytes)
 
 # check_response produces helpful error
 
