@@ -9,7 +9,8 @@ req_headers(.req, ...)
 \arguments{
 \item{.req}{A \link{request}.}
 
-\item{...}{Name-value pairs of headers and their values.
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name-value pairs of headers
+and their values.
 \itemize{
 \item Use \code{NULL} to reset a value to httr's default
 \item Use \code{""} to remove a header
@@ -51,4 +52,11 @@ req \%>\%
 req \%>\%
   req_headers(HeaderName = c("Value 1", "Value 2", "Value 3")) \%>\%
   req_dry_run()
+
+# If you have headers in a list, use !!!
+headers <- list(HeaderOne = "one", HeaderTwo = "two")
+req \%>\%
+   req_headers(!!!headers, HeaderThree = "three") \%>\%
+   req_dry_run()
+
 }
