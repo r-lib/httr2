@@ -1,9 +1,18 @@
 # curl and http errors become errors
 
     Code
-      (expect_error(req_perform(req), class = "httr2_http_404"))
-    Output
-      <error/httr2_http_404>
+      req_perform(req)
+    Condition
+      Error in `req_perform()`:
+      ! Failed to make HTTP request.
+      Caused by error in `curl::curl_fetch_memory()`:
+      ! Couldn't connect to server
+
+---
+
+    Code
+      req_perform(req)
+    Condition
       Error in `req_perform()`:
       ! HTTP 404 Not Found.
 

@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_perform()` now throws error with class `httr2_failure` if the 
+  request fails. And that error now captures the curl error as the parent.
+
 * New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
   or not the response has a body (#205).
 

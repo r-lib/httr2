@@ -153,6 +153,8 @@ oauth_flow_auth_code <- function(client,
     token_params$code_verifier <- code$verifier
   }
 
+  redirect_uri <- redirect_uri %||% "http://localhost@"
+
   state <- base64_url_rand(32)
   redirect_url <- paste0("http://", host_name, ":", port, "/")
 

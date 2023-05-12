@@ -4,13 +4,13 @@ test_that("success request returns response", {
 })
 
 test_that("curl and http errors become errors", {
-  req <- request_test("/delay/:secs", secs = 1) %>% req_timeout(0.1)
-  expect_error(req_perform(req), class = "httr2_failed")
+  req <- request("https://localhost@1")
+  expect_snapshot(req_perform(req), error = TRUE)
+  expect_error(req_perform(req), class = "httr2_failure")
 
   req <- request_test("/status/:status", status = 404)
-  expect_snapshot(
-    (expect_error(req_perform(req), class = "httr2_http_404"))
-  )
+  expect_error(req_perform(req), class = "httr2_http_404")
+  expect_snapshot(req_perform(req), error = TRUE)
 
   # including transient errors
   req <- request_test("/status/:status", status = 429)
