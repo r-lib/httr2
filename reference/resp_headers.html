@@ -77,7 +77,7 @@ resp_header_exists() checks if a header is present.
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">resp_headers</span><span class="op">(</span><span class="va">resp</span>, filter <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">resp_header</span><span class="op">(</span><span class="va">resp</span>, <span class="va">header</span><span class="op">)</span></span>
+<span><span class="fu">resp_header</span><span class="op">(</span><span class="va">resp</span>, <span class="va">header</span>, default <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">resp_header_exists</span><span class="op">(</span><span class="va">resp</span>, <span class="va">header</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -95,6 +95,10 @@ resp_header_exists() checks if a header is present.
 
 <dt>header</dt>
 <dd><p>Header name (case insensitive)</p></dd>
+
+
+<dt>default</dt>
+<dd><p>Default value to use if header doesn't exist.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -116,31 +120,31 @@ resp_header_exists() checks if a header is present.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">last-modified</span>: Fri, 12 May 2023 14:04:23 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">etag</span>: W/"645e4767-4cee"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">expires</span>: Fri, 12 May 2023 14:17:46 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">expires</span>: Fri, 12 May 2023 14:18:42 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">cache-control</span>: max-age=600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-encoding</span>: gzip</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-github-request-id</span>: C372:6CFE:28942E9:3A8677B:645E4832</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-github-request-id</span>: D59A:4374:28B87FE:3AABC79:645E486A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-ranges</span>: bytes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">date</span>: Fri, 12 May 2023 14:49:51 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">date</span>: Fri, 12 May 2023 14:56:56 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">via</span>: 1.1 varnish</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">age</span>: 36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-served-by</span>: cache-dfw-kdfw8210059-DFW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">age</span>: 473</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-served-by</span>: cache-iad-kiad7000168-IAD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache</span>: HIT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache-hits</span>: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-timer</span>: S1683902992.830584,VS0,VE1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-timer</span>: S1683903417.660110,VS0,VE0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">vary</span>: Accept-Encoding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-fastly-request-id</span>: 6798d384872cc7a03ab8fa0ce76b5fb43c286cba</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-fastly-request-id</span>: 597afe72e24db8c41cddd5d9f816f675b25a8780</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 5312</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_headers</span><span class="op">(</span><span class="st">"x-"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-github-request-id</span>: C372:6CFE:28942E9:3A8677B:645E4832</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-served-by</span>: cache-dfw-kdfw8210059-DFW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-github-request-id</span>: D59A:4374:28B87FE:3AABC79:645E486A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-served-by</span>: cache-iad-kiad7000168-IAD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache</span>: HIT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-cache-hits</span>: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-timer</span>: S1683902992.830584,VS0,VE1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-fastly-request-id</span>: 6798d384872cc7a03ab8fa0ce76b5fb43c286cba</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-timer</span>: S1683903417.660110,VS0,VE0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">x-fastly-request-id</span>: 597afe72e24db8c41cddd5d9f816f675b25a8780</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_header_exists</span><span class="op">(</span><span class="st">"server"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

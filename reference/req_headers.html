@@ -70,7 +70,8 @@
 
 
 <dt>...</dt>
-<dd><p>Name-value pairs of headers and their values.</p><ul><li><p>Use <code>NULL</code> to reset a value to httr's default</p></li>
+<dd><p>&lt;<code><a href="https://rlang.r-lib.org/reference/dyn-dots.html" class="external-link">dynamic-dots</a></code>&gt; Name-value pairs of headers
+and their values.</p><ul><li><p>Use <code>NULL</code> to reset a value to httr's default</p></li>
 <li><p>Use <code>""</code> to remove a header</p></li>
 <li><p>Use a character vector to repeat a header.</p></li>
 </ul></dd>
@@ -147,6 +148,22 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderName</span>: Value 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderName</span>: Value 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you have headers in a list, use !!!</span></span></span>
+<span class="r-in"><span><span class="va">headers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>HeaderOne <span class="op">=</span> <span class="st">"one"</span>, HeaderTwo <span class="op">=</span> <span class="st">"two"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>   <span class="fu">req_headers</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">headers</span>, HeaderThree <span class="op">=</span> <span class="st">"three"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.0.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderOne</span>: one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderTwo</span>: two</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderThree</span>: three</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
