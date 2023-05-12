@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `resp_header()` gains a `default` argument which is returned if the header
+  doesn't exist (#208).
+
 * `oauth_flow_refresh()` now only warns if the `refresh_token` changes, making
   it a little easier to use in manual workflows (#186).
 

@@ -37,10 +37,11 @@ resp_headers <- function(resp, filter = NULL) {
 
 #' @export
 #' @param header Header name (case insensitive)
+#' @param default Default value to use if header doesn't exist.
 #' @rdname resp_headers
-resp_header <- function(resp, header) {
+resp_header <- function(resp, header, default = NULL) {
   check_response(resp)
-  resp$headers[[header]]
+  resp$headers[[header]] %||% default
 }
 
 #' @export
