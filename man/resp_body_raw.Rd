@@ -2,6 +2,7 @@
 % Please edit documentation in R/resp-body.R
 \name{resp_body_raw}
 \alias{resp_body_raw}
+\alias{resp_has_body}
 \alias{resp_body_string}
 \alias{resp_body_json}
 \alias{resp_body_html}
@@ -9,6 +10,8 @@
 \title{Extract body from response}
 \usage{
 resp_body_raw(resp)
+
+resp_has_body(resp)
 
 resp_body_string(resp, encoding = NULL)
 
@@ -50,6 +53,7 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \item \code{resp_body_json()} returns parsed JSON.
 \item \code{resp_body_html()} returns parsed HTML.
 \item \code{resp_body_xml()} returns parsed XML.
+\item \code{resp_has_body()} returns \code{TRUE} if the response has a body.
 }
 
 \code{resp_body_json()} and \code{resp_body_xml()} check that the content-type header
@@ -60,6 +64,7 @@ check with \code{check_type = FALSE}.
 resp <- request("https://httr2.r-lib.org") \%>\% req_perform()
 resp
 
+resp \%>\% resp_has_body()
 resp \%>\% resp_body_raw()
 resp \%>\% resp_body_string()
 

@@ -1,9 +1,15 @@
-test_that("respinse has basic print method", {
+test_that("response has basic print method", {
+
+  file.create("path-empty")
+  writeLines(letters, "path-content")
+  withr::defer(unlink(c("path-empty", "path-content")))
+
   expect_snapshot({
     response(200)
     response(200, headers = "Content-Type: text/html")
     response(200, body = charToRaw("abcdef"))
-    response(200, body = new_path("/test"))
+    response(200, body = new_path("path-empty"))
+    response(200, body = new_path("path-content"))
   })
 })
 

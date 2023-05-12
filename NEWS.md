@@ -1,5 +1,10 @@
 # httr2 (development version)
 
+* New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
+  or not the response has a body (#205).
+
+* Improve print method for responses with body saved to disk.
+
 # httr2 0.2.3
 
 * New `example_url()` to launch a local server, making tests and examples 

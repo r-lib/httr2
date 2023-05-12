@@ -1,7 +1,15 @@
 # empty body generates error
 
     Code
-      request_test("HEAD /get") %>% req_perform() %>% resp_body_raw()
+      resp_body_raw(resp1)
+    Condition
+      Error in `resp_body_raw()`:
+      ! Can not retrieve empty body
+
+---
+
+    Code
+      resp_body_raw(resp2)
     Condition
       Error in `resp_body_raw()`:
       ! Can not retrieve empty body
