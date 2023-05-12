@@ -10,7 +10,7 @@ obfuscate(x)
 obfuscated(x)
 }
 \arguments{
-\item{x}{A string to obfuscate, or mark as obfuscated.}
+\item{x}{A string to \code{obfuscate}, or mark as \code{obfuscated}.}
 }
 \value{
 \code{obfuscate()} prints the \code{obfuscated()} call to include in your
@@ -18,19 +18,20 @@ code. \code{obfuscated()} returns an S3 class marking the string as obfuscated
 so it can be unobfuscated when needed.
 }
 \description{
-This pair of functions provides a way to obfuscate mildly confidential
-information, like OAuth client secrets. The secret can not be revealed
-from your source code, but a good R programmer could still figure it
-out with a little effort. The main goal is to protect against scraping;
-there's no way for an automated tool to grab your obfuscated secrets.
-
-Because un-obfuscation happens at the last possible instant, \code{obfuscated()}
-only works in limited locations:
+Use \code{obfuscate("value")} to generate a call to \code{obfuscated()}, which will
+unobfuscate the value at the last possible moment. Obfuscated values only
+work in limited locations:
 \itemize{
 \item The \code{secret} argument to \code{\link[=oauth_client]{oauth_client()}}
 \item Elements of the \code{data} argument to \code{\link[=req_body_form]{req_body_form()}}, \code{req_body_json()},
 and \code{req_body_multipart()}.
 }
+
+Working together this pair of functions provides a way to obfuscate mildly
+confidential information, like OAuth client secrets. The secret can not be
+revealed from your inspecting source code, but a skilled R programmer could
+figure it out with some effort. The main goal is to protect against scraping;
+there's no way for an automated tool to grab your obfuscated secrets.
 }
 \examples{
 obfuscate("good morning")

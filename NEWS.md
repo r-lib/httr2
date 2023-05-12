@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `obfuscated()` values now display their original call when printed.
+
 * `resp_header()` gains a `default` argument which is returned if the header
   doesn't exist (#208).
 

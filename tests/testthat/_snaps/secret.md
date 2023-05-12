@@ -4,11 +4,11 @@
       x <- obfuscated("abcdef")
       x
     Output
-      <OBFUSCATED>
+      obfuscated("abcdef")
     Code
       str(x)
     Output
-       <OBFUSCATED>
+       obfuscated("abcdef")
 
 # can coerce to a key
 
