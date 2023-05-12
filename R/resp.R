@@ -70,11 +70,11 @@ print.httr2_response <- function(x,...) {
   }
 
   body <- x$body
-  if (is_path(body)) {
-    cli::cli_text("{.field Body}: On disk {.path body}")
-  } else if (length(body) == 0) {
-    cli::cli_text("{.field Body}: Empty")
-  } else if (length(body) > 0) {
+  if (!resp_has_body(x)) {
+    cli::cli_text("{.field Body}: None")
+  } else if (is_path(body)) {
+    cli::cli_text("{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)")
+  } else {
     cli::cli_text("{.field Body}: In memory ({length(body)} bytes)")
   }
 

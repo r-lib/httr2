@@ -1,5 +1,10 @@
 # httr2 (development version)
 
+* New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
+  or not the response has a body (#205).
+
+* Improve print method for responses with body saved to disk.
+
 * `obfuscated()` values now display their original call when printed.
 
 * `resp_header()` gains a `default` argument which is returned if the header
