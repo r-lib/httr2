@@ -42,8 +42,8 @@ in the case of failure. To activate it, you must specify either the total
 number of requests to make with \code{max_tries} or the total amount of time
 to spend with \code{max_seconds}. Then \code{req_perform()} will retry if:
 \itemize{
-\item The either the HTTP request or HTTP response doesn't complete successfully
-leading to an error from curl, the lower-level library that httr uses to
+\item Either the HTTP request or HTTP response doesn't complete successfully
+leading to an error from curl, the lower-level library that httr2 uses to
 perform HTTP request. This occurs, for example, if your wifi is down.
 \item The error is "transient", i.e. it's an HTTP error that can be resolved
 by waiting. By default, 429 and 503 statuses are treated as transient,
