@@ -6,8 +6,8 @@
 #' number of requests to make with `max_tries` or the total amount of time
 #' to spend with `max_seconds`. Then `req_perform()` will retry if:
 #'
-#' * The either the HTTP request or HTTP response doesn't complete successfully
-#'   leading to an error from curl, the lower-level library that httr uses to
+#' * Either the HTTP request or HTTP response doesn't complete successfully
+#'   leading to an error from curl, the lower-level library that httr2 uses to
 #'   perform HTTP request. This occurs, for example, if your wifi is down.
 #'
 #' * The error is "transient", i.e. it's an HTTP error that can be resolved
