@@ -3,8 +3,8 @@
 in the case of failure. To activate it, you must specify either the total
 number of requests to make with max_tries or the total amount of time
 to spend with max_seconds. Then req_perform() will retry if:
-The either the HTTP request or HTTP response doesn't complete successfully
-leading to an error from curl, the lower-level library that httr uses to
+Either the HTTP request or HTTP response doesn't complete successfully
+leading to an error from curl, the lower-level library that httr2 uses to
 perform HTTP request. This occurs, for example, if your wifi is down.
 The error is &quot;transient&quot;, i.e. it's an HTTP error that can be resolved
 by waiting. By default, 429 and 503 statuses are treated as transient,
@@ -30,8 +30,8 @@ prefer a different strategy, you can override the default with backoff.
 in the case of failure. To activate it, you must specify either the total
 number of requests to make with max_tries or the total amount of time
 to spend with max_seconds. Then req_perform() will retry if:
-The either the HTTP request or HTTP response doesn't complete successfully
-leading to an error from curl, the lower-level library that httr uses to
+Either the HTTP request or HTTP response doesn't complete successfully
+leading to an error from curl, the lower-level library that httr2 uses to
 perform HTTP request. This occurs, for example, if your wifi is down.
 The error is &quot;transient&quot;, i.e. it's an HTTP error that can be resolved
 by waiting. By default, 429 and 503 statuses are treated as transient,
@@ -112,8 +112,8 @@ prefer a different strategy, you can override the default with backoff.
     <p><code>req_retry()</code> alters <code><a href="req_perform.html">req_perform()</a></code> so that it will automatically retry
 in the case of failure. To activate it, you must specify either the total
 number of requests to make with <code>max_tries</code> or the total amount of time
-to spend with <code>max_seconds</code>. Then <code><a href="req_perform.html">req_perform()</a></code> will retry if:</p><ul><li><p>The either the HTTP request or HTTP response doesn't complete successfully
-leading to an error from curl, the lower-level library that httr uses to
+to spend with <code>max_seconds</code>. Then <code><a href="req_perform.html">req_perform()</a></code> will retry if:</p><ul><li><p>Either the HTTP request or HTTP response doesn't complete successfully
+leading to an error from curl, the lower-level library that httr2 uses to
 perform HTTP request. This occurs, for example, if your wifi is down.</p></li>
 <li><p>The error is "transient", i.e. it's an HTTP error that can be resolved
 by waiting. By default, 429 and 503 statuses are treated as transient,
