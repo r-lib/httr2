@@ -1,9 +1,9 @@
 # can print all url details
 
     Code
-      url_parse("http://user:pass@example.com:80/path?a=1&b=2#frag")
+      url_parse("http://user:pass@example.com:80/path?a=1&b=2&c={1{2}3}#frag")
     Message
-      <httr2_url> http://user:pass@example.com:80/path?a=1&b=2#frag
+      <httr2_url> http://user:pass@example.com:80/path?a=1&b=2&c={1{2}3}#frag
       * scheme: http
       * hostname: example.com
       * username: user
@@ -13,5 +13,6 @@
       * query:
         * a: 1
         * b: 2
+        * c: {1{2}3}
       * fragment: frag
 
