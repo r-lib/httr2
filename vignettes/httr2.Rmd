@@ -36,7 +36,7 @@ req <- request(example_url())
 req
 ```
 
-Here, instead of an external webstite, we use a test server that's built-in to httr2 itself. That ensures that this vignette will work regardless of when or where you run it.
+Here, instead of an external website, we use a test server that's built-in to httr2 itself. That ensures that this vignette will work regardless of when or where you run it.
 
 We can see exactly what this request will send to the server with a dry run:
 
