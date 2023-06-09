@@ -144,7 +144,7 @@ url_build <- function(url) {
     url$scheme, if (!is.null(url$scheme)) ":",
     if (!is.null(url$scheme) || !is.null(authority)) "//",
     authority, url$path,
-    if (!is.null(query)) prefix("?", utils::URLdecode(query)),
+    prefix("?", query),
     prefix("#", url$fragment)
   )
 }
