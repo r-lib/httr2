@@ -39,7 +39,7 @@ extract the refresh token from the result, and then save in an environment
 variable for future use in automated tests.
 
 When requesting an access token, the server may also return a new refresh
-token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have
+token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have to
 update your stored refresh token.
 }
 \examples{
