@@ -79,9 +79,6 @@ req_url_path_append <- function(req, ...) {
 dots_to_path <- function(...) {
   path <- paste(c(...), collapse = "/")
   # Ensure we don't add duplicate /s
-  if (path != "" && !grepl("^/", path)) {
-    path <- paste0("/", path)
-  }
-
-  path
+  # NB: also keeps "" unchanged.
+  sub("^([^/])", "/\\1", path)
 }
