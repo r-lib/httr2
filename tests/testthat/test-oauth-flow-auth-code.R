@@ -90,5 +90,70 @@ test_that("forwards oauth error", {
     oauth_flow_auth_code_parse(query2, "abc")
     oauth_flow_auth_code_parse(query3, "abc")
   })
+})
 
+# can_fetch_auth_code -----------------------------------------------------
+
+test_that("external auth code sources are detected correctly", {
+  # False by default.
+  expect_false(can_fetch_oauth_code("http://localhost:8080/redirect"))
+
+  # Only true in the presence of certain environment variables.
+  env <- c(
+    "HTTR2_OAUTH_CODE_SOURCE_URL" = "http://localhost:8080/code",
+    "HTTR2_OAUTH_REDIRECT_URL" = "http://localhost:8080/redirect"
+  )
+  withr::with_envvar(env, {
+    expect_true(can_fetch_oauth_code("http://localhost:8080/redirect"))
+
+    # Non-matching redirect URLs should not count as external sources, either.
+    expect_false(can_fetch_oauth_code("http://localhost:9090/redirect"))
+  })
+})
+
+# ouath_flow_auth_code_fetch ----------------------------------------------
+
+test_that("auth codes can be retrieved from an external source", {
+  # Run a mock HTTP server that returns an auth code when requested, but *only*
+  # if we've been "authorized" first.
+  authorized <- FALSE
+  listen <- function(env) {
+    if (!authorized) {
+      authorized <<- TRUE
+      return(list(
+        status = 404L,
+        headers = list("Content-Type" = "text/plain"),
+        body = "Not found"
+      ))
+    }
+    list(
+      status = 200L,
+      headers = list("Content-Type" = "application/json"),
+      body = '{"code":"abc123"}'
+    )
+  }
+  port <- httpuv::randomPort()
+  server <- httpuv::startServer("127.0.0.1", port, list(call = listen))
+  withr::defer(httpuv::stopServer(server))
+
+  # Transmogrify curl::curl_fetch_memory() into an "async" version that allows
+  # interleaving calls to httpuv::service().
+  local_mocked_bindings(
+    curl_fetch_memory = function(url, handle) {
+      resp <- NULL
+      curl::curl_fetch_multi(url, function(x) resp <<- x)
+      while (is.null(resp)) {
+        curl::multi_run(timeout = 0, poll = 1L)
+        httpuv::service(NA)
+      }
+      resp
+    },
+    .package = "curl"
+  )
+
+  base_url <- paste0("http://localhost:", port)
+  env <- c("HTTR2_OAUTH_CODE_SOURCE_URL" = paste0(base_url, "/code"))
+  withr::with_envvar(env, {
+    expect_equal(oauth_flow_auth_code_fetch("ignored"), "abc123")
+  })
 })
