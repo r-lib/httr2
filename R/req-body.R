@@ -129,7 +129,7 @@ req_body_multipart <- function(.req, ...) {
 modify_body_data <- function(data, ...) {
   dots <- list2(...)
   if (length(dots) == 1 && !is_named(dots) && is.list(dots[[1]])) {
-    warn("This function longers takes a list, instead supply named arguments in ...", call = caller_env())
+    warn("This function no longer takes a list, instead supply named arguments in ...", call = caller_env())
     modify_list(data, !!!dots[[1]])
   } else {
     modify_list(data, ...)
