@@ -13,8 +13,7 @@ request_test <- function(template = "/get", ...) {
 example_url <- function() {
   check_installed("webfakes")
 
-  env_cache(
-    the, "test_app",
+  env_cache(the, "test_app",
     webfakes::new_app_process(
       webfakes::httpbin_app(),
       opts = webfakes::server_opts(num_threads = 2)
