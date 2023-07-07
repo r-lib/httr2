@@ -18,6 +18,7 @@ Imports:
     cli (>= 3.0.0),
     curl,
     glue,
+    lifecycle,
     magrittr,
     openssl,
     R6,
