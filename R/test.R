@@ -4,7 +4,7 @@ request_test <- function(template = "/get", ...) {
   req
 }
 
-#' URL too a local server that's useful for tests and examples
+#' URL to a local server that's useful for tests and examples
 #'
 #' Requires the webfakes package to be installed.
 #'

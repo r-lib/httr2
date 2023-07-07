@@ -2,7 +2,7 @@
 % Please edit documentation in R/test.R
 \name{example_url}
 \alias{example_url}
-\title{URL too a local server that's useful for tests and examples}
+\title{URL to a local server that's useful for tests and examples}
 \usage{
 example_url()
 }
