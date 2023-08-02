@@ -47,6 +47,18 @@
       request("http://x.com") %>% 
         req_perform(verbosity = 1)
 
+# can translate query
+
+    Code
+      curl_translate("curl http://x.com?string=abcde&b=2")
+    Output
+      request("http://x.com") %>% 
+        req_url_query(
+          string = "abcde",
+          b = "2",
+        ) %>% 
+        req_perform()
+
 # can translate data
 
     Code

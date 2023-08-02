@@ -37,8 +37,17 @@ curl_translate <- function(cmd) {
   }
   data <- curl_normalize(cmd)
 
-  out <- glue('request("{data$url}")')
+  url_pieces <- httr2::url_parse(data$url)
+  query <- url_pieces$query
+  url_pieces$query <- NULL
+  url <- url_build(url_pieces)
+
+  out <- glue('request("{url}")')
   add_line <- function(x, y) {
+    if (is.null(y)) {
+      return(x)
+    }
+
     paste0(x, ' %>% \n  ', gsub("\n", "\n  ", y))
   }
 
@@ -46,17 +55,15 @@ curl_translate <- function(cmd) {
     out <- add_line(out, glue('req_method("{data$method}")'))
   }
 
+  step_query <- curl_step("req_url_query", query)
+  out <- add_line(out, step_query)
+
   # Content type set with data
   type <- data$headers$`Content-Type`
   data$headers$`Content-Type` <- NULL
 
-  if (length(data$headers) > 0) {
-    names <- quote_name(names(data$headers))
-    values <- encodeString(unlist(data$headers), quote = '"')
-    args <- paste0("  ", names, " = ", values, ",\n", collapse = "")
-
-    out <- add_line(out, paste0("req_headers(\n", args, ")"))
-  }
+  step_headers <- curl_step("req_headers", data$headers)
+  out <- add_line(out, step_headers)
 
   if (!identical(data$data, "")) {
     type <- encodeString(type %||% "application/x-www-form-urlencoded", quote = '"')
@@ -233,4 +240,16 @@ is_syntactic <- function(x) {
 }
 quote_name <- function(x) {
   ifelse(is_syntactic(x), x, encodeString(x, quote = "`"))
+}
+
+curl_step <- function(f, args) {
+  if (is_empty(args)) {
+    return()
+  }
+
+  names <- quote_name(names(args))
+  values <- encodeString(unlist(args), quote = '"')
+  args_string <- paste0("  ", names, " = ", values, ",\n", collapse = "")
+
+  paste0(f, "(\n", args_string, ")")
 }
