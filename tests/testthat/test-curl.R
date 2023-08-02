@@ -124,10 +124,11 @@ test_that("can evaluate simple calls", {
 })
 
 test_that("can read from clipboard", {
+  skip_on_ci()
   skip_if_not_installed("clipr")
   withr::local_envvar(CLIPR_ALLOW = TRUE)
 
-  old_clip <- clipr::read_clip()
+  old_clip <- suppressWarnings(clipr::read_clip())
   withr::defer(clipr::write_clip(old_clip))
   rlang::local_interactive()
 
