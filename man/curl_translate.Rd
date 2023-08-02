@@ -5,13 +5,21 @@
 \alias{curl_help}
 \title{Translate curl syntax to httr2}
 \usage{
-curl_translate(cmd)
+curl_translate(cmd, simplify_headers = TRUE)
 
 curl_help()
 }
 \arguments{
 \item{cmd}{Call to curl. If omitted and the clipr package is installed,
 will be retrieved from the clipboard.}
+
+\item{simplify_headers}{Remove typically unimportant headers included when
+copying a curl command from the browser. This includes:
+\itemize{
+\item \verb{sec-fetch-*}
+\item \verb{sec-ch-ua*}
+\item \code{pragma}, \code{connection}
+}}
 }
 \value{
 A string containing the translated httr2 code. If the input

@@ -14,6 +14,12 @@
 #'
 #' @param cmd Call to curl. If omitted and the clipr package is installed,
 #'   will be retrieved from the clipboard.
+#' @param simplify_headers Remove typically unimportant headers included when
+#'   copying a curl command from the browser. This includes:
+#'
+#'   * `sec-fetch-*`
+#'   * `sec-ch-ua*`
+#'   * `pragma`, `connection`
 #' @returns A string containing the translated httr2 code. If the input
 #'   was copied from the clipboard, the translation will be copied back
 #'   to the clipboard.
@@ -23,7 +29,8 @@
 #' curl_translate("curl http://example.com -X DELETE")
 #' curl_translate("curl http://example.com --header A:1 --header B:2")
 #' curl_translate("curl http://example.com --verbose")
-curl_translate <- function(cmd) {
+curl_translate <- function(cmd,
+                           simplify_headers = TRUE) {
   if (missing(cmd)) {
     if (is_interactive() && is_installed("clipr")) {
       clip <- TRUE
@@ -39,6 +46,10 @@ curl_translate <- function(cmd) {
 
   out <- glue('request("{data$url}")')
   add_line <- function(x, y) {
+    if (is_null(y)) {
+      return(x)
+    }
+
     paste0(x, ' %>% \n  ', gsub("\n", "\n  ", y))
   }
 
@@ -50,13 +61,8 @@ curl_translate <- function(cmd) {
   type <- data$headers$`Content-Type`
   data$headers$`Content-Type` <- NULL
 
-  if (length(data$headers) > 0) {
-    names <- quote_name(names(data$headers))
-    values <- encodeString(unlist(data$headers), quote = '"')
-    args <- paste0("  ", names, " = ", values, ",\n", collapse = "")
-
-    out <- add_line(out, paste0("req_headers(\n", args, ")"))
-  }
+  headers_code <- curl_prepare_headers(data$headers, simplify_headers)
+  out <- add_line(out, headers_code)
 
   if (!identical(data$data, "")) {
     type <- encodeString(type %||% "application/x-www-form-urlencoded", quote = '"')
@@ -161,6 +167,27 @@ curl_normalize <- function(cmd) {
     data = data
   )
 }
+
+curl_prepare_headers <- function(headers, simplify_headers) {
+  if (simplify_headers) {
+    header_names <- tolower(names(headers))
+    to_drop <- startsWith(header_names, "sec-fetch") |
+      startsWith(header_names, "sec-ch-ua") |
+      header_names %in% c("user-agent", "referer", "pragma", "connection")
+    headers <- headers[!to_drop]
+  }
+
+  if (length(headers) == 0) {
+    return(NULL)
+  }
+
+  names <- quote_name(names(headers))
+  values <- encodeString(unlist(headers), quote = '"')
+  args <- paste0("  ", names, " = ", values, ",\n", collapse = "")
+
+  paste0("req_headers(\n", args, ")")
+}
+
 curl_data <- function(x, binary = FALSE, raw = FALSE) {
   if (!raw && grepl("^@", x)) {
     path <- sub("^@", "", x)

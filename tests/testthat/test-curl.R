@@ -56,6 +56,31 @@ test_that("user-agent and referer become headers", {
   )
 })
 
+test_that("common headers can be removed", {
+  sec_fetch_headers <- "-H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors'"
+  sec_ch_ua_headers <- "-H 'sec-ch-ua-mobile: ?0'"
+  other_headers <- "-H 'Accept: application/vnd.api+json'"
+  cmd <- paste("curl http://x.com -A agent -e ref", sec_fetch_headers, sec_ch_ua_headers, other_headers)
+  headers <- curl_normalize(cmd)$headers
+  expect_equal(
+    curl_prepare_headers(headers, simplify_headers = TRUE),
+    'req_headers(
+  Accept = "application/vnd.api+json",
+)'
+  )
+  expect_equal(
+    curl_prepare_headers(headers, simplify_headers = FALSE),
+    'req_headers(
+  `Sec-Fetch-Dest` = "empty",
+  `Sec-Fetch-Mode` = "cors",
+  `sec-ch-ua-mobile` = "?0",
+  Accept = "application/vnd.api+json",
+  referer = "ref",
+  `user-agent` = "agent",
+)'
+  )
+})
+
 test_that("extract user name and password", {
   expect_equal(
     curl_normalize("curl http://x.com -u name:pass")$auth,

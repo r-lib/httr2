@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* `curl_translate()` gains the argument `simplify_headers` that removes some
+  common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
+  (@mgirlich, #256).
+
 * New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
   or not the response has a body (#205).
 
