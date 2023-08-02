@@ -133,16 +133,9 @@ test_that("can read from clipboard", {
   rlang::local_interactive()
 
   clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
-  request <- c(
-  'request("http://example.com") %>% ',
-  "  req_headers(",
-  '    A = "1",',
-  '    B = "2",',
-  "  ) %>% ",
-  "  req_perform()"
-  )
-  out <- suppressMessages(curl_translate())
-  expect_equal(trimws(out), structure(paste0(request, collapse = "\n"), class = "httr2_cmd"))
-  # also writes to clip
-  expect_equal(clipr::read_clip(), request)
+  expect_snapshot({
+    curl_translate()
+    # also writes to clip
+    clipr::read_clip()
+  })
 })
