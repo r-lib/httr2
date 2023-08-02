@@ -6,6 +6,17 @@
       Error in `curl_args()`:
       ! Expecting call to curl not 'echo'
 
+# common headers can be removed
+
+    Code
+      curl_prepare_headers(headers, simplify_headers = TRUE)
+    Output
+      [1] "req_headers(\n  Accept = \"application/vnd.api+json\",\n  `user-agent` = \"agent\",\n)"
+    Code
+      curl_prepare_headers(headers, simplify_headers = FALSE)
+    Output
+      [1] "req_headers(\n  `Sec-Fetch-Dest` = \"empty\",\n  `Sec-Fetch-Mode` = \"cors\",\n  `sec-ch-ua-mobile` = \"?0\",\n  Accept = \"application/vnd.api+json\",\n  referer = \"ref\",\n  `user-agent` = \"agent\",\n)"
+
 # can translate to httr calls
 
     Code

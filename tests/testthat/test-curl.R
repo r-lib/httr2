@@ -62,23 +62,10 @@ test_that("common headers can be removed", {
   other_headers <- "-H 'Accept: application/vnd.api+json'"
   cmd <- paste("curl http://x.com -A agent -e ref", sec_fetch_headers, sec_ch_ua_headers, other_headers)
   headers <- curl_normalize(cmd)$headers
-  expect_equal(
-    curl_prepare_headers(headers, simplify_headers = TRUE),
-    'req_headers(
-  Accept = "application/vnd.api+json",
-)'
-  )
-  expect_equal(
-    curl_prepare_headers(headers, simplify_headers = FALSE),
-    'req_headers(
-  `Sec-Fetch-Dest` = "empty",
-  `Sec-Fetch-Mode` = "cors",
-  `sec-ch-ua-mobile` = "?0",
-  Accept = "application/vnd.api+json",
-  referer = "ref",
-  `user-agent` = "agent",
-)'
-  )
+  expect_snapshot({
+    curl_prepare_headers(headers, simplify_headers = TRUE)
+    curl_prepare_headers(headers, simplify_headers = FALSE)
+  })
 })
 
 test_that("extract user name and password", {
