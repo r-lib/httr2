@@ -42,44 +42,31 @@ curl_translate <- function(cmd) {
   url_pieces$query <- NULL
   url <- url_build(url_pieces)
 
-  out <- glue('request("{url}")')
-  add_line <- function(x, y) {
-    if (is.null(y)) {
-      return(x)
-    }
+  steps <- glue('request("{url}")')
+  steps <- add_curl_step(steps, "req_method", data$method, trailing_comma = FALSE)
 
-    paste0(x, ' %>% \n  ', gsub("\n", "\n  ", y))
-  }
-
-  if (!is.null(data$method)) {
-    out <- add_line(out, glue('req_method("{data$method}")'))
-  }
-
-  step_query <- curl_step("req_url_query", query)
-  out <- add_line(out, step_query)
+  steps <- add_curl_step(steps, "req_url_query", query, trailing_comma = TRUE)
 
   # Content type set with data
   type <- data$headers$`Content-Type`
   data$headers$`Content-Type` <- NULL
 
-  step_headers <- curl_step("req_headers", data$headers)
-  out <- add_line(out, step_headers)
+  steps <- add_curl_step(steps, "req_headers", data$headers, trailing_comma = TRUE)
 
   if (!identical(data$data, "")) {
-    type <- encodeString(type %||% "application/x-www-form-urlencoded", quote = '"')
-    body <- encodeString(data$data, quote = '"')
-    out <- add_line(out, glue("req_body_raw({body}, {type})"))
+    type <- type %||% "application/x-www-form-urlencoded"
+    body <- data$data
+    steps <- add_curl_step(steps, "req_body_raw", c(body, type), trailing_comma = FALSE)
   }
 
-  if (!is.null(data$auth)) {
-    out <- add_line(out, glue('req_auth_basic("{data$auth[[1]]}", "{data$auth[[2]]}")'))
-  }
+  steps <- add_curl_step(steps, "req_auth_basic", unname(data$auth), trailing_comma = FALSE)
 
   if (data$verbose) {
-    out <- add_line(out, "req_perform(verbosity = 1)")
+    steps <- c(steps, "req_perform(verbosity = 1)")
   } else {
-    out <- add_line(out, "req_perform()")
+    steps <- c(steps, "req_perform()")
   }
+  out <- paste0(steps, collapse = " %>% \n  ")
   out <- paste0(out, "\n")
 
   if (clip) {
@@ -236,20 +223,32 @@ curl_args <- function(cmd) {
 # Helpers -----------------------------------------------------------------
 
 is_syntactic <- function(x) {
-  x == make.names(x)
+  x == "" | x == make.names(x)
 }
 quote_name <- function(x) {
   ifelse(is_syntactic(x), x, encodeString(x, quote = "`"))
 }
 
-curl_step <- function(f, args) {
+add_curl_step <- function(steps, f, args, trailing_comma) {
   if (is_empty(args)) {
-    return()
+    return(steps)
   }
 
-  names <- quote_name(names(args))
+  names <- quote_name(names2(args))
   values <- encodeString(unlist(args), quote = '"')
-  args_string <- paste0("  ", names, " = ", values, ",\n", collapse = "")
 
-  paste0(f, "(\n", args_string, ")")
+  args_named <- ifelse(
+    names == "",
+    paste0(values),
+    paste0(names, " = ", values)
+  )
+  if (trailing_comma) {
+    args_string <- paste0("    ", args_named, ",\n", collapse = "")
+    new_step <- paste0(f, "(\n", args_string, "  )")
+  } else {
+    args_string <- paste0(args_named, collapse = ", ")
+    new_step <- paste0(f, "(", args_string, ")")
+  }
+
+  c(steps, new_step)
 }
