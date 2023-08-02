@@ -122,3 +122,23 @@ test_that("can evaluate simple calls", {
   body <- resp_body_json(resp)
   expect_true(body$authenticated)
 })
+
+test_that("can read from clipboard", {
+  skip_if_not_installed("clipr")
+  old_clip <- clipr::read_clip()
+  withr::defer(clipr::write_clip(old_clip))
+  rlang::local_interactive()
+
+  clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
+  request <- c(
+  'request("http://example.com") %>% ',
+  "  req_headers(",
+  '    A = "1",',
+  '    B = "2",',
+  "  ) %>% ",
+  "  req_perform()"
+  )
+  expect_equal(curl_translate(), structure(paste0(c(request, ""), collapse = "\n"), class = "httr2_cmd"))
+  # also writes to clip
+  expect_equal(clipr::read_clip(), request)
+})
