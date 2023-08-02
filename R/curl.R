@@ -43,29 +43,30 @@ curl_translate <- function(cmd) {
   url <- url_build(url_pieces)
 
   steps <- glue('request("{url}")')
-  steps <- add_curl_step(steps, "req_method", data$method, trailing_comma = FALSE)
+  steps <- add_curl_step(steps, "req_method", main_args = data$method)
 
-  steps <- add_curl_step(steps, "req_url_query", query, trailing_comma = TRUE)
+  steps <- add_curl_step(steps, "req_url_query", dots = query)
 
   # Content type set with data
   type <- data$headers$`Content-Type`
   data$headers$`Content-Type` <- NULL
 
-  steps <- add_curl_step(steps, "req_headers", data$headers, trailing_comma = TRUE)
+  steps <- add_curl_step(steps, "req_headers", dots = data$headers)
 
   if (!identical(data$data, "")) {
     type <- type %||% "application/x-www-form-urlencoded"
     body <- data$data
-    steps <- add_curl_step(steps, "req_body_raw", c(body, type), trailing_comma = FALSE)
+    steps <- add_curl_step(steps, "req_body_raw", main_args = c(body, type))
   }
 
-  steps <- add_curl_step(steps, "req_auth_basic", unname(data$auth), trailing_comma = FALSE)
+  steps <- add_curl_step(steps, "req_auth_basic", main_args = unname(data$auth))
 
+  perform_args <- list()
   if (data$verbose) {
-    steps <- c(steps, "req_perform(verbosity = 1)")
-  } else {
-    steps <- c(steps, "req_perform()")
+    perform_args$verbosity <- 1
   }
+  steps <- add_curl_step(steps, "req_perform", main_args = perform_args, keep_if_empty = TRUE)
+
   out <- paste0(steps, collapse = " %>% \n  ")
   out <- paste0(out, "\n")
 
@@ -229,25 +230,35 @@ quote_name <- function(x) {
   ifelse(is_syntactic(x), x, encodeString(x, quote = "`"))
 }
 
-add_curl_step <- function(steps, f, args, trailing_comma) {
-  if (is_empty(args)) {
+add_curl_step <- function(steps,
+                          f,
+                          ...,
+                          main_args = NULL,
+                          dots = NULL,
+                          keep_if_empty = FALSE) {
+  check_dots_empty0(...)
+  args <- c(main_args, dots)
+
+  if (is_empty(args) && !keep_if_empty) {
     return(steps)
   }
 
   names <- quote_name(names2(args))
-  values <- encodeString(unlist(args), quote = '"')
+  string <- vapply(args, is.character, logical(1L))
+  values <- unlist(args)
+  values <- ifelse(string, encodeString(values, quote = '"'), values)
 
   args_named <- ifelse(
     names == "",
     paste0(values),
     paste0(names, " = ", values)
   )
-  if (trailing_comma) {
-    args_string <- paste0("    ", args_named, ",\n", collapse = "")
-    new_step <- paste0(f, "(\n", args_string, "  )")
-  } else {
+  if (is_empty(dots)) {
     args_string <- paste0(args_named, collapse = ", ")
     new_step <- paste0(f, "(", args_string, ")")
+  } else {
+    args_string <- paste0("    ", args_named, ",\n", collapse = "")
+    new_step <- paste0(f, "(\n", args_string, "  )")
   }
 
   c(steps, new_step)
