@@ -124,10 +124,13 @@ test_that("can evaluate simple calls", {
 })
 
 test_that("can read from clipboard", {
+  # need to skip on CI as can't read from clipboard there on Linux
   skip_on_ci()
   skip_if_not_installed("clipr")
+  # need to set env var so that `read/write_clip()` works in non-interactive mode
   withr::local_envvar(CLIPR_ALLOW = TRUE)
 
+  # suppress warning because the clipboard might contain no readable text
   old_clip <- suppressWarnings(clipr::read_clip())
   withr::defer(clipr::write_clip(old_clip))
   rlang::local_interactive()
