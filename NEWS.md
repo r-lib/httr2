@@ -4,6 +4,9 @@
   common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
   (@mgirlich, #256).
 
+* `curl_translate()` now works with multiline commands from the clipboard
+  (@mgirlich, #254).
+
 * New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
   or not the response has a body (#205).
 

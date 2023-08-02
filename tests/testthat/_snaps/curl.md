@@ -84,3 +84,26 @@
         req_body_raw("abcdef", "text/plain") %>% 
         req_perform()
 
+# can read from clipboard
+
+    Code
+      curl_translate()
+    Message
+      v Copying to clipboard:
+    Output
+      request("http://example.com") %>% 
+        req_headers(
+          A = "1",
+          B = "2",
+        ) %>% 
+        req_perform()
+    Code
+      clipr::read_clip()
+    Output
+      [1] "request(\"http://example.com\") %>% "
+      [2] "  req_headers("                      
+      [3] "    A = \"1\","                      
+      [4] "    B = \"2\","                      
+      [5] "  ) %>% "                            
+      [6] "  req_perform()"                     
+
