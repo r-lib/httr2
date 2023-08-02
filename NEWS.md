@@ -2,6 +2,8 @@
 
 * `curl_translate()` now parses the query components of the url (@mgirlich, #259).
 
+* `curl_translate()` now works with multiline commands from the clipboard
+
 * New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
   or not the response has a body (#205).
 

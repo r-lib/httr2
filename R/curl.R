@@ -28,6 +28,7 @@ curl_translate <- function(cmd) {
     if (is_interactive() && is_installed("clipr")) {
       clip <- TRUE
       cmd <- clipr::read_clip()
+      cmd <- paste0(cmd, collapse = "\n")
     } else {
       abort("Must supply `cmd`")
     }
