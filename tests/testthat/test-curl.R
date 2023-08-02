@@ -125,6 +125,8 @@ test_that("can evaluate simple calls", {
 
 test_that("can read from clipboard", {
   skip_if_not_installed("clipr")
+  withr::local_envvar(CLIPR_ALLOW = TRUE)
+
   old_clip <- clipr::read_clip()
   withr::defer(clipr::write_clip(old_clip))
   rlang::local_interactive()
@@ -138,7 +140,7 @@ test_that("can read from clipboard", {
   "  ) %>% ",
   "  req_perform()"
   )
-  expect_equal(curl_translate(), structure(paste0(c(request, ""), collapse = "\n"), class = "httr2_cmd"))
+  expect_equal(suppressMessages(curl_translate()), structure(paste0(c(request, ""), collapse = "\n"), class = "httr2_cmd"))
   # also writes to clip
   expect_equal(clipr::read_clip(), request)
 })
