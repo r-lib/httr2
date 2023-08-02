@@ -18,7 +18,7 @@ copying a curl command from the browser. This includes:
 \itemize{
 \item \verb{sec-fetch-*}
 \item \verb{sec-ch-ua*}
-\item \code{pragma}, \code{connection}
+\item \code{referer}, \code{pragma}, \code{connection}
 }}
 }
 \value{

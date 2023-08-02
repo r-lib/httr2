@@ -19,7 +19,7 @@
 #'
 #'   * `sec-fetch-*`
 #'   * `sec-ch-ua*`
-#'   * `pragma`, `connection`
+#'   * `referer`, `pragma`, `connection`
 #' @returns A string containing the translated httr2 code. If the input
 #'   was copied from the clipboard, the translation will be copied back
 #'   to the clipboard.
@@ -172,7 +172,7 @@ curl_prepare_headers <- function(headers, simplify_headers) {
     header_names <- tolower(names(headers))
     to_drop <- startsWith(header_names, "sec-fetch") |
       startsWith(header_names, "sec-ch-ua") |
-      header_names %in% c("user-agent", "referer", "pragma", "connection")
+      header_names %in% c("referer", "pragma", "connection")
     headers <- headers[!to_drop]
   }
 
