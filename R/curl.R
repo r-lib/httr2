@@ -29,8 +29,7 @@
 #' curl_translate("curl http://example.com -X DELETE")
 #' curl_translate("curl http://example.com --header A:1 --header B:2")
 #' curl_translate("curl http://example.com --verbose")
-curl_translate <- function(cmd,
-                           simplify_headers = TRUE) {
+curl_translate <- function(cmd, simplify_headers = TRUE) {
   if (missing(cmd)) {
     if (is_interactive() && is_installed("clipr")) {
       clip <- TRUE
@@ -46,7 +45,7 @@ curl_translate <- function(cmd,
 
   out <- glue('request("{data$url}")')
   add_line <- function(x, y) {
-    if (is_null(y)) {
+    if (is.null(y)) {
       return(x)
     }
 
