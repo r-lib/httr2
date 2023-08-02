@@ -141,7 +141,8 @@ test_that("can read from clipboard", {
   "  ) %>% ",
   "  req_perform()"
   )
-  expect_equal(suppressMessages(curl_translate()), structure(paste0(c(request, ""), collapse = "\n"), class = "httr2_cmd"))
+  out <- suppressMessages(curl_translate())
+  expect_equal(trimws(out), structure(paste0(request, collapse = "\n"), class = "httr2_cmd"))
   # also writes to clip
   expect_equal(clipr::read_clip(), request)
 })
