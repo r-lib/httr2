@@ -63,8 +63,8 @@ test_that("common headers can be removed", {
   cmd <- paste("curl http://x.com -A agent -e ref", sec_fetch_headers, sec_ch_ua_headers, other_headers)
   headers <- curl_normalize(cmd)$headers
   expect_snapshot({
-    curl_prepare_headers(headers, simplify_headers = TRUE)
-    curl_prepare_headers(headers, simplify_headers = FALSE)
+    cat(curl_prepare_headers(headers, simplify_headers = TRUE))
+    cat(curl_prepare_headers(headers, simplify_headers = FALSE))
   })
 })
 
