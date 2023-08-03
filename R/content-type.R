@@ -1,3 +1,35 @@
+#' Check the content type of a response
+#'
+#' A different content type than expected often leads to an error in parsing
+#' the response body. This function checks that the content type of the response
+#' is as expected and fails otherwise.
+#'
+#' @param resp A response object.
+#' @param types A character vector of valid content types.
+#' @inheritParams rlang::args_error_context
+#'
+#' @return Returns `NULL` invisibly, or errors.
+#' @export
+#'
+#' @examples
+#' resp <- response(headers = list(`content-type` = "application/json"))
+#' check_resp_content_type(resp, "application/json")
+#' try(check_resp_content_type(resp, "application/xml"))
+#'
+#' # `types` can also specify multiple valid types
+#' check_resp_content_type(resp, c("application/xml", "application/json"))
+check_resp_content_type <- function(resp,
+                                    types,
+                                    call = caller_env()) {
+  content_type <- resp_content_type(resp)
+  check_content_type(
+    content_type,
+    types,
+    inform_check_type = TRUE,
+    call = call
+  )
+}
+
 parse_content_type <- function(x) {
   # Create regex with {rex} package
   #
@@ -46,7 +78,7 @@ check_content_type <- function(content_type,
                                inform_check_type = FALSE,
                                call = caller_env()) {
   if (content_type %in% valid_types) {
-    return()
+    return(invisible())
   }
 
   content_type_parsed <- parse_content_type(content_type)
@@ -54,7 +86,7 @@ check_content_type <- function(content_type,
 
   for (i in seq_along(valid_types_parsed)) {
     if (has_content_type(content_type_parsed, valid_types_parsed[[i]])) {
-      return()
+      return(invisible())
     }
   }
 
