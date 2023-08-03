@@ -96,6 +96,12 @@ test_that("can translate to httr calls", {
   })
 })
 
+test_that("can translate query", {
+  expect_snapshot({
+    curl_translate("curl http://x.com?string=abcde&b=2")
+  })
+})
+
 test_that("can translate data", {
   expect_snapshot({
     curl_translate("curl http://example.com --data abcdef")
