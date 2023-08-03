@@ -214,7 +214,10 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   if (!quiet) {
     debug <- function(type, msg) {
       if (type == 2L) verbose_header("", msg, redact = redact_headers)
-      if (type == 4L) verbose_message("", msg)
+      if (type == 4L) {
+        # FIXME check req content type to better detect a binary body - needs #190
+        verbose_message("", msg, type = req$body$type %||% "raw")
+      }
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
   }

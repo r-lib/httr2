@@ -26,9 +26,9 @@
 # req_dry_run() shows body
 
     Code
-      request("http://example.com") %>% req_headers(`Accept-Encoding` = "gzip") %>%
-        req_body_json(list(x = 1, y = TRUE, z = "c")) %>% req_user_agent("test") %>%
-        req_dry_run()
+      req <- request("http://example.com") %>% req_headers(`Accept-Encoding` = "gzip") %>%
+        req_user_agent("test")
+      req %>% req_body_json(list(x = 1, y = TRUE, z = "c")) %>% req_dry_run()
     Output
       POST / HTTP/1.1
       Host: example.com
@@ -39,6 +39,30 @@
       Content-Length: 24
       
       {"x":1,"y":true,"z":"c"}
+    Code
+      req %>% req_body_json(list(x = "Cenário 1")) %>% req_dry_run()
+    Output
+      POST / HTTP/1.1
+      Host: example.com
+      User-Agent: test
+      Accept: */*
+      Accept-Encoding: gzip
+      Content-Type: application/json
+      Content-Length: 18
+      
+      {"x":"Cenário 1"}
+    Code
+      req %>% req_body_form(x = "Cenário 1") %>% req_dry_run()
+    Output
+      POST / HTTP/1.1
+      Host: example.com
+      User-Agent: test
+      Accept: */*
+      Accept-Encoding: gzip
+      Content-Type: application/x-www-form-urlencoded
+      Content-Length: 18
+      
+      x=Cenário 1
 
 # authorization headers are redacted
 

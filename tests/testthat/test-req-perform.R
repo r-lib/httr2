@@ -90,10 +90,21 @@ test_that("req_dry_run() shows body", {
   skip_if_not(getRversion() >= "3.5")
 
   expect_snapshot({
-    request("http://example.com") %>%
+    req <- request("http://example.com") %>%
       req_headers(`Accept-Encoding` = "gzip") %>%
+      req_user_agent("test")
+
+    req %>%
       req_body_json(list(x = 1, y = TRUE, z = "c")) %>%
-      req_user_agent("test") %>%
+      req_dry_run()
+
+    # body is printed for JSON and form
+    req %>%
+      req_body_json(list(x = "Cenário 1")) %>%
+      req_dry_run()
+
+    req %>%
+      req_body_form(x = "Cenário 1") %>%
       req_dry_run()
   })
 })

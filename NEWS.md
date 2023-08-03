@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_dry_run()` and `req_perform()` now print a human readable body in more
+  cases (@mgirlich, #91).
+
 * `curl_translate()` now works with multiline commands from the clipboard
   (@mgirlich, #254).
 

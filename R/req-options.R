@@ -174,8 +174,10 @@ req_verbose <- function(req,
       text =       if (info)        verbose_message("*  ", msg),
       headerOut =  if (header_resp) verbose_header("<- ", msg),
       headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers),
+      # FIXME check resp content type to better detect a binary body - needs #190
       dataOut =    if (body_resp)   verbose_message("<< ", msg),
-      dataIn =     if (body_req)    verbose_message(">> ", msg)
+      # FIXME check req content type to better detect a binary body - needs #190
+      dataIn =     if (body_req)    verbose_message(">> ", msg, req$body$type %||% "raw")
     )
   }
   req_options(req, debugfunction = debug, verbose = TRUE)
@@ -184,14 +186,17 @@ req_verbose <- function(req,
 
 # helpers -----------------------------------------------------------------
 
-verbose_message <- function(prefix, x) {
-  if (any(x > 128)) {
+verbose_message <- function(prefix, x, type = "raw") {
+  if (any(x > 128) && !type %in% c("json", "form")) {
     # This doesn't handle unicode, but it seems like most output
     # will be compressed in some way, so displaying bodies is unlikely
     # to be useful anyway.
     lines <- paste0(length(x), " bytes of binary data")
   } else {
     x <- readBin(x, character())
+    if (type == "form") {
+      x <- curl::curl_unescape(x)
+    }
     lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
   }
   cli::cat_line(prefix, lines)
