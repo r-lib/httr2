@@ -40,17 +40,31 @@ modify_list <- function(.x, ...) {
 }
 
 
-sys_sleep <- function(seconds) {
+sys_sleep <- function(seconds, fps = 10) {
   check_number(seconds, "`seconds`")
 
-  if (seconds > 0) {
-    # TODO: add progress bar
-    signal("", class = "httr2_sleep", seconds = seconds)
-    Sys.sleep(seconds)
+  if (seconds == 0) {
+    return(invisible())
   }
+
+  start <- cur_time()
+  signal("", class = "httr2_sleep", seconds = seconds)
+
+  cli::cli_progress_bar(
+    format = "Waiting {round(seconds)}s to retry {cli::pb_bar}",
+    total = seconds * fps
+  )
+
+  while({left <- start + seconds - cur_time(); left > 0}) {
+    Sys.sleep(min(1 / fps, left))
+    cli::cli_progress_update(set = (seconds - left) * fps)
+  }
+  cli::cli_progress_done()
 
   invisible()
 }
+
+cur_time <- function() proc.time()[[3]]
 
 check_string <- function(x, name, optional = TRUE) {
   if (is_string(x) && !is.na(x)) {

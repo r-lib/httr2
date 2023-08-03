@@ -4,12 +4,43 @@
 
 * `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
 
+* `curl_translate()` now works with multiline commands from the clipboard
+  (@mgirlich, #254).
+
+* New `resp_has_body()` returns a `TRUE` or `FALSE` depending on whether
+  or not the response has a body (#205).
+
+* Improve print method for responses with body saved to disk.
+
+* `obfuscated()` values now display their original call when printed.
+
+* `resp_header()` gains a `default` argument which is returned if the header
+  doesn't exist (#208).
+
+* `oauth_flow_refresh()` now only warns if the `refresh_token` changes, making
+  it a little easier to use in manual workflows (#186).
+
+# httr2 0.2.3
+
+* New `example_url()` to launch a local server, making tests and examples 
+  more robust.
+
+* New `throttle_status()` to make it a little easier to verify what's happening
+  with throttling.
+
+* `req_oauth_refresh()` now respects the `refresh_token` for caching 
+  (@mgirlich, #178).
+
+* `req_perform()` now always sleeps before a request, rather than after it.
+  It also gains an `error_call` argument and communicates more clearly
+  where the error occurred (@mgirlich, #187).
+
 * `req_url_path()` and `req_url_path_append()` can now handle `NULL` or empty
   `...` and the elements of `...` can also have length > 1 (@mgirlich, #177).
 
-* `req_perform()` now has an `error_call` argument and communicates more clearly
-  where the error occurred (@mgirlich, #187).
-
+* `sys_sleep()` (used by `req_retry()` and `req_throttle()`) gains a progress 
+  bar (#202).
+  
 # httr2 0.2.2
 
 * `curl_translate()` can now handle curl copied from Chrome developer tools

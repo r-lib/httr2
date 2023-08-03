@@ -1,14 +1,19 @@
 test_that("requests happen in parallel", {
+  # GHA MacOS builder seems to be very slow
+  skip_if(
+    isTRUE(as.logical(Sys.getenv("CI", "false"))) &&
+    Sys.info()[["sysname"]] == "Darwin"
+  )
+
   reqs <- list2(
-    request_test("/delay/:secs", secs = 0.5),
-    request_test("/delay/:secs", secs = 0.5),
-    request_test("/delay/:secs", secs = 0.5),
-    request_test("/delay/:secs", secs = 0.5),
-    request_test("/delay/:secs", secs = 0.5),
+    request_test("/delay/:secs", secs = 0.25),
+    request_test("/delay/:secs", secs = 0.25),
+    request_test("/delay/:secs", secs = 0.25),
+    request_test("/delay/:secs", secs = 0.25),
+    request_test("/delay/:secs", secs = 0.25),
   )
   time <- system.time(multi_req_perform(reqs))
-  # GHA MacOS builder seems to be particularly slow
-  expect_lt(time[[3]], 1.5)
+  expect_lt(time[[3]], 1)
 })
 
 test_that("can download files", {

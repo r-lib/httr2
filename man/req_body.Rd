@@ -38,10 +38,11 @@ JSON scalars?}
 \item{null}{Should \code{NULL} be translated to JSON's null (\code{"null"})
 or an empty list (\code{"list"}).}
 
-\item{...}{Name-data pairs used send data in the body. For
-\code{req_body_form()}, the values must be strings (or things easily
-coerced to string); for \code{req_body_multipart()} the values must be
-strings or objects produced by \code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name-data pairs used send
+data in the body. For \code{req_body_form()}, the values must be strings (or
+things easily coerced to string); for \code{req_body_multipart()} the values
+must be strings or objects produced by
+\code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
 
 For \code{req_body_json()}, additional arguments passed on to
 \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
@@ -61,7 +62,8 @@ A modified HTTP \link{request}.
 Adding a body to a request will automatically switch the method to POST.
 }
 \examples{
-req <- request("http://httpbin.org/post")
+req <- request(example_url()) \%>\%
+  req_url_path("/post")
 
 # Most APIs expect small amounts of data in either form or json encoded:
 req \%>\%

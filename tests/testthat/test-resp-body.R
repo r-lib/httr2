@@ -1,18 +1,23 @@
 test_that("read body from disk/memory", {
   resp1 <- request_test("base64/:value", value = "SGk=") %>% req_perform()
+  expect_true(resp_has_body(resp1))
   expect_equal(resp_body_raw(resp1), charToRaw("Hi"))
   expect_equal(resp_body_string(resp1), "Hi")
 
   resp2 <- request_test("base64/:value", value = "SGk=") %>% req_perform(tempfile())
+  expect_true(resp_has_body(resp2))
   expect_equal(resp_body_string(resp2), "Hi")
 })
 
 test_that("empty body generates error", {
-  expect_snapshot({
-    request_test("HEAD /get") %>% req_perform() %>% resp_body_raw()
-  }, error = TRUE)
-})
+  resp1 <- request_test("HEAD /get") %>% req_perform()
+  expect_false(resp_has_body(resp1))
+  expect_snapshot(resp_body_raw(resp1), error = TRUE)
 
+  resp2 <- request_test("HEAD /get") %>% req_perform(tempfile())
+  expect_false(resp_has_body(resp2))
+  expect_snapshot(resp_body_raw(resp2), error = TRUE)
+})
 
 test_that("can retrieve parsed body", {
   resp <- request_test("/json") %>% req_perform()

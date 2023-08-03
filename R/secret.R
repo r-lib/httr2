@@ -159,20 +159,21 @@ secret_get_key <- function(envvar, call = caller_env()) {
 #' Obfuscate mildly secret information
 #'
 #' @description
-#' This pair of functions provides a way to obfuscate mildly confidential
-#' information, like OAuth client secrets. The secret can not be revealed
-#' from your source code, but a good R programmer could still figure it
-#' out with a little effort. The main goal is to protect against scraping;
-#' there's no way for an automated tool to grab your obfuscated secrets.
-#'
-#' Because un-obfuscation happens at the last possible instant, `obfuscated()`
-#' only works in limited locations:
+#' Use `obfuscate("value")` to generate a call to `obfuscated()`, which will
+#' unobfuscate the value at the last possible moment. Obfuscated values only
+#' work in limited locations:
 #'
 #' * The `secret` argument to [oauth_client()]
 #' * Elements of the `data` argument to [req_body_form()], `req_body_json()`,
 #'   and `req_body_multipart()`.
 #'
-#' @param x A string to obfuscate, or mark as obfuscated.
+#' Working together this pair of functions provides a way to obfuscate mildly
+#' confidential information, like OAuth client secrets. The secret can not be
+#' revealed from your inspecting source code, but a skilled R programmer could
+#' figure it out with some effort. The main goal is to protect against scraping;
+#' there's no way for an automated tool to grab your obfuscated secrets.
+#'
+#' @param x A string to `obfuscate`, or mark as `obfuscated`.
 #' @returns `obfuscate()` prints the `obfuscated()` call to include in your
 #'   code. `obfuscated()` returns an S3 class marking the string as obfuscated
 #'   so it can be unobfuscated when needed.
@@ -200,12 +201,12 @@ obfuscated <- function(x) {
 
 #' @export
 str.httr2_obfuscated <- function(object, ...) {
-  cat(" <OBFUSCATED>\n")
+  cat(" ", glue('obfuscated("{object}")\n'), sep = "")
 }
 
 #' @export
 print.httr2_obfuscated <- function(x, ...) {
-  cat("<OBFUSCATED>\n", sep = "")
+  cat(glue('obfuscated("{x}")\n'))
   invisible(x)
 }
 

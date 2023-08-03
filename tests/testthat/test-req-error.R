@@ -21,7 +21,7 @@ test_that("failing callback still generates useful body", {
   expect_snapshot_error(error_body(req, response(404)))
 
   out <- expect_snapshot(error = TRUE, {
-    req <- request("https://httpbin.org/status/404")
+    req <- request_test("/status/404")
     req <- req %>% req_error(body = ~ resp_body_json(.x)$error)
     req %>% req_perform()
   })

@@ -19,7 +19,7 @@
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
-#' httpbin <- request("http://httpbin.org")
+#' httpbin <- request(example_url())
 #'
 #' # You can supply template parameters in `...`
 #' httpbin %>% req_template("GET /bytes/{n}", n = 100)
@@ -29,10 +29,10 @@
 #' httpbin %>% req_template("GET /bytes/{n}")
 #'
 #' # Existing path is preserved:
-#' httpbin_cookies <- request("http://httpbin.org/cookies")
+#' httpbin_test <- request(example_url()) %>% req_url_path("/test")
 #' name <- "id"
 #' value <- "a3fWa"
-#' httpbin_cookies %>% req_template("GET /set/{name}/{value}")
+#' httpbin_test %>% req_template("GET /set/{name}/{value}")
 req_template <- function(req, template, ..., .env = parent.frame()) {
   check_request(req)
   check_string(template, "`template`")

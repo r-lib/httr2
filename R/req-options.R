@@ -5,8 +5,8 @@
 #' httr2.
 #'
 #' @inheritParams req_headers
-#' @param ... Name-value pairs. The name should be a valid curl option,
-#'   as found in [curl::curl_options()].
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-value pairs. The name
+#'   should be a valid curl option, as found in [curl::curl_options()].
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples

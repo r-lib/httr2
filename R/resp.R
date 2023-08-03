@@ -70,11 +70,11 @@ print.httr2_response <- function(x,...) {
   }
 
   body <- x$body
-  if (is_path(body)) {
-    cli::cli_text("{.field Body}: On disk {.path body}")
-  } else if (length(body) == 0) {
-    cli::cli_text("{.field Body}: Empty")
-  } else if (length(body) > 0) {
+  if (!resp_has_body(x)) {
+    cli::cli_text("{.field Body}: None")
+  } else if (is_path(body)) {
+    cli::cli_text("{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)")
+  } else {
     cli::cli_text("{.field Body}: In memory ({length(body)} bytes)")
   }
 
@@ -92,7 +92,9 @@ print.httr2_response <- function(x,...) {
 #' @returns `resp` (invisibly).
 #' @export
 #' @examples
-#' resp <- request("https://httpbin.org/json") %>% req_perform()
+#' resp <- request(example_url()) %>%
+#'   req_url_path("/json") %>%
+#'   req_perform()
 #' resp %>% resp_raw()
 resp_raw <- function(resp) {
   cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))

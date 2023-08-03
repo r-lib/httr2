@@ -14,12 +14,12 @@ test_that("can send file", {
 })
 
 test_that("can send string", {
-  resp <- request_httpbin("/post") %>%
-    req_body_raw("test") %>%
+  resp <- request_test("/post") %>%
+    req_body_raw("test", type = "text/plain") %>%
     req_perform()
 
   json <- resp_body_json(resp)
-  expect_equal(json$headers$`Content-Type`, NULL)
+  expect_equal(json$headers$`Content-Type`, "text/plain")
   expect_equal(json$data, "test")
 })
 
@@ -99,11 +99,17 @@ test_that("can upload file with multipart", {
   path <- tempfile()
   writeLines("this is a test", path)
 
-  resp <- request_httpbin("/post") %>%
+  resp <- request_test("/post") %>%
     req_body_multipart(file = curl::form_file(path)) %>%
     req_perform()
   json <- resp_body_json(resp)
-  expect_match(json$files$file, "this is a test\n")
+  expect_equal(
+    json$files$file$value,
+    paste0(
+      "data:application/octet-stream;base64,",
+      openssl::base64_encode("this is a test\n")
+    )
+  )
 })
 
 test_that("can override body content type", {

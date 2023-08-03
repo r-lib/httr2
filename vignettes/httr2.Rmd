@@ -32,9 +32,11 @@ Having an explicit request object makes it easier to build up a complex request 
 Every request starts with a URL:
 
 ```{r}
-req <- request("https://httpbin.org/get")
+req <- request(example_url())
 req
 ```
+
+Here, instead of an external website, we use a test server that's built-in to httr2 itself. That ensures that this vignette will work regardless of when or where you run it.
 
 We can see exactly what this request will send to the server with a dry run:
 
@@ -48,7 +50,7 @@ The first line of the request contains three important pieces of information:
     Here's its GET, the most common verb, indicating that we want to *get* a resource.
     Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.
 
--   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`httpbin.org`), and the port (not used here).
+-   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`R url_parse(example_url())$port`).
 
 -   The version of the HTTP protocol.
     This is unimportant for our purposes because it's handled at a lower level.
@@ -114,7 +116,7 @@ If you need to send data encoded in a different form, you can use `req_body_raw(
 To actually perform a request and fetch the response back from the server, call `req_perform()`:
 
 ```{r}
-req <- request("https://httpbin.org/json")
+req <- request(example_url()) %>% req_url_path("/json")
 resp <- req %>% req_perform()
 resp
 ```
@@ -163,8 +165,13 @@ Responses with status codes 4xx and 5xx are HTTP errors.
 httr2 automatically turns these into R errors:
 
 ```{r, error = TRUE}
-request("https://httpbin.org/status/404") %>% req_perform()
-request("https://httpbin.org/status/500") %>% req_perform()
+request(example_url()) %>% 
+  req_url_path("/status/404") %>% 
+  req_perform()
+
+request(example_url()) %>% 
+  req_url_path("/status/500") %>% 
+  req_perform()
 ```
 
 This is another important difference to httr, which required that you explicitly call `httr::stop_for_status()` to turn HTTP errors into R errors.
@@ -181,4 +188,4 @@ These include:
 
 -   `req_retry()` sets up a retry strategy so that if the request either fails or you get a transient HTTP error, it'll automatically retry after a short delay.
 
-For more details see their documentation, as well as examples of the usage in real APIs in `vignette("wrapping-apis.Rmd")`.
+For more details see their documentation, as well as examples of the usage in real APIs in `vignette("wrapping-apis")`.

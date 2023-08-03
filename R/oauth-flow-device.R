@@ -117,7 +117,7 @@ oauth_flow_device_poll <- function(client, request, token_params) {
   while (Sys.time() < deadline) {
     for (i in 1:20) {
       cli::cli_progress_update()
-      sys_sleep(delay / 20)
+      Sys.sleep(delay / 20)
     }
 
     tryCatch(

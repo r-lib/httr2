@@ -31,7 +31,7 @@ An \link{oauth_token}.
 This function generates an access token from a refresh token, following
 the process described in
 \href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{rfc6749},
-Section 6. Errors if the refresh returns a new refresh token, see
+Section 6. Warns if the refresh returns a new refresh token, see
 \code{\link[=req_oauth_refresh]{req_oauth_refresh()}} for details.
 }
 \seealso{

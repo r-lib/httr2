@@ -1,6 +1,6 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
-Version: 0.2.2.9000
+Version: 0.2.3.9000
 Authors@R: c(
     person("Hadley", "Wickham", , "hadley@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = c("cph", "fnd"))
@@ -36,7 +36,7 @@ Suggests:
     knitr,
     purrr,
     rmarkdown,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.8),
     tibble,
     webfakes,
     xml2

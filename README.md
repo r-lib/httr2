@@ -75,7 +75,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.2.1.9000 r-curl/4.3.2 libcurl/7.79.1
+#> User-Agent: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.87.0
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -89,7 +89,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6307 bytes)
+#> Body: In memory (6204 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the

@@ -12,7 +12,8 @@
 #' @inheritParams req_perform
 #' @returns A modified HTTP [request].
 #' @examples
-#' req <- request("http://httpbin.org/post")
+#' req <- request(example_url()) %>%
+#'   req_url_path("/post")
 #'
 #' # Most APIs expect small amounts of data in either form or json encoded:
 #' req %>%
@@ -100,10 +101,11 @@ req_body_json <- function(req, data,
 
 #' @export
 #' @rdname req_body
-#' @param ... Name-data pairs used send data in the body. For
-#'   `req_body_form()`, the values must be strings (or things easily
-#'   coerced to string); for `req_body_multipart()` the values must be
-#'   strings or objects produced by [curl::form_file()]/[curl::form_data()].
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-data pairs used send
+#'   data in the body. For `req_body_form()`, the values must be strings (or
+#'   things easily coerced to string); for `req_body_multipart()` the values
+#'   must be strings or objects produced by
+#'   [curl::form_file()]/[curl::form_data()].
 #'
 #'   For `req_body_json()`, additional arguments passed on to
 #'   [jsonlite::toJSON()].
@@ -127,7 +129,7 @@ req_body_multipart <- function(.req, ...) {
 modify_body_data <- function(data, ...) {
   dots <- list2(...)
   if (length(dots) == 1 && !is_named(dots) && is.list(dots[[1]])) {
-    warn("This function longers takes a list, instead supply named arguments in ...", call = caller_env())
+    warn("This function no longer takes a list, instead supply named arguments in ...", call = caller_env())
     modify_list(data, !!!dots[[1]])
   } else {
     modify_list(data, ...)

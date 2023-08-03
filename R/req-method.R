@@ -9,9 +9,9 @@
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
-#' request("http://httpbin.org") %>% req_method("PATCH")
-#' request("http://httpbin.org") %>% req_method("PUT")
-#' request("http://httpbin.org") %>% req_method("HEAD")
+#' request(example_url()) %>% req_method("PATCH")
+#' request(example_url()) %>% req_method("PUT")
+#' request(example_url()) %>% req_method("HEAD")
 req_method <- function(req, method) {
   check_request(req)
   check_string(method, "`method`")

@@ -6,6 +6,7 @@
 #' * `resp_body_json()` returns parsed JSON.
 #' * `resp_body_html()` returns parsed HTML.
 #' * `resp_body_xml()` returns parsed XML.
+#' * `resp_has_body()` returns `TRUE` if the response has a body.
 #'
 #' `resp_body_json()` and `resp_body_xml()` check that the content-type header
 #' is correct; if the server returns an incorrect type you can suppress the
@@ -22,6 +23,7 @@
 #' resp <- request("https://httr2.r-lib.org") %>% req_perform()
 #' resp
 #'
+#' resp %>% resp_has_body()
 #' resp %>% resp_body_raw()
 #' resp %>% resp_body_string()
 #'
@@ -31,12 +33,24 @@
 resp_body_raw <- function(resp) {
   check_response(resp)
 
-  if (is_path(resp$body)) {
-    readBin(resp$body, "raw", file.size(resp$body))
-  } else if (length(resp$body) == 0) {
+  if (!resp_has_body(resp)) {
     abort("Can not retrieve empty body")
+  } else if (is_path(resp$body)) {
+    readBin(resp$body, "raw", file.size(resp$body))
   } else {
     resp$body
+  }
+}
+
+#' @rdname resp_body_raw
+#' @export
+resp_has_body <- function(resp) {
+  check_response(resp)
+
+  if (is_path(resp$body)) {
+    file.size(resp$body) > 0
+  } else {
+    length(resp$body) > 0
   }
 }
 
