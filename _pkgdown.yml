@@ -55,6 +55,7 @@ reference:
 - title: Handle the response
   contents:
   - starts_with("resp_")
+  - check_resp_content_type
 
 - title: Miscellaenous helpers
   contents:
