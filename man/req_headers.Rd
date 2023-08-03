@@ -4,7 +4,7 @@
 \alias{req_headers}
 \title{Modify request headers}
 \usage{
-req_headers(.req, ...)
+req_headers(.req, ..., .redact = FALSE)
 }
 \arguments{
 \item{.req}{A \link{request}.}
@@ -16,6 +16,11 @@ and their values.
 \item Use \code{""} to remove a header
 \item Use a character vector to repeat a header.
 }}
+
+\item{.redact}{If \code{TRUE}, all the added headers are redacted. Can also be a
+named list containing \code{TRUE} or \code{FALSE} declaring whether or not to redact
+a particular header. If a named list is provided, the default for any
+unspecified header is \code{TRUE}.}
 }
 \value{
 A modified HTTP \link{request}.

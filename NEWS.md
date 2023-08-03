@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_headers()` gains a `.redact` argument that controls whether or not to
+  redact a header (@mgirlich, #247).
+
 * `curl_translate()` now works with multiline commands from the clipboard
   (@mgirlich, #254).
 

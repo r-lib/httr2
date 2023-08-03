@@ -30,7 +30,7 @@ req_auth_basic <- function(req, username, password = NULL) {
   password <- check_password(password)
 
   username_password <- openssl::base64_encode(paste0(username, ":", password))
-  req_headers(req, Authorization = paste0("Basic ", username_password))
+  req_headers(req, Authorization = paste0("Basic ", username_password), .redact = TRUE)
 }
 
 #' Authenticate request with bearer token
@@ -57,5 +57,5 @@ req_auth_basic <- function(req, username, password = NULL) {
 req_auth_bearer_token <- function(req, token) {
   check_request(req)
   check_string(token, "`token`")
-  req_headers(req, Authorization = paste("Bearer", token))
+  req_headers(req, Authorization = paste("Bearer", token), .redact = TRUE)
 }
