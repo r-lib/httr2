@@ -247,7 +247,7 @@ add_curl_step <- function(steps,
   names <- quote_name(names2(args))
   string <- vapply(args, is.character, logical(1L))
   values <- unlist(args)
-  values <- ifelse(string, encodeString(values, quote = '"'), values)
+  values <- ifelse(string, encode_string2(values), values)
 
   args_named <- ifelse(
     names == "",
@@ -263,4 +263,27 @@ add_curl_step <- function(steps,
   }
 
   c(steps, new_step)
+}
+
+encode_string2 <- function(x) {
+  supports_raw_string <- getRversion() >= "4.0.0"
+
+  has_double_quote <- grepl('"', x, fixed = TRUE)
+  has_single_quote <- grepl("'", x, fixed = TRUE)
+  use_double <- !has_double_quote | has_single_quote
+  out <- ifelse(
+    use_double,
+    encodeString(x, quote = '"'),
+    encodeString(x, quote = "'")
+  )
+  if (supports_raw_string) {
+    has_unprintable <- grepl("[^[[:cntrl:]]]", x)
+    x_encoded <- encodeString(x)
+    has_both_quotes <- has_double_quote & has_single_quote
+    use_raw_string <- !has_unprintable & (x != x_encoded | has_both_quotes)
+    out[use_raw_string] <- paste0('r"---{', x[use_raw_string], '}---"')
+  }
+
+  names(out) <- names(x)
+  out
 }

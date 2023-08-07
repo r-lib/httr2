@@ -148,3 +148,21 @@ test_that("can read from clipboard", {
     clipr::read_clip()
   })
 })
+
+test_that("encode_string2() produces simple strings", {
+  # double quotes is standard
+  expect_equal(encode_string2("x"), encodeString("x", quote = '"'))
+  # use single quotes if double quotes but not single quotes
+  expect_equal(encode_string2('x"x'), encodeString('x"x', quote = "'"))
+
+  skip_if_not(getRversion() >= "4.0.0")
+  # use raw string if single and double quotes are used
+  expect_equal(encode_string2('x"\'x'), 'r"---{x"\'x}---"')
+
+  cmd <- r"--{curl 'http://example.com' \
+  -X 'PATCH' \
+  -H 'Content-Type: application/json' \
+  --data-raw '{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}} ' \
+  --compressed}--"
+  expect_snapshot(curl_translate(cmd))
+})
