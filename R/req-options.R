@@ -169,11 +169,12 @@ req_verbose <- function(req,
                         redact_headers = TRUE) {
   check_request(req)
 
+  to_redact <- attr(req$headers, "redact")
   debug <- function(type, msg) {
     switch(type + 1,
       text =       if (info)        verbose_message("*  ", msg),
       headerOut =  if (header_resp) verbose_header("<- ", msg),
-      headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers),
+      headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
       dataOut =    if (body_resp)   verbose_message("<< ", msg),
       dataIn =     if (body_req)    verbose_message(">> ", msg)
     )
