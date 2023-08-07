@@ -7,7 +7,7 @@
     -> Accept-Encoding: gzip
     -> Content-Length: 17
     -> 
-    >> This is some text
+    >> 17 bytes of binary data
 
 # req_proxy gives helpful errors
 

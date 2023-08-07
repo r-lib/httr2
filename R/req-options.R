@@ -187,17 +187,14 @@ req_verbose <- function(req,
 # helpers -----------------------------------------------------------------
 
 verbose_message <- function(prefix, x, type = "raw") {
-  if (any(x > 128) && !type %in% c("json", "form")) {
-    # This doesn't handle unicode, but it seems like most output
-    # will be compressed in some way, so displaying bodies is unlikely
-    # to be useful anyway.
-    lines <- paste0(length(x), " bytes of binary data")
-  } else {
+  if (type %in% c("json", "form")) {
     x <- readBin(x, character())
     if (type == "form") {
       x <- curl::curl_unescape(x)
     }
     lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
+  } else {
+    lines <- paste0(length(x), " bytes of binary data")
   }
   cli::cat_line(prefix, lines)
 }
