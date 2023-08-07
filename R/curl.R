@@ -44,14 +44,6 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
   }
   data <- curl_normalize(cmd)
 
-  add_line <- function(x, y) {
-    if (is.null(y)) {
-      return(x)
-    }
-
-    paste0(x, ' %>% \n  ', gsub("\n", "\n  ", y))
-  }
-
   url_pieces <- httr2::url_parse(data$url)
   query <- url_pieces$query
   url_pieces$query <- NULL
