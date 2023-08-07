@@ -9,10 +9,8 @@
 #'   * Use `NULL` to reset a value to httr's default
 #'   * Use `""` to remove a header
 #'   * Use a character vector to repeat a header.
-#' @param .redact If `TRUE`, all the added headers are redacted. Can also be a
-#'   named list containing `TRUE` or `FALSE` declaring whether or not to redact
-#'   a particular header. If a named list is provided, the default for any
-#'   unspecified header is `TRUE`.
+#' @param .redact Headers to redact. If `NULL`, the default, the added headers
+#'   are not redacted.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -51,18 +49,19 @@
 #'    req_headers(!!!headers, HeaderThree = "three") %>%
 #'    req_dry_run()
 #'
-req_headers <- function(.req, ..., .redact = FALSE) {
+#' # Use `.redact` to hide a header in the output
+#' req %>%
+#'   req_headers(Secret = "this-is-private", Public = "but-this-is-not", .redact = "Secret") %>%
+#'   req_dry_run()
+req_headers <- function(.req, ..., .redact = NULL) {
   check_request(.req)
 
   headers <- list2(...)
   header_names <- names2(headers)
-  .redact <- unlist(check_list_of_bool(.redact, header_names))
-  to_redact <- names(.redact)[.redact]
-  to_unredact <- names(.redact)[!.redact]
+  check_redact(.redact)
 
-  redact_out <- attr(.req$headers, "redact") %||% to_redact
-  redact_out <- setdiff(redact_out, to_unredact)
-  redact_out <- union(redact_out, to_redact)
+  redact_out <- attr(.req$headers, "redact") %||% .redact %||% character()
+  redact_out <- union(redact_out, .redact)
   .req$headers <- modify_list(.req$headers, !!!headers)
 
   attr(.req$headers, "redact") <- redact_out
@@ -70,25 +69,11 @@ req_headers <- function(.req, ..., .redact = FALSE) {
   .req
 }
 
-check_list_of_bool <- function(x, names, arg = caller_arg(x), call = caller_env()) {
-  if (is_bool(x)) {
-    rep_named(names, x)
-  } else if (is_bare_list(x)) {
-    check_unique_names(x, arg = arg, call = call)
-    x[intersect(names(x), names)]
-  } else  {
+check_redact <- function(x, arg = caller_arg(x), call = caller_env()) {
+  if (!is.character(x) && !is.null(x)) {
     cli::cli_abort(
-      "{.arg {arg}} must be a list or a single `TRUE` or `FALSE`.",
+      "{.arg {arg}} must be a character or `NULL`.",
       call = call
     )
-  }
-}
-
-check_unique_names <- function(x, arg = caller_arg(x), call = caller_env()) {
-  if (length(x) > 0L && !is_named(x)) {
-    cli::cli_abort("All elements of {.arg {arg}} must be named.", call = call)
-  }
-  if (anyDuplicated(names(x))) {
-    cli::cli_abort("The names of {.arg {arg}} must be unique.", call = call)
   }
 }

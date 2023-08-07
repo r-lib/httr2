@@ -26,22 +26,11 @@ test_that("can control which headers to redact", {
   }
 
   req <- request("http://example.com")
-  # default to FALSE
   expect_redact(req_headers(req, a = 1L, b = 2L), character())
-  # bool works
-  expect_redact(req_headers(req, a = 1L, b = 2L, .redact = TRUE), c("a", "b"))
-  # named list works
-  expect_redact(
-    req_headers(req, a = 1L, b = 2L, c = 3L, .redact = list(a = TRUE, b = FALSE, c = TRUE)),
-    c("a", "c")
-  )
-  # unspecified defaults to FALSE
-  expect_redact(req_headers(req, a = 1L, b = 2L, c = 3L, .redact = list(a = TRUE)), "a")
-  # can update redact
-  expect_redact(
-    req %>%
-      req_headers(a = 1L, b = 2L, .redact = TRUE) %>%
-      req_headers(a = "a", .redact = FALSE),
-    "b"
-  )
+  expect_redact(req_headers(req, a = 1L, b = 2L, .redact = c("a", "b")), c("a", "b"))
+  expect_redact(req_headers(req, a = 1L, b = 2L, .redact = "a"), "a")
+
+  expect_snapshot(error = TRUE, {
+    req_headers(req, a = 1L, b = 2L, .redact = 1L)
+  })
 })
