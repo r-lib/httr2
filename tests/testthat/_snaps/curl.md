@@ -105,6 +105,6 @@
     Output
       request("http://example.com") %>% 
         req_method("PATCH") %>% 
-        req_body_raw('{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}} ', "application/json") %>% 
+        req_body_raw('{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}}', "application/json") %>% 
         req_perform()
 

@@ -159,10 +159,10 @@ test_that("encode_string2() produces simple strings", {
   # use raw string if single and double quotes are used
   expect_equal(encode_string2('x"\'x'), 'r"---{x"\'x}---"')
 
-  cmd <- r"--{curl 'http://example.com' \
+  cmd <- paste0("curl 'http://example.com' \
   -X 'PATCH' \
   -H 'Content-Type: application/json' \
-  --data-raw '{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}} ' \
-  --compressed}--"
+  --data-raw ", '{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}}', "\
+  --compressed")
   expect_snapshot(curl_translate(cmd))
 })
