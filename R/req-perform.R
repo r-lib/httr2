@@ -212,8 +212,9 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   check_installed("httpuv")
 
   if (!quiet) {
+    to_redact <- attr(req$headers, "redact")
     debug <- function(type, msg) {
-      if (type == 2L) verbose_header("", msg, redact = redact_headers)
+      if (type == 2L) verbose_header("", msg, redact = redact_headers, to_redact = to_redact)
       if (type == 4L) verbose_message("", msg)
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)

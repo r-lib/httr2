@@ -37,11 +37,11 @@ print.httr2_headers <- function(x, ..., redact = TRUE) {
   invisible(x)
 }
 
-headers_redact <- function(x, redact = TRUE) {
+headers_redact <- function(x, redact = TRUE, to_redact = NULL) {
   if (!redact) {
     x
   } else {
-    to_redact <- union(attr(x, "redact"), "Authorization")
+    to_redact <- union(attr(x, "redact"), c("Authorization", to_redact = to_redact))
     attr(x, "redact") <- NULL
 
     list_redact(x, to_redact, case_sensitive = FALSE)

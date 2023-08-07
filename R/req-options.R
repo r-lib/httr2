@@ -197,13 +197,13 @@ verbose_message <- function(prefix, x) {
   cli::cat_line(prefix, lines)
 }
 
-verbose_header <- function(prefix, x, redact = TRUE) {
+verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
   x <- readBin(x, character())
   lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
 
   for (line in lines) {
     if (grepl(":", line, fixed = TRUE)) {
-      header <- headers_redact(as_headers(line), redact)
+      header <- headers_redact(as_headers(line), redact, to_redact = to_redact)
       cli::cat_line(prefix, cli::style_bold(names(header)), ": ", header)
     } else {
       cli::cat_line(prefix, line)
