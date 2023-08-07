@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `curl_translate()` now produces escapes with single quotes or raw strings
+  in case double quotes can't be used (@mgirlich, #264).
+
 * `curl_translate()` now parses the query components of the url (@mgirlich, #259).
 
 * `curl_translate()` now works with multiline commands from the clipboard
