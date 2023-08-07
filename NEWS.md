@@ -3,6 +3,8 @@
 * `curl_translate()` gains the argument `simplify_headers` that removes some
   common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
   (@mgirlich, #256).
+  
+* `curl_translate()` now parses the query components of the url (@mgirlich, #259).
 
 * `curl_translate()` now works with multiline commands from the clipboard
   (@mgirlich, #254).

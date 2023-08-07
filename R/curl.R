@@ -44,7 +44,6 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
   }
   data <- curl_normalize(cmd)
 
-  out <- glue('request("{data$url}")')
   add_line <- function(x, y) {
     if (is.null(y)) {
       return(x)
@@ -53,32 +52,38 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
     paste0(x, ' %>% \n  ', gsub("\n", "\n  ", y))
   }
 
-  if (!is.null(data$method)) {
-    out <- add_line(out, glue('req_method("{data$method}")'))
-  }
+  url_pieces <- httr2::url_parse(data$url)
+  query <- url_pieces$query
+  url_pieces$query <- NULL
+  url <- url_build(url_pieces)
+
+  steps <- glue('request("{url}")')
+  steps <- add_curl_step(steps, "req_method", main_args = data$method)
+
+  steps <- add_curl_step(steps, "req_url_query", dots = query)
 
   # Content type set with data
   type <- data$headers$`Content-Type`
   data$headers$`Content-Type` <- NULL
 
-  headers_code <- curl_prepare_headers(data$headers, simplify_headers)
-  out <- add_line(out, headers_code)
+  headers <- curl_simplify_headers(data$headers, simplify_headers)
+  steps <- add_curl_step(steps, "req_headers", dots = headers)
 
   if (!identical(data$data, "")) {
-    type <- encodeString(type %||% "application/x-www-form-urlencoded", quote = '"')
-    body <- encodeString(data$data, quote = '"')
-    out <- add_line(out, glue("req_body_raw({body}, {type})"))
+    type <- type %||% "application/x-www-form-urlencoded"
+    body <- data$data
+    steps <- add_curl_step(steps, "req_body_raw", main_args = c(body, type))
   }
 
-  if (!is.null(data$auth)) {
-    out <- add_line(out, glue('req_auth_basic("{data$auth[[1]]}", "{data$auth[[2]]}")'))
-  }
+  steps <- add_curl_step(steps, "req_auth_basic", main_args = unname(data$auth))
 
+  perform_args <- list()
   if (data$verbose) {
-    out <- add_line(out, "req_perform(verbosity = 1)")
-  } else {
-    out <- add_line(out, "req_perform()")
+    perform_args$verbosity <- 1
   }
+  steps <- add_curl_step(steps, "req_perform", main_args = perform_args, keep_if_empty = TRUE)
+
+  out <- paste0(steps, collapse = " %>% \n  ")
   out <- paste0(out, "\n")
 
   if (clip) {
@@ -168,7 +173,7 @@ curl_normalize <- function(cmd) {
   )
 }
 
-curl_prepare_headers <- function(headers, simplify_headers) {
+curl_simplify_headers <- function(headers, simplify_headers) {
   if (simplify_headers) {
     header_names <- tolower(names(headers))
     to_drop <- startsWith(header_names, "sec-fetch") |
@@ -177,15 +182,7 @@ curl_prepare_headers <- function(headers, simplify_headers) {
     headers <- headers[!to_drop]
   }
 
-  if (length(headers) == 0) {
-    return(NULL)
-  }
-
-  names <- quote_name(names(headers))
-  values <- encodeString(unlist(headers), quote = '"')
-  args <- paste0("  ", names, " = ", values, ",\n", collapse = "")
-
-  paste0("req_headers(\n", args, ")")
+  headers
 }
 
 curl_data <- function(x, binary = FALSE, raw = FALSE) {
@@ -256,8 +253,42 @@ curl_args <- function(cmd) {
 # Helpers -----------------------------------------------------------------
 
 is_syntactic <- function(x) {
-  x == make.names(x)
+  x == "" | x == make.names(x)
 }
 quote_name <- function(x) {
   ifelse(is_syntactic(x), x, encodeString(x, quote = "`"))
+}
+
+add_curl_step <- function(steps,
+                          f,
+                          ...,
+                          main_args = NULL,
+                          dots = NULL,
+                          keep_if_empty = FALSE) {
+  check_dots_empty0(...)
+  args <- c(main_args, dots)
+
+  if (is_empty(args) && !keep_if_empty) {
+    return(steps)
+  }
+
+  names <- quote_name(names2(args))
+  string <- vapply(args, is.character, logical(1L))
+  values <- unlist(args)
+  values <- ifelse(string, encodeString(values, quote = '"'), values)
+
+  args_named <- ifelse(
+    names == "",
+    paste0(values),
+    paste0(names, " = ", values)
+  )
+  if (is_empty(dots)) {
+    args_string <- paste0(args_named, collapse = ", ")
+    new_step <- paste0(f, "(", args_string, ")")
+  } else {
+    args_string <- paste0("    ", args_named, ",\n", collapse = "")
+    new_step <- paste0(f, "(\n", args_string, "  )")
+  }
+
+  c(steps, new_step)
 }

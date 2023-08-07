@@ -63,8 +63,8 @@ test_that("common headers can be removed", {
   cmd <- paste("curl http://x.com -A agent -e ref", sec_fetch_headers, sec_ch_ua_headers, other_headers)
   headers <- curl_normalize(cmd)$headers
   expect_snapshot({
-    cat(curl_prepare_headers(headers, simplify_headers = TRUE))
-    cat(curl_prepare_headers(headers, simplify_headers = FALSE))
+    print(curl_simplify_headers(headers, simplify_headers = TRUE))
+    print(curl_simplify_headers(headers, simplify_headers = FALSE))
   })
 })
 
@@ -105,6 +105,12 @@ test_that("can translate to httr calls", {
     curl_translate("curl http://x.com -H 'A B:1'")
     curl_translate("curl http://x.com -u u:p")
     curl_translate("curl http://x.com --verbose")
+  })
+})
+
+test_that("can translate query", {
+  expect_snapshot({
+    curl_translate("curl http://x.com?string=abcde&b=2")
   })
 })
 
