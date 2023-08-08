@@ -107,11 +107,7 @@ req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, a
     proxyuserpwd <- NULL
   }
 
-  if (!is.null(port)) {
-    if (!is_integerish(port)) {
-      abort("`port` must be a number")
-    }
-  }
+  check_number_whole(port, allow_null = TRUE)
 
   req_options(
     req,

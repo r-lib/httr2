@@ -29,9 +29,7 @@ print.httr2_request <- function(x, ..., redact_headers = TRUE) {
 }
 
 new_request <- function(url, method = NULL, headers = list(), body = NULL, fields = list(), options = list(), policies = list()) {
-  if (!is_string(url)) {
-    abort("`url` must be a string")
-  }
+  check_string(url)
 
   structure(
     list(
