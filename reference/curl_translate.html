@@ -84,7 +84,7 @@ written by <a href="https://rud.is/b/" class="external-link">Bob Rudis</a>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">curl_translate</span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">curl_translate</span><span class="op">(</span><span class="va">cmd</span>, simplify_headers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">curl_help</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -94,6 +94,14 @@ written by <a href="https://rud.is/b/" class="external-link">Bob Rudis</a>.</p>
     <dl><dt>cmd</dt>
 <dd><p>Call to curl. If omitted and the clipr package is installed,
 will be retrieved from the clipboard.</p></dd>
+
+
+<dt>simplify_headers</dt>
+<dd><p>Remove typically unimportant headers included when
+copying a curl command from the browser. This includes:</p><ul><li><p><code>sec-fetch-*</code></p></li>
+<li><p><code>sec-ch-ua*</code></p></li>
+<li><p><code>referer</code>, <code>pragma</code>, <code>connection</code></p></li>
+</ul></dd>
 
 </dl></div>
     <div class="section level2">
