@@ -200,7 +200,7 @@ req_body_apply <- function(req) {
         out
       }
     }
-    seek <- function(data, offset, origin = 0) {
+    seek <- function(offset, origin = 0) {
       if (origin == 0L) {
         if (!is.null(con)) {
           close(con)
