@@ -188,7 +188,7 @@ req_body_apply <- function(req) {
     size <- file.info(data)$size
     con <- file(data, "rb")
     # Leaks connection if request doesn't complete
-    read <- function(nbytes, ...) {
+    readfunction <- function(nbytes, ...) {
       if (is.null(con)) {
         raw()
       } else {
@@ -200,22 +200,18 @@ req_body_apply <- function(req) {
         out
       }
     }
-    seek <- function(offset, origin = 0) {
-      if (origin == 0L) {
-        if (!is.null(con)) {
-          close(con)
-        }
-        con <<- file(data, "rb")
-        0L
-      } else {
-        2L
+    seekfunction <- function(offset, ...) {
+      if (!is.null(con)) {
+        close(con)
       }
+      con <<- file(data, "rb")
+      seek(con, where = offset)
     }
 
     req <- req_options(req,
       post = TRUE,
-      readfunction = read,
-      seekfunction = seek,
+      readfunction = readfunction,
+      seekfunction = seekfunction,
       postfieldsize_large = size
     )
   } else if (type == "raw") {
