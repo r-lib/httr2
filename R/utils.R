@@ -13,7 +13,7 @@ bullets_with_header <- function(header, x) {
         format(x)
       }
     } else {
-      friendly_type_of(x)
+      obj_type_friendly(x)
     }
   }
   vals <- map_chr(x, as_simple)
