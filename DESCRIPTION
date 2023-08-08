@@ -34,7 +34,6 @@ Suggests:
     jose,
     jsonlite,
     knitr,
-    purrr,
     rmarkdown,
     testthat (>= 3.1.8),
     tibble,
