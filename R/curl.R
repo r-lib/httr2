@@ -33,7 +33,7 @@ curl_translate <- function(cmd) {
       abort("Must supply `cmd`")
     }
   } else {
-    check_string(cmd, "`cmd`")
+    check_string(cmd)
     clip <- FALSE
   }
   data <- curl_normalize(cmd)

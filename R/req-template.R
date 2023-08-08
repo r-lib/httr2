@@ -35,7 +35,7 @@
 #' httpbin_test %>% req_template("GET /set/{name}/{value}")
 req_template <- function(req, template, ..., .env = parent.frame()) {
   check_request(req)
-  check_string(template, "`template`")
+  check_string(template)
 
   pieces <- strsplit(template, " ")[[1]]
   if (length(pieces) == 1) {

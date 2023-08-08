@@ -18,7 +18,6 @@ test_that("replacement affects all components with name", {
 
 test_that("can check arg types", {
   expect_snapshot(error = TRUE, {
-    check_string(1, "x")
     check_number("2", "x")
     check_number(NA_real_, "x")
   })

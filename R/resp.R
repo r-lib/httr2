@@ -37,8 +37,8 @@ response <- function(status_code = 200,
 }
 
 new_response <- function(method, url, status_code, headers, body) {
-  check_string(method, "method")
-  check_string(url, "url")
+  check_string(method)
+  check_string(url)
   check_number(status_code, "status_code")
 
   headers <- as_headers(headers)

@@ -38,7 +38,7 @@
 #'   req_url_query(!!!params, c = "3")
 req_url <- function(req, url) {
   check_request(req)
-  check_string(url, "`url`")
+  check_string(url)
 
   req$url <- url
   req

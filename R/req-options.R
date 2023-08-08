@@ -56,7 +56,7 @@ req_user_agent <- function(req, string = NULL) {
     )
     string <- paste0(names(versions), "/", versions, collapse = " ")
   } else {
-    check_string(string, "`string`")
+    check_string(string)
   }
 
   req_options(req, useragent = string)

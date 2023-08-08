@@ -26,8 +26,8 @@ oauth_token <- function(
                         .date = Sys.time()
                         ) {
 
-  check_string(access_token, "`access_token`")
-  check_string(token_type, "`token_type`")
+  check_string(access_token)
+  check_string(token_type)
   if (!is.null(expires_in)) {
     check_number(expires_in, "`expires_in`")
   }

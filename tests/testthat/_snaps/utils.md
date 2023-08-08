@@ -9,11 +9,6 @@
 # can check arg types
 
     Code
-      check_string(1, "x")
-    Condition
-      Error in `check_string()`:
-      ! x must be a string
-    Code
       check_number("2", "x")
     Condition
       Error in `check_number()`:
