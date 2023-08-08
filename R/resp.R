@@ -110,9 +110,17 @@ resp_raw <- function(resp) {
 is_response <- function(x) {
   inherits(x, "httr2_response")
 }
-check_response <- function(req) {
-  if (is_response(req)) {
-    return()
+
+check_response <- function(resp, arg = caller_arg(resp), call = caller_env()) {
+  if (!missing(resp) && is_response(resp)) {
+    return(invisible(NULL))
   }
-  abort("`resp` must be an HTTP response object")
+
+  stop_input_type(
+    resp,
+    "an HTTP response object",
+    allow_null = FALSE,
+    arg = arg,
+    call = call
+  )
 }
