@@ -56,7 +56,7 @@ req_user_agent <- function(req, string = NULL) {
     )
     string <- paste0(names(versions), "/", versions, collapse = " ")
   } else {
-    check_string(string, "`string`")
+    check_string(string)
   }
 
   req_options(req, useragent = string)
@@ -75,7 +75,7 @@ req_user_agent <- function(req, string = NULL) {
 #' request("http://example.com") %>% req_timeout(10)
 req_timeout <- function(req, seconds) {
   check_request(req)
-  check_number(seconds, "`seconds`")
+  check_number_decimal(seconds)
 
   if (seconds < 0.001) {
     abort("`timeout` must be >1 ms")
@@ -107,11 +107,7 @@ req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, a
     proxyuserpwd <- NULL
   }
 
-  if (!is.null(port)) {
-    if (!is_integerish(port)) {
-      abort("`port` must be a number")
-    }
-  }
+  check_number_whole(port, allow_null = TRUE)
 
   req_options(
     req,
