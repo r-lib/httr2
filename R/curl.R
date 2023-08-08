@@ -14,6 +14,12 @@
 #'
 #' @param cmd Call to curl. If omitted and the clipr package is installed,
 #'   will be retrieved from the clipboard.
+#' @param simplify_headers Remove typically unimportant headers included when
+#'   copying a curl command from the browser. This includes:
+#'
+#'   * `sec-fetch-*`
+#'   * `sec-ch-ua*`
+#'   * `referer`, `pragma`, `connection`
 #' @returns A string containing the translated httr2 code. If the input
 #'   was copied from the clipboard, the translation will be copied back
 #'   to the clipboard.
@@ -23,7 +29,7 @@
 #' curl_translate("curl http://example.com -X DELETE")
 #' curl_translate("curl http://example.com --header A:1 --header B:2")
 #' curl_translate("curl http://example.com --verbose")
-curl_translate <- function(cmd) {
+curl_translate <- function(cmd, simplify_headers = TRUE) {
   if (missing(cmd)) {
     if (is_interactive() && is_installed("clipr")) {
       clip <- TRUE
@@ -52,7 +58,8 @@ curl_translate <- function(cmd) {
   type <- data$headers$`Content-Type`
   data$headers$`Content-Type` <- NULL
 
-  steps <- add_curl_step(steps, "req_headers", dots = data$headers)
+  headers <- curl_simplify_headers(data$headers, simplify_headers)
+  steps <- add_curl_step(steps, "req_headers", dots = headers)
 
   if (!identical(data$data, "")) {
     type <- type %||% "application/x-www-form-urlencoded"
@@ -157,6 +164,19 @@ curl_normalize <- function(cmd) {
     data = data
   )
 }
+
+curl_simplify_headers <- function(headers, simplify_headers) {
+  if (simplify_headers) {
+    header_names <- tolower(names(headers))
+    to_drop <- startsWith(header_names, "sec-fetch") |
+      startsWith(header_names, "sec-ch-ua") |
+      header_names %in% c("referer", "pragma", "connection")
+    headers <- headers[!to_drop]
+  }
+
+  headers
+}
+
 curl_data <- function(x, binary = FALSE, raw = FALSE) {
   if (!raw && grepl("^@", x)) {
     path <- sub("^@", "", x)
