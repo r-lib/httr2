@@ -41,7 +41,7 @@ modify_list <- function(.x, ...) {
 
 
 sys_sleep <- function(seconds, fps = 10) {
-  check_number(seconds, "`seconds`")
+  check_number_decimal(seconds)
 
   if (seconds == 0) {
     return(invisible())
@@ -65,13 +65,6 @@ sys_sleep <- function(seconds, fps = 10) {
 }
 
 cur_time <- function() proc.time()[[3]]
-
-check_number <- function(x, name) {
-  if ((is_double(x, n = 1) || is_integer(x, n = 1)) && !is.na(x)) {
-    return()
-  }
-  abort(glue("{name} must be a number"))
-}
 
 is_error <- function(x) inherits(x, "error")
 
