@@ -22,7 +22,7 @@ Imports:
     openssl,
     R6,
     rappdirs,
-    rlang (>= 1.0.0),
+    rlang (>= 1.1.0),
     withr
 Suggests:
     askpass,
