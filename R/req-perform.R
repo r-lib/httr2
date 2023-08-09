@@ -303,9 +303,3 @@ req_handle <- function(req) {
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
-
-check_verbosity <- function(x) {
-  if (!is_integerish(x, n = 1)) {
-    abort("`verbosity` must be a single integer")
-  }
-}

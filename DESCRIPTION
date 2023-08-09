@@ -16,13 +16,13 @@ Depends:
     R (>= 3.4)
 Imports: 
     cli (>= 3.0.0),
-    curl,
+    curl (>= 5.0.2),
     glue,
     magrittr,
     openssl,
     R6,
     rappdirs,
-    rlang (>= 1.0.0),
+    rlang (>= 1.1.0),
     withr
 Suggests:
     askpass,
@@ -34,7 +34,6 @@ Suggests:
     jose,
     jsonlite,
     knitr,
-    purrr,
     rmarkdown,
     testthat (>= 3.1.8),
     tibble,
@@ -47,3 +46,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Remotes: jeroen/curl

@@ -25,7 +25,7 @@
 #' url$query <- list(a = 1, b = 2, c = 3)
 #' url_build(url)
 url_parse <- function(url) {
-  check_string(url, "`url`")
+  check_string(url)
 
   # https://datatracker.ietf.org/doc/html/rfc3986#appendix-B
   pieces <- parse_match(url, "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?")
