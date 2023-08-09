@@ -31,9 +31,9 @@ test_that("can send file with redirect", {
   path <- tempfile()
   writeChar(paste(letters, collapse = ""), path)
 
-  resp <- request(web$url()) |>
-    req_url_path("/upload-1") |>
-    req_body_file(path, type = "text/plain") |>
+  resp <- request(web$url()) %>%
+    req_url_path("/upload-1") %>%
+    req_body_file(path, type = "text/plain") %>%
     req_perform()
 
   expect_equal(resp_status(resp), 200)
