@@ -41,7 +41,7 @@ headers_redact <- function(x, redact = TRUE, to_redact = NULL) {
   if (!redact) {
     x
   } else {
-    to_redact <- union(attr(x, "redact"), c("Authorization", to_redact = to_redact))
+    to_redact <- union(attr(x, "redact"), to_redact)
     attr(x, "redact") <- NULL
 
     list_redact(x, to_redact, case_sensitive = FALSE)

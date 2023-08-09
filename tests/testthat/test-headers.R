@@ -27,6 +27,7 @@ test_that("subsetting is case insensitive", {
 
 test_that("redaction is case-insensitive", {
   headers <- as_headers("AUTHORIZATION: SECRET")
+  attr(headers, "redact") <- "Authorization"
   redacted <- headers_redact(headers)
   expect_named(redacted, "AUTHORIZATION")
   expect_match(as.character(redacted$AUTHORIZATION), "<REDACTED>")
