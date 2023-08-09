@@ -16,7 +16,6 @@ test_that("can send file", {
 test_that("can send file with redirect", {
   app <- webfakes::new_app()
   app$use(webfakes::mw_text())
-
   app$post("/upload-1", function(req, res) {
     res$
       set_header("Location", "/upload-2")$
@@ -27,7 +26,6 @@ test_that("can send file with redirect", {
       send(paste0("Success: ", nchar(req$text)))$
       send_status(200)
   })
-
   web <- webfakes::local_app_process(app)
 
   path <- tempfile()
@@ -38,6 +36,7 @@ test_that("can send file with redirect", {
     req_body_file(path, type = "text/plain") |>
     req_perform()
 
+  expect_equal(resp_status(resp), 200)
   expect_equal(resp$url, paste0(web$url(), "upload-2"))
   expect_equal(resp_body_string(resp), "Success: 26")
 })
