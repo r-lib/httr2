@@ -38,6 +38,6 @@
     Code
       check_request(1)
     Condition
-      Error in `check_request()`:
-      ! `req` must be an HTTP request object
+      Error:
+      ! `1` must be an HTTP request object, not the number 1.
 

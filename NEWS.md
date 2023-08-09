@@ -3,6 +3,17 @@
 * `req_headers()` gains a `.redact` argument that controls whether or not to
   redact a header (@mgirlich, #247).
 
+* `req_body_file()` now supports "rewinding". This is occasionally needed when
+  you upload a file to a URL that uses a 307 or 308 redirect to state that you 
+  should have submitted the file to a different URL, and makes the "necessary 
+  data rewind wasn't possible" error go away (#268).
+
+* `curl_translate()` gains the argument `simplify_headers` that removes some
+  common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
+  (@mgirlich, #256).
+  
+* `curl_translate()` now parses the query components of the url (@mgirlich, #259).
+
 * `curl_translate()` now works with multiline commands from the clipboard
   (@mgirlich, #254).
 

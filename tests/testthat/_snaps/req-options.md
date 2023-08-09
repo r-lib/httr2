@@ -15,7 +15,7 @@
       req %>% req_proxy(port = "abc")
     Condition
       Error in `req_proxy()`:
-      ! `port` must be a number
+      ! `port` must be a whole number or `NULL`, not the string "abc".
     Code
       req %>% req_proxy("abc", auth = "bsc")
     Condition

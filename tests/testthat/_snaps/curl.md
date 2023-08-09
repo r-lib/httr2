@@ -6,6 +6,27 @@
       Error in `curl_args()`:
       ! Expecting call to curl not 'echo'
 
+# common headers can be removed
+
+    Code
+      print(curl_simplify_headers(headers, simplify_headers = TRUE))
+    Message
+      <httr2_headers>
+    Output
+      Accept: application/vnd.api+json
+      user-agent: agent
+    Code
+      print(curl_simplify_headers(headers, simplify_headers = FALSE))
+    Message
+      <httr2_headers>
+    Output
+      Sec-Fetch-Dest: empty
+      Sec-Fetch-Mode: cors
+      sec-ch-ua-mobile: ?0
+      Accept: application/vnd.api+json
+      referer: ref
+      user-agent: agent
+
 # can translate to httr calls
 
     Code
@@ -46,6 +67,18 @@
     Output
       request("http://x.com") %>% 
         req_perform(verbosity = 1)
+
+# can translate query
+
+    Code
+      curl_translate("curl http://x.com?string=abcde&b=2")
+    Output
+      request("http://x.com") %>% 
+        req_url_query(
+          string = "abcde",
+          b = "2",
+        ) %>% 
+        req_perform()
 
 # can translate data
 

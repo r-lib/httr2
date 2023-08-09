@@ -79,7 +79,7 @@ secret_make_key <- function() {
 #'   a base64url encoded string, you can wrap it in `I()`, or you can pass
 #'   the raw vector in directly.
 secret_encrypt <- function(x, key) {
-  check_string(x, "`x`")
+  check_string(x)
   key <- as_key(key)
 
   value <- openssl::aes_ctr_encrypt(charToRaw(x), key)
@@ -89,7 +89,7 @@ secret_encrypt <- function(x, key) {
 #' @rdname secrets
 #' @param encrypted String to decrypt
 secret_decrypt <- function(encrypted, key) {
-  check_string(encrypted, "`encrypted`")
+  check_string(encrypted)
   key <- as_key(key)
 
   bytes <- base64_url_decode(encrypted)
@@ -135,7 +135,7 @@ secret_unserialize <- function(encrypted, key) {
 #' @export
 #' @rdname secrets
 secret_has_key <- function(key) {
-  check_string(key, "`envvar`")
+  check_string(key)
   key <- Sys.getenv(key)
   !identical(key, "")
 }
@@ -186,7 +186,7 @@ secret_get_key <- function(envvar, call = caller_env()) {
 #' # brute force attack
 #' obfuscate("good morning")
 obfuscate <- function(x) {
-  check_string(x, "`x`")
+  check_string(x)
 
   enc <- secret_encrypt(x, obfuscate_key())
   glue('obfuscated("{enc}")')

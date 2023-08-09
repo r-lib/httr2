@@ -13,7 +13,7 @@ bullets_with_header <- function(header, x) {
         format(x)
       }
     } else {
-      friendly_type_of(x)
+      obj_type_friendly(x)
     }
   }
   vals <- map_chr(x, as_simple)
@@ -41,7 +41,7 @@ modify_list <- function(.x, ...) {
 
 
 sys_sleep <- function(seconds, fps = 10) {
-  check_number(seconds, "`seconds`")
+  check_number_decimal(seconds)
 
   if (seconds == 0) {
     return(invisible())
@@ -65,23 +65,6 @@ sys_sleep <- function(seconds, fps = 10) {
 }
 
 cur_time <- function() proc.time()[[3]]
-
-check_string <- function(x, name, optional = TRUE) {
-  if (is_string(x) && !is.na(x)) {
-    return()
-  }
-  if (optional && is.null(x)) {
-    return()
-  }
-  abort(glue("{name} must be a string"))
-}
-
-check_number <- function(x, name) {
-  if ((is_double(x, n = 1) || is_integer(x, n = 1)) && !is.na(x)) {
-    return()
-  }
-  abort(glue("{name} must be a number"))
-}
 
 is_error <- function(x) inherits(x, "error")
 
@@ -163,7 +146,7 @@ http_date <- function(x = Sys.time()) {
 }
 
 parse_http_date <- function(x) {
-  check_string(x, "`x`")
+  check_string(x)
 
   withr::local_locale(LC_TIME = "C")
 

@@ -42,6 +42,6 @@
     Code
       check_response(1)
     Condition
-      Error in `check_response()`:
-      ! `resp` must be an HTTP response object
+      Error:
+      ! `1` must be an HTTP response object, not the number 1.
 

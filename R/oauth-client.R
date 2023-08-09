@@ -49,9 +49,9 @@ oauth_client <- function(
                          name = hash(id)
                          ) {
 
-  check_string(id, "`id`")
-  check_string(token_url, "`token_url`")
-  check_string(secret, "`secret`", optional = TRUE)
+  check_string(id)
+  check_string(token_url)
+  check_string(secret, allow_null = TRUE)
 
   if (is.character(auth)) {
     if (missing(auth)) {

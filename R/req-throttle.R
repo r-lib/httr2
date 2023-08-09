@@ -25,7 +25,7 @@
 #' throttle_status()
 req_throttle <- function(req, rate, realm = NULL) {
   check_request(req)
-  check_number(rate, "`rate`")
+  check_number_decimal(rate)
 
   delay <- 1 / rate
 
