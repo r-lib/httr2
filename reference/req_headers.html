@@ -60,7 +60,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_headers</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_headers</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span>, .redact <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,6 +75,11 @@ and their values.</p><ul><li><p>Use <code>NULL</code> to reset a value to httr's
 <li><p>Use <code>""</code> to remove a header</p></li>
 <li><p>Use a character vector to repeat a header.</p></li>
 </ul></dd>
+
+
+<dt>.redact</dt>
+<dd><p>Headers to redact. If <code>NULL</code>, the default, the added headers
+are not redacted.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -164,6 +169,18 @@ and their values.</p><ul><li><p>Use <code>NULL</code> to reset a value to httr's
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderThree</span>: three</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use `.redact` to hide a header in the output</span></span></span>
+<span class="r-in"><span><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>Secret <span class="op">=</span> <span class="st">"this-is-private"</span>, Public <span class="op">=</span> <span class="st">"but-this-is-not"</span>, .redact <span class="op">=</span> <span class="st">"Secret"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.0.2 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Secret</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Public</span>: but-this-is-not</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
