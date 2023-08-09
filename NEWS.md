@@ -8,6 +8,9 @@
   should have submitted the file to a different URL, and makes the "necessary 
   data rewind wasn't possible" error go away (#268).
 
+* `curl_translate()` now produces escapes with single quotes or raw strings
+  in case double quotes can't be used (@mgirlich, #264).
+
 * `curl_translate()` gains the argument `simplify_headers` that removes some
   common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
   (@mgirlich, #256).
