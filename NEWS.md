@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* Progress bars displayed while waiting for some time to pass are now
+  more informative (#206).
+
 * `req_headers()` gains a `.redact` argument that controls whether or not to
   redact a header (@mgirlich, #247).
 
