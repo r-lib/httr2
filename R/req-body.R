@@ -201,10 +201,9 @@ req_body_apply <- function(req) {
       }
     }
     seekfunction <- function(offset, ...) {
-      if (!is.null(con)) {
-        close(con)
+      if (is.null(con)) {
+        con <<- file(data, "rb")
       }
-      con <<- file(data, "rb")
       seek(con, where = offset)
     }
 
