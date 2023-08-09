@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_headers()` gains a `.redact` argument that controls whether or not to
+  redact a header (@mgirlich, #247).
+
 * `req_body_file()` now supports "rewinding". This is occasionally needed when
   you upload a file to a URL that uses a 307 or 308 redirect to state that you 
   should have submitted the file to a different URL, and makes the "necessary 
