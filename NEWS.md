@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* New `req_progress()` adds a progress bar to long download or uploads (#20).
+
 * `req_headers()` gains a `.redact` argument that controls whether or not to
   redact a header (@mgirlich, #247).
 
