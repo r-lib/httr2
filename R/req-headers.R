@@ -58,7 +58,7 @@ req_headers <- function(.req, ..., .redact = NULL) {
 
   headers <- list2(...)
   header_names <- names2(headers)
-  check_redact(.redact)
+  check_character(.redact, allow_null = TRUE)
 
   redact_out <- attr(.req$headers, "redact") %||% .redact %||% character()
   redact_out <- union(redact_out, .redact)
@@ -67,13 +67,4 @@ req_headers <- function(.req, ..., .redact = NULL) {
   attr(.req$headers, "redact") <- redact_out
 
   .req
-}
-
-check_redact <- function(x, arg = caller_arg(x), call = caller_env()) {
-  if (!is.character(x) && !is.null(x)) {
-    cli::cli_abort(
-      "{.arg {arg}} must be a character or `NULL`.",
-      call = call
-    )
-  }
 }
