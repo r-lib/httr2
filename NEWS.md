@@ -1,5 +1,10 @@
 # httr2 (development version)
 
+* `req_body_file()` now supports "rewinding". This is occasionally needed when
+  you upload a file to a URL that uses a 307 or 308 redirect to state that you 
+  should have submitted the file to a different URL, and makes the "necessary 
+  data rewind wasn't possible" error go away (#268).
+
 * `curl_translate()` gains the argument `simplify_headers` that removes some
   common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
   (@mgirlich, #256).
