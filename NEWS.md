@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `with_mock()` and `local_mock()` now correctly trigger errors when the
+  mocked response represents an HTTP failure (#252).
+
 * `req_headers()` gains a `.redact` argument that controls whether or not to
   redact a header (@mgirlich, #247).
 
