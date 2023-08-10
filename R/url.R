@@ -162,9 +162,9 @@ query_parse <- function(x) {
   out
 }
 
-query_build <- function(x) {
+query_build <- function(x, error_call = caller_env()) {
   if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
-    abort("Query must be a named list")
+    abort("Query must be a named list", call = error_call)
   }
 
   x <- compact(x)
@@ -177,7 +177,7 @@ query_build <- function(x) {
     abort(c(
       "Query parameters must be length 1 atomic vectors.",
       paste0("Problems: ", paste0(names(x)[bad_val], collapse =", "))
-    ))
+    ), call = error_call)
   }
 
   is_double <- map_lgl(x, is.double)
