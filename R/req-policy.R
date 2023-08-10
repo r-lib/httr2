@@ -20,14 +20,14 @@ req_policy_call <- function(req, name, args, default) {
   }
 }
 
-as_callback <- function(x, n, name) {
+as_callback <- function(x, n, name, error_call = caller_env()) {
   if (is.null(x)) {
     return(x)
   }
 
   x <- as_function(x)
   if (!inherits(x, "rlang_lambda_function") && length(formals(x)) != n) {
-    abort(glue("Callback {name}() must have {n} argument"))
+    abort(glue("Callback {name}() must have {n} argument"), call = error_call)
   }
   x
 }
