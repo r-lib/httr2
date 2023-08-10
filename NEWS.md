@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* @mgirlich is now a httr2 contributor in recognition of multiple contributions.
+* @mgirlich is now a httr2 contributor in recognition of many small contributions.
 
 * `req_headers()` gains a `.redact` argument that controls whether or not to
   redact a header (@mgirlich, #247).
