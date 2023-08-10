@@ -3,6 +3,10 @@
 * Progress bars displayed while waiting for some time to pass are now
   more informative (#206).
 
+* New `req_progress()` adds a progress bar to long download or uploads (#20).
+
+* @mgirlich is now a httr2 contributor in recognition of many small contributions.
+
 * `req_headers()` gains a `.redact` argument that controls whether or not to
   redact a header (@mgirlich, #247).
 

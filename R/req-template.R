@@ -59,10 +59,13 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
   req_url_path_append(req, path)
 }
 
-template_process <- function(template, dots = list(), env = parent.frame()) {
+template_process <- function(template,
+                             dots = list(),
+                             env = parent.frame(),
+                             error_call = caller_env()) {
   type <- template_type(template)
   vars <- template_vars(template, type)
-  vals <- map_chr(vars, template_val, dots = dots, env = env)
+  vals <- map_chr(vars, template_val, dots = dots, env = env, error_call = error_call)
 
   for (i in seq_along(vars)) {
     pattern <- switch(type,
@@ -74,17 +77,17 @@ template_process <- function(template, dots = list(), env = parent.frame()) {
   template
 }
 
-template_val <- function(name, dots, env) {
+template_val <- function(name, dots, env, error_call = caller_env()) {
   if (has_name(dots, name)) {
     val <- dots[[name]]
   } else if (env_has(env, name, inherit = TRUE)) {
     val <- env_get(env, name, inherit = TRUE)
   } else {
-    abort(glue("Can't find template variable '{name}'"))
+    abort(glue("Can't find template variable '{name}'"), call = error_call)
   }
 
   if (!is.atomic(val) || length(val) != 1) {
-    abort(glue("Template variable '{name}' is not a simple scalar value"))
+    abort(glue("Template variable '{name}' is not a simple scalar value"), call = error_call)
   }
   as.character(val)
 }

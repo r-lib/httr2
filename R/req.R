@@ -28,8 +28,15 @@ print.httr2_request <- function(x, ..., redact_headers = TRUE) {
   invisible(x)
 }
 
-new_request <- function(url, method = NULL, headers = list(), body = NULL, fields = list(), options = list(), policies = list()) {
-  check_string(url)
+new_request <- function(url,
+                        method = NULL,
+                        headers = list(),
+                        body = NULL,
+                        fields = list(),
+                        options = list(),
+                        policies = list(),
+                        error_call = caller_env()) {
+  check_string(url, call = error_call)
 
   structure(
     list(

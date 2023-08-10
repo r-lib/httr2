@@ -21,12 +21,12 @@ bullets_with_header <- function(header, x) {
   cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
 }
 
-modify_list <- function(.x, ...) {
+modify_list <- function(.x, ..., error_call = caller_env()) {
   dots <- list2(...)
   if (length(dots) == 0) return(.x)
 
   if (!is_named(dots)) {
-    abort("All components of ... must be named")
+    abort("All components of ... must be named", call = error_call)
   }
 
   out <- .x[!names(.x) %in% names(dots)]
