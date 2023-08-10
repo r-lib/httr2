@@ -40,8 +40,8 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
 }
 
 
-sys_sleep <- function(seconds, fps = 10) {
-  check_number_decimal(seconds)
+sys_sleep <- function(seconds, fps = 10, error_call = caller_env()) {
+  check_number_decimal(seconds, call = error_call)
 
   if (seconds == 0) {
     return(invisible())
