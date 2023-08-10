@@ -8,7 +8,7 @@
 #'   or downloaded.
 #' @export
 #' @examples
-#' req <- request("https://r4ds.s3.us-west-2.amazonaws.com/seattle-library-checkouts.csv") |>
+#' req <- request("https://r4ds.s3.us-west-2.amazonaws.com/seattle-library-checkouts.csv") %>%
 #'   req_progress()
 #'
 #' \dontrun{
