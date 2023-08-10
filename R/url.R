@@ -68,9 +68,9 @@ url_parse <- function(url) {
   )
 }
 
-url_modify <- function(url, ...) {
+url_modify <- function(url, ..., error_call = caller_env()) {
   url <- url_parse(url)
-  url <- modify_list(url, ...)
+  url <- modify_list(url, ..., error_call = error_call)
   url_build(url)
 }
 

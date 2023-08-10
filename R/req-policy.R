@@ -1,6 +1,6 @@
 req_policies <- function(.req, ..., error_call = caller_env()) {
   check_request(.req, call = error_call)
-  .req$policies <- modify_list(.req$policies, ...)
+  .req$policies <- modify_list(.req$policies, ..., error_call = error_call)
   .req
 }
 
