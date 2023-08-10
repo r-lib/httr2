@@ -2,6 +2,17 @@
 
 * @mgirlich is now a httr2 contributor in recognition of multiple contributions.
 
+* `req_headers()` gains a `.redact` argument that controls whether or not to
+  redact a header (@mgirlich, #247).
+
+* `req_body_file()` now supports "rewinding". This is occasionally needed when
+  you upload a file to a URL that uses a 307 or 308 redirect to state that you 
+  should have submitted the file to a different URL, and makes the "necessary 
+  data rewind wasn't possible" error go away (#268).
+
+* `curl_translate()` now produces escapes with single quotes or raw strings
+  in case double quotes can't be used (@mgirlich, #264).
+
 * `curl_translate()` gains the argument `simplify_headers` that removes some
   common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
   (@mgirlich, #256).
