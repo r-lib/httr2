@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* @mgirlich is now a httr2 contributor in recognition of multiple contributions.
+
 * `curl_translate()` gains the argument `simplify_headers` that removes some
   common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
   (@mgirlich, #256).
