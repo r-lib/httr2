@@ -3,6 +3,6 @@
     Code
       modify_list(x, a = 1, 2)
     Condition
-      Error in `modify_list()`:
+      Error:
       ! All components of ... must be named
 

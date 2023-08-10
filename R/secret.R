@@ -113,16 +113,16 @@ secret_read_rds <- function(path, key) {
   secret_unserialize(x, key)
 }
 
-secret_serialize <- function(x, key) {
-  key <- as_key(key)
+secret_serialize <- function(x, key, error_call = caller_env()) {
+  key <- as_key(key, error_call = error_call)
 
   x <- serialize(x, NULL, version = 2)
   x_cmp <- memCompress(x, "bzip2")
   x_enc <- openssl::aes_ctr_encrypt(x_cmp, key)
   c(attr(x_enc, "iv"), x_enc)
 }
-secret_unserialize <- function(encrypted, key) {
-  key <- as_key(key)
+secret_unserialize <- function(encrypted, key, error_call = caller_env()) {
+  key <- as_key(key, error_call = error_call)
 
   iv <- encrypted[1:16]
 
@@ -225,18 +225,18 @@ attr(unobfuscate, "srcref") <- "function(x) {}"
 
 # Helpers -----------------------------------------------------------------
 
-as_key <- function(x) {
+as_key <- function(x, error_call = caller_env()) {
   if (inherits(x, "AsIs") && is_string(x)) {
     base64_url_decode(x)
   } else if (is.raw(x)) {
     x
   } else if (is_string(x)) {
-    secret_get_key(x)
+    secret_get_key(x, call = error_call)
   } else {
     abort(paste0(
       "`key` must be a raw vector containing the key, ",
       "a string giving the name of an env var, ",
       "or a string wrapped in I() that contains the base64url encoded key"
-    ))
+    ), call = error_call)
   }
 }
