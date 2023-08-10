@@ -22,11 +22,11 @@
     Code
       template_process(":b")
     Condition
-      Error in `FUN()`:
+      Error:
       ! Can't find template variable 'b'
     Code
       template_process(":b", list(b = sum))
     Condition
-      Error in `FUN()`:
+      Error:
       ! Template variable 'b' is not a simple scalar value
 
