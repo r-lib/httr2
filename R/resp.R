@@ -36,12 +36,17 @@ response <- function(status_code = 200,
   )
 }
 
-new_response <- function(method, url, status_code, headers, body) {
-  check_string(method)
-  check_string(url)
-  check_number_whole(status_code)
+new_response <- function(method,
+                         url,
+                         status_code,
+                         headers,
+                         body,
+                         error_call = caller_env()) {
+  check_string(method, call = error_call)
+  check_string(url, call = error_call)
+  check_number_whole(status_code, call = error_call)
 
-  headers <- as_headers(headers)
+  headers <- as_headers(headers, error_call = error_call)
   # ensure we always have a date field
   if (!"date" %in% tolower(names(headers))) {
     headers$Date <- http_date()

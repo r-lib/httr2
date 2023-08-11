@@ -71,11 +71,11 @@ oauth_flow_password <- function(client,
   )
 }
 
-check_password <- function(password) {
+check_password <- function(password, call = caller_env()) {
   if (is.null(password)) {
-    check_installed("askpass")
+    check_installed("askpass", call = call)
     password <- askpass::askpass()
   }
-  check_string(password)
+  check_string(password, call = call)
   password
 }

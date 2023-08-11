@@ -23,6 +23,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item RStudio [copyright holder, funder]
+  \item Maximilian Girlich [contributor]
 }
 
 }
