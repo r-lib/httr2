@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `with_mock()` and `local_mock()` now correctly trigger errors when the
+  mocked response represents an HTTP failure (#252).
+
 * New `req_progress()` adds a progress bar to long download or uploads (#20).
 
 * @mgirlich is now a httr2 contributor in recognition of many small contributions.
