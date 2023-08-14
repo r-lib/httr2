@@ -131,7 +131,9 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
 
     # Replace body with cached result
-    resp$body <- cache_body(req, path)
+    cache_body <- cache_body(req, path)
+    resp$body <- cache_body$body
+    resp$headers[["content-type"]] <- cache_body$`content-type`
     resp
   } else if (resp_is_cacheable(resp)) {
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
@@ -143,9 +145,13 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 }
 
 cache_body <- function(req, path = NULL) {
-  body <- cache_get(req)$body
+  cache_resp <- cache_get(req)
+  body <- cache_resp$body
+  content_type <- resp_header(cache_resp, "content-type")
+  out <- list(body = body, `content-type` = content_type)
+
   if (is.null(path)) {
-    return(body)
+    return(out)
   }
 
   if (is_path(body)) {
@@ -153,7 +159,8 @@ cache_body <- function(req, path = NULL) {
   } else {
     writeBin(body, path)
   }
-  new_path(path)
+  out$body <- new_path(path)
+  out
 }
 
 # Caching headers ---------------------------------------------------------
