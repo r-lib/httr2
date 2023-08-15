@@ -216,7 +216,8 @@ req_body_apply <- function(req) {
   } else if (type == "raw") {
     req <- req_body_apply_raw(req, data)
   } else if (type == "json") {
-    content_type <- "application/json"
+    # FIXME temporary workaround just for testing purposes. Remove before merging!
+    # content_type <- "application/json"
     json <- exec(jsonlite::toJSON, data, !!!req$body$params)
     req <- req_body_apply_raw(req, json)
   } else if (type == "multipart") {
