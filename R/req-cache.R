@@ -131,9 +131,11 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
 
     # Replace body with cached result
-    cache_body <- cache_body(req, path)
-    resp$body <- cache_body$body
-    resp$headers[["content-type"]] <- cache_body$`content-type`
+    resp$body <- cache_body(req, path)
+
+    # Combine headers
+    resp$headers <- cache_headers(req, resp)
+
     resp
   } else if (resp_is_cacheable(resp)) {
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
@@ -145,13 +147,10 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 }
 
 cache_body <- function(req, path = NULL) {
-  cache_resp <- cache_get(req)
-  body <- cache_resp$body
-  content_type <- resp_header(cache_resp, "content-type")
-  out <- list(body = body, `content-type` = content_type)
+  body <- cache_get(req)$body
 
   if (is.null(path)) {
-    return(out)
+    return(body)
   }
 
   if (is_path(body)) {
@@ -159,8 +158,13 @@ cache_body <- function(req, path = NULL) {
   } else {
     writeBin(body, path)
   }
-  out$body <- new_path(path)
-  out
+  new_path(path)
+}
+
+cache_headers <- function(req, resp) {
+  # https://www.rfc-editor.org/rfc/rfc7232#section-4.1
+  cached_headers <- cache_get(req)$headers
+  as_headers(modify_list(cached_headers, !!!resp$headers))
 }
 
 # Caching headers ---------------------------------------------------------

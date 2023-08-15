@@ -100,8 +100,20 @@ test_that("can get and set from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
   resp <- response(
     200,
-    headers = list(Etag = "ABC", `content-type` = "application/json"),
+    headers = list(
+      Etag = "ABC",
+      `content-type` = "application/json",
+      other = "header"
+    ),
     body = charToRaw(jsonlite::toJSON(list(a = jsonlite::unbox(1))))
+  )
+
+  cached_resp <- response(
+    304,
+    headers = list(
+      Etag = "DEF",
+      other = "new"
+    )
   )
 
   expect_false(cache_exists(req))
@@ -109,13 +121,19 @@ test_that("can get and set from cache", {
   expect_true(cache_exists(req))
   expect_equal(cache_get(req), resp)
 
+  # Uses new headers if available, otherwise cached headers
+  out_headers <- cache_headers(req, cached_resp)
+  expect_equal(out_headers$`content-type`, "application/json")
+  expect_equal(out_headers$Etag, "DEF")
+  expect_equal(out_headers$other, "new")
+
   # If path is null can leave resp as is
-  expect_equal(cache_body(req, NULL), list(body = resp$body, `content-type` = "application/json"))
+  expect_equal(cache_body(req, NULL), resp$body)
   expect_equal(resp_body_json(cache_get(req)), list(a = 1L))
   # If path is set, need to save to path
   path <- tempfile()
   body <- cache_body(req, path)
-  expect_equal(body, list(body = new_path(path), `content-type` = "application/json"))
+  expect_equal(body, new_path(path))
   expect_equal(readLines(path, warn = FALSE), rawToChar(resp$body))
 })
 
@@ -133,11 +151,11 @@ test_that("handles responses with files", {
 
   # If path is null, just leave body as is, since req_body() already
   # papers over the differences
-  expect_equal(cache_body(req, NULL)$body, new_path(body_path))
+  expect_equal(cache_body(req, NULL), new_path(body_path))
 
   # If path is not null, copy to desired location, and update body
   path2 <- tempfile()
-  body <- cache_body(req, path2)$body
+  body <- cache_body(req, path2)
   expect_equal(readLines(body), "Hi there")
   expect_equal(body, new_path(path2))
 })
