@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* Cached responses now combine the headers of the new response with the headers
+  of the cached response. In particular, this fixes `resp_body_json/xml/html()`
+  on cached responses (@mgirlich, #277).
+
 * `with_mock()` and `local_mock()` now correctly trigger errors when the
   mocked response represents an HTTP failure (#252).
 

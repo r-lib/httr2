@@ -98,15 +98,38 @@ test_that("cache emits useful debugging info", {
 
 test_that("can get and set from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
-  resp <- response(200, headers = "Etag: ABC", body = charToRaw("abc"))
+  resp <- response(
+    200,
+    headers = list(
+      Etag = "ABC",
+      `content-type` = "application/json",
+      other = "header"
+    ),
+    body = charToRaw(jsonlite::toJSON(list(a = jsonlite::unbox(1))))
+  )
+
+  cached_resp <- response(
+    304,
+    headers = list(
+      Etag = "DEF",
+      other = "new"
+    )
+  )
 
   expect_false(cache_exists(req))
   cache_set(req, resp)
   expect_true(cache_exists(req))
   expect_equal(cache_get(req), resp)
 
+  # Uses new headers if available, otherwise cached headers
+  out_headers <- cache_headers(req, cached_resp)
+  expect_equal(out_headers$`content-type`, "application/json")
+  expect_equal(out_headers$Etag, "DEF")
+  expect_equal(out_headers$other, "new")
+
   # If path is null can leave resp as is
   expect_equal(cache_body(req, NULL), resp$body)
+  expect_equal(resp_body_json(cache_get(req)), list(a = 1L))
   # If path is set, need to save to path
   path <- tempfile()
   body <- cache_body(req, path)
