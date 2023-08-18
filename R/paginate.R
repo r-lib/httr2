@@ -1,4 +1,3 @@
-
 #' Pagination
 #'
 #' @inheritParams req_perform
@@ -36,16 +35,18 @@ req_paginate <- function(req,
                          total = NULL) {
   check_request(req)
   check_function(next_request)
-  check_param(page_size, allow_null = TRUE)
+  check_param(page_size, value = TRUE, allow_null = TRUE)
   check_character(total)
 
   req <- req_set_param(req, page_size)
 
   req_policies(
     req,
-    next_request = next_request,
-    page_size = page_size$value,
-    total = total
+    paginate = list(
+      next_request = next_request,
+      page_size = page_size$value,
+      total = total
+    )
   )
 }
 
@@ -118,12 +119,15 @@ paginate_next_request <- function(resp, req) {
   check_response(resp)
   check_request(req)
 
-  req_policy_call(
-    req,
-    "next_request",
-    args = list(resp = resp, req = req),
-    default = NULL
-  )
+  if (!req_policy_exists(req, "paginate")) {
+    cli_abort(c(
+      "{.arg req} doesn't have a pagination policy",
+      i = "You can add pagination via `req_paginate()`."
+    ))
+  }
+
+  next_request <- req$policies$paginate$next_request
+  next_request(resp = resp, req = req)
 }
 
 #' @rdname paginate_perform
@@ -131,8 +135,8 @@ paginate_n_pages <- function(resp, req, max_pages) {
   check_response(resp)
   check_request(req)
 
-  page_size <- req$policies$page_size
-  total <- req$policies$total
+  page_size <- req$policies$paginate$page_size
+  total <- req$policies$paginate$total
 
   if (is.null(total) || is.null(page_size)) {
     return(max_pages)
@@ -182,8 +186,7 @@ req_paginate_offset <- function(req,
                                 offset,
                                 page_size,
                                 total = NULL) {
-  check_param(offset, allow_null_value = TRUE)
-  check_param(page_size)
+  check_param(offset, value = FALSE, allow_null_value = TRUE)
 
   cur_offset <- 0L
   env <- current_env()
@@ -210,7 +213,7 @@ req_paginate_next_token <- function(req,
                                     next_token_field,
                                     page_size = NULL,
                                     total = NULL) {
-  check_param(token_field, allow_null_value = TRUE)
+  check_param(token_field, value = FALSE, allow_null_value = TRUE)
   check_character(next_token_field)
 
   next_request <- function(req, resp) {
@@ -276,15 +279,17 @@ in_body <- function(path,
 }
 
 check_param <- function(x,
+                        value,
                         ...,
                         allow_null = FALSE,
-                        allow_null_value = FALSE,
                         arg = caller_arg(x),
                         call = caller_env()) {
   if (!missing(x)) {
     if (is_param(x)) {
-      if (is.null(x$value) && !allow_null_value) {
+      if (value && is.null(x$value)) {
         abort("{.arg value} must not be `NULL`.", call = call)
+      } else if (!value && !is.null(x$value)) {
+        abort("{.arg value} must not `NULL`.", call = call)
       }
       return(invisible(NULL))
     }
