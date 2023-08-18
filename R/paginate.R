@@ -1,38 +1,34 @@
 req_paginate <- function(req,
-                         page_size,
-                         results_field,
-                         total_field,
-                         f_next_page,
-                         max_pages = 100L,
-                         progress = TRUE,
-                         error_call = caller_env()) {
-  check_request(req, call = error_call)
-  check_param(page_size, allow_null = TRUE, call = error_call)
-  check_string(results_field, allow_null = TRUE, call = error_call)
-  check_string(total_field, allow_null = TRUE, call = error_call)
-  check_function(f_next_page, call = error_call)
-  check_number_whole(max_pages, call = error_call)
-  check_bool(progress, call = error_call)
-
-  f_data <- if (is.null(results_field)) {
-    function(resp, body_parsed) {
-      body_parsed
-    }
-  } else {
-    function(resp, body_parsed) {
-      purrr::pluck(body_parsed, results_field)
-    }
-  }
+                         next_request,
+                         page_size = NULL,
+                         total = NULL) {
+  check_request(req)
+  check_function(next_request)
+  check_param(page_size, allow_null = TRUE)
+  check_character(total)
 
   req <- req_set_param(req, page_size)
 
-  resp1 <- req_perform(req)
-  body_parsed <- resp_body_json(resp1)
+  req_policies(
+    req,
+    next_request = next_request,
+    page_size = page_size$value,
+    total = total
+  )
+}
 
-  n_pages <- calc_n_pages(max_pages, total_field, body_parsed, page_size$value)
+paginate_perform <- function(req,
+                             max_pages = 20L,
+                             progress = TRUE) {
+  check_request(req)
+  check_bool(progress)
+
+  resp <- req_perform(req)
+
+  n_pages <- paginate_n_pages(resp, req, max_pages = max_pages)
 
   out <- vector("list", length = n_pages)
-  out[[1]] <- f_data(resp1, body_parsed)
+  out[[1]] <- resp
 
   cli::cli_progress_bar(
     "Paginate",
@@ -42,16 +38,16 @@ req_paginate <- function(req,
   )
 
   for (page in seq2(2, n_pages)) {
-    req <- f_next_page(req, resp, body_parsed)
+    req <- paginate_next_request(resp, req)
     if (is.null(req)) {
       page <- page - 1L
       break
     }
 
-    resp_page <- req_perform(req)
+    resp <- req_perform(req)
 
-    body_parsed <- resp_body_json(resp_page)
-    out[[page]] <- f_data(resp, body_parsed)
+    body_parsed <- resp_body_json(resp)
+    out[[page]] <- resp
 
     cli::cli_progress_update()
   }
@@ -66,17 +62,49 @@ req_paginate <- function(req,
   out
 }
 
+paginate_next_request <- function(resp, req) {
+  check_response(resp)
+  check_request(req)
+
+  req_policy_call(
+    req,
+    "next_request",
+    args = list(resp = resp, req = req),
+    default = NULL
+  )
+}
+
+paginate_n_pages <- function(resp, req, max_pages) {
+  check_response(resp)
+  check_request(req)
+
+  page_size <- req$policies$page_size
+  total <- req$policies$total
+
+  if (is.null(total) || is.null(page_size)) {
+    return(max_pages)
+  }
+
+  body_parsed <- resp_body_json(resp)
+  total <- purrr::pluck(body_parsed, total)
+  if (is.null(total)) {
+    return(max_pages)
+  }
+  n_pages <- ceiling(total / page_size)
+
+  min(n_pages, max_pages)
+}
+
 req_paginate_next_url <- function(req,
                                   next_url,
-                                  results_field = NULL,
+                                  ...,
                                   page_size = NULL,
-                                  total_field = NULL,
-                                  max_pages = 100L,
-                                  progress = TRUE) {
-  check_param(next_url, allow_null_value = TRUE)
+                                  total = NULL) {
+  check_character(next_url)
 
-  f_next_page <- function(req, resp, body_parsed) {
-    next_url <- resp_get_param(resp, body_parsed, next_url)
+  next_request <- function(req, resp) {
+    body_parsed <- resp_body_json(resp)
+    next_url <- purrr::pluck(body_parsed, next_url)
 
     if (is.null(next_url)) {
       return(NULL)
@@ -87,30 +115,24 @@ req_paginate_next_url <- function(req,
 
   req_paginate(
     req,
-    page_size,
-    results_field = results_field,
-    total_field = total_field,
-    f_next_page = f_next_page,
-    max_pages = max_pages,
-    progress = progress
+    next_request,
+    page_size = page_size,
+    total = total
   )
 }
 
 req_paginate_offset <- function(req,
                                 offset,
-                                results_field = NULL,
-                                limit = NULL,
-                                total_field = NULL,
-                                max_pages = 100L,
-                                progress = TRUE) {
+                                page_size,
+                                total = NULL) {
   check_param(offset, allow_null_value = TRUE)
-  # TODO require `limit`?
+  check_param(page_size)
 
   cur_offset <- 0L
   env <- current_env()
-  f_next_page <- function(req, resp, body_parsed) {
+  next_request <- function(resp, req) {
     cur_offset <- get("cur_offset", envir = env)
-    new_offset <- cur_offset + limit$value
+    new_offset <- cur_offset + page_size$value
     assign("cur_offset", new_offset, envir = env)
 
     req_set_param(req, offset, new_offset)
@@ -118,28 +140,23 @@ req_paginate_offset <- function(req,
 
   req_paginate(
     req,
-    limit,
-    results_field = results_field,
-    f_next_page = f_next_page,
-    total_field = total_field,
-    max_pages = max_pages,
-    progress = progress
+    next_request,
+    page_size = page_size,
+    total = total
   )
 }
 
 req_paginate_next_token <- function(req,
                                     token_field,
                                     next_token_field,
-                                    results_field = NULL,
-                                    limit = NULL,
-                                    total_field = NULL,
-                                    max_pages = 100L,
-                                    progress = TRUE) {
+                                    page_size = NULL,
+                                    total = NULL) {
   check_param(token_field, allow_null_value = TRUE)
-  check_param(next_token_field, allow_null_value = TRUE)
+  check_character(next_token_field)
 
-  f_next_page <- function(req, resp, body_parsed) {
-    next_token <- resp_get_param(resp, body_parsed, next_token_field)
+  next_request <- function(req, resp) {
+    body_parsed <- resp_body_json(resp)
+    next_token <- purrr::pluck(body_parsed, next_token_field)
 
     if (is.null(next_token)) {
       return(NULL)
@@ -150,27 +167,10 @@ req_paginate_next_token <- function(req,
 
   req_paginate(
     req,
-    limit,
-    results_field = results_field,
-    total_field = total_field,
-    f_next_page = f_next_page,
-    max_pages = max_pages,
-    progress = progress
+    next_request,
+    page_size = page_size,
+    total = total
   )
-}
-
-calc_n_pages <- function(max_pages, total_field, body_parsed, page_size) {
-  if (is.null(total_field) || is.null(page_size)) {
-    return(max_pages)
-  }
-
-  total <- body_parsed[[total_field]]
-  if (is.null(total)) {
-    return(max_pages)
-  }
-  n_pages <- ceiling(total / page_size)
-
-  min(n_pages, max_pages)
 }
 
 in_query <- function(name,
@@ -241,12 +241,6 @@ is_body_param <- function(x) {
 
 is_header_param <- function(x) {
   inherits(x, "httr2_header_param")
-}
-
-resp_get_param <- function(resp, body_parsed, x) {
-  if (is_body_param(x)) {
-    purrr::pluck(body_parsed, !!!x$path)
-  }
 }
 
 req_set_param <- function(req, x, value = NULL) {
