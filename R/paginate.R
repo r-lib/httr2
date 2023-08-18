@@ -232,6 +232,18 @@ req_paginate_next_token <- function(req,
   )
 }
 
+#' Specify a request parameter
+#'
+#' @param name Name of the query resp. header parameter.
+#' @param path Path of the parameter in the body.
+#' @param value The value of the parameter.
+#' @param error_call
+#'
+#' @return A parameter object.
+#' @export
+#'
+#' @examples
+#' in_query("start", 20)
 in_query <- function(name,
                      value = NULL,
                      error_call = caller_env()) {
@@ -241,6 +253,8 @@ in_query <- function(name,
   out
 }
 
+#' @rdname in_query
+#' @export
 in_header <- function(name,
                       value = NULL,
                       error_call = caller_env()) {
@@ -250,6 +264,8 @@ in_header <- function(name,
   out
 }
 
+#' @rdname in_query
+#' @export
 in_body <- function(path,
                     value = NULL,
                     error_call = caller_env()) {
