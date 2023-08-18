@@ -1,3 +1,35 @@
+
+#' Pagination
+#'
+#' @inheritParams req_perform
+#' @param next_request A callback function that takes a two arguments (the
+#'   original request and the response) and returns:
+#'
+#'   * a new [request] to request the next page or
+#'   * `NULL` if there is no next page.
+#' @param page_size A parameter object that specifies how the page size is added
+#'   to the request.
+#' @param total A character that specifies the path where in the body the field
+#'   with the total number of elements is stored.
+#' @param next_url A character that specifies the path where in the body the field
+#'   with the next url of the next page is stored.
+#' @param offset A parameter object that specifies how the offset is added to
+#'   the request.
+#' @param token_field A parameter object that specifies how the next token is
+#'   added to the request.
+#' @param next_token_field A character that specifies the path where in the body
+#'   the field with the token of the next page is stored.
+#'
+#' @return A modified HTTP [request].
+#' @export
+#'
+#' @examples
+#' request("https://pokeapi.co/api/v2/pokemon") %>%
+#'   req_paginate_next_url(
+#'     "next",
+#'     page_size = in_query("limit", 150L),
+#'     total = "count"
+#'   )
 req_paginate <- function(req,
                          next_request,
                          page_size = NULL,
@@ -17,6 +49,25 @@ req_paginate <- function(req,
   )
 }
 
+#' Perform a paginated request
+#'
+#' @inheritParams req_perform
+#' @param resp An HTTP [response].
+#' @param max_pages The maximum number of pages to request.
+#' @param progress Display a progress bar?
+#'
+#' @return A list of responses.
+#' @export
+#'
+#' @examples
+#' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
+#'   req_paginate_next_url(
+#'     "next",
+#'     page_size = in_query("limit", 150L),
+#'     total = "count"
+#'   )
+#'
+#' responses <- paginate_perform(req_pokemon)
 paginate_perform <- function(req,
                              max_pages = 20L,
                              progress = TRUE) {
@@ -62,6 +113,7 @@ paginate_perform <- function(req,
   out
 }
 
+#' @rdname paginate_perform
 paginate_next_request <- function(resp, req) {
   check_response(resp)
   check_request(req)
@@ -74,6 +126,7 @@ paginate_next_request <- function(resp, req) {
   )
 }
 
+#' @rdname paginate_perform
 paginate_n_pages <- function(resp, req, max_pages) {
   check_response(resp)
   check_request(req)
@@ -95,6 +148,8 @@ paginate_n_pages <- function(resp, req, max_pages) {
   min(n_pages, max_pages)
 }
 
+#' @rdname req_paginate
+#' @export
 req_paginate_next_url <- function(req,
                                   next_url,
                                   ...,
@@ -121,6 +176,8 @@ req_paginate_next_url <- function(req,
   )
 }
 
+#' @rdname req_paginate
+#' @export
 req_paginate_offset <- function(req,
                                 offset,
                                 page_size,
@@ -146,6 +203,8 @@ req_paginate_offset <- function(req,
   )
 }
 
+#' @rdname req_paginate
+#' @export
 req_paginate_next_token <- function(req,
                                     token_field,
                                     next_token_field,
