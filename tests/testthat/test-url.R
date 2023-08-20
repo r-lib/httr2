@@ -37,6 +37,13 @@ test_that("can print all url details", {
   )
 })
 
+test_that("ensures path always starts with /", {
+  expect_equal(
+    url_modify("https://example.com/abc", path = "def"),
+    "https://example.com/def"
+  )
+})
+
 # query -------------------------------------------------------------------
 
 test_that("missing query values become empty strings", {
