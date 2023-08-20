@@ -139,7 +139,7 @@ url_build <- function(url) {
     authority <- NULL
   }
 
-  if (!is.null(url$path) && !grepl("^/", url$path)) {
+  if (!is.null(url$path) && !startsWith(url$path, "/")) {
     url$path <- paste0("/", url$path)
   }
 
