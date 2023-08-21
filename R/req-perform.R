@@ -141,6 +141,9 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
     body <- res$content
   }
 
+  # Ensure cookies are saved to disk
+  curl::handle_setopt(handle, cookielist = "FLUSH")
+
   resp <- new_response(
     method = req_method_get(req),
     url = res$url,

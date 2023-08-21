@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_cookie_file()` lets you use a file to share cookies across 
+  requests (#223).
+
 * `url_build()` automatically adds leading `/` to `path` if missing (#276).
 
 * Cached responses now combine the headers of the new response with the headers
