@@ -33,5 +33,4 @@ resp_url_query <- function(resp) {
   check_response(resp)
 
   url_parse(resp$url)$query
-
 }
