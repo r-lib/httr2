@@ -28,7 +28,7 @@ httpbin \%>\%
   req_perform() \%>\%
   resp_body_json()
 
-httpbin |>
+httpbin \%>\%
   req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") \%>\%
   req_perform() \%>\%
   resp_body_json()
