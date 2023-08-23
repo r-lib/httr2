@@ -19,18 +19,18 @@ request.
 }
 \examples{
 path <- tempfile()
-httpbin <- request(example_url()) |>
+httpbin <- request(example_url()) \%>\%
   req_cookie_file(path)
 
 # Manually set two cookies
-httpbin |>
-  req_template("/cookies/set/:name/:value", name = "chocolate", value = "chip") |>
-  req_perform() |>
+httpbin \%>\%
+  req_template("/cookies/set/:name/:value", name = "chocolate", value = "chip") \%>\%
+  req_perform() \%>\%
   resp_body_json()
 
 httpbin |>
-  req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") |>
-  req_perform() |>
+  req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") \%>\%
+  req_perform() \%>\%
   resp_body_json()
 
 # The cookie path has a straightforward format
