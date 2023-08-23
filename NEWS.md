@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `resp_url()`, `resp_url_path()`, `resp_url_queries()` and
+  `resp_url_query()` to extract various part of the response url (#57).
+
 * Cached responses now combine the headers of the new response with the headers
   of the cached response. In particular, this fixes `resp_body_json/xml/html()`
   on cached responses (@mgirlich, #277).

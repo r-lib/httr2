@@ -4,22 +4,30 @@
 \alias{resp_url}
 \alias{resp_url_path}
 \alias{resp_url_query}
+\alias{resp_url_queries}
 \title{Get URL/components from the response}
 \usage{
 resp_url(resp)
 
 resp_url_path(resp)
 
-resp_url_query(resp)
+resp_url_query(resp, name, default = NULL)
+
+resp_url_queries(resp)
 }
 \arguments{
 \item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
+
+\item{name}{Query parameter name.}
+
+\item{default}{Default value to use if query parameter doesn't exist.}
 }
 \description{
 \itemize{
 \item \code{resp_url()} returns the complete url.
 \item \code{resp_url_path()} returns the path component.
-\item \code{resp_url_query()} returns the query component as a named list.
+\item \code{resp_url_query()} returns a single query component.
+\item \code{resp_url_queries()} returns the query component as a named list.
 }
 }
 \examples{
