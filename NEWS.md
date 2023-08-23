@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `resp_url()`, `resp_url_path()`, `resp_url_queries()` and
+  `resp_url_query()` to extract various part of the response url (#57).
+
 * Progress bars displayed while waiting for some time to pass are now
   more informative (#206).
 
