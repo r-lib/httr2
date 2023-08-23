@@ -55,7 +55,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/url_parse.html">url_build()</a></code> automatically adds leading <code>/</code> to <code>path</code> if missing (<a href="https://github.com/r-lib/httr2/issues/276" class="external-link">#276</a>).</p></li>
+<ul><li><p>Progress bars displayed while waiting for some time to pass are now more informative (<a href="https://github.com/r-lib/httr2/issues/206" class="external-link">#206</a>).</p></li>
+<li><p><code><a href="../reference/url_parse.html">url_build()</a></code> automatically adds leading <code>/</code> to <code>path</code> if missing (<a href="https://github.com/r-lib/httr2/issues/276" class="external-link">#276</a>).</p></li>
 <li><p>Cached responses now combine the headers of the new response with the headers of the cached response. In particular, this fixes <code>resp_body_json/xml/html()</code> on cached responses (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/277" class="external-link">#277</a>).</p></li>
 <li><p><code><a href="../reference/with_mock.html">with_mock()</a></code> and <code><a href="../reference/with_mock.html">local_mock()</a></code> now correctly trigger errors when the mocked response represents an HTTP failure (<a href="https://github.com/r-lib/httr2/issues/252" class="external-link">#252</a>).</p></li>
 <li><p>New <code><a href="../reference/req_progress.html">req_progress()</a></code> adds a progress bar to long download or uploads (<a href="https://github.com/r-lib/httr2/issues/20" class="external-link">#20</a>).</p></li>
