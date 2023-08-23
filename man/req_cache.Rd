@@ -9,7 +9,11 @@ req_cache(req, path, use_on_error = FALSE, debug = FALSE)
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{path}{Path to cache directory}
+\item{path}{Path to cache directory.
+
+httr2 doesn't provide helpers to manage the cache, but if you want to
+empty it, you can use something like
+\code{unlink(dir(cache_path, full.names = TRUE))}.}
 
 \item{use_on_error}{If the request errors, and there's a cache response,
 should \code{req_perform()} return that instead of generating an error?}
