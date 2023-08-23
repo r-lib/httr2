@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* Progress bars displayed while waiting for some time to pass are now
+  more informative (#206).
+
 * `url_build()` automatically adds leading `/` to `path` if missing (#276).
 
 * Cached responses now combine the headers of the new response with the headers
