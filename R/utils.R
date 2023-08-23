@@ -40,8 +40,8 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
 }
 
 
-sys_sleep <- function(seconds, fps = 10, error_call = caller_env()) {
-  check_number_decimal(seconds, call = error_call)
+sys_sleep <- function(seconds, task, fps = 10) {
+  check_number_decimal(seconds)
 
   if (seconds == 0) {
     return(invisible())
@@ -51,7 +51,7 @@ sys_sleep <- function(seconds, fps = 10, error_call = caller_env()) {
   signal("", class = "httr2_sleep", seconds = seconds)
 
   cli::cli_progress_bar(
-    format = "Waiting {round(seconds)}s to retry {cli::pb_bar}",
+    format = "Waiting {round(seconds)}s {task} {cli::pb_bar}",
     total = seconds * fps
   )
 

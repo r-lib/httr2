@@ -3,6 +3,11 @@
 * New `resp_url()`, `resp_url_path()`, `resp_url_queries()` and
   `resp_url_query()` to extract various part of the response url (#57).
 
+* Progress bars displayed while waiting for some time to pass are now
+  more informative (#206).
+
+* `url_build()` automatically adds leading `/` to `path` if missing (#276).
+
 * Cached responses now combine the headers of the new response with the headers
   of the cached response. In particular, this fixes `resp_body_json/xml/html()`
   on cached responses (@mgirlich, #277).

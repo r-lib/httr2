@@ -139,6 +139,10 @@ url_build <- function(url) {
     authority <- NULL
   }
 
+  if (!is.null(url$path) && !startsWith(url$path, "/")) {
+    url$path <- paste0("/", url$path)
+  }
+
   prefix <- function(prefix, x) if (!is.null(x)) paste0(prefix, x)
   paste0(
     url$scheme, if (!is.null(url$scheme)) ":",

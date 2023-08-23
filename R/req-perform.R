@@ -86,7 +86,7 @@ req_perform <- function(
 
   delay <- 0
   while(tries < max_tries && Sys.time() < deadline) {
-    sys_sleep(delay)
+    sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
     resp <- tryCatch(
