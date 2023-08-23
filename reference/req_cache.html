@@ -97,7 +97,10 @@ but it will not need to re-download the body value.</p>
 
 
 <dt>path</dt>
-<dd><p>Path to cache directory</p></dd>
+<dd><p>Path to cache directory.</p>
+<p>httr2 doesn't provide helpers to manage the cache, but if you want to
+empty it, you can use something like
+<code>unlink(dir(cache_path, full.names = TRUE))</code>.</p></dd>
 
 
 <dt>use_on_error</dt>
