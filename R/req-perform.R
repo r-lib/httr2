@@ -62,7 +62,7 @@ req_perform <- function(
     mock <- as_function(mock)
     mock_resp <- mock(req)
     if (!is.null(mock_resp)) {
-      return(mock_resp)
+      return(handle_resp(req, mock_resp, error_call = error_call))
     }
   }
 
@@ -115,11 +115,15 @@ req_perform <- function(
   signal("", "httr2_fetch", n = n, tries = tries, reauth = reauth)
 
   resp <- cache_post_fetch(req, resp, path = path)
+  handle_resp(req, resp, error_call = error_call)
+}
 
+handle_resp <- function(req, resp, error_call = caller_env()) {
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_abort(resp, error_body(req, resp), call = error_call)
+    body <- error_body(req, resp, error_call)
+    resp_abort(resp, body, call = error_call)
   } else {
     resp
   }

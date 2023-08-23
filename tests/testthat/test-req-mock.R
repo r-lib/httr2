@@ -7,3 +7,10 @@ test_that("can override requests through mocking", {
   local_mock(~ resp)
   expect_equal(req_perform(req), resp)
 })
+
+test_that("can generate errors with mocking", {
+  local_mock(~ response(404))
+
+  req <- request("https://google.com")
+  expect_error(req_perform(req), class = "httr2_http_404")
+})

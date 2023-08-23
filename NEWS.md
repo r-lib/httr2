@@ -3,6 +3,15 @@
 * Progress bars displayed while waiting for some time to pass are now
   more informative (#206).
 
+* `url_build()` automatically adds leading `/` to `path` if missing (#276).
+
+* Cached responses now combine the headers of the new response with the headers
+  of the cached response. In particular, this fixes `resp_body_json/xml/html()`
+  on cached responses (@mgirlich, #277).
+
+* `with_mock()` and `local_mock()` now correctly trigger errors when the
+  mocked response represents an HTTP failure (#252).
+
 * New `req_progress()` adds a progress bar to long download or uploads (#20).
 
 * @mgirlich is now a httr2 contributor in recognition of many small contributions.

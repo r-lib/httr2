@@ -14,31 +14,18 @@ test_that("can send file", {
 })
 
 test_that("can send file with redirect", {
-  app <- webfakes::new_app()
-  app$use(webfakes::mw_text())
-  app$post("/upload-1", function(req, res) {
-    res$
-      set_header("Location", "/upload-2")$
-      send_status(307)
-  })
-  app$post("/upload-2", function(req, res) {
-    res$
-      send(paste0("Success: ", nchar(req$text)))$
-      send_status(200)
-  })
-  web <- webfakes::local_app_process(app)
 
+  str <- paste(letters, collapse = "")
   path <- tempfile()
-  writeChar(paste(letters, collapse = ""), path)
+  writeChar(str, path)
 
-  resp <- request(web$url()) %>%
-    req_url_path("/upload-1") %>%
+  resp <- request_test("/redirect-to?url=/post&status_code=307") %>%
     req_body_file(path, type = "text/plain") %>%
     req_perform()
 
   expect_equal(resp_status(resp), 200)
-  expect_equal(resp$url, paste0(web$url(), "upload-2"))
-  expect_equal(resp_body_string(resp), "Success: 26")
+  expect_equal(url_parse(resp$url)$path, "/post")
+  expect_equal(resp_body_json(resp)$data, str)
 })
 
 test_that("can send string", {
