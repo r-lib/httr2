@@ -8,16 +8,16 @@
 #' # Error handling
 #'
 #' `req_perform()` is designed to succeed if and only if you get a valid HTTP
-#' responce back. There are two types of errors than can occur:
+#' response. There are two ways a request can fail:
 #'
-#' * The HTTP request might fail, for example the connect is dropped or
-#'   the server doesn't exist. This type of error will have class
+#' * The HTTP request might fail, for example if the connection is dropped
+#'   or the server doesn't exist. This type of error will have class
 #'   `httr2_failure`.
 #'
 #' * The HTTP request might succeed, but return an HTTP status code that
 #'   represents a error, e.g. a `404 Not Found` if the specified resource is
 #'   not found. This type of error will have (e.g.) class
-#'   `c("httr2_http_404", "httr_http")`.
+#'   `c("httr2_http_404", "httr2_http")`.
 #'
 #' These error classes are designed to be used in conjunction with R's
 #' condition handling tools (<https://adv-r.hadley.nz/conditions.html>).
@@ -42,6 +42,8 @@
 #'   }
 #' )
 #' ```
+#'
+#' Learn more about error chaining at [rlang::topic-error-chaining].
 #'
 #' @seealso [req_retry()] to control when errors are automatically retried.
 #' @inheritParams req_perform

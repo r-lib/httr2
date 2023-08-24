@@ -29,15 +29,15 @@ be useful to expose to the user.
 }
 \section{Error handling}{
 \code{req_perform()} is designed to succeed if and only if you get a valid HTTP
-responce back. There are two types of errors than can occur:
+response. There are two ways a request can fail:
 \itemize{
-\item The HTTP request might fail, for example the connect is dropped or
-the server doesn't exist. This type of error will have class
+\item The HTTP request might fail, for example if the connection is dropped
+or the server doesn't exist. This type of error will have class
 \code{httr2_failure}.
 \item The HTTP request might succeed, but return an HTTP status code that
 represents a error, e.g. a \verb{404 Not Found} if the specified resource is
 not found. This type of error will have (e.g.) class
-\code{c("httr2_http_404", "httr_http")}.
+\code{c("httr2_http_404", "httr2_http")}.
 }
 
 These error classes are designed to be used in conjunction with R's
@@ -61,6 +61,8 @@ Or if you want to re-throw the error with some additional context, use
   \}
 )
 }\if{html}{\out{</div>}}
+
+Learn more about error chaining at \link[rlang:topic-error-chaining]{rlang::topic-error-chaining}.
 }
 
 \examples{
