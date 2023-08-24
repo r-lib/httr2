@@ -22,7 +22,7 @@
 #' my_mock <- function(req) {
 #'   response(status_code = 403)
 #' }
-#' with_mock(my_mock, google())
+#' try(with_mock(my_mock, google()))
 with_mock <- function(mock, code) {
   withr::with_options(list(httr2_mock = mock), code)
 }

@@ -56,6 +56,18 @@ test_that("user-agent and referer become headers", {
   )
 })
 
+test_that("common headers can be removed", {
+  sec_fetch_headers <- "-H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors'"
+  sec_ch_ua_headers <- "-H 'sec-ch-ua-mobile: ?0'"
+  other_headers <- "-H 'Accept: application/vnd.api+json'"
+  cmd <- paste("curl http://x.com -A agent -e ref", sec_fetch_headers, sec_ch_ua_headers, other_headers)
+  headers <- curl_normalize(cmd)$headers
+  expect_snapshot({
+    print(curl_simplify_headers(headers, simplify_headers = TRUE))
+    print(curl_simplify_headers(headers, simplify_headers = FALSE))
+  })
+})
+
 test_that("extract user name and password", {
   expect_equal(
     curl_normalize("curl http://x.com -u name:pass")$auth,
@@ -96,6 +108,12 @@ test_that("can translate to httr calls", {
   })
 })
 
+test_that("can translate query", {
+  expect_snapshot({
+    curl_translate("curl http://x.com?string=abcde&b=2")
+  })
+})
+
 test_that("can translate data", {
   expect_snapshot({
     curl_translate("curl http://example.com --data abcdef")
@@ -121,4 +139,42 @@ test_that("can evaluate simple calls", {
   resp <- curl_translate_eval(glue("curl {the$test_app$url()}//basic-auth/u/p -u u:p"))
   body <- resp_body_json(resp)
   expect_true(body$authenticated)
+})
+
+test_that("can read from clipboard", {
+  # need to skip on CI as can't read from clipboard there on Linux
+  skip_on_ci()
+  skip_if_not_installed("clipr")
+  # need to set env var so that `read/write_clip()` works in non-interactive mode
+  withr::local_envvar(CLIPR_ALLOW = TRUE)
+
+  # suppress warning because the clipboard might contain no readable text
+  old_clip <- suppressWarnings(clipr::read_clip())
+  withr::defer(clipr::write_clip(old_clip))
+  rlang::local_interactive()
+
+  clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
+  expect_snapshot({
+    curl_translate()
+    # also writes to clip
+    clipr::read_clip()
+  })
+})
+
+test_that("encode_string2() produces simple strings", {
+  # double quotes is standard
+  expect_equal(encode_string2("x"), encodeString("x", quote = '"'))
+  # use single quotes if double quotes but not single quotes
+  expect_equal(encode_string2('x"x'), encodeString('x"x', quote = "'"))
+
+  skip_if_not(getRversion() >= "4.0.0")
+  # use raw string if single and double quotes are used
+  expect_equal(encode_string2('x"\'x'), 'r"---{x"\'x}---"')
+
+  cmd <- paste0("curl 'http://example.com' \
+  -X 'PATCH' \
+  -H 'Content-Type: application/json' \
+  --data-raw ", '{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}}', "\
+  --compressed")
+  expect_snapshot(curl_translate(cmd))
 })

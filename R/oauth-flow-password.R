@@ -59,7 +59,7 @@ oauth_flow_password <- function(client,
   oauth_flow_check("resource owner password credentials", client,
     interactive = is.null(password)
   )
-  check_string(username, "`username`")
+  check_string(username)
   password <- check_password(password)
 
   oauth_client_get_token(client,
@@ -71,11 +71,11 @@ oauth_flow_password <- function(client,
   )
 }
 
-check_password <- function(password) {
+check_password <- function(password, call = caller_env()) {
   if (is.null(password)) {
-    check_installed("askpass")
+    check_installed("askpass", call = call)
     password <- askpass::askpass()
   }
-  check_string(password, "`password`")
+  check_string(password, call = call)
   password
 }

@@ -13,6 +13,21 @@ test_that("can send file", {
   expect_equal(json$data, "this is a test\n")
 })
 
+test_that("can send file with redirect", {
+
+  str <- paste(letters, collapse = "")
+  path <- tempfile()
+  writeChar(str, path)
+
+  resp <- request_test("/redirect-to?url=/post&status_code=307") %>%
+    req_body_file(path, type = "text/plain") %>%
+    req_perform()
+
+  expect_equal(resp_status(resp), 200)
+  expect_equal(url_parse(resp$url)$path, "/post")
+  expect_equal(resp_body_json(resp)$data, str)
+})
+
 test_that("can send string", {
   resp <- request_test("/post") %>%
     req_body_raw("test", type = "text/plain") %>%

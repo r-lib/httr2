@@ -69,7 +69,7 @@ req_perform <- function(
     mock <- as_function(mock)
     mock_resp <- mock(req)
     if (!is.null(mock_resp)) {
-      return(mock_resp)
+      return(handle_resp(req, mock_resp, error_call = error_call))
     }
   }
 
@@ -93,7 +93,7 @@ req_perform <- function(
 
   delay <- 0
   while(tries < max_tries && Sys.time() < deadline) {
-    sys_sleep(delay)
+    sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
     resp <- tryCatch(
@@ -129,11 +129,15 @@ req_perform <- function(
   signal(class = "httr2_fetch", n = n, tries = tries, reauth = reauth)
 
   resp <- cache_post_fetch(req, resp, path = path)
+  handle_resp(req, resp, error_call = error_call)
+}
 
+handle_resp <- function(req, resp, error_call = caller_env()) {
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_abort(resp, error_body(req, resp), call = error_call)
+    body <- error_body(req, resp, error_call)
+    resp_abort(resp, body, call = error_call)
   } else {
     resp
   }
@@ -162,9 +166,9 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   resp
 }
 
-req_verbosity <- function(req, verbosity) {
+req_verbosity <- function(req, verbosity, error_call = caller_env()) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
-    abort("`verbosity` must 0, 1, 2, or 3")
+    abort("`verbosity` must 0, 1, 2, or 3", call = error_call)
   }
 
   switch(verbosity + 1,
@@ -226,8 +230,9 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   check_installed("httpuv")
 
   if (!quiet) {
+    to_redact <- attr(req$headers, "redact")
     debug <- function(type, msg) {
-      if (type == 2L) verbose_header("", msg, redact = redact_headers)
+      if (type == 2L) verbose_header("", msg, redact = redact_headers, to_redact = to_redact)
       if (type == 4L) verbose_message("", msg)
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
@@ -317,9 +322,3 @@ req_handle <- function(req) {
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
-
-check_verbosity <- function(x) {
-  if (!is_integerish(x, n = 1)) {
-    abort("`verbosity` must be a single integer")
-  }
-}

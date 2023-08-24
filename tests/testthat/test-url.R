@@ -22,6 +22,7 @@ test_that("can round trip urls", {
     "http://google.com/path?a=1&b=2",
     "http://google.com:80/path?a=1&b=2",
     "http://google.com:80/path?a=1&b=2#frag",
+    "http://google.com:80/path?a=1&b=2&c=%7B1%7B2%7D3%7D#frag",
     "http://user@google.com:80/path?a=1&b=2",
     "http://user:pass@google.com:80/path?a=1&b=2",
     "svn+ssh://my.svn.server/repo/trunk"
@@ -32,7 +33,14 @@ test_that("can round trip urls", {
 
 test_that("can print all url details", {
   expect_snapshot(
-    url_parse("http://user:pass@example.com:80/path?a=1&b=2#frag")
+    url_parse("http://user:pass@example.com:80/path?a=1&b=2&c={1{2}3}#frag")
+  )
+})
+
+test_that("ensures path always starts with /", {
+  expect_equal(
+    url_modify("https://example.com/abc", path = "def"),
+    "https://example.com/def"
   )
 })
 

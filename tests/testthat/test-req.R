@@ -13,12 +13,13 @@ test_that("individually prints repeated headers", {
 
 test_that("print method obfuscates Authorization header unless requested", {
   req <- request("https://example.com") %>%
-    req_headers(Authorization = "SECRET")
+    req_auth_basic("user", "SECRET")
   output <- testthat::capture_messages(print(req))
   expect_false(any(grepl("SECRET", output)))
 
   output <- testthat::capture_messages(print(req, redact_headers = FALSE))
-  expect_true(any(grepl("SECRET", output)))
+  expect_true(any(grepl("Authorization: 'Basic", output)))
+  expect_false(any(grepl("REDACTED", output)))
 })
 
 test_that("check_request() gives useful error", {

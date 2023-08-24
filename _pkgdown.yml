@@ -17,6 +17,7 @@ reference:
   - req_headers
   - req_method
   - req_options
+  - req_progress
   - req_proxy
   - req_template
   - req_timeout

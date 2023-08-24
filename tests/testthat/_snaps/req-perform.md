@@ -29,7 +29,7 @@
     Code
       req_perform(req, verbosity = 1.5)
     Condition
-      Error in `req_verbosity()`:
+      Error in `req_perform()`:
       ! `verbosity` must 0, 1, 2, or 3
 
 # req_dry_run() shows body

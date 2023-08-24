@@ -9,7 +9,7 @@
 #' variable for future use in automated tests.
 #'
 #' When requesting an access token, the server may also return a new refresh
-#' token. If this happens, `oauth_flow_refresh()` will warn, and you'll have
+#' token. If this happens, `oauth_flow_refresh()` will warn, and you'll have to
 #' update your stored refresh token.
 #'
 #' @export
@@ -42,7 +42,7 @@ req_oauth_refresh <- function(req, client,
 #' This function generates an access token from a refresh token, following
 #' the process described in
 #' [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-6),
-#' Section 6. Errors if the refresh returns a new refresh token, see
+#' Section 6. Warns if the refresh returns a new refresh token, see
 #' [req_oauth_refresh()] for details.
 #'
 #' @inheritParams oauth_flow_auth_code

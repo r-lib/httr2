@@ -38,7 +38,7 @@
 #'   req_url_query(!!!params, c = "3")
 req_url <- function(req, url) {
   check_request(req)
-  check_string(url, "`url`")
+  check_string(url)
 
   req$url <- url
   req
@@ -79,9 +79,6 @@ req_url_path_append <- function(req, ...) {
 dots_to_path <- function(...) {
   path <- paste(c(...), collapse = "/")
   # Ensure we don't add duplicate /s
-  if (path != "" && !grepl("^/", path)) {
-    path <- paste0("/", path)
-  }
-
-  path
+  # NB: also keeps "" unchanged.
+  sub("^([^/])", "/\\1", path)
 }

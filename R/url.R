@@ -25,7 +25,7 @@
 #' url$query <- list(a = 1, b = 2, c = 3)
 #' url_build(url)
 url_parse <- function(url) {
-  check_string(url, "`url`")
+  check_string(url)
 
   # https://datatracker.ietf.org/doc/html/rfc3986#appendix-B
   pieces <- parse_match(url, "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?")
@@ -68,9 +68,9 @@ url_parse <- function(url) {
   )
 }
 
-url_modify <- function(url, ...) {
+url_modify <- function(url, ..., error_call = caller_env()) {
   url <- url_parse(url)
-  url <- modify_list(url, ...)
+  url <- modify_list(url, ..., error_call = error_call)
   url_build(url)
 }
 
@@ -100,7 +100,9 @@ print.httr2_url <- function(x, ...) {
   if (!is.null(x$query)) {
     cli::cli_li("{.field query}: ")
     id <- cli::cli_ul()
-    cli::cli_li(paste0("  {.field ", names(x$query), "}: ", x$query))
+    # escape curly brackets for cli by replacing single with double brackets
+    query_vals <- gsub("\\{", "{{", gsub("\\}", "}}", x$query))
+    cli::cli_li(paste0("  {.field ", names(x$query), "}: ", query_vals))
     cli::cli_end(id)
   }
   if (!is.null(x$fragment)) {
@@ -137,6 +139,10 @@ url_build <- function(url) {
     authority <- NULL
   }
 
+  if (!is.null(url$path) && !startsWith(url$path, "/")) {
+    url$path <- paste0("/", url$path)
+  }
+
   prefix <- function(prefix, x) if (!is.null(x)) paste0(prefix, x)
   paste0(
     url$scheme, if (!is.null(url$scheme)) ":",
@@ -160,9 +166,9 @@ query_parse <- function(x) {
   out
 }
 
-query_build <- function(x) {
+query_build <- function(x, error_call = caller_env()) {
   if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
-    abort("Query must be a named list")
+    abort("Query must be a named list", call = error_call)
   }
 
   x <- compact(x)
@@ -175,7 +181,7 @@ query_build <- function(x) {
     abort(c(
       "Query parameters must be length 1 atomic vectors.",
       paste0("Problems: ", paste0(names(x)[bad_val], collapse =", "))
-    ))
+    ), call = error_call)
   }
 
   is_double <- map_lgl(x, is.double)

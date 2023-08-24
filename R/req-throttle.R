@@ -25,7 +25,7 @@
 #' throttle_status()
 req_throttle <- function(req, rate, realm = NULL) {
   check_request(req)
-  check_number(rate, "`rate`")
+  check_number_decimal(rate)
 
   delay <- 1 / rate
 
@@ -39,7 +39,7 @@ req_throttle <- function(req, rate, realm = NULL) {
       wait <- delay - (unix_time() - last)
     }
 
-    sys_sleep(wait)
+    sys_sleep(wait, "for throttling delay")
     throttle_touch(realm)
     wait
   }

@@ -36,7 +36,7 @@ req <- request(example_url())
 req
 ```
 
-Here, instead of an external webstite, we use a test server that's built-in to httr2 itself. That ensures that this vignette will work regardless of when or where you run it.
+Here, instead of an external website, we use a test server that's built-in to httr2 itself. That ensures that this vignette will work regardless of when or where you run it.
 
 We can see exactly what this request will send to the server with a dry run:
 
@@ -188,4 +188,4 @@ These include:
 
 -   `req_retry()` sets up a retry strategy so that if the request either fails or you get a transient HTTP error, it'll automatically retry after a short delay.
 
-For more details see their documentation, as well as examples of the usage in real APIs in `vignette("wrapping-apis.Rmd")`.
+For more details see their documentation, as well as examples of the usage in real APIs in `vignette("wrapping-apis")`.

@@ -119,7 +119,7 @@ For faker, I spent a little time with the [documentation](https://fakerapi.it/en
 
 -   All endpoints return JSON data.
 
-This lead me to construct the following function:
+This led me to construct the following function:
 
 ```{r, eval = faker_ok}
 faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
@@ -877,7 +877,7 @@ httr2 does the best it can to save these credentials securely.
 They are stored in a local cache directory (`rappdirs::user_cache_dir("httr2"))` that should only be accessible to the current user, and are encrypted so they will be hard for any package other than httr2 to read.
 However, there's no way to prevent other R code from using httr2 to access them, so if you do choose to cache tokens, you should inform the user and give them the ability to opt-out.
 
-You can see which clients have cached tokens by looking in the cache directory used by httr:
+You can see which clients have cached tokens by looking in the cache directory used by httr2:
 
 ```{r}
 dir(rappdirs::user_cache_dir("httr2"), recursive = TRUE)
