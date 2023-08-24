@@ -98,6 +98,34 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
 <p>A modified HTTP <a href="request.html">request</a>.</p>
     </div>
     <div class="section level2">
+    <h2 id="error-handling">Error handling<a class="anchor" aria-label="anchor" href="#error-handling"></a></h2>
+    <p><code><a href="req_perform.html">req_perform()</a></code> is designed to succeed if and only if you get a valid HTTP
+response. There are two ways a request can fail:</p><ul><li><p>The HTTP request might fail, for example if the connection is dropped
+or the server doesn't exist. This type of error will have class
+<code>httr2_failure</code>.</p></li>
+<li><p>The HTTP request might succeed, but return an HTTP status code that
+represents a error, e.g. a <code>404 Not Found</code> if the specified resource is
+not found. This type of error will have (e.g.) class
+<code>c("httr2_http_404", "httr2_http")</code>.</p></li>
+</ul><p>These error classes are designed to be used in conjunction with R's
+condition handling tools (<a href="https://adv-r.hadley.nz/conditions.html" class="external-link">https://adv-r.hadley.nz/conditions.html</a>).
+For example, if you want to return a default value when the server returns
+a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code>:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  req <span class="sc">%&gt;%</span> <span class="fu">req_perform</span>() <span class="sc">%&gt;%</span> <span class="fu">resp_body_json</span>(),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">httr2_http_404 =</span> <span class="cf">function</span>(cnd) <span class="cn">NULL</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre><p></p></div>
+<p>Or if you want to re-throw the error with some additional context, use
+<code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">withCallingHandlers()</a></code>, e.g.:</p>
+<p></p><div class="sourceCode R"><pre><code><span><span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">withCallingHandlers</a></span><span class="op">(</span></span>
+<span>  <span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  httr2_http_404 <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">cnd</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">abort</a></span><span class="op">(</span><span class="st">"Couldn't find user"</span>, parent <span class="op">=</span> <span class="va">cnd</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre><p></p></div>
+<p>Learn more about error chaining at <a href="https://rlang.r-lib.org/reference/topic-error-chaining.html" class="external-link">rlang::topic-error-chaining</a>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="req_retry.html">req_retry()</a></code> to control when errors are automatically retried.</p></div>
     </div>
@@ -113,7 +141,7 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
 <span class="r-in"><span><span class="co"># You can still retrieve it with last_response()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38605/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33155/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -124,7 +152,7 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">resp</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38605/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33155/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>

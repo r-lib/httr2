@@ -120,11 +120,15 @@ mentioned in error messages as the source of the error. See the
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>If request is successful (i.e. the request was successfully
-performed and a response with HTTP status code &lt;400 was recieved), an HTTP
-<a href="response.html">response</a>; otherwise throws an error. Override this behaviour with
-<code><a href="req_error.html">req_error()</a></code>.</p>
-    </div>
+<ul><li><p>If the HTTP request succeeds, and the status code is ok (e.g. 200),
+an HTTP <a href="response.html">response</a>.</p></li>
+<li><p>If the HTTP request succeeds, but the status code is an error
+(e.g a 404), an error with class <code>c("httr2_http_404", "httr2_http")</code>.
+By default, all 400 and 500 status codes will be treated as an error,
+but you can customise this with <code><a href="req_error.html">req_error()</a></code>.</p></li>
+<li><p>If the HTTP request fails (e.g. the connection is dropped or the
+server doesn't exist), an error with class <code>"httr2_failure"</code>.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="requests">Requests<a class="anchor" aria-label="anchor" href="#requests"></a></h2>
     <p>Note that one call to <code>req_perform()</code> may perform multiple HTTP requests:</p><ul><li><p>If the <code>url</code> is redirected with a 301, 302, 303, or 307, curl will
@@ -145,7 +149,7 @@ or by running the OAuth flow.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://www.google.com/</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (18609 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (20203 bytes)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
