@@ -4,7 +4,7 @@
       req_perform(req)
     Condition
       Error in `req_perform()`:
-      ! Failed to make HTTP request.
+      ! Failed to perform HTTP request.
       Caused by error in `req_perform1()`:
       ! Failed to connect
 

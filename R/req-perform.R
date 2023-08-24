@@ -100,7 +100,7 @@ req_perform <- function(
       req_perform1(req, path = path, handle = handle),
       error = function(err) {
         error_cnd(
-          message = "Failed to make HTTP request.",
+          message = "Failed to perform HTTP request.",
           class = "httr2_failure",
           parent = err,
           call = error_call,
