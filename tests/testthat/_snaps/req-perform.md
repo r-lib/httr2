@@ -1,14 +1,14 @@
-# curl and http errors become errors
+# curl errors become errors
 
     Code
       req_perform(req)
     Condition
       Error in `req_perform()`:
       ! Failed to make HTTP request.
-      Caused by error in `curl::curl_fetch_memory()`:
-      ! Failed to connect to 0.0.0.1 port 443 after 0 ms: Couldn't connect to server
+      Caused by error in `req_perform1()`:
+      ! Failed to connect
 
----
+# http errors become errors
 
     Code
       req_perform(req)

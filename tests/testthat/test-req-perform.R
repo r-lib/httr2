@@ -3,11 +3,17 @@ test_that("success request returns response", {
   expect_s3_class(resp, "httr2_response")
 })
 
-test_that("curl and http errors become errors", {
-  req <- request("https://localhost@1")
+test_that("curl errors become errors", {
+  local_mocked_bindings(
+    req_perform1 = function(...) abort("Failed to connect")
+  )
+
+  req <- request("http://127.0.0.1")
   expect_snapshot(req_perform(req), error = TRUE)
   expect_error(req_perform(req), class = "httr2_failure")
+})
 
+test_that("http errors become errors", {
   req <- request_test("/status/:status", status = 404)
   expect_error(req_perform(req), class = "httr2_http_404")
   expect_snapshot(req_perform(req), error = TRUE)
