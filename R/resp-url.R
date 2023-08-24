@@ -8,12 +8,14 @@
 #' @inheritParams resp_header
 #' @export
 #' @examples
-#' req <- request("https://httr2.r-lib.org?hello=world")
+#' resp <- request(example_url()) %>%
+#'   req_url_path("/get?hello=world") %>%
+#'   req_perform()
 #'
-#' resp <- req_perform(req)
 #' resp %>% resp_url()
 #' resp %>% resp_url_path()
-#' resp %>% resp_url_query()
+#' resp %>% resp_url_queries()
+#' resp %>% resp_url_query("hello")
 resp_url <- function(resp) {
   check_response(resp)
 
