@@ -5,6 +5,46 @@
 #' defaults, or extract additional information from the response that would
 #' be useful to expose to the user.
 #'
+#' # Error handling
+#'
+#' `req_perform()` is designed to succeed if and only if you get a valid HTTP
+#' response. There are two ways a request can fail:
+#'
+#' * The HTTP request might fail, for example if the connection is dropped
+#'   or the server doesn't exist. This type of error will have class
+#'   `httr2_failure`.
+#'
+#' * The HTTP request might succeed, but return an HTTP status code that
+#'   represents a error, e.g. a `404 Not Found` if the specified resource is
+#'   not found. This type of error will have (e.g.) class
+#'   `c("httr2_http_404", "httr2_http")`.
+#'
+#' These error classes are designed to be used in conjunction with R's
+#' condition handling tools (<https://adv-r.hadley.nz/conditions.html>).
+#' For example, if you want to return a default value when the server returns
+#' a 404, use `tryCatch()`:
+#'
+#' ```
+#' tryCatch(
+#'   req %>% req_perform() %>% resp_body_json(),
+#'   httr2_http_404 = function(cnd) NULL
+#' )
+#' ```
+#'
+#' Or if you want to re-throw the error with some additional context, use
+#' `withCallingHandlers()`, e.g.:
+#'
+#' ```R
+#' withCallingHandlers(
+#'   req %>% req_perform() %>% resp_body_json(),
+#'   httr2_http_404 = function(cnd) {
+#'     rlang::abort("Couldn't find user", parent = cnd)
+#'   }
+#' )
+#' ```
+#'
+#' Learn more about error chaining at [rlang::topic-error-chaining].
+#'
 #' @seealso [req_retry()] to control when errors are automatically retried.
 #' @inheritParams req_perform
 #' @param is_error A predicate function that takes a single argument (the

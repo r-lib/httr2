@@ -40,10 +40,17 @@
 #'   Use [with_verbosity()] to control the verbosity of requests that
 #'   you can't affect directly.
 #' @inheritParams rlang::args_error_context
-#' @returns If request is successful (i.e. the request was successfully
-#'   performed and a response with HTTP status code <400 was recieved), an HTTP
-#'   [response]; otherwise throws an error. Override this behaviour with
-#'   [req_error()].
+#' @returns
+#'   * If the HTTP request succeeds, and the status code is ok (e.g. 200),
+#'     an HTTP [response].
+#'
+#'   * If the HTTP request succeeds, but the status code is an error
+#'     (e.g a 404), an error with class `c("httr2_http_404", "httr2_http")`.
+#'     By default, all 400 and 500 status codes will be treated as an error,
+#'     but you can customise this with [req_error()].
+#'
+#'   * If the HTTP request fails (e.g. the connection is dropped or the
+#'     server doesn't exist), an error with class `"httr2_failure"`.
 #' @export
 #' @examples
 #' request("https://google.com") %>%
@@ -92,7 +99,13 @@ req_perform <- function(
     resp <- tryCatch(
       req_perform1(req, path = path, handle = handle),
       error = function(err) {
-        error_cnd("httr2_failed", message = conditionMessage(err), trace = trace_back())
+        error_cnd(
+          message = "Failed to perform HTTP request.",
+          class = "httr2_failure",
+          parent = err,
+          call = error_call,
+          trace = trace_back()
+        )
       }
     )
 
@@ -112,7 +125,8 @@ req_perform <- function(
       break
     }
   }
-  signal("", "httr2_fetch", n = n, tries = tries, reauth = reauth)
+  # Used for testing
+  signal(class = "httr2_fetch", n = n, tries = tries, reauth = reauth)
 
   resp <- cache_post_fetch(req, resp, path = path)
   handle_resp(req, resp, error_call = error_call)
