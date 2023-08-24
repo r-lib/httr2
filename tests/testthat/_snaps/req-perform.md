@@ -6,7 +6,7 @@
       Error in `req_perform()`:
       ! Failed to make HTTP request.
       Caused by error in `curl::curl_fetch_memory()`:
-      ! Couldn't connect to server
+      ! Failed to connect to 0.0.0.1 port 443 after 0 ms: Couldn't connect to server
 
 ---
 
