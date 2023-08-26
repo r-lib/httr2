@@ -2,7 +2,7 @@
 
 * New `check_resp_content_type()` to check response content types (#190).
 
-* Respect custom content type for `req_body_json()` (@mgirlich, #189).
+* `req_body_json()` respect custom content type, if set (@mgirlich, #189).
 
 * `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
 

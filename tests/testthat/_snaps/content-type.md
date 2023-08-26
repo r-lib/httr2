@@ -5,13 +5,13 @@
     Condition
       Error:
       ! Unexpected content type "application/json"
-      * Expecting "application/xml"
+      * Expecting type "application/xml"
     Code
       check_resp_content_type(resp2, "application/xml")
     Condition
       Error:
       ! Unexpected content type "xxxxx"
-      * Expecting "application/xml"
+      * Expecting type "application/xml"
 
 # check_content_type() can consult suffixes
 
@@ -20,7 +20,7 @@
     Condition
       Error:
       ! Unexpected content type "application/json"
-      * Expecting "application/xml"
+      * Expecting type "application/xml"
 
 ---
 
@@ -29,7 +29,7 @@
     Condition
       Error:
       ! Unexpected content type "application/test+json"
-      * Expecting "application/xml", or suffix "xml"
+      * Expecting type "application/xml", or suffix "xml"
 
 ---
 
@@ -38,5 +38,5 @@
     Condition
       Error:
       ! Unexpected content type "application/xml"
-      * Expecting "text/html" or "application/json"
+      * Expecting type "text/html" or "application/json"
 

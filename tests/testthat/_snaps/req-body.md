@@ -1,13 +1,11 @@
-# can use custom json type
+# non-json type errors
 
     Code
-      (expect_error(req %>% req_headers(`Content-Type` = "application/ld+json2") %>%
-        req_body_apply()))
-    Output
-      <error/rlang_error>
+      req_perform(req)
+    Condition
       Error in `req_body_apply()`:
-      ! Unexpected content type "application/ld+json2"
-      * Expecting "application/json", or suffix "json"
+      ! Unexpected content type "application/xml"
+      * Expecting type "application/json", or suffix "json"
 
 # req_body_form() and req_body_multipart() accept list() with warning
 

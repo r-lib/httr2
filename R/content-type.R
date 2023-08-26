@@ -102,7 +102,7 @@ check_content_type <- function(content_type,
     return()
   }
 
-  msg <- cli::format_inline("Expecting {.or {.str {valid_types}}}")
+  msg <- cli::format_inline("Expecting type {.or {.str {valid_types}}}")
   if (!is.null(valid_suffix)) {
     msg <- cli::format_inline("{msg}, or suffix {.str {valid_suffix}}")
   }

@@ -225,7 +225,7 @@ req_body_apply <- function(req) {
     req$fields <- data
   } else if (type == "form") {
     data <- unobfuscate(data)
-    content_type <- check_req_content_type(content_type, "application/x-www-form-urlencoded")
+    content_type <- "application/x-www-form-urlencoded"
     req <- req_body_apply_raw(req, query_build(data))
   } else {
     abort("Unsupported request body `type`", .internal = TRUE)
