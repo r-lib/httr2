@@ -28,3 +28,9 @@ test_that("respects httr verbose config", {
   withr::local_options(httr_config = config)
   expect_equal(httr2_verbosity(), 1)
 })
+
+test_that("can suppress progress bar", {
+  withr::local_options(httr2_progress = FALSE)
+
+  expect_snapshot(sys_sleep(0.1, "for test"))
+})
