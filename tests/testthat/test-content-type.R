@@ -1,7 +1,23 @@
+test_that("can check type of response", {
+  resp1 <- response(headers = c("Content-type: application/json"))
+  resp2 <- response(headers = c("Content-type: xxxxx"))
+
+  expect_no_error(
+    check_resp_content_type(resp1, "application/json")
+  )
+  expect_no_error(
+    check_resp_content_type(resp1, "application/xml", check_type = FALSE)
+  )
+  expect_snapshot(error = TRUE, {
+    check_resp_content_type(resp1, "application/xml")
+    check_resp_content_type(resp2, "application/xml")
+  })
+})
+
 test_that("can parse content type", {
   expect_equal(
     parse_content_type("application/json"),
-    list(type = "application", subtype = "json", suffix = NULL)
+    list(type = "application", subtype = "json", suffix = "")
   )
 
   # can parse suffix
@@ -17,25 +33,30 @@ test_that("can parse content type", {
   )
 })
 
+test_that("invalid type returns empty strings", {
+  expect_equal(
+    parse_content_type(""),
+    list(type = "", subtype = "", suffix = "")
+  )
+})
+
 test_that("check_content_type() can consult suffixes", {
   expect_no_error(check_content_type("application/json", "application/json"))
-  expect_snapshot({
-    (expect_error(check_content_type("application/json", "application/xml")))
-  })
-  # works with suffixes
-  expect_no_error(check_content_type("application/test+json", "application/json"))
-  expect_snapshot({
-    (expect_error(check_content_type("application/test+json", "application/xml")))
-  })
-  # can use multiple valid types
-  expect_no_error(check_content_type("application/test+json", c("text/html", "application/json")))
-  expect_snapshot({
-    (expect_error(check_content_type("application/xml", c("text/html", "application/json"))))
-  })
+  expect_snapshot(check_content_type("application/json", "application/xml"), error = TRUE)
 
-  # `valid_types` can have a suffix
-  expect_no_error(check_content_type("application/xhtml+xml", "application/xhtml+xml"))
-  expect_snapshot({
-    (expect_error(check_content_type("application/xml", "application/xhtml+xml")))
-  })
+  # works with suffixes
+  expect_no_error(check_content_type("application/test+json", "application/json", "json"))
+  expect_snapshot(
+    check_content_type("application/test+json", "application/xml", "xml"),
+    error = TRUE
+  )
+
+  # can use multiple valid types
+  expect_no_error(
+    check_content_type("application/test+json", c("text/html", "application/json"), "json")
+  )
+  expect_snapshot(
+    check_content_type("application/xml", c("text/html", "application/json")),
+    error = TRUE
+  )
 })

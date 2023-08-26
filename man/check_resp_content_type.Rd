@@ -4,20 +4,28 @@
 \alias{check_resp_content_type}
 \title{Check the content type of a response}
 \usage{
-check_resp_content_type(resp, types, check_type = TRUE, call = caller_env())
+check_resp_content_type(
+  resp,
+  types,
+  suffix = character(),
+  check_type = TRUE,
+  call = caller_env()
+)
 }
 \arguments{
 \item{resp}{A response object.}
 
-\item{types}{A character vector of valid content types.}
-
-\item{check_type}{Should the type actually be checked? Provide as a
-convenience for when using inside \verb{resp_body_*} helpers.}
+\item{check_type}{Should the type actually be checked? Provided as a
+convenience for when using this function inside \verb{resp_body_*} helpers.}
 
 \item{call}{The execution environment of a currently
 running function, e.g. \code{caller_env()}. The function will be
 mentioned in error messages as the source of the error. See the
 \code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
+
+\item{valid_types}{A character vector of valid content types.}
+
+\item{valid_suffix}{A string given an "structured media type" suffix.}
 }
 \value{
 Called for its side-effect; erroring if the response does not

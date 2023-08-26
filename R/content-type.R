@@ -5,9 +5,10 @@
 #' is as expected and fails otherwise.
 #'
 #' @param resp A response object.
-#' @param types A character vector of valid content types.
-#' @param check_type Should the type actually be checked? Provide as a
-#'   convenience for when using inside `resp_body_*` helpers.
+#' @param valid_types A character vector of valid content types.
+#' @param valid_suffix A string given an "structured media type" suffix.
+#' @param check_type Should the type actually be checked? Provided as a
+#'   convenience for when using this function inside `resp_body_*` helpers.
 #' @inheritParams rlang::args_error_context
 #' @return Called for its side-effect; erroring if the response does not
 #'   have the expected content type.
@@ -20,24 +21,27 @@
 #' # `types` can also specify multiple valid types
 #' check_resp_content_type(resp, c("application/xml", "application/json"))
 check_resp_content_type <- function(resp,
-                                    types,
+                                    valid_types,
+                                    valid_suffix = NULL,
                                     check_type = TRUE,
                                     call = caller_env()) {
   check_response(resp)
-  check_character(types)
-  check_bool(types)
+  check_character(valid_types)
+  check_bool(check_type)
+  check_string(valid_suffix, allow_null = TRUE)
 
   if (!check_type) {
     return(invisible())
   }
 
-  content_type <- resp_content_type(resp)
   check_content_type(
-    content_type,
-    types,
+    resp_content_type(resp),
+    valid_types = valid_types,
+    valid_suffix = valid_suffix,
     inform_check_type = TRUE,
     call = call
   )
+  invisible()
 }
 
 parse_content_type <- function(x) {
@@ -67,9 +71,9 @@ parse_content_type <- function(x) {
   regex <- "^(?<type>application|audio|font|example|image|message|model|multipart|text|video)/(?<subtype>(?:(?:vnd|prs|x)\\.)?(?:[^+;])+)(?:\\+(?<suffix>(?:[^;])+))?(?:;(?<parameters>(?:.)+))?$"
   if (!grepl(regex, x, perl = TRUE)) {
     out <- list(
-      type = NULL,
-      subtype = NULL,
-      suffix = NULL
+      type = "",
+      subtype = "",
+      suffix = ""
     )
     return(out)
   }
@@ -79,59 +83,33 @@ parse_content_type <- function(x) {
   list(
     type = match[[2]],
     subtype = match[[3]],
-    suffix = if (match[[4]] != "") match[[4]]
+    suffix = if (match[[4]] != "") match[[4]] else ""
   )
 }
 
 check_content_type <- function(content_type,
                                valid_types,
+                               valid_suffix = NULL,
                                inform_check_type = FALSE,
                                call = caller_env()) {
-  if (content_type %in% valid_types) {
-    return(invisible())
+  parsed <- parse_content_type(content_type)
+  base_type <- paste0(parsed$type, "/", parsed$subtype)
+
+  if (base_type %in% valid_types) {
+    return()
+  }
+  if (!is.null(valid_suffix) && parsed$suffix == valid_suffix) {
+    return()
   }
 
-  content_type_parsed <- parse_content_type(content_type)
-  valid_types_parsed <- lapply(valid_types, parse_content_type)
-
-  for (i in seq_along(valid_types_parsed)) {
-    if (has_content_type(content_type_parsed, valid_types_parsed[[i]])) {
-      return(invisible())
-    }
+  msg <- cli::format_inline("Expecting {.or {.str {valid_types}}}")
+  if (!is.null(valid_suffix)) {
+    msg <- cli::format_inline("{msg}, or suffix {.str {valid_suffix}}")
   }
 
-  valid_types_msg <- vapply(valid_types_parsed, content_type_msg, character(1))
-  if (length(valid_types) > 1) {
-    valid_types_msg <- c(i = "Expecting one of:", set_names(valid_types_msg, "*"))
-  } else {
-    valid_types_msg <- c(i = paste0("Expecting ", valid_types_msg))
-  }
-
-  abort(c(
-    glue("Unexpected content type '{content_type}'"),
-    valid_types_msg,
-    i = if (inform_check_type) "Override check with `check_type = FALSE`"
-  ), call = call)
-}
-
-has_content_type <- function(is, exp) {
-  # compare whole type in case `exp` has a suffix
-  if (!is.null(exp$suffix)) {
-    out <- identical(is, exp)
-    return(out)
-  }
-
-  if (!is.null(is$suffix)) {
-    is <- list(type = is$type, subtype = is$suffix, suffix = NULL)
-  }
-
-  identical(is, exp)
-}
-
-content_type_msg <- function(x) {
-  if (is.null(x$suffix)) {
-    glue("'{x$type}/{x$subtype}' or '{x$type}/<subtype>+{x$subtype}'")
-  } else {
-    glue("'{x$type}/{x$subtype}+{x$suffix}'")
-  }
+  abort(
+    c(cli::format_inline("Unexpected content type {.str {content_type}}"), msg),
+    i = if (inform_check_type) "Override check with `check_type = FALSE`",
+    call = call
+  )
 }

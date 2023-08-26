@@ -216,7 +216,7 @@ req_body_apply <- function(req) {
   } else if (type == "raw") {
     req <- req_body_apply_raw(req, data)
   } else if (type == "json") {
-    content_type <- check_req_content_type(content_type, "application/json")
+    content_type <- check_req_content_type(content_type, "application/json", "json")
     json <- exec(jsonlite::toJSON, data, !!!req$body$params)
     req <- req_body_apply_raw(req, json)
   } else if (type == "multipart") {
@@ -236,14 +236,18 @@ req_body_apply <- function(req) {
   req
 }
 
-check_req_content_type <- function(content_type, types, call = caller_env()) {
+check_req_content_type <- function(content_type,
+                                   valid_types,
+                                   valid_suffix = NULL,
+                                   call = caller_env()) {
   if (is.null(content_type)) {
-    return(types[[1]])
+    return(valid_types[[1]])
   }
 
   check_content_type(
     content_type,
-    types,
+    valid_types = valid_types,
+    valid_suffix = valid_suffix,
     inform_check_type = FALSE,
     call = call
   )

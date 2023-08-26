@@ -6,8 +6,8 @@
     Output
       <error/rlang_error>
       Error in `req_body_apply()`:
-      ! Unexpected content type 'application/ld+json2'
-      i Expecting 'application/json' or 'application/<subtype>+json'
+      ! Unexpected content type "application/ld+json2"
+      * Expecting "application/json", or suffix "json"
 
 # req_body_form() and req_body_multipart() accept list() with warning
 

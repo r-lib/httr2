@@ -1,43 +1,42 @@
+# can check type of response
+
+    Code
+      check_resp_content_type(resp1, "application/xml")
+    Condition
+      Error:
+      ! Unexpected content type "application/json"
+      * Expecting "application/xml"
+    Code
+      check_resp_content_type(resp2, "application/xml")
+    Condition
+      Error:
+      ! Unexpected content type "xxxxx"
+      * Expecting "application/xml"
+
 # check_content_type() can consult suffixes
 
     Code
-      (expect_error(check_content_type("application/json", "application/xml")))
-    Output
-      <error/rlang_error>
+      check_content_type("application/json", "application/xml")
+    Condition
       Error:
-      ! Unexpected content type 'application/json'
-      i Expecting 'application/xml' or 'application/<subtype>+xml'
+      ! Unexpected content type "application/json"
+      * Expecting "application/xml"
 
 ---
 
     Code
-      (expect_error(check_content_type("application/test+json", "application/xml")))
-    Output
-      <error/rlang_error>
+      check_content_type("application/test+json", "application/xml", "xml")
+    Condition
       Error:
-      ! Unexpected content type 'application/test+json'
-      i Expecting 'application/xml' or 'application/<subtype>+xml'
+      ! Unexpected content type "application/test+json"
+      * Expecting "application/xml", or suffix "xml"
 
 ---
 
     Code
-      (expect_error(check_content_type("application/xml", c("text/html",
-        "application/json"))))
-    Output
-      <error/rlang_error>
+      check_content_type("application/xml", c("text/html", "application/json"))
+    Condition
       Error:
-      ! Unexpected content type 'application/xml'
-      i Expecting one of:
-      * 'text/html' or 'text/<subtype>+html'
-      * 'application/json' or 'application/<subtype>+json'
-
----
-
-    Code
-      (expect_error(check_content_type("application/xml", "application/xhtml+xml")))
-    Output
-      <error/rlang_error>
-      Error:
-      ! Unexpected content type 'application/xml'
-      i Expecting 'application/xhtml+xml'
+      ! Unexpected content type "application/xml"
+      * Expecting "text/html" or "application/json"
 
