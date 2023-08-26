@@ -15,7 +15,11 @@
 #' [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching).
 #'
 #' @inheritParams req_perform
-#' @param path Path to cache directory
+#' @param path Path to cache directory.
+#'
+#'   httr2 doesn't provide helpers to manage the cache, but if you want to
+#'   empty it, you can use something like
+#'   `unlink(dir(cache_path, full.names = TRUE))`.
 #' @param use_on_error If the request errors, and there's a cache response,
 #'   should `req_perform()` return that instead of generating an error?
 #' @param debug When `TRUE` will emit useful messages telling you about
@@ -132,6 +136,10 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
     # Replace body with cached result
     resp$body <- cache_body(req, path)
+
+    # Combine headers
+    resp$headers <- cache_headers(req, resp)
+
     resp
   } else if (resp_is_cacheable(resp)) {
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
@@ -144,6 +152,7 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
 cache_body <- function(req, path = NULL) {
   body <- cache_get(req)$body
+
   if (is.null(path)) {
     return(body)
   }
@@ -154,6 +163,12 @@ cache_body <- function(req, path = NULL) {
     writeBin(body, path)
   }
   new_path(path)
+}
+
+cache_headers <- function(req, resp) {
+  # https://www.rfc-editor.org/rfc/rfc7232#section-4.1
+  cached_headers <- cache_get(req)$headers
+  as_headers(modify_list(cached_headers, !!!resp$headers))
 }
 
 # Caching headers ---------------------------------------------------------

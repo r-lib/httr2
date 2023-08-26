@@ -4,7 +4,7 @@
 \alias{req_headers}
 \title{Modify request headers}
 \usage{
-req_headers(.req, ...)
+req_headers(.req, ..., .redact = NULL)
 }
 \arguments{
 \item{.req}{A \link{request}.}
@@ -16,6 +16,9 @@ and their values.
 \item Use \code{""} to remove a header
 \item Use a character vector to repeat a header.
 }}
+
+\item{.redact}{Headers to redact. If \code{NULL}, the default, the added headers
+are not redacted.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -59,4 +62,8 @@ req \%>\%
    req_headers(!!!headers, HeaderThree = "three") \%>\%
    req_dry_run()
 
+# Use `.redact` to hide a header in the output
+req \%>\%
+  req_headers(Secret = "this-is-private", Public = "but-this-is-not", .redact = "Secret") \%>\%
+  req_dry_run()
 }

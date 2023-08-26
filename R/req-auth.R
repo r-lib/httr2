@@ -26,11 +26,11 @@
 #' rawToChar(jsonlite::base64_dec("aGFkbGV5OlNFQ1JFVA=="))
 req_auth_basic <- function(req, username, password = NULL) {
   check_request(req)
-  check_string(username, "`username`")
+  check_string(username)
   password <- check_password(password)
 
   username_password <- openssl::base64_encode(paste0(username, ":", password))
-  req_headers(req, Authorization = paste0("Basic ", username_password))
+  req_headers(req, Authorization = paste0("Basic ", username_password), .redact = "Authorization")
 }
 
 #' Authenticate request with bearer token
@@ -56,6 +56,6 @@ req_auth_basic <- function(req, username, password = NULL) {
 #' print(req, redact_headers = FALSE)
 req_auth_bearer_token <- function(req, token) {
   check_request(req)
-  check_string(token, "`token`")
-  req_headers(req, Authorization = paste("Bearer", token))
+  check_string(token)
+  req_headers(req, Authorization = paste("Bearer", token), .redact = "Authorization")
 }

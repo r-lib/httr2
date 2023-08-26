@@ -13,7 +13,7 @@ bullets_with_header <- function(header, x) {
         format(x)
       }
     } else {
-      friendly_type_of(x)
+      obj_type_friendly(x)
     }
   }
   vals <- map_chr(x, as_simple)
@@ -21,12 +21,12 @@ bullets_with_header <- function(header, x) {
   cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
 }
 
-modify_list <- function(.x, ...) {
+modify_list <- function(.x, ..., error_call = caller_env()) {
   dots <- list2(...)
   if (length(dots) == 0) return(.x)
 
   if (!is_named(dots)) {
-    abort("All components of ... must be named")
+    abort("All components of ... must be named", call = error_call)
   }
 
   out <- .x[!names(.x) %in% names(dots)]
@@ -40,8 +40,8 @@ modify_list <- function(.x, ...) {
 }
 
 
-sys_sleep <- function(seconds, fps = 10) {
-  check_number(seconds, "`seconds`")
+sys_sleep <- function(seconds, task, fps = 10) {
+  check_number_decimal(seconds)
 
   if (seconds == 0) {
     return(invisible())
@@ -51,7 +51,7 @@ sys_sleep <- function(seconds, fps = 10) {
   signal("", class = "httr2_sleep", seconds = seconds)
 
   cli::cli_progress_bar(
-    format = "Waiting {round(seconds)}s to retry {cli::pb_bar}",
+    format = "Waiting {round(seconds)}s {task} {cli::pb_bar}",
     total = seconds * fps
   )
 
@@ -65,23 +65,6 @@ sys_sleep <- function(seconds, fps = 10) {
 }
 
 cur_time <- function() proc.time()[[3]]
-
-check_string <- function(x, name, optional = TRUE) {
-  if (is_string(x) && !is.na(x)) {
-    return()
-  }
-  if (optional && is.null(x)) {
-    return()
-  }
-  abort(glue("{name} must be a string"))
-}
-
-check_number <- function(x, name) {
-  if ((is_double(x, n = 1) || is_integer(x, n = 1)) && !is.na(x)) {
-    return()
-  }
-  abort(glue("{name} must be a number"))
-}
 
 is_error <- function(x) inherits(x, "error")
 
@@ -163,7 +146,7 @@ http_date <- function(x = Sys.time()) {
 }
 
 parse_http_date <- function(x) {
-  check_string(x, "`x`")
+  check_string(x)
 
   withr::local_locale(LC_TIME = "C")
 

@@ -36,12 +36,17 @@ response <- function(status_code = 200,
   )
 }
 
-new_response <- function(method, url, status_code, headers, body) {
-  check_string(method, "method")
-  check_string(url, "url")
-  check_number(status_code, "status_code")
+new_response <- function(method,
+                         url,
+                         status_code,
+                         headers,
+                         body,
+                         error_call = caller_env()) {
+  check_string(method, call = error_call)
+  check_string(url, call = error_call)
+  check_number_whole(status_code, call = error_call)
 
-  headers <- as_headers(headers)
+  headers <- as_headers(headers, error_call = error_call)
   # ensure we always have a date field
   if (!"date" %in% tolower(names(headers))) {
     headers$Date <- http_date()
@@ -110,9 +115,17 @@ resp_raw <- function(resp) {
 is_response <- function(x) {
   inherits(x, "httr2_response")
 }
-check_response <- function(req) {
-  if (is_response(req)) {
-    return()
+
+check_response <- function(resp, arg = caller_arg(resp), call = caller_env()) {
+  if (!missing(resp) && is_response(resp)) {
+    return(invisible(NULL))
   }
-  abort("`resp` must be an HTTP response object")
+
+  stop_input_type(
+    resp,
+    "an HTTP response object",
+    allow_null = FALSE,
+    arg = arg,
+    call = call
+  )
 }

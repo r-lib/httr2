@@ -6,6 +6,45 @@
 
 * `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
 
+* `req_perform()` now throws error with class `httr2_failure` if the 
+  request fails. And that error now captures the curl error as the parent.
+
+* New `resp_url()`, `resp_url_path()`, `resp_url_queries()` and
+  `resp_url_query()` to extract various part of the response url (#57).
+
+* Progress bars displayed while waiting for some time to pass are now
+  more informative (#206).
+
+* `url_build()` automatically adds leading `/` to `path` if missing (#276).
+
+* Cached responses now combine the headers of the new response with the headers
+  of the cached response. In particular, this fixes `resp_body_json/xml/html()`
+  on cached responses (@mgirlich, #277).
+
+* `with_mock()` and `local_mock()` now correctly trigger errors when the
+  mocked response represents an HTTP failure (#252).
+
+* New `req_progress()` adds a progress bar to long download or uploads (#20).
+
+* @mgirlich is now a httr2 contributor in recognition of many small contributions.
+
+* `req_headers()` gains a `.redact` argument that controls whether or not to
+  redact a header (@mgirlich, #247).
+
+* `req_body_file()` now supports "rewinding". This is occasionally needed when
+  you upload a file to a URL that uses a 307 or 308 redirect to state that you 
+  should have submitted the file to a different URL, and makes the "necessary 
+  data rewind wasn't possible" error go away (#268).
+
+* `curl_translate()` now produces escapes with single quotes or raw strings
+  in case double quotes can't be used (@mgirlich, #264).
+
+* `curl_translate()` gains the argument `simplify_headers` that removes some
+  common but unimportant headers e.g. `Sec-Fetch-Dest` or `sec-ch-ua-mobile`
+  (@mgirlich, #256).
+  
+* `curl_translate()` now parses the query components of the url (@mgirlich, #259).
+
 * `curl_translate()` now works with multiline commands from the clipboard
   (@mgirlich, #254).
 

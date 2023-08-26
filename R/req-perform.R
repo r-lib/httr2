@@ -40,10 +40,17 @@
 #'   Use [with_verbosity()] to control the verbosity of requests that
 #'   you can't affect directly.
 #' @inheritParams rlang::args_error_context
-#' @returns If request is successful (i.e. the request was successfully
-#'   performed and a response with HTTP status code <400 was recieved), an HTTP
-#'   [response]; otherwise throws an error. Override this behaviour with
-#'   [req_error()].
+#' @returns
+#'   * If the HTTP request succeeds, and the status code is ok (e.g. 200),
+#'     an HTTP [response].
+#'
+#'   * If the HTTP request succeeds, but the status code is an error
+#'     (e.g a 404), an error with class `c("httr2_http_404", "httr2_http")`.
+#'     By default, all 400 and 500 status codes will be treated as an error,
+#'     but you can customise this with [req_error()].
+#'
+#'   * If the HTTP request fails (e.g. the connection is dropped or the
+#'     server doesn't exist), an error with class `"httr2_failure"`.
 #' @export
 #' @examples
 #' request("https://google.com") %>%
@@ -62,7 +69,7 @@ req_perform <- function(
     mock <- as_function(mock)
     mock_resp <- mock(req)
     if (!is.null(mock_resp)) {
-      return(mock_resp)
+      return(handle_resp(req, mock_resp, error_call = error_call))
     }
   }
 
@@ -86,13 +93,19 @@ req_perform <- function(
 
   delay <- 0
   while(tries < max_tries && Sys.time() < deadline) {
-    sys_sleep(delay)
+    sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
     resp <- tryCatch(
       req_perform1(req, path = path, handle = handle),
       error = function(err) {
-        error_cnd("httr2_failed", message = conditionMessage(err), trace = trace_back())
+        error_cnd(
+          message = "Failed to perform HTTP request.",
+          class = "httr2_failure",
+          parent = err,
+          call = error_call,
+          trace = trace_back()
+        )
       }
     )
 
@@ -112,14 +125,19 @@ req_perform <- function(
       break
     }
   }
-  signal("", "httr2_fetch", n = n, tries = tries, reauth = reauth)
+  # Used for testing
+  signal(class = "httr2_fetch", n = n, tries = tries, reauth = reauth)
 
   resp <- cache_post_fetch(req, resp, path = path)
+  handle_resp(req, resp, error_call = error_call)
+}
 
+handle_resp <- function(req, resp, error_call = caller_env()) {
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    resp_abort(resp, error_body(req, resp), call = error_call)
+    body <- error_body(req, resp, error_call)
+    resp_abort(resp, body, call = error_call)
   } else {
     resp
   }
@@ -148,9 +166,9 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   resp
 }
 
-req_verbosity <- function(req, verbosity) {
+req_verbosity <- function(req, verbosity, error_call = caller_env()) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
-    abort("`verbosity` must 0, 1, 2, or 3")
+    abort("`verbosity` must 0, 1, 2, or 3", call = error_call)
   }
 
   switch(verbosity + 1,
@@ -212,8 +230,9 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   check_installed("httpuv")
 
   if (!quiet) {
+    to_redact <- attr(req$headers, "redact")
     debug <- function(type, msg) {
-      if (type == 2L) verbose_header("", msg, redact = redact_headers)
+      if (type == 2L) verbose_header("", msg, redact = redact_headers, to_redact = to_redact)
       if (type == 4L) verbose_message("", msg)
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
@@ -303,9 +322,3 @@ req_handle <- function(req) {
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
-
-check_verbosity <- function(x) {
-  if (!is_integerish(x, n = 1)) {
-    abort("`verbosity` must be a single integer")
-  }
-}

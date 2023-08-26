@@ -51,7 +51,7 @@ test_that("both curl and HTTP errors become errors", {
   )
   out <- multi_req_perform(reqs)
   expect_s3_class(out[[1]], "httr2_http_404")
-  expect_s3_class(out[[2]], "httr2_failed")
+  expect_s3_class(out[[2]], "httr2_failure")
 })
 
 test_that("errors can cancel outstanding requests", {
@@ -68,6 +68,6 @@ test_that("errors can cancel outstanding requests", {
     request_test("/delay/:secs", secs = 2),
   )
   out <- multi_req_perform(reqs, cancel_on_error = TRUE)
-  expect_s3_class(out[[1]], "httr2_failed")
+  expect_s3_class(out[[1]], "httr2_failure")
   expect_s3_class(out[[2]], "httr2_cancelled")
 })

@@ -126,13 +126,13 @@ req_body_multipart <- function(.req, ...) {
   req_body(.req, data = data, type = "multipart")
 }
 
-modify_body_data <- function(data, ...) {
+modify_body_data <- function(data, ..., error_call = caller_env()) {
   dots <- list2(...)
   if (length(dots) == 1 && !is_named(dots) && is.list(dots[[1]])) {
     warn("This function no longer takes a list, instead supply named arguments in ...", call = caller_env())
-    modify_list(data, !!!dots[[1]])
+    modify_list(data, !!!dots[[1]], error_call = error_call)
   } else {
-    modify_list(data, ...)
+    modify_list(data, ..., error_call = error_call)
   }
 }
 
@@ -188,7 +188,7 @@ req_body_apply <- function(req) {
     size <- file.info(data)$size
     con <- file(data, "rb")
     # Leaks connection if request doesn't complete
-    read <- function(nbytes, ...) {
+    readfunction <- function(nbytes, ...) {
       if (is.null(con)) {
         raw()
       } else {
@@ -200,9 +200,17 @@ req_body_apply <- function(req) {
         out
       }
     }
+    seekfunction <- function(offset, ...) {
+      if (is.null(con)) {
+        con <<- file(data, "rb")
+      }
+      seek(con, where = offset)
+    }
+
     req <- req_options(req,
       post = TRUE,
-      readfunction = read,
+      readfunction = readfunction,
+      seekfunction = seekfunction,
       postfieldsize_large = size
     )
   } else if (type == "raw") {

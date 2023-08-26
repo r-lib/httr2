@@ -28,10 +28,15 @@ print.httr2_request <- function(x, ..., redact_headers = TRUE) {
   invisible(x)
 }
 
-new_request <- function(url, method = NULL, headers = list(), body = NULL, fields = list(), options = list(), policies = list()) {
-  if (!is_string(url)) {
-    abort("`url` must be a string")
-  }
+new_request <- function(url,
+                        method = NULL,
+                        headers = list(),
+                        body = NULL,
+                        fields = list(),
+                        options = list(),
+                        policies = list(),
+                        error_call = caller_env()) {
+  check_string(url, call = error_call)
 
   structure(
     list(
@@ -51,9 +56,16 @@ is_request <- function(x) {
   inherits(x, "httr2_request")
 }
 
-check_request <- function(req) {
-  if (is_request(req)) {
-    return()
+check_request <- function(req, arg = caller_arg(req), call = caller_env()) {
+  if (!missing(req) && is_request(req)) {
+    return(invisible(NULL))
   }
-  abort("`req` must be an HTTP request object")
+
+  stop_input_type(
+    req,
+    "an HTTP request object",
+    allow_null = FALSE,
+    arg = arg,
+    call = call
+  )
 }

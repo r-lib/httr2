@@ -9,6 +9,8 @@
 #'   * Use `NULL` to reset a value to httr's default
 #'   * Use `""` to remove a header
 #'   * Use a character vector to repeat a header.
+#' @param .redact Headers to redact. If `NULL`, the default, the added headers
+#'   are not redacted.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -47,9 +49,22 @@
 #'    req_headers(!!!headers, HeaderThree = "three") %>%
 #'    req_dry_run()
 #'
-req_headers <- function(.req, ...) {
+#' # Use `.redact` to hide a header in the output
+#' req %>%
+#'   req_headers(Secret = "this-is-private", Public = "but-this-is-not", .redact = "Secret") %>%
+#'   req_dry_run()
+req_headers <- function(.req, ..., .redact = NULL) {
   check_request(.req)
 
-  .req$headers <- modify_list(.req$headers, ...)
+  headers <- list2(...)
+  header_names <- names2(headers)
+  check_character(.redact, allow_null = TRUE)
+
+  redact_out <- attr(.req$headers, "redact") %||% .redact %||% character()
+  redact_out <- union(redact_out, .redact)
+  .req$headers <- modify_list(.req$headers, !!!headers)
+
+  attr(.req$headers, "redact") <- redact_out
+
   .req
 }

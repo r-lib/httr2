@@ -1,4 +1,4 @@
-as_headers <- function(x) {
+as_headers <- function(x, error_call = caller_env()) {
   if (is.character(x) || is.raw(x)) {
     headers <- curl::parse_headers(x)
     headers <- headers[grepl(":", headers, fixed = TRUE)]
@@ -9,20 +9,20 @@ as_headers <- function(x) {
     names <- map_chr(pieces, "[[", 1)
     values <- as.list(trimws(map_chr(pieces, "[[", 2)))
 
-    new_headers(set_names(values, names))
+    new_headers(set_names(values, names), error_call = error_call)
   } else if (is.list(x)) {
-    new_headers(x)
+    new_headers(x, error_call = error_call)
   } else {
-    abort("`headers` must be a list, character vector, or raw")
+    abort("`headers` must be a list, character vector, or raw", call = error_call)
   }
 }
 
-new_headers <- function(x) {
+new_headers <- function(x, error_call = caller_env()) {
   if (!is_list(x)) {
-    abort("`x` must be a list")
+    abort("`x` must be a list", call = error_call)
   }
   if (length(x) > 0 && !is_named(x)) {
-    abort("All elements of `x` must be named")
+    abort("All elements of `x` must be named", call = error_call)
   }
 
   structure(x, class = "httr2_headers")
@@ -37,11 +37,14 @@ print.httr2_headers <- function(x, ..., redact = TRUE) {
   invisible(x)
 }
 
-headers_redact <- function(x, redact = TRUE) {
+headers_redact <- function(x, redact = TRUE, to_redact = NULL) {
   if (!redact) {
     x
   } else {
-    list_redact(x, "Authorization", case_sensitive = FALSE)
+    to_redact <- union(attr(x, "redact"), to_redact)
+    attr(x, "redact") <- NULL
+
+    list_redact(x, to_redact, case_sensitive = FALSE)
   }
 }
 
