@@ -2,9 +2,8 @@
 
 * New `check_resp_content_type()` to check response content types (#190).
 
-* `req_body_json()` gains custom content `type` argument (@mgirlich, #189).
-
-* `req_oauth_refresh()` now respects the `refresh_token` for caching (@mgirlich, #178).
+* `req_body_json()` gains custom content `type` argument
+  and respects custom content-type set in header (@mgirlich, #189).
 
 * `req_perform()` now throws error with class `httr2_failure` if the 
   request fails. And that error now captures the curl error as the parent.
