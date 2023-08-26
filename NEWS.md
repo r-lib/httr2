@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
+
 * `req_perform()` now throws error with class `httr2_failure` if the 
   request fails. And that error now captures the curl error as the parent.
 
