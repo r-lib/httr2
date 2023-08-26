@@ -23,6 +23,10 @@ check_resp_content_type <- function(resp,
                                     types,
                                     check_type = TRUE,
                                     call = caller_env()) {
+  check_response(resp)
+  check_character(types)
+  check_bool(types)
+
   if (!check_type) {
     return(invisible())
   }
