@@ -6,14 +6,18 @@
 \usage{
 check_resp_content_type(
   resp,
-  types,
-  suffix = character(),
+  valid_types,
+  valid_suffix = NULL,
   check_type = TRUE,
   call = caller_env()
 )
 }
 \arguments{
 \item{resp}{A response object.}
+
+\item{valid_types}{A character vector of valid content types.}
+
+\item{valid_suffix}{A string given an "structured media type" suffix.}
 
 \item{check_type}{Should the type actually be checked? Provided as a
 convenience for when using this function inside \verb{resp_body_*} helpers.}
@@ -22,10 +26,6 @@ convenience for when using this function inside \verb{resp_body_*} helpers.}
 running function, e.g. \code{caller_env()}. The function will be
 mentioned in error messages as the source of the error. See the
 \code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
-
-\item{valid_types}{A character vector of valid content types.}
-
-\item{valid_suffix}{A string given an "structured media type" suffix.}
 }
 \value{
 Called for its side-effect; erroring if the response does not

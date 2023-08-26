@@ -12,7 +12,15 @@ req_body_raw(req, body, type = NULL)
 
 req_body_file(req, path, type = NULL)
 
-req_body_json(req, data, auto_unbox = TRUE, digits = 22, null = "null", ...)
+req_body_json(
+  req,
+  data,
+  auto_unbox = TRUE,
+  digits = 22,
+  null = "null",
+  type = "application/json",
+  ...
+)
 
 req_body_form(.req, ...)
 
@@ -24,7 +32,8 @@ req_body_multipart(.req, ...)
 \item{body}{A literal string or raw vector to send as body.}
 
 \item{type}{Content type. For \code{req_body_file()}, the default
-will will attempt to guess from the extension of \code{path}.}
+will will attempt to guess from the extension of \code{path}. For
+\code{req_body_json()} the default is \code{application/json}.}
 
 \item{path}{Path to file to upload.}
 

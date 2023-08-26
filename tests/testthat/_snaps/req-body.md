@@ -1,9 +1,9 @@
 # non-json type errors
 
     Code
-      req_perform(req)
+      req_body_json(request_test(), mtcars, type = "application/xml")
     Condition
-      Error in `req_body_apply()`:
+      Error in `req_body_json()`:
       ! Unexpected content type "application/xml"
       * Expecting type "application/json", or suffix "json"
 
