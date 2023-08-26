@@ -15,13 +15,13 @@
 #' req <- request("https://example.com")
 #'
 #' req %>% req_oauth_bearer_jwt(client, claim)
-req_oauth_bearer_jwt <- function(req, client,
-                          claim,
-                          signature = "jwt_encode_sig",
-                          signature_params = list(),
-                          scope = NULL,
-                          token_params = list()
-                          ) {
+req_oauth_bearer_jwt <- function(req,
+                                 client,
+                                 claim,
+                                 signature = "jwt_encode_sig",
+                                 signature_params = list(),
+                                 scope = NULL,
+                                 token_params = list()) {
 
   params <- list(
     client = client,
@@ -57,11 +57,11 @@ req_oauth_bearer_jwt <- function(req, client,
 #' @export
 #' @keywords internal
 oauth_flow_bearer_jwt <- function(client,
-                           claim,
-                           signature = "jwt_encode_sig",
-                           signature_params = list(),
-                           scope = NULL,
-                           token_params = list()) {
+                                  claim,
+                                  signature = "jwt_encode_sig",
+                                  signature_params = list(),
+                                  scope = NULL,
+                                  token_params = list()) {
   check_installed("jose")
   if (is.null(client$key)) {
     abort("JWT flow requires `client` with a key")
