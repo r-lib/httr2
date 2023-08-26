@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `vignette("oauth")` makes the details of OAuth usage easier to find 
+  (#234).
+
 * `req_perform()` now throws error with class `httr2_failure` if the 
   request fails. And that error now captures the curl error as the parent.
 
