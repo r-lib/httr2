@@ -6,11 +6,12 @@
 #'
 #' @param resp A response object.
 #' @param types A character vector of valid content types.
+#' @param check_type Should the type actually be checked? Provide as a
+#'   convenience for when using inside `resp_body_*` helpers.
 #' @inheritParams rlang::args_error_context
-#'
-#' @return Returns `NULL` invisibly, or errors.
+#' @return Called for its side-effect; erroring if the response does not
+#'   have the expected content type.
 #' @export
-#'
 #' @examples
 #' resp <- response(headers = list(`content-type` = "application/json"))
 #' check_resp_content_type(resp, "application/json")
@@ -20,7 +21,12 @@
 #' check_resp_content_type(resp, c("application/xml", "application/json"))
 check_resp_content_type <- function(resp,
                                     types,
+                                    check_type = TRUE,
                                     call = caller_env()) {
+  if (!check_type) {
+    return(invisible())
+  }
+
   content_type <- resp_content_type(resp)
   check_content_type(
     content_type,

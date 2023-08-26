@@ -79,7 +79,8 @@ resp_body_string <- function(resp, encoding = NULL) {
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
   check_response(resp)
   check_installed("jsonlite")
-  check_resp_content_type_helper(resp,
+  check_resp_content_type(
+    resp,
     types = "application/json",
     check_type = check_type
   )
@@ -93,9 +94,11 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 resp_body_html <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_resp_content_type_helper(resp,
+  check_resp_content_type(
+    resp,
     types = c("text/html", "application/xhtml+xml"),
-    check_type = check_type)
+    check_type = check_type
+  )
 
   xml2::read_html(resp$body, ...)
 }
@@ -105,21 +108,11 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_resp_content_type_helper(resp,
+  check_resp_content_type(
+    resp,
     types = c("application/xml", "text/xml"),
     check_type = check_type
   )
 
   xml2::read_xml(resp$body, ...)
-}
-
-check_resp_content_type_helper <- function(resp,
-                                           types,
-                                           check_type = TRUE,
-                                           call = caller_env()) {
-  if (!check_type) {
-    return(invisible())
-  }
-
-  check_resp_content_type(resp, types, call = call)
 }
