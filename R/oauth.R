@@ -116,3 +116,20 @@ cache_disk_prune <- function(days = 30, path = rappdirs::user_cache_dir("httr2")
   old <- mtime < (Sys.time() - days * 86400)
   unlink(files[old])
 }
+
+#' httr2 cache location
+#'
+#' When opted-in to, httr2 caches OAuth tokens in this directory. By default,
+#' it uses a OS-standard cache directory, but, if needed, you can override the
+#' location by setting the `HTTR2_CACHE` env var.
+#'
+#' @export
+#' @keywords internal
+cache_path <- function() {
+  path <- Sys.getenv("HTTR2_CACHE")
+  if (path != "") {
+    return(path)
+  }
+
+  rappdirs::user_cache_dir("httr2")
+}

@@ -21,8 +21,8 @@ req_oauth_device(
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted and
-automatically deleted 30 days after creation.}
+storing access credentials on disk. Cached tokens are encrypted,
+automatically deleted 30 days after creation, and stored in \code{\link[=cache_path]{cache_path()}}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}

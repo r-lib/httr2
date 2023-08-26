@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `cache_path()` that returns path to httr2's cache directory. Additionally, 
+  you can now change the cache location by setting the `HTTR2_CACHE` env var.
+
 * New `vignette("oauth")` makes the details of OAuth usage easier to find 
   (#234).
 
