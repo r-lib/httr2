@@ -62,6 +62,8 @@ This uses \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} to generat
 then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token is automatically cached (either in memory or on disk) to minimise
 the number of times the flow is performed.
+
+Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \section{Security considerations}{
 The authorization code flow is used for both web applications and native

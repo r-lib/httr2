@@ -6,6 +6,8 @@
 #' The token is automatically cached (either in memory or on disk) to minimise
 #' the number of times the flow is performed.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' # Security considerations
 #'
 #' The authorization code flow is used for both web applications and native

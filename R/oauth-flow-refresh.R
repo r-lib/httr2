@@ -12,6 +12,8 @@
 #' token. If this happens, `oauth_flow_refresh()` will warn, and you'll have to
 #' update your stored refresh token.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_refresh

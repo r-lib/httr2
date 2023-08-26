@@ -42,6 +42,8 @@ This uses \code{\link[=oauth_flow_device]{oauth_flow_device()}} to generate an a
 then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token is automatically cached (either in memory or on disk) to minimise
 the number of times the flow is performed.
+
+Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")
