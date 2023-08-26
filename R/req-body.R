@@ -10,9 +10,10 @@
 #' Adding a body to a request will automatically switch the method to POST.
 #'
 #' @inheritParams req_perform
-#' @param type Content type. For `req_body_file()`, the default
-#'  will will attempt to guess from the extension of `path`. For
-#'  `req_body_json()` the default is `application/json`.
+#' @param type MIME content type. You shouldn't generally need to specify this as
+#'  the defaults are usually pretty good, e.g. `req_body_file()` will guess it
+#'  from the extension of of `path`. Will be ignored if you have manually set
+#'  a `Content-Type` header.
 #' @returns A modified HTTP [request].
 #' @examples
 #' req <- request(example_url()) %>%

@@ -31,9 +31,10 @@ req_body_multipart(.req, ...)
 
 \item{body}{A literal string or raw vector to send as body.}
 
-\item{type}{Content type. For \code{req_body_file()}, the default
-will will attempt to guess from the extension of \code{path}. For
-\code{req_body_json()} the default is \code{application/json}.}
+\item{type}{MIME content type. You shouldn't generally need to specify this as
+the defaults are usually pretty good, e.g. \code{req_body_file()} will guess it
+from the extension of of \code{path}. Will be ignored if you have manually set
+a \code{Content-Type} header.}
 
 \item{path}{Path to file to upload.}
 
