@@ -14,6 +14,11 @@ test_that("can check type of response", {
   })
 })
 
+test_that("useful error even if no content type", {
+  resp <- response()
+  expect_snapshot(check_resp_content_type(resp, "application/xml"), error = TRUE)
+})
+
 test_that("can parse content type", {
   expect_equal(
     parse_content_type("application/json"),

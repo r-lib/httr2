@@ -13,6 +13,15 @@
       ! Unexpected content type "xxxxx"
       * Expecting type "application/xml"
 
+# useful error even if no content type
+
+    Code
+      check_resp_content_type(resp, "application/xml")
+    Condition
+      Error:
+      ! Unexpected content type "NA"
+      * Expecting type "application/xml"
+
 # check_content_type() can consult suffixes
 
     Code
