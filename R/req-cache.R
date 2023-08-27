@@ -41,12 +41,24 @@
 #'
 #' # Second request retrieves it from the cache
 #' resp <- req %>% req_perform()
-req_cache <- function(req, path, use_on_error = FALSE, debug = FALSE) {
+req_cache <- function(req,
+                      path,
+                      use_on_error = FALSE,
+                      debug = FALSE,
+                      max_age = Inf,
+                      max_n = Inf,
+                      max_size = 1024^3) {
+
+  check_number_whole(max_age, min = 0, allow_infinite = TRUE)
+  check_number_whole(max_n, min = 0, allow_infinite = TRUE)
+  check_number_decimal(max_size, min = 1, allow_infinite = TRUE)
+
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
   req_policies(req,
     cache_path = path,
     cache_use_on_error = use_on_error,
-    cache_debug = debug
+    cache_debug = debug,
+    cache_max = list(age = max_age, n = max_n, size = max_size)
   )
 }
 
@@ -92,6 +104,50 @@ cache_set <- function(req, resp) {
   invisible()
 }
 
+cache_prune_if_needed <- function(req, debug = TRUE) {
+  path <- req$policies$cache_path
+
+  last_prune <- the$cache_throttle[[path]]
+  if (is.null(last_prune) || last_prune + 5 <= Sys.time()) {
+    if (debug) cli::cli_text("Pruning cache")
+    cache_prune(req)
+    the$cache_throttle[[path]] <- Sys.time()
+  }
+}
+
+# Adapted from
+# https://github.com/r-lib/cachem/blob/main/R/cache-disk.R#L396-L467
+cache_prune <- function(req) {
+  info <- cache_info(req$policies$cache_path)
+  max <- req$policies$cache_max
+
+  info <- cache_prune_files(info, info$mtime + max$age < Sys.time(), "too old", debug)
+  info <- cache_prune_files(info, seq_len(nrow(info)) > max$n, "too numerous", debug)
+  info <- cache_prune_files(info, cumsum(info$size) > max$size, "too big", debug)
+
+  invisible()
+}
+
+cache_info <- function(path, pattern = "\\.rds$") {
+  filenames <- dir(path, pattern, full.names = TRUE)
+  info <- file.info(filenames, extra_cols = FALSE)
+  info <- info[info$isdir == FALSE, ]
+  info$name <- rownames(info)
+  rownames(info) <- NULL
+  info[order(info$mtime, decreasing = TRUE), c("name", "size", "mtime")]
+}
+
+cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
+  if (any(to_remove)) {
+    if (debug) cli::cli_text("Deleted {sum(to_remove)} file{?s} that {?is/are} {why}")
+
+    # file.remove(info$name[to_remove])
+    info[!to_remove, ]
+  } else {
+    info
+  }
+}
+
 # Hooks for req_perform -----------------------------------------------------
 
 # Can return request or response
@@ -99,7 +155,9 @@ cache_pre_fetch <- function(req) {
   if (!cache_exists(req)) {
     return(req)
   }
+
   debug <- cache_debug(req)
+  cache_prune_if_needed(req, debug = debug)
 
   info <- resp_cache_info(cache_get(req))
   if (debug) cli::cli_text("Found url in cache {.val {hash(req$url)}}")

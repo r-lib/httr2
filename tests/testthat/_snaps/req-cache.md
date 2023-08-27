@@ -9,6 +9,7 @@
     Code
       invisible(cache_pre_fetch(req))
     Message
+      Pruning cache
       Found url in cache "f3805db63ff822b4743f247cfdde10a3"
       Cached value is fresh; retrieving response from cache
 
@@ -18,6 +19,7 @@
       # freshness check
       invisible(cache_pre_fetch(req))
     Message
+      Pruning cache
       Found url in cache "f3805db63ff822b4743f247cfdde10a3"
       Cached value is stale; checking for updates
     Code
