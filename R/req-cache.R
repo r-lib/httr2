@@ -114,7 +114,7 @@ cache_set <- function(req, resp) {
   invisible()
 }
 
-cache_prune_if_needed <- function(req, threshold = 60, debug = TRUE) {
+cache_prune_if_needed <- function(req, threshold = 60, debug = FALSE) {
   path <- req$policies$cache_path
 
   last_prune <- the$cache_throttle[[path]]
@@ -122,6 +122,10 @@ cache_prune_if_needed <- function(req, threshold = 60, debug = TRUE) {
     if (debug) cli::cli_text("Pruning cache")
     cache_prune(path, max = req$policies$cache_max, debug = debug)
     the$cache_throttle[[path]] <- Sys.time()
+
+    invisible(TRUE)
+  } else {
+    invisible(FALSE)
   }
 }
 
