@@ -87,7 +87,15 @@ but it will not need to re-download the body value.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_cache</span><span class="op">(</span><span class="va">req</span>, <span class="va">path</span>, use_on_error <span class="op">=</span> <span class="cn">FALSE</span>, debug <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_cache</span><span class="op">(</span></span>
+<span>  <span class="va">req</span>,</span>
+<span>  <span class="va">path</span>,</span>
+<span>  use_on_error <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  max_age <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  max_n <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  max_size <span class="op">=</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">3</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -113,6 +121,16 @@ should <code><a href="req_perform.html">req_perform()</a></code> return that ins
 cache hits and misses. This can be helpful to understand whether or
 not caching is actually doing anything for your use case.</p></dd>
 
+
+<dt>max_n, max_age, max_size</dt>
+<dd><p>Automatically prune the cache by specifying
+one or more of:</p><ul><li><p><code>max_age</code>: to delete files older than this number of seconds.</p></li>
+<li><p><code>max_n</code>: to delete files (from oldest to newest) to preserve at
+most this many files.</p></li>
+<li><p><code>max_size</code>: to delete files (from oldest to newest) to preserve at
+most this many bytes.</p></li>
+</ul><p>The cache pruning is performed at most once per minute.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -137,6 +155,7 @@ not caching is actually doing anything for your use case.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Second request retrieves it from the cache</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Pruning cache</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found url in cache <span style="color: #0000BB;">"d5d1ddd7f99f55dbc920c63f942804c0"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Cached value is fresh; retrieving response from cache</span>
 </code></pre></div>
