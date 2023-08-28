@@ -25,6 +25,16 @@
 #' @param debug When `TRUE` will emit useful messages telling you about
 #'   cache hits and misses. This can be helpful to understand whether or
 #'   not caching is actually doing anything for your use case.
+#' @param max_n,max_age,max_size Automatically prune the cache by specifying
+#'   one or more of:
+#'
+#'   * `max_age`: to delete files older than this number of seconds.
+#'   * `max_n`: to delete files (from oldest to newest) to preserve at
+#'      most this many files.
+#'   * `max_size`: to delete files (from oldest to newest) to preserve at
+#'      most this many bytes.
+#'
+#'   The cache pruning is performed at most once per minute.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -104,22 +114,21 @@ cache_set <- function(req, resp) {
   invisible()
 }
 
-cache_prune_if_needed <- function(req, debug = TRUE) {
+cache_prune_if_needed <- function(req, threshold = 60, debug = TRUE) {
   path <- req$policies$cache_path
 
   last_prune <- the$cache_throttle[[path]]
-  if (is.null(last_prune) || last_prune + 5 <= Sys.time()) {
+  if (is.null(last_prune) || last_prune + threshold <= Sys.time()) {
     if (debug) cli::cli_text("Pruning cache")
-    cache_prune(req)
+    cache_prune(path, max = req$policies$cache_max, debug = debug)
     the$cache_throttle[[path]] <- Sys.time()
   }
 }
 
 # Adapted from
 # https://github.com/r-lib/cachem/blob/main/R/cache-disk.R#L396-L467
-cache_prune <- function(req) {
-  info <- cache_info(req$policies$cache_path)
-  max <- req$policies$cache_max
+cache_prune <- function(path, max, debug = TRUE) {
+  info <- cache_info(path)
 
   info <- cache_prune_files(info, info$mtime + max$age < Sys.time(), "too old", debug)
   info <- cache_prune_files(info, seq_len(nrow(info)) > max$n, "too numerous", debug)
@@ -141,7 +150,7 @@ cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
   if (any(to_remove)) {
     if (debug) cli::cli_text("Deleted {sum(to_remove)} file{?s} that {?is/are} {why}")
 
-    # file.remove(info$name[to_remove])
+    file.remove(info$name[to_remove])
     info[!to_remove, ]
   } else {
     info

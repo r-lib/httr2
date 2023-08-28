@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* `req_cache()` gains `max_n`, `max_size()`, and `max_age()` arguments to 
+  automatically prune the cache. By default, the cache will be pruned to
+  under 1 Gb (#207).
+
 * `req_perform()` now throws error with class `httr2_failure` if the 
   request fails. And that error now captures the curl error as the parent.
 
