@@ -55,7 +55,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/req_perform.html">req_perform()</a></code> now throws error with class <code>httr2_failure</code> if the request fails. And that error now captures the curl error as the parent.</p></li>
+<ul><li><p><code>req_performs()</code> progress bar can be suppressed by setting <code>options(httr2_progress = FALSE)</code> (<a href="https://github.com/r-lib/httr2/issues/251" class="external-link">#251</a>).</p></li>
+<li><p><code><a href="../reference/req_perform.html">req_perform()</a></code> now throws error with class <code>httr2_failure</code> if the request fails. And that error now captures the curl error as the parent.</p></li>
 <li><p>New <code><a href="../reference/resp_url.html">resp_url()</a></code>, <code><a href="../reference/resp_url.html">resp_url_path()</a></code>, <code><a href="../reference/resp_url.html">resp_url_queries()</a></code> and <code><a href="../reference/resp_url.html">resp_url_query()</a></code> to extract various part of the response url (<a href="https://github.com/r-lib/httr2/issues/57" class="external-link">#57</a>).</p></li>
 <li><p>Progress bars displayed while waiting for some time to pass are now more informative (<a href="https://github.com/r-lib/httr2/issues/206" class="external-link">#206</a>).</p></li>
 <li><p><code><a href="../reference/url_parse.html">url_build()</a></code> automatically adds leading <code>/</code> to <code>path</code> if missing (<a href="https://github.com/r-lib/httr2/issues/276" class="external-link">#276</a>).</p></li>

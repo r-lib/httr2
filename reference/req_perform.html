@@ -140,6 +140,13 @@ waiting a bit. See <code><a href="req_retry.html">req_retry()</a></code> for det
 will get a new token either using the refresh token (if available)
 or by running the OAuth flow.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="progress-bar">Progress bar<a class="anchor" aria-label="anchor" href="#progress-bar"></a></h2>
+    <p><code>req_perform()</code> will automatically add a progress bar if it needs to wait
+between requests because you have use <code><a href="req_throttle.html">req_throttle()</a></code> or <code><a href="req_retry.html">req_retry()</a></code>.
+You can turn the progress bar off (and just show the total time to wait)
+by setting <code>options(httr2_progress = FALSE)</code>.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -149,7 +156,7 @@ or by running the OAuth flow.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://www.google.com/</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (18560 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (18648 bytes)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
