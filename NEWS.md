@@ -1,8 +1,8 @@
 # httr2 (development version)
 
-* `req_cache()` gains `max_n`, `max_size()`, and `max_age()` arguments to 
+* `req_cache()` gains `max_n`, `max_size`, and `max_age` arguments to 
   automatically prune the cache. By default, the cache will be pruned to
-  under 1 Gb (#207).
+  under 1 GB (#207).
 
 * `req_performs()` progress bar can be suppressed by setting 
   `options(httr2_progress = FALSE)` (#251).
