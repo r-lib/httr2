@@ -6,6 +6,8 @@
 \alias{secret_decrypt}
 \alias{secret_write_rds}
 \alias{secret_read_rds}
+\alias{secret_decrypt_file}
+\alias{secret_encrypt_file}
 \alias{secret_has_key}
 \title{Secret management}
 \usage{
@@ -18,6 +20,10 @@ secret_decrypt(encrypted, key)
 secret_write_rds(x, path, key)
 
 secret_read_rds(path, key)
+
+secret_decrypt_file(path, key, envir = parent.frame())
+
+secret_encrypt_file(path, key)
 
 secret_has_key(key)
 }
@@ -33,6 +39,10 @@ the raw vector in directly.}
 \item{encrypted}{String to decrypt}
 
 \item{path}{Path to \code{.rds} file}
+
+\item{envir}{The unencrypted file will be automatically deleted when
+this environment exits. You should only need set this argument if you
+want to pass the unencrypted file to another function.}
 }
 \value{
 \itemize{
@@ -50,6 +60,8 @@ requires some confidential data that needs to be available for testing,
 but should not be available to package users.
 \itemize{
 \item \code{secret_encrypt()} and \code{secret_decrypt()} work with individual strings
+\item \code{secret_encrypt_file()} encrypts a file in place and
+\code{secret_decrypt_file()} decrypts a file in a temporary location.
 \item \code{secret_write_rds()} and \code{secret_read_rds()} work with \code{.rds} files
 \item \code{secret_make_key()} generates a random string to use as a key.
 \item \code{secret_has_key()} returns \code{TRUE} if the key is available; you can
@@ -67,10 +79,12 @@ found.)
 \item Use \code{secret_make_key()} to generate a password. Make this available
 as an env var (e.g. \verb{\{MYPACKAGE\}_KEY}) by adding a line to your
 \code{.Renviron}.
-\item Encrypt strings with \code{secret_encrypt()} and other data with
-\code{secret_write_rds()}, setting \code{key = "{MYPACKAGE}_KEY"}.
-\item In your tests, decrypt the data with \code{secret_decrypt()} or
-\code{secret_read_rds()} to match how you encrypt it.
+\item Encrypt strings with \code{secret_encrypt()}, files with
+\code{secret_encrtype_file()},  and other data with \code{secret_write_rds()},
+setting \code{key = "{MYPACKAGE}_KEY"}.
+\item In your tests, decrypt the data with \code{secret_decrypt()},
+\code{secret_decrypt_file()}, or \code{secret_read_rds()} to match how you encrypt
+it.
 \item If you push this code to your CI server, it will already "work" because
 all functions automatically skip tests when your \verb{\{MYPACKAGE\}_KEY\}}
 env var isn't set. To make the tests actually run, you'll need to set

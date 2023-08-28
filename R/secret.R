@@ -7,6 +7,8 @@
 #' but should not be available to package users.
 #'
 #' * `secret_encrypt()` and `secret_decrypt()` work with individual strings
+#' * `secret_encrypt_file()` encrypts a file in place and
+#'   `secret_decrypt_file()` decrypts a file in a temporary location.
 #' * `secret_write_rds()` and `secret_read_rds()` work with `.rds` files
 #' * `secret_make_key()` generates a random string to use as a key.
 #' * `secret_has_key()` returns `TRUE` if the key is available; you can
@@ -24,11 +26,13 @@
 #'     as an env var (e.g. `{MYPACKAGE}_KEY`) by adding a line to your
 #'     `.Renviron`.
 #'
-#' 2.  Encrypt strings with `secret_encrypt()` and other data with
-#'     `secret_write_rds()`, setting `key = "{MYPACKAGE}_KEY"`.
+#' 2.  Encrypt strings with `secret_encrypt()`, files with
+#'     `secret_encrtype_file()`,  and other data with `secret_write_rds()`,
+#'     setting `key = "{MYPACKAGE}_KEY"`.
 #'
-#' 3.  In your tests, decrypt the data with `secret_decrypt()` or
-#'     `secret_read_rds()` to match how you encrypt it.
+#' 3.  In your tests, decrypt the data with `secret_decrypt()`,
+#'     `secret_decrypt_file()`, or `secret_read_rds()` to match how you encrypt
+#'     it.
 #'
 #' 4.  If you push this code to your CI server, it will already "work" because
 #'     all functions automatically skip tests when your `{MYPACKAGE}_KEY}`
@@ -111,6 +115,32 @@ secret_write_rds <- function(x, path, key) {
 secret_read_rds <- function(path, key) {
   x <- readBin(path, "raw", file.size(path))
   secret_unserialize(x, key)
+}
+
+#' @export
+#' @param envir The unencrypted file will be automatically deleted when
+#'   this environment exits. You should only need set this argument if you
+#'   want to pass the unencrypted file to another function.
+#' @rdname secrets
+secret_decrypt_file <- function(path, key, envir = parent.frame()) {
+  val <- readChar(path, file.info(path)$size)
+  dec <- secret_decrypt(val, key = key)
+
+  path <- tempfile()
+  withr::defer(unlink(path), envir)
+  writeChar(dec, path, eos = NULL)
+  Sys.chmod(path, 400)
+  path
+}
+
+#' @export
+#' @rdname secrets
+secret_encrypt_file <- function(path, key) {
+  val <- readChar(path, file.info(path)$size)
+  enc <- secret_encrypt(val, key = key)
+
+  writeChar(enc, path, eos = NULL)
+  invisible(path)
 }
 
 secret_serialize <- function(x, key, error_call = caller_env()) {
