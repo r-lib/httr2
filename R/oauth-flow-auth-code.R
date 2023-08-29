@@ -56,6 +56,7 @@ req_oauth_auth_code <- function(req, client,
                                 pkce = TRUE,
                                 auth_params = list(),
                                 token_params = list(),
+                                type = c("desktop", "web"),
                                 host_name = "localhost",
                                 host_ip = "127.0.0.1",
                                 port = httpuv::randomPort(),
@@ -69,6 +70,7 @@ req_oauth_auth_code <- function(req, client,
     pkce = pkce,
     auth_params = auth_params,
     token_params = token_params,
+    type = type,
     host_name = host_name,
     host_ip = host_ip,
     port = port,
@@ -90,9 +92,9 @@ req_oauth_auth_code <- function(req, client,
 #' `oauth_flow_auth_code()` is a high-level wrapper that should work with APIs
 #' that adhere relatively closely to the spec. When possible, it redirects the
 #' browser back to a temporary local webserver to capture the authorization
-#' code. When this is not possible---for example, when running on a hosted
-#' platform like RStudio Server---it prompts the user to enter the code
-#' manually instead.
+#' code. When this is not possible (e.g. when running on a hosted platform
+#' like RStudio Server) set `type = "web"` to instead prompts the user to enter
+#' the code manually instead.
 #'
 #' The remaining low-level functions can be used to assemble a custom flow for
 #' APIs that are further from the spec:
@@ -122,6 +124,9 @@ req_oauth_auth_code <- function(req, client,
 #'   instead.
 #' @param host_ip IP address for the temporary webserver used to capture the
 #'   authorization code.
+#' @param type Either `desktop` or `web`. Use desktop when running on the
+#'   desktop in an environment where you can redirect the user to `localhost`.
+#'   Use `web` when running in a hosted web environment.
 #' @param port Port to bind the temporary webserver to. Used only when
 #'   `redirect_uri` is `"http(s)://localhost"`. By default, this uses a random
 #'   port. You may need to set it to a fixed port if the API requires that the
@@ -154,9 +159,19 @@ oauth_flow_auth_code <- function(client,
                                  token_params = list(),
                                  host_name = deprecated(),
                                  host_ip = "127.0.0.1",
+                                 type = c("desktop", "web"),
                                  port = httpuv::randomPort(),
                                  redirect_uri = "http://localhost"
 ) {
+
+  type <- arg_match(type)
+  if (type == "desktop") {
+    check_installed("httpuv", "desktop OAuth")
+    if (is_hosted_session()) {
+      abort("Only type='web' is supported in the current session")
+    }
+  }
+
   oauth_flow_check("authorization code", client, interactive = TRUE)
 
   # For backwards compatibility, fall back to the original redirect URL
@@ -194,7 +209,7 @@ oauth_flow_auth_code <- function(client,
   )
   utils::browseURL(user_url)
 
-  if (!is_hosted_session() && is_installed("httpuv")) {
+  if (type == "desktop") {
     # Listen on localhost for the result.
     result <- oauth_flow_auth_code_listen(host_ip, port)
     code <- oauth_flow_auth_code_parse(result, state)

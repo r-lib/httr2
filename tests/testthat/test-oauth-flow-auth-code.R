@@ -1,3 +1,13 @@
+test_that("desktop style can't run in hosted environment", {
+  client <- oauth_client("abc", "http://example.com")
+
+  withr::local_envvar("RSTUDIO_PROGRAM_MODE" = "server")
+  expect_snapshot(
+    oauth_flow_auth_code(client, "http://example.com", type = "desktop"),
+    error = TRUE
+  )
+})
+
 test_that("so-called 'hosted' sessions are detected correctly", {
   withr::with_envvar(c("RSTUDIO_PROGRAM_MODE" = "server"), {
     expect_true(is_hosted_session())

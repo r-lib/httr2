@@ -14,6 +14,7 @@ req_oauth_auth_code(
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
+  type = c("desktop", "web"),
   host_name = "localhost",
   host_ip = "127.0.0.1",
   port = httpuv::randomPort(),
@@ -45,6 +46,10 @@ security and should always be used if supported by the server.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
+
+\item{type}{Either \code{desktop} or \code{web}. Use desktop when running on the
+desktop in an environment where you can redirect the user to \code{localhost}.
+Use \code{web} when running in a hosted web environment.}
 
 \item{host_name}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{redirect_uri}
 instead.}

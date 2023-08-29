@@ -17,6 +17,7 @@ oauth_flow_auth_code(
   token_params = list(),
   host_name = deprecated(),
   host_ip = "127.0.0.1",
+  type = c("desktop", "web"),
   port = httpuv::randomPort(),
   redirect_uri = "http://localhost"
 )
@@ -58,6 +59,10 @@ instead.}
 \item{host_ip}{IP address for the temporary webserver used to capture the
 authorization code.}
 
+\item{type}{Either \code{desktop} or \code{web}. Use desktop when running on the
+desktop in an environment where you can redirect the user to \code{localhost}.
+Use \code{web} when running in a hosted web environment.}
+
 \item{port}{Port to bind the temporary webserver to. Used only when
 \code{redirect_uri} is \code{"http(s)://localhost"}. By default, this uses a random
 port. You may need to set it to a fixed port if the API requires that the
@@ -86,9 +91,9 @@ opens a page in their browser, approves the access, and then returns to R.
 \code{oauth_flow_auth_code()} is a high-level wrapper that should work with APIs
 that adhere relatively closely to the spec. When possible, it redirects the
 browser back to a temporary local webserver to capture the authorization
-code. When this is not possible---for example, when running on a hosted
-platform like RStudio Server---it prompts the user to enter the code
-manually instead.
+code. When this is not possible (e.g. when running on a hosted platform
+like RStudio Server) set \code{type = "web"} to instead prompts the user to enter
+the code manually instead.
 
 The remaining low-level functions can be used to assemble a custom flow for
 APIs that are further from the spec:
