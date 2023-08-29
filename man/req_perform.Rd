@@ -76,9 +76,9 @@ or by running the OAuth flow.
 
 \section{Progress bar}{
 \code{req_perform()} will automatically add a progress bar if it needs to wait
-between requests because you have use \code{\link[=req_throttle]{req_throttle()}} or \code{\link[=req_retry]{req_retry()}}.
-You can turn the progress bar off (and just show the total time to wait)
-by setting \code{options(httr2_progress = FALSE)}.
+between requests for \code{\link[=req_throttle]{req_throttle()}} or \code{\link[=req_retry]{req_retry()}}. You can turn the
+progress bar off (and just show the total time to wait) by setting
+\code{options(httr2_progress = FALSE)}.
 }
 
 \examples{

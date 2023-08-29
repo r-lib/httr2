@@ -165,7 +165,11 @@ oauth_flow_auth_code <- function(client,
     auth_params = auth_params
   )
   utils::browseURL(user_url)
-  result <- oauth_flow_auth_code_listen(host_ip, port)
+  result <- oauth_flow_auth_code_listen(
+    host_ip = host_ip,
+    port = port,
+    path = url_parse(redirect_url)$path
+  )
   code <- oauth_flow_auth_code_parse(result, state)
 
   # Get access/refresh token from authorisation code
@@ -207,11 +211,18 @@ oauth_flow_auth_code_url <- function(client,
 
 #' @export
 #' @rdname oauth_flow_auth_code
-oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410) {
+#' @param path Path to listen on; defaults to `/`.
+oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1",
+                                        port = 1410,
+                                        path = NULL) {
+
+  check_string(path, allow_null = TRUE, allow_empty = FALSE)
+  path <- path %||% "/"
+
   complete <- FALSE
   info <- NULL
   listen <- function(env) {
-    if (!identical(env$PATH_INFO, "/")) {
+    if (!identical(env$PATH_INFO, path)) {
       return(list(
         status = 404L,
         headers = list("Content-Type" = "text/plain"),
