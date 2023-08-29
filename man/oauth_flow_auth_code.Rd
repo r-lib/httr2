@@ -84,10 +84,11 @@ Section 4.1. This is the most commonly used OAuth flow where the user is
 opens a page in their browser, approves the access, and then returns to R.
 
 \code{oauth_flow_auth_code()} is a high-level wrapper that should work with APIs
-that adhere relatively closely to the spec. When possible, it redirects the browser
-back to a temporary local webserver to capture the authorization code. When
-this is not possible -- for example, when running on a hosted platform like
-RStudio Server -- it prompts the user to enter the code manually instead.
+that adhere relatively closely to the spec. When possible, it redirects the
+browser back to a temporary local webserver to capture the authorization
+code. When this is not possible -- for example, when running on a hosted
+platform like RStudio Server -- it prompts the user to enter the code
+manually instead.
 
 The remaining low-level functions can be used to assemble a custom flow for
 APIs that are further from the spec:

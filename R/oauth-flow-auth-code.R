@@ -146,7 +146,6 @@ req_oauth_auth_code <- function(req, client,
 #'   token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
 #'   token
 #' }
-#' @importFrom lifecycle deprecated
 oauth_flow_auth_code <- function(client,
                                  auth_url,
                                  scope = NULL,
