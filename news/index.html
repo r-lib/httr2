@@ -77,6 +77,8 @@
 <li><p><code><a href="../reference/obfuscate.html">obfuscated()</a></code> values now display their original call when printed.</p></li>
 <li><p><code><a href="../reference/resp_headers.html">resp_header()</a></code> gains a <code>default</code> argument which is returned if the header doesn’t exist (<a href="https://github.com/r-lib/httr2/issues/208" class="external-link">#208</a>).</p></li>
 <li><p><code><a href="../reference/oauth_flow_refresh.html">oauth_flow_refresh()</a></code> now only warns if the <code>refresh_token</code> changes, making it a little easier to use in manual workflows (<a href="https://github.com/r-lib/httr2/issues/186" class="external-link">#186</a>).</p></li>
+<li><p><code><a href="../reference/oauth_flow_auth_code.html">oauth_flow_auth_code()</a></code> now attempts to detect when you’re running in a hosted environment (e.g. Google Collab/Posit Workbench/Posit cloud) and allows users to enter the authorisation code into the console manually (<a href="https://github.com/r-lib/httr2/issues/248" class="external-link">#248</a>).</p></li>
+<li><p><code><a href="../reference/oauth_flow_auth_code.html">oauth_flow_auth_code()</a></code> gains a <code>redirect_uri</code> argument rather than deriving this URL automatically from the <code>host_name</code> and <code>port</code> (<a href="https://github.com/r-lib/httr2/issues/248" class="external-link">#248</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.3" id="httr2-023">httr2 0.2.3<a class="anchor" aria-label="anchor" href="#httr2-023"></a></h2><p class="text-muted">CRAN release: 2023-05-08</p>
