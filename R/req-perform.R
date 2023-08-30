@@ -22,6 +22,13 @@
 #'   will get a new token either using the refresh token (if available)
 #'   or by running the OAuth flow.
 #'
+#' # Progress bar
+#'
+#' `req_perform()` will automatically add a progress bar if it needs to wait
+#' between requests for [req_throttle()] or [req_retry()]. You can turn the
+#' progress bar off (and just show the total time to wait) by setting
+#' `options(httr2_progress = FALSE)`.
+#'
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
