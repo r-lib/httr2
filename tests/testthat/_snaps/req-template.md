@@ -9,13 +9,13 @@
       req_template(req, "x", 1)
     Condition
       Error in `req_template()`:
-      ! All elements of ... must be named
+      ! All elements of `...` must be named.
     Code
       req_template(req, "A B C")
     Condition
       Error in `req_template()`:
-      ! Can't parse template `template`
-      i Should have form like 'GET /a/b/c' or 'a/b/c/'
+      ! Can't parse template `template`.
+      i Should have form like 'GET /a/b/c' or 'a/b/c/'.
 
 # template produces useful errors
 
@@ -23,10 +23,10 @@
       template_process(":b")
     Condition
       Error:
-      ! Can't find template variable 'b'
+      ! Can't find template variable "b".
     Code
       template_process(":b", list(b = sum))
     Condition
       Error:
-      ! Template variable 'b' is not a simple scalar value
+      ! Template variable "b" is not a simple scalar value.
 

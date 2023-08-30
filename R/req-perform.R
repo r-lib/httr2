@@ -175,7 +175,7 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
 
 req_verbosity <- function(req, verbosity, error_call = caller_env()) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
-    abort("`verbosity` must 0, 1, 2, or 3", call = error_call)
+    cli::cli_abort("{.arg verbosity} must 0, 1, 2, or 3.", call = error_call)
   }
 
   switch(verbosity + 1,

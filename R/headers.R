@@ -13,16 +13,19 @@ as_headers <- function(x, error_call = caller_env()) {
   } else if (is.list(x)) {
     new_headers(x, error_call = error_call)
   } else {
-    abort("`headers` must be a list, character vector, or raw", call = error_call)
+    cli::cli_abort(
+      "`headers` must be a list, character vector, or raw.",
+      call = error_call
+    )
   }
 }
 
 new_headers <- function(x, error_call = caller_env()) {
   if (!is_list(x)) {
-    abort("`x` must be a list", call = error_call)
+    cli::cli_abort("{.arg x} must be a list.", call = error_call)
   }
   if (length(x) > 0 && !is_named(x)) {
-    abort("All elements of `x` must be named", call = error_call)
+    cli::cli_abort("All elements of {.arg x} must be named.", call = error_call)
   }
 
   structure(x, class = "httr2_headers")

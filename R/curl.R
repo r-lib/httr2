@@ -36,7 +36,7 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
       cmd <- clipr::read_clip()
       cmd <- paste0(cmd, collapse = "\n")
     } else {
-      abort("Must supply `cmd`")
+      cli::cli_abort("Must supply {.arg cmd}.")
     }
   } else {
     check_string(cmd)
@@ -103,10 +103,12 @@ curl_translate_eval <- function(cmd, env = caller_env()) {
   eval(parse_expr(code), envir = env)
 }
 
-curl_normalize <- function(cmd) {
+curl_normalize <- function(cmd, error_call = caller_env()) {
   args <- curl_args(cmd)
 
-  url <- args[["--url"]] %||% args[["<url>"]] %||% abort("Must supply url")
+  url <- args[["--url"]] %||%
+    args[["<url>"]] %||%
+    cli::cli_abort("Must supply url.", call = error_call)
 
   if (has_name(args, "--header")) {
     headers <- as_headers(args[["--header"]])
@@ -216,12 +218,15 @@ curl_opts <- "Usage: curl [<url>] [-H <header> ...] [options] [<url>]
   -v, --verbose                Make the operation more talkative
 "
 
-curl_args <- function(cmd) {
+curl_args <- function(cmd, error_call = caller_env()) {
   check_installed("docopt")
 
   pieces <- parse_in_half(cmd, " ")
   if (pieces[[1]] != "curl") {
-    abort(glue("Expecting call to curl not '{pieces[[1]]}'"))
+    cli::cli_abort(
+      "Expecting call to curl not {.str {pieces[[1]]}}",
+      call = error_call
+    )
   }
   if (grepl("'", cmd)) {
     args <- parse_delim(pieces[[2]], " ", quote = "'")

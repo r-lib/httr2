@@ -60,19 +60,19 @@ oauth_client <- function(
     auth <- arg_match(auth)
 
     if (auth == "header" && is.null(secret)) {
-      abort("`auth = 'header' requires a `secret`")
+      cli::cli_abort("{.code auth = 'header'} requires a {.arg secret}.")
     } else if (auth == "jwt_sig") {
       if (is.null(key)) {
-        abort("`auth = 'jwt_sig' requires a `key`")
+        cli::cli_abort("{.code auth = 'jwt_sig'} requires a {.arg key}.")
       }
       if (!has_name(auth_params, "claim")) {
-        abort("`auth = 'jwt_sig' requires a claim specification in `auth_params`")
+        cli::cli_abort("{.code auth = 'jwt_sig'} requires a claim specification in {.arg auth_params}.")
       }
     }
 
     auth <- paste0("oauth_client_req_auth_", auth)
   } else if (!is_function(auth)) {
-    abort("`auth` must be a string or function")
+    cli::cli_abort("{.arg auth} must be a string or function.")
   }
 
   structure(
@@ -204,21 +204,31 @@ oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header
 
 oauth_flow_check <- function(flow, client,
                              is_confidential = FALSE,
-                             interactive = FALSE) {
+                             interactive = FALSE,
+                             error_call = caller_env()) {
 
   if (!inherits(client, "httr2_oauth_client")) {
-    abort("`client` must be an OAuth client created with `oauth_client()`")
+    cli::cli_abort(
+      "{.arg client} must be an OAuth client created with {.fn oauth_client}.",
+      call = error_call
+    )
   }
 
   if (is_confidential && is.null(client$secret) && is.null(client$key)) {
-    abort(c(
-      glue("Can't use this `app` with OAuth 2.0 {flow} flow"),
-      "`app` must have a confidential client (i.e. `client_secret` is required)"
-    ))
+    cli::cli_abort(
+      c(
+        "Can't use this {.arg app} with OAuth 2.0 {flow} flow.",
+        i = "{.arg app} must have a confidential client (i.e. {.arg client_secret} is required)."
+      ),
+      call = error_call
+    )
   }
 
   if (interactive && !is_interactive()) {
-    abort(glue("OAuth 2.0 {flow} flow requires an interactive session"))
+    cli::cli_abort(
+      "OAuth 2.0 {flow} flow requires an interactive session",
+      call = error_call
+    )
   }
 }
 

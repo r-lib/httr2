@@ -6,11 +6,11 @@
     Condition
       Error in `url_build()`:
       ! Query parameters must be length 1 atomic vectors.
-      * Problems: a
+      * Problems: a.
     Code
       req %>% req_url_query(a = letters)
     Condition
       Error in `url_build()`:
       ! Query parameters must be length 1 atomic vectors.
-      * Problems: a
+      * Problems: a.
 

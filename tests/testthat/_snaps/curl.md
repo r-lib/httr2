@@ -3,8 +3,8 @@
     Code
       curl_args("echo foo")
     Condition
-      Error in `curl_args()`:
-      ! Expecting call to curl not 'echo'
+      Error:
+      ! Expecting call to curl not "echo"
 
 # common headers can be removed
 

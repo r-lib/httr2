@@ -245,7 +245,7 @@ oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410) {
   httpuv::service() # send data back to client
 
   if (is.null(info)) {
-    abort("Authentication failed; invalid url from server.")
+    cli::cli_abort("Authentication failed; invalid url from server.")
   }
 
   info
@@ -265,7 +265,7 @@ parse_form_urlencoded <- function(query) {
 #' @export
 #' @rdname oauth_flow_auth_code
 #' @param query List of query parameters returned by `oauth_flow_auth_code_listen()`.
-oauth_flow_auth_code_parse <- function(query, state) {
+oauth_flow_auth_code_parse <- function(query, state, error_call = caller_env()) {
   if (has_name(query, "error")) {
     # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1
     # Never see problems with redirect_uri
@@ -273,7 +273,7 @@ oauth_flow_auth_code_parse <- function(query, state) {
   }
 
   if (query$state != state) {
-    abort("Authentication failure: state does not match")
+    cli::cli_abort("Authentication failure: state does not match.")
   }
 
   query$code
