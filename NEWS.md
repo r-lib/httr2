@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
+
 * `req_cache()` gains `max_n`, `max_size`, and `max_age` arguments to 
   automatically prune the cache. By default, the cache will be pruned to
   under 1 GB (#207).
