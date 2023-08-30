@@ -64,7 +64,7 @@ oauth_flow_bearer_jwt <- function(client,
                                   token_params = list()) {
   check_installed("jose")
   if (is.null(client$key)) {
-    cli::cli_("JWT flow requires {.arg client} with a key.")
+    cli::cli_abort("JWT flow requires {.arg client} with a key.")
   }
 
   if (is_list(claim)) {

@@ -265,7 +265,7 @@ parse_form_urlencoded <- function(query) {
 #' @export
 #' @rdname oauth_flow_auth_code
 #' @param query List of query parameters returned by `oauth_flow_auth_code_listen()`.
-oauth_flow_auth_code_parse <- function(query, state, error_call = caller_env()) {
+oauth_flow_auth_code_parse <- function(query, state) {
   if (has_name(query, "error")) {
     # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1
     # Never see problems with redirect_uri
