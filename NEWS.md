@@ -64,6 +64,13 @@
 * `oauth_flow_refresh()` now only warns if the `refresh_token` changes, making
   it a little easier to use in manual workflows (#186).
 
+* `oauth_flow_auth_code()` now attempts to detect when you're running in a 
+  hosted environment (e.g. Google Collab/Posit Workbench/Posit cloud) and 
+  allows users to enter the authorisation code into the console manually (#248).
+
+* `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
+  this URL automatically from the `host_name` and `port` (#248).
+
 # httr2 0.2.3
 
 * New `example_url()` to launch a local server, making tests and examples 
