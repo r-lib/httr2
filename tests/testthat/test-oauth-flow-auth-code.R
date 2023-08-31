@@ -1,9 +1,10 @@
 test_that("desktop style can't run in hosted environment", {
   client <- oauth_client("abc", "http://example.com")
 
+  withr::local_options(rlang_interactive = TRUE)
   withr::local_envvar("RSTUDIO_PROGRAM_MODE" = "server")
   expect_snapshot(
-    oauth_flow_auth_code(client, "http://example.com", type = "desktop"),
+    oauth_flow_auth_code(client, "http://localhost"),
     error = TRUE
   )
 })

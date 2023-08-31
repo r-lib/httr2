@@ -1,8 +1,8 @@
 # desktop style can't run in hosted environment
 
     Code
-      oauth_flow_auth_code(client, "http://example.com", type = "desktop")
+      oauth_flow_auth_code(client, "http://localhost")
     Condition
       Error in `oauth_flow_auth_code()`:
-      ! Only type='web' is supported in the current session
+      ! Can't use localhost `redirect_uri` in a hosted environment
 

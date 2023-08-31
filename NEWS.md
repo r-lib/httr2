@@ -1,5 +1,12 @@
 # httr2 (development version)
 
+* `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
+  this URL automatically from the `host_name` and `port` (#248). It uses
+  this field to automatically which strategy to use for gathering the auth
+  info, either launching a temporary web server or, new, allowing you to 
+  manually enter the details with the help of a custom JS/HTML page hosted
+  elsewhere.
+  
 * `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
 
 * `req_cache()` gains `max_n`, `max_size`, and `max_age` arguments to 
@@ -63,13 +70,6 @@
 
 * `oauth_flow_refresh()` now only warns if the `refresh_token` changes, making
   it a little easier to use in manual workflows (#186).
-
-* `oauth_flow_auth_code()` now attempts to detect when you're running in a 
-  hosted environment (e.g. Google Collab/Posit Workbench/Posit cloud) and 
-  allows users to enter the authorisation code into the console manually (#248).
-
-* `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
-  this URL automatically from the `host_name` and `port` (#248).
 
 # httr2 0.2.3
 
