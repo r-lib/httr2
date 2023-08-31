@@ -59,6 +59,6 @@ test_that("can prune old files", {
 # cache_path --------------------------------------------------------------
 
 test_that("can override path with env var", {
-  withr::local_envvar("HTTR2_CACHE" = "/tmp")
-  expect_equal(cache_path(), "/tmp")
+  withr::local_envvar("HTTR2_OAUTH_CACHE" = "/tmp")
+  expect_equal(oauth_cache_path(), "/tmp")
 })
