@@ -55,7 +55,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> now includes the claim in the cache key (<a href="https://github.com/r-lib/httr2/issues/192" class="external-link">#192</a>).</p></li>
+<ul><li><p>New <code><a href="../reference/req_cookie_preserve.html">req_cookie_preserve()</a></code> lets you use a file to share cookies across requests (<a href="https://github.com/r-lib/httr2/issues/223" class="external-link">#223</a>).</p></li>
+<li><p><code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> now includes the claim in the cache key (<a href="https://github.com/r-lib/httr2/issues/192" class="external-link">#192</a>).</p></li>
 <li><p><code><a href="../reference/req_cache.html">req_cache()</a></code> gains <code>max_n</code>, <code>max_size</code>, and <code>max_age</code> arguments to automatically prune the cache. By default, the cache will be pruned to under 1 GB (<a href="https://github.com/r-lib/httr2/issues/207" class="external-link">#207</a>).</p></li>
 <li><p><code>req_performs()</code> progress bar can be suppressed by setting <code>options(httr2_progress = FALSE)</code> (<a href="https://github.com/r-lib/httr2/issues/251" class="external-link">#251</a>).</p></li>
 <li><p><code><a href="../reference/req_perform.html">req_perform()</a></code> now throws error with class <code>httr2_failure</code> if the request fails. And that error now captures the curl error as the parent.</p></li>
