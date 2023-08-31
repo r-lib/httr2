@@ -6,6 +6,10 @@
   code, either launching a temporary web server or, new, allowing you to 
   manually enter the details with the help of a custom JS/HTML page hosted
   elsewhere.
+
+* `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
+  of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
+  that changing this is ever useful.
   
 * `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
 

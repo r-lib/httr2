@@ -47,3 +47,27 @@ test_that("bare authorisation codes can be input manually", {
   expect_equal(oauth_flow_auth_code_read(state), "zyx987")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
 })
+
+# normalize_redirect_uri --------------------------------------------------
+
+test_that("adds port to localhost url", {
+  redirect <- normalize_redirect_uri("http://localhost")
+  expect_false(is.null(redirect$port))
+})
+
+test_that("old args are deprecated", {
+  expect_snapshot(
+    redirect <- normalize_redirect_uri("http://localhost", port = 1234)
+  )
+  expect_equal(redirect$uri, "http://localhost:1234")
+
+  expect_snapshot(
+    redirect <- normalize_redirect_uri("http://x.com", host_name = "y.com")
+  )
+  expect_equal(redirect$uri, "http://y.com")
+
+  expect_snapshot(
+    redirect <- normalize_redirect_uri("http://x.com", host_ip = "y.com")
+  )
+
+})
