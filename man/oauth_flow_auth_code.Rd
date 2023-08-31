@@ -56,14 +56,15 @@ security and should always be used if supported by the server.}
 Often this must be registered with the API in advance.
 
 httr2 supports two forms of redirect. Firstly, you can use a \code{localhost}
-url (the default), in which case httr2 will set up a temporary webserver
-to listen for the redirect. This works well when you are working on your
-own laptop. In this case, httr2 will automatically append a random port.
-If you need to set it to a fixed port because the API requires
-it, then specify it with (e.g.) \code{"http://localhost:1011"}
+url (the default), where httr2 will set up a temporary webserver to listen
+for the OAuth redirect. In this case, httr2 will automatically append a
+random port. If you need to set it to a fixed port because the API requires
+it, then specify it with (e.g.) \code{"http://localhost:1011"}. This technique
+works well when you are working on your own computer.
 
 Alternatively, you can provide a URL to a website that uses javascript to
-give the user a code to copy and paste back into the R session. This is
+give the user a code to copy and paste back into the R session (see
+\url{https://www.tidyverse.org/google-callback/} for an example). This is
 less convenient (because it requires more user interaction) but also works
 in hosted environments.}
 
