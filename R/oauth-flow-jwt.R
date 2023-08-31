@@ -5,6 +5,8 @@
 #' used to authenticate the request with [req_auth_bearer_token()].
 #' The token is cached in memory.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_bearer_jwt

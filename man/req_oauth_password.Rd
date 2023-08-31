@@ -28,8 +28,9 @@ interactively.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted and
-automatically deleted 30 days after creation.}
+storing access credentials on disk. Cached tokens are encrypted,
+automatically deleted 30 days after creation, and stored in
+\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
@@ -45,6 +46,8 @@ then used to authentication the request with \code{\link[=req_auth_bearer_token]
 The token, not the password is automatically cached (either in memory
 or on disk); the password is used once to get the token and is then
 discarded.
+
+Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")

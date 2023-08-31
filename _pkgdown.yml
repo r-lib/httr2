@@ -71,3 +71,10 @@ reference:
   contents:
   - starts_with("oauth_")
   - starts_with("jwt_")
+
+articles:
+- title: Using httr2
+  navbar: ~
+  contents:
+  - articles/wrapping-apis
+  - articles/oauth

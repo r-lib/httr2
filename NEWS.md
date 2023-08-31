@@ -1,5 +1,12 @@
 # httr2 (development version)
 
+* New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
+  tokens. Additionally, you can now change the cache location by setting the
+  `HTTR2_OAUTH_CACHE` env var.
+
+* New `vignette("oauth")` makes the details of OAuth usage easier to find 
+  (#234).
+
 * New `req_cookie_preserve()` lets you use a file to share cookies across 
   requests (#223).
 
