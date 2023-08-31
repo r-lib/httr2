@@ -211,27 +211,22 @@ check_function2 <- function(x,
   n_actual_args <- length(actual_args)
 
   if (n_expected_args == 0) {
-    message <- sprintf(
-      "%s must have no arguments, not %i %s.",
-      format_arg(arg),
-      length(actual_args),
-      pluralise(n_actual_args, "argument", "arguments")
+    cli::cli_abort(
+      "{.arg {arg}} must have no arguments, not {n_actual_args} argument{?s}.",
+      call = call,
+      arg = arg
     )
-    abort(message, call = call, arg = arg)
   }
 
   if (n_actual_args == 0) {
     arg_info <- "instead of no arguments"
   } else {
-    arg_info <- paste0("not ", format_arg(actual_args))
+    arg_info <- "not {.arg {actual_args}}"
   }
 
-  message <- sprintf(
-    "%s must have the %s %s, %s.",
-    format_arg(arg),
-    pluralise(n_expected_args, "argument", "arguments"),
-    format_arg(expected_args),
-    arg_info
+  cli::cli_abort(
+    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}, ", arg_info, "."),
+    call = call,
+    arg = arg
   )
-  abort(message, call = call, arg = arg)
 }
