@@ -35,7 +35,7 @@ req_paginate <- function(req,
                          next_request,
                          n_pages = NULL) {
   check_request(req)
-  check_function2(next_request, args = c("resp", "req"))
+  check_function2(next_request, args = c("req", "resp"))
   check_function2(n_pages, args = "resp", allow_null = TRUE)
 
   req_policies(
@@ -167,7 +167,7 @@ req_paginate_offset <- function(req,
 
   cur_offset <- 0L
   env <- current_env()
-  next_request <- function(resp, req) {
+  next_request <- function(req, resp) {
     cur_offset <- get("cur_offset", envir = env)
     new_offset <- cur_offset + page_size
     assign("cur_offset", new_offset, envir = env)
