@@ -25,7 +25,7 @@
 #'   resp_body_json()
 #'
 #' # The cookie path has a straightforward format
-cat(readChar(path, nchars = 1e4))
+#' cat(readChar(path, nchars = 1e4))
 req_cookie_file <- function(req, path) {
   check_request(req)
   check_string(path, allow_empty = FALSE)

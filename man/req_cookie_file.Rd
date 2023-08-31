@@ -9,7 +9,7 @@ req_cookie_file(req, path)
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{path}{A path to file where cookies will be saved.}
+\item{path}{A path to a file where cookies will be read from before and updated after the request.}
 }
 \description{
 By default, httr2 uses a clean slate for every request meaning that cookies
@@ -34,5 +34,5 @@ httpbin \%>\%
   resp_body_json()
 
 # The cookie path has a straightforward format
-readLines(path)
+cat(readChar(path, nchars = 1e4))
 }
