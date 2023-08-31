@@ -22,6 +22,13 @@
 #'   will get a new token either using the refresh token (if available)
 #'   or by running the OAuth flow.
 #'
+#' # Progress bar
+#'
+#' `req_perform()` will automatically add a progress bar if it needs to wait
+#' between requests for [req_throttle()] or [req_retry()]. You can turn the
+#' progress bar off (and just show the total time to wait) by setting
+#' `options(httr2_progress = FALSE)`.
+#'
 #' @param req A [request].
 #' @param path Optionally, path to save body of request. This is useful for
 #'   large responses since it avoids storing the response in memory.
@@ -154,6 +161,10 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
     res <- curl::curl_fetch_memory(req$url, handle)
     body <- res$content
   }
+
+  # Ensure cookies are saved to disk now, not when request is finalised
+  curl::handle_setopt(handle, cookielist = "FLUSH")
+  curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
   resp <- new_response(
     method = req_method_get(req),

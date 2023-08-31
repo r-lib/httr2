@@ -40,10 +40,19 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
 }
 
 
-sys_sleep <- function(seconds, task, fps = 10) {
+sys_sleep <- function(seconds,
+                      task,
+                      fps = 10,
+                      progress = getOption("httr2_progress", TRUE)) {
   check_number_decimal(seconds)
 
   if (seconds == 0) {
+    return(invisible())
+  }
+
+  if (!progress) {
+    cli::cli_alert("Waiting {ceiling(seconds)}s {task}")
+    Sys.sleep(seconds)
     return(invisible())
   }
 
@@ -51,7 +60,7 @@ sys_sleep <- function(seconds, task, fps = 10) {
   signal("", class = "httr2_sleep", seconds = seconds)
 
   cli::cli_progress_bar(
-    format = "Waiting {round(seconds)}s {task} {cli::pb_bar}",
+    format = "Waiting {ceiling(seconds)}s {task} {cli::pb_bar}",
     total = seconds * fps
   )
 

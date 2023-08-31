@@ -10,7 +10,7 @@
 #' @param sub Subject claim. Identifies the principal that is the subject of
 #'   the JWT (i.e. the entity that the claims apply to).
 #' @param aud Audience claim. Identifies the recipients that the JWT is
-#'    intended. Each principle intended to process the JWT must be identifid
+#'    intended. Each principle intended to process the JWT must be identified
 #'    with a unique value.
 #' @param exp Expiration claim. Identifies the expiration time on or after which
 #'   the JWT MUST NOT be accepted for processing. Defaults to 5 minutes.
@@ -27,13 +27,13 @@
 #' claim <- jwt_claim()
 #' str(claim)
 jwt_claim <- function(iss = NULL,
-                          sub = NULL,
-                          aud = NULL,
-                          exp = unix_time() + 5L * 60L,
-                          nbf = unix_time(),
-                          iat = unix_time(),
-                          jti = NULL,
-                          ...) {
+                      sub = NULL,
+                      aud = NULL,
+                      exp = unix_time() + 5L * 60L,
+                      nbf = unix_time(),
+                      iat = unix_time(),
+                      jti = NULL,
+                      ...) {
   # https://datatracker.ietf.org/doc/html/rfc7519
   jose::jwt_claim(
     iss = iss,

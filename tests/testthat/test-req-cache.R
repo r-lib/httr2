@@ -160,6 +160,66 @@ test_that("handles responses with files", {
   expect_equal(body, new_path(path2))
 })
 
+
+# pruning -----------------------------------------------------------------
+
+test_that("pruning is throttled", {
+  path <- withr::local_tempdir()
+  req <- req_cache(request_test(), path = path)
+
+  expect_true(cache_prune_if_needed(req))
+  expect_false(cache_prune_if_needed(req))
+  expect_true(cache_prune_if_needed(req, threshold = 0))
+
+  the$cache_throttle[[path]] <- Sys.time() - 61
+  expect_true(cache_prune_if_needed(req, threshold = 60))
+})
+
+test_that("can prune by number", {
+  path <- withr::local_tempdir()
+  file.create(file.path(path, c("a.rds", "b.rds", "c.rds")))
+  Sys.sleep(0.1)
+  file.create(file.path(path, c("d.rds")))
+
+  cache_prune(path, list(n = 4, age = Inf, size = Inf), debug = TRUE)
+  expect_equal(dir(path), c("a.rds", "b.rds", "c.rds", "d.rds"))
+
+  expect_snapshot(
+    cache_prune(path, list(n = 1, age = Inf, size = Inf), debug = TRUE)
+  )
+  expect_equal(dir(path), c("d.rds"))
+})
+
+test_that("can prune by age", {
+  path <- withr::local_tempdir()
+  file.create(file.path(path, c("a.rds", "b.rds")))
+  Sys.setFileTime(file.path(path, "a.rds"), Sys.time() - 60)
+
+  cache_prune(path, list(n = Inf, age = 120, size = Inf), debug = TRUE)
+  expect_equal(dir(path), c("a.rds", "b.rds"))
+
+  expect_snapshot({
+    cache_prune(path, list(n = Inf, age = 30, size = Inf), debug = TRUE)
+  })
+  expect_equal(dir(path), "b.rds")
+})
+
+test_that("can prune by size", {
+  path <- withr::local_tempdir()
+  writeChar(paste0(letters, collapse = ""), file.path(path, "a.rds"))
+  writeChar(paste0(letters, collapse = ""), file.path(path, "b.rds"))
+  Sys.sleep(0.1)
+  writeChar(paste0(letters, collapse = ""), file.path(path, "c.rds"))
+
+  cache_prune(path, list(n = Inf, age = Inf, size = 200), debug = TRUE)
+  expect_equal(dir(path), c("a.rds", "b.rds", "c.rds"))
+
+  expect_snapshot({
+    cache_prune(path, list(n = Inf, age = Inf, size = 50), debug = TRUE)
+  })
+  expect_equal(dir(path), "c.rds")
+})
+
 # headers -----------------------------------------------------------------
 
 test_that("correctly determines if response is cacheable", {
