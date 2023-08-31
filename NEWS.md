@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_cookie_preserve()` lets you use a file to share cookies across 
+  requests (#223).
+
 * `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
 
 * `req_cache()` gains `max_n`, `max_size`, and `max_age` arguments to 
