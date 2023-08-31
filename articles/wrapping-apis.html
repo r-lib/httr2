@@ -47,6 +47,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
+    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -127,8 +128,8 @@ basics work:</p>
 <span><span class="co">#&gt;  $ total : int 1</span></span>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Repudiandae est est dolorem."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Numquam odit est libero qui exercitationem labore corporis. Reiciendis et velit ullam et molestias. Asperiores "| __truncated__</span></span>
+<span><span class="co">#&gt;   .. ..$ title      : chr "Sit eos eveniet nesciunt."</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Quia inventore accusantium quidem. Quod delectus eum similique omnis ea ducimus provident. Aspernatur alias non"| __truncated__</span></span>
 <span><span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a>
@@ -168,7 +169,7 @@ info is returned in the headers, so let’s check:</p>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Vary</span>: Accept-Encoding</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">X-Powered-By</span>: PHP/7.3.16</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Cache-Control</span>: no-cache, private</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Thu, 31 Aug 2023 20:38:02 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Thu, 31 Aug 2023 21:09:03 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Origin</span>: *</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Methods</span>: GET</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Credentials</span>: true</span></span>
@@ -241,8 +242,8 @@ to the resource with query parameters. All parameters start with
 <span><span class="co">#&gt;  $ total : int 1</span></span>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Tempore ut magnam suscipit."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Minus eligendi aut culpa et suscipit placeat nam. Quae earum sit minima et doloribus itaque. Id excepturi veritatis vel sint."</span></span>
+<span><span class="co">#&gt;   .. ..$ title      : chr "Explicabo earum ut omnis."</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Doloribus officiis rerum sit. Praesentium optio ea qui aperiam doloremque blanditiis. Repudiandae voluptas inve"| __truncated__</span></span>
 <span><span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -302,24 +303,24 @@ wrapper would start something like this:</p>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 10</span></span>
 <span><span class="co">#&gt;   .. ..$ id       : int 1</span></span>
-<span><span class="co">#&gt;   .. ..$ firstname: chr "Clint"</span></span>
-<span><span class="co">#&gt;   .. ..$ lastname : chr "Waters"</span></span>
-<span><span class="co">#&gt;   .. ..$ email    : chr "danielle.roob@johnston.net"</span></span>
-<span><span class="co">#&gt;   .. ..$ phone    : chr "+3441665677643"</span></span>
-<span><span class="co">#&gt;   .. ..$ birthday : chr "1983-01-08"</span></span>
+<span><span class="co">#&gt;   .. ..$ firstname: chr "Coy"</span></span>
+<span><span class="co">#&gt;   .. ..$ lastname : chr "Kassulke"</span></span>
+<span><span class="co">#&gt;   .. ..$ email    : chr "quentin51@cronin.org"</span></span>
+<span><span class="co">#&gt;   .. ..$ phone    : chr "+2909163555066"</span></span>
+<span><span class="co">#&gt;   .. ..$ birthday : chr "2005-01-01"</span></span>
 <span><span class="co">#&gt;   .. ..$ gender   : chr "male"</span></span>
 <span><span class="co">#&gt;   .. ..$ address  :List of 10</span></span>
 <span><span class="co">#&gt;   .. .. ..$ id            : int 0</span></span>
-<span><span class="co">#&gt;   .. .. ..$ street        : chr "7607 Berenice Hills Apt. 533"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Huels Unions"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "57329"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ city          : chr "New Erin"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "82966"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ country       : chr "Holy See (Vatican City State)"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ county_code   : chr "LT"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ latitude      : num -73.3</span></span>
-<span><span class="co">#&gt;   .. .. ..$ longitude     : num 26.6</span></span>
-<span><span class="co">#&gt;   .. ..$ website  : chr "http://bashirian.biz"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ street        : chr "67843 Cronin Shoals"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Yost Streets"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "666"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ city          : chr "Wolfftown"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "00595"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ country       : chr "Indonesia"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ county_code   : chr "PN"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ latitude      : num 48.3</span></span>
+<span><span class="co">#&gt;   .. .. ..$ longitude     : num 139</span></span>
+<span><span class="co">#&gt;   .. ..$ website  : chr "http://turcotte.info"</span></span>
 <span><span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and
 returning the result as a tibble. I did a quick and dirty conversion
@@ -364,13 +365,13 @@ using purrr; depending on your needs you could use base R code or
 <span><span class="op">}</span></span>
 <span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span></span>
-<span><span class="co">#&gt;   firstname lastname  email                     gender</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Bertha    Schaefer  guido32@wuckert.com       male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tremayne  Hettinger itorphy@yahoo.com         male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Raven     Moore     emmett.harvey@hotmail.com male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Eino      Zemlak    jillian.huels@rolfson.com male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Juston    Reichert  tommie49@buckridge.biz    male</span></span></code></pre></div>
+<span><span class="co">#&gt;   firstname lastname   email                   gender</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Andrew    Russel     pswaniawski@kuhn.net    male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Jo        Macejkovic jasen38@gmail.com       male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Chauncey  Jenkins    melyssa58@streich.com   male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Sherman   Goodwin    stephania08@lebsack.com male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Rex       Botsford   zoila56@hotmail.com     male</span></span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll
 leave that up to you.</p>
 </div>
@@ -407,7 +408,7 @@ secrets using symmetric cryptography:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">key</span></span>
-<span><span class="co">#&gt; [1] "2Id8641PilZVOyrZclXMRw"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "K0gUG8UALWH-ZTQgJPw1GA"</span></span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically
 secure random number generator provided by OpenSSL; it is not affected
 by R’s RNG settings, and there’s no way to make it
@@ -420,7 +421,7 @@ package:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "SOnTYC44tHTQ2nal0i2Pnuz--dj85aLby8kw0-mmJzyVXdcxs9nlhPgUttgzJ9BUBA"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "91-fCUwhjRBGBQ4swM5WSbVUI9-Sh5mNIE2pzeb9drq81acaf-DZx3-RmJ5eXJaIaw"</span></span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the secret using
@@ -453,7 +454,7 @@ natural usage.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "9QgDHttB6vXjtYuPwsp6s38X_cIOslfFXPnf0KyRiKxKAwsmEzMubVvQ6-X07zLXSQ"</span></span>
+<span><span class="co">#&gt; [1] "DpvArpG8ETWRa1wBUqeJ-f7hk50_IxILfk0zOq5wqn1mo54XWaRFsIZcdhCN76ctBQ"</span></span>
 <span><span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "secret I need to work with an API"</span></span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions
@@ -941,172 +942,6 @@ need to adjust the default method from <code>GET</code> to
 <span>  <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"DELETE"</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="oauth">OAuth<a class="anchor" aria-label="anchor" href="#oauth"></a>
-</h2>
-<p>If the API provides access to a website where the user already has an
-account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it’s
-likely to use OAuth to allow you to authorise on behalf of the user.
-OAuth<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Here I’ll only talk about OAuth 2.0 which is the only
-version in common use today. OAuth 1.0 is largely only of historical
-interest.&lt;/p&gt;"><sup>2</sup></a> is
-an authorisation framework that’s designed so that you don’t have to
-share your username and password with an app; instead the app asks for
-permission to use your account. You’ve almost certainly used this before
-on the web; it’s used in most cases where one website wants to use
-another website on your behalf.</p>
-<p>OAuth is a broad framework that has many many many different variants
-which makes it hard to provide generalisable advice. The following
-advice draws on my experience working with a number of OAuth using APIs,
-but don’t be surprised if you need to do something slightly different
-for the API you’re working with.</p>
-<div class="section level3">
-<h3 id="clients">Clients<a class="anchor" aria-label="anchor" href="#clients"></a>
-</h3>
-<p>The first step in working with any OAuth API is to create a client.
-This involves you registering for a developer account on the API’s
-website and creating a new OAuth app. The process varies from API to
-API, but at the end of it you’ll get a client id and in most cases a
-client secret.</p>
-<p>(You’ll definitely need this for testing your package, and you’ll
-probably also baked it into your package for the convenience of your
-users. Bundling the app is user friendly, but not always possible,
-particularly if rate limits are enforced on a per-app rather than
-per-user basis. You should always provide some way for the user to
-provide their own app.)</p>
-<p>If the API provides a way to authenticate your app without the client
-secret, you should leave it out of your package. But in most cases,
-you’ll need to include the secret in the package. You can use
-<code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; this is not bulletproof<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;It uses &lt;code&gt;&lt;a href="../reference/secrets.html"&gt;secret_encrypt()&lt;/a&gt;&lt;/code&gt; with a special
-encryption key that’s bundled with httr2.&lt;/p&gt;'><sup>3</sup></a>, but in
-most cases it’ll be easier to create a new client than try and steal
-yours. Additionally, it’s unusual for an OAuth client to be able to do
-anything in its own right, so even if someone does steal your secret
-there’s not much harm they can do with it.</p>
-<p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span></code></pre></div>
-<p>Then use the client id from the website along with the obfuscated
-secret to create a client. The following code shows a GitHub OAuth app
-that I created specifically for this vignette:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
-<span>  secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,</span>
-<span>  token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
-<span>  name <span class="op">=</span> <span class="st">"hadley-oauth-test"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>You need to figure out the <code>token_url</code> from the <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps" class="external-link">documentation</a>.
-I wish I could give good advice about how to find it 😞.</p>
-<p>Note that if you print the client the secret is automatically
-redacted:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">client</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="flows">Flows<a class="anchor" aria-label="anchor" href="#flows"></a>
-</h3>
-<p>Once you have a client you need to use it with a
-<strong>flow</strong> in order to get a token. OAuth provides a number
-of different “flows”, the most common is the “authorisation code” flow,
-which is implemented by <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. You can try
-it out by running this code:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_flow_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span></span></code></pre></div>
-<p>This flow can’t be used inside a vignette because it’s designed
-specifically for interactive use: it will open a webpage on GitHub that
-requires you to interactively confirm it’s OK for this app to use your
-GitHub account.</p>
-<p>Other flows provide different ways of getting the token:</p>
-<ul>
-<li><p><code><a href="../reference/req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> is used to allow the
-client to perform actions on its own behalf (instead of on behalf of
-some other user). This is typically need if you want to support
-<strong>service accounts</strong>, which are used in non-interactive
-environments.</p></li>
-<li><p><code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> uses the “device” flow which is
-designed for devices like TVs that don’t have an easy way to enter data.
-It also works well from the console.</p></li>
-<li><p><code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> uses a JWT signed by a
-private key.</p></li>
-<li><p><code><a href="../reference/req_oauth_password.html">req_oauth_password()</a></code> exchanges a user name and
-password for an access token.</p></li>
-<li><p><code><a href="../reference/req_oauth_refresh.html">req_oauth_refresh()</a></code> works directly with a refresh
-token that you already have. It’s useful for testing.</p></li>
-</ul>
-<p>There’s one historically important OAuth flow that httr2 doesn’t
-support: the implicit grant flow. This is now <a href="https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead" class="external-link">mostly
-deprecated</a> and was never a particularly good fit for native
-applications because it relies on a technique for returning the access
-token that only works inside a web browser.</p>
-<p>When wrapping an API, you’ll need to carefully read the documentation
-to figure out which flows are available. Typically you’ll want to use
-the auth code flow, but if it’s not available you’ll need to carefully
-consider the others. An additional wrinkle is that many APIs don’t
-implement the flow in exactly the same way as the spec. If your initial
-attempt doesn’t work, you’re going to need to do some sleuthing. This is
-going to be painful, but unfortunately there’s no way around it. I
-recommend using <code><a href="../reference/with_verbosity.html">with_verbosity()</a></code> so you can see exactly
-what httr2 is sending to the server. You’ll then need to carefully
-compare this to the API documentation and play “spot the
-difference”.</p>
-</div>
-<div class="section level3">
-<h3 id="tokens">Tokens<a class="anchor" aria-label="anchor" href="#tokens"></a>
-</h3>
-<p>The point of a flow is to get a token. You can use
-<code><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token()</a></code> to authorise a request with the
-access token stored inside the token object:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token</a></span><span class="op">(</span><span class="va">token</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Hadley Wickham"</span></span></code></pre></div>
-<p>However, in most cases you won’t want to do this, but instead allow
-httr2 to manage the whole process, by switching from
-<code>oauth_flow_{name}</code> to <code>req_oauth_{name}</code>:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This is important because most APIs provide only a short-lived access
-token that needs to be regularly refreshed using a longer-lived refresh
-token. httr2 will automatically refresh the token if it’s expired
-(i.e. its expiry date is in the past) or if the request errors with a
-401 and there’s an <code>invalid_token</code> error in the
-<code>WWW-authenticate</code> header.</p>
-</div>
-<div class="section level3">
-<h3 id="caching">Caching<a class="anchor" aria-label="anchor" href="#caching"></a>
-</h3>
-<p>By default, <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> and friends will cache
-the token in memory, so that multiple requests in the same session all
-use the same token. In some cases, you may want to save the token so
-that it’s automatically used across sessions. This is easy to do (just
-set <code>cache_disk = TRUE</code> in
-<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>) but you need to carefully consider
-the consequences of saving the user’s credentials on disk.</p>
-<p>httr2 does the best it can to save these credentials securely. They
-are stored in a local cache directory
-(<code>rappdirs::user_cache_dir("httr2"))</code> that should only be
-accessible to the current user, and are encrypted so they will be hard
-for any package other than httr2 to read. However, there’s no way to
-prevent other R code from using httr2 to access them, so if you do
-choose to cache tokens, you should inform the user and give them the
-ability to opt-out.</p>
-<p>You can see which clients have cached tokens by looking in the cache
-directory used by httr2:</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu">rappdirs</span><span class="fu">::</span><span class="fu"><a href="https://rappdirs.r-lib.org/reference/user_cache_dir.html" class="external-link">user_cache_dir</a></span><span class="op">(</span><span class="st">"httr2"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>httr2 automatically deletes any cached tokens that are older than 30
-days whenever it’s loaded. This means that you’ll need to re-auth at
-least once a month, but prevents tokens for hanging around on disk long
-after you’ve forgotten you created them.</p>
 </div>
 </div>
 
