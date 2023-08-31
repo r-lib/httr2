@@ -11,7 +11,7 @@
 #' @examples
 #' path <- tempfile()
 #' httpbin <- request(example_url()) %>%
-#'   req_cookie_file(path)
+#'   req_cookie_preserve(path)
 #'
 #' # Manually set two cookies
 #' httpbin %>%
@@ -26,7 +26,7 @@
 #'
 #' # The cookie path has a straightforward format
 #' cat(readChar(path, nchars = 1e4))
-req_cookie_file <- function(req, path) {
+req_cookie_preserve <- function(req, path) {
   check_request(req)
   check_string(path, allow_empty = FALSE)
 

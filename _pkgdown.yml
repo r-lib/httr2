@@ -14,7 +14,7 @@ reference:
   contents:
   - request
   - req_body
-  - req_cookie_file
+  - req_cookie_preserve
   - req_headers
   - req_method
   - req_options

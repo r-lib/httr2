@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* New `req_cookie_file()` lets you use a file to share cookies across 
+* New `req_cookie_preserve()` lets you use a file to share cookies across 
   requests (#223).
 
 * New `resp_url()`, `resp_url_path()`, `resp_url_queries()` and
