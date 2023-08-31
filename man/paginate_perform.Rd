@@ -3,14 +3,11 @@
 \name{paginate_perform}
 \alias{paginate_perform}
 \alias{paginate_next_request}
-\alias{paginate_n_pages}
 \title{Perform a paginated request}
 \usage{
 paginate_perform(req, max_pages = 20L, progress = TRUE)
 
 paginate_next_request(resp, req)
-
-paginate_n_pages(resp, req, max_pages)
 }
 \arguments{
 \item{req}{A \link{request}.}

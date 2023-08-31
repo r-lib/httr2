@@ -7,19 +7,13 @@
 \alias{req_paginate_next_token}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, page_size = NULL, total = NULL)
+req_paginate(req, next_request, n_pages = NULL)
 
-req_paginate_next_url(req, next_url, ..., page_size = NULL, total = NULL)
+req_paginate_next_url(req, next_url, ..., n_pages = NULL)
 
-req_paginate_offset(req, offset, page_size, total = NULL)
+req_paginate_offset(req, offset, page_size, n_pages = NULL)
 
-req_paginate_next_token(
-  req,
-  token_field,
-  next_token_field,
-  page_size = NULL,
-  total = NULL
-)
+req_paginate_next_token(req, set_token, next_token, n_pages = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -31,17 +25,17 @@ original request and the response) and returns:
 \item \code{NULL} if there is no next page.
 }}
 
-\item{page_size}{A parameter object that specifies how the page size is added
-to the request.}
-
-\item{total}{A character that specifies the path where in the body the field
-with the total number of elements is stored.}
-
 \item{next_url}{A character that specifies the path where in the body the field
 with the next url of the next page is stored.}
 
 \item{offset}{A parameter object that specifies how the offset is added to
 the request.}
+
+\item{page_size}{A parameter object that specifies how the page size is added
+to the request.}
+
+\item{total}{A character that specifies the path where in the body the field
+with the total number of elements is stored.}
 
 \item{token_field}{A parameter object that specifies how the next token is
 added to the request.}
