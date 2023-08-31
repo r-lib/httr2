@@ -8,33 +8,35 @@
 #'   * `NULL` if there is no next page.
 #' @param page_size A parameter object that specifies how the page size is added
 #'   to the request.
-#' @param total A character that specifies the path where in the body the field
-#'   with the total number of elements is stored.
-#' @param next_url A character that specifies the path where in the body the field
-#'   with the next url of the next page is stored.
-#' @param offset A parameter object that specifies how the offset is added to
-#'   the request.
-#' @param token_field A parameter object that specifies how the next token is
-#'   added to the request.
-#' @param next_token_field A character that specifies the path where in the body
-#'   the field with the token of the next page is stored.
+#' @param next_url A function that extracts the next url from the [response].
+#' @param offset A function that applies that applies the new offset to the
+#'   request. It takes two arguments: a [request] and an integer offset.
+#' @param set_token A function that applies that applies the new token to the
+#'   request. It takes two arguments: a [request] and the new token.
+#' @param next_token A function that extracts the next token from the [response].
+#' @param n_pages A function that extracts the next token from the [response].
 #'
 #' @return A modified HTTP [request].
 #' @export
 #'
 #' @examples
 #' request("https://pokeapi.co/api/v2/pokemon") %>%
+#'   req_url_query(limit = 150) %>%
 #'   req_paginate_next_url(
-#'     "next",
-#'     page_size = in_query("limit", 150L),
-#'     total = "count"
+#'     next_url = function(resp) resp_body_json(resp)[["next"]],
+#'     n_pages = function(resp) {
+#'       calculate_n_pages(
+#'         page_size = 150,
+#'         total = resp_body_json(resp)$count
+#'       )
+#'     }
 #'   )
 req_paginate <- function(req,
                          next_request,
                          n_pages = NULL) {
   check_request(req)
-  check_function(next_request)
-  check_function(n_pages, allow_null = TRUE)
+  check_function2(next_request, args = c("resp", "req"))
+  check_function2(n_pages, args = "resp", allow_null = TRUE)
 
   req_policies(
     req,
@@ -57,10 +59,15 @@ req_paginate <- function(req,
 #'
 #' @examples
 #' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
+#'   req_url_query(limit = 150) %>%
 #'   req_paginate_next_url(
-#'     "next",
-#'     page_size = in_query("limit", 150L),
-#'     total = "count"
+#'     next_url = function(resp) resp_body_json(resp)[["next"]],
+#'     n_pages = function(resp) {
+#'       calculate_n_pages(
+#'         page_size = 150,
+#'         total = resp_body_json(resp)$count
+#'       )
+#'     }
 #'   )
 #'
 #' responses <- paginate_perform(req_pokemon)
@@ -115,7 +122,7 @@ paginate_next_request <- function(resp, req) {
   check_request(req)
 
   if (!req_policy_exists(req, "paginate")) {
-    cli_abort(c(
+    cli::cli_abort(c(
       "{.arg req} doesn't have a pagination policy",
       i = "You can add pagination via `req_paginate()`."
     ))
@@ -129,9 +136,8 @@ paginate_next_request <- function(resp, req) {
 #' @export
 req_paginate_next_url <- function(req,
                                   next_url,
-                                  ...,
                                   n_pages = NULL) {
-  check_function(next_url)
+  check_function2(next_url, args = "resp")
 
   next_request <- function(req, resp) {
     next_url <- next_url(resp)
@@ -157,7 +163,7 @@ req_paginate_offset <- function(req,
                                 page_size,
                                 n_pages = NULL) {
   check_number_whole(page_size)
-  check_function(offset)
+  check_function2(offset, args = c("req", "offset"))
 
   cur_offset <- 0L
   env <- current_env()
@@ -182,8 +188,8 @@ req_paginate_next_token <- function(req,
                                     set_token,
                                     next_token,
                                     n_pages = NULL) {
-  check_function(set_token)
-  check_function(next_token)
+  check_function2(set_token, args = c("req", "token"))
+  check_function2(next_token, args = "resp")
 
   next_request <- function(req, resp) {
     next_token <- next_token(resp)
@@ -202,25 +208,22 @@ req_paginate_next_token <- function(req,
   )
 }
 
-paginate_n_pages <- function(resp,
-                             page_size,
-                             total) {
-  if (is.numeric(page_size)) {
-    check_number_whole(page_size)
-    n_page_size <- page_size
-    page_size <- function(resp) n_page_size
+#' Calculate the number of pages
+#'
+#' @param page_size An integer.
+#' @param total A function that extracts the total number of elements from the [response].
+#'
+#' @return A function that can be passed to the `n_pages` argument of [req_paginate()].
+#' @export
+#'
+#' @examples
+#' calculate_n_pages(page_size = 100, total = 250)
+calculate_n_pages <- function(page_size, total) {
+  check_number_whole(page_size)
+  check_number_whole(total, allow_null = TRUE)
+  if (is.null(total)) {
+    return(NULL)
   }
-  check_function(page_size)
-  check_function(total)
 
-  function(resp) {
-    page_size <- page_size(resp)
-    total <- total(resp)
-
-    if (is.null(total) || is.null(page_size)) {
-      return(NULL)
-    }
-
-    ceiling(total / page_size)
-  }
+  ceiling(total / page_size)
 }

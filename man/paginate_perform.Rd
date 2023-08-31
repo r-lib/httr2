@@ -26,10 +26,15 @@ Perform a paginated request
 }
 \examples{
 req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
+  req_url_query(limit = 150) \%>\%
   req_paginate_next_url(
-    "next",
-    page_size = in_query("limit", 150L),
-    total = "count"
+    next_url = function(resp) resp_body_json(resp)[["next"]],
+    n_pages = function(resp) {
+      calculate_n_pages(
+        page_size = 150,
+        total = resp_body_json(resp)$count
+      )
+    }
   )
 
 responses <- paginate_perform(req_pokemon)

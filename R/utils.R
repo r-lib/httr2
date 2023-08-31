@@ -168,3 +168,22 @@ local_write_lines <- function(..., .env = caller_env()) {
   writeLines(c(...), path)
   path
 }
+
+check_function2 <- function(x,
+                            ...,
+                            args = NULL,
+                            allow_null = FALSE,
+                            arg = caller_arg(x),
+                            call = caller_env()) {
+  check_function(
+    x = x,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+
+  if (!is.null(x) && !is.null(args)) {
+    x_args <- fn_fmls_names(x)
+    identical(x_args, args)
+  }
+}
