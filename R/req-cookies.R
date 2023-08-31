@@ -6,7 +6,7 @@
 #' request.
 #'
 #' @inheritParams req_perform
-#' @param path A path to file where cookies will be saved.
+#' @param path A path to a file where cookies will be read from before and updated after the request.
 #' @export
 #' @examples
 #' path <- tempfile()
@@ -25,7 +25,7 @@
 #'   resp_body_json()
 #'
 #' # The cookie path has a straightforward format
-#' readLines(path)
+cat(readChar(path, nchars = 1e4))
 req_cookie_file <- function(req, path) {
   check_request(req)
   check_string(path, allow_empty = FALSE)
