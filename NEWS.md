@@ -2,8 +2,8 @@
 
 * `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
   this URL automatically from the `host_name` and `port` (#248). It uses
-  this field to automatically which strategy to use for gathering the auth
-  info, either launching a temporary web server or, new, allowing you to 
+  this field to automatically choose which strategy to use for gathering the auth
+  code, either launching a temporary web server or, new, allowing you to 
   manually enter the details with the help of a custom JS/HTML page hosted
   elsewhere.
   

@@ -133,7 +133,7 @@ req_oauth_auth_code <- function(req, client,
 #'   httr2 supports two forms of redirect. Firstly, you can use a `localhost`
 #'   url (the default), in which case httr2 will set up a temporary webserver
 #'   to listen for the redirect. This works well when you are working on your
-#'   own laptop. In this case, httr2 will automatically append a random port.
+#'   own computer. In this case, httr2 will automatically append a random port.
 #'   If you need to set it to a fixed port because the API requires
 #'   it, then specify it with (e.g.) `"http://localhost:1011"`
 #'
