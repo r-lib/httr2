@@ -28,7 +28,7 @@ jwt_encode_hmac(claim, secret, size = size, header = list())
 the JWT (i.e. the entity that the claims apply to).}
 
 \item{aud}{Audience claim. Identifies the recipients that the JWT is
-intended. Each principle intended to process the JWT must be identifid
+intended. Each principle intended to process the JWT must be identified
 with a unique value.}
 
 \item{exp}{Expiration claim. Identifies the expiration time on or after which

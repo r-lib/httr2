@@ -154,7 +154,7 @@ Performance <- R6Class("Performance", public = list(
   },
 
   fail = function(msg) {
-    self$resp <- error_cnd("httr2_failed", message = msg)
+    self$resp <- error_cnd("httr2_failure", message = msg)
     signal("", class = "httr2:::failed")
   },
 
