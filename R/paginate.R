@@ -91,6 +91,11 @@ paginate_req_perform <- function(req,
   resp <- req_perform(req)
   f_n_pages <- req$policies$paginate$n_pages %||% function(resp) Inf
   n_pages <- min(f_n_pages(resp), max_pages)
+  # the implementation below doesn't really support an infinite amount of pages
+  # but 100e3 should be plenty
+  if (is.infinite(n_pages)) {
+    n_pages <- 100e3
+  }
 
   out <- vector("list", length = n_pages)
   out[[1]] <- resp
