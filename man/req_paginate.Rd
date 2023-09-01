@@ -4,7 +4,7 @@
 \alias{req_paginate}
 \alias{req_paginate_next_url}
 \alias{req_paginate_offset}
-\alias{req_paginate_next_token}
+\alias{req_paginate_token}
 \title{Pagination}
 \usage{
 req_paginate(req, next_request, n_pages = NULL)
@@ -13,7 +13,7 @@ req_paginate_next_url(req, next_url, n_pages = NULL)
 
 req_paginate_offset(req, offset, page_size, n_pages = NULL)
 
-req_paginate_next_token(req, set_token, next_token, n_pages = NULL)
+req_paginate_token(req, set_token, next_token, n_pages = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}

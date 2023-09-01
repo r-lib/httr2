@@ -175,8 +175,8 @@ req_paginate_offset <- function(req,
                                 offset,
                                 page_size,
                                 n_pages = NULL) {
-  check_number_whole(page_size)
   check_function2(offset, args = c("req", "offset"))
+  check_number_whole(page_size)
 
   next_request <- function(req, resp) {
     cur_offset <- req$policies$paginate$offset
@@ -200,10 +200,10 @@ req_paginate_offset <- function(req,
 #' @param next_token A function that extracts the next token from the [response].
 #' @rdname req_paginate
 #' @export
-req_paginate_next_token <- function(req,
-                                    set_token,
-                                    next_token,
-                                    n_pages = NULL) {
+req_paginate_token <- function(req,
+                               set_token,
+                               next_token,
+                               n_pages = NULL) {
   check_function2(set_token, args = c("req", "token"))
   check_function2(next_token, args = "resp")
 
