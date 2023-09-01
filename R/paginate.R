@@ -82,6 +82,8 @@ paginate_req_perform <- function(req,
                                  max_pages = 20L,
                                  progress = TRUE) {
   check_request(req)
+  check_has_pagination_policy(req)
+  check_number_whole(max_pages, allow_infinite = TRUE, min = 1)
   check_bool(progress)
 
   resp <- req_perform(req)
@@ -129,13 +131,7 @@ paginate_req_perform <- function(req,
 paginate_next_request <- function(resp, req) {
   check_response(resp)
   check_request(req)
-
-  if (!req_policy_exists(req, "paginate")) {
-    cli::cli_abort(c(
-      "{.arg req} doesn't have a pagination policy",
-      i = "You can add pagination via `req_paginate()`."
-    ))
-  }
+  check_has_pagination_policy(req)
 
   next_request <- req$policies$paginate$next_request
   next_request(resp = resp, req = req)
@@ -224,4 +220,13 @@ req_paginate_next_token <- function(req,
     next_request,
     n_pages = n_pages
   )
+}
+
+check_has_pagination_policy <- function(req, call = caller_env()) {
+  if (!req_policy_exists(req, "paginate")) {
+    cli::cli_abort(c(
+      "{.arg req} doesn't have a pagination policy.",
+      i = "You can add pagination via `req_paginate()`."
+    ))
+  }
 }
