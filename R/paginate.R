@@ -177,13 +177,9 @@ req_paginate_offset <- function(req,
   check_function2(offset, args = c("req", "offset"))
 
   cur_offset <- 0L
-  env <- current_env()
   next_request <- function(req, resp) {
-    cur_offset <- get("cur_offset", envir = env)
-    new_offset <- cur_offset + page_size
-    assign("cur_offset", new_offset, envir = env)
-
-    offset(req, new_offset)
+    cur_offset <<- cur_offset + page_size
+    offset(req, cur_offset)
   }
 
   req_paginate(
