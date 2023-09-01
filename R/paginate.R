@@ -79,8 +79,8 @@ req_paginate <- function(req,
 #'
 #' responses <- paginate_req_perform(req_pokemon)
 paginate_req_perform <- function(req,
-                             max_pages = 20L,
-                             progress = TRUE) {
+                                 max_pages = 20L,
+                                 progress = TRUE) {
   check_request(req)
   check_bool(progress)
 
@@ -123,6 +123,8 @@ paginate_req_perform <- function(req,
   out
 }
 
+#' @export
+#'
 #' @rdname paginate_req_perform
 paginate_next_request <- function(resp, req) {
   check_response(resp)
