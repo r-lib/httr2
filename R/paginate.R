@@ -176,17 +176,21 @@ req_paginate_offset <- function(req,
   check_number_whole(page_size)
   check_function2(offset, args = c("req", "offset"))
 
-  cur_offset <- 0L
   next_request <- function(req, resp) {
-    cur_offset <<- cur_offset + page_size
+    cur_offset <- req$policies$paginate$offset
+    cur_offset <- cur_offset + page_size
+    req$policies$paginate$offset <- cur_offset
     offset(req, cur_offset)
   }
 
-  req_paginate(
+  out <- req_paginate(
     req,
     next_request,
     n_pages
   )
+
+  out$policies$paginate$offset <- 0L
+  out
 }
 
 #' @param set_token A function that applies the new token to the request. It

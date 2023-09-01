@@ -52,6 +52,8 @@ test_that("can paginate via offset", {
   resp <- req_perform(req1)
   req2 <- req1$policies$paginate$next_request(req1, resp)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
+  # offset stays the same when applied twice
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
 
   resp <- req_perform(req2)
   req3 <- req2$policies$paginate$next_request(req2, resp)
