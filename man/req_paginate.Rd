@@ -64,8 +64,10 @@ If you need more control use a combination of \code{\link[=req_perform]{req_perf
 \code{\link[=paginate_next_request]{paginate_next_request()}} to iterate through the pages yourself.
 }
 \examples{
+page_size <- 150
+
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
-  req_url_query(limit = 150) \%>\%
+  req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
     next_url = function(resp) resp_body_json(resp)[["next"]],
     n_pages = function(resp) {
