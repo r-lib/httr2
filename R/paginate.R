@@ -207,23 +207,3 @@ req_paginate_next_token <- function(req,
     n_pages = n_pages
   )
 }
-
-#' Calculate the number of pages
-#'
-#' @param page_size An integer.
-#' @param total A function that extracts the total number of elements from the [response].
-#'
-#' @return A function that can be passed to the `n_pages` argument of [req_paginate()].
-#' @export
-#'
-#' @examples
-#' calculate_n_pages(page_size = 100, total = 250)
-calculate_n_pages <- function(page_size, total) {
-  check_number_whole(page_size)
-  check_number_whole(total, allow_null = TRUE)
-  if (is.null(total)) {
-    return(NULL)
-  }
-
-  ceiling(total / page_size)
-}
