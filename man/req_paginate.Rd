@@ -25,18 +25,20 @@ original request and the response) and returns:
 \item \code{NULL} if there is no next page.
 }}
 
-\item{n_pages}{A function that extracts the next token from the \link{response}.}
+\item{n_pages}{A function that extracts the total number of pages from
+the \link{response}.}
 
-\item{next_url}{A function that extracts the next url from the \link{response}.}
+\item{next_url}{A function that extracts the url to the next page from the
+\link{response}.}
 
-\item{offset}{A function that applies that applies the new offset to the
-request. It takes two arguments: a \link{request} and an integer offset.}
+\item{offset}{A function that applies the new offset to the request. It takes
+two arguments: a \link{request} and an integer offset.}
 
-\item{page_size}{A parameter object that specifies how the page size is added
-to the request.}
+\item{page_size}{A whole number that specifies the page size i.e. the number
+of elements per page.}
 
-\item{set_token}{A function that applies that applies the new token to the
-request. It takes two arguments: a \link{request} and the new token.}
+\item{set_token}{A function that applies the new token to the request. It
+takes two arguments: a \link{request} and the new token.}
 
 \item{next_token}{A function that extracts the next token from the \link{response}.}
 }
@@ -44,7 +46,22 @@ request. It takes two arguments: a \link{request} and the new token.}
 A modified HTTP \link{request}.
 }
 \description{
-Pagination
+Use \code{req_paginate()} to specify how to request the next page in a paginated
+API. There are also helpers for common pagination patterns:
+}
+\details{
+\itemize{
+\item \code{req_paginate_next_url()} when the response contains a link to the next
+page.
+\item \code{req_paginate_offset()} when the request describes the offset i.e.
+at which element to start and the page size.
+\item \code{req_paginate_next_token()} when the response contains a token
+that is used to describe the next page.
+}
+
+Use \code{\link[=paginate_perform]{paginate_perform()}} to fetch all pages.
+If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
+\code{\link[=paginate_next_request]{paginate_next_request()}} to iterate through the pages yourself.
 }
 \examples{
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
@@ -52,10 +69,12 @@ request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_paginate_next_url(
     next_url = function(resp) resp_body_json(resp)[["next"]],
     n_pages = function(resp) {
-      calculate_n_pages(
-        page_size = 150,
-        total = resp_body_json(resp)$count
-      )
+      total <- resp_body_json(resp)$count
+      ceiling(total / page_size)
     }
   )
+}
+\seealso{
+\code{\link[=paginate_perform]{paginate_perform()}} to fetch all pages. \code{\link[=paginate_next_request]{paginate_next_request()}}
+to generate the request to the next page.
 }

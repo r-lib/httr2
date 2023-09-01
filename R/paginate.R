@@ -1,22 +1,31 @@
 #' Pagination
 #'
+#' Use `req_paginate()` to specify how to request the next page in a paginated
+#' API. There are also helpers for common pagination patterns:
+#'
+#'   * `req_paginate_next_url()` when the response contains a link to the next
+#'     page.
+#'   * `req_paginate_offset()` when the request describes the offset i.e.
+#'     at which element to start and the page size.
+#'   * `req_paginate_next_token()` when the response contains a token
+#'     that is used to describe the next page.
+#'
+#' Use [paginate_perform()] to fetch all pages.
+#' If you need more control use a combination of [req_perform()] and
+#' [paginate_next_request()] to iterate through the pages yourself.
+#'
 #' @inheritParams req_perform
 #' @param next_request A callback function that takes a two arguments (the
 #'   original request and the response) and returns:
 #'
 #'   * a new [request] to request the next page or
 #'   * `NULL` if there is no next page.
-#' @param page_size A parameter object that specifies how the page size is added
-#'   to the request.
-#' @param next_url A function that extracts the next url from the [response].
-#' @param offset A function that applies that applies the new offset to the
-#'   request. It takes two arguments: a [request] and an integer offset.
-#' @param set_token A function that applies that applies the new token to the
-#'   request. It takes two arguments: a [request] and the new token.
-#' @param next_token A function that extracts the next token from the [response].
-#' @param n_pages A function that extracts the next token from the [response].
+#' @param n_pages A function that extracts the total number of pages from
+#'   the [response].
 #'
 #' @return A modified HTTP [request].
+#' @seealso [paginate_perform()] to fetch all pages. [paginate_next_request()]
+#'   to generate the request to the next page.
 #' @export
 #'
 #' @examples
@@ -25,10 +34,8 @@
 #'   req_paginate_next_url(
 #'     next_url = function(resp) resp_body_json(resp)[["next"]],
 #'     n_pages = function(resp) {
-#'       calculate_n_pages(
-#'         page_size = 150,
-#'         total = resp_body_json(resp)$count
-#'       )
+#'       total <- resp_body_json(resp)$count
+#'       ceiling(total / page_size)
 #'     }
 #'   )
 req_paginate <- function(req,
@@ -132,6 +139,8 @@ paginate_next_request <- function(resp, req) {
   next_request(resp = resp, req = req)
 }
 
+#' @param next_url A function that extracts the url to the next page from the
+#'   [response].
 #' @rdname req_paginate
 #' @export
 req_paginate_next_url <- function(req,
@@ -156,6 +165,10 @@ req_paginate_next_url <- function(req,
   )
 }
 
+#' @param offset A function that applies the new offset to the request. It takes
+#'   two arguments: a [request] and an integer offset.
+#' @param page_size A whole number that specifies the page size i.e. the number
+#'   of elements per page.
 #' @rdname req_paginate
 #' @export
 req_paginate_offset <- function(req,
@@ -182,6 +195,9 @@ req_paginate_offset <- function(req,
   )
 }
 
+#' @param set_token A function that applies the new token to the request. It
+#'   takes two arguments: a [request] and the new token.
+#' @param next_token A function that extracts the next token from the [response].
 #' @rdname req_paginate
 #' @export
 req_paginate_next_token <- function(req,
