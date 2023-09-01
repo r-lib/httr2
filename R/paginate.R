@@ -10,7 +10,7 @@
 #'   * `req_paginate_next_token()` when the response contains a token
 #'     that is used to describe the next page.
 #'
-#' Use [paginate_perform()] to fetch all pages.
+#' Use [paginate_req_perform()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
 #' [paginate_next_request()] to iterate through the pages yourself.
 #'
@@ -24,7 +24,7 @@
 #'   the [response].
 #'
 #' @return A modified HTTP [request].
-#' @seealso [paginate_perform()] to fetch all pages. [paginate_next_request()]
+#' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
 #'   to generate the request to the next page.
 #' @export
 #'
@@ -77,8 +77,8 @@ req_paginate <- function(req,
 #'     }
 #'   )
 #'
-#' responses <- paginate_perform(req_pokemon)
-paginate_perform <- function(req,
+#' responses <- paginate_req_perform(req_pokemon)
+paginate_req_perform <- function(req,
                              max_pages = 20L,
                              progress = TRUE) {
   check_request(req)
@@ -123,7 +123,7 @@ paginate_perform <- function(req,
   out
 }
 
-#' @rdname paginate_perform
+#' @rdname paginate_req_perform
 paginate_next_request <- function(resp, req) {
   check_response(resp)
   check_request(req)

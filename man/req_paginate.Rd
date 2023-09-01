@@ -59,7 +59,7 @@ at which element to start and the page size.
 that is used to describe the next page.
 }
 
-Use \code{\link[=paginate_perform]{paginate_perform()}} to fetch all pages.
+Use \code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
 \code{\link[=paginate_next_request]{paginate_next_request()}} to iterate through the pages yourself.
 }
@@ -75,6 +75,6 @@ request("https://pokeapi.co/api/v2/pokemon") \%>\%
   )
 }
 \seealso{
-\code{\link[=paginate_perform]{paginate_perform()}} to fetch all pages. \code{\link[=paginate_next_request]{paginate_next_request()}}
+\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages. \code{\link[=paginate_next_request]{paginate_next_request()}}
 to generate the request to the next page.
 }
