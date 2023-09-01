@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_paginate()` and `paginate_req_perform()` to easily request paginated
+  APIs (@mgirlich, #8).
+
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
   `HTTR2_OAUTH_CACHE` env var.
