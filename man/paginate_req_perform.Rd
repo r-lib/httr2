@@ -25,12 +25,13 @@ A list of responses.
 Perform a paginated request
 }
 \examples{
-page_size <- 150
-
 req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
-  req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
     next_url = function(resp) resp_body_json(resp)[["next"]],
+    page_size = 150,
+    set_page_size = function(req, page_size) {
+      req_url_query(req, limit = page_size)
+    },
     n_pages = function(resp) {
       total <- resp_body_json(resp)$count
       ceiling(total / page_size)
