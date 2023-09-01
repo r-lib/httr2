@@ -64,8 +64,8 @@ An S3 list with class \code{jwt_claim}.
 \description{
 \code{jwt_claim()} is a wrapper around \code{\link[jose:jwt_claim]{jose::jwt_claim()}} that creates a JWT
 claim set with a few extra default values. \code{jwt_encode_sig()} and
-\code{jwt_encode_hmac()} are thin wrappers around \code{\link[jose:jwt_encode_sig]{jose::jwt_encode_sig()}} and
-\code{\link[jose:jwt_encode_hmac]{jose::jwt_encode_hmac()}} that exist primarily to make specification
+\code{jwt_encode_hmac()} are thin wrappers around \code{\link[jose:jwt_encode]{jose::jwt_encode_sig()}} and
+\code{\link[jose:jwt_encode]{jose::jwt_encode_hmac()}} that exist primarily to make specification
 in other functions a little simpler.
 }
 \examples{
