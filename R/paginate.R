@@ -1,18 +1,16 @@
 #' Pagination
 #'
 #' Use `req_paginate()` to specify how to request the next page in a paginated
-#' API. There are also helpers for common pagination patterns:
-#'
+#' API. Use [paginate_req_perform()] to fetch all pages.
+#' If you need more control use a combination of [req_perform()] and
+#' [paginate_next_request()] to iterate through the pages yourself.
+#' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
 #'     page.
 #'   * `req_paginate_offset()` when the request describes the offset i.e.
 #'     at which element to start and the page size.
 #'   * `req_paginate_next_token()` when the response contains a token
 #'     that is used to describe the next page.
-#'
-#' Use [paginate_req_perform()] to fetch all pages.
-#' If you need more control use a combination of [req_perform()] and
-#' [paginate_next_request()] to iterate through the pages yourself.
 #'
 #' @inheritParams req_perform
 #' @param next_request A callback function that takes a two arguments (the
