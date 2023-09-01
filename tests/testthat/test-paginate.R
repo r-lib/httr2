@@ -196,7 +196,7 @@ test_that("paginate_req_perform() iterates through pages", {
   }
   local_mock(next_url_mock)
 
-  req1 <- request("http://example.com") %>%
+  req <- request("http://example.com") %>%
     req_paginate_token(
       set_token = function(req, token) {
         req_body_json(req, list(my_token = u(token)))
