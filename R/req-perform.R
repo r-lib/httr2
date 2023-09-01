@@ -45,6 +45,9 @@
 #'   [response]; otherwise throws an error. Override this behaviour with
 #'   [req_error()].
 #' @export
+#' @seealso [multi_req_perform()] to perform multiple requests in parallel.
+#'   [paginate_req_perform()] to fetch all pages of a requests paginated via
+#'   [req_paginate()].
 #' @examples
 #' request("https://google.com") %>%
 #'   req_perform()

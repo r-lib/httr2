@@ -72,3 +72,8 @@ or by running the OAuth flow.
 request("https://google.com") \%>\%
   req_perform()
 }
+\seealso{
+\code{\link[=multi_req_perform]{multi_req_perform()}} to perform multiple requests in parallel.
+\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages of a requests paginated via
+\code{\link[=req_paginate]{req_paginate()}}.
+}
