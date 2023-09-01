@@ -6,9 +6,29 @@ test_that("req_paginate() checks inputs", {
     req_paginate("a", next_request)
     req_paginate(req, "a")
     req_paginate(req, function(req) req)
+
+    req_paginate(req, next_request, page_size = -1)
+    req_paginate(req, next_request, page_size = 1, set_page_size = "a")
+    req_paginate(req, next_request, page_size = 1, set_page_size = function(req) req)
+    req_paginate(req, next_request, set_page_size = function(req, page_size) req)
+
     req_paginate(req, next_request, n_pages = "a")
     req_paginate(req, next_request, n_pages = function(x) x)
   })
+})
+
+test_that("req_paginate() applies the page size", {
+  req <- request("http://example.com/")
+  next_request <- function(req, resp) req
+
+  out <- req_paginate(
+    req,
+    next_request,
+    page_size = 3,
+    set_page_size = function(req, page_size) req_url_query(req, limit = page_size)
+  )
+
+  expect_equal(out$url, "http://example.com/?limit=3")
 })
 
 test_that("paginate_next_request() produces the request to the next page", {
@@ -95,10 +115,10 @@ test_that("req_paginate_offset() checks inputs", {
 
 test_that("req_paginate_offset() can paginate", {
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
-    req_url_query(limit = 11) %>%
     req_paginate_offset(
       offset = function(req, offset) req_url_query(req, offset = offset),
-      page_size = 11
+      page_size = 11,
+      set_page_size = function(req, page_size) req_url_query(req, limit = page_size)
     )
 
   resp <- req_perform(req1)

@@ -18,8 +18,13 @@
 #'
 #'   * a new [request] to request the next page or
 #'   * `NULL` if there is no next page.
+#' @param page_size A whole number that specifies the page size i.e. the number
+#'   of elements per page.
+#' @param set_page_size A function applies the page size to the request. It must
+#'   have the arguments `req` and `page_size`.
 #' @param n_pages A function that extracts the total number of pages from
-#'   the [response].
+#'   the [response]. If the `page_size` argument is provided, the `page_size`
+#'   variable can be used in this function.
 #'
 #' @return A modified HTTP [request].
 #' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
@@ -27,29 +32,56 @@
 #' @export
 #'
 #' @examples
-#' page_size <- 150
-#'
+#' calculate_n_pages <- function(resp) {
+#'   total <- resp_body_json(resp)$count
+#'   # the page size will be injected from the `page_size` argument of `req_paginate()`
+#'   ceiling(total / page_size)
+#' }
 #' request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
 #'     next_url = function(resp) resp_body_json(resp)[["next"]],
-#'     n_pages = function(resp) {
-#'       total <- resp_body_json(resp)$count
-#'       ceiling(total / page_size)
-#'     }
+#'     page_size = 150,
+#'     set_page_size = function(req, page_size) {
+#'       req_url_query(req, limit = page_size)
+#'     },
+#'     n_pages = calculate_n_pages
 #'   )
 req_paginate <- function(req,
                          next_request,
+                         page_size = NULL,
+                         set_page_size = NULL,
                          n_pages = NULL) {
   check_request(req)
   check_function2(next_request, args = c("req", "resp"))
+  check_number_whole(page_size, allow_null = TRUE, min = 1)
+  check_function2(set_page_size, args = c("req", "page_size"), allow_null = TRUE)
   check_function2(n_pages, args = "resp", allow_null = TRUE)
+
+  # apply page size if possible
+  if (!is.null(set_page_size)) {
+    if (is.null(page_size)) {
+      cli::cli_abort("Must provide a {.arg page_size} together with {.arg set_page_size}.")
+    }
+    req <- set_page_size(req, page_size)
+  }
+
+  # modify environment of `n_pages` so it knows about `page_size`
+  f_n_pages <- n_pages
+  if (!is.null(page_size) && !is.null(f_n_pages)) {
+    data <- list(page_size = page_size)
+    f_env <- fn_env(f_n_pages)
+    fn_env(f_n_pages) <- new_environment(data = data, parent = f_env)
+  }
+
 
   req_policies(
     req,
     paginate = list(
       next_request = next_request,
-      n_pages = n_pages
+      page_size = page_size,
+      set_page_size = set_page_size,
+      n_pages = f_n_pages
     )
   )
 }
@@ -131,7 +163,6 @@ paginate_req_perform <- function(req,
 }
 
 #' @export
-#'
 #' @rdname paginate_req_perform
 paginate_next_request <- function(resp, req) {
   check_response(resp)
@@ -148,6 +179,8 @@ paginate_next_request <- function(resp, req) {
 #' @export
 req_paginate_next_url <- function(req,
                                   next_url,
+                                  page_size = NULL,
+                                  set_page_size = NULL,
                                   n_pages = NULL) {
   check_function2(next_url, args = "resp")
 
@@ -164,22 +197,23 @@ req_paginate_next_url <- function(req,
   req_paginate(
     req,
     next_request,
+    page_size = page_size,
+    set_page_size = set_page_size,
     n_pages = n_pages
   )
 }
 
 #' @param offset A function that applies the new offset to the request. It takes
 #'   two arguments: a [request] and an integer offset.
-#' @param page_size A whole number that specifies the page size i.e. the number
-#'   of elements per page.
 #' @rdname req_paginate
 #' @export
 req_paginate_offset <- function(req,
                                 offset,
                                 page_size,
+                                set_page_size = NULL,
                                 n_pages = NULL) {
   check_function2(offset, args = c("req", "offset"))
-  check_number_whole(page_size)
+  check_number_whole(page_size, min = 1)
 
   next_request <- function(req, resp) {
     cur_offset <- req$policies$paginate$offset
@@ -191,6 +225,8 @@ req_paginate_offset <- function(req,
   out <- req_paginate(
     req,
     next_request,
+    page_size = page_size,
+    set_page_size = set_page_size,
     n_pages
   )
 
@@ -206,6 +242,8 @@ req_paginate_offset <- function(req,
 req_paginate_token <- function(req,
                                set_token,
                                next_token,
+                               page_size = NULL,
+                               set_page_size = NULL,
                                n_pages = NULL) {
   check_function2(set_token, args = c("req", "token"))
   check_function2(next_token, args = "resp")
@@ -223,6 +261,8 @@ req_paginate_token <- function(req,
   req_paginate(
     req,
     next_request,
+    page_size = page_size,
+    set_page_size = set_page_size,
     n_pages = n_pages
   )
 }

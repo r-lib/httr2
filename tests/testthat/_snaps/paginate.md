@@ -16,6 +16,27 @@
       Error in `req_paginate()`:
       ! `next_request` must have the arguments `req` and `resp`, not `req`.
     Code
+      req_paginate(req, next_request, page_size = -1)
+    Condition
+      Error in `req_paginate()`:
+      ! `page_size` must be a whole number larger than or equal to 1 or `NULL`, not the number -1.
+    Code
+      req_paginate(req, next_request, page_size = 1, set_page_size = "a")
+    Condition
+      Error in `req_paginate()`:
+      ! `set_page_size` must be a function or `NULL`, not the string "a".
+    Code
+      req_paginate(req, next_request, page_size = 1, set_page_size = function(req)
+      req)
+    Condition
+      Error in `req_paginate()`:
+      ! `set_page_size` must have the arguments `req` and `page_size`, not `req`.
+    Code
+      req_paginate(req, next_request, set_page_size = function(req, page_size) req)
+    Condition
+      Error in `req_paginate()`:
+      ! Must provide a `page_size` together with `set_page_size`.
+    Code
       req_paginate(req, next_request, n_pages = "a")
     Condition
       Error in `req_paginate()`:

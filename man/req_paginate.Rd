@@ -7,13 +7,38 @@
 \alias{req_paginate_token}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, n_pages = NULL)
+req_paginate(
+  req,
+  next_request,
+  page_size = NULL,
+  set_page_size = NULL,
+  n_pages = NULL
+)
 
-req_paginate_next_url(req, next_url, n_pages = NULL)
+req_paginate_next_url(
+  req,
+  next_url,
+  page_size = NULL,
+  set_page_size = NULL,
+  n_pages = NULL
+)
 
-req_paginate_offset(req, offset, page_size, n_pages = NULL)
+req_paginate_offset(
+  req,
+  offset,
+  page_size,
+  set_page_size = NULL,
+  n_pages = NULL
+)
 
-req_paginate_token(req, set_token, next_token, n_pages = NULL)
+req_paginate_token(
+  req,
+  set_token,
+  next_token,
+  page_size = NULL,
+  set_page_size = NULL,
+  n_pages = NULL
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -25,17 +50,21 @@ original request and the response) and returns:
 \item \code{NULL} if there is no next page.
 }}
 
+\item{page_size}{A whole number that specifies the page size i.e. the number
+of elements per page.}
+
+\item{set_page_size}{A function applies the page size to the request. It must
+have the arguments \code{req} and \code{page_size}.}
+
 \item{n_pages}{A function that extracts the total number of pages from
-the \link{response}.}
+the \link{response}. If the \code{page_size} argument is provided, the \code{page_size}
+variable can be used in this function.}
 
 \item{next_url}{A function that extracts the url to the next page from the
 \link{response}.}
 
 \item{offset}{A function that applies the new offset to the request. It takes
 two arguments: a \link{request} and an integer offset.}
-
-\item{page_size}{A whole number that specifies the page size i.e. the number
-of elements per page.}
 
 \item{set_token}{A function that applies the new token to the request. It
 takes two arguments: a \link{request} and the new token.}
@@ -61,16 +90,20 @@ that is used to describe the next page.
 }
 }
 \examples{
-page_size <- 150
-
+calculate_n_pages <- function(resp) {
+  total <- resp_body_json(resp)$count
+  # the page size will be injected from the `page_size` argument of `req_paginate()`
+  ceiling(total / page_size)
+}
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
     next_url = function(resp) resp_body_json(resp)[["next"]],
-    n_pages = function(resp) {
-      total <- resp_body_json(resp)$count
-      ceiling(total / page_size)
-    }
+    page_size = 150,
+    set_page_size = function(req, page_size) {
+      req_url_query(req, limit = page_size)
+    },
+    n_pages = calculate_n_pages
   )
 }
 \seealso{
