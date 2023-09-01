@@ -85,6 +85,9 @@
     <loc>https://httr2.r-lib.org/reference/obfuscate.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/paginate_req_perform.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
   </url>
   <url>
@@ -137,6 +140,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_options.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_paginate.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_perform.html</loc>
