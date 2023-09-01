@@ -40,15 +40,26 @@
 #'   )
 req_paginate <- function(req,
                          next_request,
+                         body = NULL,
                          n_pages = NULL) {
   check_request(req)
   check_function2(next_request, args = c("req", "resp"))
+  check_function2(body, args = "resp", allow_null = TRUE)
   check_function2(n_pages, args = "resp", allow_null = TRUE)
+
+  if (!is.null(body)) {
+    next_request_user <- next_request
+    next_request <- paginate_register_body(next_request_user)
+
+    n_pages_user <- n_pages
+    n_pages <- paginate_register_body(n_pages_user)
+  }
 
   req_policies(
     req,
     paginate = list(
       next_request = next_request,
+      body = body,
       n_pages = n_pages
     )
   )
@@ -87,7 +98,10 @@ paginate_req_perform <- function(req,
   check_bool(progress)
 
   resp <- req_perform(req)
+  resp <- paginate_parse_body(resp, req)
+
   f_n_pages <- req$policies$paginate$n_pages %||% function(resp) Inf
+
   n_pages <- min(f_n_pages(resp), max_pages)
   # the implementation below doesn't really support an infinite amount of pages
   # but 100e3 should be plenty
@@ -113,6 +127,7 @@ paginate_req_perform <- function(req,
     }
 
     resp <- req_perform(req)
+    resp <- paginate_parse_body(resp, req)
 
     body_parsed <- resp_body_json(resp)
     out[[page]] <- resp
@@ -142,14 +157,42 @@ paginate_next_request <- function(resp, req) {
   next_request(resp = resp, req = req)
 }
 
+paginate_parse_body <- function(resp, req) {
+  f_body <- req$policies$paginate$body
+  if (!is.null(f_body)) {
+    resp$parsed_body <- f_body(resp)
+  }
+
+  resp
+}
+
+paginate_register_body <- function(f) {
+  out <- function(...) {
+    data <- list(body = resp$parsed_body)
+    f_env <- fn_env(f)
+    fn_env(f) <- new_environment(data = data, parent = f_env)
+
+    call <- rlang::call_match()
+    call[[1]] <- f
+    rlang::eval_bare(call)
+  }
+  rlang::fn_fmls(out) <- rlang::fn_fmls(f)
+
+  out
+}
+
 #' @param next_url A function that extracts the url to the next page from the
 #'   [response].
 #' @rdname req_paginate
 #' @export
 req_paginate_next_url <- function(req,
                                   next_url,
+                                  body = NULL,
                                   n_pages = NULL) {
   check_function2(next_url, args = "resp")
+
+  next_url_user <- next_url
+  next_url <- paginate_register_body(next_url_user)
 
   next_request <- function(req, resp) {
     next_url <- next_url(resp)
@@ -164,6 +207,7 @@ req_paginate_next_url <- function(req,
   req_paginate(
     req,
     next_request,
+    body = body,
     n_pages = n_pages
   )
 }
