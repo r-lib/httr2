@@ -97,7 +97,7 @@ test_that("req_paginate_offset() can paginate", {
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
     req_paginate_offset(
-      offset = \(req, offset) req_url_query(req, offset = offset),
+      offset = function(req, offset) req_url_query(req, offset = offset),
       page_size = 11
     )
 
