@@ -35,11 +35,11 @@ oauth_flow_fetch <- function(req) {
 oauth_flow_abort <- function(error,
                              description = NULL,
                              uri = NULL,
-                             erorr_call = caller_env()) {
+                             error_call = caller_env()) {
   cli::cli_abort(
     c(
       "OAuth failure [{error}]",
-      description,
+      "*" = description,
       i = if (!is.null(uri)) "Learn more at {.url uri}."
     ),
     code = error,

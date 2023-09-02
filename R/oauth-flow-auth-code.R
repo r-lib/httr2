@@ -171,7 +171,7 @@ oauth_flow_auth_code <- function(client,
   if (type == "desktop") {
     check_installed("httpuv", "desktop OAuth")
     if (is_hosted_session()) {
-      abort("Only type='web' is supported in the current session")
+      cli::cli_abort("Only type='web' is supported in the current session")
     }
   }
 
