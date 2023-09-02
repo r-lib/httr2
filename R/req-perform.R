@@ -59,6 +59,9 @@
 #'   * If the HTTP request fails (e.g. the connection is dropped or the
 #'     server doesn't exist), an error with class `"httr2_failure"`.
 #' @export
+#' @seealso [multi_req_perform()] to perform multiple requests in parallel.
+#'   [paginate_req_perform()] to fetch all pages of a requests paginated via
+#'   [req_paginate()].
 #' @examples
 #' request("https://google.com") %>%
 #'   req_perform()
@@ -161,6 +164,10 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
     res <- curl::curl_fetch_memory(req$url, handle)
     body <- res$content
   }
+
+  # Ensure cookies are saved to disk now, not when request is finalised
+  curl::handle_setopt(handle, cookielist = "FLUSH")
+  curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
   resp <- new_response(
     method = req_method_get(req),

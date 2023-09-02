@@ -23,6 +23,8 @@ A modified HTTP \link{request}.
 This uses \code{\link[=oauth_flow_client_credentials]{oauth_flow_client_credentials()}} to generate an access token,
 which is then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
 The token is cached in memory.
+
+Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")

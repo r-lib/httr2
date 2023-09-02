@@ -6,6 +6,8 @@
 #' The token is automatically cached (either in memory or on disk) to minimise
 #' the number of times the flow is performed.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code

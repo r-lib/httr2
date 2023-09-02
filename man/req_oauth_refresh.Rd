@@ -41,6 +41,8 @@ variable for future use in automated tests.
 When requesting an access token, the server may also return a new refresh
 token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have to
 update your stored refresh token.
+
+Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")
