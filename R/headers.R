@@ -14,7 +14,7 @@ as_headers <- function(x, error_call = caller_env()) {
     new_headers(x, error_call = error_call)
   } else {
     cli::cli_abort(
-      "`headers` must be a list, character vector, or raw.",
+      "{.arg headers} must be a list, character vector, or raw.",
       call = error_call
     )
   }
