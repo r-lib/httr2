@@ -74,7 +74,7 @@ oauth_flow_bearer_jwt <- function(client,
   } else if (is.function(claim)) {
     claim <- claim()
   } else {
-    cli::cli_abort("{.arg claim} must be result a list or function.")
+    cli::cli_abort("{.arg claim} must be a list or function.")
   }
 
   jwt <- exec(signature, claim = claim, key = client$key, !!!signature_params)
