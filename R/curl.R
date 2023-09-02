@@ -104,7 +104,7 @@ curl_translate_eval <- function(cmd, env = caller_env()) {
 }
 
 curl_normalize <- function(cmd, error_call = caller_env()) {
-  args <- curl_args(cmd)
+  args <- curl_args(cmd, error_call = error_call)
 
   url <- args[["--url"]] %||%
     args[["<url>"]] %||%
@@ -224,7 +224,7 @@ curl_args <- function(cmd, error_call = caller_env()) {
   pieces <- parse_in_half(cmd, " ")
   if (pieces[[1]] != "curl") {
     cli::cli_abort(
-      "Expecting call to curl not {.str {pieces[[1]]}}",
+      "Expecting call to {.str curl} not to {.str {pieces[[1]]}}.",
       call = error_call
     )
   }
