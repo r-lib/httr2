@@ -123,7 +123,7 @@ url_build <- function(url) {
   if (is.null(url$username) && is.null(url$password)) {
     user_pass <- NULL
   } else if (is.null(url$username) && !is.null(url$password)) {
-    cli::cli_abort("Cannot set url password without username.")
+    cli::cli_abort("Cannot set url {.arg password} without {.arg username}.")
   } else if (!is.null(url$username) && is.null(url$password)) {
     user_pass <- paste0(url$username, "@")
   } else {
@@ -168,7 +168,7 @@ query_parse <- function(x) {
 
 query_build <- function(x, error_call = caller_env()) {
   if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
-    cli::cli_abort("Query must be a named list", call = error_call)
+    cli::cli_abort("Query must be a named list.", call = error_call)
   }
 
   x <- compact(x)
@@ -181,7 +181,7 @@ query_build <- function(x, error_call = caller_env()) {
     cli::cli_abort(
       c(
         "Query parameters must be length 1 atomic vectors.",
-        "*" = "Problems: {names(x)[bad_val]}."
+        "*" = "Problems: {.str {names(x)[bad_val]}}."
       ),
       call = error_call
     )

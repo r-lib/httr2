@@ -44,6 +44,13 @@ test_that("ensures path always starts with /", {
   )
 })
 
+test_that("password also requires username", {
+  url <- url_parse("http://username:pwd@example.com")
+  url$username <- NULL
+  expect_snapshot(url_build(url), error = TRUE)
+
+})
+
 # query -------------------------------------------------------------------
 
 test_that("missing query values become empty strings", {
@@ -63,4 +70,11 @@ test_that("doubles never use scientific notation", {
 
 test_that("can opt out of escaping", {
   expect_equal(query_build(list(x = I(","))), "x=,")
+})
+
+test_that("validates inputs", {
+  expect_snapshot(error = TRUE, {
+    query_build(1:3)
+    query_build(list(x = 1:2, y = 1:3))
+  })
 })
