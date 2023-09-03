@@ -1,9 +1,14 @@
 #' Create a new HTTP response
 #'
+#' @description
 #' Generally, you should not need to call this function directly; you'll
 #' get a real HTTP response by calling [req_perform()] and friends. This
 #' function is provided primarily for testing, and a place to describe
 #' the key components of a response.
+#'
+#' `response()` creates a generic response; `response_json()` creates a
+#' response with a JSON body, automatically adding the correct Content-Type
+#' header.
 #'
 #' @keywords internal
 #' @param status_code HTTP status code. Must be a single integer.
@@ -13,6 +18,7 @@
 #' @param headers HTTP headers. Can be supplied as a raw or character vector
 #'   which will be parsed using the standard rules, or a named list.
 #' @param body Response, if any, contained in the response body.
+#'   For `response_json()`, a R data structure to serialize to JSON.
 #' @returns An HTTP response: an S3 list with class `httr2_response`.
 #' @export
 #' @examples
@@ -25,7 +31,33 @@ response <- function(status_code = 200,
                      headers = list(),
                      body = raw()) {
 
+  check_number_whole(status_code, min = 100, max = 700)
+  check_string(url)
+  check_string(method)
+
   headers <- as_headers(headers)
+
+  new_response(
+    method = method,
+    url = url,
+    status_code = as.integer(status_code),
+    headers = headers,
+    body = body
+  )
+}
+
+#' @export
+#' @rdname response
+response_json <- function(status_code = 200,
+                     url = "https://example.com",
+                     method = "GET",
+                     headers = list(),
+                     body = list()) {
+
+  headers <- as_headers(headers)
+  headers$`Content-Type` <- "application/json"
+
+  body <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
 
   new_response(
     method = method,
