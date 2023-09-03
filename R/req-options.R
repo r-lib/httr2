@@ -76,10 +76,10 @@ req_user_agent <- function(req, string = NULL) {
 req_timeout <- function(req, seconds) {
   check_request(req)
   check_number_decimal(seconds)
-
   if (seconds < 0.001) {
-    cli::cli_abort("{.arg timeout} must be >1 ms.")
+    cli::cli_abort("{.arg seconds} must be >1 ms.")
   }
+
   req_options(req, timeout_ms = seconds * 1000)
 }
 
