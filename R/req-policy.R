@@ -28,7 +28,7 @@ as_callback <- function(x, n, name, error_call = caller_env()) {
   x <- as_function(x)
   if (!inherits(x, "rlang_lambda_function") && length(formals(x)) != n) {
     cli::cli_abort(
-      "Callback {name}() must have {n} argument{?s}",
+      "Callback {.fn name} must have {n} argument{?s}",
       call = error_call
     )
   }
