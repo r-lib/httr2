@@ -67,7 +67,7 @@ req_body_raw <- function(req, body, type = NULL) {
 req_body_file <- function(req, path, type = NULL) {
   check_request(req)
   if (!file.exists(path)) {
-    cli::cli_abort("{.arg path} does not exist.")
+    cli::cli_abort("{.arg path} ({.path {path}}) does not exist.")
   }
 
   # Need to override default content-type "application/x-www-form-urlencoded"
