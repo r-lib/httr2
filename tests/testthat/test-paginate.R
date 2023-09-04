@@ -66,7 +66,7 @@ test_that("req_paginate_next_url() can paginate", {
       headers = list(`content-type` = "application/json; charset=utf-8")
     )
   }
-  local_mock(next_url_mock)
+  local_mocked_responses(next_url_mock)
 
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
@@ -135,7 +135,7 @@ test_that("req_paginate_token() can paginate", {
       headers = list(`content-type` = "application/json; charset=utf-8")
     )
   }
-  local_mock(next_url_mock)
+  local_mocked_responses(next_url_mock)
 
   req1 <- request("http://example.com") %>%
     req_paginate_token(
@@ -194,7 +194,7 @@ test_that("paginate_req_perform() iterates through pages", {
       )
     )
   }
-  local_mock(next_url_mock)
+  local_mocked_responses(next_url_mock)
 
   req <- request("http://example.com") %>%
     req_paginate_token(

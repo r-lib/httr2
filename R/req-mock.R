@@ -23,12 +23,28 @@
 #'   response(status_code = 403)
 #' }
 #' try(with_mock(my_mock, google()))
-with_mock <- function(mock, code) {
+with_mocked_responses <- function(mock, code) {
   withr::with_options(list(httr2_mock = mock), code)
 }
 
 #' @export
-#' @rdname with_mock
-local_mock <- function(mock, env = caller_env()) {
+#' @rdname with_mocked_responses
+#' @usage NULL
+with_mock <- function(mock, code) {
+  lifecycle::deprecate_warn("0.3.0", "with_mock()", "with_mocked_responses()")
+  with_mocked_responses(mock, code)
+}
+
+#' @export
+#' @rdname with_mocked_responses
+local_mocked_responses <- function(mock, env = caller_env()) {
   withr::local_options(httr2_mock = mock, .local_envir = env)
+}
+
+#' @export
+#' @rdname with_mocked_responses
+#' @usage NULL
+local_mock <- function(mock, env = caller_env()) {
+  lifecycle::deprecate_warn("0.3.0", "local_mock()", "local_mocked_responses()")
+  local_mocked_responses(mock, env)
 }
