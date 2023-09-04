@@ -32,3 +32,24 @@
       Warning:
       The `host_ip` argument of `oauth_flow_auth_code()` is deprecated as of httr2 0.3.0.
 
+# forwards oauth error
+
+    Code
+      oauth_flow_auth_code_parse(query1, "abc")
+    Condition
+      Error in `oauth_flow_auth_code_parse()`:
+      ! OAuth failure [123]
+      * A bad error
+    Code
+      oauth_flow_auth_code_parse(query2, "abc")
+    Condition
+      Error in `oauth_flow_auth_code_parse()`:
+      ! OAuth failure [123]
+      * A bad error
+      i Learn more at <uri>.
+    Code
+      oauth_flow_auth_code_parse(query3, "abc")
+    Condition
+      Error in `oauth_flow_auth_code_parse()`:
+      ! Authentication failure: state does not match.
+

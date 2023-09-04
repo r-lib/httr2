@@ -97,7 +97,7 @@ cache_mem <- function(client, key) {
   )
 }
 cache_disk <- function(client, key) {
-  app_path <- file.path(rappdirs::user_cache_dir("httr2"), client$name)
+  app_path <- file.path(oauth_cache_path(), client$name)
   dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
   path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
@@ -109,10 +109,26 @@ cache_disk <- function(client, key) {
 }
 
 # Update req_oauth_auth_code() docs if change default from 30
-cache_disk_prune <- function(days = 30, path = rappdirs::user_cache_dir("httr2")) {
+cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
   files <- dir(path, recursive = TRUE, full.names = TRUE, pattern = "-token\\.rds$")
   mtime <- file.mtime(files)
 
   old <- mtime < (Sys.time() - days * 86400)
   unlink(files[old])
+}
+
+#' httr2 OAuth cache location
+#'
+#' When opted-in to, httr2 caches OAuth tokens in this directory. By default,
+#' it uses a OS-standard cache directory, but, if needed, you can override the
+#' location by setting the `HTTR2_OAUTH_CACHE` env var.
+#'
+#' @export
+oauth_cache_path <- function() {
+  path <- Sys.getenv("HTTR2_OAUTH_CACHE")
+  if (path != "") {
+    return(path)
+  }
+
+  rappdirs::user_cache_dir("httr2")
 }

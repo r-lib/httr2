@@ -145,7 +145,7 @@ test_that("handles responses with files", {
   cache_set(req, resp)
 
   # File should be copied in cache directory, and response body updated
-  body_path <- cache_path(req, ".body")
+  body_path <- req_cache_path(req, ".body")
   expect_equal(readLines(body_path), "Hi there")
   expect_equal(cache_get(req)$body, new_path(body_path))
 

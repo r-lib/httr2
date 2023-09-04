@@ -10,7 +10,17 @@
 * `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
   of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
   that changing this is ever useful.
-  
+
+* New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
+  tokens. Additionally, you can now change the cache location by setting the
+  `HTTR2_OAUTH_CACHE` env var.
+
+* New `vignette("oauth")` makes the details of OAuth usage easier to find 
+  (#234).
+
+* New `req_cookie_preserve()` lets you use a file to share cookies across 
+  requests (#223).
+
 * `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
 
 * `req_cache()` gains `max_n`, `max_size`, and `max_age` arguments to 

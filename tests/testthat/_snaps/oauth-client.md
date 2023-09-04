@@ -1,16 +1,44 @@
 # can check app has needed pieces
 
     Code
+      oauth_flow_check("test", NULL)
+    Condition
+      Error:
+      ! `client` must be an OAuth client created with `oauth_client()`.
+    Code
       oauth_flow_check("test", client, is_confidential = TRUE)
     Condition
-      Error in `oauth_flow_check()`:
-      ! Can't use this `app` with OAuth 2.0 test flow
-      * `app` must have a confidential client (i.e. `client_secret` is required)
+      Error:
+      ! Can't use this `app` with OAuth 2.0 test flow.
+      i `app` must have a confidential client (i.e. `client_secret` is required).
     Code
       oauth_flow_check("test", client, interactive = TRUE)
     Condition
-      Error in `oauth_flow_check()`:
+      Error:
       ! OAuth 2.0 test flow requires an interactive session
+
+# checks auth types have needed args
+
+    Code
+      oauth_client("abc", "http://x.com", auth = "header")
+    Condition
+      Error in `oauth_client()`:
+      ! `auth = 'header'` requires a `secret`.
+    Code
+      oauth_client("abc", "http://x.com", auth = "jwt_sig")
+    Condition
+      Error in `oauth_client()`:
+      ! `auth = 'jwt_sig'` requires a `key`.
+    Code
+      oauth_client("abc", "http://x.com", key = "abc", auth = "jwt_sig")
+    Condition
+      Error in `oauth_client()`:
+      ! `auth = 'jwt_sig'` requires a claim specification in `auth_params`.
+    Code
+      oauth_client("abc", "http://x.com", auth = 123)
+    Condition
+      Error in `oauth_client()`:
+      ! `auth` must be a string or function.
 
 # client has useful print method
 

@@ -2,6 +2,7 @@
 % Please edit documentation in R/resp.R
 \name{response}
 \alias{response}
+\alias{response_json}
 \title{Create a new HTTP response}
 \usage{
 response(
@@ -10,6 +11,14 @@ response(
   method = "GET",
   headers = list(),
   body = raw()
+)
+
+response_json(
+  status_code = 200,
+  url = "https://example.com",
+  method = "GET",
+  headers = list(),
+  body = list()
 )
 }
 \arguments{
@@ -23,7 +32,8 @@ the request if there were any redirects.}
 \item{headers}{HTTP headers. Can be supplied as a raw or character vector
 which will be parsed using the standard rules, or a named list.}
 
-\item{body}{Response, if any, contained in the response body.}
+\item{body}{Response, if any, contained in the response body.
+For \code{response_json()}, a R data structure to serialize to JSON.}
 }
 \value{
 An HTTP response: an S3 list with class \code{httr2_response}.
@@ -33,6 +43,10 @@ Generally, you should not need to call this function directly; you'll
 get a real HTTP response by calling \code{\link[=req_perform]{req_perform()}} and friends. This
 function is provided primarily for testing, and a place to describe
 the key components of a response.
+
+\code{response()} creates a generic response; \code{response_json()} creates a
+response with a JSON body, automatically adding the correct Content-Type
+header.
 }
 \examples{
 response()

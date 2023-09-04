@@ -34,7 +34,7 @@ resp_body_raw <- function(resp) {
   check_response(resp)
 
   if (!resp_has_body(resp)) {
-    abort("Can not retrieve empty body")
+    cli::cli_abort("Can't retrieve empty body.")
   } else if (is_path(resp$body)) {
     readBin(resp$body, "raw", file.size(resp$body))
   } else {
@@ -143,11 +143,11 @@ check_content_type <- function(
     type <- paste0("'", types, "'")
   }
 
-  abort(c(
-    glue("Unexpected content type '{content_type}'"),
-    glue("Expecting {type}"),
-    if (!is.null(suffix)) glue("Or suffix '{suffix}'"),
-    i = "Override check with `check_type = FALSE`"
+  cli::cli_abort(c(
+    "Unexpected content type {.str {content_type}}.",
+    "Expecting {.str {type}}",
+    if (!is.null(suffix)) "Or suffix {.str {suffix}}.",
+    i = "Override check with {.code check_type = FALSE}."
   ))
 }
 

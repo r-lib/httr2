@@ -14,6 +14,7 @@ reference:
   contents:
   - request
   - req_body
+  - req_cookie_preserve
   - req_headers
   - req_method
   - req_options
@@ -42,6 +43,7 @@ reference:
   - req_perform
   - req_stream
   - multi_req_perform
+  - paginate_req_perform
 
 - subtitle: Control the process
   desc: >
@@ -52,6 +54,11 @@ reference:
   - req_error
   - req_throttle
   - req_retry
+
+- title: Pagination
+  contents:
+  - req_paginate
+  - paginate_next_request
 
 - title: Handle the response
   contents:
@@ -70,3 +77,10 @@ reference:
   contents:
   - starts_with("oauth_")
   - starts_with("jwt_")
+
+articles:
+- title: Using httr2
+  navbar: ~
+  contents:
+  - articles/wrapping-apis
+  - articles/oauth

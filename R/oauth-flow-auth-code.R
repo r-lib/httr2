@@ -6,6 +6,8 @@
 #' The token is automatically cached (either in memory or on disk) to minimise
 #' the number of times the flow is performed.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' # Security considerations
 #'
 #' The authorization code flow is used for both web applications and native
@@ -29,8 +31,9 @@
 #' @inheritParams req_perform
 #' @param cache_disk Should the access token be cached on disk? This reduces
 #'   the number of times that you need to re-authenticate at the cost of
-#'   storing access credentials on disk. Cached tokens are encrypted and
-#'   automatically deleted 30 days after creation.
+#'   storing access credentials on disk. Cached tokens are encrypted,
+#'   automatically deleted 30 days after creation, and stored in
+#'   [oauth_cache_path()].
 #' @param cache_key If you want to cache multiple tokens per app, use this
 #'   key to disambiguate them.
 #' @returns A modified HTTP [request].
@@ -345,7 +348,7 @@ oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410, path
   httpuv::service() # send data back to client
 
   if (is.null(info)) {
-    abort("Authentication failed; invalid url from server.")
+    cli::cli_abort("Authentication failed; invalid url from server.")
   }
 
   info
@@ -373,7 +376,7 @@ oauth_flow_auth_code_parse <- function(query, state) {
   }
 
   if (query$state != state) {
-    abort("Authentication failure: state does not match")
+    cli::cli_abort("Authentication failure: state does not match.")
   }
 
   query$code
