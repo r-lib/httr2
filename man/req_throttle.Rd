@@ -26,7 +26,7 @@ exceed a specified rate.
 }
 \examples{
 # Ensure we never send more than 30 requests a minute
-req <- request("https://example.com") \%>\%
+req <- request(example_url()) \%>\%
   req_throttle(rate = 30 / 60)
 
 resp <- req_perform(req)
