@@ -13,13 +13,18 @@
 #'     that is used to describe the next page.
 #'
 #' @inheritParams req_perform
-#' @param next_request A callback function that takes a two arguments (the
-#'   original request and the response) and returns:
+#' @param next_request A callback function that returns a [request] to the next
+#'   page or `NULL` if there is no next page. It takes a three arguments:
 #'
-#'   * a new [request] to request the next page or
-#'   * `NULL` if there is no next page.
-#' @param n_pages A function that extracts the total number of pages from
-#'   the [response].
+#'   1. `req`: the original request
+#'   2. `resp`: the response of the current request
+#'   3. `body`: the result of the argument `body` below.
+#' @param body A function with one argument `resp` that parses the body of the
+#'   response. This is passed to the argument `body` of `next_request()` and
+#'   `n_pages()`. This helps to avoid parsing the response multiple times.
+#' @param n_pages A function that extracts the total number of pages. It has two
+#'   arguments: `resp` (the response) and `body` (the result of the argument
+#'   `body` above).
 #'
 #' @return A modified HTTP [request].
 #' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
@@ -162,7 +167,7 @@ paginate_parse_body <- function(resp, req) {
 }
 
 #' @param next_url A function that extracts the url to the next page from the
-#'   [response].
+#'   [response] and the `body`.
 #' @rdname req_paginate
 #' @export
 req_paginate_next_url <- function(req,

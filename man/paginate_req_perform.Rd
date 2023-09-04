@@ -7,7 +7,7 @@
 \usage{
 paginate_req_perform(req, max_pages = 20L, progress = TRUE)
 
-paginate_next_request(resp, req)
+paginate_next_request(resp, req, body = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}

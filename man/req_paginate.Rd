@@ -7,9 +7,9 @@
 \alias{req_paginate_token}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, n_pages = NULL)
+req_paginate(req, next_request, body = NULL, n_pages = NULL)
 
-req_paginate_next_url(req, next_url, n_pages = NULL)
+req_paginate_next_url(req, next_url, body = NULL, n_pages = NULL)
 
 req_paginate_offset(req, offset, page_size, n_pages = NULL)
 
@@ -18,18 +18,24 @@ req_paginate_token(req, set_token, next_token, n_pages = NULL)
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{next_request}{A callback function that takes a two arguments (the
-original request and the response) and returns:
-\itemize{
-\item a new \link{request} to request the next page or
-\item \code{NULL} if there is no next page.
+\item{next_request}{A callback function that returns a \link{request} to the next
+page or \code{NULL} if there is no next page. It takes a three arguments:
+\enumerate{
+\item \code{req}: the original request
+\item \code{resp}: the response of the current request
+\item \code{body}: the result of the argument \code{body} below.
 }}
 
-\item{n_pages}{A function that extracts the total number of pages from
-the \link{response}.}
+\item{body}{A function with one argument \code{resp} that parses the body of the
+response. This is passed to the argument \code{body} of \code{next_request()} and
+\code{n_pages()}. This helps to avoid parsing the response multiple times.}
+
+\item{n_pages}{A function that extracts the total number of pages. It has two
+arguments: \code{resp} (the response) and \code{body} (the result of the argument
+\code{body} above).}
 
 \item{next_url}{A function that extracts the url to the next page from the
-\link{response}.}
+\link{response} and the \code{body}.}
 
 \item{offset}{A function that applies the new offset to the request. It takes
 two arguments: a \link{request} and an integer offset.}
