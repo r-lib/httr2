@@ -64,7 +64,7 @@ works well when you are working on your own computer.
 
 Alternatively, you can provide a URL to a website that uses javascript to
 give the user a code to copy and paste back into the R session (see
-\url{https://www.tidyverse.org/google-callback/} for an example). This is
+\url{https://www.tidyverse.org/google-callback/}, for an example). This is
 less convenient (because it requires more user interaction) but also works
 in hosted environments.}
 
