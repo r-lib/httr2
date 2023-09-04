@@ -17,6 +17,8 @@ paginate_next_request(resp, req, body = NULL)
 \item{progress}{Display a progress bar?}
 
 \item{resp}{An HTTP \link{response}.}
+
+\item{body}{The body parsed by the argument \code{body} of \code{req_paginate()}.}
 }
 \value{
 A list of responses.
@@ -30,9 +32,10 @@ page_size <- 150
 req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
-    next_url = function(resp) resp_body_json(resp)[["next"]],
-    n_pages = function(resp) {
-      total <- resp_body_json(resp)$count
+    next_url = function(resp, body) body[["next"]],
+    body = \(resp) resp_body_json(resp),
+    n_pages = function(resp, body) {
+      total <- body$count
       ceiling(total / page_size)
     }
   )
