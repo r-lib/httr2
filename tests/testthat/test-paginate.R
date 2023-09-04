@@ -43,27 +43,16 @@ test_that("req_paginate_next_url() checks inputs", {
 })
 
 test_that("req_paginate_next_url() can paginate", {
-  link1 <- "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11"
-  link2 <- "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11"
-
-  next_url_mock <- function(req) {
-    if (req$url == "https://pokeapi.co/api/v2/pokemon?limit=11") {
-      link <- link1
-    } else {
-      link <- link2
-    }
+  local_mocked_responses(mocked_response_sequence(
     response_json(
       url = "https://pokeapi.co/api/v2/pokemon?limit=11",
-      status_code = 200L,
-      body = list(
-        count = 1281,
-        `next` = link,
-        previous = NULL,
-        results = list(name = "bublasaur", url = "https://pokeapi.co/api/v2/pokemon/1/")
-      ),
+      body = list('next' = "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
+    ),
+    response_json(
+      url = "https://pokeapi.co/api/v2/pokemon?limit=11",
+      body = list('next' = "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
     )
-  }
-  local_mocked_responses(next_url_mock)
+  ))
 
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
@@ -73,11 +62,11 @@ test_that("req_paginate_next_url() can paginate", {
 
   resp <- req_perform(req1)
   req2 <- paginate_next_request(resp, req1)
-  expect_equal(req2$url, link1)
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
 
   resp <- req_perform(req2)
   req3 <- paginate_next_request(resp, req2)
-  expect_equal(req3$url, link2)
+  expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
 })
 
 test_that("req_paginate_offset() checks inputs", {
@@ -121,14 +110,10 @@ test_that("req_paginate_token() checks inputs", {
 })
 
 test_that("req_paginate_token() can paginate", {
-  next_url_mock <- function(req) {
-    cur_token <- req$body$data$my_token %||% 1L
-    response_json(
-      url = req$url,
-      body = list(x = 1, my_next_token = cur_token + 1L)
-    )
-  }
-  local_mocked_responses(next_url_mock)
+  local_mocked_responses(mocked_response_sequence(
+    response_json(body = list(x = 1, my_next_token = 2)),
+    response_json(body = list(x = 1, my_next_token = 3)),
+  ))
 
   req1 <- request("http://example.com") %>%
     req_paginate_token(
