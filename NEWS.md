@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* `response()` adds a Date field with value `"Wed, 01 Jan 2020 00:00:00 UTC"`
+  rather than the current time. This makes the return value more stable 
+  generally making it easier to use in tests.
+
 * `local_mock()` and `with_mock()` have been deprecated in favour of
   `local_mocked_responses()` and `with_mocked_responses()` (#301).
   `local_mocked_responses()` and `with_mocked_responses()` now accept a
