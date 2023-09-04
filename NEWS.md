@@ -2,6 +2,8 @@
 
 * `local_mock()` and `with_mock()` have been deprecated in favour of
   `local_mocked_responses()` and `with_mocked_responses()` (#301).
+  `local_mocked_responses()` and `with_mocked_responses()` now accept a
+  list of responses which will be returned in sequence.
 
 * `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
   this URL automatically from the `host_name` and `port` (#248). It uses

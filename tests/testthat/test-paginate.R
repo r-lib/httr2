@@ -43,7 +43,7 @@ test_that("req_paginate_next_url() checks inputs", {
 })
 
 test_that("req_paginate_next_url() can paginate", {
-  local_mocked_responses(mocked_response_sequence(
+  local_mocked_responses(list(
     response_json(
       url = "https://pokeapi.co/api/v2/pokemon?limit=11",
       body = list('next' = "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
@@ -110,9 +110,9 @@ test_that("req_paginate_token() checks inputs", {
 })
 
 test_that("req_paginate_token() can paginate", {
-  local_mocked_responses(mocked_response_sequence(
+  local_mocked_responses(list(
     response_json(body = list(x = 1, my_next_token = 2)),
-    response_json(body = list(x = 1, my_next_token = 3)),
+    response_json(body = list(x = 1, my_next_token = 3))
   ))
 
   req1 <- request("http://example.com") %>%

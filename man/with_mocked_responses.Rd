@@ -12,9 +12,15 @@ with_mocked_responses(mock, code)
 local_mocked_responses(mock, env = caller_env())
 }
 \arguments{
-\item{mock}{A single argument function called with a request object.
-It should return either \code{NULL} (if it doesn't want to handle the request)
-or a \link{response} (if it does).}
+\item{mock}{A function, a list, or \code{NULL}.
+\itemize{
+\item \code{NULL} disables mocking and returns httr2 to regular operation.
+\item A list of responses will be returned in sequence. After all responses
+have been used up, will return 503 server errors.
+\item For maximum flexibility, you can supply a function that that takes a
+single argument, \code{req}, and returns either \code{NULL} (if it doesn't want to
+handle the request) or a \link{response} (if it does).
+}}
 
 \item{code}{Code to execute in the temporary environment.}
 

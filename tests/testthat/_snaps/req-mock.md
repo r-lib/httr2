@@ -13,3 +13,16 @@
       `with_mock()` was deprecated in httr2 0.3.0.
       i Please use `with_mocked_responses()` instead.
 
+# validates inputs
+
+    Code
+      local_mocked_responses(function(foo) { })
+    Condition
+      Error in `local_mocked_responses()`:
+      ! `mock` must have the argument `req`, not `foo`.
+    Code
+      local_mocked_responses(10)
+    Condition
+      Error in `local_mocked_responses()`:
+      ! `mock` must be a function or list, not a number.
+

@@ -4,7 +4,7 @@ test_that("can override requests through mocking", {
 
   expect_equal(with_mocked_responses(~ resp, req_perform(req)), resp)
 
-  local_mocked_responses(~ resp)
+  local_mocked_responses(function(req) resp)
   expect_equal(req_perform(req), resp)
 })
 
@@ -23,7 +23,7 @@ test_that("local_mock and with_mock are deprecated", {
 })
 
 test_that("mocked_response_sequence returns responses then errors", {
-  local_mocked_responses(mocked_response_sequence(
+  local_mocked_responses(list(
     response(200),
     response(201)
   ))
@@ -32,4 +32,11 @@ test_that("mocked_response_sequence returns responses then errors", {
   expect_equal(req_perform(req), response(200))
   expect_equal(req_perform(req), response(201))
   expect_error(req_perform(req), class = "httr2_http_503")
+})
+
+test_that("validates inputs", {
+  expect_snapshot(error = TRUE, {
+    local_mocked_responses(function(foo) {})
+    local_mocked_responses(10)
+  })
 })
