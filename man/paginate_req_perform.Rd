@@ -33,7 +33,7 @@ req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
     next_url = function(resp, body) body[["next"]],
-    body = \(resp) resp_body_json(resp),
+    body = function(resp) resp_body_json(resp),
     n_pages = function(resp, body) {
       total <- body$count
       ceiling(total / page_size)
