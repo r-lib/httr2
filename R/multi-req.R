@@ -59,7 +59,7 @@
 multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   if (!is.null(paths)) {
     if (length(reqs) != length(paths)) {
-      abort("If supplied, `paths` must be the same length as `req`")
+      cli::cli_abort("If supplied, {.arg paths} must be the same length as {.arg req}.")
     }
   }
 

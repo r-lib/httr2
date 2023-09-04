@@ -171,7 +171,7 @@ oauth_flow_auth_code <- function(client,
   if (type == "desktop") {
     check_installed("httpuv", "desktop OAuth")
     if (is_hosted_session()) {
-      abort("Only type='web' is supported in the current session")
+      cli::cli_abort("Only type='web' is supported in the current session")
     }
   }
 
@@ -299,7 +299,7 @@ oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410) {
   httpuv::service() # send data back to client
 
   if (is.null(info)) {
-    abort("Authentication failed; invalid url from server.")
+    cli::cli_abort("Authentication failed; invalid url from server.")
   }
 
   info
@@ -327,7 +327,7 @@ oauth_flow_auth_code_parse <- function(query, state) {
   }
 
   if (query$state != state) {
-    abort("Authentication failure: state does not match")
+    cli::cli_abort("Authentication failure: state does not match.")
   }
 
   query$code

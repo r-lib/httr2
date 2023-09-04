@@ -1,10 +1,18 @@
 # must be call to curl
 
     Code
-      curl_args("echo foo")
+      curl_translate("echo foo")
     Condition
-      Error in `curl_args()`:
-      ! Expecting call to curl not 'echo'
+      Error in `curl_translate()`:
+      ! Expecting call to "curl" not to "echo".
+
+# must have cmd argument if non-interactive
+
+    Code
+      curl_translate()
+    Condition
+      Error in `curl_translate()`:
+      ! Must supply `cmd`.
 
 # common headers can be removed
 

@@ -233,10 +233,13 @@ as_key <- function(x, error_call = caller_env()) {
   } else if (is_string(x)) {
     secret_get_key(x, call = error_call)
   } else {
-    abort(paste0(
-      "`key` must be a raw vector containing the key, ",
-      "a string giving the name of an env var, ",
-      "or a string wrapped in I() that contains the base64url encoded key"
-    ), call = error_call)
+    cli::cli_abort(
+      paste0(
+        "{.arg key} must be a raw vector containing the key, ",
+        "a string giving the name of an env var, ",
+        "or a string wrapped in {.fn I} that contains the base64url encoded key."
+      ),
+      call = error_call
+    )
   }
 }

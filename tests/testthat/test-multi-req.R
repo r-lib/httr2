@@ -1,3 +1,8 @@
+test_that("request and paths must match", {
+  req <- request("http://example.com")
+  expect_snapshot(multi_req_perform(req, letters), error = TRUE)
+})
+
 test_that("requests happen in parallel", {
   # GHA MacOS builder seems to be very slow
   skip_if(

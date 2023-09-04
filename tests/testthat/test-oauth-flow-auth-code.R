@@ -46,3 +46,19 @@ test_that("bare authorisation codes can be input manually", {
   expect_equal(oauth_flow_auth_code_read(state), "zyx987")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
 })
+
+
+# ouath_flow_auth_code_parse ----------------------------------------------
+
+test_that("forwards oauth error", {
+  query1 <- query2 <- list(error = "123", error_description = "A bad error")
+  query2$error_uri <- "http://example.com"
+  query3 <- list(state = "def")
+
+  expect_snapshot(error = TRUE, {
+    oauth_flow_auth_code_parse(query1, "abc")
+    oauth_flow_auth_code_parse(query2, "abc")
+    oauth_flow_auth_code_parse(query3, "abc")
+  })
+
+})

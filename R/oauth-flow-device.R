@@ -89,7 +89,7 @@ oauth_flow_device <- function(client,
 
   token <- oauth_flow_device_poll(client, request, token_params)
   if (is.null(token)) {
-    abort("Expired without user confirmation; please try again.")
+    cli::cli_abort("Expired without user confirmation; please try again.")
   }
 
   exec(oauth_token, !!!token)
