@@ -154,19 +154,15 @@ test_that("paginate_req_perform() checks inputs", {
 })
 
 test_that("paginate_req_perform() iterates through pages", {
-  next_url_mock <- function(req) {
-    cur_token <- req$body$data$my_token %||% 1L
-    if (cur_token == 4) {
-      body <- list(x = list(1))
-    } else {
-      body <- list(x = list(1), my_next_token = cur_token + 1L)
-    }
-
-    response_json(url = req$url, body = body)
+  token_body <- function(token = NULL) {
+    compact(list(x = list(1), my_next_token = token))
   }
-  local_mocked_responses(next_url_mock)
+  local_mocked_responses(function(req) {
+    cur_token <- req$body$data$my_token %||% 1L
+    response_json(body = token_body(if (cur_token != 4) cur_token + 1))
+  })
 
-  req <- request("http://example.com") %>%
+  req <- request_test() %>%
     req_paginate_token(
       set_token = function(req, token) {
         req_body_json(req, list(my_token = token))
@@ -178,12 +174,14 @@ test_that("paginate_req_perform() iterates through pages", {
 
   responses_2 <- paginate_req_perform(req, max_pages = 2)
   expect_length(responses_2, 2)
-  expect_equal(resp_body_json(responses_2[[1]]), list(x = list(1), my_next_token = 2))
-  expect_equal(resp_body_json(responses_2[[2]]), list(x = list(1), my_next_token = 3))
+  expect_equal(resp_body_json(responses_2[[1]]), token_body(2))
+  expect_equal(resp_body_json(responses_2[[2]]), token_body(3))
 
   responses_5 <- paginate_req_perform(req, max_pages = 5)
   expect_length(responses_5, 4)
+  expect_equal(resp_body_json(responses_5[[4]]), token_body())
 
   responses_inf <- paginate_req_perform(req, max_pages = Inf)
-  expect_equal(responses_inf, responses_5)
+  expect_length(responses_inf, 4)
+  expect_equal(resp_body_json(responses_inf[[4]]), token_body())
 })
