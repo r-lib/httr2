@@ -48,3 +48,18 @@ local_mock <- function(mock, env = caller_env()) {
   lifecycle::deprecate_warn("0.3.0", "local_mock()", "local_mocked_responses()")
   local_mocked_responses(mock, env)
 }
+
+mocked_response_sequence <- function(...) {
+  responses <- list2(...)
+
+  n <- length(responses)
+  i <- 0
+  function(req) {
+    if (i >= n) {
+      response(503)
+    } else {
+      i <<- i + 1
+      responses[[i]]
+    }
+  }
+}

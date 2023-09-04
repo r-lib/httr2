@@ -21,3 +21,15 @@ test_that("local_mock and with_mock are deprecated", {
     . <- with_mock(NULL, ~ response(404))
   })
 })
+
+test_that("mocked_response_sequence returns responses then errors", {
+  local_mocked_responses(mocked_response_sequence(
+    response(200),
+    response(201)
+  ))
+
+  req <- request("https://google.com")
+  expect_equal(req_perform(req), response(200))
+  expect_equal(req_perform(req), response(201))
+  expect_error(req_perform(req), class = "httr2_http_503")
+})
