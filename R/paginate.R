@@ -43,17 +43,9 @@ req_paginate <- function(req,
                          body = NULL,
                          n_pages = NULL) {
   check_request(req)
-  check_function2(next_request, args = c("req", "resp"))
+  check_function2(next_request, args = c("req", "resp", "body"))
   check_function2(body, args = "resp", allow_null = TRUE)
-  check_function2(n_pages, args = "resp", allow_null = TRUE)
-
-  if (!is.null(body)) {
-    next_request_user <- next_request
-    next_request <- paginate_register_body(next_request_user)
-
-    n_pages_user <- n_pages
-    n_pages <- paginate_register_body(n_pages_user)
-  }
+  check_function2(n_pages, args = c("resp", "body"), allow_null = TRUE)
 
   req_policies(
     req,
@@ -98,11 +90,11 @@ paginate_req_perform <- function(req,
   check_bool(progress)
 
   resp <- req_perform(req)
-  resp <- paginate_parse_body(resp, req)
+  body <- paginate_parse_body(resp, req)
 
-  f_n_pages <- req$policies$paginate$n_pages %||% function(resp) Inf
+  f_n_pages <- req$policies$paginate$n_pages %||% function(resp, body) Inf
 
-  n_pages <- min(f_n_pages(resp), max_pages)
+  n_pages <- min(f_n_pages(resp, body), max_pages)
   # the implementation below doesn't really support an infinite amount of pages
   # but 100e3 should be plenty
   if (is.infinite(n_pages)) {
@@ -120,16 +112,15 @@ paginate_req_perform <- function(req,
   )
 
   for (page in seq2(2, n_pages)) {
-    req <- paginate_next_request(resp, req)
+    req <- paginate_next_request(resp, req, body)
     if (is.null(req)) {
       page <- page - 1L
       break
     }
 
     resp <- req_perform(req)
-    resp <- paginate_parse_body(resp, req)
+    body <- paginate_parse_body(resp, req)
 
-    body_parsed <- resp_body_json(resp)
     out[[page]] <- resp
 
     cli::cli_progress_update()
@@ -148,37 +139,26 @@ paginate_req_perform <- function(req,
 #' @export
 #'
 #' @rdname paginate_req_perform
-paginate_next_request <- function(resp, req) {
+paginate_next_request <- function(resp, req, body = NULL) {
   check_response(resp)
   check_request(req)
   check_has_pagination_policy(req)
 
   next_request <- req$policies$paginate$next_request
-  next_request(resp = resp, req = req)
+  next_request(
+    resp = resp,
+    req = req,
+    body = body
+  )
 }
 
 paginate_parse_body <- function(resp, req) {
   f_body <- req$policies$paginate$body
-  if (!is.null(f_body)) {
-    resp$parsed_body <- f_body(resp)
+  if (is.null(f_body)) {
+    return(NULL)
   }
 
-  resp
-}
-
-paginate_register_body <- function(f) {
-  out <- function(...) {
-    data <- list(body = resp$parsed_body)
-    f_env <- fn_env(f)
-    fn_env(f) <- new_environment(data = data, parent = f_env)
-
-    call <- rlang::call_match()
-    call[[1]] <- f
-    rlang::eval_bare(call)
-  }
-  rlang::fn_fmls(out) <- rlang::fn_fmls(f)
-
-  out
+  f_body(resp)
 }
 
 #' @param next_url A function that extracts the url to the next page from the
@@ -189,13 +169,10 @@ req_paginate_next_url <- function(req,
                                   next_url,
                                   body = NULL,
                                   n_pages = NULL) {
-  check_function2(next_url, args = "resp")
+  check_function2(next_url, args = c("resp", "body"))
 
-  next_url_user <- next_url
-  next_url <- paginate_register_body(next_url_user)
-
-  next_request <- function(req, resp) {
-    next_url <- next_url(resp)
+  next_request <- function(req, resp, body) {
+    next_url <- next_url(resp, body)
 
     if (is.null(next_url)) {
       return(NULL)
@@ -225,7 +202,7 @@ req_paginate_offset <- function(req,
   check_function2(offset, args = c("req", "offset"))
   check_number_whole(page_size)
 
-  next_request <- function(req, resp) {
+  next_request <- function(req, resp, body) {
     cur_offset <- req$policies$paginate$offset
     cur_offset <- cur_offset + page_size
     req$policies$paginate$offset <- cur_offset
@@ -252,10 +229,10 @@ req_paginate_token <- function(req,
                                next_token,
                                n_pages = NULL) {
   check_function2(set_token, args = c("req", "token"))
-  check_function2(next_token, args = "resp")
+  check_function2(next_token, args = c("resp", "body"))
 
-  next_request <- function(req, resp) {
-    next_token <- next_token(resp)
+  next_request <- function(req, resp, body) {
+    next_token <- next_token(resp, body)
 
     if (is.null(next_token)) {
       return(NULL)

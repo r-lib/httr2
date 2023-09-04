@@ -1,6 +1,6 @@
 test_that("req_paginate() checks inputs", {
   req <- request("http://example.com/")
-  next_request <- function(req, resp) req
+  next_request <- function(req, resp, body) req
 
   expect_snapshot(error = TRUE, {
     req_paginate("a", next_request)
@@ -13,10 +13,10 @@ test_that("req_paginate() checks inputs", {
 
 test_that("paginate_next_request() produces the request to the next page", {
   resp <- response()
-  f_next_request <- function(req, resp) {
+  f_next_request <- function(req, resp, body) {
     req_url_path(req, "/2")
   }
-  f_n_pages <- function(resp) 3
+  f_n_pages <- function(resp, body) 3
 
   req <- req_paginate(
     request("http://example.com/"),
@@ -38,7 +38,7 @@ test_that("paginate_next_request() produces the request to the next page", {
 test_that("req_paginate_next_url() checks inputs", {
   expect_snapshot(error = TRUE, {
     req_paginate_next_url(request("http://example.com/"), "a")
-    req_paginate_next_url(request("http://example.com/"), function(req) req)
+    req_paginate_next_url(request("http://example.com/"), function(req, body) req)
   })
 })
 
@@ -71,7 +71,7 @@ test_that("req_paginate_next_url() can paginate", {
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
     req_paginate_next_url(
-      next_url = function(resp) resp_body_json(resp)[["next"]]
+      next_url = function(resp, body) resp_body_json(resp)[["next"]]
     )
 
   resp <- req_perform(req1)
@@ -142,7 +142,7 @@ test_that("req_paginate_token() can paginate", {
       set_token = function(req, token) {
         req_body_json(req, list(my_token = u(token)))
       },
-      next_token = function(resp) {
+      next_token = function(resp, body) {
         resp_body_json(resp)$my_next_token
       }
     )
@@ -162,7 +162,7 @@ test_that("paginate_req_perform() checks inputs", {
       set_token = function(req, token) {
         req_body_json(req, list(my_token = u(token)))
       },
-      next_token = function(resp) {
+      next_token = function(resp, body) {
         resp_body_json(resp)$my_next_token
       }
     )
@@ -201,7 +201,7 @@ test_that("paginate_req_perform() iterates through pages", {
       set_token = function(req, token) {
         req_body_json(req, list(my_token = u(token)))
       },
-      next_token = function(resp) {
+      next_token = function(resp, body) {
         resp_body_json(resp)$my_next_token
       }
     )
