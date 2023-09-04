@@ -2,10 +2,11 @@
 
 * `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
   this URL automatically from the `host_name` and `port` (#248). It uses
-  this field to automatically choose which strategy to use for gathering the auth
-  code, either launching a temporary web server or, new, allowing you to 
+  this argument to automatically choose which strategy to use for gathering the 
+  auth code, either launching a temporary web server or, new, allowing you to 
   manually enter the details with the help of a custom JS/HTML page hosted
-  elsewhere.
+  elsewhere. The temporary web server now also respects the path component
+  of `redirect_uri`, if the API needs a specific path (#149).
 
 * `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
   of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
