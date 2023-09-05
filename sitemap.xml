@@ -220,7 +220,7 @@
     <loc>https://httr2.r-lib.org/reference/url_parse.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/with_mock.html</loc>
+    <loc>https://httr2.r-lib.org/reference/with_mocked_responses.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/with_verbosity.html</loc>
