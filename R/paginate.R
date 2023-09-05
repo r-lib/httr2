@@ -121,8 +121,7 @@ paginate_perform_other_pages <- function(start, n_pages, req, resp) {
   cli::cli_progress_bar(
     "Paginate",
     total = n_pages,
-    format = "{cli::pb_spin} Page {cli::pb_current}/{cli::pb_total} | ETA: {cli::pb_eta}",
-    current = TRUE
+    format = "{cli::pb_spin} Page {cli::pb_current}/{cli::pb_total} | ETA: {cli::pb_eta}"
   )
 
   for (page in seq2(start, n_pages)) {
