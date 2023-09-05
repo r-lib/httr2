@@ -1,0 +1,149 @@
+---
+title: "OAuth"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(httr2)
+```
+
+If the API provides access to a website where the user already has an account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it's likely to use OAuth to allow you to authorise on behalf of the user.
+OAuth[^1] is an authorisation framework that's designed so that you don't have to share your username and password with an app; instead the app asks for permission to use your account.
+You've almost certainly used this before on the web; it's used in most cases where one website wants to use another website on your behalf.
+
+[^1]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
+    OAuth 1.0 is largely only of historical interest.
+
+OAuth is a broad framework that has many many many different variants which makes it hard to provide generalisable advice.
+The following advice draws on my experience working with a number of OAuth using APIs, but don't be surprised if you need to do something slightly different for the API you're working with.
+
+## Clients
+
+The first step in working with any OAuth API is to create a client.
+This involves you registering for a developer account on the API's website and creating a new OAuth app.
+The process varies from API to API, but at the end of it you'll get a client id and in most cases a client secret.
+
+(You'll definitely need this for testing your package, and you'll probably also baked it into your package for the convenience of your users. Bundling the app is user friendly, but not always possible, particularly if rate limits are enforced on a per-app rather than per-user basis. You should always provide some way for the user to provide their own app.)
+
+If the API provides a way to authenticate your app without the client secret, you should leave it out of your package.
+But in most cases, you'll need to include the secret in the package.
+You can use `obfuscate()` to hide the secret; this is not bulletproof[^2], but in most cases it'll be easier to create a new client than try and steal yours.
+Additionally, it's unusual for an OAuth client to be able to do anything in its own right, so even if someone does steal your secret there's not much harm they can do with it.
+
+[^2]: It uses `secret_encrypt()` with a special encryption key that's bundled with httr2.
+
+To obfuscate a secret, call `obfuscate()`:
+
+```{r}
+obfuscate("secret")
+```
+
+Then use the client id from the website along with the obfuscated secret to create a client.
+The following code shows a GitHub OAuth app that I created specifically for this vignette:
+
+```{r}
+client <- oauth_client(
+  id = "28acfec0674bb3da9f38",
+  secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test"
+)
+```
+
+You need to figure out the `token_url` from the [documentation](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps).
+I wish I could give good advice about how to find it 😞.
+
+Note that if you print the client the secret is automatically redacted:
+
+```{r}
+client
+```
+
+## Flows
+
+Once you have a client you need to use it with a **flow** in order to get a token.
+OAuth provides a number of different "flows", the most common is the "authorisation code" flow, which is implemented by `req_oauth_auth_code()`.
+You can try it out by running this code:
+
+```{r, eval = FALSE}
+token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+```
+
+This flow can't be used inside a vignette because it's designed specifically for interactive use: it will open a webpage on GitHub that requires you to interactively confirm it's OK for this app to use your GitHub account.
+
+Other flows provide different ways of getting the token:
+
+-   `req_oauth_client_credentials()` is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user).
+    This is typically need if you want to support **service accounts**, which are used in non-interactive environments.
+
+-   `req_oauth_device()` uses the "device" flow which is designed for devices like TVs that don't have an easy way to enter data.
+    It also works well from the console.
+
+-   `req_oauth_bearer_jwt()` uses a JWT signed by a private key.
+
+-   `req_oauth_password()` exchanges a user name and password for an access token.
+
+-   `req_oauth_refresh()` works directly with a refresh token that you already have.
+    It's useful for testing.
+
+There's one historically important OAuth flow that httr2 doesn't support: the implicit grant flow.
+This is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead) and was never a particularly good fit for native applications because it relies on a technique for returning the access token that only works inside a web browser.
+
+When wrapping an API, you'll need to carefully read the documentation to figure out which flows are available.
+Typically you'll want to use the auth code flow, but if it's not available you'll need to carefully consider the others.
+An additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec.
+If your initial attempt doesn't work, you're going to need to do some sleuthing.
+This is going to be painful, but unfortunately there's no way around it.
+I recommend using `with_verbosity()` so you can see exactly what httr2 is sending to the server.
+You'll then need to carefully compare this to the API documentation and play "spot the difference".
+
+## Tokens
+
+The point of a flow is to get a token.
+You can use `req_auth_bearer_token()` to authorise a request with the access token stored inside the token object:
+
+```{r, eval = FALSE}
+request("https://api.github.com/user") %>% 
+  req_auth_bearer_token(token$access_token) %>% 
+  req_perform() %>% 
+  resp_body_json() %>%
+  .$name
+#> [1] "Hadley Wickham"
+```
+
+However, in most cases you won't want to do this, but instead allow httr2 to manage the whole process, by switching from `oauth_flow_{name}` to `req_oauth_{name}`:
+
+```{r, eval = FALSE}
+request("https://api.github.com/user") %>% 
+  req_oauth_auth_code(client, auth_url = "https://github.com/login/oauth/authorize") %>% 
+  req_perform() %>% 
+  resp_body_json()
+```
+
+This is important because most APIs provide only a short-lived access token that needs to be regularly refreshed using a longer-lived refresh token.
+httr2 will automatically refresh the token if it's expired (i.e. its expiry date is in the past) or if the request errors with a 401 and there's an `invalid_token` error in the `WWW-authenticate` header.
+
+## Caching
+
+By default, `req_oauth_auth_code()` and friends will cache the token in memory, so that multiple requests in the same session all use the same token.
+In some cases, you may want to save the token so that it's automatically used across sessions.
+This is easy to do (just set `cache_disk = TRUE` in `req_oauth_auth_code()`) but you need to carefully consider the consequences of saving the user's credentials on disk.
+
+httr2 does the best it can to save these credentials securely.
+They are stored in a local cache directory (`oauth_cache_path())` that should only be accessible to the current user, and are encrypted so they will be hard for any package other than httr2 to read.
+However, there's no way to prevent other R code from using httr2 to access them, so if you do choose to cache tokens, you should inform the user and give them the ability to opt-out.
+
+You can see which clients have cached tokens by looking in the cache directory used by httr2:
+
+```{r}
+dir(oauth_cache_path(), recursive = TRUE)
+```
+
+httr2 automatically deletes any cached tokens that are older than 30 days whenever it's loaded.
+This means that you'll need to re-auth at least once a month, but prevents tokens for hanging around on disk long after you've forgotten you created them.

@@ -6,6 +6,8 @@
 #' The token is automatically cached (either in memory or on disk) to minimise
 #' the number of times the flow is performed.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
@@ -87,7 +89,7 @@ oauth_flow_device <- function(client,
 
   token <- oauth_flow_device_poll(client, request, token_params)
   if (is.null(token)) {
-    abort("Expired without user confirmation; please try again.")
+    cli::cli_abort("Expired without user confirmation; please try again.")
   }
 
   exec(oauth_token, !!!token)

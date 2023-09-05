@@ -4,7 +4,7 @@
       resp_body_raw(resp1)
     Condition
       Error in `resp_body_raw()`:
-      ! Can not retrieve empty body
+      ! Can't retrieve empty body.
 
 ---
 
@@ -12,7 +12,7 @@
       resp_body_raw(resp2)
     Condition
       Error in `resp_body_raw()`:
-      ! Can not retrieve empty body
+      ! Can't retrieve empty body.
 
 # content types are checked
 

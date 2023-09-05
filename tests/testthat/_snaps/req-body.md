@@ -1,3 +1,11 @@
+# errors if file doesn't exist
+
+    Code
+      req_body_file(request_test(), "doesntexist", type = "text/plain")
+    Condition
+      Error in `req_body_file()`:
+      ! `path` ('doesntexist') does not exist.
+
 # non-json type errors
 
     Code

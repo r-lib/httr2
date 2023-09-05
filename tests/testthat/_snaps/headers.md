@@ -4,7 +4,7 @@
       as_headers(1)
     Condition
       Error:
-      ! `headers` must be a list, character vector, or raw
+      ! `headers` must be a list, character vector, or raw.
 
 # has nice print method
 
@@ -27,10 +27,10 @@
       new_headers(1)
     Condition
       Error:
-      ! `x` must be a list
+      ! `x` must be a list.
     Code
       new_headers(list(1))
     Condition
       Error:
-      ! All elements of `x` must be named
+      ! All elements of `x` must be named.
 

@@ -34,7 +34,7 @@ resp_body_raw <- function(resp) {
   check_response(resp)
 
   if (!resp_has_body(resp)) {
-    abort("Can not retrieve empty body")
+    cli::cli_abort("Can't retrieve empty body.")
   } else if (is_path(resp$body)) {
     readBin(resp$body, "raw", file.size(resp$body))
   } else {

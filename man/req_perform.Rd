@@ -74,7 +74,19 @@ or by running the OAuth flow.
 }
 }
 
+\section{Progress bar}{
+\code{req_perform()} will automatically add a progress bar if it needs to wait
+between requests for \code{\link[=req_throttle]{req_throttle()}} or \code{\link[=req_retry]{req_retry()}}. You can turn the
+progress bar off (and just show the total time to wait) by setting
+\code{options(httr2_progress = FALSE)}.
+}
+
 \examples{
 request("https://google.com") \%>\%
   req_perform()
+}
+\seealso{
+\code{\link[=multi_req_perform]{multi_req_perform()}} to perform multiple requests in parallel.
+\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages of a requests paginated via
+\code{\link[=req_paginate]{req_paginate()}}.
 }

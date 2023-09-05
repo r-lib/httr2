@@ -1,6 +1,6 @@
 # failing callback still generates useful body
 
-    Failed to parse error body with method defined in req_error()
+    Failed to parse error body with method defined in `req_error()`.
     Caused by error:
     ! This is an error!
 
@@ -12,7 +12,7 @@
       req %>% req_perform()
     Condition
       Error in `req_perform()`:
-      ! Failed to parse error body with method defined in req_error()
+      ! Failed to parse error body with method defined in `req_error()`.
       Caused by error in `resp_body_json()`:
       ! Unexpected content type "text/plain"
       * Expecting type "application/json", or suffix "json"

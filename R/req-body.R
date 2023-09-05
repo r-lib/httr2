@@ -57,7 +57,7 @@ NULL
 req_body_raw <- function(req, body, type = NULL) {
   check_request(req)
   if (!is.raw(body) && !is_string(body)) {
-    abort("`body` must be a raw vector or string")
+    cli::cli_abort("{.arg body} must be a raw vector or string.")
   }
 
   req_body(req, data = body, type = "raw", content_type = type %||% "")
@@ -69,7 +69,7 @@ req_body_raw <- function(req, body, type = NULL) {
 req_body_file <- function(req, path, type = NULL) {
   check_request(req)
   if (!file.exists(path)) {
-    abort("`path` does not exist")
+    cli::cli_abort("{.arg path} ({.path {path}}) does not exist.")
   }
 
   # Need to override default content-type "application/x-www-form-urlencoded"
@@ -231,7 +231,7 @@ req_body_apply <- function(req) {
     data <- unobfuscate(data)
     req <- req_body_apply_raw(req, query_build(data))
   } else {
-    abort("Unsupported request body `type`", .internal = TRUE)
+    cli::cli_abort("Unsupported request body {.arg type}.", .internal = TRUE)
   }
 
   # Respect existing Content-Type if set

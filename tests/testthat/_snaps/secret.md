@@ -21,5 +21,5 @@
       as_key(1)
     Condition
       Error:
-      ! `key` must be a raw vector containing the key, a string giving the name of an env var, or a string wrapped in I() that contains the base64url encoded key
+      ! `key` must be a raw vector containing the key, a string giving the name of an env var, or a string wrapped in `I()` that contains the base64url encoded key.
 

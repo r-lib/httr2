@@ -26,7 +26,10 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
   if (length(dots) == 0) return(.x)
 
   if (!is_named(dots)) {
-    abort("All components of ... must be named", call = error_call)
+    cli::cli_abort(
+      "All components of {.arg ...} must be named.",
+      call = error_call
+    )
   }
 
   out <- .x[!names(.x) %in% names(dots)]
@@ -40,10 +43,19 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
 }
 
 
-sys_sleep <- function(seconds, task, fps = 10) {
+sys_sleep <- function(seconds,
+                      task,
+                      fps = 10,
+                      progress = getOption("httr2_progress", TRUE)) {
   check_number_decimal(seconds)
 
   if (seconds == 0) {
+    return(invisible())
+  }
+
+  if (!progress) {
+    cli::cli_alert("Waiting {ceiling(seconds)}s {task}")
+    Sys.sleep(seconds)
     return(invisible())
   }
 
@@ -51,7 +63,7 @@ sys_sleep <- function(seconds, task, fps = 10) {
   signal("", class = "httr2_sleep", seconds = seconds)
 
   cli::cli_progress_bar(
-    format = "Waiting {round(seconds)}s {task} {cli::pb_bar}",
+    format = "Waiting {ceiling(seconds)}s {task} {cli::pb_bar}",
     total = seconds * fps
   )
 
@@ -167,4 +179,66 @@ local_write_lines <- function(..., .env = caller_env()) {
   path <- withr::local_tempfile(.local_envir = .env)
   writeLines(c(...), path)
   path
+}
+
+check_function2 <- function(x,
+                            ...,
+                            args = NULL,
+                            allow_null = FALSE,
+                            arg = caller_arg(x),
+                            call = caller_env()) {
+  check_function(
+    x = x,
+    allow_null = allow_null,
+    arg = arg,
+    call = call
+  )
+
+  if (!is.null(x)) {
+    .check_function_args(
+      f = x,
+      expected_args = args,
+      arg = arg,
+      call = call
+    )
+  }
+}
+
+# Basically copied from rlang. Can be removed when https://github.com/r-lib/rlang/pull/1652
+# is merged
+.check_function_args <- function(f,
+                                 expected_args,
+                                 arg,
+                                 call) {
+  if (is_null(expected_args)) {
+    return(invisible(NULL))
+  }
+
+  actual_args <- fn_fmls_names(f) %||% character()
+  if (identical(actual_args, expected_args)) {
+    return(invisible(NULL))
+  }
+
+  n_expected_args <- length(expected_args)
+  n_actual_args <- length(actual_args)
+
+  if (n_expected_args == 0) {
+    cli::cli_abort(
+      "{.arg {arg}} must have no arguments, not {n_actual_args} argument{?s}.",
+      call = call,
+      arg = arg
+    )
+  }
+
+  if (n_actual_args == 0) {
+    arg_info <- "instead of no arguments"
+  } else {
+    arg_info <- "not {.arg {actual_args}}"
+  }
+
+  cli::cli_abort(
+    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}, ", arg_info, "."),
+    call = call,
+    arg = arg
+  )
 }

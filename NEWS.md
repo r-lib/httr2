@@ -5,6 +5,54 @@
 * `req_body_json()` gains custom content `type` argument
   and respects custom content-type set in header (@mgirlich, #189).
 
+* `oauth_flow_auth_code_listen()` now takes a single `redirect_uri` argument
+  instead of separate `host_ip` and `port` arguments. This is a breaking change
+  but I don't expect anyone to call this function directly (which was confirmed 
+  by a GitHub search) so I made the change without deprecation.
+
+* New `secret_encrypt_file()` and `secret_decrypt_file()` for encrypting and 
+  decrypting files (#237).
+
+* `response()` adds a Date field with value `"Wed, 01 Jan 2020 00:00:00 UTC"`
+  rather than the current time. This makes the return value more stable 
+  generally making it easier to use in tests.
+
+* `local_mock()` and `with_mock()` have been deprecated in favour of
+  `local_mocked_responses()` and `with_mocked_responses()` (#301).
+  `local_mocked_responses()` and `with_mocked_responses()` now accept a
+  list of responses which will be returned in sequence.
+
+* `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
+  this URL automatically from the `host_name` and `port` (#248). It uses
+  this argument to automatically choose which strategy to use for gathering the 
+  auth code, either launching a temporary web server or, new, allowing you to 
+  manually enter the details with the help of a custom JS/HTML page hosted
+  elsewhere. The temporary web server now also respects the path component
+  of `redirect_uri`, if the API needs a specific path (#149).
+
+* `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
+  of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
+  that changing this is ever useful.
+
+* New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
+  tokens. Additionally, you can now change the cache location by setting the
+  `HTTR2_OAUTH_CACHE` env var.
+
+* New `vignette("oauth")` makes the details of OAuth usage easier to find 
+  (#234).
+
+* New `req_cookie_preserve()` lets you use a file to share cookies across 
+  requests (#223).
+
+* `req_oauth_bearer_jwt()` now includes the claim in the cache key (#192).
+
+* `req_cache()` gains `max_n`, `max_size`, and `max_age` arguments to 
+  automatically prune the cache. By default, the cache will be pruned to
+  under 1 GB (#207).
+
+* `req_performs()` progress bar can be suppressed by setting 
+  `options(httr2_progress = FALSE)` (#251).
+
 * `req_perform()` now throws error with class `httr2_failure` if the 
   request fails. And that error now captures the curl error as the parent.
 
