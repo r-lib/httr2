@@ -14,7 +14,7 @@
       req_paginate(req, function(req) req)
     Condition
       Error in `req_paginate()`:
-      ! `next_request` must have the arguments `req`, `resp`, and `body`, not `req`.
+      ! `next_request` must have the arguments `req`, `resp`, and `parsed`, not `req`.
     Code
       req_paginate(req, next_request, n_pages = "a")
     Condition
@@ -24,7 +24,7 @@
       req_paginate(req, next_request, n_pages = function(x) x)
     Condition
       Error in `req_paginate()`:
-      ! `n_pages` must have the arguments `resp` and `body`, not `x`.
+      ! `n_pages` must have the arguments `resp` and `parsed`, not `x`.
 
 # paginate_next_request() produces the request to the next page
 
@@ -53,10 +53,10 @@
       Error in `req_paginate_next_url()`:
       ! `next_url` must be a function, not the string "a".
     Code
-      req_paginate_next_url(request("http://example.com/"), function(req, body) req)
+      req_paginate_next_url(request("http://example.com/"), function(req, parsed) req)
     Condition
       Error in `req_paginate_next_url()`:
-      ! `next_url` must have the arguments `resp` and `body`, not `req` and `body`.
+      ! `next_url` must have the arguments `resp` and `parsed`, not `req` and `parsed`.
 
 # req_paginate_offset() checks inputs
 
@@ -98,7 +98,7 @@
       req)
     Condition
       Error in `req_paginate_token()`:
-      ! `next_token` must have the arguments `resp` and `body`, not `req`.
+      ! `next_token` must have the arguments `resp` and `parsed`, not `req`.
 
 # paginate_req_perform() checks inputs
 

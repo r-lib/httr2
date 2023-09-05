@@ -16,15 +16,17 @@
 #' @param next_request A callback function that returns a [request] to the next
 #'   page or `NULL` if there is no next page. It takes a three arguments:
 #'
-#'   1. `req`: the original request
-#'   2. `resp`: the response of the current request
-#'   3. `body`: the result of the argument `body` below.
-#' @param body A function with one argument `resp` that parses the body of the
-#'   response. This is passed to the argument `body` of `next_request()` and
+#'   1. `req`: the original request.
+#'   2. `resp`: the response of the current request.
+#'   3. `parsed`: the result of the argument `parse_resp`.
+#' @param parse_resp A function with one argument `resp` that parses the
+#'   response. This is passed to the argument `parsed` of `next_request()` and
 #'   `n_pages()`. This helps to avoid parsing the response multiple times.
 #' @param n_pages A function that extracts the total number of pages. It has two
-#'   arguments: `resp` (the response) and `body` (the result of the argument
-#'   `body` above).
+#'   arguments:
+#'
+#'   1. `resp`: the response of the current request.
+#'   2. `parsed`: the result of the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
 #' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
@@ -37,27 +39,27 @@
 #' request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
-#'     next_url = function(resp, body) body[["next"]],
-#'     body = function(resp) resp_body_json(resp),
-#'     n_pages = function(resp, body) {
-#'       total <- body$count
+#'     next_url = function(resp, parsed) parsed[["next"]],
+#'     parse_resp = function(resp) resp_body_json(resp),
+#'     n_pages = function(resp, parsed) {
+#'       total <- parsed$count
 #'       ceiling(total / page_size)
 #'     }
 #'   )
 req_paginate <- function(req,
                          next_request,
-                         body = NULL,
+                         parse_resp = NULL,
                          n_pages = NULL) {
   check_request(req)
-  check_function2(next_request, args = c("req", "resp", "body"))
-  check_function2(body, args = "resp", allow_null = TRUE)
-  check_function2(n_pages, args = c("resp", "body"), allow_null = TRUE)
+  check_function2(next_request, args = c("req", "resp", "parsed"))
+  check_function2(parse_resp, args = "resp", allow_null = TRUE)
+  check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
 
   req_policies(
     req,
     paginate = list(
       next_request = next_request,
-      body = body,
+      parse_resp = parse_resp,
       n_pages = n_pages
     )
   )
@@ -67,7 +69,7 @@ req_paginate <- function(req,
 #'
 #' @inheritParams req_perform
 #' @param resp An HTTP [response].
-#' @param body The body parsed by the argument `body` of `req_paginate()`.
+#' @param parsed The response parsed by the argument `parse_resp` of `req_paginate()`.
 #' @param max_pages The maximum number of pages to request.
 #' @param progress Display a progress bar?
 #'
@@ -80,10 +82,10 @@ req_paginate <- function(req,
 #' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
-#'     next_url = function(resp, body) body[["next"]],
-#'     body = function(resp) resp_body_json(resp),
-#'     n_pages = function(resp, body) {
-#'       total <- body$count
+#'     next_url = function(resp, parsed) parsed[["next"]],
+#'     parse_resp = function(resp) resp_body_json(resp),
+#'     n_pages = function(resp, parsed) {
+#'       total <- parsed$count
 #'       ceiling(total / page_size)
 #'     }
 #'   )
@@ -98,7 +100,7 @@ paginate_req_perform <- function(req,
   check_bool(progress)
 
   resp <- req_perform(req)
-  body <- paginate_parse_body(resp, req)
+  body <- paginate_parse_response(resp, req)
 
   f_n_pages <- req$policies$paginate$n_pages %||% function(resp, body) Inf
 
@@ -127,7 +129,7 @@ paginate_req_perform <- function(req,
     }
 
     resp <- req_perform(req)
-    body <- paginate_parse_body(resp, req)
+    body <- paginate_parse_response(resp, req)
 
     out[[page]] <- resp
 
@@ -147,7 +149,7 @@ paginate_req_perform <- function(req,
 #' @export
 #'
 #' @rdname paginate_req_perform
-paginate_next_request <- function(resp, req, body = NULL) {
+paginate_next_request <- function(resp, req, parsed = NULL) {
   check_response(resp)
   check_request(req)
   check_has_pagination_policy(req)
@@ -156,17 +158,17 @@ paginate_next_request <- function(resp, req, body = NULL) {
   next_request(
     resp = resp,
     req = req,
-    body = body
+    parsed = parsed
   )
 }
 
-paginate_parse_body <- function(resp, req) {
-  f_body <- req$policies$paginate$body
-  if (is.null(f_body)) {
+paginate_parse_response <- function(resp, req) {
+  parse_resp <- req$policies$paginate$parse_resp
+  if (is.null(parse_resp)) {
     return(NULL)
   }
 
-  f_body(resp)
+  parse_resp(resp)
 }
 
 #' @param next_url A function that extracts the url to the next page from the
@@ -175,12 +177,12 @@ paginate_parse_body <- function(resp, req) {
 #' @export
 req_paginate_next_url <- function(req,
                                   next_url,
-                                  body = NULL,
+                                  parse_resp = NULL,
                                   n_pages = NULL) {
-  check_function2(next_url, args = c("resp", "body"))
+  check_function2(next_url, args = c("resp", "parsed"))
 
-  next_request <- function(req, resp, body) {
-    next_url <- next_url(resp, body)
+  next_request <- function(req, resp, parsed) {
+    next_url <- next_url(resp, parsed)
 
     if (is.null(next_url)) {
       return(NULL)
@@ -192,7 +194,7 @@ req_paginate_next_url <- function(req,
   req_paginate(
     req,
     next_request,
-    body = body,
+    parse_resp = parse_resp,
     n_pages = n_pages
   )
 }
@@ -206,11 +208,12 @@ req_paginate_next_url <- function(req,
 req_paginate_offset <- function(req,
                                 offset,
                                 page_size,
+                                parse_resp = NULL,
                                 n_pages = NULL) {
   check_function2(offset, args = c("req", "offset"))
   check_number_whole(page_size)
 
-  next_request <- function(req, resp, body) {
+  next_request <- function(req, resp, parsed) {
     cur_offset <- req$policies$paginate$offset
     cur_offset <- cur_offset + page_size
     req$policies$paginate$offset <- cur_offset
@@ -220,7 +223,8 @@ req_paginate_offset <- function(req,
   out <- req_paginate(
     req,
     next_request,
-    n_pages
+    parse_resp = parse_resp,
+    n_pages = n_pages
   )
 
   out$policies$paginate$offset <- 0L
@@ -235,12 +239,13 @@ req_paginate_offset <- function(req,
 req_paginate_token <- function(req,
                                set_token,
                                next_token,
+                               parse_resp = NULL,
                                n_pages = NULL) {
   check_function2(set_token, args = c("req", "token"))
-  check_function2(next_token, args = c("resp", "body"))
+  check_function2(next_token, args = c("resp", "parsed"))
 
-  next_request <- function(req, resp, body) {
-    next_token <- next_token(resp, body)
+  next_request <- function(req, resp, parsed) {
+    next_token <- next_token(resp, parsed)
 
     if (is.null(next_token)) {
       return(NULL)
@@ -252,6 +257,7 @@ req_paginate_token <- function(req,
   req_paginate(
     req,
     next_request,
+    parse_resp = parse_resp,
     n_pages = n_pages
   )
 }

@@ -7,13 +7,19 @@
 \alias{req_paginate_token}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, body = NULL, n_pages = NULL)
+req_paginate(req, next_request, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_next_url(req, next_url, body = NULL, n_pages = NULL)
+req_paginate_next_url(req, next_url, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_offset(req, offset, page_size, n_pages = NULL)
+req_paginate_offset(req, offset, page_size, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_token(req, set_token, next_token, n_pages = NULL)
+req_paginate_token(
+  req,
+  set_token,
+  next_token,
+  parse_resp = NULL,
+  n_pages = NULL
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -21,18 +27,21 @@ req_paginate_token(req, set_token, next_token, n_pages = NULL)
 \item{next_request}{A callback function that returns a \link{request} to the next
 page or \code{NULL} if there is no next page. It takes a three arguments:
 \enumerate{
-\item \code{req}: the original request
-\item \code{resp}: the response of the current request
-\item \code{body}: the result of the argument \code{body} below.
+\item \code{req}: the original request.
+\item \code{resp}: the response of the current request.
+\item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
-\item{body}{A function with one argument \code{resp} that parses the body of the
-response. This is passed to the argument \code{body} of \code{next_request()} and
+\item{parse_resp}{A function with one argument \code{resp} that parses the
+response. This is passed to the argument \code{parsed} of \code{next_request()} and
 \code{n_pages()}. This helps to avoid parsing the response multiple times.}
 
 \item{n_pages}{A function that extracts the total number of pages. It has two
-arguments: \code{resp} (the response) and \code{body} (the result of the argument
-\code{body} above).}
+arguments:
+\enumerate{
+\item \code{resp}: the response of the current request.
+\item \code{parsed}: the result of the argument \code{parse_resp}.
+}}
 
 \item{next_url}{A function that extracts the url to the next page from the
 \link{response} and the \code{body}.}
@@ -72,10 +81,10 @@ page_size <- 150
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
-    next_url = function(resp, body) body[["next"]],
-    body = function(resp) resp_body_json(resp),
-    n_pages = function(resp, body) {
-      total <- body$count
+    next_url = function(resp, parsed) parsed[["next"]],
+    parse_resp = function(resp) resp_body_json(resp),
+    n_pages = function(resp, parsed) {
+      total <- parsed$count
       ceiling(total / page_size)
     }
   )
