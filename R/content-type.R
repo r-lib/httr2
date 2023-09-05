@@ -104,12 +104,12 @@ check_content_type <- function(content_type,
 
   msg <- "Expecting type {.or {.str {valid_types}}}"
   if (!is.null(valid_suffix)) {
-    msg <- paste0(msg, ", or suffix {.str {valid_suffix}}")
+    msg <- paste0(msg, ", or suffix {.str {valid_suffix}}.")
   }
 
   cli::cli_abort(
-    c("Unexpected content type {.str {content_type}}", "*" = msg),
-    i = if (inform_check_type) "Override check with `check_type = FALSE`",
+    c("Unexpected content type {.str {content_type}}.", "*" = msg),
+    i = if (inform_check_type) "Override check with `check_type = FALSE`.",
     call = call
   )
 }
