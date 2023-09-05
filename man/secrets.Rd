@@ -41,7 +41,7 @@ the raw vector in directly.}
 \item{path}{Path to \code{.rds} file}
 
 \item{envir}{The unencrypted file will be automatically deleted when
-this environment exits. You should only need set this argument if you
+this environment exits. You should only need to set this argument if you
 want to pass the unencrypted file to another function.}
 }
 \value{
@@ -80,13 +80,13 @@ found.)
 as an env var (e.g. \verb{\{MYPACKAGE\}_KEY}) by adding a line to your
 \code{.Renviron}.
 \item Encrypt strings with \code{secret_encrypt()}, files with
-\code{secret_encrtype_file()},  and other data with \code{secret_write_rds()},
+\code{secret_encrypt_file()}, and other data with \code{secret_write_rds()},
 setting \code{key = "{MYPACKAGE}_KEY"}.
 \item In your tests, decrypt the data with \code{secret_decrypt()},
 \code{secret_decrypt_file()}, or \code{secret_read_rds()} to match how you encrypt
 it.
 \item If you push this code to your CI server, it will already "work" because
-all functions automatically skip tests when your \verb{\{MYPACKAGE\}_KEY\}}
+all functions automatically skip tests when your \verb{\{MYPACKAGE\}_KEY}
 env var isn't set. To make the tests actually run, you'll need to set
 the env var using whatever tool your CI system provides for setting
 env vars. Make sure to carefully inspect the test output to check that

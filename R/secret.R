@@ -35,7 +35,7 @@
 #'     it.
 #'
 #' 4.  If you push this code to your CI server, it will already "work" because
-#'     all functions automatically skip tests when your `{MYPACKAGE}_KEY}`
+#'     all functions automatically skip tests when your `{MYPACKAGE}_KEY`
 #'     env var isn't set. To make the tests actually run, you'll need to set
 #'     the env var using whatever tool your CI system provides for setting
 #'     env vars. Make sure to carefully inspect the test output to check that
