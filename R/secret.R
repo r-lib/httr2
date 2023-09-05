@@ -118,7 +118,7 @@ secret_read_rds <- function(path, key) {
 }
 
 #' @export
-#' @param envir The unencrypted file will be automatically deleted when
+#' @param envir The decrypted file will be automatically deleted when
 #'   this environment exits. You should only need to set this argument if you
 #'   want to pass the unencrypted file to another function.
 #' @rdname secrets

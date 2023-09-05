@@ -40,7 +40,7 @@ the raw vector in directly.}
 
 \item{path}{Path to \code{.rds} file}
 
-\item{envir}{The unencrypted file will be automatically deleted when
+\item{envir}{The decrypted file will be automatically deleted when
 this environment exits. You should only need to set this argument if you
 want to pass the unencrypted file to another function.}
 }
