@@ -110,14 +110,14 @@ paginate_req_perform <- function(req,
   the$last_pagination_page <- 1
 
   paginate_perform_other_pages(
-    page = 2,
+    start = 2,
     n_pages = n_pages,
     req = req,
     resp = resp
   )
 }
 
-paginate_perform_other_pages <- function(page, n_pages, req, resp) {
+paginate_perform_other_pages <- function(start, n_pages, req, resp) {
   cli::cli_progress_bar(
     "Paginate",
     total = n_pages,
@@ -125,7 +125,7 @@ paginate_perform_other_pages <- function(page, n_pages, req, resp) {
     current = TRUE
   )
 
-  for (page in seq2(page, n_pages)) {
+  for (page in seq2(start, n_pages)) {
     req <- paginate_next_request(resp, req)
     if (is.null(req)) {
       page <- page - 1L
@@ -141,6 +141,8 @@ paginate_perform_other_pages <- function(page, n_pages, req, resp) {
     cli::cli_progress_update(set = page)
   }
   cli::cli_progress_done()
+  # `page` may be `NULL` if `start >= n_pages`
+  page <- page %||% the$last_pagination_page
 
   # remove unused end of `out` in case the pagination loop exits before all
   # `max_pages` is reached
@@ -178,7 +180,7 @@ paginate_req_perform_continue <- function(max_pages = NULL) {
   n_pages <- min(the$last_pagination_n_pages, max_pages, 100e3)
 
   paginate_perform_other_pages(
-    page = page + 1,
+    start = page + 1,
     n_pages = n_pages,
     req = req,
     resp = resp
