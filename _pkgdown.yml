@@ -44,6 +44,7 @@ reference:
   - req_stream
   - multi_req_perform
   - paginate_req_perform
+  - chunk_req_perform
 
 - subtitle: Control the process
   desc: >

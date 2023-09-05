@@ -61,7 +61,7 @@
 #' @export
 #' @seealso [multi_req_perform()] to perform multiple requests in parallel.
 #'   [paginate_req_perform()] to fetch all pages of a requests paginated via
-#'   [req_paginate()].
+#'   [req_paginate()]. [chunk_req_perform()] to perform a request in chunks.
 #' @examples
 #' request("https://google.com") %>%
 #'   req_perform()
