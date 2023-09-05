@@ -139,9 +139,10 @@ req_oauth_auth_code <- function(req, client,
 #'
 #'   Alternatively, you can provide a URL to a website that uses javascript to
 #'   give the user a code to copy and paste back into the R session (see
-#'   <https://www.tidyverse.org/google-callback/>, for an example). This is
-#'   less convenient (because it requires more user interaction) but also works
-#'   in hosted environments.
+#'   <https://www.tidyverse.org/google-callback/> and
+#'   <https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html>
+#'   for examples). This is less convenient (because it requires more
+#'   user interaction) but also works in hosted environments.
 #'
 #' @returns An [oauth_token].
 #' @export

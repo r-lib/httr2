@@ -64,9 +64,10 @@ works well when you are working on your own computer.
 
 Alternatively, you can provide a URL to a website that uses javascript to
 give the user a code to copy and paste back into the R session (see
-\url{https://www.tidyverse.org/google-callback/}, for an example). This is
-less convenient (because it requires more user interaction) but also works
-in hosted environments.}
+\url{https://www.tidyverse.org/google-callback/} and
+\url{https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html}
+for examples). This is less convenient (because it requires more
+user interaction) but also works in hosted environments.}
 
 \item{host_name, host_ip, port}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Now use \code{redirect_uri} instead.}
