@@ -100,11 +100,11 @@ paginate_req_perform <- function(req,
   check_bool(progress)
 
   resp <- req_perform(req)
-  body <- paginate_parse_response(resp, req)
+  parsed <- paginate_parse_response(resp, req)
 
-  f_n_pages <- req$policies$paginate$n_pages %||% function(resp, body) Inf
+  f_n_pages <- req$policies$paginate$n_pages %||% function(resp, parsed) Inf
 
-  n_pages <- min(f_n_pages(resp, body), max_pages)
+  n_pages <- min(f_n_pages(resp, parsed), max_pages)
   # the implementation below doesn't really support an infinite amount of pages
   # but 100e3 should be plenty
   if (is.infinite(n_pages)) {
@@ -122,14 +122,14 @@ paginate_req_perform <- function(req,
   )
 
   for (page in seq2(2, n_pages)) {
-    req <- paginate_next_request(resp, req, body)
+    req <- paginate_next_request(resp, req, parsed)
     if (is.null(req)) {
       page <- page - 1L
       break
     }
 
     resp <- req_perform(req)
-    body <- paginate_parse_response(resp, req)
+    parsed <- paginate_parse_response(resp, req)
 
     out[[page]] <- resp
 
