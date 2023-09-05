@@ -44,15 +44,15 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
     req <- req_method(req, pieces[[1]])
     template <- pieces[[2]]
   } else {
-    abort(c(
-      "Can't parse template `template`",
-      i = "Should have form like 'GET /a/b/c' or 'a/b/c/'"
+    cli::cli_abort(c(
+      "Can't parse template {.arg template}.",
+      i = "Should have form like 'GET /a/b/c' or 'a/b/c/'."
     ))
   }
 
   dots <- list2(...)
   if (length(dots) > 0 && !is_named(dots)) {
-    abort("All elements of ... must be named")
+    cli::cli_abort("All elements of {.arg ...} must be named.")
   }
 
   path <- template_process(template, dots, .env)
@@ -83,11 +83,17 @@ template_val <- function(name, dots, env, error_call = caller_env()) {
   } else if (env_has(env, name, inherit = TRUE)) {
     val <- env_get(env, name, inherit = TRUE)
   } else {
-    abort(glue("Can't find template variable '{name}'"), call = error_call)
+    cli::cli_abort(
+      "Can't find template variable {.str {name}}.",
+      call = error_call
+    )
   }
 
   if (!is.atomic(val) || length(val) != 1) {
-    abort(glue("Template variable '{name}' is not a simple scalar value"), call = error_call)
+    cli::cli_abort(
+      "Template variable {.str {name}} is not a simple scalar value.",
+      call = error_call
+    )
   }
   as.character(val)
 }

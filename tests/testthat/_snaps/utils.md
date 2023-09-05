@@ -4,7 +4,7 @@
       modify_list(x, a = 1, 2)
     Condition
       Error:
-      ! All components of ... must be named
+      ! All components of `...` must be named.
 
 # can suppress progress bar
 

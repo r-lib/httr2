@@ -1,5 +1,9 @@
 test_that("must be call to curl", {
-  expect_snapshot(error = TRUE, curl_args("echo foo"))
+  expect_snapshot(error = TRUE, curl_translate("echo foo"))
+})
+
+test_that("must have cmd argument if non-interactive", {
+  expect_snapshot(error = TRUE, curl_translate())
 })
 
 test_that("captures key components of call", {

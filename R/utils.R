@@ -26,7 +26,10 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
   if (length(dots) == 0) return(.x)
 
   if (!is_named(dots)) {
-    abort("All components of ... must be named", call = error_call)
+    cli::cli_abort(
+      "All components of {.arg ...} must be named.",
+      call = error_call
+    )
   }
 
   out <- .x[!names(.x) %in% names(dots)]

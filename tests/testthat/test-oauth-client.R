@@ -1,8 +1,18 @@
 test_that("can check app has needed pieces", {
   client <- oauth_client("id", token_url = "http://example.com")
   expect_snapshot(error = TRUE, {
+    oauth_flow_check("test", NULL)
     oauth_flow_check("test", client, is_confidential = TRUE)
     oauth_flow_check("test", client, interactive = TRUE)
+  })
+})
+
+test_that("checks auth types have needed args", {
+  expect_snapshot(error = TRUE, {
+    oauth_client("abc", "http://x.com", auth = "header")
+    oauth_client("abc", "http://x.com", auth = "jwt_sig")
+    oauth_client("abc", "http://x.com", key = "abc", auth = "jwt_sig")
+    oauth_client("abc", "http://x.com", auth = 123)
   })
 })
 

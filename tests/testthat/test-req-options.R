@@ -29,6 +29,13 @@ test_that("can set timeout", {
   expect_error(req_perform(req), "timed out")
 })
 
+test_that("validates inputs", {
+  expect_snapshot(error = TRUE, {
+    request_test() %>% req_timeout("x")
+    request_test() %>% req_timeout(0)
+  })
+})
+
 test_that("can request verbose record of request", {
   req <- request_test("/post") %>% req_body_raw("This is some text")
 

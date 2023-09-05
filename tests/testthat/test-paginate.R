@@ -43,30 +43,16 @@ test_that("req_paginate_next_url() checks inputs", {
 })
 
 test_that("req_paginate_next_url() can paginate", {
-  link1 <- "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11"
-  link2 <- "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11"
-
-  next_url_mock <- function(req) {
-    if (req$url == "https://pokeapi.co/api/v2/pokemon?limit=11") {
-      link <- link1
-    } else {
-      link <- link2
-    }
-
-    body <- glue::glue(
-      '{"count":1281,"next":"<link>","previous":null,"results":[{"name":"bulbasaur","url":"https://pokeapi.co/api/v2/pokemon/1/"}]}',
-      .open = "<",
-      .close = ">"
-    )
-
-    response(
+  local_mocked_responses(list(
+    response_json(
       url = "https://pokeapi.co/api/v2/pokemon?limit=11",
-      status_code = 200L,
-      body = charToRaw(body),
-      headers = list(`content-type` = "application/json; charset=utf-8")
+      body = list('next' = "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
+    ),
+    response_json(
+      url = "https://pokeapi.co/api/v2/pokemon?limit=11",
+      body = list('next' = "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
     )
-  }
-  local_mock(next_url_mock)
+  ))
 
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
@@ -76,11 +62,11 @@ test_that("req_paginate_next_url() can paginate", {
 
   resp <- req_perform(req1)
   req2 <- paginate_next_request(resp, req1)
-  expect_equal(req2$url, link1)
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
 
   resp <- req_perform(req2)
   req3 <- paginate_next_request(resp, req2)
-  expect_equal(req3$url, link2)
+  expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
 })
 
 test_that("req_paginate_offset() checks inputs", {
@@ -124,23 +110,15 @@ test_that("req_paginate_token() checks inputs", {
 })
 
 test_that("req_paginate_token() can paginate", {
-  u <- jsonlite::unbox
-  next_url_mock <- function(req) {
-    cur_token <- req$body$data$my_token %||% 1L
-    body <- jsonlite::toJSON(list(x = 1, my_next_token = u(cur_token + 1L)))
-
-    response(
-      url = req$url,
-      body = charToRaw(body),
-      headers = list(`content-type` = "application/json; charset=utf-8")
-    )
-  }
-  local_mock(next_url_mock)
+  local_mocked_responses(list(
+    response_json(body = list(x = 1, my_next_token = 2)),
+    response_json(body = list(x = 1, my_next_token = 3))
+  ))
 
   req1 <- request("http://example.com") %>%
     req_paginate_token(
       set_token = function(req, token) {
-        req_body_json(req, list(my_token = u(token)))
+        req_body_json(req, list(my_token = token))
       },
       next_token = function(resp, parsed) {
         resp_body_json(resp)$my_next_token
@@ -149,18 +127,18 @@ test_that("req_paginate_token() can paginate", {
 
   resp <- req_perform(req1)
   req2 <- paginate_next_request(resp, req1)
-  expect_equal(req2$body$data$my_token, u(2L))
+  expect_equal(req2$body$data$my_token, 2L)
 
   resp <- req_perform(req2)
   req3 <- paginate_next_request(resp, req2)
-  expect_equal(req3$body$data$my_token, u(3L))
+  expect_equal(req3$body$data$my_token, 3L)
 })
 
 test_that("paginate_req_perform() checks inputs", {
   req <- request("http://example.com") %>%
     req_paginate_token(
       set_token = function(req, token) {
-        req_body_json(req, list(my_token = u(token)))
+        req_body_json(req, list(my_token = token))
       },
       next_token = function(resp, parsed) {
         resp_body_json(resp)$my_next_token
@@ -176,30 +154,18 @@ test_that("paginate_req_perform() checks inputs", {
 })
 
 test_that("paginate_req_perform() iterates through pages", {
-  u <- jsonlite::unbox
-  next_url_mock <- function(req) {
-    cur_token <- req$body$data$my_token %||% 1L
-    if (cur_token == 4) {
-      body <- jsonlite::toJSON(list(x = 1))
-    } else {
-      body <- jsonlite::toJSON(list(x = 1, my_next_token = u(cur_token + 1L)))
-    }
-
-    response(
-      url = req$url,
-      body = charToRaw(body),
-      headers = list(
-        `content-type` = "application/json; charset=utf-8",
-        date = "2023-09-01"
-      )
-    )
+  token_body <- function(token = NULL) {
+    compact(list(x = list(1), my_next_token = token))
   }
-  local_mock(next_url_mock)
+  local_mocked_responses(function(req) {
+    cur_token <- req$body$data$my_token %||% 1L
+    response_json(body = token_body(if (cur_token != 4) cur_token + 1))
+  })
 
-  req <- request("http://example.com") %>%
+  req <- request_test() %>%
     req_paginate_token(
       set_token = function(req, token) {
-        req_body_json(req, list(my_token = u(token)))
+        req_body_json(req, list(my_token = token))
       },
       next_token = function(resp, parsed) {
         resp_body_json(resp)$my_next_token
@@ -208,12 +174,14 @@ test_that("paginate_req_perform() iterates through pages", {
 
   responses_2 <- paginate_req_perform(req, max_pages = 2)
   expect_length(responses_2, 2)
-  expect_equal(resp_body_json(responses_2[[1]]), list(x = list(1), my_next_token = 2))
-  expect_equal(resp_body_json(responses_2[[2]]), list(x = list(1), my_next_token = 3))
+  expect_equal(resp_body_json(responses_2[[1]]), token_body(2))
+  expect_equal(resp_body_json(responses_2[[2]]), token_body(3))
 
   responses_5 <- paginate_req_perform(req, max_pages = 5)
   expect_length(responses_5, 4)
+  expect_equal(resp_body_json(responses_5[[4]]), token_body())
 
   responses_inf <- paginate_req_perform(req, max_pages = Inf)
-  expect_equal(responses_inf, responses_5)
+  expect_length(responses_inf, 4)
+  expect_equal(resp_body_json(responses_inf[[4]]), token_body())
 })

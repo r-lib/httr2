@@ -1,9 +1,10 @@
 test_that("desktop style can't run in hosted environment", {
   client <- oauth_client("abc", "http://example.com")
 
+  withr::local_options(rlang_interactive = TRUE)
   withr::local_envvar("RSTUDIO_PROGRAM_MODE" = "server")
   expect_snapshot(
-    oauth_flow_auth_code(client, "http://example.com", type = "desktop"),
+    oauth_flow_auth_code(client, "http://localhost"),
     error = TRUE
   )
 })
@@ -45,4 +46,43 @@ test_that("bare authorisation codes can be input manually", {
   )
   expect_equal(oauth_flow_auth_code_read(state), "zyx987")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
+})
+
+# normalize_redirect_uri --------------------------------------------------
+
+test_that("adds port to localhost url", {
+  redirect <- normalize_redirect_uri("http://localhost")
+  expect_false(is.null(url_parse(redirect$uri)$port))
+})
+
+test_that("old args are deprecated", {
+  expect_snapshot(
+    redirect <- normalize_redirect_uri("http://localhost", port = 1234)
+  )
+  expect_equal(redirect$uri, "http://localhost:1234")
+
+  expect_snapshot(
+    redirect <- normalize_redirect_uri("http://x.com", host_name = "y.com")
+  )
+  expect_equal(redirect$uri, "http://y.com")
+
+  expect_snapshot(
+    redirect <- normalize_redirect_uri("http://x.com", host_ip = "y.com")
+  )
+
+})
+
+# ouath_flow_auth_code_parse ----------------------------------------------
+
+test_that("forwards oauth error", {
+  query1 <- query2 <- list(error = "123", error_description = "A bad error")
+  query2$error_uri <- "http://example.com"
+  query3 <- list(state = "def")
+
+  expect_snapshot(error = TRUE, {
+    oauth_flow_auth_code_parse(query1, "abc")
+    oauth_flow_auth_code_parse(query2, "abc")
+    oauth_flow_auth_code_parse(query3, "abc")
+  })
+
 })
