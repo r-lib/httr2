@@ -28,6 +28,7 @@ chunk_req_perform <- function(req,
 }
 
 vec_chop_by_size <- function(x, size) {
+  check_installed("vctrs", version = "0.6.0")
   check_number_whole(size, min = 1)
 
   n <- vctrs::vec_size(x)
