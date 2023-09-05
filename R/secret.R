@@ -94,8 +94,8 @@ secret_encrypt <- function(x, key) {
 secret_decrypt <- function(encrypted, key) {
   check_string(encrypted)
 
-  x <- base64_url_decode(encrypted)
-  dec <- secret_decrypt_raw(x, key)
+  enc <- base64_url_decode(encrypted)
+  dec <- secret_decrypt_raw(enc, key)
 
   rawToChar(dec)
 }
@@ -105,7 +105,6 @@ secret_decrypt <- function(encrypted, key) {
 secret_write_rds <- function(x, path, key) {
   x <- serialize(x, NULL, version = 2)
   x_cmp <- memCompress(x, "bzip2")
-
   enc <- secret_encrypt_raw(x_cmp, key)
   writeBin(enc, path)
 
@@ -115,9 +114,8 @@ secret_write_rds <- function(x, path, key) {
 #' @rdname secrets
 #' @param path Path to `.rds` file
 secret_read_rds <- function(path, key) {
-  x <- readBin(path, "raw", file.size(path))
-
-  dec_cmp <- secret_decrypt_raw(x, key)
+  enc <- readBin(path, "raw", file.size(path))
+  dec_cmp <- secret_decrypt_raw(enc, key)
   dec <- memDecompress(dec_cmp, "bzip2")
 
   unserialize(dec)
@@ -242,18 +240,18 @@ attr(unobfuscate, "srcref") <- "function(x) {}"
 
 # Helpers -----------------------------------------------------------------
 
-secret_encrypt_raw <- function(x, key, error_call = caller_env()) {
+secret_encrypt_raw <- function(dec, key, error_call = caller_env()) {
   key <- as_key(key, error_call = error_call)
 
-  value <- openssl::aes_ctr_encrypt(x, key)
-  c(attr(value, "iv"), value)
+  enc <- openssl::aes_ctr_encrypt(dec, key)
+  c(attr(enc, "iv"), enc)
 }
 
-secret_decrypt_raw <- function(x, key, error_call = caller_env()) {
+secret_decrypt_raw <- function(enc, key, error_call = caller_env()) {
   key <- as_key(key, error_call = error_call)
 
-  iv <- x[1:16]
-  value <- x[-(1:16)]
+  iv <- enc[1:16]
+  value <- enc[-(1:16)]
 
   openssl::aes_ctr_decrypt(value, key, iv = iv)
 }
