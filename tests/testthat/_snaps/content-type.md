@@ -1,13 +1,13 @@
 # can check type of response
 
     Code
-      check_resp_content_type(resp1, "application/xml")
+      resp_check_content_type(resp1, "application/xml")
     Condition
       Error:
       ! Unexpected content type "application/json".
       * Expecting type "application/xml"
     Code
-      check_resp_content_type(resp2, "application/xml")
+      resp_check_content_type(resp2, "application/xml")
     Condition
       Error:
       ! Unexpected content type "xxxxx".
@@ -16,7 +16,7 @@
 # useful error even if no content type
 
     Code
-      check_resp_content_type(resp, "application/xml")
+      resp_check_content_type(resp, "application/xml")
     Condition
       Error:
       ! Unexpected content type "NA".

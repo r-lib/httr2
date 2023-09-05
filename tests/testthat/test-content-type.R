@@ -3,20 +3,20 @@ test_that("can check type of response", {
   resp2 <- response(headers = c("Content-type: xxxxx"))
 
   expect_no_error(
-    check_resp_content_type(resp1, "application/json")
+    resp_check_content_type(resp1, "application/json")
   )
   expect_no_error(
-    check_resp_content_type(resp1, "application/xml", check_type = FALSE)
+    resp_check_content_type(resp1, "application/xml", check_type = FALSE)
   )
   expect_snapshot(error = TRUE, {
-    check_resp_content_type(resp1, "application/xml")
-    check_resp_content_type(resp2, "application/xml")
+    resp_check_content_type(resp1, "application/xml")
+    resp_check_content_type(resp2, "application/xml")
   })
 })
 
 test_that("useful error even if no content type", {
   resp <- response()
-  expect_snapshot(check_resp_content_type(resp, "application/xml"), error = TRUE)
+  expect_snapshot(resp_check_content_type(resp, "application/xml"), error = TRUE)
 })
 
 test_that("can parse content type", {

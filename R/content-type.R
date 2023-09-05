@@ -15,12 +15,12 @@
 #' @export
 #' @examples
 #' resp <- response(headers = list(`content-type` = "application/json"))
-#' check_resp_content_type(resp, "application/json")
-#' try(check_resp_content_type(resp, "application/xml"))
+#' resp_check_content_type(resp, "application/json")
+#' try(resp_check_content_type(resp, "application/xml"))
 #'
 #' # `types` can also specify multiple valid types
-#' check_resp_content_type(resp, c("application/xml", "application/json"))
-check_resp_content_type <- function(resp,
+#' resp_check_content_type(resp, c("application/xml", "application/json"))
+resp_check_content_type <- function(resp,
                                     valid_types,
                                     valid_suffix = NULL,
                                     check_type = TRUE,

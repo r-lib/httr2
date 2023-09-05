@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* New `check_resp_content_type()` to check response content types (#190).
+* New `resp_check_content_type()` to check response content types (#190).
 
 * `req_body_json()` gains custom content `type` argument
   and respects custom content-type set in header (@mgirlich, #189).
