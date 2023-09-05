@@ -81,7 +81,7 @@ new_response <- function(method,
   headers <- as_headers(headers, error_call = error_call)
   # ensure we always have a date field
   if (!"date" %in% tolower(names(headers))) {
-    headers$Date <- http_date()
+    headers$Date <- "Wed, 01 Jan 2020 00:00:00 UTC"
   }
 
   structure(
