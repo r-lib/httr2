@@ -2,10 +2,13 @@
 % Please edit documentation in R/paginate.R
 \name{paginate_req_perform}
 \alias{paginate_req_perform}
+\alias{paginate_req_perform_continue}
 \alias{paginate_next_request}
 \title{Perform a paginated request}
 \usage{
 paginate_req_perform(req, max_pages = 20L, progress = TRUE)
+
+paginate_req_perform_continue(max_pages = NULL)
 
 paginate_next_request(resp, req)
 }
@@ -22,7 +25,10 @@ paginate_next_request(resp, req)
 A list of responses.
 }
 \description{
-Perform a paginated request
+After preparing a paginated request with \code{\link[=req_paginate]{req_paginate()}} perform it with
+\code{\link[=paginate_req_perform]{paginate_req_perform()}}. In case the requests were interrupted, you can
+get the intermediate results with \code{\link[=last_pagination_responses]{last_pagination_responses()}} or
+continue with \link{paginate_req_perform_continue}.
 }
 \examples{
 page_size <- 150

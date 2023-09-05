@@ -56,6 +56,11 @@ req_paginate <- function(req,
 
 #' Perform a paginated request
 #'
+#' After preparing a paginated request with [req_paginate()] perform it with
+#' [paginate_req_perform()]. In case the requests were interrupted, you can
+#' get the intermediate results with [last_pagination_responses()] or
+#' continue with [paginate_req_perform_continue].
+#'
 #' @inheritParams req_perform
 #' @param resp An HTTP [response].
 #' @param max_pages The maximum number of pages to request.
@@ -86,26 +91,41 @@ paginate_req_perform <- function(req,
   check_number_whole(max_pages, allow_infinite = TRUE, min = 1)
   check_bool(progress)
 
+  the$last_pagination_request <- req
+  the$last_pagination_responses <- NULL
+  the$last_pagination_page <- NULL
+  the$last_pagination_n_pages <- NULL
+  the$last_pagination_max_pages <- max_pages
+
   resp <- req_perform(req)
   f_n_pages <- req$policies$paginate$n_pages %||% function(resp) Inf
-  n_pages <- min(f_n_pages(resp), max_pages)
+  n_pages <- f_n_pages(resp)
+  the$last_pagination_n_pages <- f_n_pages(resp)
   # the implementation below doesn't really support an infinite amount of pages
   # but 100e3 should be plenty
-  if (is.infinite(n_pages)) {
-    n_pages <- 100e3
-  }
+  n_pages <- min(the$last_pagination_n_pages, max_pages, 100e3)
 
-  out <- vector("list", length = n_pages)
-  out[[1]] <- resp
+  the$last_pagination_responses <- vector("list", length = n_pages)
+  the$last_pagination_responses[[1]] <- resp
+  the$last_pagination_page <- 1
 
+  paginate_perform_other_pages(
+    page = 2,
+    n_pages = n_pages,
+    req = req,
+    resp = resp
+  )
+}
+
+paginate_perform_other_pages <- function(page, n_pages, req, resp) {
   cli::cli_progress_bar(
     "Paginate",
     total = n_pages,
     format = "{cli::pb_spin} Page {cli::pb_current}/{cli::pb_total} | ETA: {cli::pb_eta}",
-    current = 1L
+    current = TRUE
   )
 
-  for (page in seq2(2, n_pages)) {
+  for (page in seq2(page, n_pages)) {
     req <- paginate_next_request(resp, req)
     if (is.null(req)) {
       page <- page - 1L
@@ -113,21 +133,55 @@ paginate_req_perform <- function(req,
     }
 
     resp <- req_perform(req)
+    the$last_pagination_page <- page
 
     body_parsed <- resp_body_json(resp)
-    out[[page]] <- resp
+    the$last_pagination_responses[[page]] <- resp
 
-    cli::cli_progress_update()
+    cli::cli_progress_update(set = page)
   }
   cli::cli_progress_done()
 
   # remove unused end of `out` in case the pagination loop exits before all
   # `max_pages` is reached
   if (page < n_pages) {
-    out <- out[seq2(1, page)]
+    the$last_pagination_responses <- the$last_pagination_responses[seq2(1, page)]
   }
 
-  out
+  the$last_pagination_responses
+}
+
+#' @export
+#' @rdname last_response
+last_pagination_responses <- function() {
+  the$last_pagination_responses
+}
+
+#' @export
+#' @rdname paginate_req_perform
+paginate_req_perform_continue <- function(max_pages = NULL) {
+  page <- the$last_pagination_page
+  req <- the$last_pagination_request
+  max_pages <- max_pages %||% the$last_pagination_max_pages
+
+  if (is.null(page)) {
+    out <- paginate_req_perform(
+      req = req,
+      max_pages = max_pages
+    )
+    return(out)
+  }
+
+  resp <- the$last_pagination_responses[[page]]
+
+  n_pages <- min(the$last_pagination_n_pages, max_pages, 100e3)
+
+  paginate_perform_other_pages(
+    page = page + 1,
+    n_pages = n_pages,
+    req = req,
+    resp = resp
+  )
 }
 
 #' @export

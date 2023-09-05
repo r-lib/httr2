@@ -15,3 +15,8 @@ the$cache_throttle <- list()
 the$token_cache <- new_environment()
 the$last_response <- NULL
 the$last_request <- NULL
+the$last_pagination_request <- NULL
+the$last_pagination_responses <- NULL
+the$last_pagination_page <- NULL
+the$last_pagination_n_pages <- NULL
+the$last_pagination_max_pages <- NULL
