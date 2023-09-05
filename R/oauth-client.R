@@ -232,13 +232,16 @@ oauth_flow_check <- function(flow, client,
   }
 }
 
-oauth_client_get_token <- function(client, grant_type, ...) {
+oauth_client_get_token <- function(client,
+                                   grant_type,
+                                   ...,
+                                   error_call = caller_env()) {
   req <- request(client$token_url)
   req <- req_body_form(req, grant_type = grant_type, ...)
   req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 
-  resp <- oauth_flow_fetch(req)
+  resp <- oauth_flow_fetch(req, "client$token_url", error_call = error_call)
   exec(oauth_token, !!!resp)
 }
 
