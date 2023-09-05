@@ -27,7 +27,7 @@
 #'     `.Renviron`.
 #'
 #' 2.  Encrypt strings with `secret_encrypt()`, files with
-#'     `secret_encrtype_file()`,  and other data with `secret_write_rds()`,
+#'     `secret_encrypt_file()`, and other data with `secret_write_rds()`,
 #'     setting `key = "{MYPACKAGE}_KEY"`.
 #'
 #' 3.  In your tests, decrypt the data with `secret_decrypt()`,
@@ -119,7 +119,7 @@ secret_read_rds <- function(path, key) {
 
 #' @export
 #' @param envir The unencrypted file will be automatically deleted when
-#'   this environment exits. You should only need set this argument if you
+#'   this environment exits. You should only need to set this argument if you
 #'   want to pass the unencrypted file to another function.
 #' @rdname secrets
 secret_decrypt_file <- function(path, key, envir = parent.frame()) {
