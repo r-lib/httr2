@@ -149,7 +149,7 @@ components as needed for PKCE, as defined in
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">oauth_flow_auth_code_listen</span><span class="op">(</span>host_ip <span class="op">=</span> <span class="st">"127.0.0.1"</span>, port <span class="op">=</span> <span class="fl">1410</span>, path <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span></span>
+<span><span class="fu">oauth_flow_auth_code_listen</span><span class="op">(</span>redirect_uri <span class="op">=</span> <span class="st">"http://localhost:1410"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">oauth_flow_auth_code_parse</span><span class="op">(</span><span class="va">query</span>, <span class="va">state</span><span class="op">)</span></span>
 <span></span>
@@ -196,23 +196,15 @@ it, then specify it with (e.g.) <code>"http://localhost:1011"</code>. This techn
 works well when you are working on your own computer.</p>
 <p>Alternatively, you can provide a URL to a website that uses javascript to
 give the user a code to copy and paste back into the R session (see
-<a href="https://www.tidyverse.org/google-callback/" class="external-link">https://www.tidyverse.org/google-callback/</a>, for an example). This is
-less convenient (because it requires more user interaction) but also works
-in hosted environments.</p></dd>
+<a href="https://www.tidyverse.org/google-callback/" class="external-link">https://www.tidyverse.org/google-callback/</a> and
+<a href="https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html" class="external-link">https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html</a>
+for examples). This is less convenient (because it requires more
+user interaction) but also works in hosted environments.</p></dd>
 
 
 <dt>host_name, host_ip, port</dt>
 <dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a>
 Now use <code>redirect_uri</code> instead.</p></dd>
-
-
-<dt>host_ip</dt>
-<dd><p>IP address for the temporary webserver used to capture the
-authorization code.</p></dd>
-
-
-<dt>port</dt>
-<dd><p>Port to bind the temporary webserver to.</p></dd>
 
 
 <dt>state</dt>
