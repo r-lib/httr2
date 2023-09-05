@@ -20,7 +20,7 @@
 #'   2. `resp`: the response of the current request.
 #'   3. `parsed`: the result of the argument `parse_resp`.
 #' @param parse_resp A function with one argument `resp` that parses the
-#'   response. This is passed to the argument `parsed` of `next_request()` and
+#'   response. The result is passed to the argument `parsed` of `next_request()` and
 #'   `n_pages()`. This helps to avoid parsing the response multiple times.
 #' @param n_pages A function that extracts the total number of pages. It has two
 #'   arguments:
@@ -53,6 +53,7 @@ req_paginate <- function(req,
   check_request(req)
   check_function2(next_request, args = c("req", "resp", "parsed"))
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
+  parse_resp <- parse_resp %||% function(resp) resp
   check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
 
   req_policies(
@@ -69,11 +70,12 @@ req_paginate <- function(req,
 #'
 #' @inheritParams req_perform
 #' @param resp An HTTP [response].
-#' @param parsed The response parsed by the argument `parse_resp` of `req_paginate()`.
+#' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
 #' @param max_pages The maximum number of pages to request.
 #' @param progress Display a progress bar?
 #'
-#' @return A list of responses.
+#' @return A list of responses parsed with the `parse_resp` argument of
+#'   [req_paginate()].
 #' @export
 #'
 #' @examples
@@ -112,7 +114,7 @@ paginate_req_perform <- function(req,
   }
 
   out <- vector("list", length = n_pages)
-  out[[1]] <- resp
+  out[[1]] <- parsed
 
   cli::cli_progress_bar(
     "Paginate",
@@ -131,7 +133,7 @@ paginate_req_perform <- function(req,
     resp <- req_perform(req)
     parsed <- paginate_parse_response(resp, req)
 
-    out[[page]] <- resp
+    out[[page]] <- parsed
 
     cli::cli_progress_update()
   }

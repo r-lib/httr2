@@ -168,20 +168,21 @@ test_that("paginate_req_perform() iterates through pages", {
         req_body_json(req, list(my_token = token))
       },
       next_token = function(resp, parsed) {
-        resp_body_json(resp)$my_next_token
-      }
+        parsed$my_next_token
+      },
+      parse_resp = function(resp) resp_body_json(resp)
     )
 
   responses_2 <- paginate_req_perform(req, max_pages = 2)
   expect_length(responses_2, 2)
-  expect_equal(resp_body_json(responses_2[[1]]), token_body(2))
-  expect_equal(resp_body_json(responses_2[[2]]), token_body(3))
+  expect_equal(responses_2[[1]], token_body(2))
+  expect_equal(responses_2[[2]], token_body(3))
 
   responses_5 <- paginate_req_perform(req, max_pages = 5)
   expect_length(responses_5, 4)
-  expect_equal(resp_body_json(responses_5[[4]]), token_body())
+  expect_equal(responses_5[[4]], token_body())
 
   responses_inf <- paginate_req_perform(req, max_pages = Inf)
   expect_length(responses_inf, 4)
-  expect_equal(resp_body_json(responses_inf[[4]]), token_body())
+  expect_equal(responses_inf[[4]], token_body())
 })
