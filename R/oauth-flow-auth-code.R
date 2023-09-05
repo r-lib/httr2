@@ -305,7 +305,7 @@ oauth_flow_auth_code_url <- function(client,
 #' @rdname oauth_flow_auth_code
 oauth_flow_auth_code_listen <- function(redirect_uri = "http://localhost:1410") {
   parsed <- url_parse(redirect_uri)
-  port <- parsed$port
+  port <- as.integer(parsed$port)
   path <- parsed$path %||% "/"
 
   complete <- FALSE
@@ -333,7 +333,7 @@ oauth_flow_auth_code_listen <- function(redirect_uri = "http://localhost:1410") 
       body = "Authentication complete. Please close this page and return to R."
     )
   }
-  server <- httpuv::startServer(host_ip, port, list(call = listen))
+  server <- httpuv::startServer("127.0.0.1", port, list(call = listen))
   withr::defer(httpuv::stopServer(server))
 
   # TODO: make this a progress bar
