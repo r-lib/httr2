@@ -1,6 +1,8 @@
 # httr2 (development version)
 
 * New `resp_check_content_type()` to check response content types (#190).
+  `resp_body_json()` and friends give better errors if no `Content-Type`
+  header is present in the response (#284).
 
 * `req_body_json()` gains custom content `type` argument
   and respects custom content-type set in header (@mgirlich, #189).
