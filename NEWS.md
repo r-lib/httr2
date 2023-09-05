@@ -2,6 +2,36 @@
 
 * Add `chunk_req_perform()` to perform a request in chunks (@mgirlich, #303).
 
+* `oauth_flow_auth_code_listen()` now takes a single `redirect_uri` argument
+  instead of separate `host_ip` and `port` arguments. This is a breaking change
+  but I don't expect anyone to call this function directly (which was confirmed 
+  by a GitHub search) so I made the change without deprecation.
+
+* New `secret_encrypt_file()` and `secret_decrypt_file()` for encrypting and 
+  decrypting files (#237).
+
+* `response()` adds a Date field with value `"Wed, 01 Jan 2020 00:00:00 UTC"`
+  rather than the current time. This makes the return value more stable 
+  generally making it easier to use in tests.
+
+* `local_mock()` and `with_mock()` have been deprecated in favour of
+  `local_mocked_responses()` and `with_mocked_responses()` (#301).
+  `local_mocked_responses()` and `with_mocked_responses()` now accept a
+  list of responses which will be returned in sequence.
+
+* `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
+  this URL automatically from the `host_name` and `port` (#248). It uses
+  this argument to automatically choose which strategy to use for gathering the 
+  auth code, either launching a temporary web server or, new, allowing you to 
+  manually enter the details with the help of a custom JS/HTML page hosted
+  elsewhere. The temporary web server now also respects the path component
+  of `redirect_uri`, if the API needs a specific path (#149).
+
+* `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
+  of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
+  that changing this is ever useful.
+>>>>>>> bc8b02a2406fd81365c557ac50e186b08d2ac526
+
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
   `HTTR2_OAUTH_CACHE` env var.
@@ -75,13 +105,6 @@
 
 * `oauth_flow_refresh()` now only warns if the `refresh_token` changes, making
   it a little easier to use in manual workflows (#186).
-
-* `oauth_flow_auth_code()` now attempts to detect when you're running in a 
-  hosted environment (e.g. Google Collab/Posit Workbench/Posit cloud) and 
-  allows users to enter the authorisation code into the console manually (#248).
-
-* `oauth_flow_auth_code()` gains a `redirect_uri` argument rather than deriving
-  this URL automatically from the `host_name` and `port` (#248).
 
 # httr2 0.2.3
 
