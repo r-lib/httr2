@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `secret_encrypt_file()` and `secret_decrypt_file()` for encrypting and 
+  decrypting files (#237).
+
 * `response()` adds a Date field with value `"Wed, 01 Jan 2020 00:00:00 UTC"`
   rather than the current time. This makes the return value more stable 
   generally making it easier to use in tests.

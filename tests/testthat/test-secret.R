@@ -17,6 +17,20 @@ test_that("encryption and decryption of object is symmetric", {
   expect_equal(x1, x2)
 })
 
+test_that("encryption and decryption of file is symmetric", {
+  key <- secret_make_key()
+  path <- withr::local_tempfile(lines = letters)
+
+  secret_encrypt_file(path, key)
+
+  local({
+    path_dec <<- secret_decrypt_file(path, key)
+    expect_equal(readLines(path_dec, warn = FALSE), letters)
+  })
+  expect_false(file.exists(path_dec))
+
+})
+
 test_that("can unobfuscate obfuscated string", {
   x <- obfuscated("qw6Ua_n2LR_xzuk2uqp2dhb5OaE")
   expect_equal(unobfuscate(x), "test")
