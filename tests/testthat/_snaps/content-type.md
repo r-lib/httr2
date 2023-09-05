@@ -38,7 +38,7 @@
     Condition
       Error:
       ! Unexpected content type "application/test+json".
-      * Expecting type "application/xml", or suffix "xml".
+      * Expecting type "application/xml" or suffix "xml".
 
 ---
 

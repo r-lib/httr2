@@ -13,7 +13,7 @@
     Condition
       Error in `req_body_json()`:
       ! Unexpected content type "application/xml".
-      * Expecting type "application/json", or suffix "json".
+      * Expecting type "application/json" or suffix "json".
 
 # req_body_form() and req_body_multipart() accept list() with warning
 
