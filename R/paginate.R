@@ -154,7 +154,8 @@ paginate_perform_other_pages <- function(page, n_pages, req, resp) {
 #' @export
 #' @rdname last_response
 last_pagination_responses <- function() {
-  the$last_pagination_responses
+  responses <- the$last_pagination_responses
+  responses[seq2(1, the$last_pagination_page)]
 }
 
 #' @export
