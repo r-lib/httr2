@@ -16,3 +16,25 @@
         * c: {1{2}3}
       * fragment: frag
 
+# password also requires username
+
+    Code
+      url_build(url)
+    Condition
+      Error in `url_build()`:
+      ! Cannot set url `password` without `username`.
+
+# validates inputs
+
+    Code
+      query_build(1:3)
+    Condition
+      Error:
+      ! Query must be a named list.
+    Code
+      query_build(list(x = 1:2, y = 1:3))
+    Condition
+      Error:
+      ! Query parameters must be length 1 atomic vectors.
+      * Problems: "x" and "y".
+

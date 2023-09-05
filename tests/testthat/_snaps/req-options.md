@@ -1,3 +1,16 @@
+# validates inputs
+
+    Code
+      request_test() %>% req_timeout("x")
+    Condition
+      Error in `req_timeout()`:
+      ! `seconds` must be a number, not the string "x".
+    Code
+      request_test() %>% req_timeout(0)
+    Condition
+      Error in `req_timeout()`:
+      ! `seconds` must be >1 ms.
+
 # can request verbose record of request
 
     -> POST /post HTTP/1.1

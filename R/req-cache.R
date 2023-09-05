@@ -75,7 +75,7 @@ req_cache <- function(req,
 # Do I need to worry about hash collisions?
 # No - even if the user stores a billion urls, the probably of a collision
 # is ~ 1e-20: https://preshing.com/20110504/hash-collision-probabilities/
-cache_path <- function(req, ext = ".rds") {
+req_cache_path <- function(req, ext = ".rds") {
   file.path(req$policies$cache_path, paste0(hash(req$url), ext))
 }
 cache_use_on_error <- function(req) {
@@ -91,13 +91,13 @@ cache_exists <- function(req) {
   if (!req_policy_exists(req, "cache_path")) {
     FALSE
   } else {
-    file.exists(cache_path(req))
+    file.exists(req_cache_path(req))
   }
 }
 
 # Callers responsibility to check that cache exists
 cache_get <- function(req) {
-  path <- cache_path(req)
+  path <- req_cache_path(req)
 
   touch(path)
   readRDS(path)
@@ -105,12 +105,12 @@ cache_get <- function(req) {
 
 cache_set <- function(req, resp) {
   if (is_path(resp$body)) {
-    body_path <- cache_path(req, ".body")
+    body_path <- req_cache_path(req, ".body")
     file.copy(resp$body, body_path, overwrite = TRUE)
     resp$body <- new_path(body_path)
   }
 
-  saveRDS(resp, cache_path(req, ".rds"))
+  saveRDS(resp, req_cache_path(req, ".rds"))
   invisible()
 }
 

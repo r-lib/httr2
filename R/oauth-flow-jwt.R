@@ -5,6 +5,8 @@
 #' used to authenticate the request with [req_auth_bearer_token()].
 #' The token is cached in memory.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' @export
 #' @inheritParams req_perform
 #' @inheritParams oauth_flow_bearer_jwt
@@ -32,7 +34,7 @@ req_oauth_bearer_jwt <- function(req,
     token_params = token_params
   )
 
-  cache <- cache_mem(client, NULL)
+  cache <- cache_mem(client, claim)
   req_oauth(req, "oauth_flow_bearer_jwt", params, cache = cache)
 }
 
@@ -64,7 +66,7 @@ oauth_flow_bearer_jwt <- function(client,
                                   token_params = list()) {
   check_installed("jose")
   if (is.null(client$key)) {
-    abort("JWT flow requires `client` with a key")
+    cli::cli_abort("JWT flow requires {.arg client} with a key.")
   }
 
   if (is_list(claim)) {
@@ -72,7 +74,7 @@ oauth_flow_bearer_jwt <- function(client,
   } else if (is.function(claim)) {
     claim <- claim()
   } else {
-    abort("`claim` must be result a list or function")
+    cli::cli_abort("{.arg claim} must be a list or function.")
   }
 
   jwt <- exec(signature, claim = claim, key = client$key, !!!signature_params)

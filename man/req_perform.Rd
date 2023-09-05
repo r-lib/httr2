@@ -85,3 +85,8 @@ progress bar off (and just show the total time to wait) by setting
 request("https://google.com") \%>\%
   req_perform()
 }
+\seealso{
+\code{\link[=multi_req_perform]{multi_req_perform()}} to perform multiple requests in parallel.
+\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages of a requests paginated via
+\code{\link[=req_paginate]{req_paginate()}}.
+}

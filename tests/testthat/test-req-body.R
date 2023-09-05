@@ -28,6 +28,13 @@ test_that("can send file with redirect", {
   expect_equal(resp_body_json(resp)$data, str)
 })
 
+test_that("errors if file doesn't exist", {
+  expect_snapshot(
+    req_body_file(request_test(), "doesntexist", type = "text/plain"),
+    error = TRUE
+  )
+})
+
 test_that("can send string", {
   resp <- request_test("/post") %>%
     req_body_raw("test", type = "text/plain") %>%

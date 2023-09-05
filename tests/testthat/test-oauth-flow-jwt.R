@@ -31,3 +31,11 @@ test_that("can generate token and use it automatically", {
   expect_type(resp, "list")
   expect_equal(resp$email_verified, TRUE)
 })
+
+test_that("validates inputs", {
+  client1 <- oauth_client("test", "http://example.com")
+  expect_snapshot(oauth_flow_bearer_jwt(client1), error = TRUE)
+
+  client2 <- oauth_client("test", "http://example.com", key = "abc", auth_params = list(claim = "123"))
+  expect_snapshot(oauth_flow_bearer_jwt(client2, claim = NULL), error = TRUE)
+})

@@ -104,8 +104,8 @@ error_body <- function(req, resp, call = caller_env()) {
   try_fetch(
     req_policy_call(req, "error_body", list(resp), default = NULL),
     error = function(cnd) {
-      abort(
-        "Failed to parse error body with method defined in req_error()",
+      cli::cli_abort(
+        "Failed to parse error body with method defined in {.fn req_error}.",
         parent = cnd,
         call = call
       )

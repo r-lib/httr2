@@ -7,6 +7,8 @@
 #' or on disk); the password is used once to get the token and is then
 #' discarded.
 #'
+#' Learn more about the overall flow in `vignette("oauth")`.
+#'
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code

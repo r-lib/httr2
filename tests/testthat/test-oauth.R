@@ -55,3 +55,10 @@ test_that("can prune old files", {
   cache_disk_prune(2, path)
   expect_equal(dir(path), "a-token.rds")
 })
+
+# cache_path --------------------------------------------------------------
+
+test_that("can override path with env var", {
+  withr::local_envvar("HTTR2_OAUTH_CACHE" = "/tmp")
+  expect_equal(oauth_cache_path(), "/tmp")
+})
