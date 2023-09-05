@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* Add `chunk_req_perform()` to perform a request in chunks (@mgirlich, #303).
+
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
   `HTTR2_OAUTH_CACHE` env var.
