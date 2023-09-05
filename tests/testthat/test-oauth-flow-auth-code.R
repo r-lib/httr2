@@ -52,7 +52,7 @@ test_that("bare authorisation codes can be input manually", {
 
 test_that("adds port to localhost url", {
   redirect <- normalize_redirect_uri("http://localhost")
-  expect_false(is.null(redirect$port))
+  expect_false(is.null(url_parse(redirect$uri)$port))
 })
 
 test_that("old args are deprecated", {

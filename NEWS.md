@@ -1,5 +1,10 @@
 # httr2 (development version)
 
+* `oauth_flow_auth_code_listen()` now takes a single `redirect_uri` argument
+  instead of separate `host_ip` and `port` arguments. This is a breaking change
+  but I don't expect anyone to call this function directly (which was confirmed 
+  by a GitHub search) so I made the change without deprecation.
+
 * New `secret_encrypt_file()` and `secret_decrypt_file()` for encrypting and 
   decrypting files (#237).
 

@@ -127,9 +127,6 @@ req_oauth_auth_code <- function(req, client,
 #'   `token_url`.
 #' @param host_name,host_ip,port `r lifecycle::badge("deprecated")`
 #'   Now use `redirect_uri` instead.
-#' @param host_ip IP address for the temporary webserver used to capture the
-#'   authorization code.
-#' @param port Port to bind the temporary webserver to.
 #' @param redirect_uri URL to redirect back to after authorization is complete.
 #'   Often this must be registered with the API in advance.
 #'
@@ -142,9 +139,10 @@ req_oauth_auth_code <- function(req, client,
 #'
 #'   Alternatively, you can provide a URL to a website that uses javascript to
 #'   give the user a code to copy and paste back into the R session (see
-#'   <https://www.tidyverse.org/google-callback/>, for an example). This is
-#'   less convenient (because it requires more user interaction) but also works
-#'   in hosted environments.
+#'   <https://www.tidyverse.org/google-callback/> and
+#'   <https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html>
+#'   for examples). This is less convenient (because it requires more
+#'   user interaction) but also works in hosted environments.
 #'
 #' @returns An [oauth_token].
 #' @export
@@ -205,10 +203,7 @@ oauth_flow_auth_code <- function(client,
 
   if (redirect$localhost) {
     # Listen on localhost for the result
-    result <- oauth_flow_auth_code_listen(
-      port = redirect$port,
-      path = redirect$path
-    )
+    result <- oauth_flow_auth_code_listen(redirect$uri)
     code <- oauth_flow_auth_code_parse(result, state)
   } else {
     # Allow the user to retrieve the token out of band manually and enter it
@@ -275,9 +270,7 @@ normalize_redirect_uri <- function(redirect_uri,
 
   list(
     uri = url_build(parsed),
-    localhost = localhost,
-    port = parsed$port,
-    path = parsed$path %||% "/"
+    localhost = localhost
   )
 
 }
@@ -310,7 +303,11 @@ oauth_flow_auth_code_url <- function(client,
 
 #' @export
 #' @rdname oauth_flow_auth_code
-oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410, path = "/") {
+oauth_flow_auth_code_listen <- function(redirect_uri = "http://localhost:1410") {
+  parsed <- url_parse(redirect_uri)
+  port <- as.integer(parsed$port)
+  path <- parsed$path %||% "/"
+
   complete <- FALSE
   info <- NULL
   listen <- function(env) {
@@ -336,7 +333,7 @@ oauth_flow_auth_code_listen <- function(host_ip = "127.0.0.1", port = 1410, path
       body = "Authentication complete. Please close this page and return to R."
     )
   }
-  server <- httpuv::startServer(host_ip, port, list(call = listen))
+  server <- httpuv::startServer("127.0.0.1", port, list(call = listen))
   withr::defer(httpuv::stopServer(server))
 
   # TODO: make this a progress bar
