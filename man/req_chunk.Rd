@@ -7,7 +7,14 @@
 \usage{
 req_chunk(req, data, chunk_size, apply_chunk)
 
-chunk_req_perform(req, data, chunk_size, apply_chunk, parse_resp = NULL)
+chunk_req_perform(
+  req,
+  data,
+  chunk_size,
+  apply_chunk,
+  parse_resp = NULL,
+  progress = TRUE
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -25,6 +32,10 @@ takes two arguments:
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
 response.}
+
+\item{progress}{Whether to show a progress bar. Use \code{TRUE} to turn on a basic
+progress bar, use a string to give it a name, or see progress_bars for more
+details.}
 }
 \value{
 For \code{req_chunk()} a list of requests. For \code{chunk_req_perform()} a

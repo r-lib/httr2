@@ -80,11 +80,15 @@ req_chunk <- function(req,
 #' @inheritParams paginate_req_perform
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response.
+#' @param progress Whether to show a progress bar. Use `TRUE` to turn on a basic
+#'   progress bar, use a string to give it a name, or see progress_bars for more
+#'   details.
 chunk_req_perform <- function(req,
                               data,
                               chunk_size,
                               apply_chunk,
-                              parse_resp = NULL) {
+                              parse_resp = NULL,
+                              progress = TRUE) {
   requests <- req_chunk(
     req = req,
     data = data,
@@ -98,6 +102,9 @@ chunk_req_perform <- function(req,
   n <- length(requests)
   the$last_chunked_responses <- vector("list", n)
 
+  pb <- create_progress_bar(total = n, name = "Request chunks", progress)
+  show_progress <- !is.null(pb)
+
   for (i in seq2(1, n)) {
     req_i <- requests[[i]]
     resp_i <- req_perform(req_i)
@@ -105,7 +112,10 @@ chunk_req_perform <- function(req,
     parsed <- parse_resp(resp_i)
     the$last_chunked_responses[[i]] <- parsed
     the$last_chunk_idx <- i
+
+    if (show_progress) cli::cli_progress_update()
   }
+  if (show_progress) cli::cli_progress_done()
 
   the$last_chunked_responses
 }

@@ -242,3 +242,28 @@ check_function2 <- function(x,
     arg = arg
   )
 }
+
+create_progress_bar <- function(total, name, config, env = caller_env()) {
+  if (is_false(config)) {
+    return()
+  }
+
+  if (is.null(config) || is_bool(config)) {
+    args <- list()
+  } else if (is_scalar_character(config)) {
+    args <- list(name = config)
+  } else if (is.list(config)) {
+    args <- config
+  } else {
+    stop_input_type(
+      config,
+      what = c("a bool", "a string", "a list")
+    )
+  }
+
+  args$name <- args$name %||% name
+  args$total <- total
+  args$.envir <- env
+
+  exec(cli::cli_progress_bar, !!!args)
+}
