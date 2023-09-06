@@ -19,7 +19,7 @@
       local_mocked_responses(function(foo) { })
     Condition
       Error in `local_mocked_responses()`:
-      ! `mock` must have the argument `req`, not `foo`.
+      ! `mock` must have the argument `req`, instead it has `foo`.
     Code
       local_mocked_responses(10)
     Condition
