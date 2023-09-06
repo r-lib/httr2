@@ -30,7 +30,6 @@
 * `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
   of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
   that changing this is ever useful.
->>>>>>> bc8b02a2406fd81365c557ac50e186b08d2ac526
 
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
