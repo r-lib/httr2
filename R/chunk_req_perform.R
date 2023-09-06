@@ -90,7 +90,8 @@ chunk_req_perform <- function(req,
                               chunk_size,
                               apply_chunk,
                               parse_resp = NULL,
-                              progress = TRUE) {
+                              progress = TRUE,
+                              error_call = current_env()) {
   chunked_requests <- req_chunk(
     req = req,
     data = data,
@@ -101,7 +102,7 @@ chunk_req_perform <- function(req,
   the$last_chunks <- chunked_requests$chunks
 
   parse_resp <- parse_resp %||% function(resp) resp
-  check_function2(parse_resp, args = "resp")
+  check_function2(parse_resp, args = "resp", call = error_call)
 
   n <- length(requests)
   the$last_chunked_responses <- vector("list", n)
@@ -118,7 +119,8 @@ chunk_req_perform <- function(req,
         cli::cli_abort(
           "When requesting chunk {i}.",
           parent = cnd,
-          .envir = env
+          .envir = env,
+          call = error_call
         )
       }
     )
@@ -128,7 +130,8 @@ chunk_req_perform <- function(req,
         cli::cli_abort(
           "When parsing response {i}.",
           parent = cnd,
-          .envir = env
+          .envir = env,
+          call = error_call
         )
       }
     )
