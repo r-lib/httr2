@@ -14,7 +14,7 @@
       req_paginate(req, function(req) req)
     Condition
       Error in `req_paginate()`:
-      ! `next_request` must have the arguments `req`, `resp`, and `parsed`, not `req`.
+      ! `next_request` must have the arguments `req`, `resp`, and `parsed`, instead it has `req`.
     Code
       req_paginate(req, next_request, n_pages = "a")
     Condition
@@ -24,7 +24,7 @@
       req_paginate(req, next_request, n_pages = function(x) x)
     Condition
       Error in `req_paginate()`:
-      ! `n_pages` must have the arguments `resp` and `parsed`, not `x`.
+      ! `n_pages` must have the arguments `resp` and `parsed`, instead it has `x`.
 
 # paginate_next_request() produces the request to the next page
 
@@ -56,7 +56,7 @@
       req_paginate_next_url(request("http://example.com/"), function(req, parsed) req)
     Condition
       Error in `req_paginate_next_url()`:
-      ! `next_url` must have the arguments `resp` and `parsed`, not `req` and `parsed`.
+      ! `next_url` must have the arguments `resp` and `parsed`, instead it has `req` and `parsed`.
 
 # req_paginate_offset() checks inputs
 
@@ -69,7 +69,7 @@
       req_paginate_offset(req, function(req) req)
     Condition
       Error in `req_paginate_offset()`:
-      ! `offset` must have the arguments `req` and `offset`, not `req`.
+      ! `offset` must have the arguments `req` and `offset`, instead it has `req`.
     Code
       req_paginate_offset(req, function(req, offset) req, page_size = "a")
     Condition
@@ -87,7 +87,7 @@
       req_paginate_token(req, function(req) req)
     Condition
       Error in `req_paginate_token()`:
-      ! `set_token` must have the arguments `req` and `token`, not `req`.
+      ! `set_token` must have the arguments `req` and `token`, instead it has `req`.
     Code
       req_paginate_token(req, function(req, token) req, next_token = "a")
     Condition
@@ -98,7 +98,7 @@
       req)
     Condition
       Error in `req_paginate_token()`:
-      ! `next_token` must have the arguments `resp` and `parsed`, not `req`.
+      ! `next_token` must have the arguments `resp` and `parsed`, instead it has `req`.
 
 # paginate_req_perform() checks inputs
 

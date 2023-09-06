@@ -40,7 +40,7 @@
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
 #'     next_url = function(resp, parsed) parsed[["next"]],
-#'     parse_resp = function(resp) resp_body_json(resp),
+#'     parse_resp = resp_body_json,
 #'     n_pages = function(resp, parsed) {
 #'       total <- parsed$count
 #'       ceiling(total / page_size)
@@ -85,7 +85,7 @@ req_paginate <- function(req,
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
 #'     next_url = function(resp, parsed) parsed[["next"]],
-#'     parse_resp = function(resp) resp_body_json(resp),
+#'     parse_resp = resp_body_json,
 #'     n_pages = function(resp, parsed) {
 #'       total <- parsed$count
 #'       ceiling(total / page_size)
