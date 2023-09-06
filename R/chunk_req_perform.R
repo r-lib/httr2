@@ -73,7 +73,8 @@ req_chunk <- function(req,
   check_function2(apply_chunk, args = c("req", "chunk"))
 
   n <- length(chunks)
-  lapply(chunks, function(chunk) apply_chunk(req, chunk))
+  requests <- lapply(chunks, function(chunk) apply_chunk(req, chunk))
+  new_chunked_request(requests, chunks)
 }
 
 #' @rdname req_chunk
@@ -89,12 +90,13 @@ chunk_req_perform <- function(req,
                               apply_chunk,
                               parse_resp = NULL,
                               progress = TRUE) {
-  requests <- req_chunk(
+  chunked_requests <- req_chunk(
     req = req,
     data = data,
     chunk_size = chunk_size,
     apply_chunk = apply_chunk
   )
+  requests <- chunked_requests$requests
 
   parse_resp <- parse_resp %||% function(resp) resp
   check_function2(parse_resp, args = "resp")
@@ -143,4 +145,30 @@ vec_chop_by_size <- function(x,
   sizes <- vctrs::vec_cast(sizes, integer())
 
   vctrs::vec_chop(x, sizes = sizes)
+}
+
+new_chunked_request <- function(requests, chunks) {
+  structure(
+    list(
+      requests = requests,
+      chunks = chunks
+    ),
+    class = "httr2_chunked_request"
+  )
+}
+
+is_chunked_request <- function(x) {
+  inherits(x, "httr2_chunked_request")
+}
+
+#' @export
+print.httr2_chunked_request <- function(x, ..., redact_headers = TRUE) {
+  n <- length(x$chunks)
+  cli::cli_text("{.cls {class(x)}} - {n} chunks")
+  cli::cli_text("\n")
+  cli::cli_text("{.strong First chunk}\n")
+
+  print(x$requests[[1]], redact_headers = redact_headers)
+
+  invisible(x)
 }

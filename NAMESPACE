@@ -3,6 +3,7 @@
 S3method("$",httr2_headers)
 S3method("[",httr2_headers)
 S3method("[[",httr2_headers)
+S3method(print,httr2_chunked_request)
 S3method(print,httr2_cmd)
 S3method(print,httr2_headers)
 S3method(print,httr2_oauth_client)
