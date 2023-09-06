@@ -107,12 +107,31 @@ chunk_req_perform <- function(req,
 
   pb <- create_progress_bar(total = n, name = "Request chunks", progress)
   show_progress <- !is.null(pb)
+  env <- current_env()
 
   for (i in seq2(1, n)) {
     req_i <- requests[[i]]
-    resp_i <- req_perform(req_i)
+    try_fetch(
+      resp_i <- req_perform(req_i),
+      error = function(cnd) {
+        cli::cli_abort(
+          "When requesting chunk {i}.",
+          parent = cnd,
+          .envir = env
+        )
+      }
+    )
+    try_fetch(
+      parsed <- parse_resp(resp_i),
+      error = function(cnd) {
+        cli::cli_abort(
+          "When parsing response {i}.",
+          parent = cnd,
+          .envir = env
+        )
+      }
+    )
 
-    parsed <- parse_resp(resp_i)
     the$last_chunked_responses[[i]] <- parsed
     the$last_chunk_idx <- i
 
