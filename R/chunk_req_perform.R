@@ -97,6 +97,7 @@ chunk_req_perform <- function(req,
     apply_chunk = apply_chunk
   )
   requests <- chunked_requests$requests
+  the$last_chunks <- chunked_requests$chunks
 
   parse_resp <- parse_resp %||% function(resp) resp
   check_function2(parse_resp, args = "resp")
@@ -126,6 +127,12 @@ chunk_req_perform <- function(req,
 #' @rdname last_response
 last_chunked_responses <- function() {
   the$last_chunked_responses[seq2(1, the$last_chunk_idx)]
+}
+
+#' @export
+#' @rdname last_response
+last_chunk <- function() {
+  the$last_chunks[[the$last_chunk_idx]]
 }
 
 vec_chop_by_size <- function(x,

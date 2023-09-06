@@ -17,3 +17,4 @@ the$last_response <- NULL
 the$last_request <- NULL
 the$last_chunked_responses <- NULL
 the$last_chunk_idx <- NULL
+the$last_chunks <- NULL
