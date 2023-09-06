@@ -2,11 +2,14 @@
 % Please edit documentation in R/chunk_req_perform.R, R/req-perform.R
 \name{last_chunked_responses}
 \alias{last_chunked_responses}
+\alias{last_chunk}
 \alias{last_response}
 \alias{last_request}
 \title{Retrieve most recent request/response}
 \usage{
 last_chunked_responses()
+
+last_chunk()
 
 last_response()
 
