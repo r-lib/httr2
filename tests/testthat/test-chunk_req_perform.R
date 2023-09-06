@@ -27,8 +27,8 @@ test_that("req_chunk() can chunk a request", {
   )
 
   expect_length(requests, 2)
-  expect_equal(requests[[1]], req %>% req_body_json(data.frame(id = 1:3)))
-  expect_equal(requests[[2]], req %>% req_body_json(data.frame(id = 4:5)))
+  expect_equal(requests$requests[[1]], req %>% req_body_json(data.frame(id = 1:3)))
+  expect_equal(requests$requests[[2]], req %>% req_body_json(data.frame(id = 4:5)))
 })
 
 test_that("chunk_req_perform() performs a request in chunks", {
