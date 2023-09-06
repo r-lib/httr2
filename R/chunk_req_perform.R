@@ -77,6 +77,7 @@ req_chunk <- function(req,
   new_chunked_request(requests, chunks)
 }
 
+#' @export
 #' @rdname req_chunk
 #' @inheritParams paginate_req_perform
 #' @param parse_resp A function with one argument `resp` that parses the
