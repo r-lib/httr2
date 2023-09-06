@@ -184,6 +184,9 @@
     <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resp_check_content_type.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_content_type.html</loc>
   </url>
   <url>
