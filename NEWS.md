@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_paginate()` and `paginate_req_perform()` to easily request paginated
+  APIs (@mgirlich, #8).
+
 * `oauth_flow_auth_code_listen()` now takes a single `redirect_uri` argument
   instead of separate `host_ip` and `port` arguments. This is a breaking change
   but I don't expect anyone to call this function directly (which was confirmed 
