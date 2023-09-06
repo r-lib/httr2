@@ -5,7 +5,8 @@
 #' is as expected and fails otherwise.
 #'
 #' @param resp A response object.
-#' @param valid_types A character vector of valid content types.
+#' @param valid_types A character vector of valid MIME types. Should only
+#'   be specified with `type/subtype`.
 #' @param valid_suffix A string given an "structured media type" suffix.
 #' @param check_type Should the type actually be checked? Provided as a
 #'   convenience for when using this function inside `resp_body_*` helpers.
@@ -21,14 +22,15 @@
 #' # `types` can also specify multiple valid types
 #' resp_check_content_type(resp, c("application/xml", "application/json"))
 resp_check_content_type <- function(resp,
-                                    valid_types,
+                                    valid_types = NULL,
                                     valid_suffix = NULL,
                                     check_type = TRUE,
                                     call = caller_env()) {
+
   check_response(resp)
-  check_character(valid_types)
-  check_bool(check_type)
+  check_character(valid_types, allow_null = TRUE)
   check_string(valid_suffix, allow_null = TRUE)
+  check_bool(check_type)
 
   if (!check_type) {
     return(invisible())
@@ -88,14 +90,14 @@ parse_content_type <- function(x) {
 }
 
 check_content_type <- function(content_type,
-                               valid_types,
+                               valid_types = NULL,
                                valid_suffix = NULL,
                                inform_check_type = FALSE,
                                call = caller_env()) {
   parsed <- parse_content_type(content_type)
   base_type <- paste0(parsed$type, "/", parsed$subtype)
 
-  if (base_type %in% valid_types) {
+  if (is.null(valid_types) || base_type %in% valid_types) {
     return()
   }
   if (!is.null(valid_suffix) && parsed$suffix == valid_suffix) {

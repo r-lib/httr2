@@ -6,7 +6,7 @@
 \usage{
 resp_check_content_type(
   resp,
-  valid_types,
+  valid_types = NULL,
   valid_suffix = NULL,
   check_type = TRUE,
   call = caller_env()
@@ -15,7 +15,8 @@ resp_check_content_type(
 \arguments{
 \item{resp}{A response object.}
 
-\item{valid_types}{A character vector of valid content types.}
+\item{valid_types}{A character vector of valid MIME types. Should only
+be specified with \code{type/subtype}.}
 
 \item{valid_suffix}{A string given an "structured media type" suffix.}
 

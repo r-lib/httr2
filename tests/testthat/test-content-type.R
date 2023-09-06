@@ -1,3 +1,8 @@
+test_that("valid arguments are optional", {
+  resp <- response_json()
+  expect_no_error(resp_check_content_type(resp))
+})
+
 test_that("can check type of response", {
   resp1 <- response(headers = c("Content-type: application/json"))
   resp2 <- response(headers = c("Content-type: xxxxx"))
