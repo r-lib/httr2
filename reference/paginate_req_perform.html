@@ -63,7 +63,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">paginate_req_perform</span><span class="op">(</span><span class="va">req</span>, max_pages <span class="op">=</span> <span class="fl">20L</span>, progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">paginate_next_request</span><span class="op">(</span><span class="va">resp</span>, <span class="va">req</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">paginate_next_request</span><span class="op">(</span><span class="va">resp</span>, <span class="va">req</span>, <span class="va">parsed</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -83,12 +83,17 @@
 <dt>resp</dt>
 <dd><p>An HTTP <a href="response.html">response</a>.</p></dd>
 
+
+<dt>parsed</dt>
+<dd><p>The response parsed by the argument <code>parse_resp</code> of <code><a href="req_paginate.html">req_paginate()</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list of responses.</p>
+<p>A list of responses parsed with the <code>parse_resp</code> argument of
+<code><a href="req_paginate.html">req_paginate()</a></code>. If this argument is not specified, it will be a list of responses.</p>
     </div>
 
     <div class="section level2">
@@ -98,9 +103,10 @@
 <span class="r-in"><span><span class="va">req_pokemon</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://pokeapi.co/api/v2/pokemon"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="va">page_size</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_paginate.html">req_paginate_next_url</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    next_url <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">[[</span><span class="st">"next"</span><span class="op">]</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>      <span class="va">total</span> <span class="op">&lt;-</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">$</span><span class="va">count</span></span></span>
+<span class="r-in"><span>    next_url <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span>, <span class="va">parsed</span><span class="op">)</span> <span class="va">parsed</span><span class="op">[[</span><span class="st">"next"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>    parse_resp <span class="op">=</span> <span class="va">resp_body_json</span>,</span></span>
+<span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span>, <span class="va">parsed</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">total</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">count</span></span></span>
 <span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">total</span> <span class="op">/</span> <span class="va">page_size</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>

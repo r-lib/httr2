@@ -94,13 +94,19 @@ that is used to describe the next page.</p></li>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_paginate</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_request</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_paginate</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_request</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">req_paginate_next_url</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_url</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">req_paginate_next_url</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_url</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">req_paginate_offset</span><span class="op">(</span><span class="va">req</span>, <span class="va">offset</span>, <span class="va">page_size</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">req_paginate_offset</span><span class="op">(</span><span class="va">req</span>, <span class="va">offset</span>, <span class="va">page_size</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">req_paginate_token</span><span class="op">(</span><span class="va">req</span>, <span class="va">set_token</span>, <span class="va">next_token</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">req_paginate_token</span><span class="op">(</span></span>
+<span>  <span class="va">req</span>,</span>
+<span>  <span class="va">set_token</span>,</span>
+<span>  <span class="va">next_token</span>,</span>
+<span>  parse_resp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_pages <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -110,20 +116,29 @@ that is used to describe the next page.</p></li>
 
 
 <dt>next_request</dt>
-<dd><p>A callback function that takes a two arguments (the
-original request and the response) and returns:</p><ul><li><p>a new <a href="request.html">request</a> to request the next page or</p></li>
-<li><p><code>NULL</code> if there is no next page.</p></li>
-</ul></dd>
+<dd><p>A callback function that returns a <a href="request.html">request</a> to the next
+page or <code>NULL</code> if there is no next page. It takes a three arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
+<li><p><code>resp</code>: the response of the current request.</p></li>
+<li><p><code>parsed</code>: the result of the argument <code>parse_resp</code>.</p></li>
+</ol></dd>
+
+
+<dt>parse_resp</dt>
+<dd><p>A function with one argument <code>resp</code> that parses the
+response. The result is passed to the argument <code>parsed</code> of <code>next_request()</code> and
+<code>n_pages()</code>. This helps to avoid parsing the response multiple times.</p></dd>
 
 
 <dt>n_pages</dt>
-<dd><p>A function that extracts the total number of pages from
-the <a href="response.html">response</a>.</p></dd>
+<dd><p>An optional function that extracts the total number of pages, improving the
+automatically generated progress bar. It has two arguments:</p><ol><li><p><code>resp</code>: the response of the current request.</p></li>
+<li><p><code>parsed</code>: the result of the argument <code>parse_resp</code>.</p></li>
+</ol></dd>
 
 
 <dt>next_url</dt>
 <dd><p>A function that extracts the url to the next page from the
-<a href="response.html">response</a>.</p></dd>
+<a href="response.html">response</a> and the <code>body</code>.</p></dd>
 
 
 <dt>offset</dt>
@@ -164,9 +179,10 @@ to generate the request to the next page.</p></div>
 <span class="r-in"><span><span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://pokeapi.co/api/v2/pokemon"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="va">page_size</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">req_paginate_next_url</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    next_url <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">[[</span><span class="st">"next"</span><span class="op">]</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>      <span class="va">total</span> <span class="op">&lt;-</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">$</span><span class="va">count</span></span></span>
+<span class="r-in"><span>    parse_resp <span class="op">=</span> <span class="va">resp_body_json</span>,</span></span>
+<span class="r-in"><span>    next_url <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span>, <span class="va">parsed</span><span class="op">)</span> <span class="va">parsed</span><span class="op">[[</span><span class="st">"next"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span>, <span class="va">parsed</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">total</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">count</span></span></span>
 <span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">total</span> <span class="op">/</span> <span class="va">page_size</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
