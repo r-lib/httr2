@@ -7,7 +7,7 @@
 #'
 #' @inheritParams req_perform
 #' @param chunk_size The size of each chunk.
-#' @param data The data to chunk.
+#' @param data The vector to chunk.
 #' @param apply_chunk A function that applies the chunk to the request. It
 #'   takes two arguments:
 #'

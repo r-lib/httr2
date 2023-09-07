@@ -15,7 +15,7 @@ chunk_next_request(req, i = NULL)
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{data}{The data to chunk.}
+\item{data}{The vector to chunk.}
 
 \item{chunk_size}{The size of each chunk.}
 
