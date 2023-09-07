@@ -73,7 +73,8 @@ req_paginate <- function(req,
 #' @param resp An HTTP [response].
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
 #' @param max_pages The maximum number of pages to request.
-#' @param progress Display a progress bar?
+#' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
+#'   bar, use a string to give it a name, or see [progress_bars] for more details.
 #'
 #' @return A list of responses parsed with the `parse_resp` argument of
 #'   [req_paginate()]. If this argument is not specified, it will be a list of responses.
