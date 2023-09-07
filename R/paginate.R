@@ -141,6 +141,9 @@ paginate_req_perform <- function(req,
   }
   cli::cli_progress_done()
 
+  # `page` may be `NULL` if `start >= n_pages`
+  page <- page %||% 1L
+
   # remove unused end of `out` in case the pagination loop exits before all
   # `max_pages` is reached
   if (page < n_pages) {
