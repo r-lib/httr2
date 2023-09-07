@@ -67,14 +67,31 @@
 req_chunk <- function(req,
                       data,
                       chunk_size,
-                      apply_chunk) {
+                      apply_chunk,
+                      parse_resp = NULL) {
   check_request(req)
-  chunks <- vec_chop_by_size(data, chunk_size)
+  check_installed("vctrs", version = "0.6.0")
+  vctrs::obj_check_vector(data)
+  check_number_whole(chunk_size, min = 1)
   check_function2(apply_chunk, args = c("req", "chunk"))
+  check_function2(parse_resp, args = "resp", allow_null = TRUE, call = error_call)
+  parse_resp <- parse_resp %||% identity
 
-  n <- length(chunks)
-  requests <- lapply(chunks, function(chunk) apply_chunk(req, chunk))
-  new_chunked_request(requests, chunks)
+  n <- vctrs::vec_size(data)
+  n_chunks <- ceiling(n / chunk_size)
+
+  req_policies(
+    req,
+    chunk = list(
+      apply_chunk = apply_chunk,
+      data = data,
+      cur_chunk = 0L,
+      chunk_size = chunk_size,
+      n_chunks = n_chunks,
+      size = n,
+      parse_resp = parse_resp
+    )
+  )
 }
 
 #' @export
@@ -83,38 +100,30 @@ req_chunk <- function(req,
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response.
 #' @param progress Whether to show a progress bar. Use `TRUE` to turn on a basic
-#'   progress bar, use a string to give it a name, or see progress_bars for more
+#'   progress bar, use a string to give it a name, or see [progress_bars] for more
 #'   details.
 chunk_req_perform <- function(req,
-                              data,
-                              chunk_size,
-                              apply_chunk,
-                              parse_resp = NULL,
                               progress = TRUE,
                               error_call = current_env()) {
-  chunked_requests <- req_chunk(
-    req = req,
-    data = data,
-    chunk_size = chunk_size,
-    apply_chunk = apply_chunk
-  )
-  requests <- chunked_requests$requests
-  the$last_chunks <- chunked_requests$chunks
+  check_request(req)
+  check_has_chunk_policy(req)
 
-  parse_resp <- parse_resp %||% function(resp) resp
-  check_function2(parse_resp, args = "resp", call = error_call)
+  parse_resp <- req$policies$chunk$parse_resp
 
-  n <- length(requests)
+  n <- req$policies$chunk$n_chunks
   the$last_chunked_responses <- vector("list", n)
+  the$last_chunks <- vector("list", n)
 
   pb <- create_progress_bar(total = n, name = "Request chunks", progress)
   show_progress <- !is.null(pb)
   env <- current_env()
 
   for (i in seq2(1, n)) {
-    req_i <- requests[[i]]
+    req <- chunk_next_request(req)
+    the$last_chunks[[i]] <- req
+
     try_fetch(
-      resp_i <- req_perform(req_i),
+      resp_i <- req_perform(req),
       error = function(cnd) {
         cli::cli_abort(
           "When requesting chunk {i}.",
@@ -124,6 +133,7 @@ chunk_req_perform <- function(req,
         )
       }
     )
+
     try_fetch(
       parsed <- parse_resp(resp_i),
       error = function(cnd) {
@@ -158,47 +168,43 @@ last_chunk <- function() {
   the$last_chunks[[the$last_chunk_idx]]
 }
 
-vec_chop_by_size <- function(x,
-                             size,
-                             x_arg = caller_arg(x),
-                             size_arg = caller_arg(size),
-                             error_call = caller_env()) {
-  check_installed("vctrs", version = "0.6.0", call = error_call)
-  vctrs::obj_check_vector(x, call = error_call, arg = x_arg)
-  check_number_whole(size, min = 1, call = error_call, arg = size_arg)
-
-  n <- vctrs::vec_size(x)
-  sizes <- vctrs::vec_rep(size, n %/% size)
-  if (n %% size != 0) {
-    sizes <- c(sizes, n %% size)
-  }
-  sizes <- vctrs::vec_cast(sizes, integer())
-
-  vctrs::vec_chop(x, sizes = sizes)
-}
-
-new_chunked_request <- function(requests, chunks) {
-  structure(
-    list(
-      requests = requests,
-      chunks = chunks
-    ),
-    class = "httr2_chunked_request"
-  )
-}
-
-is_chunked_request <- function(x) {
-  inherits(x, "httr2_chunked_request")
-}
-
 #' @export
-print.httr2_chunked_request <- function(x, ..., redact_headers = TRUE) {
-  n <- length(x$chunks)
-  cli::cli_text("{.cls {class(x)}} - {n} chunks")
-  cli::cli_text("\n")
-  cli::cli_text("{.strong First chunk}\n")
+#' @rdname chunk_req_perform
+chunk_next_request <- function(req, i = NULL) {
+  check_request(req)
+  check_has_chunk_policy(req)
+  check_number_whole(i, min = 1, allow_null = TRUE)
 
-  print(x$requests[[1]], redact_headers = redact_headers)
+  if (is.null(i)) {
+    req$policies$chunk$cur_chunk <- req$policies$chunk$cur_chunk + 1L
+    i <- req$policies$chunk$cur_chunk
+  } else {
+    req$policies$chunk$cur_chunk <- i
+  }
 
-  invisible(x)
+  n_chunks <- req$policies$chunk$n_chunks
+  if (i > n_chunks) {
+    return()
+  }
+
+  chunk_size <- req$policies$chunk$chunk_size
+  size <- req$policies$chunk$size
+
+  start <- (i - 1L) * chunk_size
+  idx <- seq2(start + 1L, min(start + chunk_size, size))
+
+  apply_chunk <- req$policies$chunk$apply_chunk
+  data <- req$policies$chunk$data
+  chunk <- vctrs::vec_slice(data, idx)
+
+  apply_chunk(req, chunk)
+}
+
+check_has_chunk_policy <- function(req, call = caller_env()) {
+  if (!req_policy_exists(req, "chunk")) {
+    cli::cli_abort(c(
+      "{.arg req} doesn't have a chunk policy.",
+      i = "You can add it via `req_chunk()`."
+    ))
+  }
 }

@@ -9,9 +9,6 @@ req_chunk(req, data, chunk_size, apply_chunk)
 
 chunk_req_perform(
   req,
-  data,
-  chunk_size,
-  apply_chunk,
   parse_resp = NULL,
   progress = TRUE,
   error_call = current_env()
@@ -35,7 +32,7 @@ takes two arguments:
 response.}
 
 \item{progress}{Whether to show a progress bar. Use \code{TRUE} to turn on a basic
-progress bar, use a string to give it a name, or see progress_bars for more
+progress bar, use a string to give it a name, or see \link{progress_bars} for more
 details.}
 
 \item{error_call}{The execution environment of a currently
