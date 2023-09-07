@@ -103,7 +103,8 @@ paginate_req_perform <- function(req,
   check_bool(progress)
 
   resp <- req_perform(req)
-  parsed <- paginate_parse_response(resp, req)
+  parse_resp <- req$policies$paginate$parse_resp
+  parsed <- parse_resp(resp)
 
   f_n_pages <- req$policies$paginate$n_pages
 
@@ -132,7 +133,7 @@ paginate_req_perform <- function(req,
     }
 
     resp <- req_perform(req)
-    parsed <- paginate_parse_response(resp, req)
+    parsed <- parse_resp(resp)
 
     out[[page]] <- parsed
 
@@ -150,7 +151,6 @@ paginate_req_perform <- function(req,
 }
 
 #' @export
-#'
 #' @rdname paginate_req_perform
 paginate_next_request <- function(resp, req, parsed) {
   check_response(resp)
@@ -163,15 +163,6 @@ paginate_next_request <- function(resp, req, parsed) {
     req = req,
     parsed = parsed
   )
-}
-
-paginate_parse_response <- function(resp, req) {
-  parse_resp <- req$policies$paginate$parse_resp
-  if (is.null(parse_resp)) {
-    return(NULL)
-  }
-
-  parse_resp(resp)
 }
 
 #' @param next_url A function that extracts the url to the next page from the
