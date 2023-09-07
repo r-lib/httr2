@@ -193,3 +193,33 @@ test_that("paginate_req_perform() iterates through pages", {
   expect_length(responses_inf, 4)
   expect_equal(responses_inf[[4]], token_body())
 })
+
+test_that("paginate_req_perform() handles error in `parse_resp()`", {
+  token_body <- function(token = NULL) {
+    compact(list(x = list(1), my_next_token = token))
+  }
+  local_mocked_responses(function(req) {
+    cur_token <- req$body$data$my_token %||% 1L
+    response_json(body = token_body(if (cur_token != 4) cur_token + 1))
+  })
+
+  req <- request_test() %>%
+    req_paginate_token(
+      set_token = function(req, token) {
+        req_body_json(req, list(my_token = token))
+      },
+      next_token = function(resp, parsed) {
+        parsed$my_next_token
+      },
+      parse_resp = function(resp) {
+        parsed <- resp_body_json(resp)
+        if (parsed$my_next_token >= 2) {
+          abort("error")
+        }
+      }
+    )
+
+  expect_snapshot(error = TRUE, {
+    paginate_req_perform(req, max_pages = 2)
+  })
+})

@@ -134,3 +134,11 @@
       Error in `paginate_req_perform()`:
       ! `progress` must be `TRUE` or `FALSE`, not the string "a".
 
+# paginate_req_perform() handles error in `parse_resp()`
+
+    Code
+      paginate_req_perform(req, max_pages = 2)
+    Condition
+      Error in `parse_resp()`:
+      ! error
+
