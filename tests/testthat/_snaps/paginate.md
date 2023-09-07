@@ -129,10 +129,10 @@
       Error in `paginate_req_perform()`:
       ! `max_pages` must be a whole number larger than or equal to 1, not the number 0.
     Code
-      paginate_req_perform(req, progress = "a")
+      paginate_req_perform(req, progress = -1)
     Condition
       Error in `paginate_req_perform()`:
-      ! `progress` must be `TRUE` or `FALSE`, not the string "a".
+      ! `progress` must be a bool, a string, or a list, not the number -1.
 
 # paginate_req_perform() handles error in `parse_resp()`
 

@@ -100,7 +100,6 @@ paginate_req_perform <- function(req,
   check_request(req)
   check_has_pagination_policy(req)
   check_number_whole(max_pages, allow_infinite = TRUE, min = 1)
-  check_bool(progress)
 
   resp <- req_perform(req)
   parse_resp <- req$policies$paginate$parse_resp
@@ -109,6 +108,13 @@ paginate_req_perform <- function(req,
   f_n_pages <- req$policies$paginate$n_pages
 
   n_pages <- min(f_n_pages(resp, parsed), max_pages)
+  pb <- create_progress_bar(
+    total = n_pages,
+    name = "Paginate",
+    config = progress
+  )
+  show_progress <- !is.null(pb)
+
   # the implementation below doesn't really support an infinite amount of pages
   # but 100e3 should be plenty
   if (is.infinite(n_pages)) {
@@ -117,13 +123,6 @@ paginate_req_perform <- function(req,
 
   out <- vector("list", length = n_pages)
   out[[1]] <- parsed
-
-  cli::cli_progress_bar(
-    "Paginate",
-    total = n_pages,
-    format = "{cli::pb_spin} Page {cli::pb_current}/{cli::pb_total} | ETA: {cli::pb_eta}",
-    current = 1L
-  )
 
   for (page in seq2(2, n_pages)) {
     req <- paginate_next_request(resp, req, parsed)
@@ -137,9 +136,9 @@ paginate_req_perform <- function(req,
 
     out[[page]] <- parsed
 
-    cli::cli_progress_update()
+    if (show_progress) cli::cli_progress_update()
   }
-  cli::cli_progress_done()
+  if (show_progress) cli::cli_progress_done()
 
   # remove unused end of `out` in case the pagination loop exits before all
   # `max_pages` is reached
