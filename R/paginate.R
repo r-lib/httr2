@@ -22,7 +22,7 @@
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response. The result is passed to the argument `parsed` of `next_request()` and
 #'   `n_pages()`. This helps to avoid parsing the response multiple times.
-#' @param n_pages An optional function that extracts the total number of pages, improving the 
+#' @param n_pages An optional function that extracts the total number of pages, improving the
 #'   automatically generated progress bar. It has two arguments:
 #'
 #'   1. `resp`: the response of the current request.
@@ -55,6 +55,7 @@ req_paginate <- function(req,
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
   parse_resp <- parse_resp %||% identity
   check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
+  n_pages <- n_pages %||% function(resp, parsed) Inf
 
   req_policies(
     req,
@@ -104,7 +105,7 @@ paginate_req_perform <- function(req,
   resp <- req_perform(req)
   parsed <- paginate_parse_response(resp, req)
 
-  f_n_pages <- req$policies$paginate$n_pages %||% function(resp, parsed) Inf
+  f_n_pages <- req$policies$paginate$n_pages
 
   n_pages <- min(f_n_pages(resp, parsed), max_pages)
   # the implementation below doesn't really support an infinite amount of pages
