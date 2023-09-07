@@ -16,14 +16,14 @@
 #' @param next_request A callback function that returns a [request] to the next
 #'   page or `NULL` if there is no next page. It takes a three arguments:
 #'
-#'   1. `req`: the original request.
+#'   1. `req`: the previous request.
 #'   2. `resp`: the response of the current request.
 #'   3. `parsed`: the result of the argument `parse_resp`.
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response. The result is passed to the argument `parsed` of `next_request()` and
 #'   `n_pages()`. This helps to avoid parsing the response multiple times.
-#' @param n_pages A function that extracts the total number of pages. It has two
-#'   arguments:
+#' @param n_pages An optional function that extracts the total number of pages, improving the 
+#'   automatically generated progress bar. It has two arguments:
 #'
 #'   1. `resp`: the response of the current request.
 #'   2. `parsed`: the result of the argument `parse_resp`.
@@ -39,8 +39,8 @@
 #' request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
-#'     next_url = function(resp, parsed) parsed[["next"]],
 #'     parse_resp = resp_body_json,
+#'     next_url = function(resp, parsed) parsed[["next"]],
 #'     n_pages = function(resp, parsed) {
 #'       total <- parsed$count
 #'       ceiling(total / page_size)
@@ -53,7 +53,7 @@ req_paginate <- function(req,
   check_request(req)
   check_function2(next_request, args = c("req", "resp", "parsed"))
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
-  parse_resp <- parse_resp %||% function(resp) resp
+  parse_resp <- parse_resp %||% identity
   check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
 
   req_policies(
@@ -75,7 +75,7 @@ req_paginate <- function(req,
 #' @param progress Display a progress bar?
 #'
 #' @return A list of responses parsed with the `parse_resp` argument of
-#'   [req_paginate()].
+#'   [req_paginate()]. If this argument is not specified, it will be a list of responses.
 #' @export
 #'
 #' @examples

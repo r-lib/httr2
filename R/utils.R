@@ -226,7 +226,7 @@ check_function2 <- function(x,
   if (n_actual_args == 0) {
     arg_info <- "instead it has no arguments"
   } else {
-    arg_info <- paste0("instead it has {.arg {actual_args}}")
+    arg_info <- paste0("it currently has {.arg {actual_args}}")
   }
 
   cli::cli_abort(
