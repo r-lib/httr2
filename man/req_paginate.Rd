@@ -7,29 +7,44 @@
 \alias{req_paginate_token}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, n_pages = NULL)
+req_paginate(req, next_request, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_next_url(req, next_url, n_pages = NULL)
+req_paginate_next_url(req, next_url, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_offset(req, offset, page_size, n_pages = NULL)
+req_paginate_offset(req, offset, page_size, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_token(req, set_token, next_token, n_pages = NULL)
+req_paginate_token(
+  req,
+  set_token,
+  next_token,
+  parse_resp = NULL,
+  n_pages = NULL
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{next_request}{A callback function that takes a two arguments (the
-original request and the response) and returns:
-\itemize{
-\item a new \link{request} to request the next page or
-\item \code{NULL} if there is no next page.
+\item{next_request}{A callback function that returns a \link{request} to the next
+page or \code{NULL} if there is no next page. It takes a three arguments:
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{resp}: the response of the current request.
+\item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
-\item{n_pages}{A function that extracts the total number of pages from
-the \link{response}.}
+\item{parse_resp}{A function with one argument \code{resp} that parses the
+response. The result is passed to the argument \code{parsed} of \code{next_request()} and
+\code{n_pages()}. This helps to avoid parsing the response multiple times.}
+
+\item{n_pages}{An optional function that extracts the total number of pages, improving the
+automatically generated progress bar. It has two arguments:
+\enumerate{
+\item \code{resp}: the response of the current request.
+\item \code{parsed}: the result of the argument \code{parse_resp}.
+}}
 
 \item{next_url}{A function that extracts the url to the next page from the
-\link{response}.}
+\link{response} and the \code{body}.}
 
 \item{offset}{A function that applies the new offset to the request. It takes
 two arguments: a \link{request} and an integer offset.}
@@ -66,9 +81,10 @@ page_size <- 150
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
-    next_url = function(resp) resp_body_json(resp)[["next"]],
-    n_pages = function(resp) {
-      total <- resp_body_json(resp)$count
+    parse_resp = resp_body_json,
+    next_url = function(resp, parsed) parsed[["next"]],
+    n_pages = function(resp, parsed) {
+      total <- parsed$count
       ceiling(total / page_size)
     }
   )

@@ -215,29 +215,22 @@ check_function2 <- function(x,
   }
 
   actual_args <- fn_fmls_names(f) %||% character()
-  if (identical(actual_args, expected_args)) {
+  missing_args <- setdiff(expected_args, actual_args)
+  if (is_empty(missing_args)) {
     return(invisible(NULL))
   }
 
   n_expected_args <- length(expected_args)
   n_actual_args <- length(actual_args)
 
-  if (n_expected_args == 0) {
-    cli::cli_abort(
-      "{.arg {arg}} must have no arguments, not {n_actual_args} argument{?s}.",
-      call = call,
-      arg = arg
-    )
-  }
-
   if (n_actual_args == 0) {
-    arg_info <- "instead of no arguments"
+    arg_info <- "instead it has no arguments"
   } else {
-    arg_info <- "not {.arg {actual_args}}"
+    arg_info <- paste0("it currently has {.arg {actual_args}}")
   }
 
   cli::cli_abort(
-    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}, ", arg_info, "."),
+    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}; ", arg_info, "."),
     call = call,
     arg = arg
   )

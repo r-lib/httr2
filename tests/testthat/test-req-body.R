@@ -63,6 +63,24 @@ test_that("can send any type of object as json", {
   expect_equal(json$json, as.list(letters))
 })
 
+test_that("can use custom json type", {
+  resp <- request_test("/post") %>%
+    req_body_json(mtcars, type = "application/ld+json") %>%
+    req_perform()
+
+  expect_equal(
+    resp_body_json(resp)$headers$`Content-Type`,
+    "application/ld+json"
+  )
+})
+
+test_that("non-json type errors", {
+  expect_snapshot(
+    req_body_json(request_test(), mtcars, type = "application/xml"),
+    error = TRUE
+  )
+})
+
 test_that("can send named elements as form/multipart", {
   data <- list(a = "1", b = "2")
 

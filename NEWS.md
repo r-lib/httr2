@@ -1,6 +1,18 @@
 # httr2 (development version)
 
-* Add `chunk_req_perform()` to perform a request in chunks (@mgirlich, #303).
+* New `req_chunk()` and `chunk_req_perform()` to perform a request in
+  chunks (@mgirlich, #303).
+
+* New `req_paginate()` and `paginate_req_perform()` to easily request paginated
+  APIs (@mgirlich, #8).
+
+* New `resp_check_content_type()` to check response content types (#190).
+  `resp_body_json()` and friends give better errors if no `Content-Type`
+  header is present in the response (#284).
+
+* `req_body_json()` gains custom content `type` argument
+  and respects custom content-type set in header (@mgirlich, #189).
+>>>>>>> 62cd461e68e2d23de429d5f703a8034843d27a1c
 
 * `oauth_flow_auth_code_listen()` now takes a single `redirect_uri` argument
   instead of separate `host_ip` and `port` arguments. This is a breaking change

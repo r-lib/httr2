@@ -19,17 +19,13 @@
     Code
       request_test("/xml") %>% req_perform() %>% resp_body_json()
     Condition
-      Error in `check_content_type()`:
+      Error in `resp_body_json()`:
       ! Unexpected content type "application/xml".
-      Expecting "'application/json'"
-      Or suffix "+json".
-      i Override check with `check_type = FALSE`.
+      * Expecting type "application/json" or suffix "json".
     Code
       request_test("/json") %>% req_perform() %>% resp_body_xml()
     Condition
-      Error in `check_content_type()`:
+      Error in `resp_body_xml()`:
       ! Unexpected content type "application/json".
-      Expecting "one of 'application/xml', 'text/xml'"
-      Or suffix "+xml".
-      i Override check with `check_type = FALSE`.
+      * Expecting type "application/xml" or "text/xml" or suffix "xml".
 
