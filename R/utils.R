@@ -230,7 +230,7 @@ check_function2 <- function(x,
   }
 
   cli::cli_abort(
-    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}, ", arg_info, "."),
+    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}; ", arg_info, "."),
     call = call,
     arg = arg
   )
