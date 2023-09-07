@@ -7,7 +7,7 @@
 \usage{
 paginate_req_perform(req, max_pages = 20L, progress = TRUE)
 
-paginate_next_request(resp, req, parsed = NULL)
+paginate_next_request(resp, req, parsed)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -18,10 +18,11 @@ paginate_next_request(resp, req, parsed = NULL)
 
 \item{resp}{An HTTP \link{response}.}
 
-\item{parsed}{The response parsed by the argument \code{parse_resp} of \code{req_paginate()}.}
+\item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
 }
 \value{
-A list of responses.
+A list of responses parsed with the \code{parse_resp} argument of
+\code{\link[=req_paginate]{req_paginate()}}. If this argument is not specified, it will be a list of responses.
 }
 \description{
 Perform a paginated request
@@ -33,7 +34,7 @@ req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
     next_url = function(resp, parsed) parsed[["next"]],
-    parse_resp = function(resp) resp_body_json(resp),
+    parse_resp = resp_body_json,
     n_pages = function(resp, parsed) {
       total <- parsed$count
       ceiling(total / page_size)

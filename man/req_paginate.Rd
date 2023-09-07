@@ -27,17 +27,17 @@ req_paginate_token(
 \item{next_request}{A callback function that returns a \link{request} to the next
 page or \code{NULL} if there is no next page. It takes a three arguments:
 \enumerate{
-\item \code{req}: the original request.
+\item \code{req}: the previous request.
 \item \code{resp}: the response of the current request.
 \item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
-response. This is passed to the argument \code{parsed} of \code{next_request()} and
+response. The result is passed to the argument \code{parsed} of \code{next_request()} and
 \code{n_pages()}. This helps to avoid parsing the response multiple times.}
 
-\item{n_pages}{A function that extracts the total number of pages. It has two
-arguments:
+\item{n_pages}{An optional function that extracts the total number of pages, improving the
+automatically generated progress bar. It has two arguments:
 \enumerate{
 \item \code{resp}: the response of the current request.
 \item \code{parsed}: the result of the argument \code{parse_resp}.
@@ -81,8 +81,8 @@ page_size <- 150
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
+    parse_resp = resp_body_json,
     next_url = function(resp, parsed) parsed[["next"]],
-    parse_resp = function(resp) resp_body_json(resp),
     n_pages = function(resp, parsed) {
       total <- parsed$count
       ceiling(total / page_size)
