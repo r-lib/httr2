@@ -3,9 +3,15 @@ test_that("req_paginate() checks inputs", {
   next_request <- function(req, resp, parsed) req
 
   expect_snapshot(error = TRUE, {
+    # `req`
     req_paginate("a", next_request)
+    # `next_request`
     req_paginate(req, "a")
     req_paginate(req, function(req) req)
+    # `parse_resp`
+    req_paginate(req, next_request, parse_resp = "a")
+    req_paginate(req, next_request, parse_resp = function(x) x)
+    # `n_pages`
     req_paginate(req, next_request, n_pages = "a")
     req_paginate(req, next_request, n_pages = function(x) x)
   })
@@ -141,8 +147,9 @@ test_that("paginate_req_perform() checks inputs", {
         req_body_json(req, list(my_token = token))
       },
       next_token = function(resp, parsed) {
-        resp_body_json(resp)$my_next_token
-      }
+        parsed$my_next_token
+      },
+      parse_resp = resp_body_json
     )
 
   expect_snapshot(error = TRUE, {
@@ -170,7 +177,7 @@ test_that("paginate_req_perform() iterates through pages", {
       next_token = function(resp, parsed) {
         parsed$my_next_token
       },
-      parse_resp = function(resp) resp_body_json(resp)
+      parse_resp = resp_body_json
     )
 
   responses_2 <- paginate_req_perform(req, max_pages = 2)

@@ -16,6 +16,16 @@
       Error in `req_paginate()`:
       ! `next_request` must have the arguments `req`, `resp`, and `parsed`; it currently has `req`.
     Code
+      req_paginate(req, next_request, parse_resp = "a")
+    Condition
+      Error in `req_paginate()`:
+      ! `parse_resp` must be a function or `NULL`, not the string "a".
+    Code
+      req_paginate(req, next_request, parse_resp = function(x) x)
+    Condition
+      Error in `req_paginate()`:
+      ! `parse_resp` must have the argument `resp`; it currently has `x`.
+    Code
       req_paginate(req, next_request, n_pages = "a")
     Condition
       Error in `req_paginate()`:
