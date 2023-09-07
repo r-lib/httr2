@@ -1,5 +1,10 @@
 #' Chunk a request
 #'
+#' Use `req_chunk()` to specify how to request a chunk of data.
+#' Use `chunk_req_perform()` to request all chunks.
+#' If you need more control use a combination of [req_perform()] and
+#' [chunk_next_request()] to iterate through the chunks yourself.
+#'
 #' @inheritParams req_perform
 #' @param chunk_size The size of each chunk.
 #' @param data The data to chunk.
@@ -8,8 +13,11 @@
 #'
 #'   1. `req`: the original request.
 #'   2. `chunk`: the current data chunk.#'
+#' @param parse_resp A function with one argument `resp` that parses the
+#'   response.
 #' @return For `req_chunk()` a list of requests. For `chunk_req_perform()` a
-#'   list of parsed responses.
+#'   list of parsed responses. If this argument is not specified, it will be a
+#'   list of responses.
 #' @export
 #'
 #' @examples
@@ -94,14 +102,11 @@ req_chunk <- function(req,
   )
 }
 
-#' @export
-#' @rdname req_chunk
-#' @inheritParams paginate_req_perform
-#' @param parse_resp A function with one argument `resp` that parses the
-#'   response.
 #' @param progress Whether to show a progress bar. Use `TRUE` to turn on a basic
 #'   progress bar, use a string to give it a name, or see [progress_bars] for more
 #'   details.
+#' @export
+#' @rdname req_chunk
 chunk_req_perform <- function(req,
                               progress = TRUE,
                               error_call = current_env()) {
@@ -168,8 +173,9 @@ last_chunk <- function() {
   the$last_chunks[[the$last_chunk_idx]]
 }
 
+#' @param i The index of the chunk to request.
 #' @export
-#' @rdname chunk_req_perform
+#' @rdname req_chunk
 chunk_next_request <- function(req, i = NULL) {
   check_request(req)
   check_has_chunk_policy(req)
