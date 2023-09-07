@@ -35,9 +35,9 @@ test_that("content types are checked", {
     request_test("/xml") %>% req_perform() %>% resp_body_json()
     request_test("/json") %>% req_perform() %>% resp_body_xml()
   })
-})
 
-test_that("check_content_type() can consult suffixes", {
-  resp <- response(headers = "Content-type: application/vnd.github-issue.text+json")
-  expect_null(check_content_type(resp, "application/json", suffix = "+json"))
+  resp <- request_test("/json") %>% req_perform()
+  resp$headers$`Content-Type` <- "application/xml"
+  expect_error(resp_body_json(resp))
+  expect_no_error(resp_body_json(resp, check_type = FALSE))
 })
