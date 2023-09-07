@@ -152,7 +152,7 @@ paginate_req_perform <- function(req,
 #' @export
 #'
 #' @rdname paginate_req_perform
-paginate_next_request <- function(resp, req, parsed = NULL) {
+paginate_next_request <- function(resp, req, parsed) {
   check_response(resp)
   check_request(req)
   check_has_pagination_policy(req)
