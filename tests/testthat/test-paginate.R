@@ -1,11 +1,17 @@
 test_that("req_paginate() checks inputs", {
   req <- request("http://example.com/")
-  next_request <- function(req, resp) req
+  next_request <- function(req, resp, parsed) req
 
   expect_snapshot(error = TRUE, {
+    # `req`
     req_paginate("a", next_request)
+    # `next_request`
     req_paginate(req, "a")
     req_paginate(req, function(req) req)
+    # `parse_resp`
+    req_paginate(req, next_request, parse_resp = "a")
+    req_paginate(req, next_request, parse_resp = function(x) x)
+    # `n_pages`
     req_paginate(req, next_request, n_pages = "a")
     req_paginate(req, next_request, n_pages = function(x) x)
   })
@@ -13,10 +19,10 @@ test_that("req_paginate() checks inputs", {
 
 test_that("paginate_next_request() produces the request to the next page", {
   resp <- response()
-  f_next_request <- function(req, resp) {
+  f_next_request <- function(req, resp, parsed) {
     req_url_path(req, "/2")
   }
-  f_n_pages <- function(resp) 3
+  f_n_pages <- function(resp, parsed) 3
 
   req <- req_paginate(
     request("http://example.com/"),
@@ -38,7 +44,7 @@ test_that("paginate_next_request() produces the request to the next page", {
 test_that("req_paginate_next_url() checks inputs", {
   expect_snapshot(error = TRUE, {
     req_paginate_next_url(request("http://example.com/"), "a")
-    req_paginate_next_url(request("http://example.com/"), function(req) req)
+    req_paginate_next_url(request("http://example.com/"), function(req, parsed) req)
   })
 })
 
@@ -57,7 +63,7 @@ test_that("req_paginate_next_url() can paginate", {
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
     req_paginate_next_url(
-      next_url = function(resp) resp_body_json(resp)[["next"]]
+      next_url = function(resp, parsed) resp_body_json(resp)[["next"]]
     )
 
   resp <- req_perform(req1)
@@ -120,7 +126,7 @@ test_that("req_paginate_token() can paginate", {
       set_token = function(req, token) {
         req_body_json(req, list(my_token = token))
       },
-      next_token = function(resp) {
+      next_token = function(resp, parsed) {
         resp_body_json(resp)$my_next_token
       }
     )
@@ -140,9 +146,10 @@ test_that("paginate_req_perform() checks inputs", {
       set_token = function(req, token) {
         req_body_json(req, list(my_token = token))
       },
-      next_token = function(resp) {
-        resp_body_json(resp)$my_next_token
-      }
+      next_token = function(resp, parsed) {
+        parsed$my_next_token
+      },
+      parse_resp = resp_body_json
     )
 
   expect_snapshot(error = TRUE, {
@@ -167,21 +174,52 @@ test_that("paginate_req_perform() iterates through pages", {
       set_token = function(req, token) {
         req_body_json(req, list(my_token = token))
       },
-      next_token = function(resp) {
-        resp_body_json(resp)$my_next_token
-      }
+      next_token = function(resp, parsed) {
+        parsed$my_next_token
+      },
+      parse_resp = resp_body_json
     )
 
   responses_2 <- paginate_req_perform(req, max_pages = 2)
   expect_length(responses_2, 2)
-  expect_equal(resp_body_json(responses_2[[1]]), token_body(2))
-  expect_equal(resp_body_json(responses_2[[2]]), token_body(3))
+  expect_equal(responses_2[[1]], token_body(2))
+  expect_equal(responses_2[[2]], token_body(3))
 
   responses_5 <- paginate_req_perform(req, max_pages = 5)
   expect_length(responses_5, 4)
-  expect_equal(resp_body_json(responses_5[[4]]), token_body())
+  expect_equal(responses_5[[4]], token_body())
 
   responses_inf <- paginate_req_perform(req, max_pages = Inf)
   expect_length(responses_inf, 4)
-  expect_equal(resp_body_json(responses_inf[[4]]), token_body())
+  expect_equal(responses_inf[[4]], token_body())
+})
+
+test_that("paginate_req_perform() handles error in `parse_resp()`", {
+  token_body <- function(token = NULL) {
+    compact(list(x = list(1), my_next_token = token))
+  }
+  local_mocked_responses(function(req) {
+    cur_token <- req$body$data$my_token %||% 1L
+    response_json(body = token_body(if (cur_token != 4) cur_token + 1))
+  })
+
+  req <- request_test() %>%
+    req_paginate_token(
+      set_token = function(req, token) {
+        req_body_json(req, list(my_token = token))
+      },
+      next_token = function(resp, parsed) {
+        parsed$my_next_token
+      },
+      parse_resp = function(resp) {
+        parsed <- resp_body_json(resp)
+        if (parsed$my_next_token >= 2) {
+          abort("error")
+        }
+      }
+    )
+
+  expect_snapshot(error = TRUE, {
+    paginate_req_perform(req, max_pages = 2)
+  })
 })
