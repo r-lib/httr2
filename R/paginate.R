@@ -39,9 +39,17 @@
 #' request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
-#'     parse_resp = resp_body_json,
-#'     next_url = function(resp, parsed) parsed[["next"]],
-#'     n_pages = function(resp, parsed) {
+#'     parse_resp = function(resp) {
+#'       parsed <- resp_body_json(resp)
+#'       results <- parsed$results
+#'       data <- data.frame(
+#'         name = sapply(results, `[[`, "name"),
+#'         url = sapply(results, `[[`, "url")
+#'       )
+#'
+#'       list(data = data, next_url = parsed$`next`)
+#'     },
+#'     n_pages = function(parsed) {
 #'       total <- parsed$count
 #'       ceiling(total / page_size)
 #'     }
@@ -83,12 +91,20 @@ req_paginate <- function(req,
 #' @examples
 #' page_size <- 150
 #'
-#' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
+#' request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
-#'     next_url = function(resp, parsed) parsed[["next"]],
-#'     parse_resp = resp_body_json,
-#'     n_pages = function(resp, parsed) {
+#'     parse_resp = function(resp) {
+#'       parsed <- resp_body_json(resp)
+#'       results <- parsed$results
+#'       data <- data.frame(
+#'         name = sapply(results, `[[`, "name"),
+#'         url = sapply(results, `[[`, "url")
+#'       )
+#'
+#'       list(data = data, next_url = parsed$`next`)
+#'     },
+#'     n_pages = function(parsed) {
 #'       total <- parsed$count
 #'       ceiling(total / page_size)
 #'     }
