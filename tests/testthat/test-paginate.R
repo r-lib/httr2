@@ -147,16 +147,15 @@ test_that("paginate_req_perform() checks inputs", {
         req_body_json(req, list(my_token = token))
       },
       next_token = function(resp, parsed) {
-        parsed$my_next_token
-      },
-      parse_resp = resp_body_json
+        1
+      }
     )
 
   expect_snapshot(error = TRUE, {
     paginate_req_perform("a")
     paginate_req_perform(request("http://example.com"))
     paginate_req_perform(req, max_pages = 0)
-    paginate_req_perform(req, progress = "a")
+    paginate_req_perform(req, progress = -1)
   })
 })
 

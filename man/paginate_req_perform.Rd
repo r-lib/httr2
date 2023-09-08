@@ -14,7 +14,8 @@ paginate_next_request(resp, req, parsed)
 
 \item{max_pages}{The maximum number of pages to request.}
 
-\item{progress}{Display a progress bar?}
+\item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic progress
+bar, use a string to give it a name, or see \link{progress_bars} for more details.}
 
 \item{resp}{An HTTP \link{response}.}
 
