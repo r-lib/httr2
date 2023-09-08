@@ -78,7 +78,6 @@ req_paginate <- function(req,
 #' Perform a paginated request
 #'
 #' @inheritParams req_perform
-#' @param resp An HTTP [response].
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
 #' @param max_pages The maximum number of pages to request.
 #' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
@@ -91,7 +90,7 @@ req_paginate <- function(req,
 #' @examples
 #' page_size <- 150
 #'
-#' request("https://pokeapi.co/api/v2/pokemon") %>%
+#' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
 #'     parse_resp = function(resp) {

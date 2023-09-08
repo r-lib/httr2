@@ -18,8 +18,6 @@ paginate_next_request(req, parsed)
 bar, use a string to give it a name, or see \link{progress_bars} for more details.}
 
 \item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
-
-\item{resp}{An HTTP \link{response}.}
 }
 \value{
 A list of responses parsed with the \code{parse_resp} argument of
@@ -31,7 +29,7 @@ Perform a paginated request
 \examples{
 page_size <- 150
 
-request("https://pokeapi.co/api/v2/pokemon") \%>\%
+req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
     parse_resp = function(resp) {

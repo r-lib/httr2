@@ -142,8 +142,7 @@ test_that("paginate_req_perform() checks inputs", {
   req <- request("http://example.com") %>%
     req_paginate_token(
       parse_resp = function(resp) {
-        parsed <- resp_body_json(resp)
-        list(next_token = parsed$my_next_token, data = parsed["x"])
+        list(next_token = 1, data = "a")
       },
       set_token = function(req, next_token) {
         req_body_json(req, list(my_token = next_token))
