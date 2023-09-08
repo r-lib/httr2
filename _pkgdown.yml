@@ -70,6 +70,7 @@ reference:
   - secrets
   - obfuscate
   - url_parse
+  - progress_bars
 
 - title: OAuth
   desc: >
