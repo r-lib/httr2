@@ -7,7 +7,7 @@
 \usage{
 paginate_req_perform(req, max_pages = 20L, progress = TRUE)
 
-paginate_next_request(resp, req, parsed)
+paginate_next_request(req, parsed)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -17,9 +17,9 @@ paginate_next_request(resp, req, parsed)
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic progress
 bar, use a string to give it a name, or see \link{progress_bars} for more details.}
 
-\item{resp}{An HTTP \link{response}.}
-
 \item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
+
+\item{resp}{An HTTP \link{response}.}
 }
 \value{
 A list of responses parsed with the \code{parse_resp} argument of

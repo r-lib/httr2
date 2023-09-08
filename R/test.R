@@ -18,13 +18,13 @@ request_pagination_test <- function(parse_resp = NULL,
 
   request_test() %>%
     req_paginate_token(
-      set_token = function(req, token) {
-        req_body_json(req, list(my_token = token))
+      parse_resp = parse_resp %||% function(resp) {
+        parsed <- resp_body_json(resp)
+        list(next_token = parsed$my_next_token, data = parsed)
       },
-      next_token = function(resp, parsed) {
-        parsed$my_next_token
+      set_token = function(req, next_token) {
+        req_body_json(req, list(my_token = next_token))
       },
-      parse_resp = parse_resp %||% resp_body_json,
       n_pages = n_pages
     )
 }

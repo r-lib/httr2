@@ -9,17 +9,11 @@
 \usage{
 req_paginate(req, next_request, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_next_url(req, next_url, parse_resp = NULL, n_pages = NULL)
+req_paginate_next_url(req, parse_resp, n_pages = NULL)
 
 req_paginate_offset(req, offset, page_size, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_token(
-  req,
-  set_token,
-  next_token,
-  parse_resp = NULL,
-  n_pages = NULL
-)
+req_paginate_token(req, parse_resp, set_token, n_pages = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -43,9 +37,6 @@ automatically generated progress bar. It has two arguments:
 \item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
-\item{next_url}{A function that extracts the url to the next page from the
-\link{response} and the \code{body}.}
-
 \item{offset}{A function that applies the new offset to the request. It takes
 two arguments: a \link{request} and an integer offset.}
 
@@ -54,8 +45,6 @@ of elements per page.}
 
 \item{set_token}{A function that applies the new token to the request. It
 takes two arguments: a \link{request} and the new token.}
-
-\item{next_token}{A function that extracts the next token from the \link{response}.}
 }
 \value{
 A modified HTTP \link{request}.

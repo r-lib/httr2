@@ -51,11 +51,11 @@ req_paginate <- function(req,
                          parse_resp = NULL,
                          n_pages = NULL) {
   check_request(req)
-  check_function2(next_request, args = c("req", "resp", "parsed"))
+  check_function2(next_request, args = c("req", "parsed"))
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
-  parse_resp <- parse_resp %||% identity
-  check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
-  n_pages <- n_pages %||% function(resp, parsed) Inf
+  parse_resp <- parse_resp %||% function(resp) list(data = resp)
+  check_function2(n_pages, args = "parsed", allow_null = TRUE)
+  n_pages <- n_pages %||% function(parsed) Inf
 
   req_policies(
     req,
@@ -108,7 +108,7 @@ paginate_req_perform <- function(req,
 
   f_n_pages <- req$policies$paginate$n_pages
 
-  n_pages <- min(f_n_pages(resp, parsed), max_pages)
+  n_pages <- min(f_n_pages(parsed), max_pages)
   pb <- create_progress_bar(
     total = n_pages,
     name = "Paginate",
@@ -123,10 +123,10 @@ paginate_req_perform <- function(req,
   }
 
   out <- vector("list", length = n_pages)
-  out[[1]] <- parsed
+  out[[1]] <- parsed$data
 
   for (page in seq2(2, n_pages)) {
-    req <- paginate_next_request(resp, req, parsed)
+    req <- paginate_next_request(req, parsed)
     if (is.null(req)) {
       page <- page - 1L
       break
@@ -135,7 +135,7 @@ paginate_req_perform <- function(req,
     resp <- req_perform(req)
     parsed <- parse_resp(resp)
 
-    out[[page]] <- parsed
+    out[[page]] <- parsed$data
 
     if (show_progress) cli::cli_progress_update()
   }
@@ -155,31 +155,24 @@ paginate_req_perform <- function(req,
 
 #' @export
 #' @rdname paginate_req_perform
-paginate_next_request <- function(resp, req, parsed) {
-  check_response(resp)
+paginate_next_request <- function(req, parsed) {
   check_request(req)
   check_has_pagination_policy(req)
 
   next_request <- req$policies$paginate$next_request
   next_request(
-    resp = resp,
     req = req,
     parsed = parsed
   )
 }
 
-#' @param next_url A function that extracts the url to the next page from the
-#'   [response] and the `body`.
 #' @rdname req_paginate
 #' @export
 req_paginate_next_url <- function(req,
-                                  next_url,
-                                  parse_resp = NULL,
+                                  parse_resp,
                                   n_pages = NULL) {
-  check_function2(next_url, args = c("resp", "parsed"))
-
-  next_request <- function(req, resp, parsed) {
-    next_url <- next_url(resp, parsed)
+  next_request <- function(req, parsed) {
+    next_url <- parsed[["next_url"]]
 
     if (is.null(next_url)) {
       return(NULL)
@@ -210,7 +203,7 @@ req_paginate_offset <- function(req,
   check_function2(offset, args = c("req", "offset"))
   check_number_whole(page_size)
 
-  next_request <- function(req, resp, parsed) {
+  next_request <- function(req, parsed) {
     cur_offset <- req$policies$paginate$offset
     cur_offset <- cur_offset + page_size
     req$policies$paginate$offset <- cur_offset
@@ -230,19 +223,16 @@ req_paginate_offset <- function(req,
 
 #' @param set_token A function that applies the new token to the request. It
 #'   takes two arguments: a [request] and the new token.
-#' @param next_token A function that extracts the next token from the [response].
 #' @rdname req_paginate
 #' @export
 req_paginate_token <- function(req,
+                               parse_resp,
                                set_token,
-                               next_token,
-                               parse_resp = NULL,
                                n_pages = NULL) {
-  check_function2(set_token, args = c("req", "token"))
-  check_function2(next_token, args = c("resp", "parsed"))
+  check_function2(set_token, args = c("req", "next_token"))
 
-  next_request <- function(req, resp, parsed) {
-    next_token <- next_token(resp, parsed)
+  next_request <- function(req, parsed) {
+    next_token <- parsed[["next_token"]]
 
     if (is.null(next_token)) {
       return(NULL)
