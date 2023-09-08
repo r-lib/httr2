@@ -236,7 +236,14 @@ check_function2 <- function(x,
   )
 }
 
-create_progress_bar <- function(total, name, config, env = caller_env()) {
+# This is inspired by the C interface of `cli_progress_bar()` which has just
+# 2 arguments: `total` and `config`
+create_progress_bar <- function(total,
+                                name,
+                                config,
+                                env = caller_env(),
+                                config_arg = caller_arg(config),
+                                error_call = caller_env()) {
   if (is_false(config)) {
     return()
   }
@@ -250,11 +257,17 @@ create_progress_bar <- function(total, name, config, env = caller_env()) {
   } else {
     stop_input_type(
       config,
-      what = c("a bool", "a string", "a list")
+      what = c("a bool", "a string", "a list"),
+      arg = config_arg,
+      call = error_call
     )
   }
 
   args$name <- args$name %||% name
+  # Can be removed if https://github.com/r-lib/cli/issues/630 is fixed
+  if (is.infinite(total)) {
+    total <- NA
+  }
   args$total <- total
   args$.envir <- env
 
