@@ -51,11 +51,17 @@ test_that("bare authorisation codes can be input manually", {
 # normalize_redirect_uri --------------------------------------------------
 
 test_that("adds port to localhost url", {
+  # Allow tests to run when is_hosted_session() is TRUE.
+  local_mocked_bindings(is_hosted_session = function() FALSE)
+
   redirect <- normalize_redirect_uri("http://localhost")
   expect_false(is.null(url_parse(redirect$uri)$port))
 })
 
 test_that("old args are deprecated", {
+  # Allow tests to run when is_hosted_session() is TRUE.
+  local_mocked_bindings(is_hosted_session = function() FALSE)
+
   expect_snapshot(
     redirect <- normalize_redirect_uri("http://localhost", port = 1234)
   )
@@ -70,6 +76,14 @@ test_that("old args are deprecated", {
     redirect <- normalize_redirect_uri("http://x.com", host_ip = "y.com")
   )
 
+})
+
+test_that("hosted sessions error on localhost redirects", {
+  local_mocked_bindings(is_hosted_session = function() TRUE)
+  expect_error(
+    normalize_redirect_uri("http://localhost"),
+    "Can't use localhost `redirect_uri` in a hosted environment"
+  )
 })
 
 # ouath_flow_auth_code_parse ----------------------------------------------
