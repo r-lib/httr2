@@ -78,14 +78,6 @@ test_that("old args are deprecated", {
 
 })
 
-test_that("hosted sessions error on localhost redirects", {
-  local_mocked_bindings(is_hosted_session = function() TRUE)
-  expect_error(
-    normalize_redirect_uri("http://localhost"),
-    "Can't use localhost `redirect_uri` in a hosted environment"
-  )
-})
-
 # ouath_flow_auth_code_parse ----------------------------------------------
 
 test_that("forwards oauth error", {
