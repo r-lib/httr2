@@ -19,16 +19,22 @@ req_paginate_token(req, parse_resp, set_token, n_pages = NULL)
 \item{req}{A \link{request}.}
 
 \item{next_request}{A callback function that returns a \link{request} to the next
-page or \code{NULL} if there is no next page. It takes a three arguments:
+page or \code{NULL} if there is no next page. It takes a two arguments:
 \enumerate{
 \item \code{req}: the previous request.
-\item \code{resp}: the response of the current request.
 \item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
-response. The result is passed to the argument \code{parsed} of \code{next_request()} and
-\code{n_pages()}. This helps to avoid parsing the response multiple times.}
+response and returns a list with the field \code{data} and other fields needed
+to create the request for the next page.
+\code{paginate_req_perform()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
+and returns the result.
+Other fields that might be needed are:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{* `next_url` for `paginate_next_url()`.
+* `next_token` for `paginate_next_token()`.
+}\if{html}{\out{</div>}}}
 
 \item{n_pages}{An optional function that extracts the total number of pages, improving the
 automatically generated progress bar. It has two arguments:
@@ -57,7 +63,7 @@ If you need more control use a combination of \code{\link[=req_perform]{req_perf
 There are also helpers for common pagination patterns:
 \itemize{
 \item \code{req_paginate_next_url()} when the response contains a link to the next
-page.
+page. The \code{parse_resp()} function
 \item \code{req_paginate_offset()} when the request describes the offset i.e.
 at which element to start and the page size.
 \item \code{req_paginate_next_token()} when the response contains a token

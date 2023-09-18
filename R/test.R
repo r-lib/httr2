@@ -20,7 +20,7 @@ request_pagination_test <- function(parse_resp = NULL,
     req_paginate_token(
       parse_resp = parse_resp %||% function(resp) {
         parsed <- resp_body_json(resp)
-        list(next_token = parsed$my_next_token, data = parsed)
+        list(next_token = parsed$my_next_token, data = list(parsed))
       },
       set_token = function(req, next_token) {
         req_body_json(req, list(my_token = next_token))

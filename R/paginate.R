@@ -6,7 +6,7 @@
 #' [paginate_next_request()] to iterate through the pages yourself.
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
-#'     page.
+#'     page. The `parse_resp()` function
 #'   * `req_paginate_offset()` when the request describes the offset i.e.
 #'     at which element to start and the page size.
 #'   * `req_paginate_next_token()` when the response contains a token
@@ -14,14 +14,20 @@
 #'
 #' @inheritParams req_perform
 #' @param next_request A callback function that returns a [request] to the next
-#'   page or `NULL` if there is no next page. It takes a three arguments:
+#'   page or `NULL` if there is no next page. It takes a two arguments:
 #'
 #'   1. `req`: the previous request.
-#'   2. `resp`: the response of the current request.
-#'   3. `parsed`: the result of the argument `parse_resp`.
+#'   2. `parsed`: the result of the argument `parse_resp`.
 #' @param parse_resp A function with one argument `resp` that parses the
-#'   response. The result is passed to the argument `parsed` of `next_request()` and
-#'   `n_pages()`. This helps to avoid parsing the response multiple times.
+#'   response and returns a list with the field `data` and other fields needed
+#'   to create the request for the next page.
+#'   `paginate_req_perform()` combines all `data` fields via [vctrs::vec_c()]
+#'   and returns the result.
+#'   Other fields that might be needed are:
+#'
+#'     * `next_url` for `paginate_next_url()`.
+#'     * `next_token` for `paginate_next_token()`.
+#'
 #' @param n_pages An optional function that extracts the total number of pages, improving the
 #'   automatically generated progress bar. It has two arguments:
 #'
@@ -83,8 +89,9 @@ req_paginate <- function(req,
 #' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
 #'   bar, use a string to give it a name, or see [progress_bars] for more details.
 #'
-#' @return A list of responses parsed with the `parse_resp` argument of
-#'   [req_paginate()]. If this argument is not specified, it will be a list of responses.
+#' @return The result of `vec_c()`ing together the `data` fields that were
+#'   extracted by the `parse_resp()` argument of [req_paginate()].
+#'   If this argument is not specified, it will be a list of the raw responses.
 #' @export
 #'
 #' @examples
@@ -165,7 +172,7 @@ paginate_req_perform <- function(req,
     out <- out[seq2(1, page)]
   }
 
-  out
+  vctrs::list_unchop(out)
 }
 
 #' @export

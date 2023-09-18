@@ -20,8 +20,9 @@ bar, use a string to give it a name, or see \link{progress_bars} for more detail
 \item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
 }
 \value{
-A list of responses parsed with the \code{parse_resp} argument of
-\code{\link[=req_paginate]{req_paginate()}}. If this argument is not specified, it will be a list of responses.
+The result of \code{vec_c()}ing together the \code{data} fields that were
+extracted by the \code{parse_resp()} argument of \code{\link[=req_paginate]{req_paginate()}}.
+If this argument is not specified, it will be a list of the raw responses.
 }
 \description{
 Perform a paginated request
