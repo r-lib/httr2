@@ -98,15 +98,17 @@ that is used to describe the next page.</p></li>
 <span></span>
 <span><span class="fu">req_paginate_next_url</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_url</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">req_paginate_offset</span><span class="op">(</span><span class="va">req</span>, <span class="va">offset</span>, <span class="va">page_size</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">req_paginate_token</span><span class="op">(</span></span>
 <span>  <span class="va">req</span>,</span>
 <span>  <span class="va">set_token</span>,</span>
 <span>  <span class="va">next_token</span>,</span>
 <span>  parse_resp <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_pages <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">req_paginate_offset</span><span class="op">(</span><span class="va">req</span>, <span class="va">offset</span>, <span class="va">page_size</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">req_paginate_page_index</span><span class="op">(</span><span class="va">req</span>, <span class="va">page_index</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -137,13 +139,28 @@ automatically generated progress bar. It has two arguments:</p><ol><li><p><code>
 
 
 <dt>next_url</dt>
-<dd><p>A function that extracts the url to the next page from the
-<a href="response.html">response</a> and the <code>body</code>.</p></dd>
+<dd><p>A function that extracts the url to the next page. It takes
+two arguments:</p><ol><li><p><code>resp</code>: the response of the current request.</p></li>
+<li><p><code>parsed</code>: the result of the argument <code>parse_resp</code>.</p></li>
+</ol></dd>
+
+
+<dt>set_token</dt>
+<dd><p>A function that applies the new token to the request. It
+takes two arguments: a <a href="request.html">request</a> and the new token.</p><ol><li><p><code>req</code>: the previous request.</p></li>
+<li><p><code>token</code>: the token for the next page.</p></li>
+</ol></dd>
+
+
+<dt>next_token</dt>
+<dd><p>A function that extracts the next token from the <a href="response.html">response</a>.</p></dd>
 
 
 <dt>offset</dt>
 <dd><p>A function that applies the new offset to the request. It takes
-two arguments: a <a href="request.html">request</a> and an integer offset.</p></dd>
+two arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
+<li><p><code>offset</code>: the integer offset for the next page.</p></li>
+</ol></dd>
 
 
 <dt>page_size</dt>
@@ -151,13 +168,11 @@ two arguments: a <a href="request.html">request</a> and an integer offset.</p></
 of elements per page.</p></dd>
 
 
-<dt>set_token</dt>
-<dd><p>A function that applies the new token to the request. It
-takes two arguments: a <a href="request.html">request</a> and the new token.</p></dd>
-
-
-<dt>next_token</dt>
-<dd><p>A function that extracts the next token from the <a href="response.html">response</a>.</p></dd>
+<dt>page_index</dt>
+<dd><p>A function that applies the page index to the request. It
+takes two arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
+<li><p><code>offset</code>: the integer page index for the next page.</p></li>
+</ol></dd>
 
 </dl></div>
     <div class="section level2">
