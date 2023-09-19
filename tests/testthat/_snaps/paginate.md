@@ -68,24 +68,6 @@
       Error in `req_paginate_next_url()`:
       ! `next_url` must have the arguments `resp` and `parsed`; it currently has `req` and `parsed`.
 
-# req_paginate_offset() checks inputs
-
-    Code
-      req_paginate_offset(req, "a")
-    Condition
-      Error in `req_paginate_offset()`:
-      ! `offset` must be a function, not the string "a".
-    Code
-      req_paginate_offset(req, function(req) req)
-    Condition
-      Error in `req_paginate_offset()`:
-      ! `offset` must have the arguments `req` and `offset`; it currently has `req`.
-    Code
-      req_paginate_offset(req, function(req, offset) req, page_size = "a")
-    Condition
-      Error in `req_paginate_offset()`:
-      ! `page_size` must be a whole number, not the string "a".
-
 # req_paginate_token() checks inputs
 
     Code
@@ -109,6 +91,37 @@
     Condition
       Error in `req_paginate_token()`:
       ! `next_token` must have the arguments `resp` and `parsed`; it currently has `req`.
+
+# req_paginate_offset() checks inputs
+
+    Code
+      req_paginate_offset(req, "a")
+    Condition
+      Error in `req_paginate_offset()`:
+      ! `offset` must be a function, not the string "a".
+    Code
+      req_paginate_offset(req, function(req) req)
+    Condition
+      Error in `req_paginate_offset()`:
+      ! `offset` must have the arguments `req` and `offset`; it currently has `req`.
+    Code
+      req_paginate_offset(req, function(req, offset) req, page_size = "a")
+    Condition
+      Error in `req_paginate_offset()`:
+      ! `page_size` must be a whole number, not the string "a".
+
+# req_paginate_page_index() checks inputs
+
+    Code
+      req_paginate_page_index(req, "a")
+    Condition
+      Error in `req_paginate_page_index()`:
+      ! `page_index` must be a function, not the string "a".
+    Code
+      req_paginate_page_index(req, function(req) req)
+    Condition
+      Error in `req_paginate_page_index()`:
+      ! `page_index` must have the arguments `req` and `page`; it currently has `req`.
 
 # paginate_req_perform() checks inputs
 
