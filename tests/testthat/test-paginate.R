@@ -75,35 +75,6 @@ test_that("req_paginate_next_url() can paginate", {
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
 })
 
-test_that("req_paginate_offset() checks inputs", {
-  req <- request("http://example.com/")
-
-  expect_snapshot(error = TRUE, {
-    req_paginate_offset(req, "a")
-    req_paginate_offset(req, function(req) req)
-    req_paginate_offset(req, function(req, offset) req, page_size = "a")
-  })
-})
-
-test_that("req_paginate_offset() can paginate", {
-  req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
-    req_url_query(limit = 11) %>%
-    req_paginate_offset(
-      offset = function(req, offset) req_url_query(req, offset = offset),
-      page_size = 11
-    )
-
-  resp <- req_perform(req1)
-  req2 <- paginate_next_request(resp, req1)
-  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
-  # offset stays the same when applied twice
-  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
-
-  resp <- req_perform(req2)
-  req3 <- paginate_next_request(resp, req2)
-  expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=22")
-})
-
 test_that("req_paginate_token() checks inputs", {
   req <- request("http://example.com/")
 
@@ -138,6 +109,62 @@ test_that("req_paginate_token() can paginate", {
   resp <- req_perform(req2)
   req3 <- paginate_next_request(resp, req2)
   expect_equal(req3$body$data$my_token, 3L)
+})
+
+test_that("req_paginate_offset() checks inputs", {
+  req <- request("http://example.com/")
+
+  expect_snapshot(error = TRUE, {
+    req_paginate_offset(req, "a")
+    req_paginate_offset(req, function(req) req)
+    req_paginate_offset(req, function(req, offset) req, page_size = "a")
+  })
+})
+
+test_that("req_paginate_offset() can paginate", {
+  req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
+    req_url_query(limit = 11) %>%
+    req_paginate_offset(
+      offset = function(req, offset) req_url_query(req, offset = offset),
+      page_size = 11
+    )
+
+  resp <- req_perform(req1)
+  req2 <- paginate_next_request(resp, req1)
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
+  # offset stays the same when applied twice
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
+
+  resp <- req_perform(req2)
+  req3 <- paginate_next_request(resp, req2)
+  expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=22")
+})
+
+test_that("req_paginate_page_index() checks inputs", {
+  req <- request("http://example.com/")
+
+  expect_snapshot(error = TRUE, {
+    req_paginate_page_index(req, "a")
+    req_paginate_page_index(req, function(req) req)
+  })
+})
+
+test_that("req_paginate_page_index() can paginate", {
+  req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
+    req_url_query(limit = 11) %>%
+    req_paginate_page_index(
+      page_index = function(req, page) req_url_query(req, page = page)
+    )
+
+  resp <- req_perform(req1)
+  req2 <- paginate_next_request(resp, req1)
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=2")
+  # offset stays the same when applied twice
+  expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=2")
+
+  resp <- req_perform(req2)
+  req3 <- paginate_next_request(resp, req2)
+  expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=3")
 })
 
 test_that("paginate_req_perform() checks inputs", {

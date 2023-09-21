@@ -4,7 +4,7 @@
       oauth_flow_auth_code(client, "http://localhost")
     Condition
       Error in `oauth_flow_auth_code()`:
-      ! Can't use localhost `redirect_uri` in a hosted environment
+      ! Can't use localhost `redirect_uri` in a hosted environment.
 
 # old args are deprecated
 
