@@ -45,7 +45,7 @@ Other fields that might be needed are:
 * `next_token` for `paginate_next_token()`.
 }\if{html}{\out{</div>}}}
 
-\item{required_fields}{An optional character vector that describes which
+\item{required_fields}{An optional character vector that specifies which
 fields are required in the list returned by \code{parse_resp()}.}
 
 \item{n_pages}{An optional function that extracts the total number of pages, improving the
@@ -90,7 +90,7 @@ If you need more control use a combination of \code{\link[=req_perform]{req_perf
 There are also helpers for common pagination patterns:
 \itemize{
 \item \code{req_paginate_next_url()} when the response contains a link to the next
-page. The \code{parse_resp()} function
+page.
 \item \code{req_paginate_offset()} when the request describes the offset i.e.
 at which element to start and the page size.
 \item \code{req_paginate_next_token()} when the response contains a token

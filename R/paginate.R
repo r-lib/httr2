@@ -6,7 +6,7 @@
 #' [paginate_next_request()] to iterate through the pages yourself.
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
-#'     page. The `parse_resp()` function
+#'     page.
 #'   * `req_paginate_offset()` when the request describes the offset i.e.
 #'     at which element to start and the page size.
 #'   * `req_paginate_next_token()` when the response contains a token
@@ -28,7 +28,7 @@
 #'     * `next_url` for `paginate_next_url()`.
 #'     * `next_token` for `paginate_next_token()`.
 #'
-#' @param required_fields An optional character vector that describes which
+#' @param required_fields An optional character vector that specifies which
 #'   fields are required in the list returned by `parse_resp()`.
 #' @param n_pages An optional function that extracts the total number of pages, improving the
 #'   automatically generated progress bar. It has two arguments:
