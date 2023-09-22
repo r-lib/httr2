@@ -38,7 +38,7 @@ test_that("paginate_next_request() produces the request to the next page", {
 
   out <- paginate_next_request(resp, req)
   expect_equal(out$url, "http://example.com/2")
-  expect_equal(req$policies$paginate$n_pages(resp), 3)
+  expect_equal(req$policies$multi$n_requests(resp), 3)
 })
 
 test_that("req_paginate_next_url() checks inputs", {

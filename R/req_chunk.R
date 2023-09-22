@@ -87,17 +87,46 @@ req_chunk <- function(req,
 
   n <- vctrs::vec_size(data)
   n_chunks <- ceiling(n / chunk_size)
+  n_requests <- n_chunks
+  get_n_requests <- function(resp, parsed) n_chunks
+
+  chunk_next_request <- function(resp, req, parsed) {
+    check_request(req)
+    check_has_chunk_policy(req)
+
+    req$policies$multi$cur_chunk <- req$policies$multi$cur_chunk + 1L
+    i <- req$policies$multi$cur_chunk
+
+    # n_chunks <- req$policies$multi$n_chunks
+    if (i > n_chunks) {
+      return()
+    }
+
+    # chunk_size <- req$policies$multi$multi_size
+    # size <- req$policies$multi$size
+
+    start <- (i - 1L) * chunk_size
+    idx <- seq2(start + 1L, min(start + chunk_size, n))
+
+    # apply_chunk <- req$policies$multi$apply_chunk
+    # data <- req$policies$multi$data
+    chunk <- vctrs::vec_slice(data, idx)
+
+    apply_chunk(req, chunk)
+  }
 
   req_policies(
     req,
-    chunk = list(
+    parse_resp = parse_resp,
+    multi = list(
+      n_requests = n_requests,
+      get_n_requests = get_n_requests,
+      next_request = chunk_next_request,
       apply_chunk = apply_chunk,
       data = data,
       cur_chunk = 0L,
       chunk_size = chunk_size,
-      n_chunks = n_chunks,
-      size = n,
-      parse_resp = parse_resp
+      size = n
     )
   )
 }
@@ -113,9 +142,9 @@ chunk_req_perform <- function(req,
   check_request(req)
   check_has_chunk_policy(req)
 
-  parse_resp <- req$policies$chunk$parse_resp
+  parse_resp <- req$policies$parse_resp
 
-  n <- req$policies$chunk$n_chunks
+  n <- req$policies$multi$n_requests()
   the$last_chunked_responses <- vector("list", n)
   the$last_chunks <- vector("list", n)
 
@@ -182,32 +211,32 @@ chunk_next_request <- function(req, i = NULL) {
   check_number_whole(i, min = 1, allow_null = TRUE)
 
   if (is.null(i)) {
-    req$policies$chunk$cur_chunk <- req$policies$chunk$cur_chunk + 1L
-    i <- req$policies$chunk$cur_chunk
+    req$policies$multi$cur_chunk <- req$policies$multi$cur_chunk + 1L
+    i <- req$policies$multi$cur_chunk
   } else {
-    req$policies$chunk$cur_chunk <- i
+    req$policies$multi$cur_chunk <- i
   }
 
-  n_chunks <- req$policies$chunk$n_chunks
+  n_chunks <- req$policies$multi$n_requests(NULL, NULL)
   if (i > n_chunks) {
     return()
   }
 
-  chunk_size <- req$policies$chunk$chunk_size
-  size <- req$policies$chunk$size
+  chunk_size <- req$policies$multi$chunk_size
+  size <- req$policies$multi$size
 
   start <- (i - 1L) * chunk_size
   idx <- seq2(start + 1L, min(start + chunk_size, size))
 
-  apply_chunk <- req$policies$chunk$apply_chunk
-  data <- req$policies$chunk$data
+  apply_chunk <- req$policies$multi$apply_chunk
+  data <- req$policies$multi$data
   chunk <- vctrs::vec_slice(data, idx)
 
   apply_chunk(req, chunk)
 }
 
 check_has_chunk_policy <- function(req, call = caller_env()) {
-  if (!req_policy_exists(req, "chunk")) {
+  if (!req_policy_exists(req, "multi")) {
     cli::cli_abort(c(
       "{.arg req} doesn't have a chunk policy.",
       i = "You can add it via `req_chunk()`."

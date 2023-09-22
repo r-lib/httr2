@@ -55,99 +55,18 @@ req_paginate <- function(req,
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
   parse_resp <- parse_resp %||% identity
   check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
-  n_pages <- n_pages %||% function(resp, parsed) Inf
+  n_requests <- NULL
+  get_n_requests <- n_pages %||% function(resp, parsed) Inf
 
   req_policies(
     req,
-    paginate = list(
+    parse_resp = parse_resp,
+    multi = list(
       next_request = next_request,
-      parse_resp = parse_resp,
-      n_pages = n_pages
+      n_requests = n_requests,
+      get_n_requests = get_n_requests
     )
   )
-}
-
-#' Perform a paginated request
-#'
-#' @inheritParams req_perform
-#' @param resp An HTTP [response].
-#' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
-#' @param max_pages The maximum number of pages to request.
-#' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
-#'   bar, use a string to give it a name, or see [progress_bars] for more details.
-#'
-#' @return A list of responses parsed with the `parse_resp` argument of
-#'   [req_paginate()]. If this argument is not specified, it will be a list of responses.
-#' @export
-#'
-#' @examples
-#' page_size <- 150
-#'
-#' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
-#'   req_url_query(limit = page_size) %>%
-#'   req_paginate_next_url(
-#'     next_url = function(resp, parsed) parsed[["next"]],
-#'     parse_resp = resp_body_json,
-#'     n_pages = function(resp, parsed) {
-#'       total <- parsed$count
-#'       ceiling(total / page_size)
-#'     }
-#'   )
-#'
-#' responses <- paginate_req_perform(req_pokemon)
-paginate_req_perform <- function(req,
-                                 max_pages = 20L,
-                                 progress = TRUE) {
-  check_request(req)
-  check_has_pagination_policy(req)
-  check_number_whole(max_pages, allow_infinite = TRUE, min = 1)
-
-  parse_resp <- req$policies$paginate$parse_resp
-  f_n_pages <- req$policies$paginate$n_pages
-
-  # the implementation below doesn't really support an infinite amount of pages
-  # but 100e3 should be plenty
-  n_pages <- max_pages
-  if (is.infinite(n_pages)) {
-    n_pages <- 100e3
-  }
-
-  pb <- create_progress_bar(
-    total = n_pages,
-    name = "Paginate",
-    config = progress
-  )
-  show_progress <- !is.null(pb)
-
-  out <- vector("list", length = n_pages)
-
-  page <- 0L
-  while ((page + 1) <= n_pages) {
-    page <- page + 1L
-
-    resp <- req_perform(req)
-    parsed <- parse_resp(resp)
-
-    if (page == 1) {
-      n_pages <- min(f_n_pages(resp, parsed), n_pages)
-    }
-
-    out[[page]] <- parsed
-    if (show_progress) cli::cli_progress_update(total = n_pages)
-
-    req <- paginate_next_request(resp, req, parsed)
-    if (is.null(req)) {
-      break
-    }
-  }
-  if (show_progress) cli::cli_progress_done()
-
-  # remove unused tail of `out`
-  if (page < length(out)) {
-    out <- out[seq2(1, page)]
-  }
-
-  out
 }
 
 #' @export
@@ -157,7 +76,7 @@ paginate_next_request <- function(resp, req, parsed) {
   check_request(req)
   check_has_pagination_policy(req)
 
-  next_request <- req$policies$paginate$next_request
+  next_request <- req$policies$multi$next_request
   next_request(
     resp = resp,
     req = req,
@@ -248,9 +167,9 @@ req_paginate_offset <- function(req,
   check_number_whole(page_size)
 
   next_request <- function(req, resp, parsed) {
-    cur_offset <- req$policies$paginate$offset
+    cur_offset <- req$policies$multi$offset
     cur_offset <- cur_offset + page_size
-    req$policies$paginate$offset <- cur_offset
+    req$policies$multi$offset <- cur_offset
     offset(req, cur_offset)
   }
 
@@ -261,7 +180,7 @@ req_paginate_offset <- function(req,
     n_pages = n_pages
   )
 
-  out$policies$paginate$offset <- 0L
+  out$policies$multi$offset <- 0L
   out
 }
 
@@ -279,8 +198,8 @@ req_paginate_page_index <- function(req,
   check_function2(page_index, args = c("req", "page"))
 
   next_request <- function(req, resp, parsed) {
-    new_page <- req$policies$paginate$page + 1L
-    req$policies$paginate$page <- new_page
+    new_page <- req$policies$multi$page + 1L
+    req$policies$multi$page <- new_page
     page_index(req, new_page)
   }
 
@@ -291,15 +210,6 @@ req_paginate_page_index <- function(req,
     n_pages = n_pages
   )
 
-  out$policies$paginate$page <- 1L
+  out$policies$multi$page <- 1L
   out
-}
-
-check_has_pagination_policy <- function(req, call = caller_env()) {
-  if (!req_policy_exists(req, "paginate")) {
-    cli::cli_abort(c(
-      "{.arg req} doesn't have a pagination policy.",
-      i = "You can add pagination via `req_paginate()`."
-    ))
-  }
 }
