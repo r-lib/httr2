@@ -3,17 +3,20 @@
 \name{req_paginate}
 \alias{req_paginate}
 \alias{req_paginate_next_url}
-\alias{req_paginate_offset}
 \alias{req_paginate_token}
+\alias{req_paginate_offset}
+\alias{req_paginate_page_index}
 \title{Pagination}
 \usage{
 req_paginate(req, next_request, parse_resp = NULL, n_pages = NULL)
 
 req_paginate_next_url(req, parse_resp, n_pages = NULL)
 
+req_paginate_token(req, set_token, parse_resp, n_pages = NULL)
+
 req_paginate_offset(req, offset, page_size, parse_resp = NULL, n_pages = NULL)
 
-req_paginate_token(req, parse_resp, set_token, n_pages = NULL)
+req_paginate_page_index(req, page_index, parse_resp = NULL, n_pages = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -43,14 +46,38 @@ automatically generated progress bar. It has two arguments:
 \item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
+\item{set_token}{A function that applies the new token to the request. It
+takes two arguments: a \link{request} and the new token.
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{token}: the token for the next page.
+}}
+
 \item{offset}{A function that applies the new offset to the request. It takes
-two arguments: a \link{request} and an integer offset.}
+two arguments:
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{offset}: the integer offset for the next page.
+}}
 
 \item{page_size}{A whole number that specifies the page size i.e. the number
 of elements per page.}
 
-\item{set_token}{A function that applies the new token to the request. It
-takes two arguments: a \link{request} and the new token.}
+\item{page_index}{A function that applies the page index to the request. It
+takes two arguments:
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{offset}: the integer page index for the next page.
+}}
+
+\item{next_url}{A function that extracts the url to the next page. It takes
+two arguments:
+\enumerate{
+\item \code{resp}: the response of the current request.
+\item \code{parsed}: the result of the argument \code{parse_resp}.
+}}
+
+\item{next_token}{A function that extracts the next token from the \link{response}.}
 }
 \value{
 A modified HTTP \link{request}.

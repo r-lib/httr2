@@ -51,11 +51,17 @@ test_that("bare authorisation codes can be input manually", {
 # normalize_redirect_uri --------------------------------------------------
 
 test_that("adds port to localhost url", {
+  # Allow tests to run when is_hosted_session() is TRUE.
+  local_mocked_bindings(is_hosted_session = function() FALSE)
+
   redirect <- normalize_redirect_uri("http://localhost")
   expect_false(is.null(url_parse(redirect$uri)$port))
 })
 
 test_that("old args are deprecated", {
+  # Allow tests to run when is_hosted_session() is TRUE.
+  local_mocked_bindings(is_hosted_session = function() FALSE)
+
   expect_snapshot(
     redirect <- normalize_redirect_uri("http://localhost", port = 1234)
   )

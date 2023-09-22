@@ -52,6 +52,29 @@
       Policies:
       * paginate: a list
 
+# req_paginate_token() checks inputs
+
+    Code
+      req_paginate_token(req, "a")
+    Condition
+      Error in `req_paginate_token()`:
+      ! `set_token` must be a function, not the string "a".
+    Code
+      req_paginate_token(req, function(req) resp)
+    Condition
+      Error in `req_paginate_token()`:
+      ! `set_token` must have the arguments `req` and `next_token`; it currently has `req`.
+    Code
+      req_paginate_token(req, function(req, next_token) req, "a")
+    Condition
+      Error in `req_paginate_token()`:
+      ! `parse_resp` must be a function, not the string "a".
+    Code
+      req_paginate_token(req, function(req, next_token) req, function(req) req)
+    Condition
+      Error in `req_paginate_token()`:
+      ! `parse_resp` must have the argument `resp`; it currently has `req`.
+
 # req_paginate_offset() checks inputs
 
     Code
@@ -70,29 +93,18 @@
       Error in `req_paginate_offset()`:
       ! `page_size` must be a whole number, not the string "a".
 
-# req_paginate_token() checks inputs
+# req_paginate_page_index() checks inputs
 
     Code
-      req_paginate_token(req, parse_resp, "a")
+      req_paginate_page_index(req, "a")
     Condition
-      Error in `req_paginate_token()`:
-      ! `set_token` must be a function, not the string "a".
+      Error in `req_paginate_page_index()`:
+      ! `page_index` must be a function, not the string "a".
     Code
-      req_paginate_token(req, parse_resp, function(req) req)
+      req_paginate_page_index(req, function(req) req)
     Condition
-      Error in `req_paginate_token()`:
-      ! `set_token` must have the arguments `req` and `next_token`; it currently has `req`.
-    Code
-      req_paginate_token(req, parse_resp, function(req, token) req, next_token = "a")
-    Condition
-      Error in `req_paginate_token()`:
-      ! unused argument (next_token = "a")
-    Code
-      req_paginate_token(req, parse_resp, function(req, token) req, next_token = function(
-        req) req)
-    Condition
-      Error in `req_paginate_token()`:
-      ! unused argument (next_token = function(req) req)
+      Error in `req_paginate_page_index()`:
+      ! `page_index` must have the arguments `req` and `page`; it currently has `req`.
 
 # paginate_req_perform() checks inputs
 
