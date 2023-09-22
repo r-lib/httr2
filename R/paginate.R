@@ -184,11 +184,6 @@ paginate_next_request <- function(req, parsed) {
   )
 }
 
-#' @param next_url A function that extracts the url to the next page. It takes
-#'   two arguments:
-#'
-#'   1. `resp`: the response of the current request.
-#'   2. `parsed`: the result of the argument `parse_resp`.
 #' @rdname req_paginate
 #' @export
 req_paginate_next_url <- function(req,
@@ -219,7 +214,6 @@ req_paginate_next_url <- function(req,
 #'
 #'   1. `req`: the previous request.
 #'   2. `token`: the token for the next page.
-#' @param next_token A function that extracts the next token from the [response].
 #' @rdname req_paginate
 #' @export
 req_paginate_token <- function(req,

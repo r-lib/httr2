@@ -69,15 +69,6 @@ takes two arguments:
 \item \code{req}: the previous request.
 \item \code{offset}: the integer page index for the next page.
 }}
-
-\item{next_url}{A function that extracts the url to the next page. It takes
-two arguments:
-\enumerate{
-\item \code{resp}: the response of the current request.
-\item \code{parsed}: the result of the argument \code{parse_resp}.
-}}
-
-\item{next_token}{A function that extracts the next token from the \link{response}.}
 }
 \value{
 A modified HTTP \link{request}.
