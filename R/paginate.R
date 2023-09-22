@@ -28,6 +28,8 @@
 #'     * `next_url` for `paginate_next_url()`.
 #'     * `next_token` for `paginate_next_token()`.
 #'
+#' @param required_fields An optional character vector that describes which
+#'   fields are required in the list returned by `parse_resp()`.
 #' @param n_pages An optional function that extracts the total number of pages, improving the
 #'   automatically generated progress bar. It has two arguments:
 #'
@@ -63,19 +65,37 @@
 req_paginate <- function(req,
                          next_request,
                          parse_resp = NULL,
+                         required_fields = NULL,
                          n_pages = NULL) {
   check_request(req)
   check_function2(next_request, args = c("req", "parsed"))
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
   parse_resp <- parse_resp %||% function(resp) list(data = resp)
+  check_character(required_fields, allow_null = TRUE)
+  required_fields <- union(required_fields, "data")
   check_function2(n_pages, args = "parsed", allow_null = TRUE)
   n_pages <- n_pages %||% function(parsed) Inf
+
+  wrapped_parse_resp <- function(resp) {
+    out <- parse_resp(resp)
+    if (!is.list(out)) {
+      cli::cli_abort("{.fun parse_resp} must return a list, not {.obj_type_friendly {out}}.")
+    }
+
+    missing_fields <- setdiff(required_fields, names2(out))
+    if (!is_empty(missing_fields)) {
+      cli::cli_abort(c("The list returned by {.code parse_resp(resp)} is missing the field{?s} {.field {missing_fields}}."))
+    }
+
+    out
+  }
 
   req_policies(
     req,
     paginate = list(
       next_request = next_request,
-      parse_resp = parse_resp,
+      parse_resp = wrapped_parse_resp,
+      required_fields = required_fields,
       n_pages = n_pages
     )
   )
@@ -205,6 +225,7 @@ req_paginate_next_url <- function(req,
     req,
     next_request,
     parse_resp = parse_resp,
+    required_fields = "next_url",
     n_pages = n_pages
   )
 }
@@ -237,6 +258,7 @@ req_paginate_token <- function(req,
     req,
     next_request,
     parse_resp = parse_resp,
+    required_fields = "next_token",
     n_pages = n_pages
   )
 }

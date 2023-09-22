@@ -130,6 +130,32 @@
       Error in `paginate_req_perform()`:
       ! `progress` must be a bool, a string, or a list, not the number -1.
 
+# parse_resp() produces a good error message
+
+    Code
+      req_not_a_list$policies$paginate$parse_resp(resp)
+    Condition
+      Error in `req_not_a_list$policies$paginate$parse_resp()`:
+      ! `parse_resp()` must return a list, not a string.
+    Code
+      req_missing_1_field$policies$paginate$parse_resp(resp)
+    Condition
+      Error in `req_missing_1_field$policies$paginate$parse_resp()`:
+      ! The list returned by `parse_resp(resp)` is missing the field next_url.
+    Code
+      req_missing_2_field$policies$paginate$parse_resp(resp)
+    Condition
+      Error in `req_missing_2_field$policies$paginate$parse_resp()`:
+      ! The list returned by `parse_resp(resp)` is missing the fields next_url and data.
+
+---
+
+    Code
+      paginate_req_perform(req, max_pages = 2)
+    Condition
+      Error in `parse_resp()`:
+      ! The list returned by `parse_resp(resp)` is missing the field next_token.
+
 # paginate_req_perform() handles error in `parse_resp()`
 
     Code

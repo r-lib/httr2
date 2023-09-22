@@ -55,7 +55,7 @@ test_that("req_paginate_next_url() can paginate", {
   req1 <- request("https://pokeapi.co/api/v2/pokemon") %>%
     req_url_query(limit = 11) %>%
     req_paginate_next_url(
-      parse_resp = function(resp) list(next_url = resp_body_json(resp)[["next"]])
+      parse_resp = function(resp) list(data = "a", next_url = resp_body_json(resp)[["next"]])
     )
 
   resp <- req_perform(req1)
@@ -206,6 +206,35 @@ test_that("paginate_req_perform() works if there is only one page", {
 
   expect_no_error(responses <- paginate_req_perform(req, max_pages = 2))
   expect_length(responses, 1)
+})
+
+test_that("parse_resp() produces a good error message", {
+  req_not_a_list <- request("https://pokeapi.co/api/v2/pokemon") %>%
+    req_paginate_next_url(parse_resp = function(resp) "a")
+  req_missing_1_field <- request("https://pokeapi.co/api/v2/pokemon") %>%
+    req_paginate_next_url(parse_resp = function(resp) list(data = "a"))
+  req_missing_2_field <- request("https://pokeapi.co/api/v2/pokemon") %>%
+    req_paginate_next_url(parse_resp = function(resp) list(x = "a"))
+  resp <- response()
+
+  expect_snapshot(error = TRUE, {
+    req_not_a_list$policies$paginate$parse_resp(resp)
+    req_missing_1_field$policies$paginate$parse_resp(resp)
+    req_missing_2_field$policies$paginate$parse_resp(resp)
+  })
+
+  # The error call is helpful
+  req <- request_pagination_test(
+    parse_resp = function(resp) {
+      parsed <- resp_body_json(resp)
+
+      list(parsed$my_next_token, data = parsed)
+    }
+  )
+
+  expect_snapshot(error = TRUE, {
+    paginate_req_perform(req, max_pages = 2)
+  })
 })
 
 test_that("paginate_req_perform() handles error in `parse_resp()`", {
