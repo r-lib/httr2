@@ -8,7 +8,13 @@
 \alias{req_paginate_page_index}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, parse_resp = NULL, n_pages = NULL)
+req_paginate(
+  req,
+  next_request,
+  parse_resp = NULL,
+  required_fields = NULL,
+  n_pages = NULL
+)
 
 req_paginate_next_url(req, parse_resp, n_pages = NULL)
 
@@ -38,6 +44,9 @@ Other fields that might be needed are:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{* `next_url` for `paginate_next_url()`.
 * `next_token` for `paginate_next_token()`.
 }\if{html}{\out{</div>}}}
+
+\item{required_fields}{An optional character vector that describes which
+fields are required in the list returned by \code{parse_resp()}.}
 
 \item{n_pages}{An optional function that extracts the total number of pages, improving the
 automatically generated progress bar. It has two arguments:
