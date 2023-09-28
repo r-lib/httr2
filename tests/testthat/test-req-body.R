@@ -148,3 +148,12 @@ test_that("can override body content type", {
   expect_equal(headers$`Content-Type`, "application/json")
   expect_equal(headers$`content-type`, NULL)
 })
+
+test_that("no issues with partial name matching", {
+  req <- request_test("/get") %>%
+    req_body_multipart(d = "some data")
+
+  expect_named(req$body$data, "d")
+
+
+})
