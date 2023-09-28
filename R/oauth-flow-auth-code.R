@@ -215,7 +215,10 @@ oauth_flow_auth_code <- function(client,
   if (redirect$can_fetch_code) {
     # Wait a bit to give the user a chance to click through the authorisation
     # process.
-    sys_sleep(2, "for browser-based authentication", progress = FALSE)
+    if (!is_testing()) {
+      sys_sleep(2, "for browser-based authentication", progress = FALSE)
+    }
+
     code <- oauth_flow_auth_code_fetch(state)
   } else if (redirect$localhost) {
     # Listen on localhost for the result

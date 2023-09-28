@@ -111,49 +111,30 @@ test_that("external auth code sources are detected correctly", {
   })
 })
 
-# ouath_flow_auth_code_fetch ----------------------------------------------
+# oauth_flow_auth_code_fetch ----------------------------------------------
 
 test_that("auth codes can be retrieved from an external source", {
-  # Run a mock HTTP server that returns an auth code when requested, but *only*
-  # if we've been "authorized" first.
+  skip_on_cran()
+
+  app <- webfakes::new_app()
   authorized <- FALSE
-  listen <- function(env) {
+
+  # Error on first, and then respond on second
+  app$get("/code", function(req, res) {
     if (!authorized) {
       authorized <<- TRUE
-      return(list(
-        status = 404L,
-        headers = list("Content-Type" = "text/plain"),
-        body = "Not found"
-      ))
+      res$
+        set_status(404L)$
+        set_type("text/plain")$
+        send("Not found")
+    } else {
+      res$
+        set_status(200L)$
+        send_json(text = '{"code":"abc123"}')
     }
-    list(
-      status = 200L,
-      headers = list("Content-Type" = "application/json"),
-      body = '{"code":"abc123"}'
-    )
-  }
-  port <- httpuv::randomPort()
-  server <- httpuv::startServer("127.0.0.1", port, list(call = listen))
-  withr::defer(httpuv::stopServer(server))
-
-  # Transmogrify curl::curl_fetch_memory() into an "async" version that allows
-  # interleaving calls to httpuv::service().
-  local_mocked_bindings(
-    curl_fetch_memory = function(url, handle) {
-      resp <- NULL
-      curl::curl_fetch_multi(url, function(x) resp <<- x)
-      while (is.null(resp)) {
-        curl::multi_run(timeout = 0, poll = 1L)
-        httpuv::service(NA)
-      }
-      resp
-    },
-    .package = "curl"
-  )
-
-  base_url <- paste0("http://localhost:", port)
-  env <- c("HTTR2_OAUTH_CODE_SOURCE_URL" = paste0(base_url, "/code"))
-  withr::with_envvar(env, {
-    expect_equal(oauth_flow_auth_code_fetch("ignored"), "abc123")
   })
+  server <- webfakes::local_app_process(app)
+
+  withr::local_envvar("HTTR2_OAUTH_CODE_SOURCE_URL" = server$url("/code"))
+  expect_equal(oauth_flow_auth_code_fetch("ignored"), "abc123")
 })
