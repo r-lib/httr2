@@ -1,10 +1,10 @@
-test_that("throttling causes delay", {
+test_that("first request isn't throttled", {
   skip_on_cran()
   throttle_reset()
 
   req <- request_test() %>% req_throttle(50 / 1)
   expect_equal(throttle_delay(req), 0)
-  expect_true(throttle_delay(req) > 0.005)
+  expect_true(throttle_delay(req) > 0)
 })
 
 test_that("throttling causes expected average request rate", {

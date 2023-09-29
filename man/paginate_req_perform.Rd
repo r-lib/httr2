@@ -7,7 +7,7 @@
 \usage{
 paginate_req_perform(req, max_pages = 20L, progress = TRUE)
 
-paginate_next_request(resp, req, parsed)
+paginate_next_request(req, parsed)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -17,13 +17,12 @@ paginate_next_request(resp, req, parsed)
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic progress
 bar, use a string to give it a name, or see \link{progress_bars} for more details.}
 
-\item{resp}{An HTTP \link{response}.}
-
 \item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
 }
 \value{
-A list of responses parsed with the \code{parse_resp} argument of
-\code{\link[=req_paginate]{req_paginate()}}. If this argument is not specified, it will be a list of responses.
+The result of \code{vec_c()}ing together the \code{data} fields that were
+extracted by the \code{parse_resp()} argument of \code{\link[=req_paginate]{req_paginate()}}.
+If this argument is not specified, it will be a list of the raw responses.
 }
 \description{
 Perform a paginated request
@@ -34,9 +33,17 @@ page_size <- 150
 req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
-    next_url = function(resp, parsed) parsed[["next"]],
-    parse_resp = resp_body_json,
-    n_pages = function(resp, parsed) {
+    parse_resp = function(resp) {
+      parsed <- resp_body_json(resp)
+      results <- parsed$results
+      data <- data.frame(
+        name = sapply(results, `[[`, "name"),
+        url = sapply(results, `[[`, "url")
+      )
+
+      list(data = data, next_url = parsed$`next`)
+    },
+    n_pages = function(parsed) {
       total <- parsed$count
       ceiling(total / page_size)
     }
