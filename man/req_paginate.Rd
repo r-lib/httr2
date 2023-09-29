@@ -31,13 +31,13 @@ req_paginate_page_index(req, page_index, parse_resp = NULL, n_pages = NULL)
 page or \code{NULL} if there is no next page. It takes two arguments:
 \enumerate{
 \item \code{req}: the previous request.
-\item \code{parsed}: the result of the argument \code{parse_resp}.
+\item \code{parsed}: the previous response parsed via the argument \code{parse_resp}.
 }}
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
 response and returns a list with the field \code{data} and other fields needed
 to create the request for the next page.
-\code{paginate_req_perform()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
+\code{req_perform_multi()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
 and returns the result.
 Other fields that might be needed are:
 
@@ -84,17 +84,19 @@ A modified HTTP \link{request}.
 }
 \description{
 Use \code{req_paginate()} to specify how to request the next page in a paginated
-API. Use \code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages.
+API. Use \code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
-\code{\link[=paginate_next_request]{paginate_next_request()}} to iterate through the pages yourself.
+\code{\link[=multi_next_request]{multi_next_request()}} to iterate through the pages yourself.
 There are also helpers for common pagination patterns:
 \itemize{
 \item \code{req_paginate_next_url()} when the response contains a link to the next
 page.
-\item \code{req_paginate_offset()} when the request describes the offset i.e.
-at which element to start and the page size.
 \item \code{req_paginate_next_token()} when the response contains a token
 that is used to describe the next page.
+\item \code{req_paginate_offset()} when the request describes the offset i.e.
+at which element to start and the page size.
+\item \code{req_paginate_page_index()} when the request specifies which the page to
+request via an index.
 }
 }
 \examples{
@@ -120,6 +122,6 @@ request("https://pokeapi.co/api/v2/pokemon") \%>\%
   )
 }
 \seealso{
-\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages. \code{\link[=paginate_next_request]{paginate_next_request()}}
+\code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages. \code{\link[=multi_next_request]{multi_next_request()}}
 to generate the request to the next page.
 }

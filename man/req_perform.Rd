@@ -87,6 +87,6 @@ request("https://google.com") \%>\%
 }
 \seealso{
 \code{\link[=multi_req_perform]{multi_req_perform()}} to perform multiple requests in parallel.
-\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages of a requests paginated via
-\code{\link[=req_paginate]{req_paginate()}}. \code{\link[=chunk_req_perform]{chunk_req_perform()}} to perform a request in chunks.
+\code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages of a requests paginated via
+\code{\link[=req_paginate]{req_paginate()}} or chunked via \code{\link[=req_chunk]{req_chunk()}}.
 }

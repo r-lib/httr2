@@ -2,15 +2,9 @@
 % Please edit documentation in R/req_chunk.R
 \name{req_chunk}
 \alias{req_chunk}
-\alias{chunk_req_perform}
-\alias{chunk_next_request}
 \title{Chunk a request}
 \usage{
 req_chunk(req, data, chunk_size, apply_chunk, parse_resp = NULL)
-
-chunk_req_perform(req, progress = TRUE, error_call = current_env())
-
-chunk_next_request(req, i = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -28,17 +22,6 @@ takes two arguments:
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
 response.}
-
-\item{progress}{Whether to show a progress bar. Use \code{TRUE} to turn on a basic
-progress bar, use a string to give it a name, or see \link{progress_bars} for more
-details.}
-
-\item{error_call}{The execution environment of a currently
-running function, e.g. \code{caller_env()}. The function will be
-mentioned in error messages as the source of the error. See the
-\code{call} argument of \code{\link[rlang:abort]{abort()}} for more information.}
-
-\item{i}{The index of the chunk to request.}
 }
 \value{
 For \code{req_chunk()} a list of requests. For \code{chunk_req_perform()} a
@@ -49,7 +32,7 @@ list of responses.
 Use \code{req_chunk()} to specify how to request a chunk of data.
 Use \code{chunk_req_perform()} to request all chunks.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
-\code{\link[=chunk_next_request]{chunk_next_request()}} to iterate through the chunks yourself.
+\code{\link[=multi_next_request]{multi_next_request()}} to iterate through the chunks yourself.
 }
 \examples{
 req <- request("https://api.restful-api.dev/objects")

@@ -1,27 +1,29 @@
 #' Pagination
 #'
 #' Use `req_paginate()` to specify how to request the next page in a paginated
-#' API. Use [paginate_req_perform()] to fetch all pages.
+#' API. Use [req_perform_multi()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
-#' [paginate_next_request()] to iterate through the pages yourself.
+#' [multi_next_request()] to iterate through the pages yourself.
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
 #'     page.
-#'   * `req_paginate_offset()` when the request describes the offset i.e.
-#'     at which element to start and the page size.
 #'   * `req_paginate_next_token()` when the response contains a token
 #'     that is used to describe the next page.
+#'   * `req_paginate_offset()` when the request describes the offset i.e.
+#'     at which element to start and the page size.
+#'   * `req_paginate_page_index()` when the request specifies which the page to
+#'     request via an index.
 #'
 #' @inheritParams req_perform
 #' @param next_request A callback function that returns a [request] to the next
 #'   page or `NULL` if there is no next page. It takes two arguments:
 #'
 #'   1. `req`: the previous request.
-#'   2. `parsed`: the result of the argument `parse_resp`.
+#'   2. `parsed`: the previous response parsed via the argument `parse_resp`.
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response and returns a list with the field `data` and other fields needed
 #'   to create the request for the next page.
-#'   `paginate_req_perform()` combines all `data` fields via [vctrs::vec_c()]
+#'   `req_perform_multi()` combines all `data` fields via [vctrs::vec_c()]
 #'   and returns the result.
 #'   Other fields that might be needed are:
 #'
@@ -37,7 +39,7 @@
 #'   2. `parsed`: the result of the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
-#' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
+#' @seealso [req_perform_multi()] to fetch all pages. [multi_next_request()]
 #'   to generate the request to the next page.
 #' @export
 #'
@@ -75,9 +77,6 @@ req_paginate <- function(req,
   required_fields <- union(required_fields, "data")
   check_function2(n_pages, args = "parsed", allow_null = TRUE)
 
-  n_requests <- NULL
-  get_n_requests <- n_pages %||% function(resp, parsed) Inf
-
   wrapped_parse_resp <- function(resp) {
     out <- parse_resp(resp)
     vctrs::obj_check_list(out, arg = "parse_resp(resp)")
@@ -90,28 +89,12 @@ req_paginate <- function(req,
     out
   }
 
-  req_policies(
+  req_multi_policy(
     req,
     parse_resp = wrapped_parse_resp,
-    multi = list(
-      next_request = next_request,
-      n_requests = n_requests,
-      get_n_requests = get_n_requests,
-      required_fields = required_fields
-    )
-  )
-}
-
-#' @export
-#' @rdname paginate_req_perform
-paginate_next_request <- function(req, parsed) {
-  check_request(req)
-  check_has_multi_policy(req)
-
-  next_request <- req$policies$multi$next_request
-  next_request(
-    req = req,
-    parsed = parsed
+    next_request = next_request,
+    n_requests = NULL,
+    get_n_requests = n_pages %||% function(resp, parsed) Inf
   )
 }
 
