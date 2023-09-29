@@ -1,10 +1,10 @@
 # httr2 (development version)
 
-* New `req_chunk()` and `chunk_req_perform()` to perform a request in
-  chunks (@mgirlich, #303).
+* New `req_perform_multi()` to perform paginated or chunked requests (@mgirlich).
 
-* New `req_paginate()` and `paginate_req_perform()` to easily request paginated
-  APIs (@mgirlich, #8).
+* New `req_chunk()` to perform a request in chunks (@mgirlich, #303).
+
+* New `req_paginate()` to easily request paginated APIs (@mgirlich, #8).
 
 * New `resp_check_content_type()` to check response content types (#190).
   `resp_body_json()` and friends give better errors if no `Content-Type`
