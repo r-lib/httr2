@@ -413,26 +413,36 @@ is_hosted_session <- function() {
 }
 
 oauth_flow_auth_code_read <- function(state) {
-  code <- trimws(readline("Enter authorization code: "))
-  # We support two options here:
+  code <- trimws(readline("Enter authorization code or URL: "))
+  # We support several options here:
+  # 1) Parsing the code and state from the resolved URL on the redirect page
   #
-  # 1) The original {gargle} style, where the user copy & pastes a
+  # 2) The original {gargle} style, where the user copy & pastes a
   #    base64-encoded JSON object with both the code and state. This is used on
   #    https://www.tidyverse.org/google-callback/; and
   #
-  # 2) The full manual approach, where the code and state are entered
+  # 3) The full manual approach, where the code and state are entered
   #    independently.
-  result <- tryCatch(
-   jsonlite::fromJSON(rawToChar(openssl::base64_decode(code))),
-   error = function(e) {
-    list(
-      code = code,
-      state = trimws(readline("Enter state parameter: "))
-    )
-  })
+
+  parsed <- url_parse(code)
+
+  if (!is.null(parsed$query)) {
+    result <- parsed$query
+  } else {
+    result <- tryCatch(
+      jsonlite::fromJSON(rawToChar(openssl::base64_decode(code))),
+      error = function(e) {
+        list(
+          code = code,
+          state = trimws(readline("Enter state parameter: "))
+        )
+      })
+  }
+
   if (!identical(result$state, state)) {
     abort("Authentication failure: state does not match")
   }
+
   result$code
 }
 
