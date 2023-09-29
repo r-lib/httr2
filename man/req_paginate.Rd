@@ -8,17 +8,17 @@
 \alias{req_paginate_page_index}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, parse_resp = NULL, n_pages = NULL)
-
-req_paginate_next_url(req, next_url, parse_resp = NULL, n_pages = NULL)
-
-req_paginate_token(
+req_paginate(
   req,
-  set_token,
-  next_token,
+  next_request,
   parse_resp = NULL,
+  required_fields = NULL,
   n_pages = NULL
 )
+
+req_paginate_next_url(req, parse_resp, n_pages = NULL)
+
+req_paginate_token(req, set_token, parse_resp, n_pages = NULL)
 
 req_paginate_offset(req, offset, page_size, parse_resp = NULL, n_pages = NULL)
 
@@ -28,26 +28,28 @@ req_paginate_page_index(req, page_index, parse_resp = NULL, n_pages = NULL)
 \item{req}{A \link{request}.}
 
 \item{next_request}{A callback function that returns a \link{request} to the next
-page or \code{NULL} if there is no next page. It takes a three arguments:
+page or \code{NULL} if there is no next page. It takes a two arguments:
 \enumerate{
 \item \code{req}: the previous request.
-\item \code{resp}: the response of the current request.
 \item \code{parsed}: the result of the argument \code{parse_resp}.
 }}
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
-response. The result is passed to the argument \code{parsed} of \code{next_request()} and
-\code{n_pages()}. This helps to avoid parsing the response multiple times.}
+response and returns a list with the field \code{data} and other fields needed
+to create the request for the next page.
+\code{paginate_req_perform()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
+and returns the result.
+Other fields that might be needed are:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{* `next_url` for `paginate_next_url()`.
+* `next_token` for `paginate_next_token()`.
+}\if{html}{\out{</div>}}}
+
+\item{required_fields}{An optional character vector that specifies which
+fields are required in the list returned by \code{parse_resp()}.}
 
 \item{n_pages}{An optional function that extracts the total number of pages, improving the
 automatically generated progress bar. It has two arguments:
-\enumerate{
-\item \code{resp}: the response of the current request.
-\item \code{parsed}: the result of the argument \code{parse_resp}.
-}}
-
-\item{next_url}{A function that extracts the url to the next page. It takes
-two arguments:
 \enumerate{
 \item \code{resp}: the response of the current request.
 \item \code{parsed}: the result of the argument \code{parse_resp}.
@@ -59,8 +61,6 @@ takes two arguments: a \link{request} and the new token.
 \item \code{req}: the previous request.
 \item \code{token}: the token for the next page.
 }}
-
-\item{next_token}{A function that extracts the next token from the \link{response}.}
 
 \item{offset}{A function that applies the new offset to the request. It takes
 two arguments:
@@ -103,9 +103,17 @@ page_size <- 150
 request("https://pokeapi.co/api/v2/pokemon") \%>\%
   req_url_query(limit = page_size) \%>\%
   req_paginate_next_url(
-    parse_resp = resp_body_json,
-    next_url = function(resp, parsed) parsed[["next"]],
-    n_pages = function(resp, parsed) {
+    parse_resp = function(resp) {
+      parsed <- resp_body_json(resp)
+      results <- parsed$results
+      data <- data.frame(
+        name = sapply(results, `[[`, "name"),
+        url = sapply(results, `[[`, "url")
+      )
+
+      list(data = data, next_url = parsed$`next`)
+    },
+    n_pages = function(parsed) {
       total <- parsed$count
       ceiling(total / page_size)
     }
