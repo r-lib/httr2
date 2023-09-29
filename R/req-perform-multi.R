@@ -46,8 +46,9 @@ req_perform_multi <- function(req,
                               cancel_on_error = FALSE,
                               progress = TRUE,
                               error_call = current_env()) {
-  # TODO should also accept a list of requests
-  # TODO accept a path pattern?
+  # TODO support `path` argument
+  # * either a list of requests (same size as `n_requests`)
+  # * a path pattern
 
   check_request(req)
   check_has_multi_policy(req)
@@ -106,7 +107,6 @@ req_perform_multi <- function(req,
     out[[i]] <- parsed$data
     if (show_progress) cli::cli_progress_update(total = n_requests)
 
-    # TODO change name to `req_next()`?
     req <- multi_next_request(req, parsed)
     if (is.null(req)) {
       break
@@ -140,67 +140,7 @@ req_multi_policy <- function(req,
   )
 }
 
-# req_perform_multi <- function(reqs,
-#                               paths = NULL,
-#                               cancel_on_error = FALSE,
-#                               progress = TRUE,
-#                               error_call = current_env()) {
-#   n <- length(reqs)
-#   if (!is.null(paths)) {
-#     if (length(paths) != n) {
-#       cli::cli_abort("If supplied, {.arg paths} must be the same length as {.arg req}.")
-#     }
-#   }
-#
-#   env <- current_env()
-#   out <- rep(list(error_cnd("httr2_cancelled", message = "Request cancelled")), n)
-#
-#   perform <- error_wrapper(
-#     f = req_perform,
-#     cancel_on_error = cancel_on_error,
-#     error_message = "When requesting chunk {i}.",
-#     error_class = "httr2_failure",
-#     error_call = error_call
-#   )
-#   parse_resp <- error_wrapper(
-#     f = function(req, resp) {
-#       parse_resp <- req$policies$paginate$parse_resp %||% identity
-#       parse_resp(resp)
-#     },
-#     cancel_on_error = cancel_on_error,
-#     error_message = "When parsing chunk {i}.",
-#     error_class = "httr2_parse_failure",
-#     error_call = error_call
-#   )
-#
-#   pb <- create_progress_bar(
-#     total = n,
-#     name = "Request",
-#     config = progress
-#   )
-#   show_progress <- !is.null(pb)
-#
-#   tryCatch(
-#     {
-#       for (i in seq2(1, n)) {
-#         req_i <- reqs[[i]]
-#         resp_i <- perform(req_i, path = paths[[i]])
-#         out[[i]] <- parse_resp(req_i, resp_i)
-#         if (show_progress) cli::cli_progress_update()
-#       }
-#     },
-#     interrupt = function(cnd) {
-#       # TODO this doesn't seem to work?
-#       cnd
-#     }
-#   )
-#
-#   if (show_progress) cli::cli_progress_done()
-#
-#   out
-# }
-
-error_wrapper <- function(f,
+serror_wrapper <- function(f,
                           cancel_on_error,
                           error_message,
                           error_class,
