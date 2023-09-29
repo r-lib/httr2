@@ -54,7 +54,6 @@ req_perform_multi <- function(req,
   check_number_whole(max_requests, allow_infinite = TRUE, allow_null = TRUE, min = 1)
   max_requests <- max_requests %||% Inf
 
-  parse_resp <- req$policies$parse_resp
   n_requests <- min(req$policies$multi$n_requests, max_requests)
   get_n_requests <- req$policies$multi$get_n_requests
 
@@ -64,6 +63,25 @@ req_perform_multi <- function(req,
     n_requests <- 100e3
   }
 
+  perform <- error_wrapper(
+    f = req_perform,
+    cancel_on_error = cancel_on_error,
+    error_message = "When performing request {i}.",
+    error_class = "httr2_failure",
+    error_call = error_call
+  )
+
+  parse_resp <- error_wrapper(
+    f = function(resp) {
+      parse_resp <- req$policies$parse_resp
+      parse_resp(resp)
+    },
+    cancel_on_error = cancel_on_error,
+    error_message = "When parsing response {i}.",
+    error_class = "httr2_parse_failure",
+    error_call = error_call
+  )
+
   # TODO customise name of progress bar
   pb <- create_progress_bar(
     total = n_requests,
@@ -72,20 +90,20 @@ req_perform_multi <- function(req,
   )
   show_progress <- !is.null(pb)
 
-  out <- vector("list", length = n_requests)
+  out <- rep(list(cancelled_response()), n_requests)
 
-  page <- 0L
-  while ((page + 1) <= n_requests) {
-    page <- page + 1L
+  i <- 0L
+  while ((i + 1) <= n_requests) {
+    i <- i + 1L
 
-    resp <- req_perform(req)
+    resp <- perform(req)
     parsed <- parse_resp(resp)
 
-    if (page == 1) {
+    if (i == 1) {
       n_requests <- min(get_n_requests(parsed), n_requests)
     }
 
-    out[[page]] <- parsed$data
+    out[[i]] <- parsed$data
     if (show_progress) cli::cli_progress_update(total = n_requests)
 
     # TODO change name to `req_next()`?
@@ -97,8 +115,8 @@ req_perform_multi <- function(req,
   if (show_progress) cli::cli_progress_done()
 
   # remove unused tail of `out`
-  if (page < length(out)) {
-    out <- out[seq2(1, page)]
+  if (i < length(out)) {
+    out <- out[seq2(1, i)]
   }
 
   vctrs::list_unchop(out)
@@ -213,39 +231,6 @@ error_wrapper <- function(f,
         }
       )
     }
-  }
-}
-
-create_perform <- function(cancel_on_error,
-                           env = caller_env(),
-                           error_call = caller_env()) {
-  req_perform_cancel <- function(req, path, i) {
-    tryCatch(
-      req_perform(req, path = path),
-      error = function(cnd) {
-        cli::cli_abort(
-          "When requesting chunk {i}.",
-          parent = cnd,
-          .envir = env,
-          call = error_call
-        )
-      }
-    )
-  }
-
-  req_perform_continue <- function(req, path, i) {
-    tryCatch(
-      req_perform(req, path = path),
-      error = function(cnd) {
-        error_cnd("httr2_failure", message = cnd$msg)
-      }
-    )
-  }
-
-  if (cancel_on_error) {
-    req_perform_cancel
-  } else {
-    req_perform_continue
   }
 }
 

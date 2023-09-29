@@ -119,8 +119,10 @@
 ---
 
     Code
-      req_perform_multi(req, max_requests = 2)
+      req_perform_multi(req, max_requests = 2, cancel_on_error = TRUE)
     Condition
-      Error in `parse_resp()`:
+      Error in `req_perform_multi()`:
+      ! When parsing response 1.
+      Caused by error in `parse_resp()`:
       ! The list returned by `parse_resp(resp)` is missing the field next_token.
 

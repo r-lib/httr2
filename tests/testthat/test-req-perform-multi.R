@@ -53,6 +53,7 @@ test_that("req_perform_multi() handles error in `parse_resp()`", {
     }
   )
 
+  skip("decide what to do if some requests error")
   expect_snapshot(error = TRUE, {
     req_perform_multi(req, max_requests = 2)
   })

@@ -273,3 +273,7 @@ create_progress_bar <- function(total,
 
   exec(cli::cli_progress_bar, !!!args)
 }
+
+cancelled_response <- function() {
+  error_cnd("httr2_cancelled", message = "Request cancelled")
+}

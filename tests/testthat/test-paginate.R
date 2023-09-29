@@ -189,6 +189,6 @@ test_that("parse_resp() produces a good error message", {
   )
 
   expect_snapshot(error = TRUE, {
-    req_perform_multi(req, max_requests = 2)
+    req_perform_multi(req, max_requests = 2, cancel_on_error = TRUE)
   })
 })

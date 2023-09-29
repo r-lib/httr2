@@ -126,7 +126,7 @@ Performance <- R6Class("Performance", public = list(
     }
 
     self$pool <- pool
-    self$resp <- error_cnd("httr2_cancelled", message = "Request cancelled")
+    self$resp <- cancelled_response()
     curl::multi_add(self$handle,
       pool = self$pool,
       data = self$path,
