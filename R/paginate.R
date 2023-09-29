@@ -14,7 +14,7 @@
 #'
 #' @inheritParams req_perform
 #' @param next_request A callback function that returns a [request] to the next
-#'   page or `NULL` if there is no next page. It takes a two arguments:
+#'   page or `NULL` if there is no next page. It takes two arguments:
 #'
 #'   1. `req`: the previous request.
 #'   2. `parsed`: the result of the argument `parse_resp`.
@@ -110,8 +110,8 @@ req_paginate <- function(req,
 #'   bar, use a string to give it a name, or see [progress_bars] for more details.
 #'
 #' @return The result of `vec_c()`ing together the `data` fields that were
-#'   extracted by the `parse_resp()` argument of [req_paginate()].
-#'   If this argument is not specified, it will be a list of the raw responses.
+#'   extracted by the `parse_resp` argument of [req_paginate()].
+#'   If `parse_resp` is not specified, it will be a list of the raw responses.
 #' @export
 #'
 #' @examples
