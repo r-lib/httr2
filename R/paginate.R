@@ -92,6 +92,7 @@ req_paginate <- function(req,
   req_multi_policy(
     req,
     parse_resp = wrapped_parse_resp,
+    type = "Paginate",
     next_request = next_request,
     n_requests = NULL,
     get_n_requests = n_pages %||% function(resp, parsed) Inf

@@ -112,6 +112,7 @@ req_chunk <- function(req,
   req_multi_policy(
     req,
     parse_resp = parse_resp_wrapped,
+    type = "Chunk",
     next_request = chunk_next_request,
     n_requests = n_requests,
     get_n_requests = get_n_requests,

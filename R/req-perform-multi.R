@@ -83,10 +83,9 @@ req_perform_multi <- function(req,
     error_call = error_call
   )
 
-  # TODO customise name of progress bar
   pb <- create_progress_bar(
     total = n_requests,
-    name = "Paginate",
+    name = req$policies$multi$type,
     config = progress
   )
   show_progress <- !is.null(pb)
@@ -124,6 +123,7 @@ req_perform_multi <- function(req,
 
 req_multi_policy <- function(req,
                              parse_resp,
+                             type,
                              next_request,
                              n_requests,
                              get_n_requests,
@@ -132,6 +132,7 @@ req_multi_policy <- function(req,
     req,
     parse_resp = parse_resp,
     multi = list(
+      type = type,
       next_request = next_request,
       n_requests = n_requests,
       get_n_requests = get_n_requests,
