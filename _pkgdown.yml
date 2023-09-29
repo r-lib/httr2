@@ -43,8 +43,7 @@ reference:
   - req_perform
   - req_stream
   - multi_req_perform
-  - paginate_req_perform
-  - chunk_req_perform
+  - req_perform_multi
 
 - subtitle: Control the process
   desc: >
@@ -56,10 +55,11 @@ reference:
   - req_throttle
   - req_retry
 
-- title: Pagination
+- title: Pagination and chunked requests
   contents:
   - req_paginate
-  - paginate_next_request
+  - req_chunk
+  - multi_next_request
 
 - title: Handle the response
   contents:
