@@ -427,10 +427,7 @@ oauth_flow_auth_code_read <- function(state) {
   parsed <- url_parse(code)
 
   if (!is.null(parsed$query)) {
-    result <- list(
-      parsed$query$code,
-      parsed$query$state
-    )
+    result <- parsed$query[c("code", "state")]
   } else {
     result <- tryCatch(
       jsonlite::fromJSON(rawToChar(openssl::base64_decode(code))),
