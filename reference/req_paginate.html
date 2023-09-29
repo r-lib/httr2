@@ -94,17 +94,17 @@ that is used to describe the next page.</p></li>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_paginate</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_request</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">req_paginate_next_url</span><span class="op">(</span><span class="va">req</span>, <span class="va">next_url</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">req_paginate_token</span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_paginate</span><span class="op">(</span></span>
 <span>  <span class="va">req</span>,</span>
-<span>  <span class="va">set_token</span>,</span>
-<span>  <span class="va">next_token</span>,</span>
+<span>  <span class="va">next_request</span>,</span>
 <span>  parse_resp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  required_fields <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_pages <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">req_paginate_next_url</span><span class="op">(</span><span class="va">req</span>, <span class="va">parse_resp</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">req_paginate_token</span><span class="op">(</span><span class="va">req</span>, <span class="va">set_token</span>, <span class="va">parse_resp</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">req_paginate_offset</span><span class="op">(</span><span class="va">req</span>, <span class="va">offset</span>, <span class="va">page_size</span>, parse_resp <span class="op">=</span> <span class="cn">NULL</span>, n_pages <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
@@ -119,16 +119,25 @@ that is used to describe the next page.</p></li>
 
 <dt>next_request</dt>
 <dd><p>A callback function that returns a <a href="request.html">request</a> to the next
-page or <code>NULL</code> if there is no next page. It takes a three arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
-<li><p><code>resp</code>: the response of the current request.</p></li>
+page or <code>NULL</code> if there is no next page. It takes a two arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
 <li><p><code>parsed</code>: the result of the argument <code>parse_resp</code>.</p></li>
 </ol></dd>
 
 
 <dt>parse_resp</dt>
 <dd><p>A function with one argument <code>resp</code> that parses the
-response. The result is passed to the argument <code>parsed</code> of <code>next_request()</code> and
-<code>n_pages()</code>. This helps to avoid parsing the response multiple times.</p></dd>
+response and returns a list with the field <code>data</code> and other fields needed
+to create the request for the next page.
+<code><a href="paginate_req_perform.html">paginate_req_perform()</a></code> combines all <code>data</code> fields via <code><a href="https://vctrs.r-lib.org/reference/vec_c.html" class="external-link">vctrs::vec_c()</a></code>
+and returns the result.
+Other fields that might be needed are:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">*</span> <span class="st">`</span><span class="at">next_url</span><span class="st">`</span> <span class="cf">for</span> <span class="st">`</span><span class="at">paginate_next_url()</span><span class="st">`</span>.</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">*</span> <span class="st">`</span><span class="at">next_token</span><span class="st">`</span> <span class="cf">for</span> <span class="st">`</span><span class="at">paginate_next_token()</span><span class="st">`</span>.</span></code></pre><p></p></div></dd>
+
+
+<dt>required_fields</dt>
+<dd><p>An optional character vector that specifies which
+fields are required in the list returned by <code>parse_resp()</code>.</p></dd>
 
 
 <dt>n_pages</dt>
@@ -138,22 +147,11 @@ automatically generated progress bar. It has two arguments:</p><ol><li><p><code>
 </ol></dd>
 
 
-<dt>next_url</dt>
-<dd><p>A function that extracts the url to the next page. It takes
-two arguments:</p><ol><li><p><code>resp</code>: the response of the current request.</p></li>
-<li><p><code>parsed</code>: the result of the argument <code>parse_resp</code>.</p></li>
-</ol></dd>
-
-
 <dt>set_token</dt>
 <dd><p>A function that applies the new token to the request. It
 takes two arguments: a <a href="request.html">request</a> and the new token.</p><ol><li><p><code>req</code>: the previous request.</p></li>
 <li><p><code>token</code>: the token for the next page.</p></li>
 </ol></dd>
-
-
-<dt>next_token</dt>
-<dd><p>A function that extracts the next token from the <a href="response.html">response</a>.</p></dd>
 
 
 <dt>offset</dt>
@@ -194,9 +192,17 @@ to generate the request to the next page.</p></div>
 <span class="r-in"><span><span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://pokeapi.co/api/v2/pokemon"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="va">page_size</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">req_paginate_next_url</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    parse_resp <span class="op">=</span> <span class="va">resp_body_json</span>,</span></span>
-<span class="r-in"><span>    next_url <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span>, <span class="va">parsed</span><span class="op">)</span> <span class="va">parsed</span><span class="op">[[</span><span class="st">"next"</span><span class="op">]</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span>, <span class="va">parsed</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    parse_resp <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">parsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="va">results</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">results</span></span></span>
+<span class="r-in"><span>      <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"name"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        url <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"url"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, next_url <span class="op">=</span> <span class="va">parsed</span><span class="op">$</span><span class="va">`next`</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span>,</span></span>
+<span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">parsed</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>      <span class="va">total</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">count</span></span></span>
 <span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">total</span> <span class="op">/</span> <span class="va">page_size</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
