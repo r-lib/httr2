@@ -136,7 +136,7 @@
       req_not_a_list$policies$paginate$parse_resp(resp)
     Condition
       Error in `req_not_a_list$policies$paginate$parse_resp()`:
-      ! `parse_resp()` must return a list, not a string.
+      ! `parse_resp(resp)` must be a list, not the string "a".
     Code
       req_missing_1_field$policies$paginate$parse_resp(resp)
     Condition

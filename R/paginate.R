@@ -78,9 +78,7 @@ req_paginate <- function(req,
 
   wrapped_parse_resp <- function(resp) {
     out <- parse_resp(resp)
-    if (!is.list(out)) {
-      cli::cli_abort("{.fun parse_resp} must return a list, not {.obj_type_friendly {out}}.")
-    }
+    vctrs::obj_check_list(out, arg = "parse_resp(resp)")
 
     missing_fields <- setdiff(required_fields, names2(out))
     if (!is_empty(missing_fields)) {
