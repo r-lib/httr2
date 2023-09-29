@@ -12,7 +12,6 @@
 
 * `req_body_json()` gains custom content `type` argument
   and respects custom content-type set in header (@mgirlich, #189).
->>>>>>> 62cd461e68e2d23de429d5f703a8034843d27a1c
 
 * `oauth_flow_auth_code_listen()` now takes a single `redirect_uri` argument
   instead of separate `host_ip` and `port` arguments. This is a breaking change
