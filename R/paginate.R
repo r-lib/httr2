@@ -14,14 +14,22 @@
 #'
 #' @inheritParams req_perform
 #' @param next_request A callback function that returns a [request] to the next
-#'   page or `NULL` if there is no next page. It takes a three arguments:
+#'   page or `NULL` if there is no next page. It takes two arguments:
 #'
 #'   1. `req`: the previous request.
-#'   2. `resp`: the response of the current request.
-#'   3. `parsed`: the result of the argument `parse_resp`.
+#'   2. `parsed`: the result of the argument `parse_resp`.
 #' @param parse_resp A function with one argument `resp` that parses the
-#'   response. The result is passed to the argument `parsed` of `next_request()` and
-#'   `n_pages()`. This helps to avoid parsing the response multiple times.
+#'   response and returns a list with the field `data` and other fields needed
+#'   to create the request for the next page.
+#'   `paginate_req_perform()` combines all `data` fields via [vctrs::vec_c()]
+#'   and returns the result.
+#'   Other fields that might be needed are:
+#'
+#'     * `next_url` for `paginate_next_url()`.
+#'     * `next_token` for `paginate_next_token()`.
+#'
+#' @param required_fields An optional character vector that specifies which
+#'   fields are required in the list returned by `parse_resp()`.
 #' @param n_pages An optional function that extracts the total number of pages, improving the
 #'   automatically generated progress bar. It has two arguments:
 #'
@@ -39,9 +47,17 @@
 #' request("https://pokeapi.co/api/v2/pokemon") %>%
 #'   req_url_query(limit = page_size) %>%
 #'   req_paginate_next_url(
-#'     parse_resp = resp_body_json,
-#'     next_url = function(resp, parsed) parsed[["next"]],
-#'     n_pages = function(resp, parsed) {
+#'     parse_resp = function(resp) {
+#'       parsed <- resp_body_json(resp)
+#'       results <- parsed$results
+#'       data <- data.frame(
+#'         name = sapply(results, `[[`, "name"),
+#'         url = sapply(results, `[[`, "url")
+#'       )
+#'
+#'       list(data = data, next_url = parsed$`next`)
+#'     },
+#'     n_pages = function(parsed) {
 #'       total <- parsed$count
 #'       ceiling(total / page_size)
 #'     }
@@ -49,56 +65,65 @@
 req_paginate <- function(req,
                          next_request,
                          parse_resp = NULL,
+                         required_fields = NULL,
                          n_pages = NULL) {
   check_request(req)
-  check_function2(next_request, args = c("req", "resp", "parsed"))
+  check_function2(next_request, args = c("req", "parsed"))
   check_function2(parse_resp, args = "resp", allow_null = TRUE)
-  parse_resp <- parse_resp %||% identity
-  check_function2(n_pages, args = c("resp", "parsed"), allow_null = TRUE)
+  parse_resp <- parse_resp %||% function(resp) list(data = resp)
+  check_character(required_fields, allow_null = TRUE)
+  required_fields <- union(required_fields, "data")
+  check_function2(n_pages, args = "parsed", allow_null = TRUE)
+
   n_requests <- NULL
   get_n_requests <- n_pages %||% function(resp, parsed) Inf
 
+  wrapped_parse_resp <- function(resp) {
+    out <- parse_resp(resp)
+    vctrs::obj_check_list(out, arg = "parse_resp(resp)")
+
+    missing_fields <- setdiff(required_fields, names2(out))
+    if (!is_empty(missing_fields)) {
+      cli::cli_abort(c("The list returned by {.code parse_resp(resp)} is missing the field{?s} {.field {missing_fields}}."))
+    }
+
+    out
+  }
+
   req_policies(
     req,
-    parse_resp = parse_resp,
+    parse_resp = wrapped_parse_resp,
     multi = list(
       next_request = next_request,
       n_requests = n_requests,
-      get_n_requests = get_n_requests
+      get_n_requests = get_n_requests,
+      required_fields = required_fields
     )
   )
 }
 
 #' @export
 #' @rdname paginate_req_perform
-paginate_next_request <- function(resp, req, parsed) {
-  check_response(resp)
+paginate_next_request <- function(req, parsed) {
   check_request(req)
-  check_has_pagination_policy(req)
+  check_has_multi_policy(req)
 
   next_request <- req$policies$multi$next_request
   next_request(
-    resp = resp,
     req = req,
     parsed = parsed
   )
 }
 
-#' @param next_url A function that extracts the url to the next page. It takes
-#'   two arguments:
-#'
-#'   1. `resp`: the response of the current request.
-#'   2. `parsed`: the result of the argument `parse_resp`.
 #' @rdname req_paginate
 #' @export
 req_paginate_next_url <- function(req,
-                                  next_url,
-                                  parse_resp = NULL,
+                                  parse_resp,
                                   n_pages = NULL) {
-  check_function2(next_url, args = c("resp", "parsed"))
+  check_function2(parse_resp, args = "resp")
 
-  next_request <- function(req, resp, parsed) {
-    next_url <- next_url(resp, parsed)
+  next_request <- function(req, parsed) {
+    next_url <- parsed[["next_url"]]
 
     if (is.null(next_url)) {
       return(NULL)
@@ -111,6 +136,7 @@ req_paginate_next_url <- function(req,
     req,
     next_request,
     parse_resp = parse_resp,
+    required_fields = "next_url",
     n_pages = n_pages
   )
 }
@@ -120,19 +146,17 @@ req_paginate_next_url <- function(req,
 #'
 #'   1. `req`: the previous request.
 #'   2. `token`: the token for the next page.
-#' @param next_token A function that extracts the next token from the [response].
 #' @rdname req_paginate
 #' @export
 req_paginate_token <- function(req,
                                set_token,
-                               next_token,
-                               parse_resp = NULL,
+                               parse_resp,
                                n_pages = NULL) {
-  check_function2(set_token, args = c("req", "token"))
-  check_function2(next_token, args = c("resp", "parsed"))
+  check_function2(set_token, args = c("req", "next_token"))
+  check_function2(parse_resp, args = "resp")
 
-  next_request <- function(req, resp, parsed) {
-    next_token <- next_token(resp, parsed)
+  next_request <- function(req, parsed) {
+    next_token <- parsed[["next_token"]]
 
     if (is.null(next_token)) {
       return(NULL)
@@ -145,6 +169,7 @@ req_paginate_token <- function(req,
     req,
     next_request,
     parse_resp = parse_resp,
+    required_fields = "next_token",
     n_pages = n_pages
   )
 }
@@ -166,7 +191,7 @@ req_paginate_offset <- function(req,
   check_function2(offset, args = c("req", "offset"))
   check_number_whole(page_size)
 
-  next_request <- function(req, resp, parsed) {
+  next_request <- function(req, parsed) {
     cur_offset <- req$policies$multi$offset
     cur_offset <- cur_offset + page_size
     req$policies$multi$offset <- cur_offset
@@ -197,7 +222,7 @@ req_paginate_page_index <- function(req,
                                     n_pages = NULL) {
   check_function2(page_index, args = c("req", "page"))
 
-  next_request <- function(req, resp, parsed) {
+  next_request <- function(req, parsed) {
     new_page <- req$policies$multi$page + 1L
     req$policies$multi$page <- new_page
     page_index(req, new_page)

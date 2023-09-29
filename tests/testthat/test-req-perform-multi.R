@@ -1,11 +1,11 @@
 test_that("req_perform_multi() checks inputs", {
   req <- request("http://example.com") %>%
     req_paginate_token(
-      set_token = function(req, token) {
-        req_body_json(req, list(my_token = token))
+      parse_resp = function(resp) {
+        list(next_token = 1, data = "a")
       },
-      next_token = function(resp, parsed) {
-        1
+      set_token = function(req, next_token) {
+        req_body_json(req, list(my_token = next_token))
       }
     )
 
@@ -48,6 +48,8 @@ test_that("req_perform_multi() handles error in `parse_resp()`", {
       if (parsed$my_next_token >= 2) {
         abort("error")
       }
+
+      list(next_token = parsed$my_next_token, data = parsed)
     }
   )
 
@@ -75,10 +77,7 @@ test_that("req_perform_multi() performs a request in chunks", {
   )
 
   responses <- req_perform_multi(req)
-  expect_equal(
-    responses,
-    list(data.frame(id = 1:3), data.frame(id = 4:5))
-  )
+  expect_equal(responses, data.frame(id = 1:5))
 
   req <- req_chunk(
     request("http://example.com"),
@@ -89,5 +88,5 @@ test_that("req_perform_multi() performs a request in chunks", {
   )
 
   responses <- req_perform_multi(req)
-  expect_equal(responses, list())
+  expect_equal(responses, NULL)
 })

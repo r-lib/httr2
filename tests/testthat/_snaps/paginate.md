@@ -14,7 +14,7 @@
       req_paginate(req, function(req) req)
     Condition
       Error in `req_paginate()`:
-      ! `next_request` must have the arguments `req`, `resp`, and `parsed`; it currently has `req`.
+      ! `next_request` must have the arguments `req` and `parsed`; it currently has `req`.
     Code
       req_paginate(req, next_request, parse_resp = "a")
     Condition
@@ -34,7 +34,7 @@
       req_paginate(req, next_request, n_pages = function(x) x)
     Condition
       Error in `req_paginate()`:
-      ! `n_pages` must have the arguments `resp` and `parsed`; it currently has `x`.
+      ! `n_pages` must have the argument `parsed`; it currently has `x`.
 
 # paginate_next_request() produces the request to the next page
 
@@ -42,31 +42,7 @@
       paginate_next_request("a", req)
     Condition
       Error in `paginate_next_request()`:
-      ! `resp` must be an HTTP response object, not the string "a".
-    Code
-      paginate_next_request(resp, "a")
-    Condition
-      Error in `paginate_next_request()`:
       ! `req` must be an HTTP request object, not the string "a".
-    Code
-      paginate_next_request(resp, request("http://example.com/"))
-    Condition
-      Error in `check_has_pagination_policy()`:
-      ! `req` doesn't have a pagination policy.
-      i You can add pagination via `req_paginate()`.
-
-# req_paginate_next_url() checks inputs
-
-    Code
-      req_paginate_next_url(request("http://example.com/"), "a")
-    Condition
-      Error in `req_paginate_next_url()`:
-      ! `next_url` must be a function, not the string "a".
-    Code
-      req_paginate_next_url(request("http://example.com/"), function(req, parsed) req)
-    Condition
-      Error in `req_paginate_next_url()`:
-      ! `next_url` must have the arguments `resp` and `parsed`; it currently has `req` and `parsed`.
 
 # req_paginate_token() checks inputs
 
@@ -76,21 +52,20 @@
       Error in `req_paginate_token()`:
       ! `set_token` must be a function, not the string "a".
     Code
-      req_paginate_token(req, function(req) req)
+      req_paginate_token(req, function(req) resp)
     Condition
       Error in `req_paginate_token()`:
-      ! `set_token` must have the arguments `req` and `token`; it currently has `req`.
+      ! `set_token` must have the arguments `req` and `next_token`; it currently has `req`.
     Code
-      req_paginate_token(req, function(req, token) req, next_token = "a")
+      req_paginate_token(req, function(req, next_token) req, "a")
     Condition
       Error in `req_paginate_token()`:
-      ! `next_token` must be a function, not the string "a".
+      ! `parse_resp` must be a function, not the string "a".
     Code
-      req_paginate_token(req, function(req, token) req, next_token = function(req)
-      req)
+      req_paginate_token(req, function(req, next_token) req, function(req) req)
     Condition
       Error in `req_paginate_token()`:
-      ! `next_token` must have the arguments `resp` and `parsed`; it currently has `req`.
+      ! `parse_resp` must have the argument `resp`; it currently has `req`.
 
 # req_paginate_offset() checks inputs
 
@@ -123,35 +98,29 @@
       Error in `req_paginate_page_index()`:
       ! `page_index` must have the arguments `req` and `page`; it currently has `req`.
 
-# paginate_req_perform() checks inputs
+# parse_resp() produces a good error message
 
     Code
-      paginate_req_perform("a")
+      req_not_a_list$policies$parse_resp(resp)
     Condition
-      Error in `paginate_req_perform()`:
-      ! `req` must be an HTTP request object, not the string "a".
+      Error in `req_not_a_list$policies$parse_resp()`:
+      ! `parse_resp(resp)` must be a list, not the string "a".
     Code
-      paginate_req_perform(request("http://example.com"))
+      req_missing_1_field$policies$parse_resp(resp)
     Condition
-      Error in `check_has_pagination_policy()`:
-      ! `req` doesn't have a pagination policy.
-      i You can add pagination via `req_paginate()`.
+      Error in `req_missing_1_field$policies$parse_resp()`:
+      ! The list returned by `parse_resp(resp)` is missing the field next_url.
     Code
-      paginate_req_perform(req, max_pages = 0)
+      req_missing_2_field$policies$parse_resp(resp)
     Condition
-      Error in `paginate_req_perform()`:
-      ! `max_pages` must be a whole number larger than or equal to 1, not the number 0.
-    Code
-      paginate_req_perform(req, progress = -1)
-    Condition
-      Error in `paginate_req_perform()`:
-      ! `progress` must be a bool, a string, or a list, not the number -1.
+      Error in `req_missing_2_field$policies$parse_resp()`:
+      ! The list returned by `parse_resp(resp)` is missing the fields next_url and data.
 
-# paginate_req_perform() handles error in `parse_resp()`
+---
 
     Code
-      paginate_req_perform(req, max_pages = 2)
+      req_perform_multi(req, max_requests = 2)
     Condition
       Error in `parse_resp()`:
-      ! error
+      ! The list returned by `parse_resp(resp)` is missing the field next_token.
 

@@ -39,14 +39,14 @@ req_perform_multi <- function(req,
     parsed <- parse_resp(resp)
 
     if (page == 1) {
-      n_requests <- min(get_n_requests(resp, parsed), n_requests)
+      n_requests <- min(get_n_requests(parsed), n_requests)
     }
 
-    out[[page]] <- parsed
+    out[[page]] <- parsed$data
     if (show_progress) cli::cli_progress_update(total = n_requests)
 
     # TODO change name to `req_next()`?
-    req <- multi_next_request(resp, req, parsed)
+    req <- multi_next_request(req, parsed)
     if (is.null(req)) {
       break
     }
@@ -225,14 +225,12 @@ create_parse_resp <- function(cancel_on_error,
   }
 }
 
-multi_next_request <- function(resp, req, parsed) {
-  check_response(resp)
+multi_next_request <- function(req, parsed) {
   check_request(req)
-  check_has_pagination_policy(req)
+  check_has_multi_policy(req)
 
   next_request <- req$policies$multi$next_request
   next_request(
-    resp = resp,
     req = req,
     parsed = parsed
   )

@@ -84,13 +84,16 @@ req_chunk <- function(req,
   check_function2(apply_chunk, args = c("req", "chunk"))
   check_function2(parse_resp, args = "resp", allow_null = TRUE, call = error_call)
   parse_resp <- parse_resp %||% identity
+  parse_resp_wrapped <- function(resp) {
+    list(data = parse_resp(resp))
+  }
 
   n <- vctrs::vec_size(data)
   n_chunks <- ceiling(n / chunk_size)
   n_requests <- n_chunks
-  get_n_requests <- function(resp, parsed) n_chunks
+  get_n_requests <- function(parsed) n_chunks
 
-  chunk_next_request <- function(resp, req, parsed) {
+  chunk_next_request <- function(req, parsed) {
     check_request(req)
     check_has_chunk_policy(req)
 
@@ -117,7 +120,7 @@ req_chunk <- function(req,
 
   req_policies(
     req,
-    parse_resp = parse_resp,
+    parse_resp = parse_resp_wrapped,
     multi = list(
       n_requests = n_requests,
       get_n_requests = get_n_requests,
@@ -217,7 +220,7 @@ chunk_next_request <- function(req, i = NULL) {
     req$policies$multi$cur_chunk <- i
   }
 
-  n_chunks <- req$policies$multi$n_requests(NULL, NULL)
+  n_chunks <- req$policies$multi$get_n_requests(NULL)
   if (i > n_chunks) {
     return()
   }
