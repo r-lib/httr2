@@ -39,7 +39,7 @@
   of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
   that changing this is ever useful.
   
-* `oauth_flow_auth_code()` allows for user to enter url (after resolving request sent to `redirect_uri`) that contains an authorization `code` and `state` to needing to manual parsing (@fh-mthomson, #TBD).
+* `oauth_flow_auth_code()` allows for user to enter url (after resolving request sent to `redirect_uri`) that contains an authorization `code` and `state` to avoid manual parsing (@fh-mthomson, #TBD).
 
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
