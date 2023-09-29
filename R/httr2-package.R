@@ -15,6 +15,3 @@ the$cache_throttle <- list()
 the$token_cache <- new_environment()
 the$last_response <- NULL
 the$last_request <- NULL
-the$last_multi_responses <- NULL
-the$last_chunk_idx <- NULL
-the$last_chunks <- NULL

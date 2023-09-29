@@ -140,7 +140,7 @@ req_multi_policy <- function(req,
   )
 }
 
-serror_wrapper <- function(f,
+error_wrapper <- function(f,
                           cancel_on_error,
                           error_message,
                           error_class,
@@ -172,18 +172,6 @@ serror_wrapper <- function(f,
       )
     }
   }
-}
-
-#' @export
-#' @rdname last_response
-last_multi_responses <- function() {
-  the$last_chunked_responses[seq2(1, the$last_chunk_idx)]
-}
-
-#' @export
-#' @rdname last_response
-last_chunk <- function() {
-  the$last_chunks[[the$last_chunk_idx]]
 }
 
 #' Create the next request of a multi request
