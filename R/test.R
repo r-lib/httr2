@@ -39,9 +39,32 @@ request_pagination_test <- function(parse_resp = NULL,
 example_url <- function() {
   check_installed("webfakes")
 
+  app <- webfakes::httpbin_app()
+  # paginated iris endpoint
+  app$get("/iris", function(req, res) {
+    page <- req$query$page
+    if (is.null(page)) page <- 1L
+    page <- as.integer(page)
+    page_size <- req$query$limit
+    if (is.null(page_size)) page_size <- 20L
+    page_size <- as.integer(page_size)
+
+    n <- nrow(iris)
+    start <- (page - 1L) * page_size + 1L
+    end <- min(start + page_size - 1L, n)
+    ids <- seq(start, end)
+    data <- vctrs::vec_slice(datasets::iris, ids)
+
+    res$set_status(200L)$send_json(
+      object = list(data = data, count = n),
+      auto_unbox = TRUE,
+      pretty = TRUE
+    )
+  })
+
   env_cache(the, "test_app",
     webfakes::new_app_process(
-      webfakes::httpbin_app(),
+      app,
       opts = webfakes::server_opts(num_threads = 2)
     )
   )
