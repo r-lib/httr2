@@ -4,6 +4,9 @@
 #' [req_chunk()].
 #'
 #' @inheritParams req_perform
+#' @param path Optionally, path to save the body of the responses. The path
+#'   should contain the string `"%i"` which is replaced by the index of the
+#'   current request.
 #' @param max_requests The maximum number of requests to perform.
 #' @param cancel_on_error Should all pending requests be cancelled when you
 #'   hit an error. Set this to `TRUE` to stop all requests as soon as you
@@ -41,17 +44,17 @@
 #'
 #' responses <- req_perform_multi(req_pokemon)
 req_perform_multi <- function(req,
-                              # paths = NULL,
+                              path = NULL,
                               max_requests = NULL,
                               cancel_on_error = FALSE,
                               progress = TRUE,
                               error_call = current_env()) {
-  # TODO support `path` argument
-  # * either a list of requests (same size as `n_requests`)
-  # * a path pattern
-
   check_request(req)
   check_has_multi_policy(req)
+  check_string(path, allow_null = TRUE)
+  if (!is.null(path) && !grepl("%i", path)) {
+    cli::cli_abort("{.arg path} must contain {.val %i}.")
+  }
   check_number_whole(max_requests, allow_infinite = TRUE, allow_null = TRUE, min = 1)
   max_requests <- max_requests %||% Inf
 
@@ -93,10 +96,14 @@ req_perform_multi <- function(req,
   out <- rep(list(cancelled_response()), n_requests)
 
   i <- 0L
+  path_i <- NULL
   while ((i + 1) <= n_requests) {
     i <- i + 1L
+    if (!is.null(path)) {
+      path_i <- gsub("%i", i, path, fixed = TRUE)
+    }
 
-    resp <- perform(req)
+    resp <- perform(req, path = path_i)
     parsed <- parse_resp(resp)
 
     if (i == 1) {

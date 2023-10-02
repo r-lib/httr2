@@ -12,6 +12,8 @@ test_that("req_perform_multi() checks inputs", {
   expect_snapshot(error = TRUE, {
     req_perform_multi("a")
     req_perform_multi(request("http://example.com"))
+    req_perform_multi(req, path = 3)
+    req_perform_multi(req, path = "abc")
     req_perform_multi(req, max_requests = 0)
     req_perform_multi(req, progress = -1)
   })
@@ -90,4 +92,39 @@ test_that("req_perform_multi() performs a request in chunks", {
 
   responses <- req_perform_multi(req)
   expect_equal(responses, NULL)
+})
+
+test_that("req_perform_multi() can store response in path", {
+  path <- withr::local_tempfile(pattern = "resp_%i_")
+
+  apply_chunk <- function(req, chunk) {
+    req_body_json(req, chunk)
+  }
+
+  req <- req_chunk(
+    request_test("/post"),
+    chunk_size = 3,
+    data = data.frame(id = 1:5),
+    apply_chunk = apply_chunk
+  )
+
+  responses <- req_perform_multi(req, path = path)
+  expect_equal(responses[[1]]$body, new_path(sub("%i", 1, path, fixed = TRUE)))
+  expect_equal(responses, data.frame(id = 1:5))
+
+  req <- req_chunk(
+    request("http://example.com"),
+    chunk_size = 3,
+    data = data.frame(id = integer()),
+    apply_chunk = apply_chunk,
+    parse_resp = function(resp) resp_body_json(resp, simplifyVector = TRUE)
+  )
+
+  responses <- req_perform_multi(req)
+  expect_equal(responses, NULL)
+
+
+
+  expect_equal(resps[[1]]$body, new_path(paths[[1]]))
+  expect_equal(resps[[2]]$body, new_path(paths[[2]]))
 })

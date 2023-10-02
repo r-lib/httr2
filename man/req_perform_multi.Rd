@@ -6,6 +6,7 @@
 \usage{
 req_perform_multi(
   req,
+  path = NULL,
   max_requests = NULL,
   cancel_on_error = FALSE,
   progress = TRUE,
@@ -14,6 +15,10 @@ req_perform_multi(
 }
 \arguments{
 \item{req}{A \link{request}.}
+
+\item{path}{Optionally, path to save the body of the responses. The path
+should contain the string \code{"\%i"} which is replaced by the index of the
+current request.}
 
 \item{max_requests}{The maximum number of requests to perform.}
 
