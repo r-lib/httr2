@@ -8,7 +8,7 @@
     Code
       req_perform_multi(request("http://example.com"))
     Condition
-      Error in `check_has_multi_policy()`:
+      Error in `req_perform_multi()`:
       ! `req` doesn't have a multi request policy.
       i You can add pagination via `req_paginate()`.
       i You can create a chunked requests via `req_chunk()`.
