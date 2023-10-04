@@ -68,12 +68,6 @@ req_perform_multi <- function(req,
   )
   show_progress <- !is.null(pb)
 
-  # the implementation below doesn't really support an infinite amount of pages
-  # but 100e3 should be plenty
-  if (is.infinite(n_requests)) {
-    n_requests <- 100e3
-  }
-
   perform <- error_wrapper(
     f = req_perform,
     cancel_on_error = cancel_on_error,
@@ -93,6 +87,13 @@ req_perform_multi <- function(req,
     error_call = error_call
   )
 
+  # the implementation below doesn't really support an infinite amount of pages
+  # but 100e3 should be plenty
+  # `pb_total` is needed to support the case when `n_requests` is infinite
+  pb_total <- n_requests
+  if (is.infinite(n_requests)) {
+    n_requests <- min(n_requests, 100e3)
+  }
   out <- rep(list(cancelled_response()), n_requests)
 
   req <- req$policies$multi$init(req)
@@ -108,11 +109,19 @@ req_perform_multi <- function(req,
     parsed <- parse_resp(resp)
 
     if (i == 1) {
-      n_requests <- min(get_n_requests(parsed), n_requests)
+      n_requests_new <- get_n_requests(parsed)
+      n_requests <- min(n_requests_new, n_requests)
+
+      pb_total <- min(n_requests_new, pb_total)
+      if (!is.infinite(pb_total)) {
+        cli::cli_progress_update(inc = 0, total = pb_total)
+      }
     }
 
     out[[i]] <- parsed$data
-    if (show_progress) cli::cli_progress_update(total = n_requests)
+    if (show_progress) {
+      cli::cli_progress_update()
+    }
 
     req <- req_next_multi(req, parsed)
     if (is.null(req)) {
