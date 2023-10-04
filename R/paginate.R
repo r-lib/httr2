@@ -95,7 +95,8 @@ req_paginate <- function(req,
     type = "Paginate",
     next_request = next_request,
     n_requests = NULL,
-    get_n_requests = n_pages %||% function(resp, parsed) Inf
+    get_n_requests = n_pages %||% function(resp, parsed) Inf,
+    init = function(req) req
   )
 }
 

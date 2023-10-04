@@ -13,6 +13,16 @@
       i You can add pagination via `req_paginate()`.
       i You can create a chunked requests via `req_chunk()`.
     Code
+      req_perform_multi(req, path = 3)
+    Condition
+      Error in `req_perform_multi()`:
+      ! `path` must be a single string or `NULL`, not the number 3.
+    Code
+      req_perform_multi(req, path = "abc")
+    Condition
+      Error in `req_perform_multi()`:
+      ! `path` must contain the string "%i".
+    Code
       req_perform_multi(req, max_requests = 0)
     Condition
       Error in `req_perform_multi()`:
@@ -22,12 +32,4 @@
     Condition
       Error in `req_perform_multi()`:
       ! `progress` must be a bool, a string, or a list, not the number -1.
-
-# req_perform_multi() handles error in `parse_resp()`
-
-    Code
-      req_perform_multi(req, max_requests = 2)
-    Condition
-      Error in `parse_resp()`:
-      ! error
 

@@ -67,7 +67,7 @@ req_chunk <- function(req,
   n_chunks <- ceiling(n / chunk_size)
   n_requests <- n_chunks
 
-  chunk_next_request <- function(req, parsed) {
+  chunk_next_request <- function(req, parsed = NULL) {
     check_request(req)
 
     req$policies$multi$cur_chunk <- req$policies$multi$cur_chunk + 1L
@@ -91,6 +91,7 @@ req_chunk <- function(req,
     next_request = chunk_next_request,
     n_requests = n_requests,
     get_n_requests = function(parsed) n_chunks,
+    init = function(req) chunk_next_request(req),
     apply_chunk = apply_chunk,
     data = data,
     cur_chunk = 0L,

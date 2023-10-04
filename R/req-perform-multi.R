@@ -53,7 +53,7 @@ req_perform_multi <- function(req,
   check_has_multi_policy(req)
   check_string(path, allow_null = TRUE)
   if (!is.null(path) && !grepl("%i", path)) {
-    cli::cli_abort("{.arg path} must contain {.val %i}.")
+    cli::cli_abort("{.arg path} must contain the string {.val %i}.")
   }
   check_number_whole(max_requests, allow_infinite = TRUE, allow_null = TRUE, min = 1)
   max_requests <- max_requests %||% Inf
@@ -95,6 +95,7 @@ req_perform_multi <- function(req,
 
   out <- rep(list(cancelled_response()), n_requests)
 
+  req <- req$policies$multi$init(req)
   i <- 0L
   path_i <- NULL
   while ((i + 1) <= n_requests) {

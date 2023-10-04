@@ -44,6 +44,7 @@ test_that("req_perform_multi() works if there is only one page", {
 })
 
 test_that("req_perform_multi() handles error in `parse_resp()`", {
+  skip("decide what to do if some requests error")
   req <- request_pagination_test(
     parse_resp = function(resp) {
       parsed <- resp_body_json(resp)
@@ -55,7 +56,6 @@ test_that("req_perform_multi() handles error in `parse_resp()`", {
     }
   )
 
-  skip("decide what to do if some requests error")
   expect_snapshot(error = TRUE, {
     req_perform_multi(req, max_requests = 2)
   })
@@ -66,24 +66,19 @@ test_that("req_perform_multi() performs a request in chunks", {
     req_body_json(req, chunk)
   }
 
-  local_mocked_responses(list(
-    response_json(body = data.frame(id = 1:3)),
-    response_json(body = data.frame(id = 4:5))
-  ))
-
   req <- req_chunk(
-    request("http://example.com"),
+    request_test("/post"),
     chunk_size = 3,
     data = data.frame(id = 1:5),
     apply_chunk = apply_chunk,
-    parse_resp = function(resp) resp_body_json(resp, simplifyVector = TRUE)
+    parse_resp = function(resp) resp_body_json(resp, simplifyVector = TRUE)$json
   )
 
   responses <- req_perform_multi(req)
   expect_equal(responses, data.frame(id = 1:5))
 
   req <- req_chunk(
-    request("http://example.com"),
+    request_test("/post"),
     chunk_size = 3,
     data = data.frame(id = integer()),
     apply_chunk = apply_chunk,
@@ -124,9 +119,4 @@ test_that("req_perform_multi() can store response in path", {
 
   responses <- req_perform_multi(req)
   expect_equal(responses, NULL)
-
-
-
-  expect_equal(resps[[1]]$body, new_path(paths[[1]]))
-  expect_equal(resps[[2]]$body, new_path(paths[[2]]))
 })
