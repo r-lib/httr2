@@ -33,10 +33,8 @@
 #' @param required_fields An optional character vector that specifies which
 #'   fields are required in the list returned by `parse_resp()`.
 #' @param n_pages An optional function that extracts the total number of pages, improving the
-#'   automatically generated progress bar. It has two arguments:
-#'
-#'   1. `resp`: the response of the current request.
-#'   2. `parsed`: the result of the argument `parse_resp`.
+#'   automatically generated progress bar. It has one argument `parsed`, which
+#'   is the previous response parsed via the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
 #' @seealso [req_perform_multi()] to fetch all pages. [multi_next_request()]
@@ -44,20 +42,27 @@
 #' @export
 #'
 #' @examples
-#' page_size <- 150
+#' page_size <- 40
 #'
-#' request("https://pokeapi.co/api/v2/pokemon") %>%
+#' request(example_url()) %>%
+#'   req_url_path("/iris") %>%
 #'   req_url_query(limit = page_size) %>%
-#'   req_paginate_next_url(
+#'   req_paginate_page_index(
+#'     page_index = function(req, page) {
+#'       req %>% req_url_query(page_index = page)
+#'     },
 #'     parse_resp = function(resp) {
 #'       parsed <- resp_body_json(resp)
-#'       results <- parsed$results
+#'       results <- parsed$data
 #'       data <- data.frame(
-#'         name = sapply(results, `[[`, "name"),
-#'         url = sapply(results, `[[`, "url")
+#'         Sepal.Length = sapply(results, `[[`, "Sepal.Length"),
+#'         Sepal.Width = sapply(results, `[[`, "Sepal.Width"),
+#'         Petal.Length = sapply(results, `[[`, "Petal.Length"),
+#'         Petal.Width = sapply(results, `[[`, "Petal.Width"),
+#'         Species = sapply(results, `[[`, "Species")
 #'       )
 #'
-#'       list(data = data, next_url = parsed$`next`)
+#'       list(data = data, count = parsed$count)
 #'     },
 #'     n_pages = function(parsed) {
 #'       total <- parsed$count
