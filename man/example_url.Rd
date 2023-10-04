@@ -7,6 +7,13 @@
 example_url()
 }
 \description{
-Requires the webfakes package to be installed.
+Requires the webfakes package to be installed. It has the following endpoints:
+}
+\details{
+\itemize{
+\item all the ones from the \code{\link[webfakes:httpbin_app]{webfakes::httpbin_app()}}
+\item \verb{/iris}: paginate through the iris dataset. It has the query parameters
+\code{page} and \code{limit} to control the pagination.
+}
 }
 \keyword{internal}

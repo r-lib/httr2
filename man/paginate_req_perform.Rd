@@ -21,27 +21,34 @@ bar, use a string to give it a name, or see \link{progress_bars} for more detail
 }
 \value{
 The result of \code{vec_c()}ing together the \code{data} fields that were
-extracted by the \code{parse_resp()} argument of \code{\link[=req_paginate]{req_paginate()}}.
-If this argument is not specified, it will be a list of the raw responses.
+extracted by the \code{parse_resp} argument of \code{\link[=req_paginate]{req_paginate()}}.
+If \code{parse_resp} is not specified, it will be a list of the raw responses.
 }
 \description{
 Perform a paginated request
 }
 \examples{
-page_size <- 150
+page_size <- 40
 
-req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
+req_flowers <- request(example_url()) \%>\%
+  req_url_path("/iris") \%>\%
   req_url_query(limit = page_size) \%>\%
-  req_paginate_next_url(
+  req_paginate_page_index(
+    page_index = function(req, page) {
+      req \%>\% req_url_query(page_index = page)
+    },
     parse_resp = function(resp) {
       parsed <- resp_body_json(resp)
-      results <- parsed$results
+      results <- parsed$data
       data <- data.frame(
-        name = sapply(results, `[[`, "name"),
-        url = sapply(results, `[[`, "url")
+        Sepal.Length = sapply(results, `[[`, "Sepal.Length"),
+        Sepal.Width = sapply(results, `[[`, "Sepal.Width"),
+        Petal.Length = sapply(results, `[[`, "Petal.Length"),
+        Petal.Width = sapply(results, `[[`, "Petal.Width"),
+        Species = sapply(results, `[[`, "Species")
       )
 
-      list(data = data, next_url = parsed$`next`)
+      list(data = data, count = parsed$count)
     },
     n_pages = function(parsed) {
       total <- parsed$count
@@ -49,5 +56,5 @@ req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
     }
   )
 
-responses <- paginate_req_perform(req_pokemon)
+paginate_req_perform(req_flowers)
 }
