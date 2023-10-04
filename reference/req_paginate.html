@@ -119,7 +119,7 @@ that is used to describe the next page.</p></li>
 
 <dt>next_request</dt>
 <dd><p>A callback function that returns a <a href="request.html">request</a> to the next
-page or <code>NULL</code> if there is no next page. It takes a two arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
+page or <code>NULL</code> if there is no next page. It takes two arguments:</p><ol><li><p><code>req</code>: the previous request.</p></li>
 <li><p><code>parsed</code>: the result of the argument <code>parse_resp</code>.</p></li>
 </ol></dd>
 
@@ -187,20 +187,27 @@ to generate the request to the next page.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">page_size</span> <span class="op">&lt;-</span> <span class="fl">150</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">page_size</span> <span class="op">&lt;-</span> <span class="fl">40</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"https://pokeapi.co/api/v2/pokemon"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="fu"><a href="example_url.html">example_url</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_path</a></span><span class="op">(</span><span class="st">"/iris"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="va">page_size</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">req_paginate_next_url</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">req_paginate_page_index</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    page_index <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">req</span>, <span class="va">page</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>page_index <span class="op">=</span> <span class="va">page</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span>,</span></span>
 <span class="r-in"><span>    parse_resp <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>      <span class="va">parsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span></span>
-<span class="r-in"><span>      <span class="va">results</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">results</span></span></span>
+<span class="r-in"><span>      <span class="va">results</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">data</span></span></span>
 <span class="r-in"><span>      <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"name"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        url <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"url"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        Sepal.Length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"Sepal.Length"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        Sepal.Width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"Sepal.Width"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        Petal.Length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"Petal.Length"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        Petal.Width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"Petal.Width"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        Species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">`[[`</span>, <span class="st">"Species"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, next_url <span class="op">=</span> <span class="va">parsed</span><span class="op">$</span><span class="va">`next`</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, count <span class="op">=</span> <span class="va">parsed</span><span class="op">$</span><span class="va">count</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">}</span>,</span></span>
 <span class="r-in"><span>    n_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">parsed</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>      <span class="va">total</span> <span class="op">&lt;-</span> <span class="va">parsed</span><span class="op">$</span><span class="va">count</span></span></span>
@@ -208,7 +215,7 @@ to generate the request to the next page.</p></div>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://pokeapi.co/api/v2/pokemon?limit=150</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:35635/iris?limit=40</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">paginate</span>: a list</span>
