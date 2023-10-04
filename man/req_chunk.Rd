@@ -30,7 +30,7 @@ A modified HTTP \link{request}.
 Use \code{req_chunk()} to specify how to request a chunk of data.
 Use \code{req_perform_multi()} to request all chunks.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
-\code{\link[=multi_next_request]{multi_next_request()}} to iterate through the chunks yourself.
+\code{\link[=req_next_multi]{req_next_multi()}} to iterate through the chunks yourself.
 }
 \examples{
 base_req <- request("https://api.restful-api.dev/objects")

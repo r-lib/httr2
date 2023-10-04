@@ -10,14 +10,14 @@ test_that("req_chunk() can chunk a request", {
     apply_chunk = apply_chunk
   )
 
-  req1 <- multi_next_request(req)
+  req1 <- req_next_multi(req)
   expect_equal(req1$body$data, data.frame(id = 1:3))
   expect_equal(req1$policies$multi$cur_chunk, 1)
 
-  req2 <- multi_next_request(req1)
+  req2 <- req_next_multi(req1)
   expect_equal(req2$body$data, data.frame(id = 4:5))
   expect_equal(req2$policies$multi$cur_chunk, 2)
 
-  req3 <- multi_next_request(req2)
+  req3 <- req_next_multi(req2)
   expect_null(req3)
 })

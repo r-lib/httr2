@@ -36,12 +36,12 @@
       Error in `req_paginate()`:
       ! `n_pages` must have the argument `parsed`; it currently has `x`.
 
-# multi_next_request() produces the request to the next page
+# req_next_multi() produces the request to the next page
 
     Code
-      multi_next_request("a", req)
+      req_next_multi("a", req)
     Condition
-      Error in `multi_next_request()`:
+      Error in `req_next_multi()`:
       ! `req` must be an HTTP request object, not the string "a".
 
 # req_paginate_token() checks inputs

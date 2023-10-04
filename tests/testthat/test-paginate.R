@@ -17,7 +17,7 @@ test_that("req_paginate() checks inputs", {
   })
 })
 
-test_that("multi_next_request() produces the request to the next page", {
+test_that("req_next_multi() produces the request to the next page", {
   resp <- response()
   f_next_request <- function(req, parsed) {
     req_url_path(req, "/2")
@@ -31,10 +31,10 @@ test_that("multi_next_request() produces the request to the next page", {
   )
 
   expect_snapshot(error = TRUE, {
-    multi_next_request("a", req)
+    req_next_multi("a", req)
   })
 
-  out <- multi_next_request(req, parsed = NULL)
+  out <- req_next_multi(req, parsed = NULL)
   expect_equal(out$url, "http://example.com/2")
   expect_equal(req$policies$multi$get_n_requests(resp), 3)
 })
@@ -59,12 +59,12 @@ test_that("req_paginate_next_url() can paginate", {
 
   resp <- req_perform(req1)
   parsed <- req1$policies$parse_resp(resp)
-  req2 <- multi_next_request(req1, parsed)
+  req2 <- req_next_multi(req1, parsed)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
 
   resp <- req_perform(req2)
   parsed <- req1$policies$parse_resp(resp)
-  req3 <- multi_next_request(req2, parsed)
+  req3 <- req_next_multi(req2, parsed)
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
 })
 
@@ -98,12 +98,12 @@ test_that("req_paginate_token() can paginate", {
 
   resp <- req_perform(req1)
   parsed <- req1$policies$parse_resp(resp)
-  req2 <- multi_next_request(req1, parsed)
+  req2 <- req_next_multi(req1, parsed)
   expect_equal(req2$body$data$my_token, 2L)
 
   resp <- req_perform(req2)
   parsed <- req1$policies$parse_resp(resp)
-  req3 <- multi_next_request(req2, parsed)
+  req3 <- req_next_multi(req2, parsed)
   expect_equal(req3$body$data$my_token, 3L)
 })
 
@@ -126,13 +126,13 @@ test_that("req_paginate_offset() can paginate", {
     )
 
   resp <- req_perform(req1)
-  req2 <- multi_next_request(req1, parsed = NULL)
+  req2 <- req_next_multi(req1, parsed = NULL)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
   # offset stays the same when applied twice
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
 
   resp <- req_perform(req2)
-  req3 <- multi_next_request(req2, parsed = NULL)
+  req3 <- req_next_multi(req2, parsed = NULL)
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=22")
 })
 
@@ -154,13 +154,13 @@ test_that("req_paginate_page_index() can paginate", {
     )
 
   resp <- req_perform(req1)
-  req2 <- multi_next_request(req1, NULL)
+  req2 <- req_next_multi(req1, NULL)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=2")
   # offset stays the same when applied twice
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=2")
 
   resp <- req_perform(req2)
-  req3 <- multi_next_request(req2, NULL)
+  req3 <- req_next_multi(req2, NULL)
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=3")
 })
 

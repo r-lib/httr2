@@ -3,7 +3,7 @@
 #' Use `req_paginate()` to specify how to request the next page in a paginated
 #' API. Use [req_perform_multi()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
-#' [multi_next_request()] to iterate through the pages yourself.
+#' [req_next_multi()] to iterate through the pages yourself.
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
 #'     page.
@@ -37,7 +37,7 @@
 #'   is the previous response parsed via the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
-#' @seealso [req_perform_multi()] to fetch all pages. [multi_next_request()]
+#' @seealso [req_perform_multi()] to fetch all pages. [req_next_multi()]
 #'   to generate the request to the next page.
 #' @export
 #'

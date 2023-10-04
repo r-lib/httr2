@@ -83,7 +83,7 @@ A modified HTTP \link{request}.
 Use \code{req_paginate()} to specify how to request the next page in a paginated
 API. Use \code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
-\code{\link[=multi_next_request]{multi_next_request()}} to iterate through the pages yourself.
+\code{\link[=req_next_multi]{req_next_multi()}} to iterate through the pages yourself.
 There are also helpers for common pagination patterns:
 \itemize{
 \item \code{req_paginate_next_url()} when the response contains a link to the next
@@ -126,6 +126,6 @@ request(example_url()) \%>\%
   )
 }
 \seealso{
-\code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages. \code{\link[=multi_next_request]{multi_next_request()}}
+\code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages. \code{\link[=req_next_multi]{req_next_multi()}}
 to generate the request to the next page.
 }

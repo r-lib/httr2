@@ -114,7 +114,7 @@ req_perform_multi <- function(req,
     out[[i]] <- parsed$data
     if (show_progress) cli::cli_progress_update(total = n_requests)
 
-    req <- multi_next_request(req, parsed)
+    req <- req_next_multi(req, parsed)
     if (is.null(req)) {
       break
     }
@@ -210,11 +210,11 @@ error_wrapper <- function(f,
 #'   apply_chunk = apply_chunk
 #' )
 #'
-#' req1 <- multi_next_request(req, parsed = NULL)
+#' req1 <- req_next_multi(req, parsed = NULL)
 #' req1$url
-#' req2 <- multi_next_request(req1, parsed = NULL)
+#' req2 <- req_next_multi(req1, parsed = NULL)
 #' req2$url
-multi_next_request <- function(req, parsed) {
+req_next_multi <- function(req, parsed) {
   check_request(req)
   check_has_multi_policy(req)
 

@@ -3,7 +3,7 @@
 #' Use `req_chunk()` to specify how to request a chunk of data.
 #' Use `req_perform_multi()` to request all chunks.
 #' If you need more control use a combination of [req_perform()] and
-#' [multi_next_request()] to iterate through the chunks yourself.
+#' [req_next_multi()] to iterate through the chunks yourself.
 #'
 #' @inheritParams req_perform
 #' @param chunk_size The size of each chunk.

@@ -59,7 +59,7 @@ reference:
   contents:
   - req_paginate
   - req_chunk
-  - multi_next_request
+  - req_next_multi
 
 - title: Handle the response
   contents:
