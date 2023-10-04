@@ -31,7 +31,7 @@ req_paginate_page_index(req, page_index, parse_resp = NULL, n_pages = NULL)
 page or \code{NULL} if there is no next page. It takes two arguments:
 \enumerate{
 \item \code{req}: the previous request.
-\item \code{parsed}: the result of the argument \code{parse_resp}.
+\item \code{parsed}: the previous response parsed via the argument \code{parse_resp}.
 }}
 
 \item{parse_resp}{A function with one argument \code{resp} that parses the
@@ -49,11 +49,8 @@ Other fields that might be needed are:
 fields are required in the list returned by \code{parse_resp()}.}
 
 \item{n_pages}{An optional function that extracts the total number of pages, improving the
-automatically generated progress bar. It has two arguments:
-\enumerate{
-\item \code{resp}: the response of the current request.
-\item \code{parsed}: the result of the argument \code{parse_resp}.
-}}
+automatically generated progress bar. It has one argument \code{parsed}, which
+is the previous response parsed via the argument \code{parse_resp}.}
 
 \item{set_token}{A function that applies the new token to the request. It
 takes two arguments: a \link{request} and the new token.
@@ -91,10 +88,12 @@ There are also helpers for common pagination patterns:
 \itemize{
 \item \code{req_paginate_next_url()} when the response contains a link to the next
 page.
-\item \code{req_paginate_offset()} when the request describes the offset i.e.
-at which element to start and the page size.
 \item \code{req_paginate_next_token()} when the response contains a token
 that is used to describe the next page.
+\item \code{req_paginate_offset()} when the request describes the offset i.e.
+at which element to start and the page size.
+\item \code{req_paginate_page_index()} when the request specifies which the page to
+request via an index.
 }
 }
 \examples{
