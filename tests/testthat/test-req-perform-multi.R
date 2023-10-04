@@ -110,7 +110,9 @@ test_that("req_perform_multi() can store response in path", {
 
   responses <- req_perform_multi(req, path = path)
   expect_equal(responses[[1]]$body, new_path(sub("%i", 1, path, fixed = TRUE)))
-  expect_equal(responses, data.frame(id = 1:5))
+  expect_equal(resp_body_json(responses[[1]])$data, jsonlite::toJSON(data.frame(id = 1:3)) %>% unclass())
+  expect_equal(responses[[2]]$body, new_path(sub("%i", 2, path, fixed = TRUE)))
+  expect_equal(resp_body_json(responses[[2]])$data, jsonlite::toJSON(data.frame(id = 4:5)) %>% unclass())
 
   req <- req_chunk(
     request("http://example.com"),
