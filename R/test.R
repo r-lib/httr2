@@ -32,7 +32,11 @@ request_pagination_test <- function(parse_resp = NULL,
 
 #' URL to a local server that's useful for tests and examples
 #'
-#' Requires the webfakes package to be installed.
+#' Requires the webfakes package to be installed. It has the following endpoints:
+#'
+#' * all the ones from the [webfakes::httpbin_app()]
+#' * `/iris`: paginate through the iris dataset. It has the query parameters
+#'   `page` and `limit` to control the pagination.
 #'
 #' @keywords internal
 #' @export
