@@ -61,6 +61,13 @@ req_perform_multi <- function(req,
   n_requests <- min(req$policies$multi$n_requests, max_requests)
   get_n_requests <- req$policies$multi$get_n_requests
 
+  pb <- create_progress_bar(
+    total = n_requests,
+    name = req$policies$multi$type,
+    config = progress
+  )
+  show_progress <- !is.null(pb)
+
   # the implementation below doesn't really support an infinite amount of pages
   # but 100e3 should be plenty
   if (is.infinite(n_requests)) {
@@ -85,13 +92,6 @@ req_perform_multi <- function(req,
     error_class = "httr2_parse_failure",
     error_call = error_call
   )
-
-  pb <- create_progress_bar(
-    total = n_requests,
-    name = req$policies$multi$type,
-    config = progress
-  )
-  show_progress <- !is.null(pb)
 
   out <- rep(list(cancelled_response()), n_requests)
 
