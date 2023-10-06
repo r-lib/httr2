@@ -17,7 +17,7 @@
 #' req <- request("https://example.com")
 #'
 #' req %>% req_oauth_device(client)
-req_oauth_device <- function(req, client,
+req_oauth_device <- function(req, client, auth_url,
                              cache_disk = FALSE,
                              cache_key = NULL,
                              scope = NULL,
@@ -26,6 +26,7 @@ req_oauth_device <- function(req, client,
 
   params <- list(
     client = client,
+    auth_url = auth_url,
     scope = scope,
     auth_params = auth_params,
     token_params = token_params
