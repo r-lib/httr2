@@ -7,17 +7,19 @@
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
 #'     page.
-#'   * `req_paginate_offset()` when the request describes the offset i.e.
-#'     at which element to start and the page size.
 #'   * `req_paginate_next_token()` when the response contains a token
 #'     that is used to describe the next page.
+#'   * `req_paginate_offset()` when the request describes the offset i.e.
+#'     at which element to start and the page size.
+#'   * `req_paginate_page_index()` when the request specifies which the page to
+#'     request via an index.
 #'
 #' @inheritParams req_perform
 #' @param next_request A callback function that returns a [request] to the next
 #'   page or `NULL` if there is no next page. It takes two arguments:
 #'
 #'   1. `req`: the previous request.
-#'   2. `parsed`: the result of the argument `parse_resp`.
+#'   2. `parsed`: the previous response parsed via the argument `parse_resp`.
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response and returns a list with the field `data` and other fields needed
 #'   to create the request for the next page.
@@ -31,10 +33,8 @@
 #' @param required_fields An optional character vector that specifies which
 #'   fields are required in the list returned by `parse_resp()`.
 #' @param n_pages An optional function that extracts the total number of pages, improving the
-#'   automatically generated progress bar. It has two arguments:
-#'
-#'   1. `resp`: the response of the current request.
-#'   2. `parsed`: the result of the argument `parse_resp`.
+#'   automatically generated progress bar. It has one argument `parsed`, which
+#'   is the previous response parsed via the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
 #' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
@@ -42,20 +42,27 @@
 #' @export
 #'
 #' @examples
-#' page_size <- 150
+#' page_size <- 40
 #'
-#' request("https://pokeapi.co/api/v2/pokemon") %>%
+#' request(example_url()) %>%
+#'   req_url_path("/iris") %>%
 #'   req_url_query(limit = page_size) %>%
-#'   req_paginate_next_url(
+#'   req_paginate_page_index(
+#'     page_index = function(req, page) {
+#'       req %>% req_url_query(page_index = page)
+#'     },
 #'     parse_resp = function(resp) {
 #'       parsed <- resp_body_json(resp)
-#'       results <- parsed$results
+#'       results <- parsed$data
 #'       data <- data.frame(
-#'         name = sapply(results, `[[`, "name"),
-#'         url = sapply(results, `[[`, "url")
+#'         Sepal.Length = sapply(results, `[[`, "Sepal.Length"),
+#'         Sepal.Width = sapply(results, `[[`, "Sepal.Width"),
+#'         Petal.Length = sapply(results, `[[`, "Petal.Length"),
+#'         Petal.Width = sapply(results, `[[`, "Petal.Width"),
+#'         Species = sapply(results, `[[`, "Species")
 #'       )
 #'
-#'       list(data = data, next_url = parsed$`next`)
+#'       list(data = data, count = parsed$count)
 #'     },
 #'     n_pages = function(parsed) {
 #'       total <- parsed$count
@@ -113,20 +120,27 @@ req_paginate <- function(req,
 #' @export
 #'
 #' @examples
-#' page_size <- 150
+#' page_size <- 40
 #'
-#' req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") %>%
+#' req_flowers <- request(example_url()) %>%
+#'   req_url_path("/iris") %>%
 #'   req_url_query(limit = page_size) %>%
-#'   req_paginate_next_url(
+#'   req_paginate_page_index(
+#'     page_index = function(req, page) {
+#'       req %>% req_url_query(page_index = page)
+#'     },
 #'     parse_resp = function(resp) {
 #'       parsed <- resp_body_json(resp)
-#'       results <- parsed$results
+#'       results <- parsed$data
 #'       data <- data.frame(
-#'         name = sapply(results, `[[`, "name"),
-#'         url = sapply(results, `[[`, "url")
+#'         Sepal.Length = sapply(results, `[[`, "Sepal.Length"),
+#'         Sepal.Width = sapply(results, `[[`, "Sepal.Width"),
+#'         Petal.Length = sapply(results, `[[`, "Petal.Length"),
+#'         Petal.Width = sapply(results, `[[`, "Petal.Width"),
+#'         Species = sapply(results, `[[`, "Species")
 #'       )
 #'
-#'       list(data = data, next_url = parsed$`next`)
+#'       list(data = data, count = parsed$count)
 #'     },
 #'     n_pages = function(parsed) {
 #'       total <- parsed$count
@@ -134,7 +148,7 @@ req_paginate <- function(req,
 #'     }
 #'   )
 #'
-#' responses <- paginate_req_perform(req_pokemon)
+#' paginate_req_perform(req_flowers)
 paginate_req_perform <- function(req,
                                  max_pages = 20L,
                                  progress = TRUE) {
