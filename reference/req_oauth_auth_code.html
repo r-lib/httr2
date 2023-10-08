@@ -83,7 +83,7 @@ the number of times the flow is performed.</p>
 <span>  pkce <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  redirect_uri <span class="op">=</span> <span class="st">"http://localhost"</span>,</span>
+<span>  redirect_uri <span class="op">=</span> <span class="fu"><a href="oauth_flow_auth_code.html">default_redirect_uri</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  host_name <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  host_ip <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  port <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
@@ -139,18 +139,25 @@ security and should always be used if supported by the server.</p></dd>
 <dt>redirect_uri</dt>
 <dd><p>URL to redirect back to after authorization is complete.
 Often this must be registered with the API in advance.</p>
-<p>httr2 supports two forms of redirect. Firstly, you can use a <code>localhost</code>
+<p>httr2 supports three forms of redirect. Firstly, you can use a <code>localhost</code>
 url (the default), where httr2 will set up a temporary webserver to listen
 for the OAuth redirect. In this case, httr2 will automatically append a
 random port. If you need to set it to a fixed port because the API requires
 it, then specify it with (e.g.) <code>"http://localhost:1011"</code>. This technique
 works well when you are working on your own computer.</p>
-<p>Alternatively, you can provide a URL to a website that uses javascript to
+<p>Secondly, you can provide a URL to a website that uses Javascript to
 give the user a code to copy and paste back into the R session (see
 <a href="https://www.tidyverse.org/google-callback/" class="external-link">https://www.tidyverse.org/google-callback/</a> and
 <a href="https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html" class="external-link">https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html</a>
 for examples). This is less convenient (because it requires more
-user interaction) but also works in hosted environments.</p></dd>
+user interaction) but also works in hosted environments like RStudio
+Server.</p>
+<p>Finally, hosted platforms might set the <code>HTTR2_OAUTH_REDIRECT_URL</code> and
+<code>HTTR2_OAUTH_CODE_SOURCE_URL</code> environment variables. In this case, httr2
+will use <code>HTTR2_OAUTH_REDIRECT_URL</code> for redirects by default, and poll the
+<code>HTTR2_OAUTH_CODE_SOURCE_URL</code> endpoint with the state parameter until it
+receives a code in the response (or encounters an error). This delegates
+completion of the authorization flow to the hosted platform.</p></dd>
 
 
 <dt>host_name, host_ip, port</dt>
