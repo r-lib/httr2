@@ -7,7 +7,7 @@
 \usage{
 paginate_req_perform(req, max_pages = 20L, progress = TRUE)
 
-paginate_next_request(resp, req, parsed)
+paginate_next_request(req, parsed)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -17,30 +17,44 @@ paginate_next_request(resp, req, parsed)
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic progress
 bar, use a string to give it a name, or see \link{progress_bars} for more details.}
 
-\item{resp}{An HTTP \link{response}.}
-
 \item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
 }
 \value{
-A list of responses parsed with the \code{parse_resp} argument of
-\code{\link[=req_paginate]{req_paginate()}}. If this argument is not specified, it will be a list of responses.
+The result of \code{vec_c()}ing together the \code{data} fields that were
+extracted by the \code{parse_resp} argument of \code{\link[=req_paginate]{req_paginate()}}.
+If \code{parse_resp} is not specified, it will be a list of the raw responses.
 }
 \description{
 Perform a paginated request
 }
 \examples{
-page_size <- 150
+page_size <- 40
 
-req_pokemon <- request("https://pokeapi.co/api/v2/pokemon") \%>\%
+req_flowers <- request(example_url()) \%>\%
+  req_url_path("/iris") \%>\%
   req_url_query(limit = page_size) \%>\%
-  req_paginate_next_url(
-    next_url = function(resp, parsed) parsed[["next"]],
-    parse_resp = resp_body_json,
-    n_pages = function(resp, parsed) {
+  req_paginate_page_index(
+    page_index = function(req, page) {
+      req \%>\% req_url_query(page_index = page)
+    },
+    parse_resp = function(resp) {
+      parsed <- resp_body_json(resp)
+      results <- parsed$data
+      data <- data.frame(
+        Sepal.Length = sapply(results, `[[`, "Sepal.Length"),
+        Sepal.Width = sapply(results, `[[`, "Sepal.Width"),
+        Petal.Length = sapply(results, `[[`, "Petal.Length"),
+        Petal.Width = sapply(results, `[[`, "Petal.Width"),
+        Species = sapply(results, `[[`, "Species")
+      )
+
+      list(data = data, count = parsed$count)
+    },
+    n_pages = function(parsed) {
       total <- parsed$count
       ceiling(total / page_size)
     }
   )
 
-responses <- paginate_req_perform(req_pokemon)
+paginate_req_perform(req_flowers)
 }

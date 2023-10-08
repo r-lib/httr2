@@ -18,13 +18,13 @@ request_pagination_test <- function(parse_resp = NULL,
 
   request_test() %>%
     req_paginate_token(
-      set_token = function(req, token) {
-        req_body_json(req, list(my_token = token))
+      parse_resp = parse_resp %||% function(resp) {
+        parsed <- resp_body_json(resp)
+        list(next_token = parsed$my_next_token, data = list(parsed))
       },
-      next_token = function(resp, parsed) {
-        parsed$my_next_token
+      set_token = function(req, next_token) {
+        req_body_json(req, list(my_token = next_token))
       },
-      parse_resp = parse_resp %||% resp_body_json,
       n_pages = n_pages
     )
 }
@@ -32,16 +32,43 @@ request_pagination_test <- function(parse_resp = NULL,
 
 #' URL to a local server that's useful for tests and examples
 #'
-#' Requires the webfakes package to be installed.
+#' Requires the webfakes package to be installed. It has the following endpoints:
+#'
+#' * all the ones from the [webfakes::httpbin_app()]
+#' * `/iris`: paginate through the iris dataset. It has the query parameters
+#'   `page` and `limit` to control the pagination.
 #'
 #' @keywords internal
 #' @export
 example_url <- function() {
   check_installed("webfakes")
 
+  app <- webfakes::httpbin_app()
+  # paginated iris endpoint
+  app$get("/iris", function(req, res) {
+    page <- req$query$page
+    if (is.null(page)) page <- 1L
+    page <- as.integer(page)
+    page_size <- req$query$limit
+    if (is.null(page_size)) page_size <- 20L
+    page_size <- as.integer(page_size)
+
+    n <- nrow(iris)
+    start <- (page - 1L) * page_size + 1L
+    end <- min(start + page_size - 1L, n)
+    ids <- seq(start, end)
+    data <- vctrs::vec_slice(datasets::iris, ids)
+
+    res$set_status(200L)$send_json(
+      object = list(data = data, count = n),
+      auto_unbox = TRUE,
+      pretty = TRUE
+    )
+  })
+
   env_cache(the, "test_app",
     webfakes::new_app_process(
-      webfakes::httpbin_app(),
+      app,
       opts = webfakes::server_opts(num_threads = 2)
     )
   )

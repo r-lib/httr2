@@ -439,7 +439,7 @@ is_hosted_session <- function() {
 }
 
 oauth_flow_auth_code_read <- function(state) {
-  code <- trimws(read_line("Enter authorization code: "))
+  code <- trimws(readline("Enter authorization code: "))
   # We support two options here:
   #
   # 1) The original {gargle} style, where the user copy & pastes a
@@ -453,18 +453,13 @@ oauth_flow_auth_code_read <- function(state) {
    error = function(e) {
     list(
       code = code,
-      state = trimws(read_line("Enter state parameter: "))
+      state = trimws(readline("Enter state parameter: "))
     )
   })
   if (!identical(result$state, state)) {
     abort("Authentication failure: state does not match")
   }
   result$code
-}
-
-# base::readline() wrapper so we can mock user input during testing.
-read_line <- function(prompt = "") {
-  readline(prompt)
 }
 
 # Determine whether we can fetch the OAuth authorization code from an external
@@ -491,3 +486,6 @@ oauth_flow_auth_code_fetch <- function(state) {
   body <- resp_body_json(resp)
   body$code
 }
+
+# Make base::readline() mockable
+readline <- NULL

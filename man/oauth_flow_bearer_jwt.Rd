@@ -36,7 +36,7 @@ callback function which should call \code{jwt_claim()}.}
 An \link{oauth_token}.
 }
 \description{
-This function uses a Bearer JWT as an authorization grant to get an access
+This function uses a Bearer JWT (JSON web token) as an authorization grant to get an access
 token, as defined by \href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.1}{rfc7523},
 Section 2.1. It is often used for service accounts, accounts that are
 used primarily in automated environments.
