@@ -53,7 +53,7 @@ token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have t
 update your stored refresh token. If you find this happening a lot, it's a
 sign that you should be using a different strategy.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")

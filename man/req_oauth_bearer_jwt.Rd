@@ -55,7 +55,7 @@ grant to get an access token, as defined by \href{https://datatracker.ietf.org/d
 It is often used for service accounts, accounts that are used primarily in
 automated environments.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 req_auth <- function(req) {

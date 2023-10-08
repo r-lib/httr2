@@ -105,7 +105,7 @@ to capture the authorization code. When this is not possible (e.g. when
 running on a hosted platform like RStudio Server), provide a custom
 \code{redirect_uri} and httr2 will prompt the user to enter the code manually.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \section{Security considerations}{
 The authorization code flow is used for both web applications and native

@@ -11,7 +11,7 @@
 #' running on a hosted platform like RStudio Server), provide a custom
 #' `redirect_uri` and httr2 will prompt the user to enter the code manually.
 #'
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
 #' # Security considerations
 #'

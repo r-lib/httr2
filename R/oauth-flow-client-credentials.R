@@ -5,7 +5,7 @@
 #' `r rfc(6749, 4.4)`. It is used to allow the client to access resources that
 #' it controls directly, not on behalf of an user.
 #'
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
 #' @export
 #' @family OAuth flows

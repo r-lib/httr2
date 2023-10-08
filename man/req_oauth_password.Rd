@@ -59,7 +59,7 @@ This function implements the OAuth \strong{resource owner password flow}, as
 defined by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{Section 4.3 of RFC 6749}. It allows the user to supply their password
 once, exchanging it for an access token that can be cached locally.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 req_auth <- function(req) {

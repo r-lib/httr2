@@ -63,7 +63,7 @@ It's designed for devices that don't have access to a web browser (if you've
 ever authenticated an app on your TV, this is probably the flow you've used),
 but it also works well from within R.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 req_auth_github <- function(req) {

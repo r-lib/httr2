@@ -28,7 +28,7 @@ Authenticate using OAuth \strong{client credentials flow}, as defined by
 \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.4}{Section 4.4 of RFC 6749}. It is used to allow the client to access resources that
 it controls directly, not on behalf of an user.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 req_auth <- function(req) {

@@ -14,7 +14,7 @@
 #' update your stored refresh token. If you find this happening a lot, it's a
 #' sign that you should be using a different strategy.
 #'
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
 #' @inheritParams req_oauth_auth_code
 #' @param refresh_token A refresh token. This is equivalent to a password
