@@ -145,10 +145,10 @@ write your own auth code flow, if the API you are wrapping does not adhere
 closely to the standard.
 
 Other OAuth flows: 
-\code{\link{oauth_flow_bearer_jwt}()},
 \code{\link{oauth_flow_client_credentials}()},
 \code{\link{oauth_flow_device}()},
 \code{\link{oauth_flow_password}()},
+\code{\link{req_oauth_bearer_jwt}()},
 \code{\link{req_oauth_refresh}()}
 }
 \concept{OAuth flows}

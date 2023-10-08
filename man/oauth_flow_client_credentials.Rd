@@ -25,10 +25,10 @@ controls directly, not on behalf of an user.
 }
 \seealso{
 Other OAuth flows: 
-\code{\link{oauth_flow_bearer_jwt}()},
 \code{\link{oauth_flow_device}()},
 \code{\link{oauth_flow_password}()},
 \code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_bearer_jwt}()},
 \code{\link{req_oauth_refresh}()}
 }
 \concept{OAuth flows}

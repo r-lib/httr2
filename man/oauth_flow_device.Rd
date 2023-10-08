@@ -49,10 +49,10 @@ defined in \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
 }
 \seealso{
 Other OAuth flows: 
-\code{\link{oauth_flow_bearer_jwt}()},
 \code{\link{oauth_flow_client_credentials}()},
 \code{\link{oauth_flow_password}()},
 \code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_bearer_jwt}()},
 \code{\link{req_oauth_refresh}()}
 }
 \concept{OAuth flows}
