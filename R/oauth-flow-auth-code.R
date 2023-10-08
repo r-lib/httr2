@@ -39,7 +39,7 @@
 #' @returns A modified HTTP [request].
 #' @inheritParams oauth_flow_auth_code
 #' @examples
-#' req_auth_github_auth_code <- function(req) {
+#' req_auth_github <- function(req) {
 #'   req_oauth_auth_code(
 #'     req,
 #'     client = example_github_client(),
@@ -48,7 +48,7 @@
 #' }
 #'
 #' request("https://api.github.com/user") %>%
-#'   req_auth_github_auth_code()
+#'   req_auth_github()
 req_oauth_auth_code <- function(req, client,
                                 auth_url,
                                 cache_disk = FALSE,

@@ -51,7 +51,7 @@ the number of times the flow is performed.
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
-req_auth_github_device <- function(req) {
+req_auth_github <- function(req) {
   req_oauth_device(
     req,
     client = example_github_client(),
@@ -60,5 +60,5 @@ req_auth_github_device <- function(req) {
 }
 
 request("https://api.github.com/user") \%>\%
-  req_auth_github_device()
+  req_auth_github()
 }

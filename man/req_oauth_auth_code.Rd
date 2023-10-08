@@ -106,7 +106,7 @@ create a new client than find your client secret.
 }
 
 \examples{
-req_auth_github_auth_code <- function(req) {
+req_auth_github <- function(req) {
   req_oauth_auth_code(
     req,
     client = example_github_client(),
@@ -115,5 +115,5 @@ req_auth_github_auth_code <- function(req) {
 }
 
 request("https://api.github.com/user") \%>\%
-  req_auth_github_auth_code()
+  req_auth_github()
 }
