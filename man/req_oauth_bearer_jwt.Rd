@@ -73,7 +73,6 @@ request("https://example.com") \%>\%
 \seealso{
 Other OAuth flows: 
 \code{\link{oauth_flow_client_credentials}()},
-\code{\link{oauth_flow_device}()},
 \code{\link{oauth_flow_password}()},
 \code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_refresh}()}

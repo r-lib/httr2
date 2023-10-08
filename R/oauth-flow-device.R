@@ -1,17 +1,19 @@
-#' OAuth authentication with device flow
+#' OAuth with device flow
 #'
 #' @description
-#' This uses [oauth_flow_device()] to generate an access token, which is
-#' then used to authentication the request with [req_auth_bearer_token()].
-#' The token is automatically cached (either in memory or on disk) to minimise
-#' the number of times the flow is performed.
+#' Authenticate using the OAuth **device flow**, as defined
+#' by [rfc8628](https://datatracker.ietf.org/doc/html/rfc8628). It's designed
+#' for devices that don't have access to a web browser (if you've ever
+#' authenticated an app on your TV, this is probably the flow you've used),
+#' but it also works well from within R.
 #'
 #' Learn more about the overall flow in `vignette("oauth")`.
 #'
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
-#' @returns A modified HTTP [request].
+#' @returns `req_oauth_device()` returns a modified HTTP [request] that will
+#'   use OAuth; `oauth_flow_device()` returns an [oauth_token].
 #' @examples
 #' req_auth_github <- function(req) {
 #'   req_oauth_device(
@@ -23,7 +25,9 @@
 #'
 #' request("https://api.github.com/user") %>%
 #'   req_auth_github()
-req_oauth_device <- function(req, client, auth_url,
+req_oauth_device <- function(req,
+                             client,
+                             auth_url,
                              cache_disk = FALSE,
                              cache_key = NULL,
                              scope = NULL,
@@ -41,26 +45,8 @@ req_oauth_device <- function(req, client, auth_url,
   req_oauth(req, "oauth_flow_device", params, cache = cache)
 }
 
-#' OAuth flow: device
-#'
-#' @description
-#' These functions implement the OAuth device flow, as defined
-#' by [rfc8628](https://datatracker.ietf.org/doc/html/rfc8628). It's designed
-#' for devices that don't have access to a web browser (if you've ever
-#' authenticated an app on your TV, this is probably the flow you've used),
-#' but it also works well from within R.
-#'
-#' This specification allows also some subspecifications:
-#' * `oauth_flow_auth_code_pkce()` is also reused here to generate code
-#'   verifier, method, and challenge components as needed for PKCE, as
-#'   defined in [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
-#'
-#' @inheritParams req_oauth_auth_code
-#' @returns An [oauth_token].
 #' @export
-#' @family OAuth flows
-#' @keywords internal
-#' @keywords internal
+#' @rdname req_oauth_device
 oauth_flow_device <- function(client,
                               auth_url,
                               pkce = FALSE,

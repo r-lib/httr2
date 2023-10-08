@@ -2,7 +2,8 @@
 % Please edit documentation in R/oauth-flow-device.R
 \name{req_oauth_device}
 \alias{req_oauth_device}
-\title{OAuth authentication with device flow}
+\alias{oauth_flow_device}
+\title{OAuth with device flow}
 \usage{
 req_oauth_device(
   req,
@@ -10,6 +11,15 @@ req_oauth_device(
   auth_url,
   cache_disk = FALSE,
   cache_key = NULL,
+  scope = NULL,
+  auth_params = list(),
+  token_params = list()
+)
+
+oauth_flow_device(
+  client,
+  auth_url,
+  pkce = FALSE,
   scope = NULL,
   auth_params = list(),
   token_params = list()
@@ -39,15 +49,20 @@ key to disambiguate them.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
+
+\item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
+security and should always be used if supported by the server.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_device()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_device()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_device]{oauth_flow_device()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token is automatically cached (either in memory or on disk) to minimise
-the number of times the flow is performed.
+Authenticate using the OAuth \strong{device flow}, as defined
+by \href{https://datatracker.ietf.org/doc/html/rfc8628}{rfc8628}. It's designed
+for devices that don't have access to a web browser (if you've ever
+authenticated an app on your TV, this is probably the flow you've used),
+but it also works well from within R.
 
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
