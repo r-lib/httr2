@@ -7,6 +7,7 @@
 req_oauth_device(
   req,
   client,
+  auth_url,
   cache_disk = FALSE,
   cache_key = NULL,
   scope = NULL,
@@ -18,6 +19,9 @@ req_oauth_device(
 \item{req}{A \link{request}.}
 
 \item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
+
+\item{auth_url}{Authorization url; you'll need to discover this by reading
+the documentation.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
@@ -47,8 +51,14 @@ the number of times the flow is performed.
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
-client <- oauth_client("example", "https://example.com/get_token")
-req <- request("https://example.com")
+req_auth_github_device <- function(req) {
+  req_oauth_device(
+    req,
+    client = example_github_client(),
+    auth_url = "https://github.com/login/device/code"
+  )
+}
 
-req \%>\% req_oauth_device(client)
+request("https://api.github.com/user") \%>\%
+  req_auth_github_device()
 }

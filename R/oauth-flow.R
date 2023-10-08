@@ -40,7 +40,7 @@ oauth_flow_abort <- function(error,
     c(
       "OAuth failure [{error}]",
       "*" = description,
-      i = if (!is.null(uri)) "Learn more at {.url uri}."
+      i = if (!is.null(uri)) "Learn more at {.url {uri}}."
     ),
     code = error,
     class = c(glue("httr2_oauth_{error}"), "httr2_oauth"),
