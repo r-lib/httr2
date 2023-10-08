@@ -2,7 +2,7 @@
 % Please edit documentation in R/oauth-flow-jwt.R
 \name{req_oauth_bearer_jwt}
 \alias{req_oauth_bearer_jwt}
-\title{OAuth authentication with a bearer JWT}
+\title{OAuth authentication with a bearer JWT (JSON web token)}
 \usage{
 req_oauth_bearer_jwt(
   req,
