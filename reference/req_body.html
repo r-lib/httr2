@@ -28,7 +28,7 @@ Adding a body to a request will automatically switch the method to POST."><!-- m
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,6 @@ Adding a body to a request will automatically switch the method to POST."><!-- m
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -89,15 +88,7 @@ Adding a body to a request will automatically switch the method to POST."><!-- m
 <span></span>
 <span><span class="fu">req_body_file</span><span class="op">(</span><span class="va">req</span>, <span class="va">path</span>, type <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">req_body_json</span><span class="op">(</span></span>
-<span>  <span class="va">req</span>,</span>
-<span>  <span class="va">data</span>,</span>
-<span>  auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">22</span>,</span>
-<span>  null <span class="op">=</span> <span class="st">"null"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"application/json"</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">req_body_json</span><span class="op">(</span><span class="va">req</span>, <span class="va">data</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>, digits <span class="op">=</span> <span class="fl">22</span>, null <span class="op">=</span> <span class="st">"null"</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">req_body_form</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -115,10 +106,8 @@ Adding a body to a request will automatically switch the method to POST."><!-- m
 
 
 <dt>type</dt>
-<dd><p>MIME content type. You shouldn't generally need to specify this as
-the defaults are usually pretty good, e.g. <code>req_body_file()</code> will guess it
-from the extension of of <code>path</code>. Will be ignored if you have manually set
-a <code>Content-Type</code> header.</p></dd>
+<dd><p>Content type. For <code>req_body_file()</code>, the default
+will will attempt to guess from the extension of <code>path</code>.</p></dd>
 
 
 <dt>path</dt>
@@ -144,11 +133,10 @@ or an empty list (<code>"list"</code>).</p></dd>
 
 
 <dt>...</dt>
-<dd><p>&lt;<code><a href="https://rlang.r-lib.org/reference/dyn-dots.html" class="external-link">dynamic-dots</a></code>&gt; Name-data pairs used send
-data in the body. For <code>req_body_form()</code>, the values must be strings (or
-things easily coerced to string); for <code>req_body_multipart()</code> the values
-must be strings or objects produced by
-<code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_file()</a></code>/<code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_data()</a></code>.</p>
+<dd><p>Name-data pairs used send data in the body. For
+<code>req_body_form()</code>, the values must be strings (or things easily
+coerced to string); for <code>req_body_multipart()</code> the values must be
+strings or objects produced by <code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_file()</a></code>/<code><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">curl::form_data()</a></code>.</p>
 <p>For <code>req_body_json()</code>, additional arguments passed on to
 <code><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">jsonlite::toJSON()</a></code>.</p></dd>
 
@@ -170,8 +158,8 @@ must be strings or objects produced by
 <span class="r-in"><span>  <span class="fu">req_body_form</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"A simple text string"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:35243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:43867</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
@@ -183,8 +171,8 @@ must be strings or objects produced by
 <span class="r-in"><span>  <span class="fu">req_body_json</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"A simple text string"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:35243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:43867</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/json</span>
@@ -197,8 +185,8 @@ must be strings or objects produced by
 <span class="r-in"><span>  <span class="fu">req_body_raw</span><span class="op">(</span><span class="st">"A simple text string"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:35243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:43867</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 20</span>
@@ -214,8 +202,8 @@ must be strings or objects produced by
 <span class="r-in"><span>  <span class="fu">req_body_file</span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:35243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:43867</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 12</span>
@@ -233,15 +221,15 @@ must be strings or objects produced by
 <span class="r-in"><span>  <span class="fu">req_body_multipart</span><span class="op">(</span>a <span class="op">=</span> <span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/multipart.html" class="external-link">form_file</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>, b <span class="op">=</span> <span class="st">"some data"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:35243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:43867</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------96b38eb3e3b038e5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------a80d11e15254b32b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------96b38eb3e3b038e5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file18a14c28a1e7"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------a80d11e15254b32b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file186447d96fb2"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-Type: application/octet-stream</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a</span>
@@ -251,11 +239,11 @@ must be strings or objects produced by
 <span class="r-out co"><span class="r-pr">#&gt;</span> e</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------96b38eb3e3b038e5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------a80d11e15254b32b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="b"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> some data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------96b38eb3e3b038e5--</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------a80d11e15254b32b--</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

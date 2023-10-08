@@ -28,7 +28,7 @@ HTTP caching."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,6 @@ HTTP caching."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -88,15 +87,7 @@ but it will not need to re-download the body value.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_cache</span><span class="op">(</span></span>
-<span>  <span class="va">req</span>,</span>
-<span>  <span class="va">path</span>,</span>
-<span>  use_on_error <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  max_age <span class="op">=</span> <span class="cn">Inf</span>,</span>
-<span>  max_n <span class="op">=</span> <span class="cn">Inf</span>,</span>
-<span>  max_size <span class="op">=</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">3</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_cache</span><span class="op">(</span><span class="va">req</span>, <span class="va">path</span>, use_on_error <span class="op">=</span> <span class="cn">FALSE</span>, debug <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -106,10 +97,7 @@ but it will not need to re-download the body value.</p>
 
 
 <dt>path</dt>
-<dd><p>Path to cache directory.</p>
-<p>httr2 doesn't provide helpers to manage the cache, but if you want to
-empty it, you can use something like
-<code>unlink(dir(cache_path, full.names = TRUE))</code>.</p></dd>
+<dd><p>Path to cache directory</p></dd>
 
 
 <dt>use_on_error</dt>
@@ -121,16 +109,6 @@ should <code><a href="req_perform.html">req_perform()</a></code> return that ins
 <dd><p>When <code>TRUE</code> will emit useful messages telling you about
 cache hits and misses. This can be helpful to understand whether or
 not caching is actually doing anything for your use case.</p></dd>
-
-
-<dt>max_n, max_age, max_size</dt>
-<dd><p>Automatically prune the cache by specifying
-one or more of:</p><ul><li><p><code>max_age</code>: to delete files older than this number of seconds.</p></li>
-<li><p><code>max_n</code>: to delete files (from oldest to newest) to preserve at
-most this many files.</p></li>
-<li><p><code>max_size</code>: to delete files (from oldest to newest) to preserve at
-most this many bytes.</p></li>
-</ul><p>The cache pruning is performed at most once per minute.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -156,7 +134,6 @@ most this many bytes.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Second request retrieves it from the cache</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Pruning cache</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found url in cache <span style="color: #0000BB;">"d5d1ddd7f99f55dbc920c63f942804c0"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Cached value is fresh; retrieving response from cache</span>
 </code></pre></div>

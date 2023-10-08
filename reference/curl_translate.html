@@ -26,7 +26,7 @@ written by Bob Rudis."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,6 @@ written by Bob Rudis."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -85,7 +84,7 @@ written by <a href="https://rud.is/b/" class="external-link">Bob Rudis</a>.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">curl_translate</span><span class="op">(</span><span class="va">cmd</span>, simplify_headers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">curl_translate</span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">curl_help</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -95,14 +94,6 @@ written by <a href="https://rud.is/b/" class="external-link">Bob Rudis</a>.</p>
     <dl><dt>cmd</dt>
 <dd><p>Call to curl. If omitted and the clipr package is installed,
 will be retrieved from the clipboard.</p></dd>
-
-
-<dt>simplify_headers</dt>
-<dd><p>Remove typically unimportant headers included when
-copying a curl command from the browser. This includes:</p><ul><li><p><code>sec-fetch-*</code></p></li>
-<li><p><code>sec-ch-ua*</code></p></li>
-<li><p><code>referer</code>, <code>pragma</code>, <code>connection</code></p></li>
-</ul></dd>
 
 </dl></div>
     <div class="section level2">

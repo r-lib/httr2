@@ -26,7 +26,7 @@ different components of the HTTP requests and responses:
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,6 @@ different components of the HTTP requests and responses:
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -142,31 +141,31 @@ to control the verbosity of requests deeper within the call stack.</p></div>
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; GET / HTTP/2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">Host</span>: httr2.r-lib.org</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">user-agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">user-agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- HTTP/2 200 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">server</span>: GitHub.com</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-type</span>: text/html; charset=utf-8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">last-modified</span>: Sun, 08 Oct 2023 18:25:20 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">last-modified</span>: Sun, 08 Oct 2023 18:30:35 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">etag</span>: W/"6522f410-4d6a"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">expires</span>: Sun, 08 Oct 2023 18:35:39 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">etag</span>: W/"6522f54b-4d6a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">expires</span>: Sun, 08 Oct 2023 19:12:35 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">cache-control</span>: max-age=600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-encoding</span>: gzip</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-github-request-id</span>: FFDA:3A29:1491D24:1F0FC52:6522F422</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-github-request-id</span>: 7B6C:27F2:1630CEB:1F56F2B:6522FCC9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">accept-ranges</span>: bytes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">date</span>: Sun, 08 Oct 2023 18:27:19 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">date</span>: Sun, 08 Oct 2023 19:04:23 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">via</span>: 1.1 varnish</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">age</span>: 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-served-by</span>: cache-iad-kcgs7200140-IAD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">age</span>: 66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-served-by</span>: cache-iad-kiad7000126-IAD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache</span>: HIT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache-hits</span>: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-timer</span>: S1696789640.669304,VS0,VE0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache-hits</span>: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-timer</span>: S1696791864.660042,VS0,VE1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">vary</span>: Accept-Encoding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-fastly-request-id</span>: 438c729fb575af9ab545f502301f6cf353b8a0a9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-fastly-request-id</span>: 2b2c22736ba96dc61d9ee98ec622efaaade3c360</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-length</span>: 5341</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- </span>
 <span class="r-in"><span></span></span>
@@ -175,31 +174,31 @@ to control the verbosity of requests deeper within the call stack.</p></div>
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span>verbosity <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; GET / HTTP/2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">Host</span>: httr2.r-lib.org</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">user-agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">user-agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- HTTP/2 200 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">server</span>: GitHub.com</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-type</span>: text/html; charset=utf-8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">last-modified</span>: Sun, 08 Oct 2023 18:25:20 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">last-modified</span>: Sun, 08 Oct 2023 18:30:35 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">etag</span>: W/"6522f410-4d6a"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">expires</span>: Sun, 08 Oct 2023 18:35:39 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">etag</span>: W/"6522f54b-4d6a"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">expires</span>: Sun, 08 Oct 2023 19:12:35 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">cache-control</span>: max-age=600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-encoding</span>: gzip</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-github-request-id</span>: FFDA:3A29:1491D24:1F0FC52:6522F422</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-github-request-id</span>: 7B6C:27F2:1630CEB:1F56F2B:6522FCC9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">accept-ranges</span>: bytes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">date</span>: Sun, 08 Oct 2023 18:27:19 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">date</span>: Sun, 08 Oct 2023 19:04:23 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">via</span>: 1.1 varnish</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">age</span>: 22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-served-by</span>: cache-iad-kcgs7200140-IAD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">age</span>: 66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-served-by</span>: cache-iad-kiad7000126-IAD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache</span>: HIT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache-hits</span>: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-timer</span>: S1696789640.693177,VS0,VE1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache-hits</span>: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-timer</span>: S1696791864.676026,VS0,VE0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">vary</span>: Accept-Encoding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-fastly-request-id</span>: ea33d2f04acfb382ac4c197c3541855097057204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-fastly-request-id</span>: b89cdb4559045ea3b7afa74784e9f07d0bafb8b0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-length</span>: 5341</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- </span>
 </code></pre></div>

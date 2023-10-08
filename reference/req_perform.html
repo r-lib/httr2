@@ -18,7 +18,7 @@ these defaults with req_method()."><!-- mathjax --><script src="https://cdnjs.cl
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,6 @@ these defaults with req_method()."><!-- mathjax --><script src="https://cdnjs.cl
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -106,8 +105,8 @@ you can't affect directly.</p></dd>
 <dt>mock</dt>
 <dd><p>A mocking function. If supplied, this function is called
 with the request. It should return either <code>NULL</code> (if it doesn't want to
-handle the request) or a <a href="response.html">response</a> (if it does). See <code><a href="with_mocked_responses.html">with_mock()</a></code>/
-<code><a href="with_mocked_responses.html">local_mock()</a></code> for more details.</p></dd>
+handle the request) or a <a href="response.html">response</a> (if it does). See <code><a href="with_mock.html">with_mock()</a></code>/
+<code><a href="with_mock.html">local_mock()</a></code> for more details.</p></dd>
 
 
 <dt>error_call</dt>
@@ -121,15 +120,11 @@ mentioned in error messages as the source of the error. See the
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<ul><li><p>If the HTTP request succeeds, and the status code is ok (e.g. 200),
-an HTTP <a href="response.html">response</a>.</p></li>
-<li><p>If the HTTP request succeeds, but the status code is an error
-(e.g a 404), an error with class <code>c("httr2_http_404", "httr2_http")</code>.
-By default, all 400 and 500 status codes will be treated as an error,
-but you can customise this with <code><a href="req_error.html">req_error()</a></code>.</p></li>
-<li><p>If the HTTP request fails (e.g. the connection is dropped or the
-server doesn't exist), an error with class <code>"httr2_failure"</code>.</p></li>
-</ul></div>
+<p>If request is successful (i.e. the request was successfully
+performed and a response with HTTP status code &lt;400 was recieved), an HTTP
+<a href="response.html">response</a>; otherwise throws an error. Override this behaviour with
+<code><a href="req_error.html">req_error()</a></code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="requests">Requests<a class="anchor" aria-label="anchor" href="#requests"></a></h2>
     <p>Note that one call to <code>req_perform()</code> may perform multiple HTTP requests:</p><ul><li><p>If the <code>url</code> is redirected with a 301, 302, 303, or 307, curl will
@@ -141,19 +136,6 @@ waiting a bit. See <code><a href="req_retry.html">req_retry()</a></code> for det
 will get a new token either using the refresh token (if available)
 or by running the OAuth flow.</p></li>
 </ul></div>
-    <div class="section level2">
-    <h2 id="progress-bar">Progress bar<a class="anchor" aria-label="anchor" href="#progress-bar"></a></h2>
-    <p><code>req_perform()</code> will automatically add a progress bar if it needs to wait
-between requests for <code><a href="req_throttle.html">req_throttle()</a></code> or <code><a href="req_retry.html">req_retry()</a></code>. You can turn the
-progress bar off (and just show the total time to wait) by setting
-<code>options(httr2_progress = FALSE)</code>.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="multi_req_perform.html">multi_req_perform()</a></code> to perform multiple requests in parallel.
-<code><a href="paginate_req_perform.html">paginate_req_perform()</a></code> to fetch all pages of a requests paginated via
-<code><a href="req_paginate.html">req_paginate()</a></code>.</p></div>
-    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -163,7 +145,7 @@ progress bar off (and just show the total time to wait) by setting
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://www.google.com/</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (18035 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (18068 bytes)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

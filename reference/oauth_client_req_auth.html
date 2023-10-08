@@ -54,7 +54,7 @@ the auth_params argument."><!-- mathjax --><script src="https://cdnjs.cloudflare
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,6 @@ the auth_params argument."><!-- mathjax --><script src="https://cdnjs.cloudflare
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -180,7 +179,7 @@ JWT header.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="fu">oauth_client_req_auth</span><span class="op">(</span><span class="va">req</span>, <span class="va">client1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /whoami HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
@@ -199,7 +198,7 @@ JWT header.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="fu">oauth_client_req_auth</span><span class="op">(</span><span class="va">req</span>, <span class="va">client2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET /whoami HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
@@ -217,13 +216,13 @@ JWT header.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="fu">oauth_client_req_auth</span><span class="op">(</span><span class="va">req</span>, <span class="va">client3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /whoami HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/0.2.3 r-curl/5.1.0 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 623</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2OTY3ODk5MjEsIm5iZiI6MTY5Njc4OTYyMSwiaWF0IjoxNjk2Nzg5NjIxLCJqdGkiOiJPeG4yODEwYnEzSUFPSlZHQmdXT1lwSkZWX0hVYTBtNDdFX3YzX3Q2dkhvIn0.O6vZjdlaO1GbkDw8SuMLOt84jPp9Ye2QXMCWP7QWN3D7bBbobN0M-hdR81HbpoZm00vok8RK_YytgzlwwcPmO0rVrs7R64V0iNDLJv5RQcyH30gefdGz-zMjuvKLdtLu4cAKG6GdRtlcXqt7o9npfm7a3uCyfwy6GcMI3QII18xsXMP7FjW0-0K-7RaZbc_Bq7NWWMWE1JL-CF7W6uG66GEN3CIQq1gadn1jwz6QYGM4C9nusAgHmW5xKhCe751x9sHEl-DKRh4uF8UNl6LQIOkDg1Ucxk7Hxmp0F6NnbCTmCpJtG4JPTZAzd_w8Yf2e6DIDM8fFT9vl4psb3DIMWg&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2OTY3OTIxNDgsIm5iZiI6MTY5Njc5MTg0OCwiaWF0IjoxNjk2NzkxODQ4LCJqdGkiOiJLcV84X3ZWRWZMTmQzQmZ1MHRseHdKOFYwZXltNUQzLUdKMTd5b29TV1pBIn0.PeqFp_1h-e0vXWaHnQj_ZLg7F_AYtBfep5sZ1lor7ZfpyovZy9RiIuH52CSsyshcC7GlU_8seyR-XCLJZC3pFCBy5EzVIjcx2impSe-YgkUvzYnLK6bcg3pNLgXBzetvl3YmyAvfD20VeQSoU54EV1MhHpWUfzeI-pYc0GR5EosrhB0l-04SrliZVNm5jJutDOKrVRSeMxCGYiPI7gDcJ1LzV0IK83x8OvYBY5yMOWXX0_pA1MqkJWX2UsQLZzjcbcRTlbNgi7tOwnN7F5MSg7Z3PmbDAmWdAYzHrdT-ZXu_DSisa2WD7OSLiVnnFsh_cl96GNWYXLfYs-C9ET3t5A&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

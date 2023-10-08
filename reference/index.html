@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +28,6 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/wrapping-apis.html">Wrapping APIs</a>
-    <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
 <li class="nav-item">
@@ -82,11 +81,6 @@
         <dd>Send data in request body</dd>
       </dl><dl><dt>
           
-          <code><a href="req_cookie_preserve.html">req_cookie_preserve()</a></code> 
-        </dt>
-        <dd>Preserve cookies across requests</dd>
-      </dl><dl><dt>
-          
           <code><a href="req_headers.html">req_headers()</a></code> 
         </dt>
         <dd>Modify request headers</dd>
@@ -100,11 +94,6 @@
           <code><a href="req_options.html">req_options()</a></code> 
         </dt>
         <dd>Set arbitrary curl options in request</dd>
-      </dl><dl><dt>
-          
-          <code><a href="req_progress.html">req_progress()</a></code> 
-        </dt>
-        <dd>Add a progress bar to long downloads or uploads</dd>
       </dl><dl><dt>
           
           <code><a href="req_proxy.html">req_proxy()</a></code> 
@@ -158,7 +147,7 @@
         <dd>Show extra output when request is performed</dd>
       </dl><dl><dt>
           
-          <code><a href="with_mocked_responses.html">with_mocked_responses()</a></code> <code><a href="with_mocked_responses.html">local_mocked_responses()</a></code> 
+          <code><a href="with_mock.html">with_mock()</a></code> <code><a href="with_mock.html">local_mock()</a></code> 
         </dt>
         <dd>Temporarily mock requests</dd>
       </dl><dl><dt>
@@ -196,7 +185,7 @@
           
           <code><a href="req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> 
         </dt>
-        <dd>OAuth authentication with a bearer JWT (JSON web token)</dd>
+        <dd>OAuth authentication with a bearer JWT</dd>
       </dl><dl><dt>
           
           <code><a href="req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> 
@@ -243,11 +232,6 @@
           <code><a href="multi_req_perform.html">multi_req_perform()</a></code> 
         </dt>
         <dd>Perform multiple requests in parallel</dd>
-      </dl><dl><dt>
-          
-          <code><a href="paginate_req_perform.html">paginate_req_perform()</a></code> <code><a href="paginate_req_perform.html">paginate_next_request()</a></code> 
-        </dt>
-        <dd>Perform a paginated request</dd>
       </dl></div><div class="section level2">
       
       <h3 id="control-the-process">Control the process<a class="anchor" aria-label="anchor" href="#control-the-process"></a></h3>
@@ -273,33 +257,12 @@
           
           <code><a href="req_throttle.html">req_throttle()</a></code> 
         </dt>
-        <dd>Rate limit a request by automatically adding a delay</dd>
+        <dd>Throttle a request by automatically adding a delay</dd>
       </dl><dl><dt>
           
           <code><a href="req_retry.html">req_retry()</a></code> 
         </dt>
         <dd>Control when a request will retry, and how long it will wait between tries</dd>
-      </dl></div><div class="section level2">
-      <h2 id="pagination">Pagination<a class="anchor" aria-label="anchor" href="#pagination"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="req_paginate.html">req_paginate()</a></code> <code><a href="req_paginate.html">req_paginate_next_url()</a></code> <code><a href="req_paginate.html">req_paginate_token()</a></code> <code><a href="req_paginate.html">req_paginate_offset()</a></code> <code><a href="req_paginate.html">req_paginate_page_index()</a></code> 
-        </dt>
-        <dd>Pagination</dd>
-      </dl><dl><dt>
-          
-          <code><a href="paginate_req_perform.html">paginate_req_perform()</a></code> <code><a href="paginate_req_perform.html">paginate_next_request()</a></code> 
-        </dt>
-        <dd>Perform a paginated request</dd>
       </dl></div><div class="section level2">
       <h2 id="handle-the-response">Handle the response<a class="anchor" aria-label="anchor" href="#handle-the-response"></a></h2>
       
@@ -313,14 +276,9 @@
 
       <dl><dt>
           
-          <code><a href="resp_body_raw.html">resp_body_raw()</a></code> <code><a href="resp_body_raw.html">resp_has_body()</a></code> <code><a href="resp_body_raw.html">resp_body_string()</a></code> <code><a href="resp_body_raw.html">resp_body_json()</a></code> <code><a href="resp_body_raw.html">resp_body_html()</a></code> <code><a href="resp_body_raw.html">resp_body_xml()</a></code> 
+          <code><a href="resp_body_raw.html">resp_body_raw()</a></code> <code><a href="resp_body_raw.html">resp_body_string()</a></code> <code><a href="resp_body_raw.html">resp_body_json()</a></code> <code><a href="resp_body_raw.html">resp_body_html()</a></code> <code><a href="resp_body_raw.html">resp_body_xml()</a></code> 
         </dt>
         <dd>Extract body from response</dd>
-      </dl><dl><dt>
-          
-          <code><a href="resp_check_content_type.html">resp_check_content_type()</a></code> 
-        </dt>
-        <dd>Check the content type of a response</dd>
       </dl><dl><dt>
           
           <code><a href="resp_content_type.html">resp_content_type()</a></code> <code><a href="resp_content_type.html">resp_encoding()</a></code> 
@@ -356,11 +314,6 @@
           <code><a href="resp_status.html">resp_status()</a></code> <code><a href="resp_status.html">resp_status_desc()</a></code> <code><a href="resp_status.html">resp_is_error()</a></code> <code><a href="resp_status.html">resp_check_status()</a></code> 
         </dt>
         <dd>Extract HTTP status from response</dd>
-      </dl><dl><dt>
-          
-          <code><a href="resp_url.html">resp_url()</a></code> <code><a href="resp_url.html">resp_url_path()</a></code> <code><a href="resp_url.html">resp_url_query()</a></code> <code><a href="resp_url.html">resp_url_queries()</a></code> 
-        </dt>
-        <dd>Get URL/components from the response</dd>
       </dl></div><div class="section level2">
       <h2 id="miscellaenous-helpers">Miscellaenous helpers<a class="anchor" aria-label="anchor" href="#miscellaenous-helpers"></a></h2>
       
@@ -379,7 +332,7 @@
         <dd>Translate curl syntax to httr2</dd>
       </dl><dl><dt>
           
-          <code><a href="secrets.html">secret_make_key()</a></code> <code><a href="secrets.html">secret_encrypt()</a></code> <code><a href="secrets.html">secret_decrypt()</a></code> <code><a href="secrets.html">secret_write_rds()</a></code> <code><a href="secrets.html">secret_read_rds()</a></code> <code><a href="secrets.html">secret_decrypt_file()</a></code> <code><a href="secrets.html">secret_encrypt_file()</a></code> <code><a href="secrets.html">secret_has_key()</a></code> 
+          <code><a href="secrets.html">secret_make_key()</a></code> <code><a href="secrets.html">secret_encrypt()</a></code> <code><a href="secrets.html">secret_decrypt()</a></code> <code><a href="secrets.html">secret_write_rds()</a></code> <code><a href="secrets.html">secret_read_rds()</a></code> <code><a href="secrets.html">secret_has_key()</a></code> 
         </dt>
         <dd>Secret management</dd>
       </dl><dl><dt>
@@ -392,11 +345,6 @@
           <code><a href="url_parse.html">url_parse()</a></code> <code><a href="url_parse.html">url_build()</a></code> 
         </dt>
         <dd>Parse and build URLs</dd>
-      </dl><dl><dt>
-          
-          <code><a href="progress_bars.html">progress_bars</a></code> 
-        </dt>
-        <dd>Progress bars in httr2</dd>
       </dl></div><div class="section level2">
       <h2 id="oauth">OAuth<a class="anchor" aria-label="anchor" href="#oauth"></a></h2>
       
@@ -409,11 +357,6 @@
       
 
       <dl><dt>
-          
-          <code><a href="oauth_cache_path.html">oauth_cache_path()</a></code> 
-        </dt>
-        <dd>httr2 OAuth cache location</dd>
-      </dl><dl><dt>
           
           <code><a href="oauth_client.html">oauth_client()</a></code> 
         </dt>
