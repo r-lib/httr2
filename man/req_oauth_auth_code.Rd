@@ -106,16 +106,14 @@ create a new client than find your client secret.
 }
 
 \examples{
-client <- oauth_client(
-  id = "28acfec0674bb3da9f38",
-  secret = obfuscated(paste0(
-     "J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnv",
-     "PeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"
-  )),
-  token_url = "https://github.com/login/oauth/access_token",
-  name = "hadley-oauth-test"
-)
+req_auth_github <- function(req) {
+  req_oauth_auth_code(
+    req,
+    client = example_github_client(),
+    auth_url = "https://github.com/login/oauth/authorize"
+  )
+}
 
 request("https://api.github.com/user") \%>\%
-  req_oauth_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+  req_auth_github()
 }
