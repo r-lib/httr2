@@ -21,7 +21,7 @@
       oauth_flow_parse(resp2, "test")
     Condition
       Error:
-      ! Failed to parse response from `test` url.
+      ! Failed to parse response from `test` OAuth url.
       * Did not contain `access_token`, `device_code`, or `error` field.
 
 # returns body if known good structure
