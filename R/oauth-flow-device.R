@@ -13,11 +13,17 @@
 #' @inheritParams req_oauth_auth_code
 #' @returns A modified HTTP [request].
 #' @examples
-#' client <- oauth_client("example", "https://example.com/get_token")
-#' req <- request("https://example.com")
+#' req_auth_github <- function(req) {
+#'   req_oauth_device(
+#'     req,
+#'     client = example_github_client(),
+#'     auth_url = "https://github.com/login/device/code"
+#'   )
+#' }
 #'
-#' req %>% req_oauth_device(client)
-req_oauth_device <- function(req, client,
+#' request("https://api.github.com/user") %>%
+#'   req_auth_github()
+req_oauth_device <- function(req, client, auth_url,
                              cache_disk = FALSE,
                              cache_key = NULL,
                              scope = NULL,
@@ -26,6 +32,7 @@ req_oauth_device <- function(req, client,
 
   params <- list(
     client = client,
+    auth_url = auth_url,
     scope = scope,
     auth_params = auth_params,
     token_params = token_params
