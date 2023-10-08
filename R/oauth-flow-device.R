@@ -27,11 +27,11 @@
 req_oauth_device <- function(req,
                              client,
                              auth_url,
-                             cache_disk = FALSE,
-                             cache_key = NULL,
                              scope = NULL,
                              auth_params = list(),
-                             token_params = list()) {
+                             token_params = list(),
+                             cache_disk = FALSE,
+                             cache_key = NULL) {
 
   params <- list(
     client = client,

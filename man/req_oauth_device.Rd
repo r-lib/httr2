@@ -9,11 +9,11 @@ req_oauth_device(
   req,
   client,
   auth_url,
-  cache_disk = FALSE,
-  cache_key = NULL,
   scope = NULL,
   auth_params = list(),
-  token_params = list()
+  token_params = list(),
+  cache_disk = FALSE,
+  cache_key = NULL
 )
 
 oauth_flow_device(
@@ -33,6 +33,14 @@ oauth_flow_device(
 \item{auth_url}{Authorization url; you'll need to discover this by reading
 the documentation.}
 
+\item{scope}{Scopes to be requested from the resource owner.}
+
+\item{auth_params}{List containing additional parameters passed to
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
+
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
+
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
 storing access credentials on disk. Cached tokens are encrypted,
@@ -41,14 +49,6 @@ automatically deleted 30 days after creation, and stored in
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
-
-\item{scope}{Scopes to be requested from the resource owner.}
-
-\item{auth_params}{List containing additional parameters passed to
-\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
-
-\item{token_params}{List containing additional parameters passed to the
-\code{token_url}.}
 
 \item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
 security and should always be used if supported by the server.}

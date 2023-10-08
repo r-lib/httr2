@@ -10,9 +10,10 @@ req_oauth_password(
   client,
   username,
   password = NULL,
-  cache_disk = FALSE,
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  cache_disk = FALSE,
+  cache_key = username
 )
 
 oauth_flow_password(
@@ -35,16 +36,19 @@ calling this function as it will be captured by \code{.Rhistory}. Instead,
 leave it unset and the default behaviour will prompt you for it
 interactively.}
 
+\item{scope}{Scopes to be requested from the resource owner.}
+
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
+
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
 storing access credentials on disk. Cached tokens are encrypted,
 automatically deleted 30 days after creation, and stored in
 \code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
 
-\item{scope}{Scopes to be requested from the resource owner.}
-
-\item{token_params}{List containing additional parameters passed to the
-\code{token_url}.}
+\item{cache_key}{If you want to cache multiple tokens per app, use this
+key to disambiguate them.}
 }
 \value{
 \code{req_oauth_password()} returns a modified HTTP \link{request} that will

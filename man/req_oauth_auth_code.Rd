@@ -9,13 +9,13 @@ req_oauth_auth_code(
   req,
   client,
   auth_url,
-  cache_disk = FALSE,
-  cache_key = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
   redirect_uri = oauth_redirect_uri(),
+  cache_disk = FALSE,
+  cache_key = NULL,
   host_name = deprecated(),
   host_ip = deprecated(),
   port = deprecated()
@@ -41,15 +41,6 @@ oauth_flow_auth_code(
 
 \item{auth_url}{Authorization url; you'll need to discover this by reading
 the documentation.}
-
-\item{cache_disk}{Should the access token be cached on disk? This reduces
-the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted,
-automatically deleted 30 days after creation, and stored in
-\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
-
-\item{cache_key}{If you want to cache multiple tokens per app, use this
-key to disambiguate them.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
@@ -86,6 +77,15 @@ will use \code{HTTR2_OAUTH_REDIRECT_URL} for redirects by default, and poll the
 \code{HTTR2_OAUTH_CODE_SOURCE_URL} endpoint with the state parameter until it
 receives a code in the response (or encounters an error). This delegates
 completion of the authorization flow to the hosted platform.}
+
+\item{cache_disk}{Should the access token be cached on disk? This reduces
+the number of times that you need to re-authenticate at the cost of
+storing access credentials on disk. Cached tokens are encrypted,
+automatically deleted 30 days after creation, and stored in
+\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
+
+\item{cache_key}{If you want to cache multiple tokens per app, use this
+key to disambiguate them.}
 
 \item{host_name, host_ip, port}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Now use \code{redirect_uri} instead.}
