@@ -62,9 +62,9 @@ req \%>\% req_oauth_refresh(client)
 }
 \seealso{
 Other OAuth flows: 
-\code{\link{oauth_flow_password}()},
 \code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_bearer_jwt}()},
-\code{\link{req_oauth_client_credentials}()}
+\code{\link{req_oauth_client_credentials}()},
+\code{\link{req_oauth_password}()}
 }
 \concept{OAuth flows}

@@ -2,7 +2,8 @@
 % Please edit documentation in R/oauth-flow-password.R
 \name{req_oauth_password}
 \alias{req_oauth_password}
-\title{OAuth authentication with username and password}
+\alias{oauth_flow_password}
+\title{OAuth with username and password}
 \usage{
 req_oauth_password(
   req,
@@ -10,6 +11,14 @@ req_oauth_password(
   username,
   password = NULL,
   cache_disk = FALSE,
+  scope = NULL,
+  token_params = list()
+)
+
+oauth_flow_password(
+  client,
+  username,
+  password = NULL,
   scope = NULL,
   token_params = list()
 )
@@ -38,14 +47,13 @@ automatically deleted 30 days after creation, and stored in
 \code{token_url}.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_password()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_password()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_password]{oauth_flow_password()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token, not the password is automatically cached (either in memory
-or on disk); the password is used once to get the token and is then
-discarded.
+This function implements the OAuth \strong{resource owner password flow}, as
+defined by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{Section 4.3 of RFC 6749}. It allows the user to supply their password
+once, exchanging it for an access token that can be cached locally.
 
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
@@ -57,3 +65,11 @@ if (interactive()) {
   req \%>\% req_oauth_password(client, "username")
 }
 }
+\seealso{
+Other OAuth flows: 
+\code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_bearer_jwt}()},
+\code{\link{req_oauth_client_credentials}()},
+\code{\link{req_oauth_refresh}()}
+}
+\concept{OAuth flows}

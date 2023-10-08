@@ -1,24 +1,28 @@
-#' OAuth authentication with username and password
+#' OAuth with username and password
 #'
 #' @description
-#' This uses [oauth_flow_password()] to generate an access token, which is
-#' then used to authentication the request with [req_auth_bearer_token()].
-#' The token, not the password is automatically cached (either in memory
-#' or on disk); the password is used once to get the token and is then
-#' discarded.
+#' This function implements the OAuth **resource owner password flow**, as
+#' defined by `r rfc(6749, 4.3)`. It allows the user to supply their password
+#' once, exchanging it for an access token that can be cached locally.
 #'
 #' Learn more about the overall flow in `vignette("oauth")`.
 #'
 #' @export
-#' @inheritParams oauth_flow_password
+#' @family OAuth flows
 #' @inheritParams req_oauth_auth_code
-#' @returns A modified HTTP [request].
+#' @inheritParams req_auth_basic
+#' @returns `req_oauth_password()` returns a modified HTTP [request] that will
+#'   use OAuth; `oauth_flow_password()` returns an [oauth_token].
 #' @examples
-#' client <- oauth_client("example", "https://example.com/get_token")
-#' req <- request("https://example.com")
-#'
+#' req_auth <- function(req) {
+#'   req_oauth_password(req,
+#'     client = oauth_client("example", "https://example.com/get_token"),
+#'     username = "username"
+#'   )
+#' }
 #' if (interactive()) {
-#'   req %>% req_oauth_password(client, "username")
+#'   request("https://example.com") %>%
+#'     req_auth()
 #' }
 req_oauth_password <- function(req, client,
                                username,
@@ -39,18 +43,8 @@ req_oauth_password <- function(req, client,
   req_oauth(req, "oauth_flow_password", params, cache = cache)
 }
 
-#' OAuth flow: user password
-#'
-#' This function implements the OAuth resource owner password flow, as defined
-#' by `r rfc(6749, 4.3)`. It allows the user to supply their password once, exchanging
-#' it for an access token that can be cached locally.
-#'
-#' @inheritParams req_oauth_auth_code
-#' @inheritParams req_auth_basic
 #' @export
-#' @family OAuth flows
-#' @returns An [oauth_token].
-#' @keywords internal
+#' @rdname req_oauth_password
 oauth_flow_password <- function(client,
                                 username,
                                 password = NULL,
