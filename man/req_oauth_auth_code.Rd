@@ -14,7 +14,7 @@ req_oauth_auth_code(
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
-  redirect_uri = "http://localhost",
+  redirect_uri = default_redirect_uri(),
   host_name = deprecated(),
   host_ip = deprecated(),
   port = deprecated()
@@ -50,19 +50,27 @@ security and should always be used if supported by the server.}
 \item{redirect_uri}{URL to redirect back to after authorization is complete.
 Often this must be registered with the API in advance.
 
-httr2 supports two forms of redirect. Firstly, you can use a \code{localhost}
+httr2 supports three forms of redirect. Firstly, you can use a \code{localhost}
 url (the default), where httr2 will set up a temporary webserver to listen
 for the OAuth redirect. In this case, httr2 will automatically append a
 random port. If you need to set it to a fixed port because the API requires
 it, then specify it with (e.g.) \code{"http://localhost:1011"}. This technique
 works well when you are working on your own computer.
 
-Alternatively, you can provide a URL to a website that uses javascript to
+Secondly, you can provide a URL to a website that uses Javascript to
 give the user a code to copy and paste back into the R session (see
 \url{https://www.tidyverse.org/google-callback/} and
 \url{https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html}
 for examples). This is less convenient (because it requires more
-user interaction) but also works in hosted environments.}
+user interaction) but also works in hosted environments like RStudio
+Server.
+
+Finally, hosted platforms might set the \code{HTTR2_OAUTH_REDIRECT_URL} and
+\code{HTTR2_OAUTH_CODE_SOURCE_URL} environment variables. In this case, httr2
+will use \code{HTTR2_OAUTH_REDIRECT_URL} for redirects by default, and poll the
+\code{HTTR2_OAUTH_CODE_SOURCE_URL} endpoint with the state parameter until it
+receives a code in the response (or encounters an error). This delegates
+completion of the authorization flow to the hosted platform.}
 
 \item{host_name, host_ip, port}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Now use \code{redirect_uri} instead.}

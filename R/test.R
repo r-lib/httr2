@@ -53,7 +53,7 @@ example_url <- function() {
     if (is.null(page_size)) page_size <- 20L
     page_size <- as.integer(page_size)
 
-    n <- nrow(iris)
+    n <- nrow(datasets::iris)
     start <- (page - 1L) * page_size + 1L
     end <- min(start + page_size - 1L, n)
     ids <- seq(start, end)
