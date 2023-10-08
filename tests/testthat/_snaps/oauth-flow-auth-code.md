@@ -4,7 +4,7 @@
       oauth_flow_auth_code(client, "http://localhost")
     Condition
       Error in `oauth_flow_auth_code()`:
-      ! Can't use localhost `redirect_uri` in a hosted environment
+      ! Can't use localhost `redirect_uri` in a hosted environment.
 
 # old args are deprecated
 
@@ -46,7 +46,7 @@
       Error in `oauth_flow_auth_code_parse()`:
       ! OAuth failure [123]
       * A bad error
-      i Learn more at <uri>.
+      i Learn more at <http://example.com>.
     Code
       oauth_flow_auth_code_parse(query3, "abc")
     Condition

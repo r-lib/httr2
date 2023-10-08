@@ -15,7 +15,5 @@
       ! Failed to parse error body with method defined in `req_error()`.
       Caused by error in `resp_body_json()`:
       ! Unexpected content type "text/plain".
-      Expecting "'application/json'"
-      Or suffix "+json".
-      i Override check with `check_type = FALSE`.
+      * Expecting type "application/json" or suffix "json".
 

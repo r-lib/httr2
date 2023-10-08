@@ -79,9 +79,10 @@ resp_body_string <- function(resp, encoding = NULL) {
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
   check_response(resp)
   check_installed("jsonlite")
-  check_content_type(resp,
-    types = "application/json",
-    suffix = "+json",
+  resp_check_content_type(
+    resp,
+    valid_types = "application/json",
+    valid_suffix = "json",
     check_type = check_type
   )
 
@@ -94,9 +95,11 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 resp_body_html <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_content_type(resp,
-    types = c("text/html", "application/xhtml+xml"),
-    check_type = check_type)
+  resp_check_content_type(
+    resp,
+    valid_types = c("text/html", "application/xhtml+xml"),
+    check_type = check_type
+  )
 
   xml2::read_html(resp$body, ...)
 }
@@ -106,52 +109,12 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
   check_installed("xml2")
-  check_content_type(resp,
-    types = c("application/xml", "text/xml"),
-    suffix = "+xml",
+  resp_check_content_type(
+    resp,
+    valid_types = c("application/xml", "text/xml"),
+    valid_suffix = "xml",
     check_type = check_type
   )
 
   xml2::read_xml(resp$body, ...)
 }
-
-# Helpers -----------------------------------------------------------------
-
-check_content_type <- function(
-    resp,
-    types,
-    suffix = NULL,
-    check_type = TRUE,
-    error_call = parent.frame()) {
-
-  if (identical(check_type, FALSE)) {
-    return()
-  }
-
-  content_type <- resp_content_type(resp)
-  if (content_type %in% types) {
-    return()
-  }
-
-  # https://datatracker.ietf.org/doc/html/rfc6838#section-4.2.8
-  if (!is.null(suffix) && endsWith(content_type, suffix)) {
-    return()
-  }
-
-  if (length(types) > 1) {
-    type <- paste0("one of ", paste0("'", types, "'", collapse = ", "))
-  } else {
-    type <- paste0("'", types, "'")
-  }
-
-  cli::cli_abort(
-    c(
-      "Unexpected content type {.str {content_type}}.",
-      "Expecting {.str {type}}",
-      if (!is.null(suffix)) "Or suffix {.str {suffix}}.",
-      i = if (identical(check_type, TRUE)) "Override check with {.code check_type = FALSE}."
-    ),
-    call = error_call
-  )
-}
-

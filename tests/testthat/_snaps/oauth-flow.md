@@ -16,8 +16,7 @@
       ! Failed to parse response from `test` OAuth url.
       Caused by error in `resp_body_json()`:
       ! Unexpected content type "text/plain".
-      Expecting "'application/json'"
-      Or suffix "+json".
+      * Expecting type "application/json" or suffix "json".
     Code
       oauth_flow_parse(resp2, "test")
     Condition

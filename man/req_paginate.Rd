@@ -3,44 +3,78 @@
 \name{req_paginate}
 \alias{req_paginate}
 \alias{req_paginate_next_url}
-\alias{req_paginate_offset}
 \alias{req_paginate_token}
+\alias{req_paginate_offset}
+\alias{req_paginate_page_index}
 \title{Pagination}
 \usage{
-req_paginate(req, next_request, n_pages = NULL)
+req_paginate(
+  req,
+  next_request,
+  parse_resp = NULL,
+  required_fields = NULL,
+  n_pages = NULL
+)
 
-req_paginate_next_url(req, next_url, n_pages = NULL)
+req_paginate_next_url(req, parse_resp, n_pages = NULL)
 
-req_paginate_offset(req, offset, page_size, n_pages = NULL)
+req_paginate_token(req, set_token, parse_resp, n_pages = NULL)
 
-req_paginate_token(req, set_token, next_token, n_pages = NULL)
+req_paginate_offset(req, offset, page_size, parse_resp = NULL, n_pages = NULL)
+
+req_paginate_page_index(req, page_index, parse_resp = NULL, n_pages = NULL)
 }
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{next_request}{A callback function that takes a two arguments (the
-original request and the response) and returns:
-\itemize{
-\item a new \link{request} to request the next page or
-\item \code{NULL} if there is no next page.
+\item{next_request}{A callback function that returns a \link{request} to the next
+page or \code{NULL} if there is no next page. It takes two arguments:
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{parsed}: the previous response parsed via the argument \code{parse_resp}.
 }}
 
-\item{n_pages}{A function that extracts the total number of pages from
-the \link{response}.}
+\item{parse_resp}{A function with one argument \code{resp} that parses the
+response and returns a list with the field \code{data} and other fields needed
+to create the request for the next page.
+\code{paginate_req_perform()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
+and returns the result.
+Other fields that might be needed are:
 
-\item{next_url}{A function that extracts the url to the next page from the
-\link{response}.}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{* `next_url` for `paginate_next_url()`.
+* `next_token` for `paginate_next_token()`.
+}\if{html}{\out{</div>}}}
+
+\item{required_fields}{An optional character vector that specifies which
+fields are required in the list returned by \code{parse_resp()}.}
+
+\item{n_pages}{An optional function that extracts the total number of pages, improving the
+automatically generated progress bar. It has one argument \code{parsed}, which
+is the previous response parsed via the argument \code{parse_resp}.}
+
+\item{set_token}{A function that applies the new token to the request. It
+takes two arguments: a \link{request} and the new token.
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{token}: the token for the next page.
+}}
 
 \item{offset}{A function that applies the new offset to the request. It takes
-two arguments: a \link{request} and an integer offset.}
+two arguments:
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{offset}: the integer offset for the next page.
+}}
 
 \item{page_size}{A whole number that specifies the page size i.e. the number
 of elements per page.}
 
-\item{set_token}{A function that applies the new token to the request. It
-takes two arguments: a \link{request} and the new token.}
-
-\item{next_token}{A function that extracts the next token from the \link{response}.}
+\item{page_index}{A function that applies the page index to the request. It
+takes two arguments:
+\enumerate{
+\item \code{req}: the previous request.
+\item \code{offset}: the integer page index for the next page.
+}}
 }
 \value{
 A modified HTTP \link{request}.
@@ -54,21 +88,39 @@ There are also helpers for common pagination patterns:
 \itemize{
 \item \code{req_paginate_next_url()} when the response contains a link to the next
 page.
-\item \code{req_paginate_offset()} when the request describes the offset i.e.
-at which element to start and the page size.
 \item \code{req_paginate_next_token()} when the response contains a token
 that is used to describe the next page.
+\item \code{req_paginate_offset()} when the request describes the offset i.e.
+at which element to start and the page size.
+\item \code{req_paginate_page_index()} when the request specifies which the page to
+request via an index.
 }
 }
 \examples{
-page_size <- 150
+page_size <- 40
 
-request("https://pokeapi.co/api/v2/pokemon") \%>\%
+request(example_url()) \%>\%
+  req_url_path("/iris") \%>\%
   req_url_query(limit = page_size) \%>\%
-  req_paginate_next_url(
-    next_url = function(resp) resp_body_json(resp)[["next"]],
-    n_pages = function(resp) {
-      total <- resp_body_json(resp)$count
+  req_paginate_page_index(
+    page_index = function(req, page) {
+      req \%>\% req_url_query(page_index = page)
+    },
+    parse_resp = function(resp) {
+      parsed <- resp_body_json(resp)
+      results <- parsed$data
+      data <- data.frame(
+        Sepal.Length = sapply(results, `[[`, "Sepal.Length"),
+        Sepal.Width = sapply(results, `[[`, "Sepal.Width"),
+        Petal.Length = sapply(results, `[[`, "Petal.Length"),
+        Petal.Width = sapply(results, `[[`, "Petal.Width"),
+        Species = sapply(results, `[[`, "Species")
+      )
+
+      list(data = data, count = parsed$count)
+    },
+    n_pages = function(parsed) {
+      total <- parsed$count
       ceiling(total / page_size)
     }
   )
