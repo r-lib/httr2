@@ -6,16 +6,16 @@ oauth_flow_fetch <- function(req, source, error_call = caller_env()) {
 }
 
 oauth_flow_parse <- function(resp, source, error_call = caller_env()) {
-  body <- oauth_flow_body(resp)
-  if (is.null(body)) {
-    cli::cli_abort(
-      c(
-        "Failed to parse response from {.arg {source}} url.",
-        "*" = "Response type was {.str {resp_content_type(resp)}} not {.str application/json}."
-      ),
-      call = error_call
-    )
-  }
+  withCallingHandlers(
+    body <- oauth_flow_body(resp),
+    error = function(err) {
+      cli::cli_abort(
+        "Failed to parse response from {.arg {source}} OAuth url.",
+        parent = err,
+        call = error_call
+      )
+    }
+  )
 
   if (has_name(body, "expires_in")) {
     body$expires_in <- as.numeric(body$expires_in)
@@ -52,12 +52,8 @@ oauth_flow_parse <- function(resp, source, error_call = caller_env()) {
   )
 }
 
-oauth_flow_body <- function(resp, error_call = caller_env()) {
-  if (resp_content_type(resp) == "application/json") {
-    resp_body_json(resp)
-  } else {
-    NULL
-  }
+oauth_flow_body <- function(resp) {
+  resp_body_json(resp, check_type = NA)
 }
 
 # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1

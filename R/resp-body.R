@@ -121,9 +121,10 @@ check_content_type <- function(
     resp,
     types,
     suffix = NULL,
-    check_type = TRUE) {
+    check_type = TRUE,
+    error_call = parent.frame()) {
 
-  if (!check_type) {
+  if (identical(check_type, FALSE)) {
     return()
   }
 
@@ -143,11 +144,14 @@ check_content_type <- function(
     type <- paste0("'", types, "'")
   }
 
-  cli::cli_abort(c(
-    "Unexpected content type {.str {content_type}}.",
-    "Expecting {.str {type}}",
-    if (!is.null(suffix)) "Or suffix {.str {suffix}}.",
-    i = "Override check with {.code check_type = FALSE}."
-  ))
+  cli::cli_abort(
+    c(
+      "Unexpected content type {.str {content_type}}.",
+      "Expecting {.str {type}}",
+      if (!is.null(suffix)) "Or suffix {.str {suffix}}.",
+      i = if (identical(check_type, TRUE)) "Override check with {.code check_type = FALSE}."
+    ),
+    call = error_call
+  )
 }
 

@@ -13,8 +13,11 @@
       oauth_flow_parse(resp1, "test")
     Condition
       Error:
-      ! Failed to parse response from `test` url.
-      * Response type was "text/plain" not "application/json".
+      ! Failed to parse response from `test` OAuth url.
+      Caused by error in `resp_body_json()`:
+      ! Unexpected content type "text/plain".
+      Expecting "'application/json'"
+      Or suffix "+json".
     Code
       oauth_flow_parse(resp2, "test")
     Condition
