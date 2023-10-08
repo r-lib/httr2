@@ -24,7 +24,8 @@
 #'   request("https://example.com") %>%
 #'     req_auth()
 #' }
-req_oauth_password <- function(req, client,
+req_oauth_password <- function(req,
+                               client,
                                username,
                                password = NULL,
                                cache_disk = FALSE,
@@ -49,8 +50,7 @@ oauth_flow_password <- function(client,
                                 username,
                                 password = NULL,
                                 scope = NULL,
-                                token_params = list()
-) {
+                                token_params = list()) {
   oauth_flow_check("resource owner password credentials", client,
     interactive = is.null(password)
   )
