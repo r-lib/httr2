@@ -65,19 +65,94 @@ Note that if you print the client the secret is automatically redacted:
 client
 ```
 
-## Flows
+You'll probably want to wrap this up in a function in your package.
+For an example, you might take a look at `example_github_client()`, which I provide in httr2 because I use it in a couple of different OAuth examples.
+
+## Authorization code flow
 
 Once you have a client you need to use it with a **flow** in order to get a token.
-OAuth provides a number of different "flows", the most common is the "authorisation code" flow, which is implemented by `req_oauth_auth_code()`.
-You can try it out by running this code:
+OAuth provides a number of different "flows", the most common is the "authorisation code" flow, which is implemented by a pair of functions `oauth_flow_auth_code()` and `req_oauth_auth_code()`.
+
+I'd recommend starting with the `oauth_flow_` function.
+This isn't going to be useful in the long run, but it's the fastest way to iterate to ensure that you can get an OAuth token interactively.
+For example, you can get a token to access the GitHub API using the example client above with this code:
 
 ```{r, eval = FALSE}
-token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+token <- oauth_flow_auth_code(
+  client = client, 
+  auth_url = "https://github.com/login/oauth/authorize"
+)
 ```
 
 This flow can't be used inside a vignette because it's designed specifically for interactive use: it will open a webpage on GitHub that requires you to interactively confirm it's OK for this app to use your GitHub account.
+But if you do run it and print out the `token`, you'll see something like this:
 
-Other flows provide different ways of getting the token:
+```{r}
+#| eval: false
+token
+#> <httr2_token>
+#> token_type: bearer
+#> access_token: <REDACTED>
+#> scope: ''
+```
+
+If your call to `oauth_flow_auth_code` succeeds then you've got everything set up correctly and you can proceed to the next step.
+If it doesn't, you'll need to do a bunch of careful checking and experimentation 😞.
+
+This is typically the only time that you'll see a OAuth token object because you'll generally want to rely on httr2 to manage the tokens for you.
+You do by by using `req_oauth_auth_code()`, as described next.
+Most APIs provide some way to get information about the current user, so this is typically a good place to test that you've set everything up correctly.
+
+For example, with GitHub we can make a `GET` request to `/user`.
+If we do this without setting up authentication, we'll get an error:
+
+```{r}
+#| error: true
+req <- request("https://api.github.com/user")
+req %>% 
+  req_perform()
+```
+
+We can authenticate this request by using `req_oauth_auth_code()`, which takes the same arguments as `oauth_flow_auth_code()`:
+
+```{r}
+#| eval: false
+req %>% 
+  req_oauth_auth_code(
+    client = client,
+    auth_url = "https://github.com/login/oauth/authorize"
+  ) %>% 
+  req_perform() %>% 
+  resp_body_json() %>% 
+  str()
+```
+
+When you run this code, you'll see something like this, but obviously it will contain information about you, not me.
+
+```{r}
+#| eval: false
+#> List of 32
+#>  $ login        : chr "hadley"
+#>  $ id           : int 4196
+#>  $ node_id      : chr "MDQ6VXNlcjQxOTY="
+#>  $ avatar_url   : chr "https://avatars.githubusercontent.com/u/4196?v=4"
+#>  $ gravatar_id  : chr ""
+#>  $ url          : chr "https://api.github.com/users/hadley"
+#>  $ html_url     : chr "https://github.com/hadley"
+#>  ...
+#>  $ type         : chr "User"
+#>  $ site_admin   : logi FALSE
+#>  $ name         : chr "Hadley Wickham"
+#>  $ company      : chr "@posit-pbc"
+#>  $ blog         : chr "http://hadley.nz"
+#>  $ location     : chr "Houston, TX"
+```
+
+## Other flows
+
+When wrapping an API, you'll need to carefully read the documentation to figure out which flows it provides.
+Typically you'll want to use the auth code flow, but if it's not available you'll need to carefully consider the others.
+Currently, httr2 supports the following flows:
 
 -   `req_oauth_client_credentials()` is used to allow the client to perform actions on its own behalf (instead of on behalf of some other user).
     This is typically need if you want to support **service accounts**, which are used in non-interactive environments.
@@ -92,12 +167,11 @@ Other flows provide different ways of getting the token:
 -   `req_oauth_refresh()` works directly with a refresh token that you already have.
     It's useful for testing.
 
-There's one historically important OAuth flow that httr2 doesn't support: the implicit grant flow.
-This is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead) and was never a particularly good fit for native applications because it relies on a technique for returning the access token that only works inside a web browser.
+httr2 doesn't support the implicit grant flow.
+This was historically important but is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead) and was never a particularly good fit for R because it relies on a technique for returning the access token that only reliably works inside a web browser.
 
-When wrapping an API, you'll need to carefully read the documentation to figure out which flows are available.
-Typically you'll want to use the auth code flow, but if it's not available you'll need to carefully consider the others.
-An additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec.
+Regardless of which flow you use, you'll need to follow the same process as the example above: first get figure out how to get a token using the `oauth_flow_` function, then actually use with a request, by calling the matching `req_oauth_` function.
+One additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec.
 If your initial attempt doesn't work, you're going to need to do some sleuthing.
 This is going to be painful, but unfortunately there's no way around it.
 I recommend using `with_verbosity()` so you can see exactly what httr2 is sending to the server.
