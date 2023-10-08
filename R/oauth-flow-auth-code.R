@@ -102,7 +102,7 @@ req_oauth_auth_code <- function(req,
                                 pkce = TRUE,
                                 auth_params = list(),
                                 token_params = list(),
-                                redirect_uri = default_redirect_uri(),
+                                redirect_uri = oauth_redirect_uri(),
                                 host_name = deprecated(),
                                 host_ip = deprecated(),
                                 port = deprecated()) {
@@ -136,7 +136,7 @@ oauth_flow_auth_code <- function(client,
                                  pkce = TRUE,
                                  auth_params = list(),
                                  token_params = list(),
-                                 redirect_uri = default_redirect_uri(),
+                                 redirect_uri = oauth_redirect_uri(),
                                  host_name = deprecated(),
                                  host_ip = deprecated(),
                                  port = deprecated()
@@ -254,14 +254,13 @@ normalize_redirect_uri <- function(redirect_uri,
 }
 
 
-#' OAuth default redirect uri
+#' Default redirect url for OAuth
 #'
-#' Returns `http://localhost` but also respects the `HTTR2_OAUTH_REDIRECT_URL`
-#' environment variable.
+#' The default redirect uri used by [req_oauth_auth_code()]. Defaults to
+#' `http://localhost` unless the `HTTR2_OAUTH_REDIRECT_URL` envvar is set.
 #'
 #' @export
-#' @keywords internal
-default_redirect_uri <- function() {
+oauth_redirect_uri <- function() {
   Sys.getenv("HTTR2_OAUTH_REDIRECT_URL", "http://localhost")
 }
 

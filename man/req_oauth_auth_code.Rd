@@ -15,7 +15,7 @@ req_oauth_auth_code(
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
-  redirect_uri = default_redirect_uri(),
+  redirect_uri = oauth_redirect_uri(),
   host_name = deprecated(),
   host_ip = deprecated(),
   port = deprecated()
@@ -28,7 +28,7 @@ oauth_flow_auth_code(
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
-  redirect_uri = default_redirect_uri(),
+  redirect_uri = oauth_redirect_uri(),
   host_name = deprecated(),
   host_ip = deprecated(),
   port = deprecated()

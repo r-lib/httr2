@@ -58,11 +58,15 @@ once, exchanging it for an access token that can be cached locally.
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
-client <- oauth_client("example", "https://example.com/get_token")
-req <- request("https://example.com")
-
+req_auth <- function(req) {
+  req_oauth_password(req,
+    client = oauth_client("example", "https://example.com/get_token"),
+    username = "username"
+  )
+}
 if (interactive()) {
-  req \%>\% req_oauth_password(client, "username")
+  request("https://example.com") \%>\%
+    req_auth()
 }
 }
 \seealso{
