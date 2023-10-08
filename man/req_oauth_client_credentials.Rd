@@ -2,9 +2,12 @@
 % Please edit documentation in R/oauth-flow-client-credentials.R
 \name{req_oauth_client_credentials}
 \alias{req_oauth_client_credentials}
-\title{OAuth authentication with client credentials}
+\alias{oauth_flow_client_credentials}
+\title{OAuth with client credentials}
 \usage{
 req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
+
+oauth_flow_client_credentials(client, scope = NULL, token_params = list())
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -17,18 +20,33 @@ req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
 \code{token_url}.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_client_credentials()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_client_credentials()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_client_credentials]{oauth_flow_client_credentials()}} to generate an access token,
-which is then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token is cached in memory.
+Authenticate using OAuth \strong{client credentials flow}, as defined by
+Section 4.4 of \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.4}{rfc6749}.
+It is used to allow the client to access resources that it controls directly,
+not on behalf of an user.
 
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
-client <- oauth_client("example", "https://example.com/get_token")
-req <- request("https://example.com")
-
-req \%>\% req_oauth_client_credentials(client)
+req_auth <- function(req) {
+  req_oauth_client_credentials(
+    req,
+    client = oauth_client("example", "https://example.com/get_token")
+  )
 }
+
+request("https://example.com") \%>\%
+  req_auth()
+}
+\seealso{
+Other OAuth flows: 
+\code{\link{oauth_flow_password}()},
+\code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_bearer_jwt}()},
+\code{\link{req_oauth_refresh}()}
+}
+\concept{OAuth flows}

@@ -38,9 +38,9 @@ it for an access token that can be cached locally.
 }
 \seealso{
 Other OAuth flows: 
-\code{\link{oauth_flow_client_credentials}()},
 \code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_bearer_jwt}()},
+\code{\link{req_oauth_client_credentials}()},
 \code{\link{req_oauth_refresh}()}
 }
 \concept{OAuth flows}
