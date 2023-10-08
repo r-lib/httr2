@@ -56,6 +56,9 @@ test_that("adds port to localhost url", {
 
   redirect <- normalize_redirect_uri("http://localhost")
   expect_false(is.null(url_parse(redirect$uri)$port))
+
+  redirect <- normalize_redirect_uri("http://127.0.0.1")
+  expect_false(is.null(url_parse(redirect$uri)$port))
 })
 
 test_that("old args are deprecated", {

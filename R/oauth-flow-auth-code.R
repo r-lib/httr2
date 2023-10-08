@@ -252,7 +252,7 @@ normalize_redirect_uri <- function(redirect_uri,
     lifecycle::deprecate_warn("0.3.0", "oauth_flow_auth_code(host_ip)")
   }
 
-  localhost <- parsed$hostname == "localhost"
+  localhost <- parsed$hostname %in% c("localhost", "127.0.0.1")
 
   if (localhost) {
     check_installed("httpuv", "desktop OAuth")
