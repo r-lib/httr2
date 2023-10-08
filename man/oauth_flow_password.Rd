@@ -32,8 +32,7 @@ An \link{oauth_token}.
 }
 \description{
 This function implements the OAuth resource owner password flow, as defined
-by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{rfc6749},
-Section 4.3. It allows the user to supply their password once, exchanging
+by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{Section 4.3 of RFC 6749}. It allows the user to supply their password once, exchanging
 it for an access token that can be cached locally.
 }
 \seealso{

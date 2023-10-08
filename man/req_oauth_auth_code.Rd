@@ -96,8 +96,7 @@ use OAuth; \code{oauth_flow_auth_code()} returns an \link{oauth_token}.
 }
 \description{
 Authenticate using the OAuth \strong{authorization code flow}, as defined
-by Section 4.1 of
-\href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{rfc6749}.
+by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{Section 4.1 of RFC 6749}.
 
 This is the most commonly used OAuth flow where the user is
 opens a page in their browser, approves the access, and then returns to R.
@@ -110,8 +109,7 @@ Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \section{Security considerations}{
 The authorization code flow is used for both web applications and native
-applications (which are equivalent to R packages).
-\href{https://datatracker.ietf.org/doc/html/rfc8252}{rfc8252} spells out
+applications (which are equivalent to R packages). \href{https://datatracker.ietf.org/doc/html/rfc8252}{RFC 8252} spells out
 important considerations for native apps. Most importantly there's no way
 for native apps to keep secrets from their users. This means that the
 server should either not require a \code{client_secret} (i.e. a public client

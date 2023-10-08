@@ -2,8 +2,7 @@
 #'
 #' @description
 #' Authenticate using a **Bearer JWT** (JSON web token) as an authorization
-#' grant to get an access token, as defined by Section 2.1 of
-#' [rfc7523](https://datatracker.ietf.org/doc/html/rfc7523#section-2.1).
+#' grant to get an access token, as defined by `r rfc(7523, 2.1)`.
 #' It is often used for service accounts, accounts that are used primarily in
 #' automated environments.
 #'

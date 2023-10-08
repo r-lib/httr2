@@ -2,9 +2,7 @@
 #'
 #' @description
 #' Authenticate by generating an access token from a refresh token, following
-#' the process described in Section 6 of
-#' [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-6).
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' the process described in `r rfc(6749, 6)`.
 #'
 #' This is primarily useful for testing: you can manually execute another OAuth
 #' flow (e.g. by calling [oauth_flow_auth_code()] or [oauth_flow_device()]),
@@ -15,6 +13,8 @@
 #' token. If this happens, `oauth_flow_refresh()` will warn, and you'll have to
 #' update your stored refresh token. If you find this happening a lot, it's a
 #' sign that you should be using a different strategy.
+#'
+#' Learn more about the overall flow in `vignette("oauth")`.
 #'
 #' @inheritParams req_oauth_auth_code
 #' @param refresh_token A refresh token. This is equivalent to a password

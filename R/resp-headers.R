@@ -148,8 +148,7 @@ resp_retry_after <- function(resp) {
 
 #' Parse link URL from a response
 #'
-#' Parses URLs out of the the `Link` header as defined by
-#' [rfc8288](https://datatracker.ietf.org/doc/html/rfc8288).
+#' Parses URLs out of the the `Link` header as defined by `r rfc(8288)`.
 #'
 #' @export
 #' @inheritParams resp_headers

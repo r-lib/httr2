@@ -51,8 +51,7 @@ use OAuth; \code{oauth_flow_bearer_jwt()} returns an \link{oauth_token}.
 }
 \description{
 Authenticate using a \strong{Bearer JWT} (JSON web token) as an authorization
-grant to get an access token, as defined by Section 2.1 of
-\href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.1}{rfc7523}.
+grant to get an access token, as defined by \href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.1}{Section 2.1 of RFC 7523}.
 It is often used for service accounts, accounts that are used primarily in
 automated environments.
 

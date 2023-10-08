@@ -1,10 +1,9 @@
 #' OAuth with device flow
 #'
 #' @description
-#' Authenticate using the OAuth **device flow**, as defined
-#' by [rfc8628](https://datatracker.ietf.org/doc/html/rfc8628). It's designed
-#' for devices that don't have access to a web browser (if you've ever
-#' authenticated an app on your TV, this is probably the flow you've used),
+#' Authenticate using the OAuth **device flow**, as defined by `r rfc(8626)`.
+#' It's designed for devices that don't have access to a web browser (if you've
+#' ever authenticated an app on your TV, this is probably the flow you've used),
 #' but it also works well from within R.
 #'
 #' Learn more about the overall flow in `vignette("oauth")`.

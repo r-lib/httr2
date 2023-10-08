@@ -42,8 +42,7 @@ listens for the response from the resource server.
 the server redirect, verifying that the \code{state} is correct, and returning
 the authorisation code.
 \item \code{oauth_flow_auth_code_pkce()} generates code verifier, method, and challenge
-components as needed for PKCE, as defined in
-\href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
+components as needed for PKCE, as defined in \href{https://datatracker.ietf.org/doc/html/rfc7636}{RFC 7636}.
 }
 }
 \keyword{internal}

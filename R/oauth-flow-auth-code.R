@@ -2,8 +2,7 @@
 #'
 #' @description
 #' Authenticate using the OAuth **authorization code flow**, as defined
-#' by Section 4.1 of
-#' [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1).
+#' by `r rfc(6749, 4.1)`.
 #'
 #' This is the most commonly used OAuth flow where the user is
 #' opens a page in their browser, approves the access, and then returns to R.
@@ -17,8 +16,7 @@
 #' # Security considerations
 #'
 #' The authorization code flow is used for both web applications and native
-#' applications (which are equivalent to R packages).
-#' [rfc8252](https://datatracker.ietf.org/doc/html/rfc8252) spells out
+#' applications (which are equivalent to R packages). `r rfc(8252)` spells out
 #' important considerations for native apps. Most importantly there's no way
 #' for native apps to keep secrets from their users. This means that the
 #' server should either not require a `client_secret` (i.e. a public client
@@ -284,8 +282,7 @@ default_redirect_uri <- function() {
 #'   the server redirect, verifying that the `state` is correct, and returning
 #'   the authorisation code.
 #' * `oauth_flow_auth_code_pkce()` generates code verifier, method, and challenge
-#'   components as needed for PKCE, as defined in
-#'   [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
+#'   components as needed for PKCE, as defined in `r rfc(7636)`.
 #'
 #' @export
 #' @keywords internal

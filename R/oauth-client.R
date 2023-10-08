@@ -108,19 +108,15 @@ print.httr2_oauth_client <- function(x, ...) {
 #' There are three built-in strategies:
 #'
 #' * `oauth_client_req_body()` adds the client id and (optionally) the secret
-#'    to the request body, as described in
-#'   [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1),
-#'   Section 2.3.1.
+#'   to the request body, as described in `r rfc(6749, "2.3.1")`.
 #'
 #' * `oauth_client_req_header()` adds the client id and secret using HTTP
-#'   basic authentication with the `Authorization` header, as described in
-#'   [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1),
-#'   Section 2.3.1.
+#'   basic authentication with the `Authorization` header, as described
+#'   in `r rfc(6749, "2.3.1")`.
 #'
 #' * `oauth_client_jwt_rs256()` adds a client assertion to the body using a
-#'   JWT signed with `jwt_sign_rs256()` using a private key, as described in
-#'   [rfc7523](https://datatracker.ietf.org/doc/html/rfc7523#section-2.2),
-#'   Section 2.2.
+#'   JWT signed with `jwt_sign_rs256()` using a private key, as described
+#'   in `r rfc(7523, 2.2)`.
 #'
 #' You will generally not call these functions directly but will instead
 #' specify them through the `auth` argument to [oauth_client()]. The `req` and

@@ -41,9 +41,7 @@ use OAuth; \code{oauth_flow_refresh()} returns an \link{oauth_token}.
 }
 \description{
 Authenticate by generating an access token from a refresh token, following
-the process described in Section 6 of
-\href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{rfc6749}.
-Learn more about the overall flow in \code{vignette("oauth")}.
+the process described in \href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{Section 6 of RFC 6749}.
 
 This is primarily useful for testing: you can manually execute another OAuth
 flow (e.g. by calling \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or \code{\link[=oauth_flow_device]{oauth_flow_device()}}),
@@ -54,6 +52,8 @@ When requesting an access token, the server may also return a new refresh
 token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have to
 update your stored refresh token. If you find this happening a lot, it's a
 sign that you should be using a different strategy.
+
+Learn more about the overall flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")
