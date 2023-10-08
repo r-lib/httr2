@@ -16,8 +16,7 @@
 #' update your stored refresh token. If you find this happening a lot, it's a
 #' sign that you should be using a different strategy.
 #'
-#' @inheritParams req_perform
-#' @inheritParams oauth_flow_auth_code
+#' @inheritParams req_oauth_auth_code
 #' @param refresh_token A refresh token. This is equivalent to a password
 #'   so shouldn't be typed into the console or stored in a script. Instead,
 #'   we recommend placing in an environment variable; the default behaviour

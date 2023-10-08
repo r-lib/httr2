@@ -34,7 +34,8 @@ key to disambiguate them.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
+\item{auth_params}{List containing additional parameters passed to
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}

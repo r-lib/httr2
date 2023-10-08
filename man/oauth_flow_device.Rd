@@ -24,7 +24,8 @@ security and should always be used if supported by the server.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
-\item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
+\item{auth_params}{List containing additional parameters passed to
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
@@ -48,10 +49,10 @@ defined in \href{https://datatracker.ietf.org/doc/html/rfc7636}{rfc7636}.
 }
 \seealso{
 Other OAuth flows: 
-\code{\link{oauth_flow_auth_code}()},
 \code{\link{oauth_flow_bearer_jwt}()},
 \code{\link{oauth_flow_client_credentials}()},
 \code{\link{oauth_flow_password}()},
+\code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_refresh}()}
 }
 \concept{OAuth flows}

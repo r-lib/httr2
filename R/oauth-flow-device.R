@@ -55,7 +55,7 @@ req_oauth_device <- function(req, client, auth_url,
 #'   verifier, method, and challenge components as needed for PKCE, as
 #'   defined in [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
 #'
-#' @inheritParams oauth_flow_auth_code
+#' @inheritParams req_oauth_auth_code
 #' @returns An [oauth_token].
 #' @export
 #' @family OAuth flows

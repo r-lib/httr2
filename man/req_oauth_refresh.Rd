@@ -36,8 +36,8 @@ is to look in \code{HTTR2_REFRESH_TOKEN}.}
 \code{token_url}.}
 }
 \value{
-\code{req_oauth_refresh()} returns a modified HTTP \link{request};
-\code{oauth_flow_refresh()} returns an \link{oauth_token}.
+\code{req_oauth_refresh()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_refresh()} returns an \link{oauth_token}.
 }
 \description{
 Authenticate by generating an access token from a refresh token, following
@@ -62,10 +62,10 @@ req \%>\% req_oauth_refresh(client)
 }
 \seealso{
 Other OAuth flows: 
-\code{\link{oauth_flow_auth_code}()},
 \code{\link{oauth_flow_bearer_jwt}()},
 \code{\link{oauth_flow_client_credentials}()},
 \code{\link{oauth_flow_device}()},
-\code{\link{oauth_flow_password}()}
+\code{\link{oauth_flow_password}()},
+\code{\link{req_oauth_auth_code}()}
 }
 \concept{OAuth flows}

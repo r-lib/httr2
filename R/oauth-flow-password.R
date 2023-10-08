@@ -46,7 +46,7 @@ req_oauth_password <- function(req, client,
 #' Section 4.3. It allows the user to supply their password once, exchanging
 #' it for an access token that can be cached locally.
 #'
-#' @inheritParams oauth_flow_auth_code
+#' @inheritParams req_oauth_auth_code
 #' @inheritParams req_auth_basic
 #' @export
 #' @family OAuth flows

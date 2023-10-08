@@ -2,7 +2,8 @@
 % Please edit documentation in R/oauth-flow-auth-code.R
 \name{req_oauth_auth_code}
 \alias{req_oauth_auth_code}
-\title{OAuth authentication with authorization code}
+\alias{oauth_flow_auth_code}
+\title{OAuth with authorization code}
 \usage{
 req_oauth_auth_code(
   req,
@@ -10,6 +11,19 @@ req_oauth_auth_code(
   auth_url,
   cache_disk = FALSE,
   cache_key = NULL,
+  scope = NULL,
+  pkce = TRUE,
+  auth_params = list(),
+  token_params = list(),
+  redirect_uri = default_redirect_uri(),
+  host_name = deprecated(),
+  host_ip = deprecated(),
+  port = deprecated()
+)
+
+oauth_flow_auth_code(
+  client,
+  auth_url,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -42,7 +56,8 @@ key to disambiguate them.}
 \item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
 security and should always be used if supported by the server.}
 
-\item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
+\item{auth_params}{List containing additional parameters passed to
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
@@ -76,13 +91,20 @@ completion of the authorization flow to the hosted platform.}
 Now use \code{redirect_uri} instead.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_auth_code()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_auth_code()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token is automatically cached (either in memory or on disk) to minimise
-the number of times the flow is performed.
+Authenticate using the OAuth \strong{authorization code flow}, as defined
+by Section 4.1 of
+\href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{rfc6749}.
+
+This is the most commonly used OAuth flow where the user is
+opens a page in their browser, approves the access, and then returns to R.
+When possible, it redirects the browser back to a temporary local webserver
+to capture the authorization code. When this is not possible (e.g. when
+running on a hosted platform like RStudio Server), provide a custom
+\code{redirect_uri} and httr2 will prompt the user to enter the code manually.
 
 Learn more about the overall flow in \code{vignette("oauth")}.
 }
@@ -117,3 +139,16 @@ req_auth_github <- function(req) {
 request("https://api.github.com/user") \%>\%
   req_auth_github()
 }
+\seealso{
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}} for the components necessary to
+write your own auth code flow, if the API you are wrapping does not adhere
+closely to the standard.
+
+Other OAuth flows: 
+\code{\link{oauth_flow_bearer_jwt}()},
+\code{\link{oauth_flow_client_credentials}()},
+\code{\link{oauth_flow_device}()},
+\code{\link{oauth_flow_password}()},
+\code{\link{req_oauth_refresh}()}
+}
+\concept{OAuth flows}

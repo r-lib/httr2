@@ -38,7 +38,7 @@ req_oauth_client_credentials <- function(req, client,
 #' Section 4.4. It is used to allow the client to access resources that it
 #' controls directly, not on behalf of an user.
 #'
-#' @inheritParams oauth_flow_auth_code
+#' @inheritParams req_oauth_auth_code
 #' @returns An [oauth_token].
 #' @export
 #' @family OAuth flows

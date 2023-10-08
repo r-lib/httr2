@@ -45,7 +45,7 @@ req_oauth_bearer_jwt <- function(req,
 #' Section 2.1. It is often used for service accounts, accounts that are
 #' used primarily in automated environments.
 #'
-#' @inheritParams oauth_flow_auth_code
+#' @inheritParams req_oauth_auth_code
 #' @family OAuth flows
 #' @param claim A list of claims. If all elements of the claim set are static
 #'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
