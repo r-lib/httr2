@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* httr2 now informs the user when a token is cached.
+
 * `req_oauth_device()` now takes a `auth_url` parameter making it usable 
   (#331, @taerwin).
 

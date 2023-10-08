@@ -13,6 +13,19 @@
 #'
 #' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
+#' # Caching
+#'
+#' By default, the OAuth token will cached in memory. That means that you will
+#' only need to authenticate once in the current session, but you will need to
+#' re-authenticate again from scratch if you restart R.
+#'
+#' To cache across sessions, set `cache_disk = TRUE`. This will cause
+#' lightly-encrypted tokens to be saved in [oauth_cache_path()]. Tokens
+#' will be automatically deleted 30 days after creation (trigged whenever you
+#' load httr2), striking a balance between minimising the need to
+#' re-authenticate and leaving potentially valuable tokens in a place that you
+#' might forget about.
+#'
 #' # Security considerations
 #'
 #' The authorization code flow is used for both web applications and native
@@ -75,9 +88,9 @@
 #'   completion of the authorization flow to the hosted platform.
 #' @param cache_disk Should the access token be cached on disk? This reduces
 #'   the number of times that you need to re-authenticate at the cost of
-#'   storing access credentials on disk. Cached tokens are encrypted,
-#'   automatically deleted 30 days after creation, and stored in
-#'   [oauth_cache_path()].
+#'   storing access credentials on disk.
+#'
+#'   See the "Caching" section below for more details.
 #' @param cache_key If you want to cache multiple tokens per app, use this
 #'   key to disambiguate them.
 #' @returns `req_oauth_auth_code()` returns a modified HTTP [request] that will

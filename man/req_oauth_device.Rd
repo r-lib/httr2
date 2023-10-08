@@ -43,9 +43,9 @@ the documentation.}
 
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted,
-automatically deleted 30 days after creation, and stored in
-\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
+storing access credentials on disk.
+
+See the "Caching" section below for more details.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
@@ -65,6 +65,19 @@ but it also works well from within R.
 
 Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
+\section{Caching}{
+By default, the OAuth token will cached in memory. That means that you will
+only need to authenticate once in the current session, but you will need to
+re-authenticate again from scratch if you restart R.
+
+To cache across sessions, set \code{cache_disk = TRUE}. This will cause
+lightly-encrypted tokens to be saved in \code{\link[=oauth_cache_path]{oauth_cache_path()}}. Tokens
+will be automatically deleted 30 days after creation (trigged whenever you
+load httr2), striking a balance between minimising the need to
+re-authenticate and leaving potentially valuable tokens in a place that you
+might forget about.
+}
+
 \examples{
 req_auth_github <- function(req) {
   req_oauth_device(
