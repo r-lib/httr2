@@ -116,7 +116,7 @@ req_paginate <- function(req,
 #' `r lifecycle::badge("experimental")`
 #'
 #' * `paginate_req_perform()` requests all pages for a paginated request and
-#'   returns a list of response.
+#'   returns a list of responses.
 #' * `paginate_next_request()` generates the next request for a paginated
 #'   response, or `NULL` if there are no more pages to return.
 #'
