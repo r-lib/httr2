@@ -19,7 +19,7 @@
 #' * Consults the cache set by [req_cache()] before/after all requests.
 #'
 #' In general, where [req_perform()] might make multiple requests due to retries
-#' or OAuth failures, `multi_req_perform()` will make only make 1.
+#' or OAuth failures, `req_perform_multi()` will make only make 1.
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional list of paths, if you want to download the request
@@ -44,19 +44,19 @@
 #'   request_base %>% req_url_path("/delay/0.5")
 #' )
 #' # But it's much faster if you request in parallel
-#' system.time(resps <- multi_req_perform(reqs))
+#' system.time(resps <- req_perform_multi(reqs))
 #'
 #' reqs <- list(
 #'   request_base %>% req_url_path("/status/200"),
 #'   request_base %>% req_url_path("/status/400"),
 #'   request("FAILURE")
 #' )
-#' # multi_req_perform() will always succeed
-#' resps <- multi_req_perform(reqs)
+#' # req_perform_multi() will always succeed
+#' resps <- req_perform_multi(reqs)
 #' # you'll need to inspect the results to figure out which requests fails
 #' fail <- vapply(resps, inherits, "error", FUN.VALUE = logical(1))
 #' resps[fail]
-multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
+req_perform_multi <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   if (!is.null(paths)) {
     if (length(reqs) != length(paths)) {
       cli::cli_abort("If supplied, {.arg paths} must be the same length as {.arg req}.")
@@ -71,6 +71,24 @@ multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error =
 
   pool_run(pool, perfs, cancel_on_error = cancel_on_error)
   map(perfs, ~ .$resp)
+}
+
+#' @export
+#' @rdname req_perform_multi
+#' @usage NULL
+multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
+  lifecycle::deprecate_warn(
+    "0.3.0",
+    "multi_req_perform()",
+    "req_perform_multi()"
+  )
+
+  req_perform_multi(
+    reqs = reqs,
+    paths = paths,
+    pool = pool,
+    cancel_on_error = cancel_on_error
+  )
 }
 
 pool_run <- function(pool, perfs, cancel_on_error = FALSE) {

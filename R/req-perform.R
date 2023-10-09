@@ -59,7 +59,7 @@
 #'   * If the HTTP request fails (e.g. the connection is dropped or the
 #'     server doesn't exist), an error with class `"httr2_failure"`.
 #' @export
-#' @seealso [multi_req_perform()] to perform multiple requests in parallel.
+#' @seealso [req_perform_multi()] to perform multiple requests in parallel.
 #'   [req_perform_paginate()] to fetch all pages of a requests paginated via
 #'   [req_paginate()].
 #' @examples
