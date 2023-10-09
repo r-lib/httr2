@@ -6,7 +6,7 @@
 \alias{req_paginate_token}
 \alias{req_paginate_offset}
 \alias{req_paginate_page_index}
-\title{Pagination}
+\title{Define a paginated request}
 \usage{
 req_paginate(
   req,

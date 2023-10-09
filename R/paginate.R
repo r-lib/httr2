@@ -1,4 +1,4 @@
-#' Pagination
+#' Define a paginated request
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`

@@ -45,7 +45,6 @@ reference:
   contents:
   - req_perform
   - req_perform_multi
-  - req_perform_paginate
   - req_stream
 
 - subtitle: Control the process
@@ -61,7 +60,7 @@ reference:
 - title: Pagination
   contents:
   - req_paginate
-  - paginate_next_request
+  - req_perform_paginate
 
 - title: Handle the response
   contents:
