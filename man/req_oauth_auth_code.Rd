@@ -47,7 +47,7 @@ the documentation.}
 \item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
 security and should always be used if supported by the server.}
 
-\item{auth_params}{List containing additional parameters passed to
+\item{auth_params}{A list containing additional parameters passed to
 \code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
 
 \item{token_params}{List containing additional parameters passed to the
@@ -98,7 +98,7 @@ use OAuth; \code{oauth_flow_auth_code()} returns an \link{oauth_token}.
 Authenticate using the OAuth \strong{authorization code flow}, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{Section 4.1 of RFC 6749}.
 
-This is the most commonly used OAuth flow where the user is
+This is the most commonly used OAuth flow where the user
 opens a page in their browser, approves the access, and then returns to R.
 When possible, it redirects the browser back to a temporary local webserver
 to capture the authorization code. When this is not possible (e.g. when
@@ -108,13 +108,13 @@ running on a hosted platform like RStudio Server), provide a custom
 Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \section{Caching}{
-By default, the OAuth token will cached in memory. That means that you will
+By default, the OAuth token will be cached in memory. That means that you will
 only need to authenticate once in the current session, but you will need to
 re-authenticate again from scratch if you restart R.
 
 To cache across sessions, set \code{cache_disk = TRUE}. This will cause
 lightly-encrypted tokens to be saved in \code{\link[=oauth_cache_path]{oauth_cache_path()}}. Tokens
-will be automatically deleted 30 days after creation (trigged whenever you
+will be automatically deleted 30 days after creation (triggered whenever you
 load httr2), striking a balance between minimising the need to
 re-authenticate and leaving potentially valuable tokens in a place that you
 might forget about.

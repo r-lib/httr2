@@ -62,13 +62,13 @@ once, exchanging it for an access token that can be cached locally.
 Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \section{Caching}{
-By default, the OAuth token will cached in memory. That means that you will
+By default, the OAuth token will be cached in memory. That means that you will
 only need to authenticate once in the current session, but you will need to
 re-authenticate again from scratch if you restart R.
 
 To cache across sessions, set \code{cache_disk = TRUE}. This will cause
 lightly-encrypted tokens to be saved in \code{\link[=oauth_cache_path]{oauth_cache_path()}}. Tokens
-will be automatically deleted 30 days after creation (trigged whenever you
+will be automatically deleted 30 days after creation (triggered whenever you
 load httr2), striking a balance between minimising the need to
 re-authenticate and leaving potentially valuable tokens in a place that you
 might forget about.
