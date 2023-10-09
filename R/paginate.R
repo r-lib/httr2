@@ -117,8 +117,8 @@ req_paginate <- function(req,
 #'
 #' * `paginate_req_perform()` requests all pages for a paginated request and
 #'   returns a list of responses.
-#' * `paginate_next_request()` generates the next request for a paginated
-#'   response, or `NULL` if there are no more pages to return.
+#' * `paginate_next_request()` generates the request for the next page for a
+#'   paginated response, or `NULL` if there are no more pages to return.
 #'
 #' @inheritParams req_perform
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
