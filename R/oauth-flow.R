@@ -25,31 +25,24 @@ oauth_flow_parse <- function(resp, source, error_call = caller_env()) {
   # hopefully be general enough to handle most token endpoints. However,
   # it would still be nice to figure out how to make user extensible,
   # especially since you might be able to give better errors.
-  if (resp_status(resp) == 200) {
-    if (has_name(body, "access_token")) {
-      return(body)
-    }
-    if (has_name(body, "device_code")) {
-      return(body)
-    }
+  if (has_name(body, "access_token") || has_name(body, "device_code")) {
+    body
+  } else if (has_name(body, "error")) {
+    oauth_flow_abort(
+      body$error,
+      body$error_description,
+      body$error_uri,
+      error_call = error_call
+    )
   } else {
-    if (has_name(body, "error")) {
-      oauth_flow_abort(
-        body$error,
-        body$error_description,
-        body$error_uri,
-        error_call = error_call
-      )
-    }
+    cli::cli_abort(
+      c(
+        "Failed to parse response from {.arg {source}} OAuth url.",
+        "*" = "Did not contain {.code access_token}, {.code device_code}, or {.code error} field."
+      ),
+      call = error_call
+    )
   }
-
-  cli::cli_abort(
-    c(
-      "Failed to parse response from {.arg {source}} OAuth url.",
-      "*" = "Did not contain {.code access_token}, {.code device_code}, or {.code error} field."
-    ),
-    call = error_call
-  )
 }
 
 oauth_flow_body <- function(resp) {
