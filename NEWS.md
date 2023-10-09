@@ -1,7 +1,7 @@
 # httr2 (development version)
 
 * `req_perform_multi()` replaces `multi_req_perform()`. `multi_req_perform()`
-  is now deprecated.
+  is now deprecated (#314).
 
 * `req_oauth_device()` now takes a `auth_url` parameter making it usable 
   (#331, @taerwin).
