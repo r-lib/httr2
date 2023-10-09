@@ -106,28 +106,28 @@
       Error in `req_paginate_page_index()`:
       ! `page_index` must have the arguments `req` and `page`; it currently has `req`.
 
-# paginate_req_perform() checks inputs
+# req_perform_paginate() checks inputs
 
     Code
-      paginate_req_perform("a")
+      req_perform_paginate("a")
     Condition
-      Error in `paginate_req_perform()`:
+      Error in `req_perform_paginate()`:
       ! `req` must be an HTTP request object, not the string "a".
     Code
-      paginate_req_perform(request("http://example.com"))
+      req_perform_paginate(request("http://example.com"))
     Condition
       Error in `check_has_pagination_policy()`:
       ! `req` doesn't have a pagination policy.
       i You can add pagination via `req_paginate()`.
     Code
-      paginate_req_perform(req, max_pages = 0)
+      req_perform_paginate(req, max_pages = 0)
     Condition
-      Error in `paginate_req_perform()`:
+      Error in `req_perform_paginate()`:
       ! `max_pages` must be a whole number larger than or equal to 1, not the number 0.
     Code
-      paginate_req_perform(req, progress = -1)
+      req_perform_paginate(req, progress = -1)
     Condition
-      Error in `paginate_req_perform()`:
+      Error in `req_perform_paginate()`:
       ! `progress` must be a bool, a string, or a list, not the number -1.
 
 # parse_resp() produces a good error message
@@ -151,15 +151,15 @@
 ---
 
     Code
-      paginate_req_perform(req, max_pages = 2)
+      req_perform_paginate(req, max_pages = 2)
     Condition
       Error in `parse_resp()`:
       ! The list returned by `parse_resp(resp)` is missing the field next_token.
 
-# paginate_req_perform() handles error in `parse_resp()`
+# req_perform_paginate() handles error in `parse_resp()`
 
     Code
-      paginate_req_perform(req, max_pages = 2)
+      req_perform_paginate(req, max_pages = 2)
     Condition
       Error in `parse_resp()`:
       ! error

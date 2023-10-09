@@ -6,7 +6,7 @@
 * OAuth errors containing a url now correctly display that URL 
   (instead of just uri).
 
-* New `req_paginate()` and `paginate_req_perform()` to easily request paginated
+* New `req_paginate()` and `req_perform_paginate()` to easily request paginated
   APIs (@mgirlich, #8).
 
 * New `resp_check_content_type()` to check response content types (#190).

@@ -60,7 +60,7 @@
 #'     server doesn't exist), an error with class `"httr2_failure"`.
 #' @export
 #' @seealso [multi_req_perform()] to perform multiple requests in parallel.
-#'   [paginate_req_perform()] to fetch all pages of a requests paginated via
+#'   [req_perform_paginate()] to fetch all pages of a requests paginated via
 #'   [req_paginate()].
 #' @examples
 #' request("https://google.com") %>%
