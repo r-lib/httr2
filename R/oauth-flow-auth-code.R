@@ -4,7 +4,7 @@
 #' Authenticate using the OAuth **authorization code flow**, as defined
 #' by `r rfc(6749, 4.1)`.
 #'
-#' This is the most commonly used OAuth flow where the user is
+#' This is the most commonly used OAuth flow where the user
 #' opens a page in their browser, approves the access, and then returns to R.
 #' When possible, it redirects the browser back to a temporary local webserver
 #' to capture the authorization code. When this is not possible (e.g. when
@@ -15,13 +15,13 @@
 #'
 #' # Caching
 #'
-#' By default, the OAuth token will cached in memory. That means that you will
+#' By default, the OAuth token will be cached in memory. That means that you will
 #' only need to authenticate once in the current session, but you will need to
 #' re-authenticate again from scratch if you restart R.
 #'
 #' To cache across sessions, set `cache_disk = TRUE`. This will cause
 #' lightly-encrypted tokens to be saved in [oauth_cache_path()]. Tokens
-#' will be automatically deleted 30 days after creation (trigged whenever you
+#' will be automatically deleted 30 days after creation (triggered whenever you
 #' load httr2), striking a balance between minimising the need to
 #' re-authenticate and leaving potentially valuable tokens in a place that you
 #' might forget about.
@@ -56,7 +56,7 @@
 #' @param scope Scopes to be requested from the resource owner.
 #' @param pkce Use "Proof Key for Code Exchange"? This adds an extra layer of
 #'   security and should always be used if supported by the server.
-#' @param auth_params List containing additional parameters passed to
+#' @param auth_params A list containing additional parameters passed to
 #'   [oauth_flow_auth_code_url()].
 #' @param token_params List containing additional parameters passed to the
 #'   `token_url`.
