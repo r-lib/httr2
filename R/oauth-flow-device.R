@@ -105,18 +105,25 @@ oauth_flow_device <- function(client,
 # Device authorization request and response
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.1
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
-oauth_flow_device_request <- function(client, auth_url, scope, auth_params) {
+oauth_flow_device_request <- function(client,
+                                      auth_url,
+                                      scope,
+                                      auth_params,
+                                      error_call = caller_env()) {
   req <- request(auth_url)
   req <- req_body_form(req, scope = scope, !!!auth_params)
   req <- oauth_client_req_auth(req, client)
   req <- req_headers(req, Accept = "application/json")
 
-  oauth_flow_fetch(req)
+  oauth_flow_fetch(req, "auth_url", error_call = error_call)
 }
 
 # Device Access Token Request
 # https://datatracker.ietf.org/doc/html/rfc8628#section-3.4
-oauth_flow_device_poll <- function(client, request, token_params) {
+oauth_flow_device_poll <- function(client,
+                                   request,
+                                   token_params,
+                                   error_call = caller_env()) {
   cli::cli_progress_step("Waiting for response from server", spinner = TRUE)
 
   delay <- request$interval %||% 5
@@ -134,7 +141,8 @@ oauth_flow_device_poll <- function(client, request, token_params) {
         token <- oauth_client_get_token(client,
           grant_type = "urn:ietf:params:oauth:grant-type:device_code",
           device_code = request$device_code,
-          !!!token_params
+          !!!token_params,
+          error_call = error_call
         )
         break
       },
