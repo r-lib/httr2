@@ -46,7 +46,7 @@
       Error in `oauth_flow_auth_code_parse()`:
       ! OAuth failure [123]
       * A bad error
-      i Learn more at <uri>.
+      i Learn more at <http://example.com>.
     Code
       oauth_flow_auth_code_parse(query3, "abc")
     Condition

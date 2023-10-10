@@ -1,7 +1,9 @@
 #' Pagination
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Use `req_paginate()` to specify how to request the next page in a paginated
-#' API. Use [req_perform_multi()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
 #' [req_next_multi()] to iterate through the pages yourself.
 #' There are also helpers for common pagination patterns:

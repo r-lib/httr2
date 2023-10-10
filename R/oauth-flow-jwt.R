@@ -1,4 +1,4 @@
-#' OAuth authentication with a bearer JWT
+#' OAuth authentication with a bearer JWT (JSON web token)
 #'
 #' @description
 #' This uses [oauth_flow_bearer_jwt()] to generate an access token which is then
@@ -40,7 +40,7 @@ req_oauth_bearer_jwt <- function(req,
 
 #' OAuth flow: Bearer JWT
 #'
-#' This function uses a Bearer JWT as an authorization grant to get an access
+#' This function uses a Bearer JWT (JSON web token) as an authorization grant to get an access
 #' token, as defined by [rfc7523](https://datatracker.ietf.org/doc/html/rfc7523#section-2.1),
 #' Section 2.1. It is often used for service accounts, accounts that are
 #' used primarily in automated environments.

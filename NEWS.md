@@ -6,6 +6,12 @@
 
 * New `req_paginate()` to easily request paginated APIs (@mgirlich, #8).
 
+* `req_oauth_device()` now takes a `auth_url` parameter making it usable 
+  (#331, @taerwin).
+
+* OAuth errors containing a url now correctly display that URL 
+  (instead of just uri).
+
 * New `resp_check_content_type()` to check response content types (#190).
   `resp_body_json()` and friends give better errors if no `Content-Type`
   header is present in the response (#284).

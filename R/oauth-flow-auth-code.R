@@ -39,18 +39,16 @@
 #' @returns A modified HTTP [request].
 #' @inheritParams oauth_flow_auth_code
 #' @examples
-#' client <- oauth_client(
-#'   id = "28acfec0674bb3da9f38",
-#'   secret = obfuscated(paste0(
-#'      "J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnv",
-#'      "PeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"
-#'   )),
-#'   token_url = "https://github.com/login/oauth/access_token",
-#'   name = "hadley-oauth-test"
-#' )
+#' req_auth_github <- function(req) {
+#'   req_oauth_auth_code(
+#'     req,
+#'     client = example_github_client(),
+#'     auth_url = "https://github.com/login/oauth/authorize"
+#'   )
+#' }
 #'
 #' request("https://api.github.com/user") %>%
-#'   req_oauth_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
+#'   req_auth_github()
 req_oauth_auth_code <- function(req, client,
                                 auth_url,
                                 cache_disk = FALSE,
@@ -59,7 +57,7 @@ req_oauth_auth_code <- function(req, client,
                                 pkce = TRUE,
                                 auth_params = list(),
                                 token_params = list(),
-                                redirect_uri = "http://localhost",
+                                redirect_uri = default_redirect_uri(),
                                 host_name = deprecated(),
                                 host_ip = deprecated(),
                                 port = deprecated()
@@ -98,8 +96,11 @@ req_oauth_auth_code <- function(req, client,
 #' that adhere relatively closely to the spec. When possible, it redirects the
 #' browser back to a temporary local webserver to capture the authorization
 #' code. When this is not possible (e.g. when running on a hosted platform
-#' like RStudio Server) set `type = "web"` to instead prompts the user to enter
-#' the code manually instead.
+#' like RStudio Server), provide a custom redirect URI and httr2 will prompt the
+#' user to enter the code manually instead.
+#'
+#' `default_redirect_uri()` returns `http://localhost` but also respects the
+#' `HTTR2_OAUTH_REDIRECT_URL` environment variable.
 #'
 #' The remaining low-level functions can be used to assemble a custom flow for
 #' APIs that are further from the spec:
@@ -130,19 +131,27 @@ req_oauth_auth_code <- function(req, client,
 #' @param redirect_uri URL to redirect back to after authorization is complete.
 #'   Often this must be registered with the API in advance.
 #'
-#'   httr2 supports two forms of redirect. Firstly, you can use a `localhost`
+#'   httr2 supports three forms of redirect. Firstly, you can use a `localhost`
 #'   url (the default), where httr2 will set up a temporary webserver to listen
 #'   for the OAuth redirect. In this case, httr2 will automatically append a
 #'   random port. If you need to set it to a fixed port because the API requires
 #'   it, then specify it with (e.g.) `"http://localhost:1011"`. This technique
 #'   works well when you are working on your own computer.
 #'
-#'   Alternatively, you can provide a URL to a website that uses javascript to
+#'   Secondly, you can provide a URL to a website that uses Javascript to
 #'   give the user a code to copy and paste back into the R session (see
 #'   <https://www.tidyverse.org/google-callback/> and
 #'   <https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html>
 #'   for examples). This is less convenient (because it requires more
-#'   user interaction) but also works in hosted environments.
+#'   user interaction) but also works in hosted environments like RStudio
+#'   Server.
+#'
+#'   Finally, hosted platforms might set the `HTTR2_OAUTH_REDIRECT_URL` and
+#'   `HTTR2_OAUTH_CODE_SOURCE_URL` environment variables. In this case, httr2
+#'   will use `HTTR2_OAUTH_REDIRECT_URL` for redirects by default, and poll the
+#'   `HTTR2_OAUTH_CODE_SOURCE_URL` endpoint with the state parameter until it
+#'   receives a code in the response (or encounters an error). This delegates
+#'   completion of the authorization flow to the hosted platform.
 #'
 #' @returns An [oauth_token].
 #' @export
@@ -167,7 +176,7 @@ oauth_flow_auth_code <- function(client,
                                  pkce = TRUE,
                                  auth_params = list(),
                                  token_params = list(),
-                                 redirect_uri = "http://localhost",
+                                 redirect_uri = default_redirect_uri(),
                                  host_name = deprecated(),
                                  host_ip = deprecated(),
                                  port = deprecated()
@@ -201,7 +210,15 @@ oauth_flow_auth_code <- function(client,
   )
   utils::browseURL(user_url)
 
-  if (redirect$localhost) {
+  if (redirect$can_fetch_code) {
+    # Wait a bit to give the user a chance to click through the authorisation
+    # process.
+    if (!is_testing()) {
+      sys_sleep(2, "for browser-based authentication", progress = FALSE)
+    }
+
+    code <- oauth_flow_auth_code_fetch(state)
+  } else if (redirect$localhost) {
     # Listen on localhost for the result
     result <- oauth_flow_auth_code_listen(redirect$uri)
     code <- oauth_flow_auth_code_parse(result, state)
@@ -252,7 +269,7 @@ normalize_redirect_uri <- function(redirect_uri,
     lifecycle::deprecate_warn("0.3.0", "oauth_flow_auth_code(host_ip)")
   }
 
-  localhost <- parsed$hostname == "localhost"
+  localhost <- parsed$hostname %in% c("localhost", "127.0.0.1")
 
   if (localhost) {
     check_installed("httpuv", "desktop OAuth")
@@ -270,9 +287,16 @@ normalize_redirect_uri <- function(redirect_uri,
 
   list(
     uri = url_build(parsed),
-    localhost = localhost
+    localhost = localhost,
+    can_fetch_code = can_fetch_oauth_code(redirect_uri)
   )
 
+}
+
+#' @export
+#' @rdname oauth_flow_auth_code
+default_redirect_uri <- function() {
+  Sys.getenv("HTTR2_OAUTH_REDIRECT_URL", "http://localhost")
 }
 
 # Authorisation request: make a url that the user navigates to
@@ -434,6 +458,31 @@ oauth_flow_auth_code_read <- function(state) {
     abort("Authentication failure: state does not match")
   }
   result$code
+}
+
+# Determine whether we can fetch the OAuth authorization code from an external
+# source without user interaction.
+can_fetch_oauth_code <- function(redirect_url) {
+  nchar(Sys.getenv("HTTR2_OAUTH_CODE_SOURCE_URL")) &&
+    Sys.getenv("HTTR2_OAUTH_REDIRECT_URL") == redirect_url
+}
+
+# Fetch the authorization code from an external source that is serving as a
+# redirect URL. This assumes a very simple API that takes the state parameter in
+# the query string and returns a JSON object with a `code` key.
+oauth_flow_auth_code_fetch <- function(state) {
+  req <- request(Sys.getenv("HTTR2_OAUTH_CODE_SOURCE_URL"))
+  req <- req_url_query(req, state = state)
+  req <- req_retry(
+    req,
+    max_seconds = 60,
+    # The endpoint may temporarily return a 404 when no code is found for a
+    # given state because the user hasn't finished clicking through yet.
+    is_transient = ~ resp_status(.x) %in% c(404, 429, 503)
+  )
+  resp <- req_perform(req)
+  body <- resp_body_json(resp)
+  body$code
 }
 
 # Make base::readline() mockable

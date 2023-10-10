@@ -56,6 +56,9 @@ test_that("adds port to localhost url", {
 
   redirect <- normalize_redirect_uri("http://localhost")
   expect_false(is.null(url_parse(redirect$uri)$port))
+
+  redirect <- normalize_redirect_uri("http://127.0.0.1")
+  expect_false(is.null(url_parse(redirect$uri)$port))
 })
 
 test_that("old args are deprecated", {
@@ -90,5 +93,51 @@ test_that("forwards oauth error", {
     oauth_flow_auth_code_parse(query2, "abc")
     oauth_flow_auth_code_parse(query3, "abc")
   })
+})
 
+# can_fetch_auth_code -----------------------------------------------------
+
+test_that("external auth code sources are detected correctly", {
+  # False by default.
+  expect_false(can_fetch_oauth_code("http://localhost:8080/redirect"))
+
+  # Only true in the presence of certain environment variables.
+  env <- c(
+    "HTTR2_OAUTH_CODE_SOURCE_URL" = "http://localhost:8080/code",
+    "HTTR2_OAUTH_REDIRECT_URL" = "http://localhost:8080/redirect"
+  )
+  withr::with_envvar(env, {
+    expect_true(can_fetch_oauth_code("http://localhost:8080/redirect"))
+
+    # Non-matching redirect URLs should not count as external sources, either.
+    expect_false(can_fetch_oauth_code("http://localhost:9090/redirect"))
+  })
+})
+
+# oauth_flow_auth_code_fetch ----------------------------------------------
+
+test_that("auth codes can be retrieved from an external source", {
+  skip_on_cran()
+
+  app <- webfakes::new_app()
+  authorized <- FALSE
+
+  # Error on first, and then respond on second
+  app$get("/code", function(req, res) {
+    if (!authorized) {
+      authorized <<- TRUE
+      res$
+        set_status(404L)$
+        set_type("text/plain")$
+        send("Not found")
+    } else {
+      res$
+        set_status(200L)$
+        send_json(text = '{"code":"abc123"}')
+    }
+  })
+  server <- webfakes::local_app_process(app)
+
+  withr::local_envvar("HTTR2_OAUTH_CODE_SOURCE_URL" = server$url("/code"))
+  expect_equal(oauth_flow_auth_code_fetch("ignored"), "abc123")
 })

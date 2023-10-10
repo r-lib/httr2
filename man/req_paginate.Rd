@@ -80,8 +80,9 @@ takes two arguments:
 A modified HTTP \link{request}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Use \code{req_paginate()} to specify how to request the next page in a paginated
-API. Use \code{\link[=req_perform_multi]{req_perform_multi()}} to fetch all pages.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
 \code{\link[=req_next_multi]{req_next_multi()}} to iterate through the pages yourself.
 There are also helpers for common pagination patterns:
