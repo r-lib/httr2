@@ -2,12 +2,12 @@
 % Please edit documentation in R/paginate.R
 \name{req_perform_iterate}
 \alias{req_perform_iterate}
-\alias{paginate_next_request}
-\title{Perform a paginated request}
+\alias{iterate_next_request}
+\title{Perform a iterated request}
 \usage{
 req_perform_iterate(req, max_pages = 20L, progress = TRUE)
 
-paginate_next_request(req, parsed)
+iterate_next_request(req, parsed)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -27,10 +27,10 @@ If \code{parse_resp} is not specified, it will be a list of the raw responses.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \itemize{
-\item \code{req_perform_iterate()} requests all pages for a paginated request and
+\item \code{req_perform_iterate()} requests all pages for a iterated request and
 returns a list of responses.
-\item \code{paginate_next_request()} generates the request for the next page for a
-paginated response, or \code{NULL} if there are no more pages to return.
+\item \code{iterate_next_request()} generates the request for the next page for a
+iterated response, or \code{NULL} if there are no more pages to return.
 }
 }
 \examples{

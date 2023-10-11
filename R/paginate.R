@@ -6,7 +6,7 @@
 #' Use `req_paginate()` to specify how to request the next page in a paginated
 #' API. Use [req_perform_iterate()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
-#' [paginate_next_request()] to iterate through the pages yourself.
+#' [iterate_next_request()] to iterate through the pages yourself.
 #'
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
@@ -41,7 +41,7 @@
 #'   is the previous response parsed via the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
-#' @seealso [req_perform_iterate()] to fetch all pages. [paginate_next_request()]
+#' @seealso [req_perform_iterate()] to fetch all pages. [iterate_next_request()]
 #'   to generate the request to the next page.
 #' @export
 #'
@@ -110,15 +110,15 @@ req_paginate <- function(req,
   )
 }
 
-#' Perform a paginated request
+#' Perform a iterated request
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' * `req_perform_iterate()` requests all pages for a paginated request and
+#' * `req_perform_iterate()` requests all pages for a iterated request and
 #'   returns a list of responses.
-#' * `paginate_next_request()` generates the request for the next page for a
-#'   paginated response, or `NULL` if there are no more pages to return.
+#' * `iterate_next_request()` generates the request for the next page for a
+#'   iterated response, or `NULL` if there are no more pages to return.
 #'
 #' @inheritParams req_perform
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
@@ -200,7 +200,7 @@ req_perform_iterate <- function(req,
     out[[page]] <- parsed$data
     if (show_progress) cli::cli_progress_update(total = n_pages)
 
-    req <- paginate_next_request(req, parsed)
+    req <- iterate_next_request(req, parsed)
     if (is.null(req)) {
       break
     }
@@ -217,7 +217,7 @@ req_perform_iterate <- function(req,
 
 #' @export
 #' @rdname req_perform_iterate
-paginate_next_request <- function(req, parsed) {
+iterate_next_request <- function(req, parsed) {
   check_request(req)
   check_has_pagination_policy(req)
 

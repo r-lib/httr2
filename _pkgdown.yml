@@ -44,6 +44,7 @@ reference:
 - title: Perform a request and get a response
   contents:
   - req_perform
+  - req_perform_iterate
   - req_perform_parallel
   - req_stream
 
@@ -60,7 +61,6 @@ reference:
 - title: Pagination
   contents:
   - req_paginate
-  - req_perform_iterate
 
 - title: Handle the response
   contents:
