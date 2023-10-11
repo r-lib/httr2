@@ -30,9 +30,9 @@ resp_check_content_type <- function(resp,
   check_response(resp)
   check_character(valid_types, allow_null = TRUE)
   check_string(valid_suffix, allow_null = TRUE)
-  check_bool(check_type)
+  check_bool(check_type, allow_na = TRUE)
 
-  if (!check_type) {
+  if (isFALSE(check_type)) {
     return(invisible())
   }
 
@@ -40,7 +40,7 @@ resp_check_content_type <- function(resp,
     resp_content_type(resp),
     valid_types = valid_types,
     valid_suffix = valid_suffix,
-    inform_check_type = TRUE,
+    inform_check_type = !is.na(check_type),
     call = call
   )
   invisible()

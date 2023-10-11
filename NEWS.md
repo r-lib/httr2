@@ -1,5 +1,11 @@
 # httr2 (development version)
 
+* `req_oauth_device()` now takes a `auth_url` parameter making it usable 
+  (#331, @taerwin).
+
+* OAuth errors containing a url now correctly display that URL 
+  (instead of just uri).
+
 * New `req_paginate()` and `paginate_req_perform()` to easily request paginated
   APIs (@mgirlich, #8).
 

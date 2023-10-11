@@ -30,13 +30,17 @@ request_pagination_test <- function(parse_resp = NULL,
 }
 
 
-#' URL to a local server that's useful for tests and examples
+#' Code for examples
 #'
-#' Requires the webfakes package to be installed. It has the following endpoints:
+#' @description
+#' `example_url()` runs a simple websever using the webfakes package with the
+#' following endpoints:
 #'
 #' * all the ones from the [webfakes::httpbin_app()]
 #' * `/iris`: paginate through the iris dataset. It has the query parameters
 #'   `page` and `limit` to control the pagination.
+#'
+#' `example_github_client()` is an OAuth client for GitHub.
 #'
 #' @keywords internal
 #' @export
@@ -53,7 +57,7 @@ example_url <- function() {
     if (is.null(page_size)) page_size <- 20L
     page_size <- as.integer(page_size)
 
-    n <- nrow(iris)
+    n <- nrow(datasets::iris)
     start <- (page - 1L) * page_size + 1L
     end <- min(start + page_size - 1L, n)
     ids <- seq(start, end)
@@ -73,4 +77,19 @@ example_url <- function() {
     )
   )
   the$test_app$url()
+}
+
+#' @export
+#' @rdname example_url
+example_github_client <- function() {
+  # <https://github.com/settings/applications/1636322>
+  oauth_client(
+    id = "28acfec0674bb3da9f38",
+    secret = obfuscated(paste0(
+       "J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnv",
+       "PeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"
+    )),
+    token_url = "https://github.com/login/oauth/access_token",
+    name = "hadley-oauth-test"
+  )
 }
