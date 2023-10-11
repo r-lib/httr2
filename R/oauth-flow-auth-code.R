@@ -437,28 +437,48 @@ is_hosted_session <- function() {
 }
 
 oauth_flow_auth_code_read <- function(state) {
-  code <- trimws(readline("Enter authorization code: "))
-  # We support two options here:
-  #
-  # 1) The original {gargle} style, where the user copy & pastes a
-  #    base64-encoded JSON object with both the code and state. This is used on
-  #    https://www.tidyverse.org/google-callback/; and
-  #
-  # 2) The full manual approach, where the code and state are entered
-  #    independently.
-  result <- tryCatch(
-   jsonlite::fromJSON(rawToChar(openssl::base64_decode(code))),
-   error = function(e) {
-    list(
-      code = code,
-      state = trimws(readline("Enter state parameter: "))
-    )
-  })
-  if (!identical(result$state, state)) {
+  code <- trimws(readline("Enter authorization code or URL: "))
+
+  if (is_string_url(code)) {
+    # minimal setup where user copy & pastes a URL
+    parsed <- url_parse(code)
+
+    code <- parsed$query$code
+    new_state <- parsed$query$state
+  } else if (is_base64_json(code)) {
+    # {gargle} style, where the user copy & pastes a base64-encoded JSON
+    # object with both the code and state. This is used on
+    # https://www.tidyverse.org/google-callback/
+    json <- jsonlite::fromJSON(rawToChar(openssl::base64_decode(code)))
+
+    code <- json$code
+    new_state <- json$state
+  } else {
+    # Full manual approach, where the code and state are entered
+    # independently.
+
+    new_state <- trimws(readline("Enter state parameter: "))
+  }
+
+  if (!identical(state, new_state)) {
     abort("Authentication failure: state does not match")
   }
-  result$code
+
+  code
 }
+
+is_string_url <- function(x) grepl("^https?://", x)
+
+is_base64_json <- function(x) {
+  tryCatch(
+    {
+      jsonlite::fromJSON(rawToChar(openssl::base64_decode(x)))
+      TRUE
+    },
+    error = function(err) FALSE
+  )
+}
+
 
 # Determine whether we can fetch the OAuth authorization code from an external
 # source without user interaction.
