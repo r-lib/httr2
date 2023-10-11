@@ -40,18 +40,18 @@ is to look in \code{HTTR2_REFRESH_TOKEN}.}
 use OAuth; \code{oauth_flow_refresh()} returns an \link{oauth_token}.
 }
 \description{
-Authenticate by generating an access token from a refresh token, following
-the process described in \href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{Section 6 of RFC 6749}.
+Authenticate using a refresh token, following the process described in
+\href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{Section 6 of RFC 6749}.
 
-This is primarily useful for testing: you can manually execute another OAuth
-flow (e.g. by calling \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or \code{\link[=oauth_flow_device]{oauth_flow_device()}}),
+This technique is primarily useful for testing: you can manually retrieve
+a token using another OAuth flow (e.g. with \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}}),
 extract the refresh token from the result, and then save in an environment
-variable for future use in automated tests.
+variable for use in automated tests.
 
 When requesting an access token, the server may also return a new refresh
 token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have to
 update your stored refresh token. If you find this happening a lot, it's a
-sign that you should be using a different strategy.
+sign that you should be using a different testing strategy.
 
 Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }

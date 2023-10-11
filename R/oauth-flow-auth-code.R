@@ -4,7 +4,7 @@
 #' Authenticate using the OAuth **authorization code flow**, as defined
 #' by `r rfc(6749, 4.1)`.
 #'
-#' This is the most commonly used OAuth flow where the user
+#' This flow is the most commonly used OAuth flow where the user
 #' opens a page in their browser, approves the access, and then returns to R.
 #' When possible, it redirects the browser back to a temporary local webserver
 #' to capture the authorization code. When this is not possible (e.g. when

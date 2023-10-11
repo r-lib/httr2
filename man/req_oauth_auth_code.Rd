@@ -98,7 +98,7 @@ use OAuth; \code{oauth_flow_auth_code()} returns an \link{oauth_token}.
 Authenticate using the OAuth \strong{authorization code flow}, as defined
 by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{Section 4.1 of RFC 6749}.
 
-This is the most commonly used OAuth flow where the user
+This flow is the most commonly used OAuth flow where the user
 opens a page in their browser, approves the access, and then returns to R.
 When possible, it redirects the browser back to a temporary local webserver
 to capture the authorization code. When this is not possible (e.g. when
