@@ -74,8 +74,8 @@ Once you have a client you need to use it with a **flow** in order to get a toke
 OAuth provides a number of different "flows", the most common is the "authorisation code" flow, which is implemented by a pair of functions `oauth_flow_auth_code()` and `req_oauth_auth_code()`.
 
 I'd recommend starting with the `oauth_flow_` function.
-This isn't going to be useful in the long run, but it's the fastest way to iterate to ensure that you can get an OAuth token interactively.
-For example, you can get a token to access the GitHub API using the example client above with this code:
+You won't use this when actually performing requests, but it it's the best way to verify that you can get a OAuth token, without having to worry about any other part of the API.
+For example, you could get a token to access the GitHub API (using the client defined above) with this code:
 
 ```{r, eval = FALSE}
 token <- oauth_flow_auth_code(
@@ -96,11 +96,11 @@ token
 #> scope: ''
 ```
 
-If your call to `oauth_flow_auth_code` succeeds then you've got everything set up correctly and you can proceed to the next step.
+If your call to `oauth_flow_auth_code()` succeeds then you've got everything set up correctly and you can proceed to the next step.
 If it doesn't, you'll need to do a bunch of careful checking and experimentation 😞.
 
 This is typically the only time that you'll see a OAuth token object because you'll generally want to rely on httr2 to manage the tokens for you.
-You do by by using `req_oauth_auth_code()`, as described next.
+You do so by using `req_oauth_auth_code()`, as described next.
 Most APIs provide some way to get information about the current user, so this is typically a good place to test that you've set everything up correctly.
 
 For example, with GitHub we can make a `GET` request to `/user`.
@@ -113,7 +113,7 @@ req %>%
   req_perform()
 ```
 
-We can authenticate this request by using `req_oauth_auth_code()`, which takes the same arguments as `oauth_flow_auth_code()`:
+We can authenticate this request with `req_oauth_auth_code()`, which uses the same arguments as `oauth_flow_auth_code()`:
 
 ```{r}
 #| eval: false
