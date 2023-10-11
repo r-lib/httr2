@@ -21,25 +21,20 @@ test_that("so-called 'hosted' sessions are detected correctly", {
 })
 
 test_that("URL embedding authorisation code and state can be input manually", {
-  state <- base64_url_rand(32)
-  code <- "def456"
-  url <- glue("https://x.com?code={code}&state={state}")
   local_mocked_bindings(
-    readline = function(prompt = "") url
+    readline = function(prompt = "") "https://x.com?code=code&state=state"
   )
-  expect_equal(oauth_flow_auth_code_read(state), code)
+  expect_equal(oauth_flow_auth_code_read("state"), "code")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
 })
 
 test_that("JSON-encoded authorisation codes can be input manually", {
-  state <- base64_url_rand(32)
-  code <- "abc123"
-  input <- list(state = state, code = code)
+  input <- list(state = "state", code = "code")
   encoded <- openssl::base64_encode(jsonlite::toJSON(input))
   local_mocked_bindings(
     readline = function(prompt = "") encoded
   )
-  expect_equal(oauth_flow_auth_code_read(state), code)
+  expect_equal(oauth_flow_auth_code_read("state"), "code")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
 })
 
