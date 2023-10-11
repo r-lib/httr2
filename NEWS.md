@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* `req_perform_multi()` replaces `multi_req_perform()`. `multi_req_perform()`
+* `req_perform_parallel()` replaces `multi_req_perform()`. `multi_req_perform()`
   is now deprecated (#314).
 
 * `req_oauth_device()` now takes a `auth_url` parameter making it usable 
@@ -9,7 +9,7 @@
 * OAuth errors containing a url now correctly display that URL 
   (instead of just uri).
 
-* New `req_paginate()` and `req_perform_paginate()` to easily request paginated
+* New `req_paginate()` and `req_perform_iterate()` to easily request paginated
   APIs (@mgirlich, #8).
 
 * New `resp_check_content_type()` to check response content types (#190).

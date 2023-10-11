@@ -19,7 +19,7 @@
 #' * Consults the cache set by [req_cache()] before/after all requests.
 #'
 #' In general, where [req_perform()] might make multiple requests due to retries
-#' or OAuth failures, `req_perform_multi()` will make only make 1.
+#' or OAuth failures, `req_perform_parallel()` will make only make 1.
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional list of paths, if you want to download the request
@@ -44,19 +44,19 @@
 #'   request_base %>% req_url_path("/delay/0.5")
 #' )
 #' # But it's much faster if you request in parallel
-#' system.time(resps <- req_perform_multi(reqs))
+#' system.time(resps <- req_perform_parallel(reqs))
 #'
 #' reqs <- list(
 #'   request_base %>% req_url_path("/status/200"),
 #'   request_base %>% req_url_path("/status/400"),
 #'   request("FAILURE")
 #' )
-#' # req_perform_multi() will always succeed
-#' resps <- req_perform_multi(reqs)
+#' # req_perform_parallel() will always succeed
+#' resps <- req_perform_parallel(reqs)
 #' # you'll need to inspect the results to figure out which requests fails
 #' fail <- vapply(resps, inherits, "error", FUN.VALUE = logical(1))
 #' resps[fail]
-req_perform_multi <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
+req_perform_parallel <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   if (!is.null(paths)) {
     if (length(reqs) != length(paths)) {
       cli::cli_abort("If supplied, {.arg paths} must be the same length as {.arg req}.")
@@ -74,16 +74,16 @@ req_perform_multi <- function(reqs, paths = NULL, pool = NULL, cancel_on_error =
 }
 
 #' @export
-#' @rdname req_perform_multi
+#' @rdname req_perform_parallel
 #' @usage NULL
 multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   lifecycle::deprecate_warn(
     "0.3.0",
     "multi_req_perform()",
-    "req_perform_multi()"
+    "req_perform_parallel()"
   )
 
-  req_perform_multi(
+  req_perform_parallel(
     reqs = reqs,
     paths = paths,
     pool = pool,
