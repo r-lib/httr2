@@ -46,9 +46,6 @@
     <loc>https://httr2.r-lib.org/dev/reference/last_response.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/dev/reference/multi_req_perform.html</loc>
-  </url>
-  <url>
     <loc>https://httr2.r-lib.org/dev/reference/oauth_cache_path.html</loc>
   </url>
   <url>
@@ -80,9 +77,6 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/obfuscate.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/dev/reference/paginate_req_perform.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/pipe.html</loc>
@@ -148,6 +142,15 @@
     <loc>https://httr2.r-lib.org/dev/reference/req_perform.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/dev/reference/req_perform_iteratively.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/dev/reference/req_perform_parallel.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/dev/reference/req_perform_stream.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/dev/reference/req_progress.html</loc>
   </url>
   <url>
@@ -155,9 +158,6 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/req_retry.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/dev/reference/req_stream.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/req_template.html</loc>

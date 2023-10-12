@@ -218,7 +218,7 @@
         </dt>
         <dd>OAuth authentication with a refresh token</dd>
       </dl></div><div class="section level2">
-      <h2 id="perform-a-request-and-get-a-response">Perform a request and get a response<a class="anchor" aria-label="anchor" href="#perform-a-request-and-get-a-response"></a></h2>
+      <h2 id="perform-one-or-more-requests">Perform one or more requests<a class="anchor" aria-label="anchor" href="#perform-one-or-more-requests"></a></h2>
       
       
 
@@ -232,22 +232,22 @@
           
           <code><a href="req_perform.html">req_perform()</a></code> 
         </dt>
-        <dd>Perform a request</dd>
+        <dd>Perform a request to get a response</dd>
       </dl><dl><dt>
           
-          <code><a href="req_stream.html">req_stream()</a></code> 
+          <code><a href="req_perform_iteratively.html">req_perform_iteratively()</a></code> <code><a href="req_perform_iteratively.html">iterate_next_request()</a></code> 
         </dt>
-        <dd>Perform a request, streaming data back to R</dd>
+        <dd>Perform requests iteratively, generating new requests from previous responses</dd>
       </dl><dl><dt>
           
-          <code><a href="multi_req_perform.html">multi_req_perform()</a></code> 
+          <code><a href="req_perform_parallel.html">req_perform_parallel()</a></code> 
         </dt>
-        <dd>Perform multiple requests in parallel</dd>
+        <dd>Perform a list of requests in parallel</dd>
       </dl><dl><dt>
           
-          <code><a href="paginate_req_perform.html">paginate_req_perform()</a></code> <code><a href="paginate_req_perform.html">paginate_next_request()</a></code> 
+          <code><a href="req_perform_stream.html">req_perform_stream()</a></code> 
         </dt>
-        <dd>Perform a paginated request</dd>
+        <dd>Perform a request and handle data as it streams back</dd>
       </dl></div><div class="section level2">
       
       <h3 id="control-the-process">Control the process<a class="anchor" aria-label="anchor" href="#control-the-process"></a></h3>
@@ -294,12 +294,7 @@
           
           <code><a href="req_paginate.html">req_paginate()</a></code> <code><a href="req_paginate.html">req_paginate_next_url()</a></code> <code><a href="req_paginate.html">req_paginate_token()</a></code> <code><a href="req_paginate.html">req_paginate_offset()</a></code> <code><a href="req_paginate.html">req_paginate_page_index()</a></code> 
         </dt>
-        <dd>Pagination</dd>
-      </dl><dl><dt>
-          
-          <code><a href="paginate_req_perform.html">paginate_req_perform()</a></code> <code><a href="paginate_req_perform.html">paginate_next_request()</a></code> 
-        </dt>
-        <dd>Perform a paginated request</dd>
+        <dd>Define a paginated request</dd>
       </dl></div><div class="section level2">
       <h2 id="handle-the-response">Handle the response<a class="anchor" aria-label="anchor" href="#handle-the-response"></a></h2>
       
