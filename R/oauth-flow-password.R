@@ -9,7 +9,6 @@
 #'
 #' @export
 #' @family OAuth flows
-#' @inheritSection req_oauth_auth_code Caching
 #' @inheritParams req_oauth_auth_code
 #' @inheritParams req_auth_basic
 #' @returns `req_oauth_password()` returns a modified HTTP [request] that will

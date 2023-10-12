@@ -11,7 +11,6 @@
 #' @export
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
-#' @inheritSection req_oauth_auth_code Caching
 #' @returns `req_oauth_device()` returns a modified HTTP [request] that will
 #'   use OAuth; `oauth_flow_device()` returns an [oauth_token].
 #' @examples
