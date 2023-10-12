@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 library(httr2)
 ```
 
-OAuth[^1] is a authorization framework design for performing work on the behalf of a user.
+OAuth[^1] is an authorization framework design for performing work on the behalf of a user.
 It allows you to wrap an API that requires a user login without your app ever directly seeing the user's user name and password.
 You've almost certainly used this before on the web or with your TV; it's used in most cases where one website (or your TV) needs to login to an account on your behalf.
 
@@ -42,7 +42,7 @@ client <- oauth_client(
 ```
 
 The call to `oauth_client()` also includes a `name` and a `token_url`.
-The `name` is human facing and should typically be the same as the package, if you're using one.
+The `name` is human-facing, and should typically be the same as your package or project (the thing that prompted you to create the client).
 I have a bunch of apps that I've used for testing, so here I've and is used to remind you which app the client corresponds to.
 The `token_url` points to the URL that's used to obtain an access token.
 You'll need to find this from the documentation for the API you're wrapping; it will typically be found in the section that describes the OAuth process and will be an endpoint that returns an access token.
@@ -94,12 +94,12 @@ github_client <- function() {
 
 You'll need this in order to run tests for your package, but you'll probably also want to use it as the default client for your users.
 In some cases, it will be necessary for each user to create their own app and matching client (e.g. if rate limits are applied by app, not by user), but this is much less user friendly so you should avoid it if possible.
-That said, you should always provide a way for a user to provide their own client if when you do bundle a default.
+That said, you should always provide a way for a user to supply their own client when you bundle a default.
 
 ## Authorization code flow
 
 Once you have a client you need to use it with a flow in order to get a token.
-You'll need to read the docs for your API to figure out which flows it supports, but the most common is the **authorisation code**[^2] flow, which works something like this:
+You'll need to read the docs for your API to figure out which flows it supports, but the most common is the **authorization code**[^2] flow, which works something like this:
 
 [^2]: Confusingly, Github calls this the "web application flow", but this is not the official name.
     This is a general problem with OAuth docs; often they use different terms for the same things.
@@ -141,15 +141,16 @@ There's not much to see here because httr2 automatically redacts the access toke
 
 If your call to `oauth_flow_auth_code()` succeeds then you've got everything set up correctly and you can proceed to the next step.
 Otherwise, you'll get an HTTP error.
-If you're very luckily, that error will be informative and will help you figure out want went wrong.
+If you're very lucky, that error will be informative and will help you figure out want went wrong.
 However, in most cases, you'll need to carefully double check that you've correctly copied and pasted the client id and secret, and check that you've supplied the correct authorization and token urls (`auth_url` and `token_url`).
 If the docs have multiple candidates for each and you're unclear about which is which, you'll need to do some systematic experimentation.
 
 ### Authenticating a request
 
-Initial configuration is the only time that you'll see a `httr2_token` object because you'll generally want to rely on httr2 to manage the tokens for you.
-You'll do that with `req_oauth_auth_code()` and to check that it's working correctly, I recommend finding the simplest possible API endpoint to test it with.
-A good place to start is an endpoint that provides information about the "current" user, if your API provides it.
+Initial configuration is the only time that you'll see an `httr2_token` object because you'll generally want to rely on httr2 to manage the tokens for you.
+You'll do that with `req_oauth_auth_code()`. 
+To check that it's working correctly, I recommend finding the simplest possible API endpoint to test it with.
+A good place to start is an endpoint that provides information about the "current" user, if your API provides one.
 
 For example, the GitHub API provides a `GET` endpoint at `/user` that returns information about the current user.
 If we make a request to this endpoint without authentication, we'll get an error:
@@ -218,16 +219,16 @@ Currently, httr2 supports the following flows:
 -   `req_oauth_password()` exchanges a user name and password for an access token.
 
 -   `req_oauth_refresh()` works directly with a refresh token that you already have.
-    It's useful for testing.
+    It's useful for testing and automation.
 
 httr2 doesn't support the implicit grant flow.
 This was historically important but is now [mostly deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead) and was never a particularly good fit for R because it relies on a technique for returning the access token that only reliably works inside a web browser.
 
-Regardless of which flow you use, you'll need to follow the same process as the example above: first get figure out how to get a token using the `oauth_flow_` function, then actually use with a request, by calling the matching `req_oauth_` function.
+Regardless of which flow you use, you'll need to follow the same process as the example above: first figure out how to get a token using the `oauth_flow_` function, then actually use oauth with a request, by calling the matching `req_oauth_` function.
 
 One additional wrinkle is that many APIs don't implement the flow in exactly the same way as the spec so httr2's built-in flows might not work at all.
 If your initial attempt doesn't work, you're going to need to do some sleuthing.
 This is going to be painful, but unfortunately there's no way around it.
-I recommend using `with_verbosity()` so you can see exactly what httr2 is sending to the server.
+I recommend wrapping your httr2 code in `with_verbosity()` so you can see exactly what httr2 is sending to the server.
 You'll then need to carefully compare this to the API documentation and play "spot the difference".
 You're very welcome to file an issue and I'll do my best to help you out.
