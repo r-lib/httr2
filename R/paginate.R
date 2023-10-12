@@ -115,13 +115,10 @@ req_paginate <- function(req,
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' * `req_perform_iteratively()` requests all pages for an iterated request and
-#'   returns a list of responses.
-#' * `iterate_next_request()` generates the request for the next page for an
-#'   iterated response, or `NULL` if there are no more pages to return.
+#' `req_perform_iteratively()` requests all pages for an iterated request and
+#' returning a list of responses.
 #'
 #' @inheritParams req_perform
-#' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
 #' @param max_pages The maximum number of pages to request.
 #' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
 #'   bar, use a string to give it a name, or see [progress_bars] for more details.
@@ -215,8 +212,31 @@ req_perform_iteratively <- function(req,
   vctrs::list_unchop(out)
 }
 
+#' Retrieve the next request from an iterative response
+#'
+#' In most case you should use [req_perform_iteratively()] but you can
+#' use this lower-level helper if you need more control.
+#'
+#' @inheritParams req_perform
+#' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
+#' @keywords internal
 #' @export
-#' @rdname req_perform_iteratively
+#' @return Generates the next request in an iterative request,
+#'   or `NULL` if there are no more pages to return.
+#' @examples
+#' req_flowers <- request(example_url()) %>%
+#'   req_url_path("/iris") %>%
+#'   req_url_query(limit = 40) %>%
+#'   req_paginate_page_index(
+#'     page_index = function(req, page) {
+#'       req %>% req_url_query(page_index = page)
+#'     }
+#'   )
+#' req_flowers %>% .$url
+#'
+#' resp <- req_flowers %>% req_perform()
+#' next_req <- iterate_next_request(req_flowers, resp)
+#' next_req %>% .$url
 iterate_next_request <- function(req, parsed) {
   check_request(req)
   check_has_pagination_policy(req)

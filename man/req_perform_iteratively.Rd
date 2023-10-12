@@ -2,12 +2,9 @@
 % Please edit documentation in R/paginate.R
 \name{req_perform_iteratively}
 \alias{req_perform_iteratively}
-\alias{iterate_next_request}
 \title{Perform requests iteratively, generating new requests from previous responses}
 \usage{
 req_perform_iteratively(req, max_pages = 20L, progress = TRUE)
-
-iterate_next_request(req, parsed)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -16,8 +13,6 @@ iterate_next_request(req, parsed)
 
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic progress
 bar, use a string to give it a name, or see \link{progress_bars} for more details.}
-
-\item{parsed}{The response parsed by the argument \code{parse_resp} of \code{\link[=req_paginate]{req_paginate()}}.}
 }
 \value{
 The result of \code{vec_c()}ing together the \code{data} fields that were
@@ -26,12 +21,9 @@ If \code{parse_resp} is not specified, it will be a list of the raw responses.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-\itemize{
-\item \code{req_perform_iteratively()} requests all pages for an iterated request and
-returns a list of responses.
-\item \code{iterate_next_request()} generates the request for the next page for an
-iterated response, or \code{NULL} if there are no more pages to return.
-}
+
+\code{req_perform_iteratively()} requests all pages for an iterated request and
+returning a list of responses.
 }
 \examples{
 page_size <- 40
