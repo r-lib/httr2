@@ -165,7 +165,7 @@ test_that("req_paginate_page_index() can paginate", {
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=3")
 })
 
-test_that("req_perform_iterate() checks inputs", {
+test_that("req_perform_iteratively() checks inputs", {
   req <- request("http://example.com") %>%
     req_paginate_token(
       parse_resp = function(resp) {
@@ -177,34 +177,34 @@ test_that("req_perform_iterate() checks inputs", {
     )
 
   expect_snapshot(error = TRUE, {
-    req_perform_iterate("a")
-    req_perform_iterate(request("http://example.com"))
-    req_perform_iterate(req, max_pages = 0)
-    req_perform_iterate(req, progress = -1)
+    req_perform_iteratively("a")
+    req_perform_iteratively(request("http://example.com"))
+    req_perform_iteratively(req, max_pages = 0)
+    req_perform_iteratively(req, progress = -1)
   })
 })
 
-test_that("req_perform_iterate() iterates through pages", {
+test_that("req_perform_iteratively() iterates through pages", {
   req <- request_pagination_test()
 
-  responses_2 <- req_perform_iterate(req, max_pages = 2)
+  responses_2 <- req_perform_iteratively(req, max_pages = 2)
   expect_length(responses_2, 2)
   expect_equal(responses_2[[1]], token_body_test(2))
   expect_equal(responses_2[[2]], token_body_test(3))
 
-  responses_5 <- req_perform_iterate(req, max_pages = 5)
+  responses_5 <- req_perform_iteratively(req, max_pages = 5)
   expect_length(responses_5, 4)
   expect_equal(responses_5[[4]], token_body_test())
 
-  responses_inf <- req_perform_iterate(req, max_pages = Inf)
+  responses_inf <- req_perform_iteratively(req, max_pages = Inf)
   expect_length(responses_inf, 4)
   expect_equal(responses_inf[[4]], token_body_test())
 })
 
-test_that("req_perform_iterate() works if there is only one page", {
+test_that("req_perform_iteratively() works if there is only one page", {
   req <- request_pagination_test(n_pages = function(resp, parsed) 1)
 
-  expect_no_error(responses <- req_perform_iterate(req, max_pages = 2))
+  expect_no_error(responses <- req_perform_iteratively(req, max_pages = 2))
   expect_length(responses, 1)
 })
 
@@ -233,11 +233,11 @@ test_that("parse_resp() produces a good error message", {
   )
 
   expect_snapshot(error = TRUE, {
-    req_perform_iterate(req, max_pages = 2)
+    req_perform_iteratively(req, max_pages = 2)
   })
 })
 
-test_that("req_perform_iterate() handles error in `parse_resp()`", {
+test_that("req_perform_iteratively() handles error in `parse_resp()`", {
   req <- request_pagination_test(
     parse_resp = function(resp) {
       parsed <- resp_body_json(resp)
@@ -250,6 +250,6 @@ test_that("req_perform_iterate() handles error in `parse_resp()`", {
   )
 
   expect_snapshot(error = TRUE, {
-    req_perform_iterate(req, max_pages = 2)
+    req_perform_iteratively(req, max_pages = 2)
   })
 })
