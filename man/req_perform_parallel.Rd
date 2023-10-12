@@ -3,7 +3,7 @@
 \name{req_perform_parallel}
 \alias{req_perform_parallel}
 \alias{multi_req_perform}
-\title{Perform multiple requests in parallel}
+\title{Perform a list of requests in parallel}
 \usage{
 req_perform_parallel(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE)
 }

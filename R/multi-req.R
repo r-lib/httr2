@@ -1,4 +1,4 @@
-#' Perform multiple requests in parallel
+#' Perform a list of requests in parallel
 #'
 #' @description
 #' This variation on [req_perform()] performs multiple requests in parallel.

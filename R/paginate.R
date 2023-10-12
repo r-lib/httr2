@@ -110,7 +110,7 @@ req_paginate <- function(req,
   )
 }
 
-#' Perform an iterative request
+#' Perform requests iteratively, generating new requests from previous responses
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
