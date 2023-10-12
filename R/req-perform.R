@@ -1,4 +1,4 @@
-#' Perform a request
+#' Perform a request to get a response
 #'
 #' @description
 #' After preparing a [request], call `req_perform()` to perform it, fetching

@@ -3,7 +3,7 @@
 \name{req_perform_iterate}
 \alias{req_perform_iterate}
 \alias{iterate_next_request}
-\title{Perform an iterated request}
+\title{Perform an iterative request}
 \usage{
 req_perform_iterate(req, max_pages = 20L, progress = TRUE)
 

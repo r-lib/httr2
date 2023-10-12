@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-perform.R
 \name{req_perform}
 \alias{req_perform}
-\title{Perform a request}
+\title{Perform a request to get a response}
 \usage{
 req_perform(
   req,

@@ -1,5 +1,5 @@
 
-#' Perform a request, streaming data back to R
+#' Perform a request and handle data as it streams back
 #'
 #' After preparing a request, call `req_perform_stream()` to perform the request
 #' and handle the result with a streaming callback. This is useful for

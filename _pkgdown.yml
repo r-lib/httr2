@@ -41,7 +41,7 @@ reference:
   - starts_with("req_auth")
   - starts_with("req_oauth")
 
-- title: Perform a request and get a response
+- title: Perform one or more requests
   contents:
   - starts_with("req_perform")
 

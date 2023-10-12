@@ -3,7 +3,7 @@
 \name{req_perform_stream}
 \alias{req_perform_stream}
 \alias{req_stream}
-\title{Perform a request, streaming data back to R}
+\title{Perform a request and handle data as it streams back}
 \usage{
 req_perform_stream(req, callback, timeout_sec = Inf, buffer_kb = 64)
 }
