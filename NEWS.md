@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
+  not `oauth_*()` (#330).
+
 * httr2 now informs the user when a token is cached.
 
 * `req_oauth_device()` now takes a `auth_url` parameter making it usable 
