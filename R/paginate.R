@@ -110,14 +110,14 @@ req_paginate <- function(req,
   )
 }
 
-#' Perform a iterated request
+#' Perform an iterated request
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' * `req_perform_iterate()` requests all pages for a iterated request and
+#' * `req_perform_iterate()` requests all pages for an iterated request and
 #'   returns a list of responses.
-#' * `iterate_next_request()` generates the request for the next page for a
+#' * `iterate_next_request()` generates the request for the next page for an
 #'   iterated response, or `NULL` if there are no more pages to return.
 #'
 #' @inheritParams req_perform
