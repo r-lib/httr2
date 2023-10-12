@@ -3,7 +3,7 @@
 \name{req_perform_iterate}
 \alias{req_perform_iterate}
 \alias{iterate_next_request}
-\title{Perform a iterated request}
+\title{Perform an iterated request}
 \usage{
 req_perform_iterate(req, max_pages = 20L, progress = TRUE)
 
@@ -27,9 +27,9 @@ If \code{parse_resp} is not specified, it will be a list of the raw responses.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \itemize{
-\item \code{req_perform_iterate()} requests all pages for a iterated request and
+\item \code{req_perform_iterate()} requests all pages for an iterated request and
 returns a list of responses.
-\item \code{iterate_next_request()} generates the request for the next page for a
+\item \code{iterate_next_request()} generates the request for the next page for an
 iterated response, or \code{NULL} if there are no more pages to return.
 }
 }

@@ -46,7 +46,7 @@ the requests.
 }
 
 In general, where \code{\link[=req_perform]{req_perform()}} might make multiple requests due to retries
-or OAuth failures, \code{req_perform_parallel()} will make only make 1.
+or OAuth failures, \code{req_perform_parallel()} will only make 1.
 }
 
 \examples{
