@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_perform_stream()` replaces `req_perform_stream()`. `req_perform_stream()`
+  is now deprecated (#314).
+
 * `req_perform_parallel()` replaces `multi_req_perform()`. `multi_req_perform()`
   is now deprecated (#314).
 

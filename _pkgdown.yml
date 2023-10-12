@@ -43,10 +43,7 @@ reference:
 
 - title: Perform a request and get a response
   contents:
-  - req_perform
-  - req_perform_iterate
-  - req_perform_parallel
-  - req_stream
+  - starts_with("req_perform")
 
 - subtitle: Control the process
   desc: >

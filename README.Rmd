@@ -83,7 +83,6 @@ resp %>% resp_body_html()
 
 -   You can now create and modify a request without performing it.
     This means that there's now a single function to perform the request and fetch the result: `req_perform()`.
-    (If you want to handle the response as it streams in, use `req_stream()` instead).
     `req_perform()` replaces `httr::GET()`, `httr::POST()`, `httr::DELETE()`, and more.
   
 -   HTTP errors are automatically converted into R errors.
