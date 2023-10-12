@@ -25,7 +25,13 @@ extracted by the \code{parse_resp} argument of \code{\link[=req_paginate]{req_pa
 If \code{parse_resp} is not specified, it will be a list of the raw responses.
 }
 \description{
-Perform a paginated request
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\itemize{
+\item \code{paginate_req_perform()} requests all pages for a paginated request and
+returns a list of responses.
+\item \code{paginate_next_request()} generates the request for the next page from a
+paginated response, or \code{NULL} if there are no more pages to return.
+}
 }
 \examples{
 page_size <- 40

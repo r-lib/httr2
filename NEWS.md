@@ -5,6 +5,9 @@
 
 * httr2 now informs the user when a token is cached.
 
+* `oauth_flow_auth_code()` allows the user to enter a URL that contains 
+  authorization `code` and `state` parameters (@fh-mthomson, #326).
+
 * `req_oauth_device()` now takes a `auth_url` parameter making it usable 
   (#331, @taerwin).
 
@@ -49,7 +52,7 @@
 * `oauth_flow_auth_code()` deprecates `host_name` and `port` arguments in favour
   of using `redirect_uri`. It also deprecates `host_ip` since it seems unlikely
   that changing this is ever useful.
-
+  
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
   `HTTR2_OAUTH_CACHE` env var.

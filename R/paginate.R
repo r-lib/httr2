@@ -1,9 +1,13 @@
 #' Pagination
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Use `req_paginate()` to specify how to request the next page in a paginated
 #' API. Use [paginate_req_perform()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
 #' [paginate_next_request()] to iterate through the pages yourself.
+#'
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
 #'     page.
@@ -107,6 +111,14 @@ req_paginate <- function(req,
 }
 
 #' Perform a paginated request
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' * `paginate_req_perform()` requests all pages for a paginated request and
+#'   returns a list of responses.
+#' * `paginate_next_request()` generates the request for the next page for a
+#'   paginated response, or `NULL` if there are no more pages to return.
 #'
 #' @inheritParams req_perform
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
