@@ -108,16 +108,30 @@ running on a hosted platform like RStudio Server), provide a custom
 Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \section{Caching}{
-By default, the OAuth token will be cached in memory. That means that you will
-only need to authenticate once in the current session, but you will need to
-re-authenticate again from scratch if you restart R.
+By default, the OAuth token will be cached in memory. That means that you
+will only need to authenticate once in the current session, but you will
+need to re-authenticate again from scratch if you restart R. In some cases,
+you may want to save the token so that it's automatically used across
+sessions. This is easy to do (just set \code{cache_disk = TRUE}) but you need to
+carefully consider the consequences of saving the user's credentials on disk.
 
-To cache across sessions, set \code{cache_disk = TRUE}. This will cause
-lightly-encrypted tokens to be saved in \code{\link[=oauth_cache_path]{oauth_cache_path()}}. Tokens
-will be automatically deleted 30 days after creation (triggered whenever you
-load httr2), striking a balance between minimising the need to
-re-authenticate and leaving potentially valuable tokens in a place that you
-might forget about.
+httr2 does the best it can to save these credentials securely. They are
+stored in a local cache directory (\code{\link[=oauth_cache_path]{oauth_cache_path()}}) that should only
+be accessible to the current user, and are encrypted so they will be hard
+for any package other than httr2 to read. However, there's no way to prevent
+other R code from using httr2 to access them, so if you do choose to cache
+tokens, you should inform the user and give them the ability to opt-out.
+
+You can see which clients have cached tokens by looking in the cache
+directory used by httr2:
+
+\if{html}{\out{<div class="sourceCode R">}}\preformatted{dir(oauth_cache_path(), recursive = TRUE)
+}\if{html}{\out{</div>}}
+
+httr2 automatically deletes any cached tokens that are older than 30 days
+whenever it's loaded. This means that you'll need to re-auth at least once a
+month, but prevents tokens for hanging around on disk long after you've
+forgotten you created them.
 }
 
 \section{Security considerations}{

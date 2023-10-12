@@ -1,7 +1,8 @@
 # httr2 (development version)
 
 * OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
-  not `oauth_*()` (#330).
+  not `oauth_*()` (#330). This includes a new `vignette("oauth")` which makes 
+  the details of OAuth usage easier to find (#234).
 
 * httr2 now informs the user when a token is cached.
 
@@ -56,9 +57,6 @@
 * New `oauth_cache_path()` returns the path that httr2 uses for caching OAuth
   tokens. Additionally, you can now change the cache location by setting the
   `HTTR2_OAUTH_CACHE` env var.
-
-* New `vignette("oauth")` makes the details of OAuth usage easier to find 
-  (#234).
 
 * New `req_cookie_preserve()` lets you use a file to share cookies across 
   requests (#223).

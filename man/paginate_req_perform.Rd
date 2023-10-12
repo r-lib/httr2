@@ -29,7 +29,7 @@ If \code{parse_resp} is not specified, it will be a list of the raw responses.
 \itemize{
 \item \code{paginate_req_perform()} requests all pages for a paginated request and
 returns a list of responses.
-\item \code{paginate_next_request()} generates the request for the next page from a
+\item \code{paginate_next_request()} generates the request for the next page for a
 paginated response, or \code{NULL} if there are no more pages to return.
 }
 }
