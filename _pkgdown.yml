@@ -41,12 +41,9 @@ reference:
   - starts_with("req_auth")
   - starts_with("req_oauth")
 
-- title: Perform a request and get a response
+- title: Perform one or more requests
   contents:
-  - req_perform
-  - req_stream
-  - multi_req_perform
-  - paginate_req_perform
+  - starts_with("req_perform")
 
 - subtitle: Control the process
   desc: >
@@ -61,7 +58,6 @@ reference:
 - title: Pagination
   contents:
   - req_paginate
-  - paginate_next_request
 
 - title: Handle the response
   contents:

@@ -75,7 +75,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.2.2.9000 r-curl/5.0.0 libcurl/7.87.0
+#> User-Agent: httr2/0.2.3.9000 r-curl/5.0.2 libcurl/8.1.2
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -89,7 +89,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6204 bytes)
+#> Body: In memory (6549 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
@@ -111,9 +111,8 @@ resp %>% resp_body_html()
 
 - You can now create and modify a request without performing it. This
   means that there’s now a single function to perform the request and
-  fetch the result: `req_perform()`. (If you want to handle the response
-  as it streams in, use `req_stream()` instead). `req_perform()`
-  replaces `httr::GET()`, `httr::POST()`, `httr::DELETE()`, and more.
+  fetch the result: `req_perform()`. `req_perform()` replaces
+  `httr::GET()`, `httr::POST()`, `httr::DELETE()`, and more.
 
 - HTTP errors are automatically converted into R errors. Use
   `req_error()` to override the defaults (which turn all 4xx and 5xx

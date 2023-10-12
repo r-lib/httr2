@@ -1,12 +1,12 @@
-#' Pagination
+#' Define a paginated request
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
 #' Use `req_paginate()` to specify how to request the next page in a paginated
-#' API. Use [paginate_req_perform()] to fetch all pages.
+#' API. Use [req_perform_iteratively()] to fetch all pages.
 #' If you need more control use a combination of [req_perform()] and
-#' [paginate_next_request()] to iterate through the pages yourself.
+#' [iterate_next_request()] to iterate through the pages yourself.
 #'
 #' There are also helpers for common pagination patterns:
 #'   * `req_paginate_next_url()` when the response contains a link to the next
@@ -27,7 +27,7 @@
 #' @param parse_resp A function with one argument `resp` that parses the
 #'   response and returns a list with the field `data` and other fields needed
 #'   to create the request for the next page.
-#'   `paginate_req_perform()` combines all `data` fields via [vctrs::vec_c()]
+#'   `req_perform_iteratively()` combines all `data` fields via [vctrs::vec_c()]
 #'   and returns the result.
 #'   Other fields that might be needed are:
 #'
@@ -41,7 +41,7 @@
 #'   is the previous response parsed via the argument `parse_resp`.
 #'
 #' @return A modified HTTP [request].
-#' @seealso [paginate_req_perform()] to fetch all pages. [paginate_next_request()]
+#' @seealso [req_perform_iteratively()] to fetch all pages. [iterate_next_request()]
 #'   to generate the request to the next page.
 #' @export
 #'
@@ -110,15 +110,15 @@ req_paginate <- function(req,
   )
 }
 
-#' Perform a paginated request
+#' Perform requests iteratively, generating new requests from previous responses
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' * `paginate_req_perform()` requests all pages for a paginated request and
+#' * `req_perform_iteratively()` requests all pages for an iterated request and
 #'   returns a list of responses.
-#' * `paginate_next_request()` generates the request for the next page for a
-#'   paginated response, or `NULL` if there are no more pages to return.
+#' * `iterate_next_request()` generates the request for the next page for an
+#'   iterated response, or `NULL` if there are no more pages to return.
 #'
 #' @inheritParams req_perform
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
@@ -160,10 +160,10 @@ req_paginate <- function(req,
 #'     }
 #'   )
 #'
-#' paginate_req_perform(req_flowers)
-paginate_req_perform <- function(req,
-                                 max_pages = 20L,
-                                 progress = TRUE) {
+#' req_perform_iteratively(req_flowers)
+req_perform_iteratively <- function(req,
+                                    max_pages = 20L,
+                                    progress = TRUE) {
   check_request(req)
   check_has_pagination_policy(req)
   check_number_whole(max_pages, allow_infinite = TRUE, min = 1)
@@ -200,7 +200,7 @@ paginate_req_perform <- function(req,
     out[[page]] <- parsed$data
     if (show_progress) cli::cli_progress_update(total = n_pages)
 
-    req <- paginate_next_request(req, parsed)
+    req <- iterate_next_request(req, parsed)
     if (is.null(req)) {
       break
     }
@@ -216,8 +216,8 @@ paginate_req_perform <- function(req,
 }
 
 #' @export
-#' @rdname paginate_req_perform
-paginate_next_request <- function(req, parsed) {
+#' @rdname req_perform_iteratively
+iterate_next_request <- function(req, parsed) {
   check_request(req)
   check_has_pagination_policy(req)
 

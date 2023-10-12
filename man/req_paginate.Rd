@@ -6,7 +6,7 @@
 \alias{req_paginate_token}
 \alias{req_paginate_offset}
 \alias{req_paginate_page_index}
-\title{Pagination}
+\title{Define a paginated request}
 \usage{
 req_paginate(
   req,
@@ -37,7 +37,7 @@ page or \code{NULL} if there is no next page. It takes two arguments:
 \item{parse_resp}{A function with one argument \code{resp} that parses the
 response and returns a list with the field \code{data} and other fields needed
 to create the request for the next page.
-\code{paginate_req_perform()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
+\code{req_perform_iteratively()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
 and returns the result.
 Other fields that might be needed are:
 
@@ -83,9 +83,9 @@ A modified HTTP \link{request}.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Use \code{req_paginate()} to specify how to request the next page in a paginated
-API. Use \code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages.
+API. Use \code{\link[=req_perform_iteratively]{req_perform_iteratively()}} to fetch all pages.
 If you need more control use a combination of \code{\link[=req_perform]{req_perform()}} and
-\code{\link[=paginate_next_request]{paginate_next_request()}} to iterate through the pages yourself.
+\code{\link[=iterate_next_request]{iterate_next_request()}} to iterate through the pages yourself.
 
 There are also helpers for common pagination patterns:
 \itemize{
@@ -129,6 +129,6 @@ request(example_url()) \%>\%
   )
 }
 \seealso{
-\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages. \code{\link[=paginate_next_request]{paginate_next_request()}}
+\code{\link[=req_perform_iteratively]{req_perform_iteratively()}} to fetch all pages. \code{\link[=iterate_next_request]{iterate_next_request()}}
 to generate the request to the next page.
 }

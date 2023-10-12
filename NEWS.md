@@ -1,5 +1,11 @@
 # httr2 (development version)
 
+* `req_perform_stream()` replaces `req_perform_stream()`. `req_perform_stream()`
+  is now deprecated (#314).
+
+* `req_perform_parallel()` replaces `multi_req_perform()`. `multi_req_perform()`
+  is now deprecated (#314).
+
 * `oauth_flow_auth_code()` allows the user to enter a URL that contains 
   authorization `code` and `state` parameters (@fh-mthomson, #326).
 
@@ -9,7 +15,7 @@
 * OAuth errors containing a url now correctly display that URL 
   (instead of just uri).
 
-* New `req_paginate()` and `paginate_req_perform()` to easily request paginated
+* New `req_paginate()` and `req_perform_iteratively()` to easily request paginated
   APIs (@mgirlich, #8).
 
 * New `resp_check_content_type()` to check response content types (#190).
