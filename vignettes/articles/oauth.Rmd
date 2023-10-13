@@ -14,7 +14,7 @@ library(httr2)
 ```
 
 OAuth[^1] is an authorization framework design for performing work on the behalf of a user.
-You've probably used it a bunch without knowing what it's called: it's used when you login to a non-Google website using your Google account, when you give an phone access to your twitter account, or when you login to a streaming app on your smart TV.
+You've probably used it a bunch without knowing what it's called: it's used when you login to a non-Google website using your Google account, when you give a phone access to your twitter account, or when you login to a streaming app on your smart TV.
 
 [^1]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
@@ -23,12 +23,12 @@ You'll notice none of these common scenarios quite match to using an R package t
 OAuth gives you the incredible power to extract data from popular web services, but it's fundamentally designed for a different use case.
 This means that while httr2 can make the interactive experience pretty seamless, unattended usage (i.e. on CI or in an automated script) is usually going to include some pain.
 
-This vignette builds on the techniques in discussed in `vignette("wrapping-apis")`, so I recommend you read that vignette first.
-I'll also assume that you're working in package, since most people want to wrap up an API into a bunch of R functions, but most of the ideas will also apply if you're creating a one off script.
+This vignette builds on the techniques discussed in `vignette("wrapping-apis")`, so I recommend you read that vignette first.
+I'll also assume that you're working in a package, since most people want to wrap up an API into a bunch of R functions, but most of the ideas will also apply if you're creating a one off script.
 
 ## OAuth basics
 
-OAuth is a broad framework that has many different variants, called **flows**, which makes it hard to provide sweeping generalisations, but the basic idea of OAuth is to create a hierarchy of increasing more specific and shorter lived credentials, so that the impact of a credential being lost is as small as possible.
+OAuth is a broad framework that has many different variants, called **flows**, which makes it hard to provide sweeping generalisations, but the basic idea of OAuth is to create a hierarchy of increasingly more specific and shorter-lived credentials, so that the impact of a credential being lost is as small as possible.
 
 The longest lived and most powerful credential is typically a user name and password.
 Most people don't change their passwords regularly, and often (against all advice) reuse the same password on multiple websites.
@@ -143,7 +143,7 @@ You'll need to read the docs for your API to figure out which flows it supports,
     This is a general problem with OAuth docs; often they use different terms for the same things.
     In httr2, I've tried to stick as closely as possible to the terms used in the official RFC specifications.
 
-1.  httr2 sends opens a browser using the **authorization URL** provided by the API. The URL includes parameters that identify your app and what **scope** of access you're looking for.
+1.  httr2 opens a browser using the **authorization URL** provided by the API. The URL includes parameters that identify your app and what **scope** of access you're looking for.
 2.  The user logs in using their user name and password (hopefully in a password manageer) and approves the request.
 3.  The API sends an **authorization code** back to httr2 using a callback URL that was supplied in the initial request.
 4.  httr2 sends the authorization code to the **token URL** to get an access token.
@@ -250,7 +250,7 @@ httr2 does the best it can to save these credentials securely.
 They are stored in a local cache directory (`oauth_cache_path()`) that is accessible to the current user, and they are encrypted so they will be hard for any package other than httr2 to read.
 However, there's no way to prevent other R code from using httr2 to access them, so if you do choose to cache tokens, you should inform the user and give them the ability to opt-out.
 httr2 automatically deletes any cached tokens that are older than 30 days whenever it's loaded.
-This means that you'll need to re-auth at least once a month, but prevents tokens for hanging around on disk long after you've forgotten you created them.
+This means that you'll need to re-auth at least once a month, but prevents tokens from hanging around on disk long after you've forgotten you created them.
 
 You can see which clients have cached tokens by looking in the cache directory used by httr2:
 
@@ -259,7 +259,7 @@ You can see which clients have cached tokens by looking in the cache directory u
 dir(oauth_cache_path(), recursive = TRUE)
 ```
 
-Each client gets its own subdirectory named using the client `name`, so if you turn caching on, it's particularly important to give you client a good name so that the user can easily tell with package the tokens belong to.
+Each client gets its own subdirectory named using the client `name`, so if you turn caching on, it's particularly important to give your client a good name so that the user can easily tell which package the tokens belong to.
 
 ## Other flows
 
