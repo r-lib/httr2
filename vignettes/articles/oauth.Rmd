@@ -37,24 +37,28 @@ That means as a programmer you never want to touch user name-password pairs beca
 
 Avoiding that problem lead to the creation of OAuth.
 The basic idea is that instead of your package asking the user to give you their user name and password, you instead ask them to log in and give your package permission to use the API on their behalf.
-The API gives this permission in the form of an **access token**, which is essentially a random string of numbers and letters.
-An access token tends to be very short lived, lasting maybe only days or hours, and is bound to a specified **scope** of access.
+The API gives this permission in the form of an **access token** which is essentially a random string of numbers and letters, e.g.
+`UfNlXaEog03hdRPTUPpEInEiIW01jI1WcjOB`.
+An access token is very short lived, lasting maybe only days, and is bound to a specified **scope** of access.
 The access token has some big advantages over a user name and password:
 
 -   It's short-lived so if it's lost or stolen, there's only a limited amount of time where it can be abused.
 -   It has limited scope, so even if stolen, it can't be used to do something particularly nefarious like changing your password or contact details.
 -   It's bound to a specific application, so it can be invalidated (cancelled) without affecting any other uses.
 
-If you have an access token you can use it to authenticate an API by passing a **bearer token** in the `Authorization` header, which you can do with `req_auth_bearer_token()`.
+If you have an access token you can use it to authenticate an API by passing it as a **bearer token** in the `Authorization` header, which you can do with `req_auth_bearer_token()`.
 However, in most cases you will want to let httr2 manage this by calling one of the `req_oauth_` functions we'll talk about shortly.
 
 One of the reasons that you want httr2 to manage your tokens is that because access tokens are so short lived, they're often accompanied by a **refresh token**.
 A refresh token lasts for a longer amount of time and has one job: it allows you to get a new access token when the previous one expires.
-This leads to a hierarchy of credentials from strongest to weakest:
+You need to look after an refresh token a little more carefully than an access token.
+In particular, you should never include a refresh token in a HTTP request as that's the job of the access token.
 
--   user name + password: your code should never touch these!
--   refresh token: it's okay to store this on your computer.
--   access token: you submit this with every request.
+Overall this leads to a hierarchy of credentials from weakest to strongest:
+
+-   The access token only lasts a couple hours and needs to be submitted this with every request.
+-   The refresh token lasts for days to weeks and it's designed to be stored locally so you can regenerate access tokens. (We'll talk about this more in Caching, below.)
+-   The user name + password gives access to everything so your code should never touch them!
 
 Now that you've got the basic idea of OAuth, lets talk about the details.
 
@@ -66,7 +70,7 @@ For this reason, httr2 calls the application client a **client**, but many APIs 
 
 To create a client, you'll need to first register for a developer account on the API's website.
 In most cases this is easy, totally automated, and only takes a couple of minutes.
-That will give you access to some sort of developer portal which you can then use to create a new OAuth app (aka a client).
+That will give you access to some sort of developer portal which you can then use to register a new OAuth app (aka a client).
 This process varies from API to API (it's normal to spend some time hunting through the docs and settings), but at the end of it you'll get a client id (another random string of numbers and letters).
 Sometimes the client id is all you need, and you can create an httr2 client with `oauth_client()`, e.g.:
 
@@ -143,8 +147,8 @@ You'll need to read the docs for your API to figure out which flows it supports,
     This is a general problem with OAuth docs; often they use different terms for the same things.
     In httr2, I've tried to stick as closely as possible to the terms used in the official RFC specifications.
 
-1.  httr2 opens a browser using the **authorization URL** provided by the API. The URL includes parameters that identify your app and what **scope** of access you're looking for.
-2.  The user logs in using their user name and password (hopefully in a password manageer) and approves the request.
+1.  httr2 opens a browser using the **authorization URL** provided by the API. The URL includes parameters that identify your app and what **scope** of access you're looking for (e.g. `tweet.read`, `userinfo.write`).
+2.  The user logs in using their user name and password (hopefully using a [password manager](https://www.nytimes.com/wirecutter/blog/why-you-need-a-password-manager-yes-you/)) and approves the request.
 3.  The API sends an **authorization code** back to httr2 using a callback URL that was supplied in the initial request.
 4.  httr2 sends the authorization code to the **token URL** to get an access token.
 
