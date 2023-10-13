@@ -51,12 +51,12 @@ However, in most cases you will want to let httr2 manage this by calling one of 
 
 One of the reasons that you want httr2 to manage your tokens is that because access tokens are so short lived, they're often accompanied by a **refresh token**.
 A refresh token lasts for a longer amount of time and has one job: it allows you to get a new access token when the previous one expires.
-You need to look after an refresh token a little more carefully than an access token.
+You need to look after a refresh token a little more carefully than an access token.
 In particular, you should never include a refresh token in a HTTP request as that's the job of the access token.
 
 Overall this leads to a hierarchy of credentials from weakest to strongest:
 
--   The access token only lasts a couple hours and needs to be submitted this with every request.
+-   The access token usually only lasts a couple hours and needs to be submitted with every request.
 -   The refresh token lasts for days to weeks and it's designed to be stored locally so you can regenerate access tokens. (We'll talk about this more in Caching, below.)
 -   The user name + password gives access to everything so your code should never touch them!
 
