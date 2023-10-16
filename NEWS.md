@@ -1,8 +1,9 @@
 # httr2 (development version)
 
 * OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
-  not `oauth_*()` (#330). This includes a new `vignette("oauth")` which makes 
-  the details of OAuth usage easier to find (#234).
+  not `oauth_*()` (#330). This includes a new `vignette("oauth")` which 
+  gives many more details about how OAuth works and how to use it with
+  httr2 (#234).
 
 * httr2 now informs the user when a token is cached.
 
