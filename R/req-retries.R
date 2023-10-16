@@ -52,7 +52,7 @@
 #' @examples
 #' # google APIs assume that a 500 is also a transient error
 #' request("http://google.com") |>
-#'   req_retry(is_transient = ~ resp_status(.x) %in% c(429, 500, 503))
+#'   req_retry(is_transient = \(resp) resp_status(resp) %in% c(429, 500, 503))
 #'
 #' # use a constant 10s delay after every failure
 #' request("http://example.com") |>

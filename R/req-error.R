@@ -67,14 +67,14 @@
 #'
 #' # But you might want to suppress this behaviour:
 #' resp <- req |>
-#'   req_error(is_error = function(resp) FALSE) |>
+#'   req_error(is_error = \(resp) FALSE) |>
 #'   req_perform()
 #' resp
 #'
 #' # Or perhaps you're working with a server that routinely uses the
 #' # wrong HTTP error codes only 500s are really errors
 #' request("http://example.com") |>
-#'   req_error(is_error = function(resp) resp_status(resp) == 500)
+#'   req_error(is_error = \(resp) resp_status(resp) == 500)
 #'
 #' # Most typically you'll use req_error() to add additional information
 #' # extracted from the response body (or sometimes header):
