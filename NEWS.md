@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* The httr2 examples now only run on R 4.2 and later so that we can use
+  the base pipe and lambda syntax (#345).
+
 * `curl_translate()` now uses the base pipe.
 
 * OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
