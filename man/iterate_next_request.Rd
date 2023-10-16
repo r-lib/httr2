@@ -16,8 +16,9 @@ Generates the next request in an iterative request,
 or \code{NULL} if there are no more pages to return.
 }
 \description{
-In most case you should use \code{\link[=req_perform_iteratively]{req_perform_iteratively()}} but you can
-use this lower-level helper if you need more control.
+In most case you should use \code{\link[=req_perform_iteratively]{req_perform_iteratively()}} but you can use
+this lower-level helper to iterate through the requests and perform them
+yourself with \code{\link[=req_perform]{req_perform()}}.
 }
 \examples{
 req_flowers <- request(example_url()) \%>\%
@@ -28,10 +29,10 @@ req_flowers <- request(example_url()) \%>\%
       req \%>\% req_url_query(page_index = page)
     }
   )
-req_flowers \%>\% .$url
+req_flowers$url
 
 resp <- req_flowers \%>\% req_perform()
 next_req <- iterate_next_request(req_flowers, resp)
-next_req \%>\% .$url
+next_req$url
 }
 \keyword{internal}

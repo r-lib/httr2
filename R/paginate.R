@@ -214,8 +214,9 @@ req_perform_iteratively <- function(req,
 
 #' Retrieve the next request from an iterative response
 #'
-#' In most case you should use [req_perform_iteratively()] but you can
-#' use this lower-level helper if you need more control.
+#' In most case you should use [req_perform_iteratively()] but you can use
+#' this lower-level helper to iterate through the requests and perform them
+#' yourself with [req_perform()].
 #'
 #' @inheritParams req_perform
 #' @param parsed The response parsed by the argument `parse_resp` of [req_paginate()].
@@ -232,11 +233,11 @@ req_perform_iteratively <- function(req,
 #'       req %>% req_url_query(page_index = page)
 #'     }
 #'   )
-#' req_flowers %>% .$url
+#' req_flowers$url
 #'
 #' resp <- req_flowers %>% req_perform()
 #' next_req <- iterate_next_request(req_flowers, resp)
-#' next_req %>% .$url
+#' next_req$url
 iterate_next_request <- function(req, parsed) {
   check_request(req)
   check_has_pagination_policy(req)
