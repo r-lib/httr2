@@ -83,13 +83,13 @@ by the server will be automatically added by httr2.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="response.html">response</a></span><span class="op">(</span>headers <span class="op">=</span> <span class="st">"Date: Wed, 01 Jan 2020 09:23:15 UTC"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_date</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_date</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2020-01-01 09:23:15 UTC"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If server doesn't add header (unusual), you get the time the request</span></span></span>
 <span class="r-in"><span><span class="co"># was created:</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="response.html">response</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">resp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">resp_date</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_date</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2020-01-01 UTC"</span>
 </code></pre></div>
     </div>

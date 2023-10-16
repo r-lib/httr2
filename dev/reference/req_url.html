@@ -120,17 +120,17 @@ components that will be combined with <code>/</code>.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"http://example.com"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Change url components</span></span></span>
-<span class="r-in"><span><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"a"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"b"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"search.html"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"a"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"b"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"search.html"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">req_url_query</span><span class="op">(</span>q <span class="op">=</span> <span class="st">"the cool ice"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://example.com/a/b/search.html?q=the%20cool%20ice</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Change complete url</span></span></span>
-<span class="r-in"><span><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">req_url</span><span class="op">(</span><span class="st">"http://google.com"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://google.com</span>
@@ -138,7 +138,7 @@ components that will be combined with <code>/</code>.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If you have query parameters in a list, use !!!</span></span></span>
 <span class="r-in"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="st">"1"</span>, b <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">req_url_query</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span>, c <span class="op">=</span> <span class="st">"3"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://example.com?a=1&amp;b=2&amp;c=3</span>
