@@ -40,6 +40,9 @@
     <loc>https://httr2.r-lib.org/dev/reference/index.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/dev/reference/iterate_next_request.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/dev/reference/jwt_claim.html</loc>
   </url>
   <url>

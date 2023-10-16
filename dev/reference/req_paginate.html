@@ -90,7 +90,7 @@ request via an index.
 <p>Use <code>req_paginate()</code> to specify how to request the next page in a paginated
 API. Use <code><a href="req_perform_iteratively.html">req_perform_iteratively()</a></code> to fetch all pages.
 If you need more control use a combination of <code><a href="req_perform.html">req_perform()</a></code> and
-<code><a href="req_perform_iteratively.html">iterate_next_request()</a></code> to iterate through the pages yourself.</p>
+<code><a href="iterate_next_request.html">iterate_next_request()</a></code> to iterate through the pages yourself.</p>
 <p>There are also helpers for common pagination patterns:</p><ul><li><p><code>req_paginate_next_url()</code> when the response contains a link to the next
 page.</p></li>
 <li><p><code>req_paginate_next_token()</code> when the response contains a token
@@ -189,7 +189,7 @@ takes two arguments:</p><ol><li><p><code>req</code>: the previous request.</p></
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="req_perform_iteratively.html">req_perform_iteratively()</a></code> to fetch all pages. <code><a href="req_perform_iteratively.html">iterate_next_request()</a></code>
+    <div class="dont-index"><p><code><a href="req_perform_iteratively.html">req_perform_iteratively()</a></code> to fetch all pages. <code><a href="iterate_next_request.html">iterate_next_request()</a></code>
 to generate the request to the next page.</p></div>
     </div>
 
@@ -223,7 +223,7 @@ to generate the request to the next page.</p></div>
 <span class="r-in"><span>    <span class="op">}</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:45979/iris?limit=40</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:40909/iris?limit=40</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">paginate</span>: a list</span>
