@@ -2,14 +2,24 @@
 % Please edit documentation in R/oauth-flow-password.R
 \name{req_oauth_password}
 \alias{req_oauth_password}
-\title{OAuth authentication with username and password}
+\alias{oauth_flow_password}
+\title{OAuth with username and password}
 \usage{
 req_oauth_password(
   req,
   client,
   username,
   password = NULL,
+  scope = NULL,
+  token_params = list(),
   cache_disk = FALSE,
+  cache_key = username
+)
+
+oauth_flow_password(
+  client,
+  username,
+  password = NULL,
   scope = NULL,
   token_params = list()
 )
@@ -26,34 +36,48 @@ calling this function as it will be captured by \code{.Rhistory}. Instead,
 leave it unset and the default behaviour will prompt you for it
 interactively.}
 
-\item{cache_disk}{Should the access token be cached on disk? This reduces
-the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted,
-automatically deleted 30 days after creation, and stored in
-\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
-
 \item{scope}{Scopes to be requested from the resource owner.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
+
+\item{cache_disk}{Should the access token be cached on disk? This reduces
+the number of times that you need to re-authenticate at the cost of
+storing access credentials on disk.
+
+Learn more in \code{vignette("oauth")}}
+
+\item{cache_key}{If you want to cache multiple tokens per app, use this
+key to disambiguate them.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_password()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_password()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_password]{oauth_flow_password()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token, not the password is automatically cached (either in memory
-or on disk); the password is used once to get the token and is then
-discarded.
+This function implements the OAuth \strong{resource owner password flow}, as
+defined by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{Section 4.3 of RFC 6749}. It allows the user to supply their password
+once, exchanging it for an access token that can be cached locally.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
-client <- oauth_client("example", "https://example.com/get_token")
-req <- request("https://example.com")
-
+req_auth <- function(req) {
+  req_oauth_password(req,
+    client = oauth_client("example", "https://example.com/get_token"),
+    username = "username"
+  )
+}
 if (interactive()) {
-  req \%>\% req_oauth_password(client, "username")
+  request("https://example.com") \%>\%
+    req_auth()
 }
 }
+\seealso{
+Other OAuth flows: 
+\code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_bearer_jwt}()},
+\code{\link{req_oauth_client_credentials}()},
+\code{\link{req_oauth_refresh}()}
+}
+\concept{OAuth flows}

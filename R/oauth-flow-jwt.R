@@ -1,22 +1,38 @@
-#' OAuth authentication with a bearer JWT (JSON web token)
+#' OAuth with a bearer JWT (JSON web token)
 #'
 #' @description
-#' This uses [oauth_flow_bearer_jwt()] to generate an access token which is then
-#' used to authenticate the request with [req_auth_bearer_token()].
-#' The token is cached in memory.
+#' Authenticate using a **Bearer JWT** (JSON web token) as an authorization
+#' grant to get an access token, as defined by `r rfc(7523, 2.1)`.
+#' It is often used for service accounts, accounts that are used primarily in
+#' automated environments.
 #'
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
 #' @export
+#' @family OAuth flows
 #' @inheritParams req_perform
-#' @inheritParams oauth_flow_bearer_jwt
-#' @returns A modified HTTP [request].
+#' @inheritParams req_oauth_auth_code
+#' @param claim A list of claims. If all elements of the claim set are static
+#'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
+#'   [jwt_claim()] will automatically fill in the dynamic components.
+#'   If other components need to vary, you can instead provide a zero-argument
+#'   callback function which should call `jwt_claim()`.
+#' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
+#' @param signature_params Additional arguments passed to `signature`, e.g.
+#'   `size`, `header`.
+#' @returns `req_oauth_bearer_jwt()` returns a modified HTTP [request] that will
+#'   use OAuth; `oauth_flow_bearer_jwt()` returns an [oauth_token].
 #' @examples
-#' client <- oauth_client("example", "https://example.com/get_token")
-#' claim <- jwt_claim()
-#' req <- request("https://example.com")
+#' req_auth <- function(req) {
+#'   req_oauth_bearer_jwt(
+#'     req,
+#'     client = oauth_client("example", "https://example.com/get_token"),
+#'     claim = jwt_claim()
+#'   )
+#' }
 #'
-#' req %>% req_oauth_bearer_jwt(client, claim)
+#' request("https://example.com") %>%
+#'  req_auth()
 req_oauth_bearer_jwt <- function(req,
                                  client,
                                  claim,
@@ -38,26 +54,8 @@ req_oauth_bearer_jwt <- function(req,
   req_oauth(req, "oauth_flow_bearer_jwt", params, cache = cache)
 }
 
-#' OAuth flow: Bearer JWT
-#'
-#' This function uses a Bearer JWT (JSON web token) as an authorization grant to get an access
-#' token, as defined by [rfc7523](https://datatracker.ietf.org/doc/html/rfc7523#section-2.1),
-#' Section 2.1. It is often used for service accounts, accounts that are
-#' used primarily in automated environments.
-#'
-#' @inheritParams oauth_flow_auth_code
-#' @family OAuth flows
-#' @param claim A list of claims. If all elements of the claim set are static
-#'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
-#'   [jwt_claim()] will automatically fill in the dynamic components.
-#'   If other components need to vary, you can instead provide a zero-argument
-#'   callback function which should call `jwt_claim()`.
-#' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
-#' @param signature_params Additional arguments passed to `signature`, e.g.
-#'   `size`, `header`.
-#' @returns An [oauth_token].
 #' @export
-#' @keywords internal
+#' @rdname req_oauth_bearer_jwt
 oauth_flow_bearer_jwt <- function(client,
                                   claim,
                                   signature = "jwt_encode_sig",

@@ -2,10 +2,18 @@
 % Please edit documentation in R/oauth-flow-refresh.R
 \name{req_oauth_refresh}
 \alias{req_oauth_refresh}
-\title{OAuth authentication with a refresh token}
+\alias{oauth_flow_refresh}
+\title{OAuth with a refresh token}
 \usage{
 req_oauth_refresh(
   req,
+  client,
+  refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
+  scope = NULL,
+  token_params = list()
+)
+
+oauth_flow_refresh(
   client,
   refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
   scope = NULL,
@@ -28,24 +36,36 @@ is to look in \code{HTTR2_REFRESH_TOKEN}.}
 \code{token_url}.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_refresh()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_refresh()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_refresh]{oauth_flow_refresh()}} to generate an access token, which is
-then used to authenticate the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-This is primarily useful for testing: you can manually execute another OAuth
-flow (e.g. by calling \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} or \code{\link[=oauth_flow_device]{oauth_flow_device()}}),
+Authenticate using a \strong{refresh token}, following the process described in
+\href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{Section 6 of RFC 6749}.
+
+This technique is primarily useful for testing: you can manually retrieve
+a OAuth token using another OAuth flow (e.g. with \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}}),
 extract the refresh token from the result, and then save in an environment
-variable for future use in automated tests.
+variable for use in automated tests.
 
 When requesting an access token, the server may also return a new refresh
-token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have to
-update your stored refresh token.
+token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have
+retrieve a new update refresh token and update the stored value. If you find
+this happening a lot, it's a sign that you should be using a different flow
+in your automated tests.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")
 req <- request("https://example.com")
 req \%>\% req_oauth_refresh(client)
 }
+\seealso{
+Other OAuth flows: 
+\code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_bearer_jwt}()},
+\code{\link{req_oauth_client_credentials}()},
+\code{\link{req_oauth_password}()}
+}
+\concept{OAuth flows}

@@ -1,28 +1,37 @@
-#' OAuth authentication with a refresh token
+#' OAuth with a refresh token
 #'
 #' @description
-#' This uses [oauth_flow_refresh()] to generate an access token, which is
-#' then used to authenticate the request with [req_auth_bearer_token()].
-#' This is primarily useful for testing: you can manually execute another OAuth
-#' flow (e.g. by calling [oauth_flow_auth_code()] or [oauth_flow_device()]),
+#' Authenticate using a **refresh token**, following the process described in
+#' `r rfc(6749, 6)`.
+#'
+#' This technique is primarily useful for testing: you can manually retrieve
+#' a OAuth token using another OAuth flow (e.g. with [oauth_flow_auth_code()]),
 #' extract the refresh token from the result, and then save in an environment
-#' variable for future use in automated tests.
+#' variable for use in automated tests.
 #'
 #' When requesting an access token, the server may also return a new refresh
-#' token. If this happens, `oauth_flow_refresh()` will warn, and you'll have to
-#' update your stored refresh token.
+#' token. If this happens, `oauth_flow_refresh()` will warn, and you'll have
+#' retrieve a new update refresh token and update the stored value. If you find
+#' this happening a lot, it's a sign that you should be using a different flow
+#' in your automated tests.
 #'
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
+#' @inheritParams req_oauth_auth_code
+#' @param refresh_token A refresh token. This is equivalent to a password
+#'   so shouldn't be typed into the console or stored in a script. Instead,
+#'   we recommend placing in an environment variable; the default behaviour
+#'   is to look in `HTTR2_REFRESH_TOKEN`.
+#' @returns `req_oauth_refresh()` returns a modified HTTP [request] that will
+#'   use OAuth; `oauth_flow_refresh()` returns an [oauth_token].
+#' @family OAuth flows
 #' @export
-#' @inheritParams req_perform
-#' @inheritParams oauth_flow_refresh
-#' @returns A modified HTTP [request].
 #' @examples
 #' client <- oauth_client("example", "https://example.com/get_token")
 #' req <- request("https://example.com")
 #' req %>% req_oauth_refresh(client)
-req_oauth_refresh <- function(req, client,
+req_oauth_refresh <- function(req,
+                              client,
                               refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
                               scope = NULL,
                               token_params = list()) {
@@ -38,24 +47,8 @@ req_oauth_refresh <- function(req, client,
   req_oauth(req, "oauth_flow_refresh", params, cache = cache)
 }
 
-#' OAuth flow: refresh token
-#'
-#' @description
-#' This function generates an access token from a refresh token, following
-#' the process described in
-#' [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-6),
-#' Section 6. Warns if the refresh returns a new refresh token, see
-#' [req_oauth_refresh()] for details.
-#'
-#' @inheritParams oauth_flow_auth_code
-#' @param refresh_token A refresh token. This is equivalent to a password
-#'   so shouldn't be typed into the console or stored in a script. Instead,
-#'   we recommend placing in an environment variable; the default behaviour
-#'   is to look in `HTTR2_REFRESH_TOKEN`.
-#' @family OAuth flows
-#' @returns An [oauth_token].
 #' @export
-#' @keywords internal
+#' @rdname req_oauth_refresh
 oauth_flow_refresh <- function(client,
                                refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
                                scope = NULL,

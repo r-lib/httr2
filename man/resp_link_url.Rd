@@ -16,8 +16,7 @@ Either a string providing a URL, if the specified \code{rel} exists, or
 \code{NULL} if not.
 }
 \description{
-Parses URLs out of the the \code{Link} header as defined by
-\href{https://datatracker.ietf.org/doc/html/rfc8288}{rfc8288}.
+Parses URLs out of the the \code{Link} header as defined by \href{https://datatracker.ietf.org/doc/html/rfc8288}{RFC 8288}.
 }
 \examples{
 # Simulate response from GitHub code search

@@ -1,18 +1,22 @@
-#' OAuth authentication with authorization code
+#' OAuth with authorization code
 #'
 #' @description
-#' This uses [oauth_flow_auth_code()] to generate an access token, which is
-#' then used to authentication the request with [req_auth_bearer_token()].
-#' The token is automatically cached (either in memory or on disk) to minimise
-#' the number of times the flow is performed.
+#' Authenticate using the OAuth **authorization code flow**, as defined
+#' by `r rfc(6749, 4.1)`.
 #'
-#' Learn more about the overall flow in `vignette("oauth")`.
+#' This flow is the most commonly used OAuth flow where the user
+#' opens a page in their browser, approves the access, and then returns to R.
+#' When possible, it redirects the browser back to a temporary local webserver
+#' to capture the authorization code. When this is not possible (e.g. when
+#' running on a hosted platform like RStudio Server), provide a custom
+#' `redirect_uri` and httr2 will prompt the user to enter the code manually.
+#'
+#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
 #'
 #' # Security considerations
 #'
 #' The authorization code flow is used for both web applications and native
-#' applications (which are equivalent to R packages).
-#' [rfc8252](https://datatracker.ietf.org/doc/html/rfc8252) spells out
+#' applications (which are equivalent to R packages). `r rfc(8252)` spells out
 #' important considerations for native apps. Most importantly there's no way
 #' for native apps to keep secrets from their users. This means that the
 #' server should either not require a `client_secret` (i.e. a public client
@@ -28,102 +32,19 @@
 #' create a new client than find your client secret.
 #'
 #' @export
-#' @inheritParams req_perform
-#' @param cache_disk Should the access token be cached on disk? This reduces
-#'   the number of times that you need to re-authenticate at the cost of
-#'   storing access credentials on disk. Cached tokens are encrypted,
-#'   automatically deleted 30 days after creation, and stored in
-#'   [oauth_cache_path()].
-#' @param cache_key If you want to cache multiple tokens per app, use this
-#'   key to disambiguate them.
-#' @returns A modified HTTP [request].
-#' @inheritParams oauth_flow_auth_code
-#' @examples
-#' req_auth_github <- function(req) {
-#'   req_oauth_auth_code(
-#'     req,
-#'     client = example_github_client(),
-#'     auth_url = "https://github.com/login/oauth/authorize"
-#'   )
-#' }
-#'
-#' request("https://api.github.com/user") %>%
-#'   req_auth_github()
-req_oauth_auth_code <- function(req, client,
-                                auth_url,
-                                cache_disk = FALSE,
-                                cache_key = NULL,
-                                scope = NULL,
-                                pkce = TRUE,
-                                auth_params = list(),
-                                token_params = list(),
-                                redirect_uri = default_redirect_uri(),
-                                host_name = deprecated(),
-                                host_ip = deprecated(),
-                                port = deprecated()
-                                ) {
-
-  redirect <- normalize_redirect_uri(
-    redirect_uri = redirect_uri,
-    host_name = host_name,
-    host_ip = host_ip,
-    port = port
-  )
-
-  params <- list(
-    client = client,
-    auth_url = auth_url,
-    scope = scope,
-    pkce = pkce,
-    auth_params = auth_params,
-    token_params = token_params,
-    redirect_uri = redirect$uri
-  )
-
-  cache <- cache_choose(client, cache_disk, cache_key)
-  req_oauth(req, "oauth_flow_auth_code", params, cache = cache)
-}
-
-#' OAuth flow: authorization code
-#'
-#' @description
-#' These functions implement the OAuth authorization code flow, as defined
-#' by [rfc6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1),
-#' Section 4.1. This is the most commonly used OAuth flow where the user is
-#' opens a page in their browser, approves the access, and then returns to R.
-#'
-#' `oauth_flow_auth_code()` is a high-level wrapper that should work with APIs
-#' that adhere relatively closely to the spec. When possible, it redirects the
-#' browser back to a temporary local webserver to capture the authorization
-#' code. When this is not possible (e.g. when running on a hosted platform
-#' like RStudio Server), provide a custom redirect URI and httr2 will prompt the
-#' user to enter the code manually instead.
-#'
-#' `default_redirect_uri()` returns `http://localhost` but also respects the
-#' `HTTR2_OAUTH_REDIRECT_URL` environment variable.
-#'
-#' The remaining low-level functions can be used to assemble a custom flow for
-#' APIs that are further from the spec:
-#'
-#' * `oauth_flow_auth_code_url()` generates the url that should be opened in a
-#'   browser.
-#' * `oauth_flow_auth_code_listen()` starts a temporary local webserver that
-#'   listens for the response from the resource server.
-#' * `oauth_flow_auth_code_parse()` parses the query parameters returned from
-#'   the server redirect, verifying that the `state` is correct, and returning
-#'   the authorisation code.
-#' * `oauth_flow_auth_code_pkce()` generates code verifier, method, and challenge
-#'   components as needed for PKCE, as defined in
-#'   [rfc7636](https://datatracker.ietf.org/doc/html/rfc7636).
-#'
 #' @family OAuth flows
+#' @seealso [oauth_flow_auth_code_url()] for the components necessary to
+#'   write your own auth code flow, if the API you are wrapping does not adhere
+#'   closely to the standard.
+#' @inheritParams req_perform
 #' @param client An [oauth_client()].
 #' @param auth_url Authorization url; you'll need to discover this by reading
 #'   the documentation.
 #' @param scope Scopes to be requested from the resource owner.
 #' @param pkce Use "Proof Key for Code Exchange"? This adds an extra layer of
 #'   security and should always be used if supported by the server.
-#' @param auth_params List containing additional parameters passed to `oauth_flow_auth_code_url()`
+#' @param auth_params A list containing additional parameters passed to
+#'   [oauth_flow_auth_code_url()].
 #' @param token_params List containing additional parameters passed to the
 #'   `token_url`.
 #' @param host_name,host_ip,port `r lifecycle::badge("deprecated")`
@@ -152,31 +73,70 @@ req_oauth_auth_code <- function(req, client,
 #'   `HTTR2_OAUTH_CODE_SOURCE_URL` endpoint with the state parameter until it
 #'   receives a code in the response (or encounters an error). This delegates
 #'   completion of the authorization flow to the hosted platform.
+#' @param cache_disk Should the access token be cached on disk? This reduces
+#'   the number of times that you need to re-authenticate at the cost of
+#'   storing access credentials on disk.
 #'
-#' @returns An [oauth_token].
-#' @export
-#' @keywords internal
+#'   Learn more in `vignette("oauth")`
+#' @param cache_key If you want to cache multiple tokens per app, use this
+#'   key to disambiguate them.
+#' @returns `req_oauth_auth_code()` returns a modified HTTP [request] that will
+#'   use OAuth; `oauth_flow_auth_code()` returns an [oauth_token].
 #' @examples
-#' client <- oauth_client(
-#'   id = "28acfec0674bb3da9f38",
-#'   secret = obfuscated(paste0(
-#'      "J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnv",
-#'      "PeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"
-#'   )),
-#'   token_url = "https://github.com/login/oauth/access_token",
-#'   name = "hadley-oauth-test"
-#' )
-#' if (interactive()) {
-#'   token <- oauth_flow_auth_code(client, auth_url = "https://github.com/login/oauth/authorize")
-#'   token
+#' req_auth_github <- function(req) {
+#'   req_oauth_auth_code(
+#'     req,
+#'     client = example_github_client(),
+#'     auth_url = "https://github.com/login/oauth/authorize"
+#'   )
 #' }
+#'
+#' request("https://api.github.com/user") %>%
+#'   req_auth_github()
+req_oauth_auth_code <- function(req,
+                                client,
+                                auth_url,
+                                scope = NULL,
+                                pkce = TRUE,
+                                auth_params = list(),
+                                token_params = list(),
+                                redirect_uri = oauth_redirect_uri(),
+                                cache_disk = FALSE,
+                                cache_key = NULL,
+                                host_name = deprecated(),
+                                host_ip = deprecated(),
+                                port = deprecated()) {
+
+  redirect <- normalize_redirect_uri(
+    redirect_uri = redirect_uri,
+    host_name = host_name,
+    host_ip = host_ip,
+    port = port
+  )
+
+  params <- list(
+    client = client,
+    auth_url = auth_url,
+    scope = scope,
+    pkce = pkce,
+    auth_params = auth_params,
+    token_params = token_params,
+    redirect_uri = redirect$uri
+  )
+
+  cache <- cache_choose(client, cache_disk, cache_key)
+  req_oauth(req, "oauth_flow_auth_code", params, cache = cache)
+}
+
+#' @export
+#' @rdname req_oauth_auth_code
 oauth_flow_auth_code <- function(client,
                                  auth_url,
                                  scope = NULL,
                                  pkce = TRUE,
                                  auth_params = list(),
                                  token_params = list(),
-                                 redirect_uri = default_redirect_uri(),
+                                 redirect_uri = oauth_redirect_uri(),
                                  host_name = deprecated(),
                                  host_ip = deprecated(),
                                  port = deprecated()
@@ -293,16 +253,38 @@ normalize_redirect_uri <- function(redirect_uri,
 
 }
 
+
+#' Default redirect url for OAuth
+#'
+#' The default redirect uri used by [req_oauth_auth_code()]. Defaults to
+#' `http://localhost` unless the `HTTR2_OAUTH_REDIRECT_URL` envvar is set.
+#'
 #' @export
-#' @rdname oauth_flow_auth_code
-default_redirect_uri <- function() {
+oauth_redirect_uri <- function() {
   Sys.getenv("HTTR2_OAUTH_REDIRECT_URL", "http://localhost")
 }
 
 # Authorisation request: make a url that the user navigates to
 # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.1
+
+#' OAuth authorization code components
+#'
+#' @description
+#' These low-level functions can be used to assemble a custom flow for
+#' APIs that are further from the spec:
+#'
+#' * `oauth_flow_auth_code_url()` generates the url that should be opened in a
+#'   browser.
+#' * `oauth_flow_auth_code_listen()` starts a temporary local webserver that
+#'   listens for the response from the resource server.
+#' * `oauth_flow_auth_code_parse()` parses the query parameters returned from
+#'   the server redirect, verifying that the `state` is correct, and returning
+#'   the authorisation code.
+#' * `oauth_flow_auth_code_pkce()` generates code verifier, method, and challenge
+#'   components as needed for PKCE, as defined in `r rfc(7636)`.
+#'
 #' @export
-#' @rdname oauth_flow_auth_code
+#' @keywords internal
 #' @param state Random state generated by `oauth_flow_auth_code()`. Used to
 #'   verify that we're working with an authentication request that we created.
 #'   (This is an unlikely threat for R packages since the webserver that
@@ -326,7 +308,7 @@ oauth_flow_auth_code_url <- function(client,
 }
 
 #' @export
-#' @rdname oauth_flow_auth_code
+#' @rdname oauth_flow_auth_code_url
 oauth_flow_auth_code_listen <- function(redirect_uri = "http://localhost:1410") {
   parsed <- url_parse(redirect_uri)
   port <- as.integer(parsed$port)
@@ -387,7 +369,7 @@ parse_form_urlencoded <- function(query) {
 # Authorisation response: get query params back from redirect
 # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2
 #' @export
-#' @rdname oauth_flow_auth_code
+#' @rdname oauth_flow_auth_code_url
 #' @param query List of query parameters returned by `oauth_flow_auth_code_listen()`.
 oauth_flow_auth_code_parse <- function(query, state) {
   if (has_name(query, "error")) {
@@ -404,7 +386,7 @@ oauth_flow_auth_code_parse <- function(query, state) {
 }
 
 #' @export
-#' @rdname oauth_flow_auth_code
+#' @rdname oauth_flow_auth_code_url
 oauth_flow_auth_code_pkce <- function() {
   # https://datatracker.ietf.org/doc/html/rfc7636#section-4.1
   #

@@ -2,14 +2,24 @@
 % Please edit documentation in R/oauth-flow-device.R
 \name{req_oauth_device}
 \alias{req_oauth_device}
-\title{OAuth authentication with device flow}
+\alias{oauth_flow_device}
+\title{OAuth with device flow}
 \usage{
 req_oauth_device(
   req,
   client,
   auth_url,
+  scope = NULL,
+  auth_params = list(),
+  token_params = list(),
   cache_disk = FALSE,
-  cache_key = NULL,
+  cache_key = NULL
+)
+
+oauth_flow_device(
+  client,
+  auth_url,
+  pkce = FALSE,
   scope = NULL,
   auth_params = list(),
   token_params = list()
@@ -23,32 +33,37 @@ req_oauth_device(
 \item{auth_url}{Authorization url; you'll need to discover this by reading
 the documentation.}
 
+\item{scope}{Scopes to be requested from the resource owner.}
+
+\item{auth_params}{A list containing additional parameters passed to
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
+
+\item{token_params}{List containing additional parameters passed to the
+\code{token_url}.}
+
 \item{cache_disk}{Should the access token be cached on disk? This reduces
 the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted,
-automatically deleted 30 days after creation, and stored in
-\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
+storing access credentials on disk.
+
+Learn more in \code{vignette("oauth")}}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
 
-\item{scope}{Scopes to be requested from the resource owner.}
-
-\item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
-
-\item{token_params}{List containing additional parameters passed to the
-\code{token_url}.}
+\item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
+security and should always be used if supported by the server.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_device()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_device()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_device]{oauth_flow_device()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token is automatically cached (either in memory or on disk) to minimise
-the number of times the flow is performed.
+Authenticate using the OAuth \strong{device flow}, as defined by \href{https://datatracker.ietf.org/doc/html/rfc8626}{RFC 8626}.
+It's designed for devices that don't have access to a web browser (if you've
+ever authenticated an app on your TV, this is probably the flow you've used),
+but it also works well from within R.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
 req_auth_github <- function(req) {

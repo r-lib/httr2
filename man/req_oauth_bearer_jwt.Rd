@@ -2,10 +2,20 @@
 % Please edit documentation in R/oauth-flow-jwt.R
 \name{req_oauth_bearer_jwt}
 \alias{req_oauth_bearer_jwt}
-\title{OAuth authentication with a bearer JWT (JSON web token)}
+\alias{oauth_flow_bearer_jwt}
+\title{OAuth with a bearer JWT (JSON web token)}
 \usage{
 req_oauth_bearer_jwt(
   req,
+  client,
+  claim,
+  signature = "jwt_encode_sig",
+  signature_params = list(),
+  scope = NULL,
+  token_params = list()
+)
+
+oauth_flow_bearer_jwt(
   client,
   claim,
   signature = "jwt_encode_sig",
@@ -36,19 +46,34 @@ callback function which should call \code{jwt_claim()}.}
 \code{token_url}.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_bearer_jwt()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_bearer_jwt()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_bearer_jwt]{oauth_flow_bearer_jwt()}} to generate an access token which is then
-used to authenticate the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token is cached in memory.
+Authenticate using a \strong{Bearer JWT} (JSON web token) as an authorization
+grant to get an access token, as defined by \href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.1}{Section 2.1 of RFC 7523}.
+It is often used for service accounts, accounts that are used primarily in
+automated environments.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \examples{
-client <- oauth_client("example", "https://example.com/get_token")
-claim <- jwt_claim()
-req <- request("https://example.com")
-
-req \%>\% req_oauth_bearer_jwt(client, claim)
+req_auth <- function(req) {
+  req_oauth_bearer_jwt(
+    req,
+    client = oauth_client("example", "https://example.com/get_token"),
+    claim = jwt_claim()
+  )
 }
+
+request("https://example.com") \%>\%
+ req_auth()
+}
+\seealso{
+Other OAuth flows: 
+\code{\link{req_oauth_auth_code}()},
+\code{\link{req_oauth_client_credentials}()},
+\code{\link{req_oauth_password}()},
+\code{\link{req_oauth_refresh}()}
+}
+\concept{OAuth flows}

@@ -23,9 +23,8 @@ and elements \code{scheme}, \code{hostname}, \code{port}, \code{path}, \code{fra
 }
 \description{
 \code{url_parse()} parses a URL into its component pieces; \code{url_build()} does
-the reverse, converting a list of pieces into a string URL. See
-\href{https://www.rfc-editor.org/rfc/rfc3986}{rfc3986} for details of parsing
-algorithm.
+the reverse, converting a list of pieces into a string URL. See \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986}
+for the details of the parsing algorithm.
 }
 \examples{
 url_parse("http://google.com/")

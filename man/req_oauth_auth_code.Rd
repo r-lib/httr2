@@ -2,19 +2,33 @@
 % Please edit documentation in R/oauth-flow-auth-code.R
 \name{req_oauth_auth_code}
 \alias{req_oauth_auth_code}
-\title{OAuth authentication with authorization code}
+\alias{oauth_flow_auth_code}
+\title{OAuth with authorization code}
 \usage{
 req_oauth_auth_code(
   req,
   client,
   auth_url,
-  cache_disk = FALSE,
-  cache_key = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
-  redirect_uri = default_redirect_uri(),
+  redirect_uri = oauth_redirect_uri(),
+  cache_disk = FALSE,
+  cache_key = NULL,
+  host_name = deprecated(),
+  host_ip = deprecated(),
+  port = deprecated()
+)
+
+oauth_flow_auth_code(
+  client,
+  auth_url,
+  scope = NULL,
+  pkce = TRUE,
+  auth_params = list(),
+  token_params = list(),
+  redirect_uri = oauth_redirect_uri(),
   host_name = deprecated(),
   host_ip = deprecated(),
   port = deprecated()
@@ -28,21 +42,13 @@ req_oauth_auth_code(
 \item{auth_url}{Authorization url; you'll need to discover this by reading
 the documentation.}
 
-\item{cache_disk}{Should the access token be cached on disk? This reduces
-the number of times that you need to re-authenticate at the cost of
-storing access credentials on disk. Cached tokens are encrypted,
-automatically deleted 30 days after creation, and stored in
-\code{\link[=oauth_cache_path]{oauth_cache_path()}}.}
-
-\item{cache_key}{If you want to cache multiple tokens per app, use this
-key to disambiguate them.}
-
 \item{scope}{Scopes to be requested from the resource owner.}
 
 \item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
 security and should always be used if supported by the server.}
 
-\item{auth_params}{List containing additional parameters passed to \code{oauth_flow_auth_code_url()}}
+\item{auth_params}{A list containing additional parameters passed to
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
@@ -72,24 +78,38 @@ will use \code{HTTR2_OAUTH_REDIRECT_URL} for redirects by default, and poll the
 receives a code in the response (or encounters an error). This delegates
 completion of the authorization flow to the hosted platform.}
 
+\item{cache_disk}{Should the access token be cached on disk? This reduces
+the number of times that you need to re-authenticate at the cost of
+storing access credentials on disk.
+
+Learn more in \code{vignette("oauth")}}
+
+\item{cache_key}{If you want to cache multiple tokens per app, use this
+key to disambiguate them.}
+
 \item{host_name, host_ip, port}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 Now use \code{redirect_uri} instead.}
 }
 \value{
-A modified HTTP \link{request}.
+\code{req_oauth_auth_code()} returns a modified HTTP \link{request} that will
+use OAuth; \code{oauth_flow_auth_code()} returns an \link{oauth_token}.
 }
 \description{
-This uses \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}} to generate an access token, which is
-then used to authentication the request with \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}.
-The token is automatically cached (either in memory or on disk) to minimise
-the number of times the flow is performed.
+Authenticate using the OAuth \strong{authorization code flow}, as defined
+by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.1}{Section 4.1 of RFC 6749}.
 
-Learn more about the overall flow in \code{vignette("oauth")}.
+This flow is the most commonly used OAuth flow where the user
+opens a page in their browser, approves the access, and then returns to R.
+When possible, it redirects the browser back to a temporary local webserver
+to capture the authorization code. When this is not possible (e.g. when
+running on a hosted platform like RStudio Server), provide a custom
+\code{redirect_uri} and httr2 will prompt the user to enter the code manually.
+
+Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
 }
 \section{Security considerations}{
 The authorization code flow is used for both web applications and native
-applications (which are equivalent to R packages).
-\href{https://datatracker.ietf.org/doc/html/rfc8252}{rfc8252} spells out
+applications (which are equivalent to R packages). \href{https://datatracker.ietf.org/doc/html/rfc8252}{RFC 8252} spells out
 important considerations for native apps. Most importantly there's no way
 for native apps to keep secrets from their users. This means that the
 server should either not require a \code{client_secret} (i.e. a public client
@@ -117,3 +137,15 @@ req_auth_github <- function(req) {
 request("https://api.github.com/user") \%>\%
   req_auth_github()
 }
+\seealso{
+\code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}} for the components necessary to
+write your own auth code flow, if the API you are wrapping does not adhere
+closely to the standard.
+
+Other OAuth flows: 
+\code{\link{req_oauth_bearer_jwt}()},
+\code{\link{req_oauth_client_credentials}()},
+\code{\link{req_oauth_password}()},
+\code{\link{req_oauth_refresh}()}
+}
+\concept{OAuth flows}

@@ -42,7 +42,12 @@ test_that("can store on disk", {
   withr::defer(cache$clear())
 
   expect_equal(cache$get(), NULL)
-  cache$set(1)
+  expect_snapshot(
+    cache$set(1),
+    transform = function(x) {
+      gsub(oauth_cache_path(), "<oauth-cache-path>", x, fixed = TRUE)
+    }
+  )
   expect_equal(cache$get(), 1)
   cache$clear()
   expect_equal(cache$get(), NULL)

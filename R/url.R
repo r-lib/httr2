@@ -1,9 +1,8 @@
 #' Parse and build URLs
 #'
 #' `url_parse()` parses a URL into its component pieces; `url_build()` does
-#' the reverse, converting a list of pieces into a string URL. See
-#' [rfc3986](https://www.rfc-editor.org/rfc/rfc3986) for details of parsing
-#' algorithm.
+#' the reverse, converting a list of pieces into a string URL. See `r rfc(3986)`
+#' for the details of the parsing algorithm.
 #'
 #' @param url For `url_parse()` a string to parse into a URL;
 #'   for `url_build()` a URL to turn back into a string.
