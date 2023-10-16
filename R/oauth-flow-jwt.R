@@ -31,7 +31,7 @@
 #'   )
 #' }
 #'
-#' request("https://example.com") %>%
+#' request("https://example.com") |>
 #'  req_auth()
 req_oauth_bearer_jwt <- function(req,
                                  client,

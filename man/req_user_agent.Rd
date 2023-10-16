@@ -21,13 +21,13 @@ version numbers of httr2, the curl package, and libcurl.
 }
 \examples{
 # Default user-agent:
-request("http://example.com") \%>\% req_dry_run()
+request("http://example.com") |> req_dry_run()
 
-request("http://example.com") \%>\% req_user_agent("MyString") \%>\% req_dry_run()
+request("http://example.com") |> req_user_agent("MyString") |> req_dry_run()
 
 # If you're wrapping in an API in a package, it's polite to set the
 # user agent to identify your package.
-request("http://example.com") \%>\%
-  req_user_agent("MyPackage (http://mypackage.com)") \%>\%
+request("http://example.com") |>
+  req_user_agent("MyPackage (http://mypackage.com)") |>
   req_dry_run()
 }

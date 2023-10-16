@@ -19,8 +19,8 @@ servers compress at least the body, and HTTP/2 can also compress the
 headers), but it conveys the same information.
 }
 \examples{
-resp <- request(example_url()) \%>\%
-  req_url_path("/json") \%>\%
+resp <- request(example_url()) |>
+  req_url_path("/json") |>
   req_perform()
-resp \%>\% resp_raw()
+resp |> resp_raw()
 }

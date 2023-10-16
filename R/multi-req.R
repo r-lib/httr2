@@ -38,17 +38,17 @@
 #' # Requesting these 4 pages one at a time would take 2 seconds:
 #' request_base <- request(example_url())
 #' reqs <- list(
-#'   request_base %>% req_url_path("/delay/0.5"),
-#'   request_base %>% req_url_path("/delay/0.5"),
-#'   request_base %>% req_url_path("/delay/0.5"),
-#'   request_base %>% req_url_path("/delay/0.5")
+#'   request_base |> req_url_path("/delay/0.5"),
+#'   request_base |> req_url_path("/delay/0.5"),
+#'   request_base |> req_url_path("/delay/0.5"),
+#'   request_base |> req_url_path("/delay/0.5")
 #' )
 #' # But it's much faster if you request in parallel
 #' system.time(resps <- req_perform_parallel(reqs))
 #'
 #' reqs <- list(
-#'   request_base %>% req_url_path("/status/200"),
-#'   request_base %>% req_url_path("/status/400"),
+#'   request_base |> req_url_path("/status/200"),
+#'   request_base |> req_url_path("/status/400"),
 #'   request("FAILURE")
 #' )
 #' # req_perform_parallel() will always succeed

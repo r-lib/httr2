@@ -19,5 +19,5 @@ An error will be thrown if the request does not complete in the time limit.
 }
 \examples{
 # Give up after at most 10 seconds
-request("http://example.com") \%>\% req_timeout(10)
+request("http://example.com") |> req_timeout(10)
 }

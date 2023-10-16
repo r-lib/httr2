@@ -29,7 +29,7 @@
 #' @examples
 #' client <- oauth_client("example", "https://example.com/get_token")
 #' req <- request("https://example.com")
-#' req %>% req_oauth_refresh(client)
+#' req |> req_oauth_refresh(client)
 req_oauth_refresh <- function(req,
                               client,
                               refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),

@@ -21,8 +21,8 @@ found, it will return \code{NA}.
 }
 \examples{
 resp <- response(headers = "Retry-After: 30")
-resp \%>\% resp_retry_after()
+resp |> resp_retry_after()
 
 resp <- response(headers = "Retry-After: Mon, 20 Sep 2025 21:44:05 UTC")
-resp \%>\% resp_retry_after()
+resp |> resp_retry_after()
 }

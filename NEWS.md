@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `curl_translate()` now uses the base pipe.
+
 * OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
   not `oauth_*()` (#330). This includes a new `vignette("oauth")` which 
   gives many more details about how OAuth works and how to use it with

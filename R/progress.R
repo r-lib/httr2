@@ -8,12 +8,12 @@
 #'   or downloaded.
 #' @export
 #' @examples
-#' req <- request("https://r4ds.s3.us-west-2.amazonaws.com/seattle-library-checkouts.csv") %>%
+#' req <- request("https://r4ds.s3.us-west-2.amazonaws.com/seattle-library-checkouts.csv") |>
 #'   req_progress()
 #'
 #' \dontrun{
 #' path <- tempfile()
-#' req %>% req_perform(path = path)
+#' req |> req_perform(path = path)
 #' }
 req_progress <- function(req, type = c("down", "up")) {
   type <- arg_match(type)

@@ -22,19 +22,19 @@
 #' req <- request("http://example.com")
 #'
 #' # Change url components
-#' req %>%
-#'   req_url_path_append("a") %>%
-#'   req_url_path_append("b") %>%
-#'   req_url_path_append("search.html") %>%
+#' req |>
+#'   req_url_path_append("a") |>
+#'   req_url_path_append("b") |>
+#'   req_url_path_append("search.html") |>
 #'   req_url_query(q = "the cool ice")
 #'
 #' # Change complete url
-#' req %>%
+#' req |>
 #'   req_url("http://google.com")
 #'
 #' # If you have query parameters in a list, use !!!
 #' params <- list(a = "1", b = "2")
-#' req %>%
+#' req |>
 #'   req_url_query(!!!params, c = "3")
 req_url <- function(req, url) {
   check_request(req)

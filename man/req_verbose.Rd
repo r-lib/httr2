@@ -47,12 +47,12 @@ different components of the HTTP requests and responses:
 \examples{
 # Use `req_verbose()` to see the headers that are sent back and forth when
 # making a request
-resp <- request("https://httr2.r-lib.org") \%>\%
-  req_verbose() \%>\%
+resp <- request("https://httr2.r-lib.org") |>
+  req_verbose() |>
   req_perform()
 
 # Or use one of the convenient shortcuts:
-resp <- request("https://httr2.r-lib.org") \%>\%
+resp <- request("https://httr2.r-lib.org") |>
   req_perform(verbosity = 1)
 }
 \seealso{

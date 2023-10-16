@@ -44,13 +44,13 @@
 #'   "master/inst/extdata/penguins.csv"
 #' )
 #' # Here I set debug = TRUE so you can see what's happening
-#' req <- request(url) %>% req_cache(tempdir(), debug = TRUE)
+#' req <- request(url) |> req_cache(tempdir(), debug = TRUE)
 #'
 #' # First request downloads the data
-#' resp <- req %>% req_perform()
+#' resp <- req |> req_perform()
 #'
 #' # Second request retrieves it from the cache
-#' resp <- req %>% req_perform()
+#' resp <- req |> req_perform()
 req_cache <- function(req,
                       path,
                       use_on_error = FALSE,

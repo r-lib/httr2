@@ -91,7 +91,7 @@
 #'   )
 #' }
 #'
-#' request("https://api.github.com/user") %>%
+#' request("https://api.github.com/user") |>
 #'   req_auth_github()
 req_oauth_auth_code <- function(req,
                                 client,

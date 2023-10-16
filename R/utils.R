@@ -123,7 +123,7 @@ base64_url_rand <- function(bytes = 32) {
 #' @export
 #' @examples
 #' fun <- function() {
-#'   request("https://httr2.r-lib.org") %>% req_perform()
+#'   request("https://httr2.r-lib.org") |> req_perform()
 #' }
 #' with_verbosity(fun())
 with_verbosity <- function(code, verbosity = 1) {

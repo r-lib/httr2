@@ -26,6 +26,6 @@ httr2.
 # turn off SSL verification. This is generally a bad idea so httr2 doesn't
 # provide a convenient wrapper, but if you really know what you're doing
 # you can still access this libcurl option:
-req <- request("https://example.com") \%>\%
+req <- request("https://example.com") |>
   req_options(ssl_verifypeer = 0)
 }

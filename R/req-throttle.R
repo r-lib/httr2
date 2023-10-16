@@ -16,7 +16,7 @@
 #' @export
 #' @examples
 #' # Ensure we never send more than 30 requests a minute
-#' req <- request(example_url()) %>%
+#' req <- request(example_url()) |>
 #'   req_throttle(rate = 30 / 60)
 #'
 #' resp <- req_perform(req)

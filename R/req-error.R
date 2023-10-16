@@ -26,7 +26,7 @@
 #'
 #' ```
 #' tryCatch(
-#'   req %>% req_perform() %>% resp_body_json(),
+#'   req |> req_perform() |> resp_body_json(),
 #'   httr2_http_404 = function(cnd) NULL
 #' )
 #' ```
@@ -36,7 +36,7 @@
 #'
 #' ```R
 #' withCallingHandlers(
-#'   req %>% req_perform() %>% resp_body_json(),
+#'   req |> req_perform() |> resp_body_json(),
 #'   httr2_http_404 = function(cnd) {
 #'     rlang::abort("Couldn't find user", parent = cnd)
 #'   }
@@ -59,21 +59,21 @@
 #' @examples
 #' # Performing this request usually generates an error because httr2
 #' # converts HTTP errors into R errors:
-#' req <- request(example_url()) %>%
+#' req <- request(example_url()) |>
 #'   req_url_path("/status/404")
-#' try(req %>% req_perform())
+#' try(req |> req_perform())
 #' # You can still retrieve it with last_response()
 #' last_response()
 #'
 #' # But you might want to suppress this behaviour:
-#' resp <- req %>%
-#'   req_error(is_error = function(resp) FALSE) %>%
+#' resp <- req |>
+#'   req_error(is_error = function(resp) FALSE) |>
 #'   req_perform()
 #' resp
 #'
 #' # Or perhaps you're working with a server that routinely uses the
 #' # wrong HTTP error codes only 500s are really errors
-#' request("http://example.com") %>%
+#' request("http://example.com") |>
 #'   req_error(is_error = function(resp) resp_status(resp) == 500)
 #'
 #' # Most typically you'll use req_error() to add additional information
@@ -81,7 +81,7 @@
 #' error_body <- function(resp) {
 #'   resp_body_json(resp)$error
 #' }
-#' request("http://example.com") %>%
+#' request("http://example.com") |>
 #'   req_error(body = error_body)
 #' # Learn more in https://httr2.r-lib.org/articles/wrapping-apis.html
 req_error <- function(req,
