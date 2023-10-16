@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-perform.R
 \name{req_perform}
 \alias{req_perform}
-\title{Perform a request}
+\title{Perform a request to get a response}
 \usage{
 req_perform(
   req,
@@ -86,7 +86,7 @@ request("https://google.com") \%>\%
   req_perform()
 }
 \seealso{
-\code{\link[=multi_req_perform]{multi_req_perform()}} to perform multiple requests in parallel.
-\code{\link[=paginate_req_perform]{paginate_req_perform()}} to fetch all pages of a requests paginated via
+\code{\link[=req_perform_parallel]{req_perform_parallel()}} to perform multiple requests in parallel.
+\code{\link[=req_perform_iteratively]{req_perform_iteratively()}} to fetch all pages of a requests paginated via
 \code{\link[=req_paginate]{req_paginate()}}.
 }

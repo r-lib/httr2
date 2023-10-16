@@ -17,7 +17,7 @@ test_that("req_paginate() checks inputs", {
   })
 })
 
-test_that("paginate_next_request() produces the request to the next page", {
+test_that("iterate_next_request() produces the request to the next page", {
   resp <- response()
   f_next_request <- function(req, parsed) {
     req_url_path(req, "/2")
@@ -31,11 +31,11 @@ test_that("paginate_next_request() produces the request to the next page", {
   )
 
   expect_snapshot(error = TRUE, {
-    paginate_next_request("a", req)
-    paginate_next_request(req, "a")
+    iterate_next_request("a", req)
+    iterate_next_request(req, "a")
   })
 
-  out <- paginate_next_request(req, parsed = NULL)
+  out <- iterate_next_request(req, parsed = NULL)
   expect_equal(out$url, "http://example.com/2")
   expect_equal(req$policies$paginate$n_pages(resp), 3)
 })
@@ -60,12 +60,12 @@ test_that("req_paginate_next_url() can paginate", {
 
   resp <- req_perform(req1)
   parsed <- req1$policies$paginate$parse_resp(resp)
-  req2 <- paginate_next_request(req1, parsed)
+  req2 <- iterate_next_request(req1, parsed)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?offset=11&limit=11")
 
   resp <- req_perform(req2)
   parsed <- req1$policies$paginate$parse_resp(resp)
-  req3 <- paginate_next_request(req2, parsed)
+  req3 <- iterate_next_request(req2, parsed)
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?offset=22&limit=11")
 })
 
@@ -99,12 +99,12 @@ test_that("req_paginate_token() can paginate", {
 
   resp <- req_perform(req1)
   parsed <- req1$policies$paginate$parse_resp(resp)
-  req2 <- paginate_next_request(req1, parsed)
+  req2 <- iterate_next_request(req1, parsed)
   expect_equal(req2$body$data$my_token, 2L)
 
   resp <- req_perform(req2)
   parsed <- req1$policies$paginate$parse_resp(resp)
-  req3 <- paginate_next_request(req2, parsed)
+  req3 <- iterate_next_request(req2, parsed)
   expect_equal(req3$body$data$my_token, 3L)
 })
 
@@ -127,13 +127,13 @@ test_that("req_paginate_offset() can paginate", {
     )
 
   resp <- req_perform(req1)
-  req2 <- paginate_next_request(req1, parsed = NULL)
+  req2 <- iterate_next_request(req1, parsed = NULL)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
   # offset stays the same when applied twice
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=11")
 
   resp <- req_perform(req2)
-  req3 <- paginate_next_request(req2, parsed = NULL)
+  req3 <- iterate_next_request(req2, parsed = NULL)
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&offset=22")
 })
 
@@ -155,17 +155,17 @@ test_that("req_paginate_page_index() can paginate", {
     )
 
   resp <- req_perform(req1)
-  req2 <- paginate_next_request(req1, NULL)
+  req2 <- iterate_next_request(req1, NULL)
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=2")
   # offset stays the same when applied twice
   expect_equal(req2$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=2")
 
   resp <- req_perform(req2)
-  req3 <- paginate_next_request(req2, NULL)
+  req3 <- iterate_next_request(req2, NULL)
   expect_equal(req3$url, "https://pokeapi.co/api/v2/pokemon?limit=11&page=3")
 })
 
-test_that("paginate_req_perform() checks inputs", {
+test_that("req_perform_iteratively() checks inputs", {
   req <- request("http://example.com") %>%
     req_paginate_token(
       parse_resp = function(resp) {
@@ -177,34 +177,34 @@ test_that("paginate_req_perform() checks inputs", {
     )
 
   expect_snapshot(error = TRUE, {
-    paginate_req_perform("a")
-    paginate_req_perform(request("http://example.com"))
-    paginate_req_perform(req, max_pages = 0)
-    paginate_req_perform(req, progress = -1)
+    req_perform_iteratively("a")
+    req_perform_iteratively(request("http://example.com"))
+    req_perform_iteratively(req, max_pages = 0)
+    req_perform_iteratively(req, progress = -1)
   })
 })
 
-test_that("paginate_req_perform() iterates through pages", {
+test_that("req_perform_iteratively() iterates through pages", {
   req <- request_pagination_test()
 
-  responses_2 <- paginate_req_perform(req, max_pages = 2)
+  responses_2 <- req_perform_iteratively(req, max_pages = 2)
   expect_length(responses_2, 2)
   expect_equal(responses_2[[1]], token_body_test(2))
   expect_equal(responses_2[[2]], token_body_test(3))
 
-  responses_5 <- paginate_req_perform(req, max_pages = 5)
+  responses_5 <- req_perform_iteratively(req, max_pages = 5)
   expect_length(responses_5, 4)
   expect_equal(responses_5[[4]], token_body_test())
 
-  responses_inf <- paginate_req_perform(req, max_pages = Inf)
+  responses_inf <- req_perform_iteratively(req, max_pages = Inf)
   expect_length(responses_inf, 4)
   expect_equal(responses_inf[[4]], token_body_test())
 })
 
-test_that("paginate_req_perform() works if there is only one page", {
+test_that("req_perform_iteratively() works if there is only one page", {
   req <- request_pagination_test(n_pages = function(resp, parsed) 1)
 
-  expect_no_error(responses <- paginate_req_perform(req, max_pages = 2))
+  expect_no_error(responses <- req_perform_iteratively(req, max_pages = 2))
   expect_length(responses, 1)
 })
 
@@ -233,11 +233,11 @@ test_that("parse_resp() produces a good error message", {
   )
 
   expect_snapshot(error = TRUE, {
-    paginate_req_perform(req, max_pages = 2)
+    req_perform_iteratively(req, max_pages = 2)
   })
 })
 
-test_that("paginate_req_perform() handles error in `parse_resp()`", {
+test_that("req_perform_iteratively() handles error in `parse_resp()`", {
   req <- request_pagination_test(
     parse_resp = function(resp) {
       parsed <- resp_body_json(resp)
@@ -250,6 +250,6 @@ test_that("paginate_req_perform() handles error in `parse_resp()`", {
   )
 
   expect_snapshot(error = TRUE, {
-    paginate_req_perform(req, max_pages = 2)
+    req_perform_iteratively(req, max_pages = 2)
   })
 })

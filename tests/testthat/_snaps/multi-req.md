@@ -1,8 +1,19 @@
 # request and paths must match
 
     Code
-      multi_req_perform(req, letters)
+      req_perform_parallel(req, letters)
     Condition
-      Error in `multi_req_perform()`:
+      Error in `req_perform_parallel()`:
       ! If supplied, `paths` must be the same length as `req`.
+
+# multi_req_perform is deprecated
+
+    Code
+      multi_req_perform(list())
+    Condition
+      Warning:
+      `multi_req_perform()` was deprecated in httr2 0.3.0.
+      i Please use `req_perform_parallel()` instead.
+    Output
+      list()
 
