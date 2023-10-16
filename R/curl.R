@@ -75,7 +75,7 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
   }
   steps <- add_curl_step(steps, "req_perform", main_args = perform_args, keep_if_empty = TRUE)
 
-  out <- paste0(steps, collapse = " |> \n  ")
+  out <- paste0(steps, collapse = paste0(pipe(), "\n  "))
   out <- paste0(out, "\n")
 
   if (clip) {
@@ -84,6 +84,10 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
   }
 
   structure(out, class = "httr2_cmd")
+}
+
+pipe <- function() {
+  if (getRversion() >= "4.1.0") " |> " else " %>% "
 }
 
 #' @export
