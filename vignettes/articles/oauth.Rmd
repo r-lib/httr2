@@ -24,7 +24,7 @@ OAuth gives you the incredible power to extract data from popular web services, 
 This means that while httr2 can make the interactive experience pretty seamless, unattended usage (i.e. on CI or in an automated script) is usually going to include some pain.
 
 This vignette builds on the techniques discussed in `vignette("wrapping-apis")`, so I recommend you read that vignette first.
-I'll also assume that you're working in a package, since most people want to wrap up an API into a bunch of R functions, but most of the ideas will also apply if you're creating a one off script.
+I'll also assume that you're working in a package, since most people want to wrap up an API into a bunch of R functions, but most of the ideas will also apply if you're creating a one-off script.
 
 ## OAuth basics
 
@@ -158,7 +158,7 @@ These two steps are described in the following sections.
 
 ### Creating a token
 
-`oauth_flow_auth_code()` is the best way to verify you've correctly specified the parameters to the client and the `auth_url`, without depending on correclty understanding any other part of the API.
+`oauth_flow_auth_code()` is the best way to verify you've correctly specified the parameters to the client and the `auth_url`, without depending on correctly understanding any other part of the API.
 For example, you could get a token to access the GitHub API (using the client defined above) with this code:
 
 ```{r, eval = FALSE}
