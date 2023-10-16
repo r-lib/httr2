@@ -9,9 +9,10 @@ req_oauth(req, flow, flow_params, cache)
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{flow}{Function used to generate the access token.}
+\item{flow}{An \code{oauth_flow_} function used to generate the access token.}
 
-\item{flow_params}{List of parameters to call \code{flow} with.}
+\item{flow_params}{Parameters for the flow. This should be a named list
+whose names match the argument names of \code{flow}.}
 
 \item{cache}{An object that controls how the token is cached. This should
 be a list containing three functions:

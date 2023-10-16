@@ -12,8 +12,9 @@
 #'     cached yet.
 #'   * `set()` saves the token to the cache.
 #'   * `clear()` removes the token from the cache
-#' @param flow Function used to generate the access token.
-#' @param flow_params List of parameters to call `flow` with.
+#' @param flow An `oauth_flow_` function used to generate the access token.
+#' @param flow_params Parameters for the flow. This should be a named list
+#'   whose names match the argument names of `flow`.
 #' @returns An [oauth_token].
 #' @keywords internal
 #' @export
@@ -33,13 +34,21 @@ auth_oauth_sign <- function(req, reauth = FALSE) {
     return(req)
   }
 
-  cache <- req$policies$auth_oauth$cache
-  flow <- req$policies$auth_oauth$flow
-  flow_params <- req$policies$auth_oauth$flow_params
+  token <- auth_oauth_token_get(
+    cache = req$policies$auth_oauth$cache,
+    flow = req$policies$auth_oauth$flow,
+    flow_params = req$policies$auth_oauth$flow_params,
+    reauth = reauth
+  )
 
+  req_auth_bearer_token(req, token$access_token)
+}
+
+auth_oauth_token_get <- function(cache, flow, flow_params, reauth = FALSE) {
   token <- cache$get()
   if (reauth || is.null(token)) {
     token <- exec(flow, !!!flow_params)
+    cache$set(token)
   } else {
     if (token_has_expired(token)) {
       cache$clear()
@@ -48,10 +57,56 @@ auth_oauth_sign <- function(req, reauth = FALSE) {
       } else {
         token <- token_refresh(flow_params$client, token$refresh_token)
       }
+
+      cache$set(token)
     }
   }
-  cache$set(token)
-  req_auth_bearer_token(req, token$access_token)
+
+  token
+}
+
+#' Retrieve an OAuth token using the cache
+#'
+#' This function wraps around a `oauth_flow_` function to retrieve a token
+#' from the cache, or to generate and cache a token if needed. Use this for
+#' manual token management that still takes advantage of httr2's caching
+#' system. You should only need to use this function if you're passing
+#' the token
+#'
+#' @keywords internal
+#' @inheritParams req_oauth
+#' @inheritParams req_oauth_auth_code
+#' @param reauth Set to `TRUE` to force re-authentication via flow, regardless
+#'   of whether or not token is expired.
+#' @export
+#' @examples
+#' \dontrun{
+#' token <- oauth_token_cached(
+#'   client = example_github_client(),
+#'   flow = oauth_flow_auth_code,
+#'   flow_params = list(
+#'     auth_url = "https://github.com/login/oauth/authorize"
+#'   ),
+#'   cache_disk = TRUE
+#' )
+#' token
+#' }
+oauth_token_cached <- function(client,
+                               flow,
+                               flow_params = list(),
+                               cache_disk = FALSE,
+                               cache_key = NULL,
+                               reauth = FALSE) {
+  check_bool(reauth)
+  cache <- cache_choose(client, cache_disk, cache_key)
+
+  flow_params$client <- client
+  auth_oauth_token_get(
+    cache = cache,
+    flow = flow,
+    flow_params = flow_params,
+    reauth = reauth
+  )
 }
 
 resp_is_invalid_oauth_token <- function(req, resp) {

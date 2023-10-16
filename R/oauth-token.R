@@ -11,6 +11,8 @@
 #' @param ... Additional components returned by the endpoint
 #' @param .date Date the request was made; used to convert the relative
 #'   `expires_in` to an absolute `expires_at`.
+#' @seealso [oauth_token_cached()] to use the token cache with a specified
+#'   OAuth flow.
 #' @return An OAuth token: an S3 list with class `httr2_token`.
 #' @export
 #' @examples
