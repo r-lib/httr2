@@ -31,7 +31,7 @@ and requested.
 }
 \examples{
 fun <- function() {
-  request("https://httr2.r-lib.org") \%>\% req_perform()
+  request("https://httr2.r-lib.org") |> req_perform()
 }
 with_verbosity(fun())
 }

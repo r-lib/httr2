@@ -63,7 +63,7 @@
 #'   [req_perform_iteratively()] to fetch all pages of a requests paginated via
 #'   [req_paginate()].
 #' @examples
-#' request("https://google.com") %>%
+#' request("https://google.com") |>
 #'   req_perform()
 req_perform <- function(
       req,
@@ -203,7 +203,7 @@ req_verbosity <- function(req, verbosity, error_call = caller_env()) {
 #' @returns An HTTP [response]/[request].
 #' @export
 #' @examples
-#' invisible(request("http://httr2.r-lib.org") %>% req_perform())
+#' invisible(request("http://httr2.r-lib.org") |> req_perform())
 #' last_request()
 #' last_response()
 last_response <- function() {
@@ -230,15 +230,15 @@ last_request <- function() {
 #' @export
 #' @examples
 #' # httr2 adds default User-Agent, Accept, and Accept-Encoding headers
-#' request("http://example.com") %>% req_dry_run()
+#' request("http://example.com") |> req_dry_run()
 #'
 #' # the Authorization header is automatically redacted to avoid leaking
 #' # credentials on the console
-#' req <- request("http://example.com") %>% req_auth_basic("user", "password")
-#' req %>% req_dry_run()
+#' req <- request("http://example.com") |> req_auth_basic("user", "password")
+#' req |> req_dry_run()
 #'
 #' # if you need to see it, use redact_headers = FALSE
-#' req %>% req_dry_run(redact_headers = FALSE)
+#' req |> req_dry_run(redact_headers = FALSE)
 req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   check_request(req)
   check_installed("httpuv")

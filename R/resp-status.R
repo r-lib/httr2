@@ -13,10 +13,10 @@
 #' * 1xx are handled internally by curl.
 #' * 3xx redirects are automatically followed. You will only see them if you
 #'   have deliberately suppressed redirects with
-#'   `req %>% req_options(followlocation = FALSE)`.
+#'   `req |> req_options(followlocation = FALSE)`.
 #' * 4xx client and 5xx server errors are automatically turned into R errors.
 #'   You can stop them from being turned into R errors with [req_error()],
-#'   e.g. `req %>% req_error(is_error = ~ FALSE)`.
+#'   e.g. `req |> req_error(is_error = ~ FALSE)`.
 #'
 #' @return
 #' * `resp_status()` returns a scalar integer
@@ -29,9 +29,9 @@
 #' @examples
 #' # An HTTP status code you're unlikely to see in the wild:
 #' resp <- response(418)
-#' resp %>% resp_is_error()
-#' resp %>% resp_status()
-#' resp %>% resp_status_desc()
+#' resp |> resp_is_error()
+#' resp |> resp_status()
+#' resp |> resp_status_desc()
 resp_status <- function(resp) {
   check_response(resp)
   resp$status_code

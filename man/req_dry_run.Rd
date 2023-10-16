@@ -27,13 +27,13 @@ the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 }
 \examples{
 # httr2 adds default User-Agent, Accept, and Accept-Encoding headers
-request("http://example.com") \%>\% req_dry_run()
+request("http://example.com") |> req_dry_run()
 
 # the Authorization header is automatically redacted to avoid leaking
 # credentials on the console
-req <- request("http://example.com") \%>\% req_auth_basic("user", "password")
-req \%>\% req_dry_run()
+req <- request("http://example.com") |> req_auth_basic("user", "password")
+req |> req_dry_run()
 
 # if you need to see it, use redact_headers = FALSE
-req \%>\% req_dry_run(redact_headers = FALSE)
+req |> req_dry_run(redact_headers = FALSE)
 }

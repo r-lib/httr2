@@ -46,7 +46,7 @@ For example, if you want to return a default value when the server returns
 a 404, use \code{tryCatch()}:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{tryCatch(
-  req \%>\% req_perform() \%>\% resp_body_json(),
+  req |> req_perform() |> resp_body_json(),
   httr2_http_404 = function(cnd) NULL
 )
 }\if{html}{\out{</div>}}
@@ -55,7 +55,7 @@ Or if you want to re-throw the error with some additional context, use
 \code{withCallingHandlers()}, e.g.:
 
 \if{html}{\out{<div class="sourceCode R">}}\preformatted{withCallingHandlers(
-  req \%>\% req_perform() \%>\% resp_body_json(),
+  req |> req_perform() |> resp_body_json(),
   httr2_http_404 = function(cnd) \{
     rlang::abort("Couldn't find user", parent = cnd)
   \}
@@ -68,29 +68,29 @@ Learn more about error chaining at \link[rlang:topic-error-chaining]{rlang::topi
 \examples{
 # Performing this request usually generates an error because httr2
 # converts HTTP errors into R errors:
-req <- request(example_url()) \%>\%
+req <- request(example_url()) |>
   req_url_path("/status/404")
-try(req \%>\% req_perform())
+try(req |> req_perform())
 # You can still retrieve it with last_response()
 last_response()
 
 # But you might want to suppress this behaviour:
-resp <- req \%>\%
-  req_error(is_error = function(resp) FALSE) \%>\%
+resp <- req |>
+  req_error(is_error = \(resp) FALSE) |>
   req_perform()
 resp
 
 # Or perhaps you're working with a server that routinely uses the
 # wrong HTTP error codes only 500s are really errors
-request("http://example.com") \%>\%
-  req_error(is_error = function(resp) resp_status(resp) == 500)
+request("http://example.com") |>
+  req_error(is_error = \(resp) resp_status(resp) == 500)
 
 # Most typically you'll use req_error() to add additional information
 # extracted from the response body (or sometimes header):
 error_body <- function(resp) {
   resp_body_json(resp)$error
 }
-request("http://example.com") \%>\%
+request("http://example.com") |>
   req_error(body = error_body)
 # Learn more in https://httr2.r-lib.org/articles/wrapping-apis.html
 }

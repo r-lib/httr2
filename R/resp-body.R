@@ -20,15 +20,15 @@
 #' * `resp_body_html()` and `resp_body_xml()` return an `xml2::xml_document`
 #' @export
 #' @examples
-#' resp <- request("https://httr2.r-lib.org") %>% req_perform()
+#' resp <- request("https://httr2.r-lib.org") |> req_perform()
 #' resp
 #'
-#' resp %>% resp_has_body()
-#' resp %>% resp_body_raw()
-#' resp %>% resp_body_string()
+#' resp |> resp_has_body()
+#' resp |> resp_body_raw()
+#' resp |> resp_body_string()
 #'
 #' if (requireNamespace("xml2", quietly = TRUE)) {
-#'   resp %>% resp_body_html()
+#'   resp |> resp_body_html()
 #' }
 resp_body_raw <- function(resp) {
   check_response(resp)

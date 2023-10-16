@@ -102,6 +102,8 @@ test_that("prefers explicit url", {
 })
 
 test_that("can translate to httr calls", {
+  skip_if(getRversion() < "4.1")
+
   expect_snapshot({
     curl_translate("curl http://x.com")
     curl_translate("curl http://x.com -X DELETE")
@@ -113,12 +115,16 @@ test_that("can translate to httr calls", {
 })
 
 test_that("can translate query", {
+  skip_if(getRversion() < "4.1")
+
   expect_snapshot({
     curl_translate("curl http://x.com?string=abcde&b=2")
   })
 })
 
 test_that("can translate data", {
+  skip_if(getRversion() < "4.1")
+
   expect_snapshot({
     curl_translate("curl http://example.com --data abcdef")
     curl_translate("curl http://example.com --data abcdef -H Content-Type:text/plain")
@@ -149,6 +155,8 @@ test_that("can read from clipboard", {
   # need to skip on CI as can't read from clipboard there on Linux
   skip_on_ci()
   skip_if_not_installed("clipr")
+  skip_if(getRversion() < "4.1")
+
   # need to set env var so that `read/write_clip()` works in non-interactive mode
   withr::local_envvar(CLIPR_ALLOW = TRUE)
 
@@ -175,6 +183,7 @@ test_that("encode_string2() produces simple strings", {
   # use raw string if single and double quotes are used
   expect_equal(encode_string2('x"\'x'), 'r"---{x"\'x}---"')
 
+  skip_if(getRversion() < "4.1")
   cmd <- paste0("curl 'http://example.com' \
   -X 'PATCH' \
   -H 'Content-Type: application/json' \

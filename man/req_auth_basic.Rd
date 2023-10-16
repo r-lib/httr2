@@ -24,14 +24,14 @@ This sets the Authorization header. See details at
 \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization}.
 }
 \examples{
-req <- request("http://example.com") \%>\% req_auth_basic("hadley", "SECRET")
+req <- request("http://example.com") |> req_auth_basic("hadley", "SECRET")
 req
-req \%>\% req_dry_run()
+req |> req_dry_run()
 
 # httr2 does its best to redact the Authorization header so that you don't
 # accidentally reveal confidential data. Use `redact_headers` to reveal it:
 print(req, redact_headers = FALSE)
-req \%>\% req_dry_run(redact_headers = FALSE)
+req |> req_dry_run(redact_headers = FALSE)
 
 # We do this because the authorization header is not encrypted and the
 # so password can easily be discovered:

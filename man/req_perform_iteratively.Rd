@@ -28,12 +28,12 @@ returning a list of responses.
 \examples{
 page_size <- 40
 
-req_flowers <- request(example_url()) \%>\%
-  req_url_path("/iris") \%>\%
-  req_url_query(limit = page_size) \%>\%
+req_flowers <- request(example_url()) |>
+  req_url_path("/iris") |>
+  req_url_query(limit = page_size) |>
   req_paginate_page_index(
     page_index = function(req, page) {
-      req \%>\% req_url_query(page_index = page)
+      req |> req_url_query(page_index = page)
     },
     parse_resp = function(resp) {
       parsed <- resp_body_json(resp)

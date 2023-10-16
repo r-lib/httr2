@@ -50,16 +50,16 @@ will only ever see a 200 response:
 \item 1xx are handled internally by curl.
 \item 3xx redirects are automatically followed. You will only see them if you
 have deliberately suppressed redirects with
-\code{req \%>\% req_options(followlocation = FALSE)}.
+\code{req |> req_options(followlocation = FALSE)}.
 \item 4xx client and 5xx server errors are automatically turned into R errors.
 You can stop them from being turned into R errors with \code{\link[=req_error]{req_error()}},
-e.g. \code{req \%>\% req_error(is_error = ~ FALSE)}.
+e.g. \code{req |> req_error(is_error = ~ FALSE)}.
 }
 }
 \examples{
 # An HTTP status code you're unlikely to see in the wild:
 resp <- response(418)
-resp \%>\% resp_is_error()
-resp \%>\% resp_status()
-resp \%>\% resp_status_desc()
+resp |> resp_is_error()
+resp |> resp_status()
+resp |> resp_status_desc()
 }
