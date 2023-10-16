@@ -5,17 +5,13 @@ This used to authenticate the client as part of the OAuth flow, not
 to authenticate a request on behalf of a user.
 There are three built-in strategies:
 oauth_client_req_body() adds the client id and (optionally) the secret
-to the request body, as described in
-rfc6749,
-Section 2.3.1.
+to the request body, as described in Section 2.3.1 of RFC 6749.
 oauth_client_req_header() adds the client id and secret using HTTP
-basic authentication with the Authorization header, as described in
-rfc6749,
-Section 2.3.1.
+basic authentication with the Authorization header, as described
+in Section 2.3.1 of RFC 6749.
 oauth_client_jwt_rs256() adds a client assertion to the body using a
-JWT signed with jwt_sign_rs256() using a private key, as described in
-rfc7523,
-Section 2.2.
+JWT signed with jwt_sign_rs256() using a private key, as described
+in Section 2.2 of RFC 7523.
 
 
 You will generally not call these functions directly but will instead
@@ -27,17 +23,13 @@ This used to authenticate the client as part of the OAuth flow, not
 to authenticate a request on behalf of a user.
 There are three built-in strategies:
 oauth_client_req_body() adds the client id and (optionally) the secret
-to the request body, as described in
-rfc6749,
-Section 2.3.1.
+to the request body, as described in Section 2.3.1 of RFC 6749.
 oauth_client_req_header() adds the client id and secret using HTTP
-basic authentication with the Authorization header, as described in
-rfc6749,
-Section 2.3.1.
+basic authentication with the Authorization header, as described
+in Section 2.3.1 of RFC 6749.
 oauth_client_jwt_rs256() adds a client assertion to the body using a
-JWT signed with jwt_sign_rs256() using a private key, as described in
-rfc7523,
-Section 2.2.
+JWT signed with jwt_sign_rs256() using a private key, as described
+in Section 2.2 of RFC 7523.
 
 
 You will generally not call these functions directly but will instead
@@ -105,17 +97,13 @@ strategy defined by the <code>auth</code> and <code>auth_param</code> arguments 
 This used to authenticate the client as part of the OAuth flow, <strong>not</strong>
 to authenticate a request on behalf of a user.</p>
 <p>There are three built-in strategies:</p><ul><li><p><code>oauth_client_req_body()</code> adds the client id and (optionally) the secret
-to the request body, as described in
-<a href="https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1" class="external-link">rfc6749</a>,
-Section 2.3.1.</p></li>
+to the request body, as described in <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1" class="external-link">Section 2.3.1 of RFC 6749</a>.</p></li>
 <li><p><code>oauth_client_req_header()</code> adds the client id and secret using HTTP
-basic authentication with the <code>Authorization</code> header, as described in
-<a href="https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1" class="external-link">rfc6749</a>,
-Section 2.3.1.</p></li>
+basic authentication with the <code>Authorization</code> header, as described
+in <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1" class="external-link">Section 2.3.1 of RFC 6749</a>.</p></li>
 <li><p><code>oauth_client_jwt_rs256()</code> adds a client assertion to the body using a
-JWT signed with <code>jwt_sign_rs256()</code> using a private key, as described in
-<a href="https://datatracker.ietf.org/doc/html/rfc7523#section-2.2" class="external-link">rfc7523</a>,
-Section 2.2.</p></li>
+JWT signed with <code>jwt_sign_rs256()</code> using a private key, as described
+in <a href="https://datatracker.ietf.org/doc/html/rfc7523#section-2.2" class="external-link">Section 2.2 of RFC 7523</a>.</p></li>
 </ul><p>You will generally not call these functions directly but will instead
 specify them through the <code>auth</code> argument to <code><a href="oauth_client.html">oauth_client()</a></code>. The <code>req</code> and
 <code>client</code> parameters are automatically filled in; other parameters come from
@@ -223,7 +211,7 @@ JWT header.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 623</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2OTcxMzk2OTYsIm5iZiI6MTY5NzEzOTM5NiwiaWF0IjoxNjk3MTM5Mzk2LCJqdGkiOiJJNzJiYWRLY1FpOFFxY2VHY29iR1pDVS1zbHVPMEVBdXVUdmZlUThTWW04In0.y5499GOKBv235FbEZKGykPpwYnBDsBQ5_wcyjYPUYTKRPj1ifLKkeQC9HaRWCazzcMvBGczBKcJh-pHNmFZD5BlglqqZ0m765X6yjLzmQFxn0I2gW5XsKdWbnBcplq_5E-Ve3v7SviuUu_ERYG103P22AOUB7h24oMdD_AMIsTOvyOcYXFrYRzjPo4EgvbnsPAG947bBn4-J67fRMGXJ-cGwKNRfpHNw1Z3Jm7Uh0M3XAM6vTrG4r9YPknZSIJoKXSzSA_eBSUixR0DjXuzTE-STKc3EP05ZpJe-L8yX_PgW7DNjcnkVoyldD_Qsrlz4XJzu44gTWqEGX8rPilQ77Q&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE2OTc0ODE4NjEsIm5iZiI6MTY5NzQ4MTU2MSwiaWF0IjoxNjk3NDgxNTYxLCJqdGkiOiI5UWN1V1FpZDRUOGJVbTFBZ3hNMFNEN3E3OGRqT01tN3FpOGZKUDdOekhJIn0.TEx86fFXNmr2mLBY3cdv2KCWbJwQeEWDwdMXP_V73OQVh_6bZxMVnPZrU8CbF8JA-MHwIbC-0al6AakZmooY02-XSUFLFcXSQw6Atujtf8_D9AN9foY_cHFnjF5Cb26UMSty6XdpjnSCbYptiAIFMSPtBvDF_kKatFkHH-eDcTnGmvagQxMPVUBbfrlC7SyGE7ZpxO4OeZS4cIGmS3BKJpPaP92eHizkyf3841oLTVxD34DY1LwVuU_ao4hNHqyIYr4Gkzp2YCgLp9Hk9YHdGn4H_zZWHSEbqFAcHYd5FSoevp0mZVhwznOOUUF7wzJFDoqneGxURe_D-WnmgJjM4g&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

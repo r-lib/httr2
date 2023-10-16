@@ -89,174 +89,385 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org">httr2</a></span><span class="op">)</span></span></code></pre></div>
-<p>If the API provides access to a website where the user already has an
-account (think Twitter, Instagram, Facebook, Google, GitHub, etc), it’s
-likely to use OAuth to allow you to authorise on behalf of the user.
-OAuth<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Here I’ll only talk about OAuth 2.0 which is the only
+<p>OAuth<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Here I’ll only talk about OAuth 2.0 which is the only
 version in common use today. OAuth 1.0 is largely only of historical
-interest.&lt;/p&gt;"><sup>1</sup></a> is
-an authorisation framework that’s designed so that you don’t have to
-share your username and password with an app; instead the app asks for
-permission to use your account. You’ve almost certainly used this before
-on the web; it’s used in most cases where one website wants to use
-another website on your behalf.</p>
-<p>OAuth is a broad framework that has many many many different variants
-which makes it hard to provide generalisable advice. The following
-advice draws on my experience working with a number of OAuth using APIs,
-but don’t be surprised if you need to do something slightly different
-for the API you’re working with.</p>
+interest.&lt;/p&gt;"><sup>1</sup></a>
+is an authorization framework design for performing work on the behalf
+of a user. You’ve probably used it a bunch without knowing what it’s
+called: it’s used when you login to a non-Google website using your
+Google account, when you give a phone access to your twitter account, or
+when you login to a streaming app on your smart TV.</p>
+<p>You’ll notice none of these common scenarios quite match to using an
+R package to scrape data from a web API, and that’s the pleasure and
+pain of OAuth. OAuth gives you the incredible power to extract data from
+popular web services, but it’s fundamentally designed for a different
+use case. This means that while httr2 can make the interactive
+experience pretty seamless, unattended usage (i.e. on CI or in an
+automated script) is usually going to include some pain.</p>
+<p>This vignette builds on the techniques discussed in
+<code><a href="../articles/wrapping-apis.html">vignette("wrapping-apis")</a></code>, so I recommend you read that
+vignette first. I’ll also assume that you’re working in a package, since
+most people want to wrap up an API into a bunch of R functions, but most
+of the ideas will also apply if you’re creating a one-off script.</p>
+<div class="section level2">
+<h2 id="oauth-basics">OAuth basics<a class="anchor" aria-label="anchor" href="#oauth-basics"></a>
+</h2>
+<p>OAuth is a broad framework that has many different variants, called
+<strong>flows</strong>, which makes it hard to provide sweeping
+generalisations, but the basic idea of OAuth is to create a hierarchy of
+increasingly more specific and shorter-lived credentials, so that the
+impact of a credential being lost is as small as possible.</p>
+<p>The longest lived and most powerful credential is typically a user
+name and password. Most people don’t change their passwords regularly,
+and often (against all advice) reuse the same password on multiple
+websites. And if you have a user name and password, you have total
+control over that account; you can even use it to change the password so
+the actual user can’t log in. That means as a programmer you never want
+to touch user name-password pairs because if they’re lost or stolen,
+they give very wide access.</p>
+<p>Avoiding that problem lead to the creation of OAuth. The basic idea
+is that instead of your package asking the user to give you their user
+name and password, you instead ask them to log in and give your package
+permission to use the API on their behalf. The API gives this permission
+in the form of an <strong>access token</strong> which is essentially a
+random string of numbers and letters, e.g.
+<code>UfNlXaEog03hdRPTUPpEInEiIW01jI1WcjOB</code>. An access token is
+very short lived, lasting maybe only days, and is bound to a specified
+<strong>scope</strong> of access. The access token has some big
+advantages over a user name and password:</p>
+<ul>
+<li>It’s short-lived so if it’s lost or stolen, there’s only a limited
+amount of time where it can be abused.</li>
+<li>It has limited scope, so even if stolen, it can’t be used to do
+something particularly nefarious like changing your password or contact
+details.</li>
+<li>It’s bound to a specific application, so it can be invalidated
+(cancelled) without affecting any other uses.</li>
+</ul>
+<p>If you have an access token you can use it to authenticate an API by
+passing it as a <strong>bearer token</strong> in the
+<code>Authorization</code> header, which you can do with
+<code><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token()</a></code>. However, in most cases you will
+want to let httr2 manage this by calling one of the
+<code>req_oauth_</code> functions we’ll talk about shortly.</p>
+<p>One of the reasons that you want httr2 to manage your tokens is that
+because access tokens are so short lived, they’re often accompanied by a
+<strong>refresh token</strong>. A refresh token lasts for a longer
+amount of time and has one job: it allows you to get a new access token
+when the previous one expires. You need to look after a refresh token a
+little more carefully than an access token. In particular, you should
+never include a refresh token in a HTTP request as that’s the job of the
+access token.</p>
+<p>Overall this leads to a hierarchy of credentials from weakest to
+strongest:</p>
+<ul>
+<li>The access token usually only lasts a couple hours and needs to be
+submitted with every request.</li>
+<li>The refresh token lasts for days to weeks and it’s designed to be
+stored locally so you can regenerate access tokens. (We’ll talk about
+this more in Caching, below.)</li>
+<li>The user name + password gives access to everything so your code
+should never touch them!</li>
+</ul>
+<p>Now that you’ve got the basic idea of OAuth, lets talk about the
+details.</p>
+</div>
 <div class="section level2">
 <h2 id="clients">Clients<a class="anchor" aria-label="anchor" href="#clients"></a>
 </h2>
-<p>The first step in working with any OAuth API is to create a client.
-This involves you registering for a developer account on the API’s
-website and creating a new OAuth app. The process varies from API to
-API, but at the end of it you’ll get a client id and in most cases a
-client secret.</p>
-<p>(You’ll definitely need this for testing your package, and you’ll
-probably also baked it into your package for the convenience of your
-users. Bundling the app is user friendly, but not always possible,
-particularly if rate limits are enforced on a per-app rather than
-per-user basis. You should always provide some way for the user to
-provide their own app.)</p>
-<p>If the API provides a way to authenticate your app without the client
-secret, you should leave it out of your package. But in most cases,
-you’ll need to include the secret in the package. You can use
-<code><a href="../reference/obfuscate.html">obfuscate()</a></code> to hide the secret; this is not bulletproof<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;It uses &lt;code&gt;&lt;a href="../reference/secrets.html"&gt;secret_encrypt()&lt;/a&gt;&lt;/code&gt; with a special
-encryption key that’s bundled with httr2.&lt;/p&gt;'><sup>2</sup></a>, but in
-most cases it’ll be easier to create a new client than try and steal
-yours. Additionally, it’s unusual for an OAuth client to be able to do
-anything in its own right, so even if someone does steal your secret
-there’s not much harm they can do with it.</p>
-<p>To obfuscate a secret, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>:</p>
+<p>The first step in working with any OAuth API is to create an
+<strong>application</strong> <strong>client</strong>. It’s called an
+application client because in the wider world OAuth is usually used with
+a web, phone, or tv app, but here your “app” is going to be your R
+package. For this reason, httr2 calls the application client a
+<strong>client</strong>, but many APIs will call it an OAuth
+application.</p>
+<p>To create a client, you’ll need to first register for a developer
+account on the API’s website. In most cases this is easy, totally
+automated, and only takes a couple of minutes. That will give you access
+to some sort of developer portal which you can then use to register a
+new OAuth app (aka a client). This process varies from API to API (it’s
+normal to spend some time hunting through the docs and settings), but at
+the end of it you’ll get a client id (another random string of numbers
+and letters). Sometimes the client id is all you need, and you can
+create an httr2 client with <code><a href="../reference/oauth_client.html">oauth_client()</a></code>, e.g.:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("ZD0a2TLXWcKxhTSCoJ56x83-DHzcJw")</span></span></code></pre></div>
-<p>Then use the client id from the website along with the obfuscated
-secret to create a client. The following code shows a GitHub OAuth app
-that I created specifically for this vignette:</p>
+<code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
+<span>  token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"hadley-oauth-test-2"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The call to <code><a href="../reference/oauth_client.html">oauth_client()</a></code> also includes a
+<code>name</code> and a <code>token_url</code>.</p>
+<ul>
+<li>The <code>name</code> is human-facing, and should typically be the
+same as your package (the thing that prompted you to create the client).
+I have a bunch of apps that I’ve used for testing, so here I’ve used the
+name <code>hadley-oauth-test-2</code> to remind me which app this client
+corresponds to.</li>
+<li>The <code>token_url</code> points to the URL that’s used to obtain
+an access token. You’ll need to find this from the documentation for the
+API you’re wrapping; it will typically be found in the section that
+describes the OAuth process and will be an endpoint that returns an
+access token. Don’t be surprised if this endpoint feels very different
+to the rest of the API; auth is often implemented by a third-party
+package with slightly different conventions to the rest of the API.</li>
+</ul>
+<div class="section level3">
+<h3 id="client-secret">Client secret<a class="anchor" aria-label="anchor" href="#client-secret"></a>
+</h3>
+<p>In most cases, however, the API will also require a client secret.
+While this is called a secret, it’s typically not that important to keep
+it a secret because of two reasons:</p>
+<ul>
+<li>It’s typically easy to create an new app on the developer website so
+stealing yours wouldn’t save much time.</li>
+<li>It’s unusual for an OAuth client to be able to do anything in its
+own right, so stealing your secret doesn’t have much benefit.</li>
+</ul>
+<p>That means that unless you have paid for the app or given it private
+information while creating it, it’s ok to embed the client in your
+package. That said, httr2 provides some tooling to obfuscate your client
+secret so that the client secret isn’t directly embedded in your source
+code, and hence vulnerable to scraping.</p>
+<p>To obfuscate a string, call <code><a href="../reference/obfuscate.html">obfuscate()</a></code>, then copy and
+paste the result into your package. For example, if your client secret
+was “secret”, you’d call <code><a href="../reference/obfuscate.html">obfuscate()</a></code> then you’d copy and
+paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
+your client specification.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; obfuscated("3ER2bUGxDZBgmvt1nyaaiQysDnVVsg")</span></span></code></pre></div>
+<p>Here’s what a complete client specification for GitHub looks like,
+using a real app that I created specifically for this vignette:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
 <span>  secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,</span>
 <span>  token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"hadley-oauth-test"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>You need to figure out the <code>token_url</code> from the <a href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps" class="external-link">documentation</a>.
-I wish I could give good advice about how to find it 😞.</p>
-<p>Note that if you print the client the secret is automatically
-redacted:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">client</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">&lt;httr2_oauth_client&gt;</span></span></span>
-<span><span class="co">#&gt; name: hadley-oauth-test</span></span>
-<span><span class="co">#&gt; id: 28acfec0674bb3da9f38</span></span>
-<span><span class="co">#&gt; secret: <span style="color: #555555;">&lt;REDACTED&gt;</span></span></span>
-<span><span class="co">#&gt; token_url: https://github.com/login/oauth/access_token</span></span>
-<span><span class="co">#&gt; auth: oauth_client_req_auth_body</span></span></code></pre></div>
+<p>You can certainly uncover my client secret if you are an experienced
+R programmer and are willing to spend a bit of time experimenting, but
+I’m pretty sure it’d be easy for you to just create your own app on
+GitHub.</p>
+</div>
+<div class="section level3">
+<h3 id="packaging">Packaging<a class="anchor" aria-label="anchor" href="#packaging"></a>
+</h3>
+<p>I recommend wrapping client creation in a function in your package,
+e.g.:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">github_client</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
+<span>    secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,</span>
+<span>    token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"hadley-oauth-test"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>You’ll need this in order to run tests for your package, but you’ll
+probably also want to use it as the default client for your users. In
+some cases, it will be necessary for each user to create their own app
+and matching client (e.g. if rate limits are applied by app, not by
+user), but this is much less user friendly so you should avoid it if
+possible. That said, you should always provide a way for a user to
+supply their own client when you bundle a default. You can see an
+example of this in <a href="https://googledrive.tidyverse.org/articles/bring-your-own-app.html" class="external-link">the
+googledrive package</a>.</p>
+</div>
 </div>
 <div class="section level2">
-<h2 id="flows">Flows<a class="anchor" aria-label="anchor" href="#flows"></a>
+<h2 id="authorization-code-flow">Authorization code flow<a class="anchor" aria-label="anchor" href="#authorization-code-flow"></a>
 </h2>
-<p>Once you have a client you need to use it with a
-<strong>flow</strong> in order to get a token. OAuth provides a number
-of different “flows”, the most common is the “authorisation code” flow,
-which is implemented by <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. You can try
-it out by running this code:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_flow_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span></span></code></pre></div>
+<p>Once you have a client you need to use it with a flow in order to get
+a token. You’ll need to read the docs for your API to figure out which
+flows it supports, but the most common is the <strong>authorization
+code</strong><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Confusingly, Github calls this the “web application
+flow”, but this is not the official name. This is a general problem with
+OAuth docs; often they use different terms for the same things. In
+httr2, I’ve tried to stick as closely as possible to the terms used in
+the official RFC specifications.&lt;/p&gt;"><sup>2</sup></a> flow, which works something like this:</p>
+<ol style="list-style-type: decimal">
+<li>httr2 opens a browser using the <strong>authorization URL</strong>
+provided by the API. The URL includes parameters that identify your app
+and what <strong>scope</strong> of access you’re looking for
+(e.g. <code>tweet.read</code>, <code>userinfo.write</code>).</li>
+<li>The user logs in using their user name and password (hopefully using
+a <a href="https://www.nytimes.com/wirecutter/blog/why-you-need-a-password-manager-yes-you/" class="external-link">password
+manager</a>) and approves the request.</li>
+<li>The API sends an <strong>authorization code</strong> back to httr2
+using a callback URL that was supplied in the initial request.</li>
+<li>httr2 sends the authorization code to the <strong>token URL</strong>
+to get an access token.</li>
+</ol>
+<p>In httr2 this flow is implemented by a pair of functions:
+<code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> and
+<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. Start with
+<code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> to check that you have all the
+parameters correctly specified, then use
+<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> to authenticate requests. These two
+steps are described in the following sections.</p>
+<div class="section level3">
+<h3 id="creating-a-token">Creating a token<a class="anchor" aria-label="anchor" href="#creating-a-token"></a>
+</h3>
+<p><code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> is the best way to verify you’ve
+correctly specified the parameters to the client and the
+<code>auth_url</code>, without depending on correctly understanding any
+other part of the API. For example, you could get a token to access the
+GitHub API (using the client defined above) with this code:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span></span>
+<span>  client <span class="op">=</span> <span class="va">client</span>, </span>
+<span>  auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>This flow can’t be used inside a vignette because it’s designed
-specifically for interactive use: it will open a webpage on GitHub that
-requires you to interactively confirm it’s OK for this app to use your
-GitHub account.</p>
-<p>Other flows provide different ways of getting the token:</p>
+specifically for interactive use, but if you do run it and print out the
+<code>token</code>, you’ll see something like this:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">token</span></span>
+<span><span class="co">#&gt; &lt;httr2_token&gt;</span></span>
+<span><span class="co">#&gt; token_type: bearer</span></span>
+<span><span class="co">#&gt; access_token: &lt;REDACTED&gt;</span></span>
+<span><span class="co">#&gt; scope: ''</span></span></code></pre></div>
+<p>There’s not much to see here because httr2 automatically redacts the
+access token (because that could be used to perform actions on behalf of
+the user).</p>
+<p>If your call to <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> succeeds then
+you’ve got everything set up correctly and you can proceed to the next
+step. Otherwise, you’ll get an HTTP error. If you’re very lucky, that
+error will be informative and will help you figure out want went wrong.
+However, in most cases, you’ll need to carefully double check that
+you’ve correctly copied and pasted the client id and secret, and check
+that you’ve supplied the correct authorization and token urls
+(<code>auth_url</code> and <code>token_url</code>). If the docs have
+multiple candidates for each and you’re unclear about which is which,
+you’ll need to do some systematic experimentation.</p>
+</div>
+<div class="section level3">
+<h3 id="authenticating-a-request">Authenticating a request<a class="anchor" aria-label="anchor" href="#authenticating-a-request"></a>
+</h3>
+<p>Initial configuration is the only time that you’ll see an
+<code>httr2_token</code> object because you’ll generally want to rely on
+httr2 to manage the tokens for you. You’ll do that with
+<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>. To check that it’s working
+correctly, I recommend finding the simplest possible API endpoint to
+test it with. A good place to start is an endpoint that provides
+information about the “current” user, if your API provides one.</p>
+<p>For example, the GitHub API provides a <code>GET</code> endpoint at
+<code>/user</code> that returns information about the current user. If
+we make a request to this endpoint without authentication, we’ll get an
+error:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span></span>
+<span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 401 Unauthorized.</span></span></code></pre></div>
+<p>We can authenticate this request with
+<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>, using the same arguments as our
+previous call to <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span></span>
+<span>    client <span class="op">=</span> <span class="fu">github_client</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>When you run this code, you’ll see something like this, but it will
+obviously contain information about you, not me.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#&gt; List of 32</span></span>
+<span><span class="co">#&gt;  $ login        : chr "hadley"</span></span>
+<span><span class="co">#&gt;  $ id           : int 4196</span></span>
+<span><span class="co">#&gt;  $ node_id      : chr "MDQ6VXNlcjQxOTY="</span></span>
+<span><span class="co">#&gt;  $ avatar_url   : chr "https://avatars.githubusercontent.com/u/4196?v=4"</span></span>
+<span><span class="co">#&gt;  $ gravatar_id  : chr ""</span></span>
+<span><span class="co">#&gt;  $ url          : chr "https://api.github.com/users/hadley"</span></span>
+<span><span class="co">#&gt;  $ html_url     : chr "https://github.com/hadley"</span></span>
+<span><span class="co">#&gt;  ...</span></span>
+<span><span class="co">#&gt;  $ type         : chr "User"</span></span>
+<span><span class="co">#&gt;  $ site_admin   : logi FALSE</span></span>
+<span><span class="co">#&gt;  $ name         : chr "Hadley Wickham"</span></span>
+<span><span class="co">#&gt;  $ company      : chr "@posit-pbc"</span></span>
+<span><span class="co">#&gt;  $ blog         : chr "http://hadley.nz"</span></span>
+<span><span class="co">#&gt;  $ location     : chr "Houston, TX"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="caching">Caching<a class="anchor" aria-label="anchor" href="#caching"></a>
+</h3>
+<p>There are two big reasons to allow httr2 to manage tokens for you.
+The first is that httr2 will automatically refresh the token if it’s
+expired. The second is cross-session caching, as described below.</p>
+<p>By default, the OAuth token will be cached in memory. That means that
+you will only need to authenticate once in the current session, but
+you’ll need to re-authenticate if you restart R. In some cases, you may
+want to save the tokens (refresh and access) so that they can be used
+across sessions. This is easy to do (just set
+<code>cache_disk = TRUE</code>) but you need to think through the
+consequences of saving the refresh token on disk.</p>
+<p>httr2 does the best it can to save these credentials securely. They
+are stored in a local cache directory (<code><a href="../reference/oauth_cache_path.html">oauth_cache_path()</a></code>)
+that is accessible to the current user, and they are encrypted so they
+will be hard for any package other than httr2 to read. However, there’s
+no way to prevent other R code from using httr2 to access them, so if
+you do choose to cache tokens, you should inform the user and give them
+the ability to opt-out. httr2 automatically deletes any cached tokens
+that are older than 30 days whenever it’s loaded. This means that you’ll
+need to re-auth at least once a month, but prevents tokens from hanging
+around on disk long after you’ve forgotten you created them.</p>
+<p>You can see which clients have cached tokens by looking in the cache
+directory used by httr2:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu"><a href="../reference/oauth_cache_path.html">oauth_cache_path</a></span><span class="op">(</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Each client gets its own subdirectory named using the client
+<code>name</code>, so if you turn caching on, it’s particularly
+important to give your client a good name so that the user can easily
+tell which package the tokens belong to.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="other-flows">Other flows<a class="anchor" aria-label="anchor" href="#other-flows"></a>
+</h2>
+<p>When wrapping an API, you’ll need to carefully read the documentation
+to figure out which flows it provides. If possible you’ll want to use
+the authorization code flow since it generally provides the best
+experience, but if it’s not available you’ll need to carefully consider
+the others. Currently, httr2 supports the following flows:</p>
 <ul>
-<li><p><code><a href="../reference/req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> is used to allow the
-client to perform actions on its own behalf (instead of on behalf of
-some other user). This is typically need if you want to support
-<strong>service accounts</strong>, which are used in non-interactive
-environments.</p></li>
 <li><p><code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> uses the “device” flow which is
 designed for devices like TVs that don’t have an easy way to enter data.
 It also works well from the console.</p></li>
-<li><p><code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> uses a JWT signed by a
-private key.</p></li>
+<li><p><code><a href="../reference/req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> and
+<code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> are often needed for <strong>service
+accounts</strong>, accounts that represent automated services, not
+people, and are often used in non-interactive environments.</p></li>
 <li><p><code><a href="../reference/req_oauth_password.html">req_oauth_password()</a></code> exchanges a user name and
 password for an access token.</p></li>
 <li><p><code><a href="../reference/req_oauth_refresh.html">req_oauth_refresh()</a></code> works directly with a refresh
-token that you already have. It’s useful for testing.</p></li>
+token that you already have. It’s useful for testing and
+automation.</p></li>
 </ul>
-<p>There’s one historically important OAuth flow that httr2 doesn’t
-support: the implicit grant flow. This is now <a href="https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead" class="external-link">mostly
-deprecated</a> and was never a particularly good fit for native
-applications because it relies on a technique for returning the access
-token that only works inside a web browser.</p>
-<p>When wrapping an API, you’ll need to carefully read the documentation
-to figure out which flows are available. Typically you’ll want to use
-the auth code flow, but if it’s not available you’ll need to carefully
-consider the others. An additional wrinkle is that many APIs don’t
-implement the flow in exactly the same way as the spec. If your initial
-attempt doesn’t work, you’re going to need to do some sleuthing. This is
-going to be painful, but unfortunately there’s no way around it. I
-recommend using <code><a href="../reference/with_verbosity.html">with_verbosity()</a></code> so you can see exactly
-what httr2 is sending to the server. You’ll then need to carefully
-compare this to the API documentation and play “spot the
-difference”.</p>
-</div>
-<div class="section level2">
-<h2 id="tokens">Tokens<a class="anchor" aria-label="anchor" href="#tokens"></a>
-</h2>
-<p>The point of a flow is to get a token. You can use
-<code><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token()</a></code> to authorise a request with the
-access token stored inside the token object:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_auth_bearer_token.html">req_auth_bearer_token</a></span><span class="op">(</span><span class="va">token</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">$</span><span class="va">name</span></span>
-<span><span class="co">#&gt; [1] "Hadley Wickham"</span></span></code></pre></div>
-<p>However, in most cases you won’t want to do this, but instead allow
-httr2 to manage the whole process, by switching from
-<code>oauth_flow_{name}</code> to <code>req_oauth_{name}</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span><span class="va">client</span>, auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This is important because most APIs provide only a short-lived access
-token that needs to be regularly refreshed using a longer-lived refresh
-token. httr2 will automatically refresh the token if it’s expired
-(i.e. its expiry date is in the past) or if the request errors with a
-401 and there’s an <code>invalid_token</code> error in the
-<code>WWW-authenticate</code> header.</p>
-</div>
-<div class="section level2">
-<h2 id="caching">Caching<a class="anchor" aria-label="anchor" href="#caching"></a>
-</h2>
-<p>By default, <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> and friends will cache
-the token in memory, so that multiple requests in the same session all
-use the same token. In some cases, you may want to save the token so
-that it’s automatically used across sessions. This is easy to do (just
-set <code>cache_disk = TRUE</code> in
-<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>) but you need to carefully consider
-the consequences of saving the user’s credentials on disk.</p>
-<p>httr2 does the best it can to save these credentials securely. They
-are stored in a local cache directory (<code>oauth_cache_path())</code>
-that should only be accessible to the current user, and are encrypted so
-they will be hard for any package other than httr2 to read. However,
-there’s no way to prevent other R code from using httr2 to access them,
-so if you do choose to cache tokens, you should inform the user and give
-them the ability to opt-out.</p>
-<p>You can see which clients have cached tokens by looking in the cache
-directory used by httr2:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu"><a href="../reference/oauth_cache_path.html">oauth_cache_path</a></span><span class="op">(</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; character(0)</span></span></code></pre></div>
-<p>httr2 automatically deletes any cached tokens that are older than 30
-days whenever it’s loaded. This means that you’ll need to re-auth at
-least once a month, but prevents tokens for hanging around on disk long
-after you’ve forgotten you created them.</p>
+<p>httr2 doesn’t support the implicit grant flow. This was historically
+important but is now <a href="https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead" class="external-link">mostly
+deprecated</a> and was never a particularly good fit for R because it
+relies on a technique for returning the access token that only reliably
+works inside a web browser.</p>
+<p>Regardless of which flow you use, you’ll need to follow the same
+process as the example above: first figure out how to get a token using
+the <code>oauth_flow_</code> function, then actually use oauth with a
+request, by calling the matching <code>req_oauth_</code> function.</p>
+<p>One additional wrinkle is that many APIs don’t implement the flow in
+exactly the same way as the spec so httr2’s built-in flows might not
+work at all. If your initial attempt doesn’t work, you’re going to need
+to do some sleuthing. This is going to be painful, but unfortunately
+there’s no way around it. I recommend wrapping your httr2 code in
+<code><a href="../reference/with_verbosity.html">with_verbosity()</a></code> so you can see exactly what httr2 is
+sending to the server. You’ll then need to carefully compare this to the
+API documentation and play “spot the difference”. You’re very welcome to
+file an issue and I’ll do my best to help you out.</p>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

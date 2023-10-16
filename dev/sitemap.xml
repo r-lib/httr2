@@ -55,22 +55,10 @@
     <loc>https://httr2.r-lib.org/dev/reference/oauth_client_req_auth.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_auth_code.html</loc>
+    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_auth_code_url.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_bearer_jwt.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_client_credentials.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_device.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_password.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/dev/reference/oauth_flow_refresh.html</loc>
+    <loc>https://httr2.r-lib.org/dev/reference/oauth_redirect_uri.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/oauth_token.html</loc>
