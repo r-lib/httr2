@@ -7,7 +7,7 @@
 
 * httr2 now informs the user when a token is cached.
 
-* `req_perform_stream()` replaces `req_perform_stream()`. `req_perform_stream()`
+* `req_perform_stream()` replaces `req_stream()`. `req_stream()`
   is now deprecated (#314).
 
 * `req_perform_parallel()` replaces `multi_req_perform()`. `multi_req_perform()`
