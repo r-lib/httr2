@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `resp_body_json()` now caches its response so that you can use it
+  multiple times without worrying about the performance cost.
+
 * The httr2 examples now only run on R 4.2 and later so that we can use
   the base pipe and lambda syntax (#345).
 

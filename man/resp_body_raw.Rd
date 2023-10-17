@@ -50,7 +50,8 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \itemize{
 \item \code{resp_body_raw()} returns the raw bytes.
 \item \code{resp_body_string()} returns a UTF-8 string.
-\item \code{resp_body_json()} returns parsed JSON.
+\item \code{resp_body_json()} returns parsed JSON. The result is cached in the
+response so that calling \code{resp_body_json()} repeatedly is cheap.
 \item \code{resp_body_html()} returns parsed HTML.
 \item \code{resp_body_xml()} returns parsed XML.
 \item \code{resp_has_body()} returns \code{TRUE} if the response has a body.

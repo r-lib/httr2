@@ -3,7 +3,8 @@
 #' @description
 #' * `resp_body_raw()` returns the raw bytes.
 #' * `resp_body_string()` returns a UTF-8 string.
-#' * `resp_body_json()` returns parsed JSON.
+#' * `resp_body_json()` returns parsed JSON. The result is cached in the
+#'   response so that calling `resp_body_json()` repeatedly is cheap.
 #' * `resp_body_html()` returns parsed HTML.
 #' * `resp_body_xml()` returns parsed XML.
 #' * `resp_has_body()` returns `TRUE` if the response has a body.
@@ -77,6 +78,10 @@ resp_body_string <- function(resp, encoding = NULL) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
+  if (env_has(resp$cache, "json")) {
+    return(resp$cache$json)
+  }
+
   check_response(resp)
   check_installed("jsonlite")
   resp_check_content_type(
@@ -87,7 +92,8 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
   )
 
   text <- resp_body_string(resp, "UTF-8")
-  jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+  resp$cache$json <- jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+  resp$cache$json
 }
 
 #' @rdname resp_body_raw

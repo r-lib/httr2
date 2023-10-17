@@ -90,7 +90,8 @@ new_response <- function(method,
       url = url,
       status_code = status_code,
       headers = headers,
-      body = body
+      body = body,
+      cache = new_environment()
     ),
     class = "httr2_response"
   )
