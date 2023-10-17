@@ -41,6 +41,17 @@ test_that("resp_body_json stores parsed result", {
   expect_true(is_reference(json2, json1))
 })
 
+test_that("resp_body_xml stores parsed result", {
+  resp <- request_test("/xml") %>% req_perform()
+  xml1 <- resp_body_xml(resp)
+  # check it's saved
+  expect_equal(resp$cache$xml, xml1)
+
+  # check it's not recomputed
+  xml2 <- resp_body_xml(resp)
+  expect_true(is_reference(xml2, xml1))
+})
+
 test_that("content types are checked", {
   expect_snapshot(error = TRUE, {
     request_test("/xml") %>% req_perform() %>% resp_body_json()

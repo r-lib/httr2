@@ -3,15 +3,15 @@
 #' @description
 #' * `resp_body_raw()` returns the raw bytes.
 #' * `resp_body_string()` returns a UTF-8 string.
-#' * `resp_body_json()` returns parsed JSON. The result is cached in the
-#'   response so that calling `resp_body_json()` repeatedly is cheap.
+#' * `resp_body_json()` returns parsed JSON.
 #' * `resp_body_html()` returns parsed HTML.
 #' * `resp_body_xml()` returns parsed XML.
 #' * `resp_has_body()` returns `TRUE` if the response has a body.
 #'
 #' `resp_body_json()` and `resp_body_xml()` check that the content-type header
 #' is correct; if the server returns an incorrect type you can suppress the
-#' check with `check_type = FALSE`.
+#' check with `check_type = FALSE`. These two functions also cache the parsed
+#' object so the second and subsequent calls are low-cost.
 #'
 #' @param resp A response object.
 #' @returns
@@ -113,6 +113,11 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
+  if (env_has(resp$cache, "xml")) {
+    return(resp$cache$xml)
+  }
+
+
   check_response(resp)
   check_installed("xml2")
   resp_check_content_type(
@@ -122,5 +127,6 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
     check_type = check_type
   )
 
-  xml2::read_xml(resp$body, ...)
+  resp$cache$xml <- xml2::read_xml(resp$body, ...)
+  resp$cache$xml
 }
