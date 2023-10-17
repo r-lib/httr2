@@ -50,6 +50,7 @@ test_that("can set query params", {
 
   expect_equal(req_url_query(req, a = 1, a = 2)$url, "http://example.com/?a=1&a=2")
   expect_equal(req_url_query(req, !!!list(a = 1, a = 2))$url, "http://example.com/?a=1&a=2")
+  expect_equal(req_url_query(req, a = 1:2)$url, "http://example.com/?a=1&a=2")
 })
 
 test_that("empty query doesn't affect url", {
@@ -72,9 +73,6 @@ test_that("can opt-out of query escaping", {
 })
 
 test_that("query components must be length 1", {
-  expect_snapshot(error = TRUE, {
-    req <- request("http://example.com/")
-    req %>% req_url_query(a = mean)
-    req %>% req_url_query(a = letters)
-  })
+  req <- request("http://example.com/")
+  expect_snapshot(req %>% req_url_query(a = mean), error = TRUE)
 })

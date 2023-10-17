@@ -22,7 +22,7 @@ req_url_path_append(req, ...)
 
 \item{...}{For \code{req_url_query()}: <\code{\link[rlang:dyn-dots]{dynamic-dots}}>
 Name-value pairs that provide query parameters. Each value must be either
-a length-1 atomic vector (which is automatically escaped) or \code{NULL} (which
+an atomic vector (which is automatically escaped) or \code{NULL} (which
 is silently dropped). If you want to opt out of escaping, wrap strings in
 \code{I()}.
 
@@ -53,6 +53,10 @@ req |>
 # Change complete url
 req |>
   req_url("http://google.com")
+
+# Vectors automatically generate repeated parameter names:
+req |>
+  req_url_query(id = 100:105)
 
 # If you have query parameters in a list, use !!!
 params <- list(a = "1", b = "2")

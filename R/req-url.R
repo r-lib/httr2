@@ -10,7 +10,7 @@
 #' @param url New URL; completely replaces existing.
 #' @param ... For `req_url_query()`: <[`dynamic-dots`][rlang::dyn-dots]>
 #'   Name-value pairs that provide query parameters. Each value must be either
-#'   a length-1 atomic vector (which is automatically escaped) or `NULL` (which
+#'   an atomic vector (which is automatically escaped) or `NULL` (which
 #'   is silently dropped). If you want to opt out of escaping, wrap strings in
 #'   `I()`.
 #'
@@ -32,6 +32,10 @@
 #' req |>
 #'   req_url("http://google.com")
 #'
+#' # Vectors automatically generate repeated parameter names:
+#' req |>
+#'   req_url_query(id = 100:105)
+#'
 #' # If you have query parameters in a list, use !!!
 #' params <- list(a = "1", b = "2")
 #' req |>
@@ -49,8 +53,29 @@ req_url <- function(req, url) {
 req_url_query <- function(.req, ...) {
   check_request(.req)
 
+  dots <- list2(...)
+
+  type_ok <- map_lgl(dots, function(x) is_atomic(x) || is.null(x))
+  if (any(!type_ok)) {
+    cli::cli_abort(
+      "All elements of {.code ...} must be either an atomic vector or NULL."
+    )
+  }
+
+  expanded <- map(dots, function(x) {
+    if (is.null(x)) {
+      list(NULL)
+    } else {
+      map(seq_along(x), function(i) x[i])
+    }
+  })
+  expanded <- stats::setNames(
+    unlist(expanded, recursive = FALSE, use.names = FALSE),
+    rep(names(dots), lengths(expanded))
+  )
+
   url <- url_parse(.req$url)
-  url$query <- modify_list(url$query, ...)
+  url$query <- modify_list(url$query, !!!expanded)
 
   req_url(.req, url_build(url))
 }

@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* `req_url_query()` now allows you to set query parameters to a vector of 
+  values, in which case the name will be repeated, i.e. 
+  `req_url_query(req, a = 1)` will generate `?a=1&a=2` (#350).
+
 * The httr2 examples now only run on R 4.2 and later so that we can use
   the base pipe and lambda syntax (#345).
 
