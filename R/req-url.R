@@ -32,9 +32,9 @@
 #' req |>
 #'   req_url("http://google.com")
 #'
-#' # Vectors automatically generate repeated parameter names:
-#' req |>
-#'   req_url_query(id = 100:105)
+#' # Use multi to control what happens with vector parameters:
+#' req |> req_url_query(id = 100:105, .multi = "comma")
+#' req |> req_url_query(id = 100:105, .multi = "explode")
 #'
 #' # If you have query parameters in a list, use !!!
 #' params <- list(a = "1", b = "2")
@@ -50,8 +50,25 @@ req_url <- function(req, url) {
 
 #' @export
 #' @rdname req_url
-req_url_query <- function(.req, ...) {
+#' @param .multi Controls what happens when an element of `...` is a vector
+#'   containing multiple values:
+#'
+#'   * `"error"`, the default, throws an error.
+#'   * `"comma"`, separates values with a `,`, e.g. `?x=1,2`.
+#'   * `"pipe"`, separates values with a `|`, e.g. `?x=1|2`.
+#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`.
+#'
+#'   If none of these functions work, you can alternatively supply a function
+#'   that takes a character vector and returns a string.
+req_url_query <- function(.req,
+                          ...,
+                          .multi = c("error", "comma", "pipe", "explode")) {
   check_request(.req)
+  if (is.function(.multi)) {
+    multi <- .multi
+  } else {
+    multi <- arg_match(.multi)
+  }
 
   dots <- list2(...)
 
@@ -62,22 +79,48 @@ req_url_query <- function(.req, ...) {
     )
   }
 
-  expanded <- map(dots, function(x) {
+  n <- lengths(dots)
+  if (any(n > 1)) {
+    if (is.function(multi)) {
+      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- lapply(dots[n > 1], multi)
+      dots[n > 1] <- lapply(dots[n > 1], I)
+    } else if (multi == "comma") {
+      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = ",")
+      dots[n > 1] <- lapply(dots[n > 1], I)
+    } else if (multi == "pipe") {
+      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = "|")
+      dots[n > 1] <- lapply(dots[n > 1], I)
+    } else if (multi == "explode") {
+      dots <- explode(dots)
+    } else if (multi == "error") {
+      cli::cli_abort(c(
+        "All vector elements of {.code ...} must be length 1.",
+        i = "Use {.arg multi} to choose a strategy for handling."
+      ))
+    }
+  }
+
+  url <- url_parse(.req$url)
+  url$query <- modify_list(url$query, !!!dots)
+
+  req_url(.req, url_build(url))
+}
+
+explode <- function(x) {
+  expanded <- map(x, function(x) {
     if (is.null(x)) {
       list(NULL)
     } else {
       map(seq_along(x), function(i) x[i])
     }
   })
-  expanded <- stats::setNames(
+  stats::setNames(
     unlist(expanded, recursive = FALSE, use.names = FALSE),
-    rep(names(dots), lengths(expanded))
+    rep(names(x), lengths(expanded))
   )
-
-  url <- url_parse(.req$url)
-  url$query <- modify_list(url$query, !!!expanded)
-
-  req_url(.req, url_build(url))
 }
 
 #' @export

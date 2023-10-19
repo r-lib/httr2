@@ -186,13 +186,18 @@ query_build <- function(x, error_call = caller_env()) {
     )
   }
 
-  is_double <- map_lgl(x, is.double)
-  x[is_double] <- map_chr(x[is_double], format, scientific = FALSE)
-
-  names <- curl::curl_escape(names(x))
-  values <- map_chr(x, url_escape)
+  names <- url_escape(names(x))
+  values <- map_chr(x, format_query_param)
 
   paste0(names, "=", values, collapse = "&")
+}
+
+
+format_query_param <- function(x) {
+  if (is.double(x)) {
+    x <- format(x, scientific = FALSE)
+  }
+  url_escape(x)
 }
 
 url_escape <- function(x) {
