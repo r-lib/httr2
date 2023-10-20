@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `resp_body_json()` and `resp_body_xml()` now caches the parsed values so 
+  that you can use them repeatedly without worrying about the performance cost.
+
 * `req_url_query()` gains a `.multi` parameter that controls what happens when
   you supply multiple values in a vector. The default will continue to error 
   but you can use `.multi = "comma"` to separate with commas, `"pipe"` to 
