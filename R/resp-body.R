@@ -78,8 +78,9 @@ resp_body_string <- function(resp, encoding = NULL) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
-  if (env_has(resp$cache, "json")) {
-    return(resp$cache$json)
+  key <- body_cache_key("json", simplifyVector = simplifyVector, ...)
+  if (env_has(resp$cache, key)) {
+    return(resp$cache[[key]])
   }
 
   check_response(resp)
@@ -92,8 +93,8 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
   )
 
   text <- resp_body_string(resp, "UTF-8")
-  resp$cache$json <- jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
-  resp$cache$json
+  resp$cache[[key]] <- jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+  resp$cache[[key]]
 }
 
 #' @rdname resp_body_raw
@@ -113,8 +114,9 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
-  if (env_has(resp$cache, "xml")) {
-    return(resp$cache$xml)
+  key <- body_cache_key("xml", ...)
+  if (env_has(resp$cache, key)) {
+    return(resp$cache[[key]])
   }
 
 
@@ -127,6 +129,11 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
     check_type = check_type
   )
 
-  resp$cache$xml <- xml2::read_xml(resp$body, ...)
-  resp$cache$xml
+  resp$cache[[key]] <- xml2::read_xml(resp$body, ...)
+  resp$cache[[key]]
+}
+
+body_cache_key <- function(prefix, ...) {
+  key <- hash(list(...))
+  paste0(prefix, "-", substr(key, 1, 10))
 }
