@@ -134,7 +134,7 @@ req_auth_github <- function(req) {
   )
 }
 
-request("https://api.github.com/user") \%>\%
+request("https://api.github.com/user") |>
   req_auth_github()
 }
 \seealso{

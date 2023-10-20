@@ -51,11 +51,11 @@
 #'   the limits in the response.
 #' @examples
 #' # google APIs assume that a 500 is also a transient error
-#' request("http://google.com") %>%
-#'   req_retry(is_transient = ~ resp_status(.x) %in% c(429, 500, 503))
+#' request("http://google.com") |>
+#'   req_retry(is_transient = \(resp) resp_status(resp) %in% c(429, 500, 503))
 #'
 #' # use a constant 10s delay after every failure
-#' request("http://example.com") %>%
+#' request("http://example.com") |>
 #'   req_retry(backoff = ~ 10)
 #'
 #' # When rate-limited, GitHub's API returns a 403 with
@@ -69,7 +69,7 @@
 #'   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
 #'   time - unclass(Sys.time())
 #' }
-#' request("http://api.github.com") %>%
+#' request("http://api.github.com") |>
 #'   req_retry(
 #'     is_transient = github_is_transient,
 #'     after = github_after

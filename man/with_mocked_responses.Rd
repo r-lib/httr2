@@ -37,7 +37,7 @@ primarily used for testing.
 \examples{
 # This function should perform a response against google.com:
 google <- function() {
-  request("http://google.com") \%>\%
+  request("http://google.com") |>
     req_perform()
 }
 

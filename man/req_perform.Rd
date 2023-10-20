@@ -82,7 +82,7 @@ progress bar off (and just show the total time to wait) by setting
 }
 
 \examples{
-request("https://google.com") \%>\%
+request("https://google.com") |>
   req_perform()
 }
 \seealso{

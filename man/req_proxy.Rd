@@ -29,8 +29,8 @@ Use a proxy for a request
 \examples{
 # Proxy from https://www.proxynova.com/proxy-server-list/
 \dontrun{
-request("http://hadley.nz") \%>\%
-  req_proxy("20.116.130.70", 3128) \%>\%
+request("http://hadley.nz") |>
+  req_proxy("20.116.130.70", 3128) |>
   req_perform()
 }
 }

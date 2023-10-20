@@ -15,7 +15,7 @@
 #' # turn off SSL verification. This is generally a bad idea so httr2 doesn't
 #' # provide a convenient wrapper, but if you really know what you're doing
 #' # you can still access this libcurl option:
-#' req <- request("https://example.com") %>%
+#' req <- request("https://example.com") |>
 #'   req_options(ssl_verifypeer = 0)
 req_options <- function(.req, ...) {
   check_request(.req)
@@ -36,14 +36,14 @@ req_options <- function(.req, ...) {
 #' @export
 #' @examples
 #' # Default user-agent:
-#' request("http://example.com") %>% req_dry_run()
+#' request("http://example.com") |> req_dry_run()
 #'
-#' request("http://example.com") %>% req_user_agent("MyString") %>% req_dry_run()
+#' request("http://example.com") |> req_user_agent("MyString") |> req_dry_run()
 #'
 #' # If you're wrapping in an API in a package, it's polite to set the
 #' # user agent to identify your package.
-#' request("http://example.com") %>%
-#'   req_user_agent("MyPackage (http://mypackage.com)") %>%
+#' request("http://example.com") |>
+#'   req_user_agent("MyPackage (http://mypackage.com)") |>
 #'   req_dry_run()
 req_user_agent <- function(req, string = NULL) {
   check_request(req)
@@ -72,7 +72,7 @@ req_user_agent <- function(req, string = NULL) {
 #' @export
 #' @examples
 #' # Give up after at most 10 seconds
-#' request("http://example.com") %>% req_timeout(10)
+#' request("http://example.com") |> req_timeout(10)
 req_timeout <- function(req, seconds) {
   check_request(req)
   check_number_decimal(seconds)
@@ -94,8 +94,8 @@ req_timeout <- function(req, seconds) {
 #' @examples
 #' # Proxy from https://www.proxynova.com/proxy-server-list/
 #' \dontrun{
-#' request("http://hadley.nz") %>%
-#'   req_proxy("20.116.130.70", 3128) %>%
+#' request("http://hadley.nz") |>
+#'   req_proxy("20.116.130.70", 3128) |>
 #'   req_perform()
 #' }
 #' @export
@@ -149,12 +149,12 @@ req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, a
 #' @examples
 #' # Use `req_verbose()` to see the headers that are sent back and forth when
 #' # making a request
-#' resp <- request("https://httr2.r-lib.org") %>%
-#'   req_verbose() %>%
+#' resp <- request("https://httr2.r-lib.org") |>
+#'   req_verbose() |>
 #'   req_perform()
 #'
 #' # Or use one of the convenient shortcuts:
-#' resp <- request("https://httr2.r-lib.org") %>%
+#' resp <- request("https://httr2.r-lib.org") |>
 #'   req_perform(verbosity = 1)
 req_verbose <- function(req,
                         header_req = TRUE,

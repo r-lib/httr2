@@ -52,6 +52,31 @@ test_that("can set query params", {
   expect_equal(req_url_query(req, !!!list(a = 1, a = 2))$url, "http://example.com/?a=1&a=2")
 })
 
+test_that("can handle multi query params", {
+  req <- request("http://example.com/")
+
+  req_url_query_multi <- function(multi) {
+    req_url_query(req, a = 1:2, .multi = multi)$url
+  }
+
+  expect_snapshot(req_url_query_multi("error"), error = TRUE)
+
+  expect_equal(req_url_query_multi("explode"), "http://example.com/?a=1&a=2")
+  expect_equal(req_url_query_multi("comma"), "http://example.com/?a=1,2")
+  expect_equal(req_url_query_multi("pipe"), "http://example.com/?a=1|2")
+  expect_equal(req_url_query_multi(function(x) "X"), "http://example.com/?a=X")
+})
+
+test_that("errors are forwarded correctly", {
+  req <- request("http://example.com/")
+  expect_snapshot(error = TRUE, {
+    req %>% req_url_query(a = I(1))
+    req %>% req_url_query(a = 1:2)
+    req %>% req_url_query(a = mean)
+  })
+
+})
+
 test_that("empty query doesn't affect url", {
   req <- request("http://example.com/")
   expect_equal(req_url_query(req)$url, "http://example.com/")
@@ -71,10 +96,11 @@ test_that("can opt-out of query escaping", {
   expect_equal(req_url_query(req, a = I(","))$url, "http://example.com/?a=,")
 })
 
-test_that("query components must be length 1", {
-  expect_snapshot(error = TRUE, {
-    req <- request("http://example.com/")
-    req %>% req_url_query(a = mean)
-    req %>% req_url_query(a = letters)
-  })
+# explode -----------------------------------------------------------------
+
+test_that("explode handles expected inputs", {
+  expect_equal(
+    explode(list(a = NULL, b = 1, c = 2:3)),
+    list(a = NULL, b = 1, c = 2, c = 3)
+  )
 })

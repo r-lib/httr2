@@ -8,6 +8,20 @@
   token has expired, then httr2 will now re-run the entire flow to get 
   you a new token (#349).
 
+* `resp_body_json()` and `resp_body_xml()` now caches the parsed values so 
+  that you can use them repeatedly without worrying about the performance cost.
+
+* `req_url_query()` gains a `.multi` parameter that controls what happens when
+  you supply multiple values in a vector. The default will continue to error 
+  but you can use `.multi = "comma"` to separate with commas, `"pipe"` to 
+  separate with `|`, and `"explode"` to generate one parameter for each 
+  value (e.g. `?a=1&a=2`) (#350).
+
+* The httr2 examples now only run on R 4.2 and later so that we can use
+  the base pipe and lambda syntax (#345).
+
+* `curl_translate()` now uses the base pipe.
+
 * OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
   not `oauth_*()` (#330). This includes a new `vignette("oauth")` which 
   gives many more details about how OAuth works and how to use it with

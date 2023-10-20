@@ -21,7 +21,7 @@
 #'   )
 #' }
 #' if (interactive()) {
-#'   request("https://example.com") %>%
+#'   request("https://example.com") |>
 #'     req_auth()
 #' }
 req_oauth_password <- function(req,

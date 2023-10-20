@@ -19,7 +19,7 @@ occur. If the request did not succeed (or no requests have been made)
 \code{last_response()} will be \code{NULL}.
 }
 \examples{
-invisible(request("http://httr2.r-lib.org") \%>\% req_perform())
+invisible(request("http://httr2.r-lib.org") |> req_perform())
 last_request()
 last_response()
 }

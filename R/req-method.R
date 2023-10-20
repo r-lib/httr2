@@ -9,9 +9,9 @@
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
-#' request(example_url()) %>% req_method("PATCH")
-#' request(example_url()) %>% req_method("PUT")
-#' request(example_url()) %>% req_method("HEAD")
+#' request(example_url()) |> req_method("PATCH")
+#' request(example_url()) |> req_method("PUT")
+#' request(example_url()) |> req_method("HEAD")
 req_method <- function(req, method) {
   check_request(req)
   check_string(method)

@@ -21,17 +21,15 @@ this lower-level helper to iterate through the requests and perform them
 yourself with \code{\link[=req_perform]{req_perform()}}.
 }
 \examples{
-req_flowers <- request(example_url()) \%>\%
-  req_url_path("/iris") \%>\%
-  req_url_query(limit = 40) \%>\%
+req_flowers <- request(example_url()) |>
+  req_url_path("/iris") |>
+  req_url_query(limit = 40) |>
   req_paginate_page_index(
-    page_index = function(req, page) {
-      req \%>\% req_url_query(page_index = page)
-    }
+    page_index = \(req, page) req |> req_url_query(page_index = page)
   )
 req_flowers$url
 
-resp <- req_flowers \%>\% req_perform()
+resp <- req_flowers |> req_perform()
 next_req <- iterate_next_request(req_flowers, resp)
 next_req$url
 }

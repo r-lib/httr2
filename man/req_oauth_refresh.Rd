@@ -59,7 +59,7 @@ Learn more about the overall OAuth authentication flow in \code{vignette("oauth"
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")
 req <- request("https://example.com")
-req \%>\% req_oauth_refresh(client)
+req |> req_oauth_refresh(client)
 }
 \seealso{
 Other OAuth flows: 

@@ -37,15 +37,15 @@ resp_header_exists(resp, header)
 }
 }
 \examples{
-resp <- request("https://httr2.r-lib.org") \%>\% req_perform()
-resp \%>\% resp_headers()
-resp \%>\% resp_headers("x-")
+resp <- request("https://httr2.r-lib.org") |> req_perform()
+resp |> resp_headers()
+resp |> resp_headers("x-")
 
-resp \%>\% resp_header_exists("server")
-resp \%>\% resp_header("server")
+resp |> resp_header_exists("server")
+resp |> resp_header("server")
 # Headers are case insensitive
-resp \%>\% resp_header("SERVER")
+resp |> resp_header("SERVER")
 
 # Returns NULL if header doesn't exist
-resp \%>\% resp_header("this-header-doesnt-exist")
+resp |> resp_header("this-header-doesnt-exist")
 }

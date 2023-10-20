@@ -9,7 +9,7 @@
 \usage{
 req_url(req, url)
 
-req_url_query(.req, ...)
+req_url_query(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
 
 req_url_path(req, ...)
 
@@ -21,13 +21,24 @@ req_url_path_append(req, ...)
 \item{url}{New URL; completely replaces existing.}
 
 \item{...}{For \code{req_url_query()}: <\code{\link[rlang:dyn-dots]{dynamic-dots}}>
-Name-value pairs that provide query parameters. Each value must be either
-a length-1 atomic vector (which is automatically escaped) or \code{NULL} (which
-is silently dropped). If you want to opt out of escaping, wrap strings in
-\code{I()}.
+Name-value pairs that define query parameters. Each value must be either
+an atomic vector or \code{NULL} (which removes the corresponding parameters).
+If you want to opt out of escaping, wrap strings in \code{I()}.
 
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}
+
+\item{.multi}{Controls what happens when an element of \code{...} is a vector
+containing multiple values:
+\itemize{
+\item \code{"error"}, the default, throws an error.
+\item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.
+\item \code{"pipe"}, separates values with a \code{|}, e.g. \code{?x=1|2}.
+\item \code{"explode"}, turns each element into its own parameter, e.g. \code{?x=1&x=2}.
+}
+
+If none of these functions work, you can alternatively supply a function
+that takes a character vector and returns a string.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -44,18 +55,22 @@ A modified HTTP \link{request}.
 req <- request("http://example.com")
 
 # Change url components
-req \%>\%
-  req_url_path_append("a") \%>\%
-  req_url_path_append("b") \%>\%
-  req_url_path_append("search.html") \%>\%
+req |>
+  req_url_path_append("a") |>
+  req_url_path_append("b") |>
+  req_url_path_append("search.html") |>
   req_url_query(q = "the cool ice")
 
 # Change complete url
-req \%>\%
+req |>
   req_url("http://google.com")
+
+# Use .multi to control what happens with vector parameters:
+req |> req_url_query(id = 100:105, .multi = "comma")
+req |> req_url_query(id = 100:105, .multi = "explode")
 
 # If you have query parameters in a list, use !!!
 params <- list(a = "1", b = "2")
-req \%>\%
+req |>
   req_url_query(!!!params, c = "3")
 }

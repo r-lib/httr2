@@ -90,7 +90,8 @@ new_response <- function(method,
       url = url,
       status_code = status_code,
       headers = headers,
-      body = body
+      body = body,
+      cache = new_environment()
     ),
     class = "httr2_response"
   )
@@ -129,10 +130,10 @@ print.httr2_response <- function(x,...) {
 #' @returns `resp` (invisibly).
 #' @export
 #' @examples
-#' resp <- request(example_url()) %>%
-#'   req_url_path("/json") %>%
+#' resp <- request(example_url()) |>
+#'   req_url_path("/json") |>
 #'   req_perform()
-#' resp %>% resp_raw()
+#' resp |> resp_raw()
 resp_raw <- function(resp) {
   cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))
   cli::cat_line(cli::style_bold(names(resp$headers)), ": ", resp$headers)

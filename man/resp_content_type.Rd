@@ -30,11 +30,11 @@ is found, returns \code{UTF-8}. Used by \code{\link[=resp_body_string]{resp_body
 }
 \examples{
 resp <- response(header = "Content-type: text/html; charset=utf-8")
-resp \%>\% resp_content_type()
-resp \%>\% resp_encoding()
+resp |> resp_content_type()
+resp |> resp_encoding()
 
 # No Content-Type header
 resp <- response()
-resp \%>\% resp_content_type()
-resp \%>\% resp_encoding()
+resp |> resp_content_type()
+resp |> resp_encoding()
 }

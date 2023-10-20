@@ -10,7 +10,8 @@
 #'
 #' `resp_body_json()` and `resp_body_xml()` check that the content-type header
 #' is correct; if the server returns an incorrect type you can suppress the
-#' check with `check_type = FALSE`.
+#' check with `check_type = FALSE`. These two functions also cache the parsed
+#' object so the second and subsequent calls are low-cost.
 #'
 #' @param resp A response object.
 #' @returns
@@ -20,15 +21,15 @@
 #' * `resp_body_html()` and `resp_body_xml()` return an `xml2::xml_document`
 #' @export
 #' @examples
-#' resp <- request("https://httr2.r-lib.org") %>% req_perform()
+#' resp <- request("https://httr2.r-lib.org") |> req_perform()
 #' resp
 #'
-#' resp %>% resp_has_body()
-#' resp %>% resp_body_raw()
-#' resp %>% resp_body_string()
+#' resp |> resp_has_body()
+#' resp |> resp_body_raw()
+#' resp |> resp_body_string()
 #'
 #' if (requireNamespace("xml2", quietly = TRUE)) {
-#'   resp %>% resp_body_html()
+#'   resp |> resp_body_html()
 #' }
 resp_body_raw <- function(resp) {
   check_response(resp)
@@ -77,6 +78,11 @@ resp_body_string <- function(resp, encoding = NULL) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
+  key <- body_cache_key("json", simplifyVector = simplifyVector, ...)
+  if (env_has(resp$cache, key)) {
+    return(resp$cache[[key]])
+  }
+
   check_response(resp)
   check_installed("jsonlite")
   resp_check_content_type(
@@ -87,7 +93,8 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
   )
 
   text <- resp_body_string(resp, "UTF-8")
-  jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+  resp$cache[[key]] <- jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+  resp$cache[[key]]
 }
 
 #' @rdname resp_body_raw
@@ -107,6 +114,12 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
+  key <- body_cache_key("xml", ...)
+  if (env_has(resp$cache, key)) {
+    return(resp$cache[[key]])
+  }
+
+
   check_response(resp)
   check_installed("xml2")
   resp_check_content_type(
@@ -116,5 +129,11 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
     check_type = check_type
   )
 
-  xml2::read_xml(resp$body, ...)
+  resp$cache[[key]] <- xml2::read_xml(resp$body, ...)
+  resp$cache[[key]]
+}
+
+body_cache_key <- function(prefix, ...) {
+  key <- hash(list(...))
+  paste0(prefix, "-", substr(key, 1, 10))
 }

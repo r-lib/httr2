@@ -66,7 +66,7 @@ req_auth <- function(req) {
   )
 }
 
-request("https://example.com") \%>\%
+request("https://example.com") |>
  req_auth()
 }
 \seealso{

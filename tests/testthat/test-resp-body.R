@@ -30,6 +30,33 @@ test_that("can retrieve parsed body", {
   expect_s3_class(resp_body_xml(resp), "xml_document")
 })
 
+test_that("resp_body_json stores parsed result", {
+  resp <- request_test("/json") %>% req_perform()
+  json1 <- resp_body_json(resp)
+  # check it's saved
+  expect_length(resp$cache, 1)
+
+  # check it's not recomputed
+  json2 <- resp_body_json(resp)
+  expect_true(is_reference(json2, json1))
+
+  # check the arguments matter
+  json3 <- resp_body_json(resp, simplifyVector = TRUE)
+  expect_false(is_reference(json3, json1))
+  expect_length(resp$cache, 2)
+})
+
+test_that("resp_body_xml stores parsed result", {
+  resp <- request_test("/xml") %>% req_perform()
+  xml1 <- resp_body_xml(resp)
+  # check it's saved
+  expect_length(resp$cache, 1)
+
+  # check it's not recomputed
+  xml2 <- resp_body_xml(resp)
+  expect_true(is_reference(xml2, xml1))
+})
+
 test_that("content types are checked", {
   expect_snapshot(error = TRUE, {
     request_test("/xml") %>% req_perform() %>% resp_body_json()
