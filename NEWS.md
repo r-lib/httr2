@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* If you are using an OAuth token with a refresh token, and that refresh
+  token has expired, then httr2 will now re-run the entire flow to get 
+  you a new token (#349).
+
 * OAuth docs have been clarified to encourage the use of `req_oauth_*()`, 
   not `oauth_*()` (#330). This includes a new `vignette("oauth")` which 
   gives many more details about how OAuth works and how to use it with

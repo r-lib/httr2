@@ -44,22 +44,25 @@ auth_oauth_sign <- function(req, reauth = FALSE) {
   req_auth_bearer_token(req, token$access_token)
 }
 
-auth_oauth_token_get <- function(cache, flow, flow_params, reauth = FALSE) {
+auth_oauth_token_get <- function(cache, flow, flow_params = list(), reauth = FALSE) {
   token <- cache$get()
   if (reauth || is.null(token)) {
     token <- exec(flow, !!!flow_params)
     cache$set(token)
-  } else {
-    if (token_has_expired(token)) {
-      cache$clear()
-      if (is.null(token$refresh_token)) {
-        token <- exec(flow, !!!flow_params)
-      } else {
-        token <- token_refresh(flow_params$client, token$refresh_token)
-      }
-
-      cache$set(token)
+  } else if (token_has_expired(token)) {
+    cache$clear()
+    if (is.null(token$refresh_token)) {
+      token <- exec(flow, !!!flow_params)
+    } else {
+      token <- tryCatch(
+        token_refresh(flow_params$client, token$refresh_token),
+        httr2_oauth = function(cnd) {
+          # If refresh fails, try to auth from scratch
+          exec(flow, !!!flow_params)
+        }
+      )
     }
+    cache$set(token)
   }
 
   token
@@ -143,7 +146,7 @@ cache_choose <- function(client, cache_disk = FALSE, cache_key = NULL) {
   }
 }
 
-cache_mem <- function(client, key) {
+cache_mem <- function(client, key = NULL) {
   key <- hash(c(client$name, key))
   list(
     get = function() env_get(the$token_cache, key, default = NULL),
@@ -151,7 +154,7 @@ cache_mem <- function(client, key) {
     clear = function() env_unbind(the$token_cache, key)
   )
 }
-cache_disk <- function(client, key) {
+cache_disk <- function(client, key = NULL) {
   app_path <- file.path(oauth_cache_path(), client$name)
   dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
