@@ -32,7 +32,7 @@
 #' req |>
 #'   req_url("http://google.com")
 #'
-#' # Use multi to control what happens with vector parameters:
+#' # Use .multi to control what happens with vector parameters:
 #' req |> req_url_query(id = 100:105, .multi = "comma")
 #' req |> req_url_query(id = 100:105, .multi = "explode")
 #'
@@ -98,7 +98,7 @@ req_url_query <- function(.req,
     } else if (multi == "error") {
       cli::cli_abort(c(
         "All vector elements of {.code ...} must be length 1.",
-        i = "Use {.arg multi} to choose a strategy for handling."
+        i = "Use {.arg .multi} to choose a strategy for handling."
       ))
     }
   }
