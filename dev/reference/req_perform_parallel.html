@@ -138,7 +138,7 @@ or OAuth failures, <code>req_perform_parallel()</code> will only make 1.</p>
 <span class="r-in"><span><span class="co"># But it's much faster if you request in parallel</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.741   0.304   1.045 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.692   0.353   1.046 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">reqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">request_base</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_url.html">req_url_path</a></span><span class="op">(</span><span class="st">"/status/200"</span><span class="op">)</span>,</span></span>
