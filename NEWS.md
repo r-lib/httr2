@@ -1,5 +1,13 @@
 # httr2 (development version)
 
+* New `oauth_token_cached()` that allows you to get an OAuth token while still
+  taking advantage of httr2's caching and auto-renewal features. For expert
+  use only (#328).
+
+* If you are using an OAuth token with a refresh token, and that refresh
+  token has expired, then httr2 will now re-run the entire flow to get 
+  you a new token (#349).
+
 * `resp_body_json()` and `resp_body_xml()` now caches the parsed values so 
   that you can use them repeatedly without worrying about the performance cost.
 
