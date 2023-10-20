@@ -64,17 +64,33 @@ test_that("empty queries become NULL", {
   expect_equal(query_parse(""), NULL)
 })
 
-test_that("doubles never use scientific notation", {
-  expect_equal(query_build(list(x = 1e9)), "x=1000000000")
-})
-
-test_that("can opt out of escaping", {
-  expect_equal(query_build(list(x = I(","))), "x=,")
-})
-
 test_that("validates inputs", {
   expect_snapshot(error = TRUE, {
     query_build(1:3)
     query_build(list(x = 1:2, y = 1:3))
   })
+})
+
+# format_query_param ------------------------------------------------------
+
+test_that("handles all atomic vectors", {
+  expect_equal(format_query_param(NA), "NA")
+  expect_equal(format_query_param(TRUE), "TRUE")
+  expect_equal(format_query_param(1L), "1")
+  expect_equal(format_query_param(1.3), "1.3")
+  expect_equal(format_query_param("x"), "x")
+  expect_equal(format_query_param(" "), "%20")
+})
+
+
+test_that("doubles don't use scientific notation", {
+  expect_equal(format_query_param(1e9), "1000000000")
+})
+
+test_that("can opt out of escaping", {
+  expect_equal(format_query_param(I(",")), ",")
+})
+
+test_that("can't opt out of escaping non strings", {
+  expect_snapshot(format_query_param(I(1)), error = TRUE)
 })

@@ -1,5 +1,11 @@
 # httr2 (development version)
 
+* `req_url_query()` gains a `.multi` parameter that controls what happens when
+  you supply multiple values in a vector. The default will continue to error 
+  but you can use `.multi = "comma"` to separate with commas, `"pipe"` to 
+  separate with `|`, and `"explode"` to generate one parameter for each 
+  value (e.g. `?a=1&a=2`) (#350).
+
 * The httr2 examples now only run on R 4.2 and later so that we can use
   the base pipe and lambda syntax (#345).
 
