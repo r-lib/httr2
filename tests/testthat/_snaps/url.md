@@ -38,3 +38,11 @@
       ! Query parameters must be length 1 atomic vectors.
       * Problems: "x" and "y".
 
+# can't opt out of escaping non strings
+
+    Code
+      format_query_param(I(1))
+    Condition
+      Error:
+      ! Escaped query value must be a single string, not the number 1.
+
