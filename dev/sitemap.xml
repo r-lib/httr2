@@ -67,6 +67,9 @@
     <loc>https://httr2.r-lib.org/dev/reference/oauth_token.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/dev/reference/oauth_token_cached.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/dev/reference/obfuscate.html</loc>
   </url>
   <url>
