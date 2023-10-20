@@ -186,24 +186,20 @@ query_build <- function(x, error_call = caller_env()) {
     )
   }
 
-  names <- url_escape(names(x))
-  values <- map_chr(x, format_query_param)
+  names <- curl::curl_escape(names(x))
+  values <- map_chr(x, format_query_param, error_call = error_call)
 
   paste0(names, "=", values, collapse = "&")
 }
 
 
-format_query_param <- function(x) {
-  if (is.double(x)) {
-    x <- format(x, scientific = FALSE)
-  }
-  url_escape(x)
-}
-
-url_escape <- function(x) {
+format_query_param <- function(x, error_call = caller_env()) {
   if (inherits(x, "AsIs")) {
-    x
-  } else {
-    curl::curl_escape(x)
+    x <- unclass(x)
+    check_string(x, call = error_call, arg = I("Escaped query value"))
+    return(x)
   }
+
+  x <- format(x, scientific = FALSE)
+  curl::curl_escape(x)
 }

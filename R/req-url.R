@@ -9,10 +9,9 @@
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
 #' @param ... For `req_url_query()`: <[`dynamic-dots`][rlang::dyn-dots]>
-#'   Name-value pairs that provide query parameters. Each value must be either
-#'   an atomic vector (which is automatically escaped) or `NULL` (which
-#'   is silently dropped). If you want to opt out of escaping, wrap strings in
-#'   `I()`.
+#'   Name-value pairs that define query parameters. Each value must be either
+#'   an atomic vector or `NULL` (which removes the corresponding parameters).
+#'   If you want to opt out of escaping, wrap strings in `I()`.
 #'
 #'   For `req_url_path()` and `req_url_path_append()`: A sequence of path
 #'   components that will be combined with `/`.
@@ -98,14 +97,15 @@ req_url_query <- function(.req,
     } else if (multi == "error") {
       cli::cli_abort(c(
         "All vector elements of {.code ...} must be length 1.",
-        i = "Use {.arg .multi} to choose a strategy for handling."
+        i = "Use {.arg .multi} to choose a strategy for handling vectors."
       ))
     }
   }
+  # Force query generation to bubble up errors
+  query_build(dots)
 
   url <- url_parse(.req$url)
   url$query <- modify_list(url$query, !!!dots)
-
   req_url(.req, url_build(url))
 }
 

@@ -21,10 +21,9 @@ req_url_path_append(req, ...)
 \item{url}{New URL; completely replaces existing.}
 
 \item{...}{For \code{req_url_query()}: <\code{\link[rlang:dyn-dots]{dynamic-dots}}>
-Name-value pairs that provide query parameters. Each value must be either
-an atomic vector (which is automatically escaped) or \code{NULL} (which
-is silently dropped). If you want to opt out of escaping, wrap strings in
-\code{I()}.
+Name-value pairs that define query parameters. Each value must be either
+an atomic vector or \code{NULL} (which removes the corresponding parameters).
+If you want to opt out of escaping, wrap strings in \code{I()}.
 
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}
@@ -66,7 +65,7 @@ req |>
 req |>
   req_url("http://google.com")
 
-# Use multi to control what happens with vector parameters:
+# Use .multi to control what happens with vector parameters:
 req |> req_url_query(id = 100:105, .multi = "comma")
 req |> req_url_query(id = 100:105, .multi = "explode")
 
