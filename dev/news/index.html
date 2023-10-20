@@ -56,7 +56,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p>The httr2 examples now only run on R 4.2 and later so that we can use the base pipe and lambda syntax (<a href="https://github.com/r-lib/httr2/issues/345" class="external-link">#345</a>).</p></li>
+<ul><li><p><code><a href="../reference/req_url.html">req_url_query()</a></code> gains a <code>.multi</code> parameter that controls what happens when you supply multiple values in a vector. The default will continue to error but you can use <code>.multi = "comma"</code> to separate with commas, <code>"pipe"</code> to separate with <code>|</code>, and <code>"explode"</code> to generate one parameter for each value (e.g. <code>?a=1&amp;a=2</code>) (<a href="https://github.com/r-lib/httr2/issues/350" class="external-link">#350</a>).</p></li>
+<li><p>The httr2 examples now only run on R 4.2 and later so that we can use the base pipe and lambda syntax (<a href="https://github.com/r-lib/httr2/issues/345" class="external-link">#345</a>).</p></li>
 <li><p><code><a href="../reference/curl_translate.html">curl_translate()</a></code> now uses the base pipe.</p></li>
 <li><p>OAuth docs have been clarified to encourage the use of <code>req_oauth_*()</code>, not <code>oauth_*()</code> (<a href="https://github.com/r-lib/httr2/issues/330" class="external-link">#330</a>). This includes a new <code><a href="../articles/oauth.html">vignette("oauth")</a></code> which gives many more details about how OAuth works and how to use it with httr2 (<a href="https://github.com/r-lib/httr2/issues/234" class="external-link">#234</a>).</p></li>
 <li><p>httr2 now informs the user when a token is cached.</p></li>
