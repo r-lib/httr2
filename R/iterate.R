@@ -17,6 +17,10 @@
 #' @param progress Display a progress bar? Use `TRUE` to turn on a basic
 #'   progress bar, use a string to give it a name, or see [progress_bars] to
 #'   customise it in other ways.
+#' @param path Optionally, path to save body of request. This should be
+#'   a glue string that uses `{i}` to distinguish different requests.
+#'   Useful for large responses because it avoids storing the response in
+#'   memory.
 #' @return A list of [response()]s.
 #' @export
 #' @examples
@@ -39,11 +43,21 @@
 #' })
 req_perform_iteratively <- function(req,
                                     next_req,
+                                    path = NULL,
                                     max_reqs = 20,
                                     progress = TRUE) {
   check_request(req)
   check_function2(next_req, args = c("resp", "req"))
   check_number_whole(max_reqs, allow_infinite = TRUE, min = 1)
+  check_string(path, allow_empty = FALSE, allow_null = TRUE)
+
+  get_path <- function(i) {
+    if (is.null(path)) {
+      NULL
+    } else {
+      glue::glue(path)
+    }
+  }
 
   progress <- create_progress_bar(
     total = max_reqs,
@@ -56,7 +70,7 @@ req_perform_iteratively <- function(req,
 
   tryCatch({
     repeat {
-      resps[[i]] <- resp <- req_perform(req)
+      resps[[i]] <- resp <- req_perform(req, path = get_path(i))
       progress$update()
 
       req <- next_req(resp = resp, req = req)

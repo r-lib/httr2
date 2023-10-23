@@ -13,6 +13,24 @@ test_that("can perform multiple requests", {
   expect_equal(resp_url(resps[[4]]), paste0(example_url(), "iris?limit=5&page_index=4"))
 })
 
+test_that("can save results to disk", {
+  req <- request(example_url()) |>
+    req_url_path("/iris") |>
+    req_url_query(limit = 5)
+
+  dir <- withr::local_tempdir()
+
+  resps <- req_perform_iteratively(
+    req,
+    next_req = iterate_with_offset("page_index"),
+    max_reqs = 2,
+    path = paste0(dir, "/file-{i}")
+  )
+
+  expect_equal(resps[[1]]$body, new_path(file.path(dir, "file-1")))
+  expect_equal(resps[[2]]$body, new_path(file.path(dir, "file-2")))
+})
+
 test_that("user temination still returns data", {
   req <- request(example_url()) |>
     req_url_path("/iris") |>

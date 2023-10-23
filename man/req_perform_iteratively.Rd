@@ -4,7 +4,13 @@
 \alias{req_perform_iteratively}
 \title{Perform requests iteratively, generating new requests from previous responses}
 \usage{
-req_perform_iteratively(req, next_req, max_reqs = 20, progress = TRUE)
+req_perform_iteratively(
+  req,
+  next_req,
+  path = NULL,
+  max_reqs = 20,
+  progress = TRUE
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -12,6 +18,11 @@ req_perform_iteratively(req, next_req, max_reqs = 20, progress = TRUE)
 \item{next_req}{A function that takes the previous response (\code{resp}) and
 request (\code{req}) and returns a \link{request} for the next page or \code{NULL} if
 the iteration should terminate.}
+
+\item{path}{Optionally, path to save body of request. This should be
+a glue string that uses \code{{i}} to distinguish different requests.
+Useful for large responses because it avoids storing the response in
+memory.}
 
 \item{max_reqs}{The maximum number of requests to perform. Use \code{Inf} to
 perform all requests until \code{next_req()} returns \code{NULL}.}
