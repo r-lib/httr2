@@ -61,5 +61,15 @@ test_that("can retrieve all pages", {
     class = "httr2:::doubled"
   )
   expect_length(resps, 120)
+})
 
+test_that("checks its inputs", {
+  req <- request_test()
+  expect_snapshot(error = TRUE,{
+    req_perform_iteratively(1)
+    req_perform_iteratively(req, function(x, y) x + y)
+    req_perform_iteratively(req, function(resp, req) {}, path = 1)
+    req_perform_iteratively(req, function(resp, req) {}, max_reqs = -1)
+    req_perform_iteratively(req, function(resp, req) {}, progress = -1)
+  })
 })
