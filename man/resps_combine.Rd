@@ -17,14 +17,7 @@ resps_errors(resps)
 
 \item{resp_data}{A function with one argument \code{resp} that parses the
 response and returns a list with the field \code{data} and other fields needed
-to create the request for the next page.
-\code{req_perform_iteratively()} combines all \code{data} fields via \code{\link[vctrs:vec_c]{vctrs::vec_c()}}
-and returns the result.
-Other fields that might be needed are:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{* `next_url` for `paginate_next_url()`.
-* `next_token` for `paginate_next_token()`.
-}\if{html}{\out{</div>}}}
+to create the request for the next page.}
 }
 \description{
 \itemize{
