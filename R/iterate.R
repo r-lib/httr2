@@ -74,14 +74,19 @@ req_perform_iteratively <- function(req,
       resps[[i]] <- resp <- req_perform(req, path = get_path(i))
       progress$update()
 
-      withCallingHandlers({
-        req <- next_req(resp = resp, req = req)
-      }, httr2_total_pages = function(cnd) {
-        if (cnd$n < max_reqs) {
-          max_reqs <<- cnd$n
-          progress$update(total = max_reqs)
+      withCallingHandlers(
+        {
+          req <- next_req(resp = resp, req = req)
+        },
+        httr2_total_pages = function(cnd) {
+          # Allow next_req() to shrink the number of pages remaining
+          # Most important in max_req = Inf case
+          if (cnd$n < max_reqs) {
+            max_reqs <<- cnd$n
+            progress$update(total = max_reqs)
+          }
         }
-      })
+      )
 
       if (is.null(req) || i >= max_reqs) {
         break
