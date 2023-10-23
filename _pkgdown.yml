@@ -55,9 +55,11 @@ reference:
   - req_throttle
   - req_retry
 
-- title: Pagination
+- title: Iteration
   contents:
-  - req_paginate
+  - req_perform_iteratively
+  - starts_with("iterate_")
+  - starts_with("resps_")
 
 - title: Handle the response
   contents:
