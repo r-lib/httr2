@@ -6,7 +6,13 @@
 \alias{iterate_with_link_url}
 \title{Iteration helpers}
 \usage{
-iterate_with_offset(param_name, start = 1, offset = 1, resp_complete = NULL)
+iterate_with_offset(
+  param_name,
+  start = 1,
+  offset = 1,
+  resp_pages = NULL,
+  resp_complete = NULL
+)
 
 iterate_with_cursor(param_name, resp_param_value)
 
@@ -18,6 +24,10 @@ iterate_with_link_url(rel = "next")
 \item{start}{Starting value.}
 
 \item{offset}{Offset for each page.}
+
+\item{resp_pages}{A callback function that takes a response (\code{resp}) and
+returns the total number of pages, or \code{NULL} if unknown. It will only
+be called once.}
 
 \item{resp_complete}{A callback function that takes a response (\code{resp})
 and returns \code{TRUE} if there are no further pages.}
@@ -45,13 +55,31 @@ See \code{resp_link_url()} for more details.
 req <- request(example_url()) |>
   req_url_path("/iris") |>
   req_throttle(10) |>
-  req_url_query(limit = 5)
+  req_url_query(limit = 50)
 
+# If you don't know the total number of pages in advance, you can
+# provde a `resp_complete()` callback
 is_complete <- function(resp) {
   length(resp_body_json(resp)$data) == 0
 }
 resps <- req_perform_iteratively(
   req,
-  iterate_with_offset("page_index", resp_complete = is_complete)
+  next_req = iterate_with_offset("page_index", resp_complete = is_complete),
+  max_reqs = Inf
 )
+
+\dontrun{
+# Alternatively, if the response returns the total number of pages (or you
+# can easily calculate it), you can use the `resp_pages()` callback which
+# will generate a better progress bar.
+
+resps <- req_perform_iteratively(
+  req \%>\% req_url_query(limit = 1),
+  next_req = iterate_with_offset(
+    "page_index",
+    resp_pages = function(resp) resp_body_json(resp)$pages
+  ),
+  max_reqs = Inf)
+}
+
 }

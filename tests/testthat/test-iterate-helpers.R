@@ -21,6 +21,29 @@ test_that("increments param_name by offset", {
   expect_equal(url_parse(req_3$url)$query, list(page = "3"))
 })
 
+test_that("can compute total pages", {
+  req_1 <- request_test()
+  iterator <- iterate_with_offset("page", resp_pages = function(resp) {
+    resp_body_json(resp)$n
+  })
+
+  expect_no_condition(
+    req_2 <- iterator(response_json(), req_1),
+    class = "httr2_total_pages"
+  )
+
+  expect_condition(
+    req_3 <- iterator(response_json(body = list(n = 100)), req_2),
+    class = "httr2_total_pages"
+  )
+
+  # Only called once
+  expect_no_condition(
+    req_4 <- iterator(response_json(body = list(n = 200)), req_3),
+    class = "httr2_total_pages"
+  )
+})
+
 test_that("can terminate early", {
   req_1 <- request_test()
   iterator <- iterate_with_offset("page", resp_complete = function(resp) {

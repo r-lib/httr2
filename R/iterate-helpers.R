@@ -17,32 +17,65 @@
 #' @param offset Offset for each page.
 #' @param resp_complete A callback function that takes a response (`resp`)
 #'   and returns `TRUE` if there are no further pages.
+#' @param resp_pages A callback function that takes a response (`resp`) and
+#'   returns the total number of pages, or `NULL` if unknown. It will only
+#'   be called once.
 #' @export
 #' @examples
 #' req <- request(example_url()) |>
 #'   req_url_path("/iris") |>
 #'   req_throttle(10) |>
-#'   req_url_query(limit = 5)
+#'   req_url_query(limit = 50)
 #'
+#' # If you don't know the total number of pages in advance, you can
+#' # provde a `resp_complete()` callback
 #' is_complete <- function(resp) {
 #'   length(resp_body_json(resp)$data) == 0
 #' }
 #' resps <- req_perform_iteratively(
 #'   req,
-#'   iterate_with_offset("page_index", resp_complete = is_complete)
+#'   next_req = iterate_with_offset("page_index", resp_complete = is_complete),
+#'   max_reqs = Inf
 #' )
+#'
+#' \dontrun{
+#' # Alternatively, if the response returns the total number of pages (or you
+#' # can easily calculate it), you can use the `resp_pages()` callback which
+#' # will generate a better progress bar.
+#'
+#' resps <- req_perform_iteratively(
+#'   req %>% req_url_query(limit = 1),
+#'   next_req = iterate_with_offset(
+#'     "page_index",
+#'     resp_pages = function(resp) resp_body_json(resp)$pages
+#'   ),
+#'   max_reqs = Inf)
+#' }
+#'
 iterate_with_offset <- function(param_name,
                                 start = 1,
                                 offset = 1,
+                                resp_pages = NULL,
                                 resp_complete = NULL) {
   check_string(param_name)
   check_number_whole(start)
   check_number_whole(offset, min = 1)
+  check_function2(resp_pages, args = "resp", allow_null = TRUE)
   check_function2(resp_complete, args = "resp", allow_null = TRUE)
   resp_complete <- resp_complete %||% function(resp) FALSE
 
+  known_total <- FALSE
   i <- start # assume already fetched
+
   function(resp, req) {
+    if (!is.null(resp_pages) && !known_total) {
+      n <- resp_pages(resp)
+      if (!is.null(n)) {
+        known_total <<- TRUE
+        signal("", class = "httr2_total_pages", n = n)
+      }
+    }
+
     if (!isTRUE(resp_complete(resp))) {
       i <<- i + offset
       req %>% req_url_query(!!param_name := i)

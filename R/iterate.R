@@ -3,8 +3,9 @@
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' `req_perform_iteratively()` requests all pages for an iterated request and
-#' returning a list of responses. You will probably want to it pair with an
+#' `req_perform_iteratively()` iteratively generates and performs requests,
+#' using a callback function, `next_req`, to define the next request based on
+#' the current request and response. You will probably want to it pair with an
 #' [iteration helper][iterate_with_offset] and use a
 #' [multi-response handler][resps_combine] to process the result.
 #'
@@ -73,7 +74,15 @@ req_perform_iteratively <- function(req,
       resps[[i]] <- resp <- req_perform(req, path = get_path(i))
       progress$update()
 
-      req <- next_req(resp = resp, req = req)
+      withCallingHandlers({
+        req <- next_req(resp = resp, req = req)
+      }, httr2_total_pages = function(cnd) {
+        if (cnd$n < max_reqs) {
+          max_reqs <<- cnd$n
+          progress$update(total = max_reqs)
+        }
+      })
+
       if (is.null(req) || i >= max_reqs) {
         break
       }

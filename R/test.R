@@ -38,7 +38,7 @@ example_url <- function() {
     data <- vctrs::vec_slice(datasets::iris, intersect(ids, seq_len(n)))
 
     res$set_status(200L)$send_json(
-      object = list(data = data, count = n),
+      object = list(data = data, count = n, pages = n / page_size),
       auto_unbox = TRUE,
       pretty = TRUE
     )

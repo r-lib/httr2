@@ -37,8 +37,9 @@ A list of \code{\link[=response]{response()}}s.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{req_perform_iteratively()} requests all pages for an iterated request and
-returning a list of responses. You will probably want to it pair with an
+\code{req_perform_iteratively()} iteratively generates and performs requests,
+using a callback function, \code{next_req}, to define the next request based on
+the current request and response. You will probably want to it pair with an
 \link[=iterate_with_offset]{iteration helper} and use a
 \link[=resps_combine]{multi-response handler} to process the result.
 }
