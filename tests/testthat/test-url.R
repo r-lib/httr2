@@ -83,8 +83,9 @@ test_that("handles all atomic vectors", {
 })
 
 
-test_that("doubles don't use scientific notation", {
+test_that("formats numbers nicely", {
   expect_equal(format_query_param(1e9), "1000000000")
+  expect_equal(format_query_param(c(1, 1000)), c("1", "1000"))
 })
 
 test_that("can opt out of escaping", {
