@@ -83,7 +83,7 @@ req_perform_iteratively <- function(req,
           # Most important in max_req = Inf case
           if (cnd$n < max_reqs) {
             max_reqs <<- cnd$n
-            progress$update(total = max_reqs)
+            progress$update(total = max_reqs, inc = 0)
           }
         }
       )
