@@ -18,7 +18,7 @@
 #' @param progress Display a progress bar? Use `TRUE` to turn on a basic
 #'   progress bar, use a string to give it a name, or see [progress_bars] to
 #'   customise it in other ways.
-#' @param path Optionally, path to save body of request. This should be
+#' @param path Optionally, path to save the body of request. This should be
 #'   a glue string that uses `{i}` to distinguish different requests.
 #'   Useful for large responses because it avoids storing the response in
 #'   memory.

@@ -1,7 +1,7 @@
 #' Iteration helpers
 #'
 #' @description
-#' These functions are suitable for use with the `next_req` argument to
+#' These functions are intended for use with the `next_req` argument to
 #' [req_perform_iteratively()]. Each implements iteration for a common
 #' pagination pattern:
 #'
@@ -9,7 +9,7 @@
 #'   `?page=2`, or `?offset=1`, `offset=21`.
 #' * `iterate_with_cursor()` updates a query parameter with the value of a
 #'    cursor found somewhere in the response.
-#'  * `iterate_with_link_url()` follows the url found the `Link` header.
+#'  * `iterate_with_link_url()` follows the url found in the `Link` header.
 #'    See `resp_link_url()` for more details.
 #'
 #' @param param_name Name of query parameter.
@@ -28,7 +28,7 @@
 #'   req_url_query(limit = 50)
 #'
 #' # If you don't know the total number of pages in advance, you can
-#' # provde a `resp_complete()` callback
+#' # provide a `resp_complete()` callback
 #' is_complete <- function(resp) {
 #'   length(resp_body_json(resp)$data) == 0
 #' }
