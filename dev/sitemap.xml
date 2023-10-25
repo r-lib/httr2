@@ -40,7 +40,7 @@
     <loc>https://httr2.r-lib.org/dev/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/dev/reference/iterate_next_request.html</loc>
+    <loc>https://httr2.r-lib.org/dev/reference/iterate_with_offset.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/jwt_claim.html</loc>
@@ -130,9 +130,6 @@
     <loc>https://httr2.r-lib.org/dev/reference/req_options.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/dev/reference/req_paginate.html</loc>
-  </url>
-  <url>
     <loc>https://httr2.r-lib.org/dev/reference/req_perform.html</loc>
   </url>
   <url>
@@ -206,6 +203,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/response.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/dev/reference/resps_combine.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/dev/reference/secrets.html</loc>

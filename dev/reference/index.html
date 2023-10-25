@@ -280,7 +280,7 @@
         </dt>
         <dd>Control when a request will retry, and how long it will wait between tries</dd>
       </dl></div><div class="section level2">
-      <h2 id="pagination">Pagination<a class="anchor" aria-label="anchor" href="#pagination"></a></h2>
+      <h2 id="iteration">Iteration<a class="anchor" aria-label="anchor" href="#iteration"></a></h2>
       
       
 
@@ -292,9 +292,19 @@
 
       <dl><dt>
           
-          <code><a href="req_paginate.html">req_paginate()</a></code> <code><a href="req_paginate.html">req_paginate_next_url()</a></code> <code><a href="req_paginate.html">req_paginate_token()</a></code> <code><a href="req_paginate.html">req_paginate_offset()</a></code> <code><a href="req_paginate.html">req_paginate_page_index()</a></code> 
+          <code><a href="req_perform_iteratively.html">req_perform_iteratively()</a></code> 
         </dt>
-        <dd>Define a paginated request</dd>
+        <dd>Perform requests iteratively, generating new requests from previous responses</dd>
+      </dl><dl><dt>
+          
+          <code><a href="iterate_with_offset.html">iterate_with_offset()</a></code> <code><a href="iterate_with_offset.html">iterate_with_cursor()</a></code> <code><a href="iterate_with_offset.html">iterate_with_link_url()</a></code> 
+        </dt>
+        <dd>Iteration helpers</dd>
+      </dl><dl><dt>
+          
+          <code><a href="resps_combine.html">resps_combine()</a></code> <code><a href="resps_combine.html">resps_responses()</a></code> <code><a href="resps_combine.html">resps_errors()</a></code> 
+        </dt>
+        <dd>Tools for working with lists of responses</dd>
       </dl></div><div class="section level2">
       <h2 id="handle-the-response">Handle the response<a class="anchor" aria-label="anchor" href="#handle-the-response"></a></h2>
       
