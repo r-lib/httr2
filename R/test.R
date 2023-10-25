@@ -4,32 +4,6 @@ request_test <- function(template = "/get", ...) {
   req
 }
 
-token_body_test <- function(token = NULL) {
-  compact(list(x = list(1), my_next_token = token))
-}
-
-request_pagination_test <- function(parse_resp = NULL,
-                                    n_pages = NULL,
-                                    local_env = caller_env()) {
-  local_mocked_responses(function(req) {
-    cur_token <- req$body$data$my_token %||% 1L
-    response_json(body = token_body_test(if (cur_token != 4) cur_token + 1))
-  }, env = local_env)
-
-  request_test() %>%
-    req_paginate_token(
-      parse_resp = parse_resp %||% function(resp) {
-        parsed <- resp_body_json(resp)
-        list(next_token = parsed$my_next_token, data = list(parsed))
-      },
-      set_token = function(req, next_token) {
-        req_body_json(req, list(my_token = next_token))
-      },
-      n_pages = n_pages
-    )
-}
-
-
 #' Code for examples
 #'
 #' @description
@@ -59,12 +33,12 @@ example_url <- function() {
 
     n <- nrow(datasets::iris)
     start <- (page - 1L) * page_size + 1L
-    end <- min(start + page_size - 1L, n)
-    ids <- seq(start, end)
-    data <- vctrs::vec_slice(datasets::iris, ids)
+    end <- start + page_size - 1L
+    ids <- seq2(start, end)
+    data <- vctrs::vec_slice(datasets::iris, intersect(ids, seq_len(n)))
 
     res$set_status(200L)$send_json(
-      object = list(data = data, count = n),
+      object = list(data = data, count = n, pages = ceiling(n / page_size)),
       auto_unbox = TRUE,
       pretty = TRUE
     )

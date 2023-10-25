@@ -245,7 +245,10 @@ create_progress_bar <- function(total,
                                 config_arg = caller_arg(config),
                                 error_call = caller_env()) {
   if (is_false(config)) {
-    return()
+    return(list(
+      update = function(...) {},
+      done = function() {}
+    ))
   }
 
   if (is.null(config) || is_bool(config)) {
@@ -271,5 +274,10 @@ create_progress_bar <- function(total,
   args$total <- total
   args$.envir <- env
 
-  exec(cli::cli_progress_bar, !!!args)
+  id <- exec(cli::cli_progress_bar, !!!args)
+
+  list(
+    update = function(...) cli::cli_progress_update(..., id = id),
+    done = function() cli::cli_progress_done(id = id)
+  )
 }
