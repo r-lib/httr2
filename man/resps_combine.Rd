@@ -15,14 +15,13 @@ resps_errors(resps)
 \arguments{
 \item{resps}{A list of responses (possibly including errors).}
 
-\item{resp_data}{A function with one argument \code{resp} that parses the
-response and returns a list with the field \code{data} and other fields needed
-to create the request for the next page.}
+\item{resp_data}{A function that takes a response (\code{resp}) and
+returns the data foind inside that response as a vector or data frame.}
 }
 \description{
 \itemize{
-\item \code{resps_combine()} combines the data from each responses into a single
-object.
+\item \code{resps_combine()} combines the data from each response into a single
+vector.
 \item \code{resps_response()} returns all successful responses.
 \item \code{resps_error()} returns all errors.
 }

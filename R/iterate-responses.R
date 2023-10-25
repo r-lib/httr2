@@ -8,7 +8,7 @@
 #' @export
 #' @param resps A list of responses (possibly including errors).
 #' @param resp_data A function that takes a response (`resp`) and
-#'   returns its data as a vector or data frame.
+#'   returns the data foind inside that response as a vector or data frame.
 resps_combine <- function(resps, resp_data) {
   check_installed("vctrs")
 

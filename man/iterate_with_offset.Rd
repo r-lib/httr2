@@ -23,7 +23,10 @@ iterate_with_link_url(rel = "next")
 
 \item{start}{Starting value.}
 
-\item{offset}{Offset for each page.}
+\item{offset}{Offset for each page. The default is set to \code{1} so you get
+(e.g.) \code{?page=1}, \code{?page=2}, ... If \code{param_name} refers to an element
+index (rather than a page index) you'll want to set this to a larger number
+so you get (e.g.) \code{?items=20}, \code{?items=40}, ...}
 
 \item{resp_pages}{A callback function that takes a response (\code{resp}) and
 returns the total number of pages, or \code{NULL} if unknown. It will only
@@ -39,7 +42,7 @@ pages.}
 \item{rel}{The "link relation type" to use to retrieve the next page.}
 }
 \description{
-These functions are suitable for use with the \code{next_req} argument to
+These functions are intended for use with the \code{next_req} argument to
 \code{\link[=req_perform_iteratively]{req_perform_iteratively()}}. Each implements iteration for a common
 pagination pattern:
 \itemize{
@@ -47,7 +50,7 @@ pagination pattern:
 \code{?page=2}, or \code{?offset=1}, \code{offset=21}.
 \item \code{iterate_with_cursor()} updates a query parameter with the value of a
 cursor found somewhere in the response.
-\item \code{iterate_with_link_url()} follows the url found the \code{Link} header.
+\item \code{iterate_with_link_url()} follows the url found in the \code{Link} header.
 See \code{resp_link_url()} for more details.
 }
 }
@@ -58,7 +61,7 @@ req <- request(example_url()) |>
   req_url_query(limit = 50)
 
 # If you don't know the total number of pages in advance, you can
-# provde a `resp_complete()` callback
+# provide a `resp_complete()` callback
 is_complete <- function(resp) {
   length(resp_body_json(resp)$data) == 0
 }
@@ -79,7 +82,7 @@ resps <- req_perform_iteratively(
     "page_index",
     resp_pages = function(resp) resp_body_json(resp)$pages
   ),
-  max_reqs = Inf)
+  max_reqs = Inf
+)
 }
-
 }

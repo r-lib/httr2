@@ -19,7 +19,7 @@ req_perform_iteratively(
 request (\code{req}) and returns a \link{request} for the next page or \code{NULL} if
 the iteration should terminate.}
 
-\item{path}{Optionally, path to save body of request. This should be
+\item{path}{Optionally, path to save the body of request. This should be
 a glue string that uses \code{{i}} to distinguish different requests.
 Useful for large responses because it avoids storing the response in
 memory.}

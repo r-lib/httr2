@@ -14,7 +14,10 @@
 #'
 #' @param param_name Name of query parameter.
 #' @param start Starting value.
-#' @param offset Offset for each page.
+#' @param offset Offset for each page. The default is set to `1` so you get
+#'   (e.g.) `?page=1`, `?page=2`, ... If `param_name` refers to an element
+#'   index (rather than a page index) you'll want to set this to a larger number
+#'   so you get (e.g.) `?items=20`, `?items=40`, ...
 #' @param resp_complete A callback function that takes a response (`resp`)
 #'   and returns `TRUE` if there are no further pages.
 #' @param resp_pages A callback function that takes a response (`resp`) and
@@ -49,9 +52,9 @@
 #'     "page_index",
 #'     resp_pages = function(resp) resp_body_json(resp)$pages
 #'   ),
-#'   max_reqs = Inf)
+#'   max_reqs = Inf
+#' )
 #' }
-#'
 iterate_with_offset <- function(param_name,
                                 start = 1,
                                 offset = 1,
