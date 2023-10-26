@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_body_json_modify()` allows you to iteratively modify a JSON 
+  body of a request.
+
 * New `oauth_token_cached()` that allows you to get an OAuth token while still
   taking advantage of httr2's caching and auto-renewal features. For expert
   use only (#328).

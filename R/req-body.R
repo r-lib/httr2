@@ -3,7 +3,8 @@
 #' @description
 #' * `req_body_file()` sends a local file.
 #' * `req_body_raw()` sends a string or raw vector.
-#' * `req_body_json()` sends JSON encoded data.
+#' * `req_body_json()` sends JSON encoded data. Named components of this data
+#'   can later be modified with `req_body_json_modify()`.
 #' * `req_body_form()` sends form encoded data.
 #' * `req_body_multipart()` creates a multi-part body.
 #'
@@ -106,14 +107,30 @@ req_body_json <- function(req, data,
 
 #' @export
 #' @rdname req_body
-#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-data pairs used send
-#'   data in the body. For `req_body_form()`, the values must be strings (or
-#'   things easily coerced to string); for `req_body_multipart()` the values
-#'   must be strings or objects produced by
-#'   [curl::form_file()]/[curl::form_data()].
+req_body_json_modify <- function(req, ...) {
+  check_request(req)
+  if (req$body$type != "json") {
+    cli::cli_abort("Can only be used after {.fn req_body_json")
+  }
+
+  req$body$data <- modify_list(req$body$data, ...)
+  req
+}
+
+#' @export
+#' @rdname req_body
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-data pairs used to send
+#'   data in the body.
 #'
-#'   For `req_body_json()`, additional arguments passed on to
-#'   [jsonlite::toJSON()].
+#'   * For `req_body_form()`, the values must be strings (or things easily
+#'     coerced to strings);
+#'   * For `req_body_multipart()` the values must be strings or objects
+#'     produced by [curl::form_file()]/[curl::form_data()].
+#'   * For `req_body_json_modify()`, any simple data made from atomic vectors
+#'     and lists.
+#'
+#'   `req_body_json()` uses this argument differently; it takes additional
+#'   arguments passed on to  [jsonlite::toJSON()].
 req_body_form <- function(.req, ...) {
   check_request(.req)
 

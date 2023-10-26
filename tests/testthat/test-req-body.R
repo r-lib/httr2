@@ -81,6 +81,14 @@ test_that("non-json type errors", {
   )
 })
 
+test_that("can modify json data", {
+  req <- request_test() %>%
+    req_body_json(data = list(a = 1, b = 2, d = 4)) %>%
+    req_body_json_modify(a = 10, b = NULL, c = 3)
+
+   expect_equal(req$body$data, list(d = 4, a = 10, c = 3))
+})
+
 test_that("can send named elements as form/multipart", {
   data <- list(a = "1", b = "2")
 
