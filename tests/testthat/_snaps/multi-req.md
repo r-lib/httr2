@@ -12,7 +12,7 @@
       multi_req_perform(list())
     Condition
       Warning:
-      `multi_req_perform()` was deprecated in httr2 0.3.0.
+      `multi_req_perform()` was deprecated in httr2 1.0.0.
       i Please use `req_perform_parallel()` instead.
     Output
       list()
