@@ -66,7 +66,7 @@ resp_check_status <- function(resp, info = NULL, error_call = caller_env()) {
   if (!resp_is_error(resp)) {
     invisible(resp)
   } else {
-    resp_abort(resp, resp$req, info, call = error_call)
+    resp_abort(resp, resp$request, info, call = error_call)
   }
 }
 

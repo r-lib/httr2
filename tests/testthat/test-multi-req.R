@@ -57,6 +57,10 @@ test_that("both curl and HTTP errors become errors", {
   out <- req_perform_parallel(reqs)
   expect_s3_class(out[[1]], "httr2_http_404")
   expect_s3_class(out[[2]], "httr2_failure")
+
+  # and contain the responses
+  expect_equal(out[[1]]$request, reqs[[1]])
+  expect_equal(out[[2]]$request, reqs[[2]])
 })
 
 test_that("errors can cancel outstanding requests", {
