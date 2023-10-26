@@ -19,7 +19,9 @@
 #' * Consults the cache set by [req_cache()] before/after all requests.
 #'
 #' In general, where [req_perform()] might make multiple requests due to retries
-#' or OAuth failures, `req_perform_parallel()` will only make 1.
+#' or OAuth failures, `req_perform_parallel()` will only make 1. If any of
+#' these limitations are problematic, you may want to use
+#' [req_perform_sequential()] instead.
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional list of paths, if you want to download the request
