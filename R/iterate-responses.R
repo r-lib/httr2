@@ -5,11 +5,12 @@
 #' responses as returned [req_perform_parallel()] and
 #' [req_perform_iteratively()].
 #'
-#' * `resp_ok()` returns a logical vector which is `TRUE` if the response was
-#'   successful, and `FALSE` otherwise.
-#' * `resps_combine()` combines the data from successful responses into a
-#'   single vector. It requires the vctrs package to be installed.
-#' * `resps_requests()` returns the requests corresponding to each response.
+#' * `resps_successes()` returns a list successful responses.
+#' * `resps_failures()` returns a list failed responses (i.e. errors).
+#' * `resps_requests()` returns the list of requests that corresponds to
+#'   each request.
+#' * `resps_data()` returns all the data in a single vector or data frame.
+#'   It requires the vctrs package to be installed.
 #'
 #' @export
 #' @param resps A list of responses (possibly including errors).

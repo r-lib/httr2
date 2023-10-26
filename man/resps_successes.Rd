@@ -26,11 +26,12 @@ These function provide a basic toolkit for operating with lists of
 responses as returned \code{\link[=req_perform_parallel]{req_perform_parallel()}} and
 \code{\link[=req_perform_iteratively]{req_perform_iteratively()}}.
 \itemize{
-\item \code{resp_ok()} returns a logical vector which is \code{TRUE} if the response was
-successful, and \code{FALSE} otherwise.
-\item \code{resps_combine()} combines the data from successful responses into a
-single vector. It requires the vctrs package to be installed.
-\item \code{resps_requests()} returns the requests corresponding to each response.
+\item \code{resps_successes()} returns a list successful responses.
+\item \code{resps_failures()} returns a list failed responses (i.e. errors).
+\item \code{resps_requests()} returns the list of requests that corresponds to
+each request.
+\item \code{resps_data()} returns all the data in a single vector or data frame.
+It requires the vctrs package to be installed.
 }
 }
 \examples{
