@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* The request is now stored in the response object (and errors that httr2
+  throws), making it easier to debug when things go wrong.
+
 * New `oauth_token_cached()` that allows you to get an OAuth token while still
   taking advantage of httr2's caching and auto-renewal features. For expert
   use only (#328).

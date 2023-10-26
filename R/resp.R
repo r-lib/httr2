@@ -73,10 +73,12 @@ new_response <- function(method,
                          status_code,
                          headers,
                          body,
+                         request = NULL,
                          error_call = caller_env()) {
   check_string(method, call = error_call)
   check_string(url, call = error_call)
   check_number_whole(status_code, call = error_call)
+  check_request(request, allow_null = TRUE)
 
   headers <- as_headers(headers, error_call = error_call)
   # ensure we always have a date field
@@ -91,6 +93,7 @@ new_response <- function(method,
       status_code = status_code,
       headers = headers,
       body = body,
+      request = request,
       cache = new_environment()
     ),
     class = "httr2_response"
