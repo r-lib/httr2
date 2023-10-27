@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* All errors thrown by httr2 now inherit from the `httr2_error` class.
+
 * New `oauth_token_cached()` that allows you to get an OAuth token while still
   taking advantage of httr2's caching and auto-renewal features. For expert
   use only (#328).

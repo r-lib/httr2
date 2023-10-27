@@ -110,7 +110,7 @@ req_perform <- function(
       error = function(err) {
         error_cnd(
           message = "Failed to perform HTTP request.",
-          class = "httr2_failure",
+          class = c("httr2_failure", "httr2_error"),
           parent = err,
           call = error_call,
           trace = trace_back()
