@@ -4,7 +4,7 @@
 #' a list of responses. It's slower than [req_perform_parallel()] but
 #' has fewer limitations.
 #'
-#' @inheritParams req_perform_sequential
+#' @inheritParams req_perform_parallel
 #' @inheritParams req_perform_iteratively
 #' @param on_error What should happen if one of the requests throws an
 #'   HTTP error?

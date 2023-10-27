@@ -12,6 +12,11 @@ req_perform_sequential(
 )
 }
 \arguments{
+\item{reqs}{A list of \link{request}s.}
+
+\item{paths}{An optional list of paths, if you want to download the request
+bodies to disks. If supplied, must be the same length as \code{reqs}.}
+
 \item{on_error}{What should happen if one of the requests throws an
 HTTP error?
 \itemize{
