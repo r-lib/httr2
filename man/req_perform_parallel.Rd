@@ -70,7 +70,10 @@ reqs <- list(
 )
 # req_perform_parallel() will always succeed
 resps <- req_perform_parallel(reqs)
-# you'll need to inspect the results to figure out which requests fails
-fail <- vapply(resps, inherits, "error", FUN.VALUE = logical(1))
-resps[fail]
+
+# Inspect the successful responses
+resps |> resps_successes()
+
+# And the failed responses
+resps |> resps_failures() |> resps_requests()
 }

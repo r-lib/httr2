@@ -66,11 +66,11 @@ resp_check_status <- function(resp, info = NULL, error_call = caller_env()) {
   if (!resp_is_error(resp)) {
     invisible(resp)
   } else {
-    resp_abort(resp, info, call = error_call)
+    resp_abort(resp, resp$request, info, call = error_call)
   }
 }
 
-resp_abort <- function(resp, info = NULL, call = caller_env()) {
+resp_abort <- function(resp, req, info = NULL, call = caller_env()) {
   status <- resp_status(resp)
   desc <- resp_status_desc(resp)
   message <- glue("HTTP {status} {desc}.")
@@ -80,6 +80,7 @@ resp_abort <- function(resp, info = NULL, call = caller_env()) {
     status = status,
     resp = resp,
     class = c(glue("httr2_http_{status}"), "httr2_http", "httr2_error"),
+    request = req,
     call = call
   )
 }

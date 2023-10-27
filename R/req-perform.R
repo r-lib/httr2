@@ -112,6 +112,7 @@ req_perform <- function(
           message = "Failed to perform HTTP request.",
           class = c("httr2_failure", "httr2_error"),
           parent = err,
+          request = req,
           call = error_call,
           trace = trace_back()
         )
@@ -146,7 +147,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
     body <- error_body(req, resp, error_call)
-    resp_abort(resp, body, call = error_call)
+    resp_abort(resp, req, body, call = error_call)
   } else {
     resp
   }
@@ -173,7 +174,8 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
     url = res$url,
     status_code = res$status_code,
     headers = as_headers(res$headers),
-    body = body
+    body = body,
+    request = req
   )
   the$last_response <- resp
   resp

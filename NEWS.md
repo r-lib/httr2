@@ -2,6 +2,14 @@
 
 * All errors thrown by httr2 now inherit from the `httr2_error` class.
 
+* A new family of functions `resps_successes()`, `resps_failures()`, 
+  `resps_requests()` and `resps_data()` make it easier to work with lists of
+  responses as returned by `req_perform_parallel()` and 
+  `req_perform_iteratively()` (#357).
+
+* The request is now stored in the response object (and errors that httr2
+  throws), making it easier to debug when things go wrong (#357).
+
 * New `oauth_token_cached()` that allows you to get an OAuth token while still
   taking advantage of httr2's caching and auto-renewal features. For expert
   use only (#328).

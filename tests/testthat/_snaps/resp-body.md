@@ -14,6 +14,19 @@
       Error in `resp_body_raw()`:
       ! Can't retrieve empty body.
 
+# check argument types before caching
+
+    Code
+      resp_body_json(1)
+    Condition
+      Error in `resp_body_json()`:
+      ! `resp` must be an HTTP response object, not the number 1.
+    Code
+      resp_body_xml(1)
+    Condition
+      Error in `resp_body_xml()`:
+      ! `resp` must be an HTTP response object, not the number 1.
+
 # content types are checked
 
     Code
