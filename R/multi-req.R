@@ -78,7 +78,7 @@ req_perform_parallel <- function(reqs, paths = NULL, pool = NULL, cancel_on_erro
 #' @usage NULL
 multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   lifecycle::deprecate_warn(
-    "0.3.0",
+    "1.0.0",
     "multi_req_perform()",
     "req_perform_parallel()"
   )

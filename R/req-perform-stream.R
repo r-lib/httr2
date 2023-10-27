@@ -57,7 +57,7 @@ req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64)
 #' @usage NULL
 req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
   lifecycle::deprecate_warn(
-    "0.3.0",
+    "1.0.0",
     "req_stream()",
     "req_perform_stream()"
   )
