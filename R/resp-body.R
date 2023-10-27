@@ -78,13 +78,14 @@ resp_body_string <- function(resp, encoding = NULL) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
+  check_response(resp)
+  check_installed("jsonlite")
+
   key <- body_cache_key("json", simplifyVector = simplifyVector, ...)
   if (env_has(resp$cache, key)) {
     return(resp$cache[[key]])
   }
 
-  check_response(resp)
-  check_installed("jsonlite")
   resp_check_content_type(
     resp,
     valid_types = "application/json",
@@ -114,14 +115,14 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_xml <- function(resp, check_type = TRUE, ...) {
+  check_response(resp)
+  check_installed("xml2")
+
   key <- body_cache_key("xml", ...)
   if (env_has(resp$cache, key)) {
     return(resp$cache[[key]])
   }
 
-
-  check_response(resp)
-  check_installed("xml2")
   resp_check_content_type(
     resp,
     valid_types = c("application/xml", "text/xml"),

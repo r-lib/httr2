@@ -1,6 +1,8 @@
 test_that("success request returns response", {
-  resp <- request_test() %>% req_perform()
+  req <- request_test()
+  resp <- req_perform(req)
   expect_s3_class(resp, "httr2_response")
+  expect_equal(resp$request, req)
 })
 
 test_that("curl errors become errors", {
@@ -11,12 +13,20 @@ test_that("curl errors become errors", {
   req <- request("http://127.0.0.1")
   expect_snapshot(req_perform(req), error = TRUE)
   expect_error(req_perform(req), class = "httr2_failure")
+
+  # and captures request
+  cnd <- catch_cnd(req_perform(req), classes = "error")
+  expect_equal(cnd$request, req)
 })
 
 test_that("http errors become errors", {
   req <- request_test("/status/:status", status = 404)
   expect_error(req_perform(req), class = "httr2_http_404")
   expect_snapshot(req_perform(req), error = TRUE)
+
+  # and captures request
+  cnd <- catch_cnd(req_perform(req), classes = "error")
+  expect_equal(cnd$request, req)
 
   # including transient errors
   req <- request_test("/status/:status", status = 429)

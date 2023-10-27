@@ -56,15 +56,24 @@ is_request <- function(x) {
   inherits(x, "httr2_request")
 }
 
-check_request <- function(req, arg = caller_arg(req), call = caller_env()) {
-  if (!missing(req) && is_request(req)) {
-    return(invisible(NULL))
+check_request <- function(req,
+                          arg = caller_arg(req),
+                          call = caller_env(),
+                          allow_null = FALSE) {
+  if (!missing(req)) {
+    if (is_request(req)) {
+      return(invisible(NULL))
+    }
+
+    if (allow_null && is.null(req)) {
+      return(invisible(NULL))
+    }
   }
 
   stop_input_type(
     req,
     "an HTTP request object",
-    allow_null = FALSE,
+    allow_null = allow_null,
     arg = arg,
     call = call
   )
