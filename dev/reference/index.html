@@ -77,7 +77,7 @@
         <dd>Create a new HTTP request</dd>
       </dl><dl><dt>
           
-          <code><a href="req_body.html">req_body_raw()</a></code> <code><a href="req_body.html">req_body_file()</a></code> <code><a href="req_body.html">req_body_json()</a></code> <code><a href="req_body.html">req_body_form()</a></code> <code><a href="req_body.html">req_body_multipart()</a></code> 
+          <code><a href="req_body.html">req_body_raw()</a></code> <code><a href="req_body.html">req_body_file()</a></code> <code><a href="req_body.html">req_body_json()</a></code> <code><a href="req_body.html">req_body_json_modify()</a></code> <code><a href="req_body.html">req_body_form()</a></code> <code><a href="req_body.html">req_body_multipart()</a></code> 
         </dt>
         <dd>Send data in request body</dd>
       </dl><dl><dt>
@@ -218,7 +218,7 @@
         </dt>
         <dd>OAuth with a refresh token</dd>
       </dl></div><div class="section level2">
-      <h2 id="perform-one-or-more-requests">Perform one or more requests<a class="anchor" aria-label="anchor" href="#perform-one-or-more-requests"></a></h2>
+      <h2 id="perform-a-request">Perform a request<a class="anchor" aria-label="anchor" href="#perform-a-request"></a></h2>
       
       
 
@@ -233,16 +233,6 @@
           <code><a href="req_perform.html">req_perform()</a></code> 
         </dt>
         <dd>Perform a request to get a response</dd>
-      </dl><dl><dt>
-          
-          <code><a href="req_perform_iteratively.html">req_perform_iteratively()</a></code> 
-        </dt>
-        <dd>Perform requests iteratively, generating new requests from previous responses</dd>
-      </dl><dl><dt>
-          
-          <code><a href="req_perform_parallel.html">req_perform_parallel()</a></code> 
-        </dt>
-        <dd>Perform a list of requests in parallel</dd>
       </dl><dl><dt>
           
           <code><a href="req_perform_stream.html">req_perform_stream()</a></code> 
@@ -280,7 +270,7 @@
         </dt>
         <dd>Control when a request will retry, and how long it will wait between tries</dd>
       </dl></div><div class="section level2">
-      <h2 id="iteration">Iteration<a class="anchor" aria-label="anchor" href="#iteration"></a></h2>
+      <h2 id="perform-multiple-requests">Perform multiple requests<a class="anchor" aria-label="anchor" href="#perform-multiple-requests"></a></h2>
       
       
 
@@ -297,12 +287,17 @@
         <dd>Perform requests iteratively, generating new requests from previous responses</dd>
       </dl><dl><dt>
           
+          <code><a href="req_perform_parallel.html">req_perform_parallel()</a></code> 
+        </dt>
+        <dd>Perform a list of requests in parallel</dd>
+      </dl><dl><dt>
+          
           <code><a href="iterate_with_offset.html">iterate_with_offset()</a></code> <code><a href="iterate_with_offset.html">iterate_with_cursor()</a></code> <code><a href="iterate_with_offset.html">iterate_with_link_url()</a></code> 
         </dt>
         <dd>Iteration helpers</dd>
       </dl><dl><dt>
           
-          <code><a href="resps_combine.html">resps_combine()</a></code> <code><a href="resps_combine.html">resps_responses()</a></code> <code><a href="resps_combine.html">resps_errors()</a></code> 
+          <code><a href="resps_successes.html">resps_successes()</a></code> <code><a href="resps_successes.html">resps_failures()</a></code> <code><a href="resps_successes.html">resps_requests()</a></code> <code><a href="resps_successes.html">resps_data()</a></code> 
         </dt>
         <dd>Tools for working with lists of responses</dd>
       </dl></div><div class="section level2">

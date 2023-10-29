@@ -138,7 +138,7 @@ or OAuth failures, <code>req_perform_parallel()</code> will only make 1.</p>
 <span class="r-in"><span><span class="co"># But it's much faster if you request in parallel</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.721   0.325   1.046 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.624   0.408   1.032 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">reqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">request_base</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_url.html">req_url_path</a></span><span class="op">(</span><span class="st">"/status/200"</span><span class="op">)</span>,</span></span>
@@ -147,59 +147,28 @@ or OAuth failures, <code>req_perform_parallel()</code> will only make 1.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># req_perform_parallel() will always succeed</span></span></span>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># you'll need to inspect the results to figure out which requests fails</span></span></span>
-<span class="r-in"><span><span class="va">fail</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">resps</span>, <span class="va">inherits</span>, <span class="st">"error"</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">resps</span><span class="op">[</span><span class="va">fail</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Inspect the successful responses</span></span></span>
+<span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_successes</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">&lt;error/httr2_http_400&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> HTTP 400 Bad Request.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Backtrace:</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">     </span>▆</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  1. </span>├─<span style="font-weight: bold;">pkgdown</span>::build_site_github_pages(new_process = FALSE, install = FALSE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  2. </span>│ <span style="color: #949494;">└─pkgdown::build_site(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  3. </span>│   <span style="color: #949494;">└─pkgdown:::build_site_local(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  4. </span>│     <span style="color: #949494;">└─pkgdown::build_reference(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  5. </span>│       <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">purrr</span><span style="color: #949494;">::map(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  6. </span>│         <span style="color: #949494;">└─purrr:::map_("list", .x, .f, ..., .progress = .progress)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  7. </span>│           <span style="color: #949494;">├─purrr:::with_indexed_errors(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  8. </span>│           <span style="color: #949494;">│ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  9. </span>│           <span style="color: #949494;">├─</span><span style="color: #949494; font-weight: bold;">purrr</span><span style="color: #949494;">:::call_with_cleanup(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 10. </span>│           <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">pkgdown</span><span style="color: #949494;"> (local) .f(.x[[i]], ...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 11. </span>│             <span style="color: #949494;">├─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 12. </span>│             <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">pkgdown</span><span style="color: #949494;">:::data_reference_topic(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 13. </span>│               <span style="color: #949494;">└─pkgdown:::run_examples(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 14. </span>│                 <span style="color: #949494;">└─pkgdown:::highlight_examples(code, topic, env = env)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 15. </span>│                   <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">downlit</span><span style="color: #949494;">::evaluate_and_highlight(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 16. </span>│                     <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">evaluate</span><span style="color: #949494;">::evaluate(code, child_env(env), new_device = TRUE, output_handler = output_handler)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 17. </span>│                       <span style="color: #949494;">└─evaluate:::evaluate_call(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 18. </span>│                         <span style="color: #949494;">├─evaluate (local) timing_fn(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 19. </span>│                         <span style="color: #949494;">├─evaluate (local) handle(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 20. </span>│                         <span style="color: #949494;">│ └─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::try(f, silent = TRUE)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 21. </span>│                         <span style="color: #949494;">│   └─base::tryCatch(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 22. </span>│                         <span style="color: #949494;">│     └─base (local) tryCatchList(expr, classes, parentenv, handlers)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 23. </span>│                         <span style="color: #949494;">│       └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 24. </span>│                         <span style="color: #949494;">│         └─base (local) doTryCatch(return(expr), name, parentenv, handler)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 25. </span>│                         <span style="color: #949494;">├─base::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 26. </span>│                         <span style="color: #949494;">├─base::withVisible(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 27. </span>│                         <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">evaluate</span><span style="color: #949494;">:::eval_with_user_handlers(expr, envir, enclos, user_handlers)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 28. </span>│                           <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::eval(expr, envir, enclos)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 29. </span>│                             <span style="color: #949494;">└─base::eval(expr, envir, enclos)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 30. </span>│                               <span style="color: #949494;">└─httr2::req_perform_parallel(reqs)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 31. </span>│                                 <span style="color: #949494;">└─httr2:::pool_run(pool, perfs, cancel_on_error = cancel_on_error)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 32. </span>│                                   <span style="color: #949494;">├─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::tryCatch(poll_until_done(pool), interrupt = cancel)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 33. </span>│                                   <span style="color: #949494;">│ └─base (local) tryCatchList(expr, classes, parentenv, handlers)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 34. </span>│                                   <span style="color: #949494;">│   └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 35. </span>│                                   <span style="color: #949494;">│     └─base (local) doTryCatch(return(expr), name, parentenv, handler)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 36. </span>│                                   <span style="color: #949494;">└─httr2 (local) poll_until_done(pool)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 37. </span>│                                     <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">curl</span><span style="color: #949494;">::multi_run(0.1, pool = pool, poll = TRUE)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 38. </span>└─httr2 (local) <span style="color: #5555FF; font-weight: bold;">`&lt;fn&gt;`(</span>`&lt;named list&gt;`<span style="color: #5555FF; font-weight: bold;">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38889/status/200</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># And the failed responses</span></span></span>
+<span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_failures</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_requests</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38889/status/400</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">&lt;error/httr2_failure&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Could not resolve host: FAILURE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> FAILURE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
