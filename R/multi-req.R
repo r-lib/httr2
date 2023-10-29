@@ -53,9 +53,12 @@
 #' )
 #' # req_perform_parallel() will always succeed
 #' resps <- req_perform_parallel(reqs)
-#' # you'll need to inspect the results to figure out which requests fails
-#' fail <- vapply(resps, inherits, "error", FUN.VALUE = logical(1))
-#' resps[fail]
+#'
+#' # Inspect the successful responses
+#' resps |> resps_successes()
+#'
+#' # And the failed responses
+#' resps |> resps_failures() |> resps_requests()
 req_perform_parallel <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   if (!is.null(paths)) {
     if (length(reqs) != length(paths)) {
@@ -78,7 +81,7 @@ req_perform_parallel <- function(reqs, paths = NULL, pool = NULL, cancel_on_erro
 #' @usage NULL
 multi_req_perform <- function(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE) {
   lifecycle::deprecate_warn(
-    "0.3.0",
+    "1.0.0",
     "multi_req_perform()",
     "req_perform_parallel()"
   )
@@ -161,7 +164,8 @@ Performance <- R6Class("Performance", public = list(
       url = res$url,
       status_code = res$status_code,
       headers = as_headers(res$headers),
-      body = body
+      body = body,
+      request = self$req
     )
     resp <- cache_post_fetch(self$reqs, resp, path = self$paths)
 
@@ -172,7 +176,7 @@ Performance <- R6Class("Performance", public = list(
   },
 
   fail = function(msg) {
-    self$resp <- error_cnd("httr2_failure", message = msg)
+    self$resp <- error_cnd("httr2_failure", message = msg, request = self$req)
     signal("", class = "httr2:::failed")
   },
 

@@ -7,7 +7,7 @@
 #' using a callback function, `next_req`, to define the next request based on
 #' the current request and response. You will probably want to it pair with an
 #' [iteration helper][iterate_with_offset] and use a
-#' [multi-response handler][resps_combine] to process the result.
+#' [multi-response handler][resps_successes] to process the result.
 #'
 #' ## `next_req()`
 #'
@@ -88,7 +88,7 @@
 #'
 #' resps <- req_perform_iteratively(req, iterate_with_offset("page_index"))
 #'
-#' resps |> resps_combine(function(resp) {
+#' resps |> resps_data(function(resp) {
 #'   data <- resp_body_json(resp)$data
 #'   data.frame(
 #'     Sepal.Length = sapply(data, `[[`, "Sepal.Length"),

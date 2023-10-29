@@ -41,7 +41,7 @@ A list of \code{\link[=response]{response()}}s.
 using a callback function, \code{next_req}, to define the next request based on
 the current request and response. You will probably want to it pair with an
 \link[=iterate_with_offset]{iteration helper} and use a
-\link[=resps_combine]{multi-response handler} to process the result.
+\link[=resps_successes]{multi-response handler} to process the result.
 \subsection{\code{next_req()}}{
 
 The key piece that makes \code{req_perform_iteratively()} work is the \code{next_req()}
@@ -104,7 +104,7 @@ req <- request(example_url()) |>
 
 resps <- req_perform_iteratively(req, iterate_with_offset("page_index"))
 
-resps |> resps_combine(function(resp) {
+resps |> resps_data(function(resp) {
   data <- resp_body_json(resp)$data
   data.frame(
     Sepal.Length = sapply(data, `[[`, "Sepal.Length"),

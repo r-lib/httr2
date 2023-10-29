@@ -57,6 +57,13 @@ test_that("resp_body_xml stores parsed result", {
   expect_true(is_reference(xml2, xml1))
 })
 
+test_that("check argument types before caching", {
+  expect_snapshot(error = TRUE, {
+    resp_body_json(1)
+    resp_body_xml(1)
+  })
+})
+
 test_that("content types are checked", {
   expect_snapshot(error = TRUE, {
     request_test("/xml") %>% req_perform() %>% resp_body_json()

@@ -41,9 +41,10 @@ reference:
   - starts_with("req_auth")
   - starts_with("req_oauth")
 
-- title: Perform one or more requests
+- title: Perform a request
   contents:
-  - starts_with("req_perform")
+  - req_perform
+  - req_perform_stream
 
 - subtitle: Control the process
   desc: >
@@ -55,9 +56,10 @@ reference:
   - req_throttle
   - req_retry
 
-- title: Iteration
+- title: Perform multiple requests
   contents:
   - req_perform_iteratively
+  - req_perform_parallel
   - starts_with("iterate_")
   - starts_with("resps_")
 
