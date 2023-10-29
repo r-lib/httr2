@@ -4,6 +4,7 @@
 \alias{req_body_raw}
 \alias{req_body_file}
 \alias{req_body_json}
+\alias{req_body_json_modify}
 \alias{req_body_form}
 \alias{req_body_multipart}
 \title{Send data in request body}
@@ -21,6 +22,8 @@ req_body_json(
   type = "application/json",
   ...
 )
+
+req_body_json_modify(req, ...)
 
 req_body_form(.req, ...)
 
@@ -48,14 +51,19 @@ JSON scalars?}
 \item{null}{Should \code{NULL} be translated to JSON's null (\code{"null"})
 or an empty list (\code{"list"}).}
 
-\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name-data pairs used send
-data in the body. For \code{req_body_form()}, the values must be strings (or
-things easily coerced to string); for \code{req_body_multipart()} the values
-must be strings or objects produced by
-\code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name-data pairs used to send
+data in the body.
+\itemize{
+\item For \code{req_body_form()}, the values must be strings (or things easily
+coerced to strings);
+\item For \code{req_body_multipart()} the values must be strings or objects
+produced by \code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
+\item For \code{req_body_json_modify()}, any simple data made from atomic vectors
+and lists.
+}
 
-For \code{req_body_json()}, additional arguments passed on to
-\code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
+\code{req_body_json()} uses this argument differently; it takes additional
+arguments passed on to  \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -64,7 +72,8 @@ A modified HTTP \link{request}.
 \itemize{
 \item \code{req_body_file()} sends a local file.
 \item \code{req_body_raw()} sends a string or raw vector.
-\item \code{req_body_json()} sends JSON encoded data.
+\item \code{req_body_json()} sends JSON encoded data. Named components of this data
+can later be modified with \code{req_body_json_modify()}.
 \item \code{req_body_form()} sends form encoded data.
 \item \code{req_body_multipart()} creates a multi-part body.
 }
