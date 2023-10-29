@@ -68,14 +68,14 @@ iterate_with_offset <- function(param_name,
   resp_complete <- resp_complete %||% function(resp) FALSE
 
   known_total <- FALSE
-  i <- start # assume already fetched
+  i <- start # assume already fetched first page
 
   function(resp, req) {
     if (!is.null(resp_pages) && !known_total) {
       n <- resp_pages(resp)
       if (!is.null(n)) {
         known_total <<- TRUE
-        signal("", class = "httr2_total_pages", n = n)
+        signal_total_pages(n)
       }
     }
 
@@ -115,4 +115,22 @@ iterate_with_link_url <- function(rel = "next") {
       req %>% req_url(url)
     }
   }
+}
+
+
+#' Signal total number pages
+#'
+#' To be called within a `next_req` callback function used with
+#' [req_perform_iteratively()]
+#'
+#' @param n Total number of pages.
+#' @export
+#' @keywords internal
+signal_total_pages <- function(n) {
+  if (is.null(n)) {
+    return()
+  }
+
+  check_number_whole(n, min = 1)
+  signal("", class = "httr2_total_pages", n = n)
 }

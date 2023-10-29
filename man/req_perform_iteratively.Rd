@@ -42,6 +42,59 @@ using a callback function, \code{next_req}, to define the next request based on
 the current request and response. You will probably want to it pair with an
 \link[=iterate_with_offset]{iteration helper} and use a
 \link[=resps_successes]{multi-response handler} to process the result.
+\subsection{\code{next_req()}}{
+
+The key piece that makes \code{req_perform_iteratively()} work is the \code{next_req()}
+argument. For most common cases, you can use one of the canned helpers,
+like \code{\link[=iterate_with_offset]{iterate_with_offset()}}. If, however, the API you're wrapping uses a
+different pagination system, you'll need to write your own. This section
+gives some advice.
+
+Generally, your function needs to inspect the response, extract some data
+from it, then use that to modify the previous request. For example, imagine
+that the response returns a cursor, which needs to be add to the body of
+the request. The simplest version of this function might look like this:
+
+\if{html}{\out{<div class="sourceCode R">}}\preformatted{next_req <- function(resp, req) \{
+  cursor <- resp_body_json(resp)$next_cursor
+  req \%>\% req_body_json_modify(cursor = cursor)
+\}
+}\if{html}{\out{</div>}}
+
+There's one problem here: if there are no more pages to return then
+\code{cursor} will be \code{NULL}, but \code{req_body_json_modify()} will still generate
+a meaningful request. So we need to handle this specifically by
+returning \code{NULL}:
+
+\if{html}{\out{<div class="sourceCode R">}}\preformatted{next_req <- function(resp, req) \{
+  cursor <- resp_body_json(resp)$next_cursor
+  if (is.null(cursor))
+    return(NULL)
+  req \%>\% req_body_json_modify(cursor = cursor)
+\}
+}\if{html}{\out{</div>}}
+
+A value of \code{NULL} lets \code{req_perform_iteratively()} know there are no pages
+remaining.
+
+There's one last feature you might want to add to your iterator: if you
+know the total number of pages, then it's nice to let
+\code{req_perform_iteratively()} know so it can adjust the progress bar.
+(This will only ever decrease the number of pages, not increase it.)
+You can signal the total number of pages by calling \code{\link[=signal_total_pages]{signal_total_pages()}},
+like this:
+
+\if{html}{\out{<div class="sourceCode R">}}\preformatted{next_req <- function(resp, req) \{
+  body <- resp_body_json(resp)
+  cursor <- body$next_cursor
+  if (is.null(cursor))
+    return(NULL)
+
+  signal_total_pages(body$pages)
+  req \%>\% req_body_json_modify(cursor = cursor)
+\}
+}\if{html}{\out{</div>}}
+}
 }
 \examples{
 req <- request(example_url()) |>

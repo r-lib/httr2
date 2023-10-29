@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_body_json_modify()` allows you to iteratively modify a JSON 
+  body of a request.
+
 * A new family of functions `resps_successes()`, `resps_failures()`, 
   `resps_requests()` and `resps_data()` make it easier to work with lists of
   responses as returned by `req_perform_parallel()` and 
