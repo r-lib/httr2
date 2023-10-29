@@ -85,8 +85,13 @@ test_that("can modify json data", {
   req <- request_test() %>%
     req_body_json(data = list(a = 1, b = 2, d = 4)) %>%
     req_body_json_modify(a = 10, b = NULL, c = 3)
+   expect_equal(req$body$data, list(a = 10, d = 4, c = 3))
 
-   expect_equal(req$body$data, list(d = 4, a = 10, c = 3))
+  req <- request_test() %>%
+    req_body_json(data = list(a = list(b = list(c = 1, d = 2), e = 3))) %>%
+    req_body_json_modify(a = list(b = list(c = 101), e = 103))
+   expect_equal(req$body$data, list(a = list(b = list(c = 101, d = 2), e = 103)))
+
 })
 
 test_that("can send named elements as form/multipart", {

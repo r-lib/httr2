@@ -113,7 +113,7 @@ req_body_json_modify <- function(req, ...) {
     cli::cli_abort("Can only be used after {.fn req_body_json")
   }
 
-  req$body$data <- modify_list(req$body$data, ...)
+  req$body$data <- modifyList(req$body$data, list2(...))
   req
 }
 
