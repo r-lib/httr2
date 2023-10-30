@@ -1,5 +1,11 @@
 # httr2 (development version)
 
+* New `req_perform_sequential()` which performs a known set of requests 
+  sequentially. It has an interface similar to `req_perform_parallel()` but
+  with no limitations, and the cost of being slower (#361).
+
+* All errors thrown by httr2 now inherit from the `httr2_error` class.
+
 * New `req_body_json_modify()` allows you to iteratively modify a JSON 
   body of a request.
 

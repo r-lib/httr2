@@ -79,7 +79,7 @@ resp_abort <- function(resp, req, info = NULL, call = caller_env()) {
     c(message, resp_auth_message(resp), info),
     status = status,
     resp = resp,
-    class = c(glue("httr2_http_{status}"), "httr2_http"),
+    class = c(glue("httr2_http_{status}"), "httr2_http", "httr2_error"),
     request = req,
     call = call
   )

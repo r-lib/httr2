@@ -12,12 +12,12 @@
 #'
 #' * The HTTP request might fail, for example if the connection is dropped
 #'   or the server doesn't exist. This type of error will have class
-#'   `httr2_failure`.
+#'   `c("httr2_failure", "htt2_error")`.
 #'
 #' * The HTTP request might succeed, but return an HTTP status code that
 #'   represents a error, e.g. a `404 Not Found` if the specified resource is
 #'   not found. This type of error will have (e.g.) class
-#'   `c("httr2_http_404", "httr2_http")`.
+#'   `c("httr2_http_404", "httr2_http", "httr2_error")`.
 #'
 #' These error classes are designed to be used in conjunction with R's
 #' condition handling tools (<https://adv-r.hadley.nz/conditions.html>).
