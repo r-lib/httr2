@@ -3,7 +3,7 @@
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' `req_perform_iteratively()` iteratively generates and performs requests,
+#' `req_perform_iterative()` iteratively generates and performs requests,
 #' using a callback function, `next_req`, to define the next request based on
 #' the current request and response. You will probably want to it pair with an
 #' [iteration helper][iterate_with_offset] and use a
@@ -11,7 +11,7 @@
 #'
 #' ## `next_req()`
 #'
-#' The key piece that makes `req_perform_iteratively()` work is the `next_req()`
+#' The key piece that makes `req_perform_iterative()` work is the `next_req()`
 #' argument. For most common cases, you can use one of the canned helpers,
 #' like [iterate_with_offset()]. If, however, the API you're wrapping uses a
 #' different pagination system, you'll need to write your own. This section
@@ -43,12 +43,12 @@
 #' }
 #' ```
 #'
-#' A value of `NULL` lets `req_perform_iteratively()` know there are no pages
+#' A value of `NULL` lets `req_perform_iterative()` know there are no pages
 #' remaining.
 #'
 #' There's one last feature you might want to add to your iterator: if you
 #' know the total number of pages, then it's nice to let
-#' `req_perform_iteratively()` know so it can adjust the progress bar.
+#' `req_perform_iterative()` know so it can adjust the progress bar.
 #' (This will only ever decrease the number of pages, not increase it.)
 #' You can signal the total number of pages by calling [signal_total_pages()],
 #' like this:
@@ -86,7 +86,7 @@
 #'   req_throttle(10) |>
 #'   req_url_query(limit = 5)
 #'
-#' resps <- req_perform_iteratively(req, iterate_with_offset("page_index"))
+#' resps <- req_perform_iterative(req, iterate_with_offset("page_index"))
 #'
 #' resps |> resps_data(function(resp) {
 #'   data <- resp_body_json(resp)$data
@@ -98,7 +98,7 @@
 #'     Species = sapply(data, `[[`, "Species")
 #'   )
 #' })
-req_perform_iteratively <- function(req,
+req_perform_iterative <- function(req,
                                     next_req,
                                     path = NULL,
                                     max_reqs = 20,

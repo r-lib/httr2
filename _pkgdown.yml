@@ -58,7 +58,7 @@ reference:
 
 - title: Perform multiple requests
   contents:
-  - req_perform_iteratively
+  - req_perform_iterative
   - req_perform_parallel
   - req_perform_sequential
   - starts_with("iterate_")
