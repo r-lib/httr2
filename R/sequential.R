@@ -16,11 +16,11 @@
 #' @return
 #' A list, the same length as `reqs`.
 #'
-#' If `error_on` is `"return"` and it errors on the ith request, the ith
+#' If `on_error` is `"return"` and it errors on the ith request, the ith
 #' element of the result will be an error object, and the remaining elements
 #' will be `NULL`.
 #'
-#' If `error_on` is `"ignore"`, it will be a mix of requests and errors.
+#' If `on_error` is `"ignore"`, it will be a mix of requests and errors.
 #' @examples
 #' # req_perform_sequential() if the API allows you to request data for
 #' # multiple objects in each request, but in total you still have more
