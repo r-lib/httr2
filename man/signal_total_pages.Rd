@@ -11,6 +11,6 @@ signal_total_pages(n)
 }
 \description{
 To be called within a \code{next_req} callback function used with
-\code{\link[=req_perform_iteratively]{req_perform_iteratively()}}
+\code{\link[=req_perform_iterative]{req_perform_iterative()}}
 }
 \keyword{internal}

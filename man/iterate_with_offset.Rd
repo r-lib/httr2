@@ -43,7 +43,7 @@ pages.}
 }
 \description{
 These functions are intended for use with the \code{next_req} argument to
-\code{\link[=req_perform_iteratively]{req_perform_iteratively()}}. Each implements iteration for a common
+\code{\link[=req_perform_iterative]{req_perform_iterative()}}. Each implements iteration for a common
 pagination pattern:
 \itemize{
 \item \code{iterate_with_offset()} increments a query parameter, e.g. \code{?page=1},
@@ -65,7 +65,7 @@ req <- request(example_url()) |>
 is_complete <- function(resp) {
   length(resp_body_json(resp)$data) == 0
 }
-resps <- req_perform_iteratively(
+resps <- req_perform_iterative(
   req,
   next_req = iterate_with_offset("page_index", resp_complete = is_complete),
   max_reqs = Inf
@@ -76,7 +76,7 @@ resps <- req_perform_iteratively(
 # can easily calculate it), you can use the `resp_pages()` callback which
 # will generate a better progress bar.
 
-resps <- req_perform_iteratively(
+resps <- req_perform_iterative(
   req \%>\% req_url_query(limit = 1),
   next_req = iterate_with_offset(
     "page_index",

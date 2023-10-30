@@ -3,7 +3,7 @@
 #' @description
 #' These function provide a basic toolkit for operating with lists of
 #' responses as returned [req_perform_parallel()] and
-#' [req_perform_iteratively()].
+#' [req_perform_iterative()].
 #'
 #' * `resps_successes()` returns a list successful responses.
 #' * `resps_failures()` returns a list failed responses (i.e. errors).

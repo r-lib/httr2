@@ -6,7 +6,7 @@
 * A new family of functions `resps_successes()`, `resps_failures()`, 
   `resps_requests()` and `resps_data()` make it easier to work with lists of
   responses as returned by `req_perform_parallel()` and 
-  `req_perform_iteratively()` (#357).
+  `req_perform_iterative()` (#357).
 
 * The request is now stored in the response object (and errors that httr2
   throws), making it easier to debug when things go wrong (#357).
@@ -55,7 +55,7 @@
 * OAuth errors containing a url now correctly display that URL 
   (instead of just uri).
 
-* New `req_paginate()` and `req_perform_iteratively()` to easily request paginated
+* New `req_paginate()` and `req_perform_iterative()` to easily request paginated
   APIs (@mgirlich, #8).
 
 * New `resp_check_content_type()` to check response content types (#190).

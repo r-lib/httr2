@@ -2,7 +2,7 @@
 #'
 #' @description
 #' These functions are intended for use with the `next_req` argument to
-#' [req_perform_iteratively()]. Each implements iteration for a common
+#' [req_perform_iterative()]. Each implements iteration for a common
 #' pagination pattern:
 #'
 #' * `iterate_with_offset()` increments a query parameter, e.g. `?page=1`,
@@ -35,7 +35,7 @@
 #' is_complete <- function(resp) {
 #'   length(resp_body_json(resp)$data) == 0
 #' }
-#' resps <- req_perform_iteratively(
+#' resps <- req_perform_iterative(
 #'   req,
 #'   next_req = iterate_with_offset("page_index", resp_complete = is_complete),
 #'   max_reqs = Inf
@@ -46,7 +46,7 @@
 #' # can easily calculate it), you can use the `resp_pages()` callback which
 #' # will generate a better progress bar.
 #'
-#' resps <- req_perform_iteratively(
+#' resps <- req_perform_iterative(
 #'   req %>% req_url_query(limit = 1),
 #'   next_req = iterate_with_offset(
 #'     "page_index",
@@ -121,7 +121,7 @@ iterate_with_link_url <- function(rel = "next") {
 #' Signal total number pages
 #'
 #' To be called within a `next_req` callback function used with
-#' [req_perform_iteratively()]
+#' [req_perform_iterative()]
 #'
 #' @param n Total number of pages.
 #' @export

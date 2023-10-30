@@ -24,7 +24,7 @@ returns the data foind inside that response as a vector or data frame.}
 \description{
 These function provide a basic toolkit for operating with lists of
 responses as returned \code{\link[=req_perform_parallel]{req_perform_parallel()}} and
-\code{\link[=req_perform_iteratively]{req_perform_iteratively()}}.
+\code{\link[=req_perform_iterative]{req_perform_iterative()}}.
 \itemize{
 \item \code{resps_successes()} returns a list successful responses.
 \item \code{resps_failures()} returns a list failed responses (i.e. errors).
