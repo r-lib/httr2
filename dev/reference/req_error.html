@@ -103,11 +103,11 @@ of <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-
     <p><code><a href="req_perform.html">req_perform()</a></code> is designed to succeed if and only if you get a valid HTTP
 response. There are two ways a request can fail:</p><ul><li><p>The HTTP request might fail, for example if the connection is dropped
 or the server doesn't exist. This type of error will have class
-<code>httr2_failure</code>.</p></li>
+<code>c("httr2_failure", "htt2_error")</code>.</p></li>
 <li><p>The HTTP request might succeed, but return an HTTP status code that
 represents a error, e.g. a <code>404 Not Found</code> if the specified resource is
 not found. This type of error will have (e.g.) class
-<code>c("httr2_http_404", "httr2_http")</code>.</p></li>
+<code>c("httr2_http_404", "httr2_http", "httr2_error")</code>.</p></li>
 </ul><p>These error classes are designed to be used in conjunction with R's
 condition handling tools (<a href="https://adv-r.hadley.nz/conditions.html" class="external-link">https://adv-r.hadley.nz/conditions.html</a>).
 For example, if you want to return a default value when the server returns
@@ -142,7 +142,7 @@ a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="externa
 <span class="r-in"><span><span class="co"># You can still retrieve it with last_response()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38889/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:43385/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -153,7 +153,7 @@ a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="externa
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">resp</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38889/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:43385/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
