@@ -50,6 +50,7 @@ req_perform_sequential <- function(reqs,
     stop_input_type(reqs, "a list")
   }
   if (!is.null(paths)) {
+    check_character(paths)
     if (length(reqs) != length(paths)) {
       cli::cli_abort("If supplied, {.arg paths} must be the same length as {.arg req}.")
     }
