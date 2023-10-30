@@ -87,10 +87,15 @@ test_that("can last response is NULL if it fails", {
   expect_equal(last_response(), NULL)
 })
 
-test_that("checks verbosity value", {
+test_that("checks input types", {
   req <- request_test()
-  expect_snapshot(req_perform(req, verbosity = 1.5), error = TRUE)
+  expect_snapshot(error = TRUE, {
+    req_perform(req, path = 1)
+    req_perform(req, verbosity = 1.5)
+    req_perform(req, mock = 7)
+  })
 })
+
 
 # dry run -----------------------------------------------------------------
 
