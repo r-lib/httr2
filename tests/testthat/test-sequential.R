@@ -33,12 +33,12 @@ test_that("on_error = 'return' returns error", {
 })
 
 
-test_that("on_error = 'ignore' captures both error types", {
+test_that("on_error = 'continue' captures both error types", {
   reqs <- list2(
     request_test("/status/:status", status = 404),
     request("INVALID"),
   )
-  out <- req_perform_sequential(reqs, on_error = "ignore")
+  out <- req_perform_sequential(reqs, on_error = "continue")
   expect_s3_class(out[[1]], "httr2_http_404")
   expect_s3_class(out[[2]], "httr2_failure")
 })

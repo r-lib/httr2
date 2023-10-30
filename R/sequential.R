@@ -11,7 +11,7 @@
 #'
 #'   * `stop`, the default: stop iterating and throw an error
 #'   * `return`: stop iterating and return all the successful responses so far.
-#'   * `ignore`: continue iterating, recording errors in the result.
+#'   * `continue`: continue iterating, recording errors in the result.
 #' @export
 #' @return
 #' A list, the same length as `reqs`.
@@ -20,12 +20,11 @@
 #' element of the result will be an error object, and the remaining elements
 #' will be `NULL`.
 #'
-#' If `on_error` is `"ignore"`, it will be a mix of requests and errors.
+#' If `on_error` is `"continue"`, it will be a mix of requests and errors.
 #' @examples
-#' # req_perform_sequential() if the API allows you to request data for
-#' # multiple objects in each request, but in total you still have more
-#' # objects than can fit in on request.
-#'
+#' # One use of req_perform_sequential() is if the API allows you to request
+#' # data for multiple objects, you want data for more objects than can fit
+#' # in one request.
 #' req <- request("https://api.restful-api.dev/objects")
 #'
 #' # Imagine we have 50 ids:
@@ -45,7 +44,7 @@
 #' }
 req_perform_sequential <- function(reqs,
                                    paths = NULL,
-                                   on_error = c("stop", "return", "ignore"),
+                                   on_error = c("stop", "return", "continue"),
                                    progress = TRUE) {
   if (!is_bare_list(reqs)) {
     stop_input_type(reqs, "a list")

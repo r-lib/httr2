@@ -7,7 +7,7 @@
 req_perform_sequential(
   reqs,
   paths = NULL,
-  on_error = c("stop", "return", "ignore"),
+  on_error = c("stop", "return", "continue"),
   progress = TRUE
 )
 }
@@ -22,7 +22,7 @@ HTTP error?
 \itemize{
 \item \code{stop}, the default: stop iterating and throw an error
 \item \code{return}: stop iterating and return all the successful responses so far.
-\item \code{ignore}: continue iterating, recording errors in the result.
+\item \code{continue}: continue iterating, recording errors in the result.
 }}
 
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
@@ -32,11 +32,11 @@ customise it in other ways.}
 \value{
 A list, the same length as \code{reqs}.
 
-If \code{error_on} is \code{"return"} and it errors on the ith request, the ith
+If \code{on_error} is \code{"return"} and it errors on the ith request, the ith
 element of the result will be an error object, and the remaining elements
 will be \code{NULL}.
 
-If \code{error_on} is \code{"ignore"}, it will be a mix of requests and errors.
+If \code{on_error} is \code{"continue"}, it will be a mix of requests and errors.
 }
 \description{
 Given a list of requests, this function performs each in turn, returning
@@ -44,10 +44,9 @@ a list of responses. It's slower than \code{\link[=req_perform_parallel]{req_per
 has fewer limitations.
 }
 \examples{
-# req_perform_sequential() if the API allows you to request data for
-# multiple objects in each request, but in total you still have more
-# objects than can fit in on request.
-
+# One use of req_perform_sequential() is if the API allows you to request
+# data for multiple objects, you want data for more objects than can fit
+# in one request.
 req <- request("https://api.restful-api.dev/objects")
 
 # Imagine we have 50 ids:
