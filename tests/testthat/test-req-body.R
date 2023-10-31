@@ -114,23 +114,13 @@ test_that("can send named elements as form/multipart", {
 
 test_that("can modify body data", {
   req1 <- request_test() %>% req_body_form(a = 1)
-  expect_equal(req1$body$data, list(a = 1))
+  expect_equal(req1$body$data, list(a = I("1")))
 
   req2 <- req1 %>% req_body_form(b = 2)
-  expect_equal(req2$body$data, list(a = 1, b = 2))
+  expect_equal(req2$body$data, list(a = I("1"), b = I("2")))
 
   req3 <- req1 %>% req_body_form(a = 3, a = 4)
-  expect_equal(req3$body$data, list(a = 3, a = 4))
-})
-
-test_that("req_body_form() and req_body_multipart() accept list() with warning", {
-  req <- request_test()
-  expect_snapshot({
-    req1 <- req %>% req_body_form(list(x = "x"))
-    req2 <- req %>% req_body_multipart(list(x = "x"))
-  })
-  expect_equal(req1$body$data, list(x = "x"))
-  expect_equal(req2$body$data, list(x = "x"))
+  expect_equal(req3$body$data, list(a = I("3"), a = I("4")))
 })
 
 test_that("can upload file with multipart", {

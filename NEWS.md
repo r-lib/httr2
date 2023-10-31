@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* `req_body_form()` and `req_body_multipart()` now require data `...`;
+  they no longer accept a single list for compatibility with the 0.1.0
+  API.
+
 * New `req_perform_sequential()` which performs a known set of requests 
   sequentially. It has an interface similar to `req_perform_parallel()` but
   with no limitations, and the cost of being slower (#361).
@@ -28,11 +32,11 @@
 * `resp_body_json()` and `resp_body_xml()` now caches the parsed values so 
   that you can use them repeatedly without worrying about the performance cost.
 
-* `req_url_query()` gains a `.multi` parameter that controls what happens when
-  you supply multiple values in a vector. The default will continue to error 
-  but you can use `.multi = "comma"` to separate with commas, `"pipe"` to 
-  separate with `|`, and `"explode"` to generate one parameter for each 
-  value (e.g. `?a=1&a=2`) (#350).
+* `req_url_query()` and `req_body_form()` gain a `.multi` parameter that 
+  controls what happens when you supply multiple values in a vector. The default 
+  will continue to error  but you can use `.multi = "comma"` to separate with 
+  commas, `"pipe"` to separate with `|`, and `"explode"` to generate one 
+  parameter for each value (e.g. `?a=1&a=2`) (#350).
 
 * The httr2 examples now only run on R 4.2 and later so that we can use
   the base pipe and lambda syntax (#345).
