@@ -10,6 +10,11 @@
 # errors are forwarded correctly
 
     Code
+      req %>% req_url_query(1)
+    Condition
+      Error in `req_url_query()`:
+      ! All components of `...` must be named.
+    Code
       req %>% req_url_query(a = I(1))
     Condition
       Error in `req_url_query()`:

@@ -70,11 +70,11 @@ test_that("can handle multi query params", {
 test_that("errors are forwarded correctly", {
   req <- request("http://example.com/")
   expect_snapshot(error = TRUE, {
+    req %>% req_url_query(1)
     req %>% req_url_query(a = I(1))
     req %>% req_url_query(a = 1:2)
     req %>% req_url_query(a = mean)
   })
-
 })
 
 test_that("empty query doesn't affect url", {
