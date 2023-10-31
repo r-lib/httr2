@@ -5,7 +5,7 @@
 #' has fewer limitations.
 #'
 #' @inheritParams req_perform_parallel
-#' @inheritParams req_perform_iteratively
+#' @inheritParams req_perform_iterative
 #' @param on_error What should happen if one of the requests throws an
 #'   HTTP error?
 #'
