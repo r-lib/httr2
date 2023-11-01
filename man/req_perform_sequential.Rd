@@ -19,8 +19,9 @@ bodies to disks. If supplied, must be the same length as \code{reqs}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{
-\item \code{stop}, the default: stop iterating and throw an error
-\item \code{return}: stop iterating and return all the successful responses so far.
+\item \code{stop}, the default: stop iterating with an error.
+\item \code{return}: stop iterating, returning all the successful responses
+received so far, as well as an error object for the failed request.
 \item \code{continue}: continue iterating, recording errors in the result.
 }}
 

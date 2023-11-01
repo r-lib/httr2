@@ -4,7 +4,7 @@ test_that("basic helpers work", {
     request_test("/status/:status", status = 404),
     request("INVALID")
   )
-  resps <- req_perform_parallel(reqs)
+  resps <- req_perform_parallel(reqs, on_error = "continue")
 
   expect_equal(resps_successes(resps), resps[1])
   expect_equal(resps_failures(resps), resps[2:3])

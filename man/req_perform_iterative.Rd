@@ -28,10 +28,11 @@ memory.}
 \item{max_reqs}{The maximum number of requests to perform. Use \code{Inf} to
 perform all requests until \code{next_req()} returns \code{NULL}.}
 
-\item{on_error}{What should happen if a request throws an HTTP error?
+\item{on_error}{What should happen if a request fails?
 \itemize{
-\item \code{stop}, the default: stop iterating and throw an error
-\item \code{return}: stop iterating and return all the successful responses so far.
+\item \code{"stop"}, the default: stop iterating with an error.
+\item \code{"return"}: stop iterating, returning all the successful responses so
+far, as well as an error object for the failed request.
 }}
 
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
@@ -39,7 +40,7 @@ progress bar, use a string to give it a name, or see \link{progress_bars} to
 customise it in other ways.}
 }
 \value{
-A list, the same length as \code{reqs}, containing \link{response}s and possibly one
+A list, at most length \code{max_reqs}, containing \link{response}s and possibly one
 error object, if \code{on_error} is \code{"return"} and one of the requests errors.
 If present, the error object will always be last element in the list.
 
