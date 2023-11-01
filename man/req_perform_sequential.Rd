@@ -32,7 +32,7 @@ customise it in other ways.}
 \value{
 A list, the same length as \code{reqs}, containing \link{response}s and possibly
 error objects, if \code{on_error} is \code{"return"} or \code{"continue"} and one of the
-responses error. If \code{on_error} is \code{"return"} and it errors on the ith
+responses errors. If \code{on_error} is \code{"return"} and it errors on the ith
 request, the ith element of the result will be an error object, and the
 remaining elements will be \code{NULL}. If \code{on_error} is \code{"continue"}, it will
 be a mix of requests and error objects.

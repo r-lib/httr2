@@ -17,9 +17,8 @@ this if you want to override the defaults for total concurrent connections
 (100) or concurrent connections per host (6).}
 
 \item{cancel_on_error}{Should all pending requests be cancelled when you
-hit an error. Set this to \code{TRUE} to stop all requests as soon as you
-hit an error. Responses that were never performed will have class
-\code{httr2_cancelled} in the result.}
+hit an error? Set this to \code{TRUE} to stop all requests as soon as you
+hit an error. Responses that were never performed be \code{NULL} in the result.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

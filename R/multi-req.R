@@ -32,7 +32,7 @@
 #' @return
 #' A list, the same length as `reqs`, containing [response]s and possibly
 #' error objects, if `on_error` is `"return"` or `"continue"` and one of the
-#' responses error. If `on_error` is `"return"` and it errors on the ith
+#' responses errors. If `on_error` is `"return"` and it errors on the ith
 #' request, the ith element of the result will be an error object, and the
 #' remaining elements will be `NULL`. If `on_error` is `"continue"`, it will
 #' be a mix of requests and error objects.
@@ -98,9 +98,8 @@ req_perform_parallel <- function(reqs,
 #'
 #' @export
 #' @param cancel_on_error Should all pending requests be cancelled when you
-#'   hit an error. Set this to `TRUE` to stop all requests as soon as you
-#'   hit an error. Responses that were never performed will have class
-#'   `httr2_cancelled` in the result.
+#'   hit an error? Set this to `TRUE` to stop all requests as soon as you
+#'   hit an error. Responses that were never performed be `NULL` in the result.
 #' @inheritParams req_perform_parallel
 #' @keywords internal
 multi_req_perform <- function(reqs,
@@ -123,33 +122,29 @@ multi_req_perform <- function(reqs,
 }
 
 pool_run <- function(pool, perfs, on_error = "continue") {
-  poll_until_done <- function(pool) {
+  on.exit(pool_cancel(pool, perfs), add = TRUE)
+
+  # The done and fail callbacks for curl::multi_add() are designed to always
+  # succeed. If the request actually failed, they raise a `httr_fail`
+  # signal (not error) that wraps the error. Here we catch that error and
+  # handle it based on the value of `on_error`
+  httr2_fail <- switch(on_error,
+    stop =     function(cnd) cnd_signal(cnd$error),
+    continue = function(cnd) zap(),
+    return =   function(cnd) NULL
+  )
+
+  try_fetch(
     repeat({
       # TODO: progress bar
       run <- curl::multi_run(0.1, pool = pool, poll = TRUE)
       if (run$pending == 0) {
         break
       }
-    })
-  }
-
-  # Ensure that this function leaves the pool in a good state
-  on.exit({
-    pool_cancel(pool, perfs)
-    curl::multi_run(pool = pool)
-  }, add = TRUE)
-
-  cancel <- function(cnd) cnd
-  if (on_error == "stop") {
-    signal <- tryCatch(poll_until_done(pool), interrupt = cancel, `httr2:::failed` = cancel)
-    if (is_error(signal$response)) {
-      cnd_signal(signal$response)
-    }
-  } else if (on_error == "continue") {
-    tryCatch(poll_until_done(pool), interrupt = cancel)
-  } else {
-    tryCatch(poll_until_done(pool), interrupt = cancel, `httr2:::failed` = cancel)
-  }
+    }),
+    interrupt = function(cnd) NULL,
+    httr2_fail = httr2_fail
+  )
 
   invisible()
 }
@@ -181,11 +176,13 @@ Performance <- R6Class("Performance", public = list(
 
   submit = function(pool = NULL) {
     if (!is.null(self$resp)) {
+      # cached
       return()
     }
 
     self$pool <- pool
-    curl::multi_add(self$handle,
+    curl::multi_add(
+      handle = self$handle,
       pool = self$pool,
       data = self$path,
       done = self$succeed,
@@ -195,7 +192,6 @@ Performance <- R6Class("Performance", public = list(
   },
 
   succeed = function(res) {
-    self$handle <- NULL
     body <- if (is.null(self$path)) res$content else new_path(self$path)
     resp <- new_response(
       method = req_method_get(self$req),
@@ -212,22 +208,22 @@ Performance <- R6Class("Performance", public = list(
       error = identity
     )
     if (is_error(self$resp)) {
-      signal("", response = self$resp, class = "httr2:::failed")
+      signal("", error = self$resp, class = "httr2_fail")
     }
   },
 
   fail = function(msg) {
-    self$handle <- NULL
     self$resp <- error_cnd(
       "httr2_failure",
       message = msg,
       request = self$req,
       call = self$error_call
     )
-    signal("", response = self$resp, class = "httr2:::failed")
+    signal("", error = self$resp, class = "httr2_fail")
   },
 
   cancel = function() {
+    # No handle if response was cached
     if (!is.null(self$handle)) {
       curl::multi_cancel(self$handle)
     }
@@ -236,4 +232,5 @@ Performance <- R6Class("Performance", public = list(
 
 pool_cancel <- function(pool, perfs) {
   walk(perfs, ~ .x$cancel())
+  curl::multi_run(pool = pool)
 }
