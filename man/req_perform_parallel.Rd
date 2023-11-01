@@ -69,13 +69,16 @@ reqs <- list(
 # But it's much faster if you request in parallel
 system.time(resps <- req_perform_parallel(reqs))
 
+# req_perform_parallel() will fail on error
 reqs <- list(
   request_base |> req_url_path("/status/200"),
   request_base |> req_url_path("/status/400"),
   request("FAILURE")
 )
-# req_perform_parallel() will always succeed
-resps <- req_perform_parallel(reqs)
+try(resps <- req_perform_parallel(reqs))
+
+# but can use on_error to capture all successful results
+resps <- req_perform_parallel(reqs, on_error = "continue")
 
 # Inspect the successful responses
 resps |> resps_successes()
