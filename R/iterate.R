@@ -119,7 +119,6 @@ req_perform_iterative <- function(req,
   check_number_whole(max_reqs, allow_infinite = TRUE, min = 1)
   check_string(path, allow_empty = FALSE, allow_null = TRUE)
   on_error <- arg_match(on_error)
-  err_return <- on_error == "return"
 
   get_path <- function(i) {
     if (is.null(path)) {
@@ -140,17 +139,17 @@ req_perform_iterative <- function(req,
 
   tryCatch({
     repeat {
-      if (err_return) {
-        resp <- tryCatch(
-          req_perform(req, path = get_path(i)),
-          httr2_error = function(err) err
-        )
-      } else {
-        resp <- req_perform(req, path = get_path(i))
-      }
+      httr2_error <- switch(on_error,
+        stop = function(cnd) zap(),
+        return = function(cnd) cnd
+      )
+      resp <- try_fetch(
+        req_perform(req, path = get_path(i)),
+        httr2_error = httr2_error
+      )
       resps[[i]] <- resp
 
-      if (err_return && is_error(resp)) {
+      if (on_error == "return" && is_error(resp)) {
         break
       }
 
