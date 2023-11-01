@@ -17,8 +17,7 @@ req_perform_sequential(
 \item{paths}{An optional list of paths, if you want to download the request
 bodies to disks. If supplied, must be the same length as \code{reqs}.}
 
-\item{on_error}{What should happen if one of the requests throws an
-HTTP error?
+\item{on_error}{What should happen if one of the requests fails?
 \itemize{
 \item \code{stop}, the default: stop iterating and throw an error
 \item \code{return}: stop iterating and return all the successful responses so far.
@@ -30,13 +29,14 @@ progress bar, use a string to give it a name, or see \link{progress_bars} to
 customise it in other ways.}
 }
 \value{
-A list, the same length as \code{reqs}.
+A list, the same length as \code{reqs}, containing \link{response}s and possibly
+error objects, if \code{on_error} is \code{"return"} or \code{"continue"} and one of the
+responses error. If \code{on_error} is \code{"return"} and it errors on the ith
+request, the ith element of the result will be an error object, and the
+remaining elements will be \code{NULL}. If \code{on_error} is \code{"continue"}, it will
+be a mix of requests and error objects.
 
-If \code{on_error} is \code{"return"} and it errors on the ith request, the ith
-element of the result will be an error object, and the remaining elements
-will be \code{NULL}.
-
-If \code{on_error} is \code{"continue"}, it will be a mix of requests and errors.
+Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for more details.
 }
 \description{
 Given a list of requests, this function performs each in turn, returning

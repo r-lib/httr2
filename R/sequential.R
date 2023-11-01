@@ -6,21 +6,22 @@
 #'
 #' @inheritParams req_perform_parallel
 #' @inheritParams req_perform_iterative
-#' @param on_error What should happen if one of the requests throws an
-#'   HTTP error?
+#' @param on_error What should happen if one of the requests fails?
 #'
-#'   * `stop`, the default: stop iterating and throw an error
-#'   * `return`: stop iterating and return all the successful responses so far.
+#'   * `stop`, the default: stop iterating with an error.
+#'   * `return`: stop iterating, returning all the successful responses
+#'     received so far, as well as an error object for the failed request.
 #'   * `continue`: continue iterating, recording errors in the result.
 #' @export
 #' @return
-#' A list, the same length as `reqs`.
+#' A list, the same length as `reqs`, containing [response]s and possibly
+#' error objects, if `on_error` is `"return"` or `"continue"` and one of the
+#' responses error. If `on_error` is `"return"` and it errors on the ith
+#' request, the ith element of the result will be an error object, and the
+#' remaining elements will be `NULL`. If `on_error` is `"continue"`, it will
+#' be a mix of requests and error objects.
 #'
-#' If `on_error` is `"return"` and it errors on the ith request, the ith
-#' element of the result will be an error object, and the remaining elements
-#' will be `NULL`.
-#'
-#' If `on_error` is `"continue"`, it will be a mix of requests and errors.
+#' Only httr2 errors are captured; see [req_error()] for more details.
 #' @examples
 #' # One use of req_perform_sequential() is if the API allows you to request
 #' # data for multiple objects, you want data for more objects than can fit
