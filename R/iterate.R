@@ -86,7 +86,7 @@
 #' @return
 #' A list, at most length `max_reqs`, containing [response]s and possibly one
 #' error object, if `on_error` is `"return"` and one of the requests errors.
-#' If present, the error object will always be last element in the list.
+#' If present, the error object will always be the last element in the list.
 #'
 #' Only httr2 errors are captured; see [req_error()] for more details.
 #' @export

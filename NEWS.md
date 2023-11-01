@@ -50,7 +50,7 @@
   is now deprecated (#314).
 
 * `req_perform_parallel()` replaces `multi_req_perform()`. `multi_req_perform()`
-  is now deprecated (#314). `req_perform_parallel()` has an new error handling
+  is now deprecated (#314). `req_perform_parallel()` has a new error handling
   strategy matching `req_perform_iterative()` and `req_perform_sequential()`.
   It will bubble up errors by default but you can choose an alternative strategy
   with the `on_error` argument.
