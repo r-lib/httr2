@@ -49,7 +49,18 @@ test_that("immutable objects retrieved from cache", {
   expect_equal(resps[[1]], resp)
 })
 
-test_that("both curl and HTTP errors become errors", {
+test_that("errors by default", {
+  reqs <- list2(
+    request_test("/status/:status", status = 404),
+    request("INVALID")
+  )
+  expect_snapshot(error = TRUE, {
+    req_perform_parallel(reqs[1])
+    req_perform_parallel(reqs[2])
+  })
+})
+
+test_that("both curl and HTTP errors become errors on continue", {
   reqs <- list2(
     request_test("/status/:status", status = 404),
     request("INVALID"),
@@ -70,7 +81,7 @@ test_that("errors can cancel outstanding requests", {
   )
   out <- req_perform_parallel(reqs, on_error = "return")
   expect_s3_class(out[[1]], "httr2_http_404")
-  expect_s3_class(out[[2]], "httr2_cancelled")
+  expect_null(out[[2]])
 })
 
 test_that("multi_req_perform is deprecated", {

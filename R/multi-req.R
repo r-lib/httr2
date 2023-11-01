@@ -73,7 +73,11 @@ req_perform_parallel <- function(reqs,
 
   perfs <- vector("list", length(reqs))
   for (i in seq_along(reqs)) {
-    perfs[[i]] <- Performance$new(req = reqs[[i]], path = paths[[i]])
+    perfs[[i]] <- Performance$new(
+      req = reqs[[i]],
+      path = paths[[i]],
+      error_call = environment()
+    )
     perfs[[i]]$submit(pool)
   }
 
@@ -129,15 +133,23 @@ pool_run <- function(pool, perfs, on_error = "continue") {
     })
   }
 
-  cancel <- function(cnd) pool_cancel(pool, perfs)
-  if (on_error == "continue") {
+  # Ensure that this function leaves the pool in a good state
+  on.exit({
+    pool_cancel(pool, perfs)
+    curl::multi_run(pool = pool)
+  }, add = TRUE)
+
+  cancel <- function(cnd) cnd
+  if (on_error == "stop") {
+    signal <- tryCatch(poll_until_done(pool), interrupt = cancel, `httr2:::failed` = cancel)
+    if (is_error(signal$response)) {
+      cnd_signal(signal$response)
+    }
+  } else if (on_error == "continue") {
     tryCatch(poll_until_done(pool), interrupt = cancel)
   } else {
     tryCatch(poll_until_done(pool), interrupt = cancel, `httr2:::failed` = cancel)
   }
-
-  # Ensuring any pending handles are still completed
-  curl::multi_run(pool = pool)
 
   invisible()
 }
@@ -150,10 +162,12 @@ Performance <- R6Class("Performance", public = list(
   handle = NULL,
   resp = NULL,
   pool = NULL,
+  error_call = NULL,
 
-  initialize = function(req, path = NULL) {
+  initialize = function(req, path = NULL, error_call = NULL) {
     self$req <- req
     self$path <- path
+    self$error_call <- error_call
 
     req <- auth_oauth_sign(req)
     req <- cache_pre_fetch(req)
@@ -171,7 +185,6 @@ Performance <- R6Class("Performance", public = list(
     }
 
     self$pool <- pool
-    self$resp <- error_cnd("httr2_cancelled", message = "Request cancelled")
     curl::multi_add(self$handle,
       pool = self$pool,
       data = self$path,
@@ -182,6 +195,7 @@ Performance <- R6Class("Performance", public = list(
   },
 
   succeed = function(res) {
+    self$handle <- NULL
     body <- if (is.null(self$path)) res$content else new_path(self$path)
     resp <- new_response(
       method = req_method_get(self$req),
@@ -193,15 +207,24 @@ Performance <- R6Class("Performance", public = list(
     )
     resp <- cache_post_fetch(self$reqs, resp, path = self$paths)
 
-    self$resp <- tryCatch(resp_check_status(resp), error = identity)
+    self$resp <- tryCatch(
+      resp_check_status(resp, error_call = self$error_call),
+      error = identity
+    )
     if (is_error(self$resp)) {
-      signal("", class = "httr2:::failed")
+      signal("", response = self$resp, class = "httr2:::failed")
     }
   },
 
   fail = function(msg) {
-    self$resp <- error_cnd("httr2_failure", message = msg, request = self$req)
-    signal("", class = "httr2:::failed")
+    self$handle <- NULL
+    self$resp <- error_cnd(
+      "httr2_failure",
+      message = msg,
+      request = self$req,
+      call = self$error_call
+    )
+    signal("", response = self$resp, class = "httr2:::failed")
   },
 
   cancel = function() {
