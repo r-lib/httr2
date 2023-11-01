@@ -42,7 +42,7 @@ customise it in other ways.}
 \value{
 A list, at most length \code{max_reqs}, containing \link{response}s and possibly one
 error object, if \code{on_error} is \code{"return"} and one of the requests errors.
-If present, the error object will always be last element in the list.
+If present, the error object will always be the last element in the list.
 
 Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for more details.
 }
