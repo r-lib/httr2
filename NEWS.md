@@ -50,7 +50,10 @@
   is now deprecated (#314).
 
 * `req_perform_parallel()` replaces `multi_req_perform()`. `multi_req_perform()`
-  is now deprecated (#314).
+  is now deprecated (#314). `req_perform_parallel()` has an new error handling
+  strategy matching `req_perform_iterative()` and `req_perform_sequential()`.
+  It will bubble up errors by default by you can choose an alterantive strategy
+  with the `on_error` argument.
 
 * `oauth_flow_auth_code()` allows the user to enter a URL that contains 
   authorization `code` and `state` parameters (@fh-mthomson, #326).
