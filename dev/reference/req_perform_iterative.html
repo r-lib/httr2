@@ -222,6 +222,7 @@ like this:</p>
 <span>  <span class="va">next_req</span>,</span>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_reqs <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  on_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stop"</span>, <span class="st">"return"</span><span class="op">)</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -250,6 +251,13 @@ memory.</p></dd>
 perform all requests until <code>next_req()</code> returns <code>NULL</code>.</p></dd>
 
 
+<dt>on_error</dt>
+<dd><p>What should happen if a request fails?</p><ul><li><p><code>"stop"</code>, the default: stop iterating with an error.</p></li>
+<li><p><code>"return"</code>: stop iterating, returning all the successful responses so
+far, as well as an error object for the failed request.</p></li>
+</ul></dd>
+
+
 <dt>progress</dt>
 <dd><p>Display a progress bar? Use <code>TRUE</code> to turn on a basic
 progress bar, use a string to give it a name, or see <a href="progress_bars.html">progress_bars</a> to
@@ -260,7 +268,12 @@ customise it in other ways.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list of <code><a href="response.html">response()</a></code>s.</p>
+<p>A list, at most length <code>max_reqs</code>, containing <a href="response.html">response</a>s and possibly one
+error object, if <code>on_error</code> is <code>"return"</code> and one of the requests errors.
+If present, the error object will always be the last element in the list.</p>
+
+
+<p>Only httr2 errors are captured; see <code><a href="req_error.html">req_error()</a></code> for more details.</p>
     </div>
 
     <div class="section level2">
@@ -272,7 +285,6 @@ customise it in other ways.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_iterative</span><span class="op">(</span><span class="va">req</span>, <span class="fu"><a href="iterate_with_offset.html">iterate_with_offset</a></span><span class="op">(</span><span class="st">"page_index"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iterating <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Iterating <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% | ETA:  0s</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iterating <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_data</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span></span>

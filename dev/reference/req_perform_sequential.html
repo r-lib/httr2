@@ -87,9 +87,9 @@ bodies to disks. If supplied, must be the same length as <code>reqs</code>.</p><
 
 
 <dt>on_error</dt>
-<dd><p>What should happen if one of the requests throws an
-HTTP error?</p><ul><li><p><code>stop</code>, the default: stop iterating and throw an error</p></li>
-<li><p><code>return</code>: stop iterating and return all the successful responses so far.</p></li>
+<dd><p>What should happen if one of the requests fails?</p><ul><li><p><code>stop</code>, the default: stop iterating with an error.</p></li>
+<li><p><code>return</code>: stop iterating, returning all the successful responses
+received so far, as well as an error object for the failed request.</p></li>
 <li><p><code>continue</code>: continue iterating, recording errors in the result.</p></li>
 </ul></dd>
 
@@ -104,15 +104,15 @@ customise it in other ways.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list, the same length as <code>reqs</code>.</p>
+<p>A list, the same length as <code>reqs</code>, containing <a href="response.html">response</a>s and possibly
+error objects, if <code>on_error</code> is <code>"return"</code> or <code>"continue"</code> and one of the
+responses errors. If <code>on_error</code> is <code>"return"</code> and it errors on the ith
+request, the ith element of the result will be an error object, and the
+remaining elements will be <code>NULL</code>. If <code>on_error</code> is <code>"continue"</code>, it will
+be a mix of requests and error objects.</p>
 
 
-<p>If <code>on_error</code> is <code>"return"</code> and it errors on the ith request, the ith
-element of the result will be an error object, and the remaining elements
-will be <code>NULL</code>.</p>
-
-
-<p>If <code>on_error</code> is <code>"continue"</code>, it will be a mix of requests and errors.</p>
+<p>Only httr2 errors are captured; see <code><a href="req_error.html">req_error()</a></code> for more details.</p>
     </div>
 
     <div class="section level2">
