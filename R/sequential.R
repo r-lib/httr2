@@ -6,21 +6,8 @@
 #'
 #' @inheritParams req_perform_parallel
 #' @inheritParams req_perform_iterative
-#' @param on_error What should happen if one of the requests throws an
-#'   HTTP error?
-#'
-#'   * `stop`, the default: stop iterating and throw an error
-#'   * `return`: stop iterating and return all the successful responses so far.
-#'   * `continue`: continue iterating, recording errors in the result.
+#' @inherit req_perform_parallel return
 #' @export
-#' @return
-#' A list, the same length as `reqs`.
-#'
-#' If `on_error` is `"return"` and it errors on the ith request, the ith
-#' element of the result will be an error object, and the remaining elements
-#' will be `NULL`.
-#'
-#' If `on_error` is `"continue"`, it will be a mix of requests and errors.
 #' @examples
 #' # One use of req_perform_sequential() is if the API allows you to request
 #' # data for multiple objects, you want data for more objects than can fit
@@ -49,13 +36,9 @@ req_perform_sequential <- function(reqs,
   if (!is_bare_list(reqs)) {
     stop_input_type(reqs, "a list")
   }
-  if (!is.null(paths)) {
-    check_character(paths)
-    if (length(reqs) != length(paths)) {
-      cli::cli_abort("If supplied, {.arg paths} must be the same length as {.arg req}.")
-    }
-  }
+  check_paths(paths, reqs)
   on_error <- arg_match(on_error)
+
   err_catch <- on_error != "stop"
   err_return <- on_error == "return"
 
@@ -91,4 +74,16 @@ req_perform_sequential <- function(reqs,
   progress$done()
 
   resps
+}
+
+check_paths <- function(paths, reqs, error_call = caller_env()) {
+  if (!is.null(paths)) {
+    check_character(paths)
+    if (length(reqs) != length(paths)) {
+      cli::cli_abort(
+        "If supplied, {.arg paths} must be the same length as {.arg req}.",
+        call = error_call
+      )
+    }
+  }
 }

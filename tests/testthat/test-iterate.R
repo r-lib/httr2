@@ -63,6 +63,21 @@ test_that("can retrieve all pages", {
   expect_length(resps, 120)
 })
 
+test_that("can choose to return on failure", {
+  iterator <- function(resp, req) {
+    request_test("/status/:status", status = 404)
+  }
+  expect_error(
+    req_perform_iterative(request_test(), iterator),
+    class = "httr2_http_404"
+  )
+
+  out <- req_perform_iterative(request_test(), iterator, on_error = "return")
+  expect_length(out, 2)
+  expect_s3_class(out[[1]], "httr2_response")
+  expect_s3_class(out[[2]], "httr2_http_404")
+})
+
 test_that("checks its inputs", {
   req <- request_test()
   expect_snapshot(error = TRUE,{

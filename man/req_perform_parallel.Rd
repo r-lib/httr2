@@ -2,10 +2,14 @@
 % Please edit documentation in R/multi-req.R
 \name{req_perform_parallel}
 \alias{req_perform_parallel}
-\alias{multi_req_perform}
 \title{Perform a list of requests in parallel}
 \usage{
-req_perform_parallel(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE)
+req_perform_parallel(
+  reqs,
+  paths = NULL,
+  pool = NULL,
+  on_error = c("stop", "return", "continue")
+)
 }
 \arguments{
 \item{reqs}{A list of \link{request}s.}
@@ -17,40 +21,42 @@ bodies to disks. If supplied, must be the same length as \code{reqs}.}
 this if you want to override the defaults for total concurrent connections
 (100) or concurrent connections per host (6).}
 
-\item{cancel_on_error}{Should all pending requests be cancelled when you
-hit an error. Set this to \code{TRUE} to stop all requests as soon as you
-hit an error. Responses that were never performed will have class
-\code{httr2_cancelled} in the result.}
+\item{on_error}{What should happen if one of the requests fails?
+\itemize{
+\item \code{stop}, the default: stop iterating with an error.
+\item \code{return}: stop iterating, returning all the successful responses
+received so far, as well as an error object for the failed request.
+\item \code{continue}: continue iterating, recording errors in the result.
+}}
 }
 \value{
-A list the same length as \code{reqs} where each element is either a
-\link{response} or an \code{error}.
+A list, the same length as \code{reqs}, containing \link{response}s and possibly
+error objects, if \code{on_error} is \code{"return"} or \code{"continue"} and one of the
+responses errors. If \code{on_error} is \code{"return"} and it errors on the ith
+request, the ith element of the result will be an error object, and the
+remaining elements will be \code{NULL}. If \code{on_error} is \code{"continue"}, it will
+be a mix of requests and error objects.
+
+Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for more details.
 }
 \description{
 This variation on \code{\link[=req_perform]{req_perform()}} performs multiple requests in parallel.
-Unlike \code{req_perform()} it always succeeds; it will never throw an error.
-Instead it will return error objects, which are your responsibility to
-handle.
-
 Exercise caution when using this function; it's easy to pummel a server
 with many simultaneous requests. Only use it with hosts designed to serve
-many files at once.
-}
-\section{Limitations}{
+many files at once, which are typically web servers, not API servers.
+
+\code{req_perform_parallel()} has a few limitations:
 \itemize{
 \item Will not retrieve a new OAuth token if it expires part way through
 the requests.
 \item Does not perform throttling with \code{\link[=req_throttle]{req_throttle()}}.
 \item Does not attempt retries as described by \code{\link[=req_retry]{req_retry()}}.
-\item Consults the cache set by \code{\link[=req_cache]{req_cache()}} before/after all requests.
+\item Only consults the cache set by \code{\link[=req_cache]{req_cache()}} before/after all requests.
 }
 
-In general, where \code{\link[=req_perform]{req_perform()}} might make multiple requests due to retries
-or OAuth failures, \code{req_perform_parallel()} will only make 1. If any of
-these limitations are problematic, you may want to use
+If any of these limitations are problematic for your use case, we recommend
 \code{\link[=req_perform_sequential]{req_perform_sequential()}} instead.
 }
-
 \examples{
 # Requesting these 4 pages one at a time would take 2 seconds:
 request_base <- request(example_url())
@@ -63,13 +69,16 @@ reqs <- list(
 # But it's much faster if you request in parallel
 system.time(resps <- req_perform_parallel(reqs))
 
+# req_perform_parallel() will fail on error
 reqs <- list(
   request_base |> req_url_path("/status/200"),
   request_base |> req_url_path("/status/400"),
   request("FAILURE")
 )
-# req_perform_parallel() will always succeed
-resps <- req_perform_parallel(reqs)
+try(resps <- req_perform_parallel(reqs))
+
+# but can use on_error to capture all successful results
+resps <- req_perform_parallel(reqs, on_error = "continue")
 
 # Inspect the successful responses
 resps |> resps_successes()
