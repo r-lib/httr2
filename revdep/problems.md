@@ -1,44 +1,3 @@
-# congress
-
-<details>
-
-* Version: 0.0.1
-* GitHub: https://github.com/christopherkenny/congress
-* Source code: https://github.com/cran/congress
-* Date/Publication: 2022-10-12 08:02:32 UTC
-* Number of recursive dependencies: 57
-
-Run `revdepcheck::cloud_details(, "congress")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking tests ... ERROR
-    ```
-      Running ‘spelling.R’
-      Running ‘testthat.R’
-    Running the tests in ‘tests/testthat.R’ failed.
-    Complete output:
-      > # This file is part of the standard setup for testthat.
-      > # It is recommended that you do not modify it.
-      > #
-      > # Where should you do additional test configuration?
-      > # Learn more about the roles of various files in:
-      > # * https://r-pkgs.org/tests.html
-    ...
-       3.     └─httptest2 (local) mock(req)
-       4.       └─httptest2:::load_response(mockfile, req)
-       5.         └─httr2::response(method = req$method)
-       6.           └─httr2:::check_string(method)
-       7.             └─httr2:::stop_input_type(...)
-       8.               └─rlang::abort(message, ..., call = call, arg = arg)
-      
-      [ FAIL 11 | WARN 0 | SKIP 0 | PASS 0 ]
-      Error: Test failures
-      Execution halted
-    ```
-
 # feltr
 
 <details>
@@ -68,55 +27,14 @@ Run `revdepcheck::cloud_details(, "feltr")` for more info
       > # * https://r-pkgs.org/tests.html
       > # * https://testthat.r-lib.org/reference/test_package.html#special-files
     ...
-        6.     └─httptest2 (local) mock(req)
-        7.       └─httptest2:::load_response(mockfile, req)
-        8.         └─httr2::response(method = req$method)
-        9.           └─httr2:::check_string(method)
-       10.             └─httr2:::stop_input_type(...)
-       11.               └─rlang::abort(message, ..., call = call, arg = arg)
+       1. └─feltr::felt_get_map_elements("TBI8sDkmQjuK2GX9CSiHiUA") at test-map_elements.R:3:5
+       2.   └─httr2::resp_body_json(httr2::req_perform(req))
+       3.     └─rlang::env_has(env = resp$cache)
+       4.       └─rlang:::check_environment(env)
+       5.         └─rlang:::stop_input_type(...)
+       6.           └─rlang::abort(message, ..., call = call, arg = arg)
       
-      [ FAIL 3 | WARN 0 | SKIP 1 | PASS 0 ]
-      Error: Test failures
-      Execution halted
-    ```
-
-# gptzeror
-
-<details>
-
-* Version: 0.0.1
-* GitHub: https://github.com/christopherkenny/gptzeror
-* Source code: https://github.com/cran/gptzeror
-* Date/Publication: 2023-06-05 08:30:02 UTC
-* Number of recursive dependencies: 48
-
-Run `revdepcheck::cloud_details(, "gptzeror")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking tests ... ERROR
-    ```
-      Running ‘testthat.R’
-    Running the tests in ‘tests/testthat.R’ failed.
-    Complete output:
-      > # This file is part of the standard setup for testthat.
-      > # It is recommended that you do not modify it.
-      > #
-      > # Where should you do additional test configuration?
-      > # Learn more about the roles of various files in:
-      > # * https://r-pkgs.org/tests.html
-      > # * https://testthat.r-lib.org/reference/test_package.html#special-files
-    ...
-        6.     └─httptest2 (local) mock(req)
-        7.       └─httptest2:::load_response(mockfile, req)
-        8.         └─httr2::response(method = req$method)
-        9.           └─httr2:::check_string(method)
-       10.             └─httr2:::stop_input_type(...)
-       11.               └─rlang::abort(message, ..., call = call, arg = arg)
-      
-      [ FAIL 2 | WARN 0 | SKIP 0 | PASS 0 ]
+      [ FAIL 1 | WARN 0 | SKIP 1 | PASS 4 ]
       Error: Test failures
       Execution halted
     ```
@@ -157,7 +75,7 @@ Run `revdepcheck::cloud_details(, "happign")` for more info
        10.       └─cli::cli_abort("Query must be a named list.", call = error_call)
        11.         └─rlang::abort(...)
       
-      [ FAIL 5 | WARN 21 | SKIP 24 | PASS 58 ]
+      [ FAIL 4 | WARN 21 | SKIP 24 | PASS 60 ]
       Error: Test failures
       Execution halted
     ```
@@ -194,18 +112,18 @@ Run `revdepcheck::cloud_details(, "httptest2")` for more info
       > library(testthat)
       > test_check("httptest2")
       Loading required package: httptest2
-      Reading /tmp/workdir/httptest2/new/httptest2.Rcheck/tests/testthat/example.com/login-712027-POST.R
-      Writing /tmp/RtmpPx69aP/filee6563a5e193/example.com/login-712027-POST.R
-      Using redact.R from "testpkg"
-    ...
-       13.   └─httptest2 (local) mock(req)
-       14.     └─httptest2:::load_response(mockfile, req)
-       15.       └─httr2::response(method = req$method)
-       16.         └─httr2:::check_string(method)
-       17.           └─httr2:::stop_input_type(...)
-       18.             └─rlang::abort(message, ..., call = call, arg = arg)
+      [ FAIL 8 | WARN 21 | SKIP 10 | PASS 209 ]
       
-      [ FAIL 23 | WARN 20 | SKIP 8 | PASS 153 ]
+      ══ Skipped tests (10) ══════════════════════════════════════════════════════════
+    ...
+       3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
+       4. └─httr2::resp_body_json(loc_sub)
+       5.   └─rlang::env_has(env = resp$cache)
+       6.     └─rlang:::check_environment(env)
+       7.       └─rlang:::stop_input_type(...)
+       8.         └─rlang::abort(message, ..., call = call, arg = arg)
+      
+      [ FAIL 8 | WARN 21 | SKIP 10 | PASS 209 ]
       Error: Test failures
       Execution halted
     ```
@@ -236,17 +154,17 @@ Run `revdepcheck::cloud_details(, "osmdata")` for more info
       Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright
       > 
       > test_check("osmdata")
-      [ FAIL 8 | WARN 0 | SKIP 0 | PASS 535 ]
+      [ FAIL 4 | WARN 0 | SKIP 0 | PASS 559 ]
       
     ...
-       13.           └─httptest2 (local) mock(req)
-       14.             └─httptest2:::load_response(mockfile, req)
-       15.               └─httr2::response(method = req$method)
-       16.                 └─httr2:::check_string(method)
-       17.                   └─httr2:::stop_input_type(...)
-       18.                     └─rlang::abort(message, ..., call = call, arg = arg)
+       10.     └─osmdata:::overpass_query(...)
+       11.       └─httr2::resp_body_xml(resp)
+       12.         └─rlang::env_has(env = resp$cache)
+       13.           └─rlang:::check_environment(env)
+       14.             └─rlang:::stop_input_type(...)
+       15.               └─rlang::abort(message, ..., call = call, arg = arg)
       
-      [ FAIL 8 | WARN 0 | SKIP 0 | PASS 535 ]
+      [ FAIL 4 | WARN 0 | SKIP 0 | PASS 559 ]
       Error: Test failures
       Execution halted
     ```
@@ -259,47 +177,6 @@ Run `revdepcheck::cloud_details(, "osmdata")` for more info
       sub-directories of 1Mb or more:
         doc    5.0Mb
         libs  16.2Mb
-    ```
-
-# riem
-
-<details>
-
-* Version: 0.3.0
-* GitHub: https://github.com/ropensci/riem
-* Source code: https://github.com/cran/riem
-* Date/Publication: 2022-02-08 13:40:02 UTC
-* Number of recursive dependencies: 104
-
-Run `revdepcheck::cloud_details(, "riem")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking tests ... ERROR
-    ```
-      Running ‘testthat.R’
-    Running the tests in ‘tests/testthat.R’ failed.
-    Complete output:
-      > library(testthat)
-      > library(riem)
-      > 
-      > test_check("riem")
-      [ FAIL 3 | WARN 1 | SKIP 3 | PASS 1 ]
-      
-      ══ Skipped tests (3) ═══════════════════════════════════════════════════════════
-    ...
-       14.   └─httptest2 (local) mock(req)
-       15.     └─httptest2:::load_response(mockfile, req)
-       16.       └─httr2::response(method = req$method)
-       17.         └─httr2:::check_string(method)
-       18.           └─httr2:::stop_input_type(...)
-       19.             └─rlang::abort(message, ..., call = call, arg = arg)
-      
-      [ FAIL 3 | WARN 1 | SKIP 3 | PASS 1 ]
-      Error: Test failures
-      Execution halted
     ```
 
 # rirods
