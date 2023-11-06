@@ -58,7 +58,7 @@ security and should always be used if supported by the server.}
 use OAuth; \code{oauth_flow_device()} returns an \link{oauth_token}.
 }
 \description{
-Authenticate using the OAuth \strong{device flow}, as defined by \href{https://datatracker.ietf.org/doc/html/rfc8626}{RFC 8626}.
+Authenticate using the OAuth \strong{device flow}, as defined by \href{https://datatracker.ietf.org/doc/html/rfc8628}{RFC 8628}.
 It's designed for devices that don't have access to a web browser (if you've
 ever authenticated an app on your TV, this is probably the flow you've used),
 but it also works well from within R.

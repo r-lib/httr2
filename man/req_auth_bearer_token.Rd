@@ -30,6 +30,6 @@ req
 print(req, redact_headers = FALSE)
 }
 \seealso{
-\href{https://datatracker.ietf.org/doc/html/rfc6750}{RFC750}
-The OAuth 2.0 Authorization Framework: Bearer Token Usage
+See \href{https://datatracker.ietf.org/doc/html/rfc6750}{RFC 6750} for more details about bearer token usage
+with OAuth 2.0.
 }
