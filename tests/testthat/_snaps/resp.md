@@ -37,6 +37,29 @@
       Status: 200 OK
       Body: On disk 'path-content' (15 bytes)
 
+# response checks its inputs
+
+    Code
+      response(status_code = "abc")
+    Condition
+      Error in `response()`:
+      ! `status_code` must be a whole number, not the string "abc".
+    Code
+      response(url = 1)
+    Condition
+      Error in `response()`:
+      ! `url` must be a single string, not the number 1.
+    Code
+      response(method = 1)
+    Condition
+      Error in `response()`:
+      ! `method` must be a single string or `NULL`, not the number 1.
+    Code
+      response(headers = 1)
+    Condition
+      Error in `response()`:
+      ! `headers` must be a list, character vector, or raw.
+
 # check_response produces helpful error
 
     Code

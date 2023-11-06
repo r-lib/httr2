@@ -14,9 +14,24 @@ test_that("response has basic print method", {
   })
 })
 
+test_that("response checks its inputs", {
+  expect_snapshot(error = TRUE, {
+    response(status_code = "abc")
+    response(url = 1)
+    response(method = 1)
+    response(headers = 1)
+  })
+})
+
 test_that("response adds date if not provided by server", {
   resp <- response(headers = "Test: 1")
   expect_named(resp_headers(resp), c("Test", "Date"))
+})
+
+test_that("response adds default METHOD", {
+  # for backward compatibility
+  resp <- response(method = NULL)
+  expect_equal(resp$method, "GET")
 })
 
 test_that("check_response produces helpful error", {

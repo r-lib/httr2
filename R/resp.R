@@ -33,12 +33,12 @@ response <- function(status_code = 200,
 
   check_number_whole(status_code, min = 100, max = 700)
   check_string(url)
-  check_string(method)
+  check_string(method, allow_null = TRUE)
 
   headers <- as_headers(headers)
 
   new_response(
-    method = method,
+    method = method %||% "GET",
     url = url,
     status_code = as.integer(status_code),
     headers = headers,
