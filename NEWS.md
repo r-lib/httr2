@@ -24,19 +24,19 @@
   with no limitations, and the cost of being slower (#361).
 
 * New `req_perform_iterative()` performs multiple requests, where each request
-  is derived the from the previous response (@mgirlich, #8).
+  is derived from the previous response (@mgirlich, #8).
 
 * `req_perform_parallel()` replaces `multi_req_perform()` to match the new
   naming scheme (#314).
 
-* `req_perform_iterative()`, `req_perform_parallel()`, 
-  `req_perform_sequential()`, and share a new error handling strategy. By
+* `req_perform_iterative()`, `req_perform_parallel()`, and
+  `req_perform_sequential()` share a new error handling strategy. By
   default, errors will be bubbled up, but you can choose an alternative 
   strategy with the `on_error` argument (#372).
 
 * A new family of functions `resps_successes()`, `resps_failures()`, 
   `resps_requests()` and `resps_data()` make it easier to work with lists of
-  responses (#357). Behind the scenes, these work by because the request is now 
+  responses (#357). Behind the scenes, these work because the request is now 
   stored in the response (or error) object (#357).
 
 * `resp_body_json()` and `resp_body_xml()` now cache the parsed values so 
@@ -48,8 +48,7 @@
 
 * A new `vignette("oauth")` gives many more details about how OAuth works and 
   how to use it with httr2 (#234), and the OAuth docs have been overhauled to
-  make it more clear that you should being using `req_oauth_*()`, not 
-  `oauth_*()` (#330). 
+  make it more clear that you should use `req_oauth_*()`, not `oauth_*()` (#330). 
   
 * If you are using an OAuth token with a refresh token, and that refresh
   token has expired, then httr2 will now re-run the entire flow to get 
@@ -87,7 +86,7 @@
 * New `req_cookie_preserve()` lets you use a file to share cookies across 
   requests (#223).
 
-* New `req_progress()` adds a progress bar to long download or uploads (#20).
+* New `req_progress()` adds a progress bar to long downloads or uploads (#20).
 
 * New `resp_check_content_type()` to check response content types (#190).
   `resp_body_json()` and friends give better errors if no `Content-Type`
