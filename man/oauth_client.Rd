@@ -23,7 +23,7 @@ oauth_client(
 so in principle you should avoid storing it in source code. However, many
 APIs require it in order to provide a user friendly authentication
 experience, and the risks of including it are usually low. To make things
-a little safer, I recommend using \code{\link[=obfuscate]{obfuscate()}} when recorded the client
+a little safer, I recommend using \code{\link[=obfuscate]{obfuscate()}} when recording the client
 secret in public code.}
 
 \item{key}{Client key. As an alternative to using a \code{secret}, you can
@@ -36,7 +36,7 @@ or a function that will be called with arguments \code{req}, \code{client}, and
 the contents of \code{auth_params}.
 
 The most common mechanism in the wild is \code{"body"} where the \code{client_id} and
-(optionally) \code{client_secret} are added to the body. \code{"header"} sends in
+(optionally) \code{client_secret} are added to the body. \code{"header"} sends the
 \code{client_id} and \code{client_secret} in HTTP Authorization header. \code{"jwt_sig"}
 will generate a JWT, and include it in a \code{client_assertion} field in the
 body.
@@ -46,9 +46,9 @@ See \code{\link[=oauth_client_req_auth]{oauth_client_req_auth()}} for more detai
 \item{auth_params}{Additional parameters passed to the function specified
 by \code{auth}.}
 
-\item{name}{Optional name for the client. Used when generating cache
+\item{name}{Optional name for the client. Used when generating the cache
 directory. If \code{NULL}, generated from hash of \code{client_id}. If you're
-defining a package for use in a package, I recommend that you use
+defining a client for use in a package, I recommend that you use
 the package name.}
 }
 \value{

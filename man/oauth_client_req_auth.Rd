@@ -34,7 +34,7 @@ A modified HTTP \link{request}.
 \description{
 \code{oauth_client_req_auth()} authenticates a request using the authentication
 strategy defined by the \code{auth} and \code{auth_param} arguments to \code{\link[=oauth_client]{oauth_client()}}.
-This used to authenticate the client as part of the OAuth flow, \strong{not}
+This is used to authenticate the client as part of the OAuth flow, \strong{not}
 to authenticate a request on behalf of a user.
 
 There are three built-in strategies:
