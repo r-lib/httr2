@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# httr2
+# httr2 <a href="https://httr2.r-lib.org"><img src="man/figures/logo.png" align="right" height="138" alt="httr2 website" /></a>
 
 <!-- badges: start -->
 
