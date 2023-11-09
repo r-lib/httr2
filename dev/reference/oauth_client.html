@@ -99,7 +99,7 @@ the API's website.</p>
 so in principle you should avoid storing it in source code. However, many
 APIs require it in order to provide a user friendly authentication
 experience, and the risks of including it are usually low. To make things
-a little safer, I recommend using <code><a href="obfuscate.html">obfuscate()</a></code> when recorded the client
+a little safer, I recommend using <code><a href="obfuscate.html">obfuscate()</a></code> when recording the client
 secret in public code.</p></dd>
 
 
@@ -115,7 +115,7 @@ the API. Can be one of three built-in methods ("body", "header", or "jwt"),
 or a function that will be called with arguments <code>req</code>, <code>client</code>, and
 the contents of <code>auth_params</code>.</p>
 <p>The most common mechanism in the wild is <code>"body"</code> where the <code>client_id</code> and
-(optionally) <code>client_secret</code> are added to the body. <code>"header"</code> sends in
+(optionally) <code>client_secret</code> are added to the body. <code>"header"</code> sends the
 <code>client_id</code> and <code>client_secret</code> in HTTP Authorization header. <code>"jwt_sig"</code>
 will generate a JWT, and include it in a <code>client_assertion</code> field in the
 body.</p>
@@ -128,9 +128,9 @@ by <code>auth</code>.</p></dd>
 
 
 <dt>name</dt>
-<dd><p>Optional name for the client. Used when generating cache
+<dd><p>Optional name for the client. Used when generating the cache
 directory. If <code>NULL</code>, generated from hash of <code>client_id</code>. If you're
-defining a package for use in a package, I recommend that you use
+defining a client for use in a package, I recommend that you use
 the package name.</p></dd>
 
 </dl></div>
