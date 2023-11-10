@@ -38,10 +38,10 @@ A modified HTTP \link{request}.
 different components of the HTTP requests and responses:
 \itemize{
 \item \verb{* } informative curl messages
-\item \verb{<-} request headers
-\item \verb{<<} request body
-\item \verb{->} response headers
-\item \verb{>>} response body
+\item \verb{->} request headers
+\item \verb{>>} request body
+\item \verb{<-} response headers
+\item \verb{<<} response body
 }
 }
 \examples{

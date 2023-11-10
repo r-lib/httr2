@@ -126,10 +126,10 @@ req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, a
 #' different components of the HTTP requests and responses:
 #'
 #' * `* ` informative curl messages
-#' * `<-` request headers
-#' * `<<` request body
-#' * `->` response headers
-#' * `>>` response body
+#' * `->` request headers
+#' * `>>` request body
+#' * `<-` response headers
+#' * `<<` response body
 #'
 #' @inheritParams req_perform
 #' @param header_req,header_resp Show request/response headers?
