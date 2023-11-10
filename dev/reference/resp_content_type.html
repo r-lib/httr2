@@ -106,7 +106,7 @@ is found, returns <code>UTF-8</code>. Used by <code><a href="resp_body_raw.html"
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="response.html">response</a></span><span class="op">(</span>header <span class="op">=</span> <span class="st">"Content-type: text/html; charset=utf-8"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="response.html">response</a></span><span class="op">(</span>headers <span class="op">=</span> <span class="st">"Content-type: text/html; charset=utf-8"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_content_type</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "text/html"</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_encoding</span><span class="op">(</span><span class="op">)</span></span></span>
