@@ -25,7 +25,7 @@ httr2 (pronounced hitter2) is a ground-up rewrite of [httr](https://httr.r-lib.o
 
 ## Installation
 
-You can install httr from CRAN with:
+You can install httr2 from CRAN with:
 
 ``` r
 install.packages("httr2")

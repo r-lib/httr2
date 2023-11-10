@@ -18,7 +18,7 @@ and more).
 
 ## Installation
 
-You can install httr from CRAN with:
+You can install httr2 from CRAN with:
 
 ``` r
 install.packages("httr2")
@@ -76,7 +76,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/8.1.2
+#> User-Agent: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/8.3.0
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
