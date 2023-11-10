@@ -63,64 +63,12 @@ req_url_query <- function(.req,
                           ...,
                           .multi = c("error", "comma", "pipe", "explode")) {
   check_request(.req)
-  if (is.function(.multi)) {
-    multi <- .multi
-  } else {
-    multi <- arg_match(.multi)
-  }
 
-  dots <- list2(...)
-
-  type_ok <- map_lgl(dots, function(x) is_atomic(x) || is.null(x))
-  if (any(!type_ok)) {
-    cli::cli_abort(
-      "All elements of {.code ...} must be either an atomic vector or NULL."
-    )
-  }
-
-  n <- lengths(dots)
-  if (any(n > 1)) {
-    if (is.function(multi)) {
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
-      dots[n > 1] <- lapply(dots[n > 1], multi)
-      dots[n > 1] <- lapply(dots[n > 1], I)
-    } else if (multi == "comma") {
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
-      dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = ",")
-      dots[n > 1] <- lapply(dots[n > 1], I)
-    } else if (multi == "pipe") {
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
-      dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = "|")
-      dots[n > 1] <- lapply(dots[n > 1], I)
-    } else if (multi == "explode") {
-      dots <- explode(dots)
-    } else if (multi == "error") {
-      cli::cli_abort(c(
-        "All vector elements of {.code ...} must be length 1.",
-        i = "Use {.arg .multi} to choose a strategy for handling vectors."
-      ))
-    }
-  }
-  # Force query generation to bubble up errors
-  query_build(dots)
+  dots <- multi_dots(..., .multi = .multi)
 
   url <- url_parse(.req$url)
   url$query <- modify_list(url$query, !!!dots)
   req_url(.req, url_build(url))
-}
-
-explode <- function(x) {
-  expanded <- map(x, function(x) {
-    if (is.null(x)) {
-      list(NULL)
-    } else {
-      map(seq_along(x), function(i) x[i])
-    }
-  })
-  stats::setNames(
-    unlist(expanded, recursive = FALSE, use.names = FALSE),
-    rep(names(x), lengths(expanded))
-  )
 }
 
 #' @export

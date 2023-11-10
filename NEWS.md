@@ -17,6 +17,10 @@
   but I don't expect anyone to call this function directly (which was confirmed 
   by a GitHub search) so I made the change without deprecation.
 
+* `req_body_form()` and `req_body_multipart()` now require data `...`;
+  they no longer accept a single list for compatibility with the 0.1.0
+  API.
+
 ## Multiple requests
 
 * New `req_perform_sequential()` performs a known set of requests 
@@ -97,6 +101,12 @@
 
 * New `resp_url()`, `resp_url_path()`, `resp_url_queries()` and
   `resp_url_query()` to extract various part of the response url (#57).
+
+* `req_url_query()` gains a `.multi` parameter that controls what happens when
+  you supply multiple values in a vector. The default will continue to error 
+  but you can use `.multi = "comma"` to separate with commas, `"pipe"` to 
+  separate with `|`, and `"explode"` to generate one parameter for each 
+  value (e.g. `?a=1&a=2`) (#350).
 
 * New `secret_encrypt_file()` and `secret_decrypt_file()` for encrypting and 
   decrypting files (#237).

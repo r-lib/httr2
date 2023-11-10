@@ -131,10 +131,14 @@ req_body_json_modify <- function(req, ...) {
 #'
 #'   `req_body_json()` uses this argument differently; it takes additional
 #'   arguments passed on to  [jsonlite::toJSON()].
-req_body_form <- function(.req, ...) {
+#' @inheritParams req_url_query
+req_body_form <- function(.req,
+                          ...,
+                          .multi = c("error", "comma", "pipe", "explode")) {
   check_request(.req)
 
-  data <- modify_body_data(.req$body$data, ...)
+  dots <- multi_dots(..., .multi = .multi)
+  data <- modify_list(.req$body$data, !!!dots)
   req_body(
     .req,
     data = data,
@@ -148,7 +152,7 @@ req_body_form <- function(.req, ...) {
 req_body_multipart <- function(.req, ...) {
   check_request(.req)
 
-  data <- modify_body_data(.req$body$data, ...)
+  data <- modify_list(.req$body$data, ...)
   # data must be character, raw, curl::form_file, or curl::form_data
   req_body(
     .req,
@@ -156,16 +160,6 @@ req_body_multipart <- function(.req, ...) {
     type = "multipart",
     content_type = NULL
   )
-}
-
-modify_body_data <- function(.data, ..., error_call = caller_env()) {
-  dots <- list2(...)
-  if (length(dots) == 1 && !is_named(dots) && is.list(dots[[1]])) {
-    warn("This function no longer takes a list, instead supply named arguments in ...", call = caller_env())
-    modify_list(.data, !!!dots[[1]], error_call = error_call)
-  } else {
-    modify_list(.data, ..., error_call = error_call)
-  }
 }
 
 # General structure -------------------------------------------------------

@@ -25,7 +25,7 @@ req_body_json(
 
 req_body_json_modify(req, ...)
 
-req_body_form(.req, ...)
+req_body_form(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
 
 req_body_multipart(.req, ...)
 }
@@ -64,6 +64,18 @@ and lists.
 
 \code{req_body_json()} uses this argument differently; it takes additional
 arguments passed on to  \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
+
+\item{.multi}{Controls what happens when an element of \code{...} is a vector
+containing multiple values:
+\itemize{
+\item \code{"error"}, the default, throws an error.
+\item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.
+\item \code{"pipe"}, separates values with a \code{|}, e.g. \code{?x=1|2}.
+\item \code{"explode"}, turns each element into its own parameter, e.g. \code{?x=1&x=2}.
+}
+
+If none of these functions work, you can alternatively supply a function
+that takes a character vector and returns a string.}
 }
 \value{
 A modified HTTP \link{request}.
