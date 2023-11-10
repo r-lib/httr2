@@ -12,7 +12,7 @@
 #'
 #' * The HTTP request might fail, for example if the connection is dropped
 #'   or the server doesn't exist. This type of error will have class
-#'   `c("httr2_failure", "htt2_error")`.
+#'   `c("httr2_failure", "httr2_error")`.
 #'
 #' * The HTTP request might succeed, but return an HTTP status code that
 #'   represents a error, e.g. a `404 Not Found` if the specified resource is

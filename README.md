@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# httr2
+# httr2 <a href="https://httr2.r-lib.org"><img src="man/figures/logo.png" align="right" height="138" alt="httr2 website" /></a>
 
 <!-- badges: start -->
 
@@ -10,14 +10,15 @@
 coverage](https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/httr2?branch=main)
 <!-- badges: end -->
 
-httr2 is a ground-up rewrite of [httr](https://httr.r-lib.org) that
-provides a pipeable API with an explicit request object that solves more
-problems felt by packages that wrap APIs (e.g. built-in rate-limiting,
-retries, OAuth, secure secrets, and more).
+httr2 (pronounced hitter2) is a ground-up rewrite of
+[httr](https://httr.r-lib.org) that provides a pipeable API with an
+explicit request object that solves more problems felt by packages that
+wrap APIs (e.g. built-in rate-limiting, retries, OAuth, secure secrets,
+and more).
 
 ## Installation
 
-You can install httr from CRAN with:
+You can install httr2 from CRAN with:
 
 ``` r
 install.packages("httr2")
@@ -75,7 +76,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req %>% req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.2.3.9000 r-curl/5.0.2 libcurl/8.1.2
+#> User-Agent: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/8.3.0
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -89,7 +90,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6549 bytes)
+#> Body: In memory (6446 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the

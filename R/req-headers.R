@@ -6,7 +6,7 @@
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-value pairs of headers
 #'   and their values.
 #'
-#'   * Use `NULL` to reset a value to httr's default
+#'   * Use `NULL` to reset a value to httr2's default
 #'   * Use `""` to remove a header
 #'   * Use a character vector to repeat a header.
 #' @param .redact Headers to redact. If `NULL`, the default, the added headers

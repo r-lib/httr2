@@ -33,7 +33,7 @@ response. There are two ways a request can fail:
 \itemize{
 \item The HTTP request might fail, for example if the connection is dropped
 or the server doesn't exist. This type of error will have class
-\code{c("httr2_failure", "htt2_error")}.
+\code{c("httr2_failure", "httr2_error")}.
 \item The HTTP request might succeed, but return an HTTP status code that
 represents a error, e.g. a \verb{404 Not Found} if the specified resource is
 not found. This type of error will have (e.g.) class

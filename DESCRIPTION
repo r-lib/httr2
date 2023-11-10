@@ -14,7 +14,7 @@ License: MIT + file LICENSE
 URL: https://httr2.r-lib.org, https://github.com/r-lib/httr2
 BugReports: https://github.com/r-lib/httr2/issues
 Depends: 
-    R (>= 3.4)
+    R (>= 3.6)
 Imports: 
     cli (>= 3.0.0),
     curl (>= 5.1.0),

@@ -2,8 +2,8 @@
 #'
 #' @description
 #' These function provide a basic toolkit for operating with lists of
-#' responses as returned [req_perform_parallel()] and
-#' [req_perform_iterative()].
+#' responses and possibly errors, as returned by [req_perform_parallel()],
+#' [req_perform_sequential()] and [req_perform_iterative()].
 #'
 #' * `resps_successes()` returns a list successful responses.
 #' * `resps_failures()` returns a list failed responses (i.e. errors).
@@ -23,7 +23,7 @@
 #'   request(example_url()) |> req_template("/status/:status", status = 404),
 #'   request("INVALID")
 #' )
-#' resps <- req_perform_parallel(reqs)
+#' resps <- req_perform_parallel(reqs, on_error = "continue")
 #'
 #' # find successful responses
 #' resps |> resps_successes()

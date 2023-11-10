@@ -12,7 +12,7 @@
 #'   so in principle you should avoid storing it in source code. However, many
 #'   APIs require it in order to provide a user friendly authentication
 #'   experience, and the risks of including it are usually low. To make things
-#'   a little safer, I recommend using [obfuscate()] when recorded the client
+#'   a little safer, I recommend using [obfuscate()] when recording the client
 #'   secret in public code.
 #' @param key Client key. As an alternative to using a `secret`, you can
 #'   instead supply a confidential private key. This should never be included
@@ -23,7 +23,7 @@
 #'   the contents of `auth_params`.
 #'
 #'   The most common mechanism in the wild is `"body"` where the `client_id` and
-#'   (optionally) `client_secret` are added to the body. `"header"` sends in
+#'   (optionally) `client_secret` are added to the body. `"header"` sends the
 #'   `client_id` and `client_secret` in HTTP Authorization header. `"jwt_sig"`
 #'   will generate a JWT, and include it in a `client_assertion` field in the
 #'   body.
@@ -31,9 +31,9 @@
 #'   See [oauth_client_req_auth()] for more details.
 #' @param auth_params Additional parameters passed to the function specified
 #'   by `auth`.
-#' @param name Optional name for the client. Used when generating cache
+#' @param name Optional name for the client. Used when generating the cache
 #'   directory. If `NULL`, generated from hash of `client_id`. If you're
-#'   defining a package for use in a package, I recommend that you use
+#'   defining a client for use in a package, I recommend that you use
 #'   the package name.
 #' @return An OAuth client: An S3 list with class `httr2_oauth_client`.
 #' @export
@@ -102,7 +102,7 @@ print.httr2_oauth_client <- function(x, ...) {
 #' @description
 #' `oauth_client_req_auth()` authenticates a request using the authentication
 #' strategy defined by the `auth` and `auth_param` arguments to [oauth_client()].
-#' This used to authenticate the client as part of the OAuth flow, **not**
+#' This is used to authenticate the client as part of the OAuth flow, **not**
 #' to authenticate a request on behalf of a user.
 #'
 #' There are three built-in strategies:

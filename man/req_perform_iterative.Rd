@@ -9,6 +9,7 @@ req_perform_iterative(
   next_req,
   path = NULL,
   max_reqs = 20,
+  on_error = c("stop", "return"),
   progress = TRUE
 )
 }
@@ -27,12 +28,23 @@ memory.}
 \item{max_reqs}{The maximum number of requests to perform. Use \code{Inf} to
 perform all requests until \code{next_req()} returns \code{NULL}.}
 
+\item{on_error}{What should happen if a request fails?
+\itemize{
+\item \code{"stop"}, the default: stop iterating with an error.
+\item \code{"return"}: stop iterating, returning all the successful responses so
+far, as well as an error object for the failed request.
+}}
+
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
 progress bar, use a string to give it a name, or see \link{progress_bars} to
 customise it in other ways.}
 }
 \value{
-A list of \code{\link[=response]{response()}}s.
+A list, at most length \code{max_reqs}, containing \link{response}s and possibly one
+error object, if \code{on_error} is \code{"return"} and one of the requests errors.
+If present, the error object will always be the last element in the list.
+
+Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for more details.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

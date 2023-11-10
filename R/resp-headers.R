@@ -90,7 +90,7 @@ resp_date <- function(resp) {
 #'   `resp_encoding()` will return `"UTF-8"`.
 #' @inheritParams resp_headers
 #' @examples
-#' resp <- response(header = "Content-type: text/html; charset=utf-8")
+#' resp <- response(headers = "Content-type: text/html; charset=utf-8")
 #' resp |> resp_content_type()
 #' resp |> resp_encoding()
 #'

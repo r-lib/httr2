@@ -50,7 +50,7 @@ The first line of the request contains three important pieces of information:
     Here's its GET, the most common verb, indicating that we want to *get* a resource.
     Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.
 
--   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`R url_parse(example_url())$port`).
+-   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`r url_parse(example_url())$port`).
 
 -   The version of the HTTP protocol.
     This is unimportant for our purposes because it's handled at a lower level.

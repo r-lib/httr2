@@ -41,8 +41,8 @@ req_auth_basic <- function(req, username, password = NULL) {
 #' (like the various OAuth 2.0 flows), but you are sometimes given then
 #' directly.
 #'
-#' @seealso [RFC750](https://datatracker.ietf.org/doc/html/rfc6750)
-#'   The OAuth 2.0 Authorization Framework: Bearer Token Usage
+#' @seealso See `r rfc(6750)` for more details about bearer token usage
+#'   with OAuth 2.0.
 #' @inheritParams req_perform
 #' @param token A bearer token
 #' @returns A modified HTTP [request].

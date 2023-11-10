@@ -71,6 +71,11 @@
 #'   the iteration should terminate.
 #' @param max_reqs The maximum number of requests to perform. Use `Inf` to
 #'   perform all requests until `next_req()` returns `NULL`.
+#' @param on_error What should happen if a request fails?
+#'
+#'   * `"stop"`, the default: stop iterating with an error.
+#'   * `"return"`: stop iterating, returning all the successful responses so
+#'     far, as well as an error object for the failed request.
 #' @param progress Display a progress bar? Use `TRUE` to turn on a basic
 #'   progress bar, use a string to give it a name, or see [progress_bars] to
 #'   customise it in other ways.
@@ -78,7 +83,12 @@
 #'   a glue string that uses `{i}` to distinguish different requests.
 #'   Useful for large responses because it avoids storing the response in
 #'   memory.
-#' @return A list of [response()]s.
+#' @return
+#' A list, at most length `max_reqs`, containing [response]s and possibly one
+#' error object, if `on_error` is `"return"` and one of the requests errors.
+#' If present, the error object will always be the last element in the list.
+#'
+#' Only httr2 errors are captured; see [req_error()] for more details.
 #' @export
 #' @examples
 #' req <- request(example_url()) |>
@@ -99,14 +109,16 @@
 #'   )
 #' })
 req_perform_iterative <- function(req,
-                                    next_req,
-                                    path = NULL,
-                                    max_reqs = 20,
-                                    progress = TRUE) {
+                                  next_req,
+                                  path = NULL,
+                                  max_reqs = 20,
+                                  on_error = c("stop", "return"),
+                                  progress = TRUE) {
   check_request(req)
   check_function2(next_req, args = c("resp", "req"))
   check_number_whole(max_reqs, allow_infinite = TRUE, min = 1)
   check_string(path, allow_empty = FALSE, allow_null = TRUE)
+  on_error <- arg_match(on_error)
 
   get_path <- function(i) {
     if (is.null(path)) {
@@ -127,7 +139,20 @@ req_perform_iterative <- function(req,
 
   tryCatch({
     repeat {
-      resps[[i]] <- resp <- req_perform(req, path = get_path(i))
+      httr2_error <- switch(on_error,
+        stop = function(cnd) zap(),
+        return = function(cnd) cnd
+      )
+      resp <- try_fetch(
+        req_perform(req, path = get_path(i)),
+        httr2_error = httr2_error
+      )
+      resps[[i]] <- resp
+
+      if (on_error == "return" && is_error(resp)) {
+        break
+      }
+
       progress$update()
 
       withCallingHandlers(
