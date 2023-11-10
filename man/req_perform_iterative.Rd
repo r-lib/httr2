@@ -54,8 +54,8 @@ using a callback function, \code{next_req}, to define the next request based on
 the current request and response. You will probably want to it pair with an
 \link[=iterate_with_offset]{iteration helper} and use a
 \link[=resps_successes]{multi-response handler} to process the result.
-\subsection{\code{next_req()}}{
-
+}
+\section{\code{next_req()}}{
 The key piece that makes \code{req_perform_iterative()} work is the \code{next_req()}
 argument. For most common cases, you can use one of the canned helpers,
 like \code{\link[=iterate_with_offset]{iterate_with_offset()}}. If, however, the API you're wrapping uses a
@@ -107,7 +107,7 @@ like this:
 \}
 }\if{html}{\out{</div>}}
 }
-}
+
 \examples{
 req <- request(example_url()) |>
   req_url_path("/iris") |>

@@ -9,7 +9,7 @@
 #' [iteration helper][iterate_with_offset] and use a
 #' [multi-response handler][resps_successes] to process the result.
 #'
-#' ## `next_req()`
+#' # `next_req()`
 #'
 #' The key piece that makes `req_perform_iterative()` work is the `next_req()`
 #' argument. For most common cases, you can use one of the canned helpers,
@@ -68,7 +68,7 @@
 #' @inheritParams req_perform
 #' @param next_req A function that takes the previous response (`resp`) and
 #'   request (`req`) and returns a [request] for the next page or `NULL` if
-#'   the iteration should terminate.
+#'   the iteration should terminate. See below for more details.
 #' @param max_reqs The maximum number of requests to perform. Use `Inf` to
 #'   perform all requests until `next_req()` returns `NULL`.
 #' @param on_error What should happen if a request fails?
