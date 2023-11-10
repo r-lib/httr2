@@ -200,6 +200,6 @@ format_query_param <- function(x, error_call = caller_env()) {
     return(x)
   }
 
-  x <- format(x, scientific = FALSE, trim = TRUE)
+  x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
   curl::curl_escape(x)
 }
