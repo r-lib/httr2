@@ -33,9 +33,11 @@ make_progress <- function(type, frame = caller_env()) {
     if (type == "down") {
       total <- down[[1]]
       now <- down[[2]]
+      verb <- "Downloading"
     } else {
       total <- up[[1]]
       now <- up[[2]]
+      verb <- "Uploading"
     }
 
     if (total == 0 && now == 0) {
@@ -47,12 +49,12 @@ make_progress <- function(type, frame = caller_env()) {
       init <<- TRUE
       if (total == 0) {
         cli::cli_progress_bar(
-          format = "Downloading {cli::pb_spin}",
+          format = paste0(verb, " {cli::pb_spin}"),
           .envir = frame
         )
       } else {
         cli::cli_progress_bar(
-          format = "Downloading {cli::pb_percent} {cli::pb_bar} {cli::pb_eta}",
+          format = paste0(verb, " {cli::pb_percent} {cli::pb_bar} {cli::pb_eta}"),
           total = total,
           .envir = frame
         )
