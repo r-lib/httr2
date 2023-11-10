@@ -29,7 +29,7 @@ header. If that header is not found, not valid, or no charset parameter
 is found, returns \code{UTF-8}. Used by \code{\link[=resp_body_string]{resp_body_string()}}.
 }
 \examples{
-resp <- response(header = "Content-type: text/html; charset=utf-8")
+resp <- response(headers = "Content-type: text/html; charset=utf-8")
 resp |> resp_content_type()
 resp |> resp_encoding()
 
