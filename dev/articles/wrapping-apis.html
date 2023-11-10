@@ -136,8 +136,8 @@ basics work:</p>
 <span><span class="co">#&gt;  $ total : int 1</span></span>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Deserunt ab qui rerum."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "In impedit accusantium vel quia nam. Voluptatem beatae impedit eum non quod nesciunt. Et libero quia illo elige"| __truncated__</span></span>
+<span><span class="co">#&gt;   .. ..$ title      : chr "Sit ad soluta possimus velit."</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Soluta enim nostrum deleniti ut explicabo sunt. Mollitia et hic dignissimos molestias beatae omnis. Consequatur"| __truncated__</span></span>
 <span><span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a>
@@ -177,7 +177,7 @@ info is returned in the headers, so let’s check:</p>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Vary</span>: Accept-Encoding</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">X-Powered-By</span>: PHP/7.3.16</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Cache-Control</span>: no-cache, private</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Thu, 09 Nov 2023 23:07:58 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Fri, 10 Nov 2023 15:14:52 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Origin</span>: *</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Methods</span>: GET</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Credentials</span>: true</span></span>
@@ -250,8 +250,8 @@ to the resource with query parameters. All parameters start with
 <span><span class="co">#&gt;  $ total : int 1</span></span>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Porro occaecati et atque nam."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Velit eaque officia facilis consectetur cupiditate est tenetur. Autem quidem incidunt quis enim. Temporibus sit"| __truncated__</span></span>
+<span><span class="co">#&gt;   .. ..$ title      : chr "Dolore vel molestiae nihil."</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Eaque harum optio ea debitis animi praesentium cupiditate. Non aut aut autem. Officiis facilis harum fugit. Aut"| __truncated__</span></span>
 <span><span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -311,24 +311,24 @@ wrapper would start something like this:</p>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 10</span></span>
 <span><span class="co">#&gt;   .. ..$ id       : int 1</span></span>
-<span><span class="co">#&gt;   .. ..$ firstname: chr "Mikel"</span></span>
-<span><span class="co">#&gt;   .. ..$ lastname : chr "Cummings"</span></span>
-<span><span class="co">#&gt;   .. ..$ email    : chr "dooley.durward@gmail.com"</span></span>
-<span><span class="co">#&gt;   .. ..$ phone    : chr "+7542922711100"</span></span>
-<span><span class="co">#&gt;   .. ..$ birthday : chr "1999-02-18"</span></span>
+<span><span class="co">#&gt;   .. ..$ firstname: chr "Zion"</span></span>
+<span><span class="co">#&gt;   .. ..$ lastname : chr "Schultz"</span></span>
+<span><span class="co">#&gt;   .. ..$ email    : chr "eugene91@gmail.com"</span></span>
+<span><span class="co">#&gt;   .. ..$ phone    : chr "+9427699947455"</span></span>
+<span><span class="co">#&gt;   .. ..$ birthday : chr "1987-03-31"</span></span>
 <span><span class="co">#&gt;   .. ..$ gender   : chr "male"</span></span>
 <span><span class="co">#&gt;   .. ..$ address  :List of 10</span></span>
 <span><span class="co">#&gt;   .. .. ..$ id            : int 0</span></span>
-<span><span class="co">#&gt;   .. .. ..$ street        : chr "80377 Jacinthe Unions Apt. 912"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Morar Pike"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "97264"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ city          : chr "Schmelerport"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "26576"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ country       : chr "Lesotho"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ county_code   : chr "BD"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ latitude      : num -0.967</span></span>
-<span><span class="co">#&gt;   .. .. ..$ longitude     : num 149</span></span>
-<span><span class="co">#&gt;   .. ..$ website  : chr "http://berge.com"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ street        : chr "490 Romaine Crossing Apt. 547"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Hackett Valleys"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "728"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ city          : chr "South Tabithashire"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "77360-6601"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ country       : chr "Jordan"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ county_code   : chr "IM"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ latitude      : num -17.8</span></span>
+<span><span class="co">#&gt;   .. .. ..$ longitude     : num -41</span></span>
+<span><span class="co">#&gt;   .. ..$ website  : chr "http://nolan.net"</span></span>
 <span><span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and
 returning the result as a tibble. I did a quick and dirty conversion
@@ -373,13 +373,13 @@ using purrr; depending on your needs you could use base R code or
 <span><span class="op">}</span></span>
 <span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span></span>
-<span><span class="co">#&gt;   firstname lastname   email                       gender</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Darrell   Glover     pstiedemann@spencer.com     male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Miles     Weber      gkonopelski@macejkovic.com  male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Pedro     Stiedemann nbeahan@senger.com          male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Kale      Mertz      darron.steuber@gmail.com    male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Ariel     Hagenes    theodora.lindgren@gmail.com male</span></span></code></pre></div>
+<span><span class="co">#&gt;   firstname lastname    email                     gender</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Jacinto   Schamberger santina.collins@yahoo.com male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Helmer    Hodkiewicz  lavina90@stokes.com       male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Lesley    Champlin    rodrigo84@gmail.com       male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Godfrey   Heathcote   enrico89@altenwerth.com   male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Fabian    Mitchell    zpouros@gmail.com         male</span></span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll
 leave that up to you.</p>
 </div>
@@ -416,7 +416,7 @@ secrets using symmetric cryptography:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">key</span></span>
-<span><span class="co">#&gt; [1] "oSCeZqRI6ChLsKgafW9w9g"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "L99HKcUDnkCBBQ091AM4mg"</span></span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically
 secure random number generator provided by OpenSSL; it is not affected
 by R’s RNG settings, and there’s no way to make it
@@ -429,7 +429,7 @@ package:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "Sk9yv_fgIPsmRoDtgTyPdKt09-4AhKEvB5OOUM4e_zwPAjVrYBtiX5uBLqQDd9uv5A"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "hs3yCGcyhbnStnbOweIivlPyTwiAu7P6sxrSoWWbuwNDxh8pfDogx2MzZSd6tZu6mQ"</span></span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the secret using
@@ -462,7 +462,7 @@ natural usage.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "8hp2kGfo4j_0jlgGOw2oX_hDVM1QskE8XVLiVA6vW02aihWq1akXkmdMRo-yt9EhXw"</span></span>
+<span><span class="co">#&gt; [1] "03kN6GvJmpSGJ37x5j1jDFmoFSjnrSOG8mBudWExW8E56wAjqd5TFs26DPqSx84e5A"</span></span>
 <span><span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "secret I need to work with an API"</span></span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions
