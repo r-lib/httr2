@@ -77,7 +77,7 @@ resps <- req_perform_iterative(
 # will generate a better progress bar.
 
 resps <- req_perform_iterative(
-  req \%>\% req_url_query(limit = 1),
+  req |> req_url_query(limit = 1),
   next_req = iterate_with_offset(
     "page_index",
     resp_pages = function(resp) resp_body_json(resp)$pages
