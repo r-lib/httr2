@@ -164,7 +164,7 @@ pages.</p></dd>
 <span class="r-in"><span><span class="co"># will generate a better progress bar.</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu"><a href="req_perform_iterative.html">req_perform_iterative</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">req</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  next_req <span class="op">=</span> <span class="fu">iterate_with_offset</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"page_index"</span>,</span></span>
 <span class="r-in"><span>    resp_pages <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">$</span><span class="va">pages</span></span></span>

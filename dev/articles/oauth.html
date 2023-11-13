@@ -244,7 +244,7 @@ paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
 your client specification.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("EDAaJTbSUXJPRlu3U5ITY1SyLeAAoQ")</span></span></code></pre></div>
+<span><span class="co">#&gt; obfuscated("fGVEi-1T3_tIm0IKyV14i738FjiOAQ")</span></span></code></pre></div>
 <p>Here’s what a complete client specification for GitHub looks like,
 using a real app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -367,7 +367,7 @@ we make a request to this endpoint without authentication, we’ll get an
 error:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span></span>
-<span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="va">req</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 401 Unauthorized.</span></span></code></pre></div>
@@ -375,13 +375,13 @@ error:</p>
 <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>, using the same arguments as our
 previous call to <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span></span>
 <span>    client <span class="op">=</span> <span class="fu">github_client</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>When you run this code, you’ll see something like this, but it will
 obviously contain information about you, not me.</p>
