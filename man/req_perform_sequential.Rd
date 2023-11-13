@@ -58,11 +58,11 @@ ids <- sort(sample(100, 50))
 chunks <- unname(split(ids, (seq_along(ids) - 1) \%/\% 10))
 
 # Then we use lapply to generate one request for each chunk:
-reqs <- chunks \%>\% lapply(\(idx) req \%>\% req_url_query(id = idx, .multi = "comma"))
+reqs <- chunks |> lapply(\(idx) req |> req_url_query(id = idx, .multi = "comma"))
 
 # Then we can perform them all and get the results
 \dontrun{
-resps <- reqs \%>\% req_perform_sequential()
+resps <- reqs |> req_perform_sequential()
 resps_data(resps, \(resp) resp_body_json(resp))
 }
 }

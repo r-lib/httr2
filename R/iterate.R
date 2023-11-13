@@ -25,7 +25,7 @@
 #' ```R
 #' next_req <- function(resp, req) {
 #'   cursor <- resp_body_json(resp)$next_cursor
-#'   req %>% req_body_json_modify(cursor = cursor)
+#'   req |> req_body_json_modify(cursor = cursor)
 #' }
 #' ```
 #'
@@ -39,7 +39,7 @@
 #'   cursor <- resp_body_json(resp)$next_cursor
 #'   if (is.null(cursor))
 #'     return(NULL)
-#'   req %>% req_body_json_modify(cursor = cursor)
+#'   req |> req_body_json_modify(cursor = cursor)
 #' }
 #' ```
 #'
@@ -61,7 +61,7 @@
 #'     return(NULL)
 #'
 #'   signal_total_pages(body$pages)
-#'   req %>% req_body_json_modify(cursor = cursor)
+#'   req |> req_body_json_modify(cursor = cursor)
 #' }
 #' ```
 #'

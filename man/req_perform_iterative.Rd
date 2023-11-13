@@ -69,7 +69,7 @@ the request. The simplest version of this function might look like this:
 
 \if{html}{\out{<div class="sourceCode R">}}\preformatted{next_req <- function(resp, req) \{
   cursor <- resp_body_json(resp)$next_cursor
-  req \%>\% req_body_json_modify(cursor = cursor)
+  req |> req_body_json_modify(cursor = cursor)
 \}
 }\if{html}{\out{</div>}}
 
@@ -82,7 +82,7 @@ returning \code{NULL}:
   cursor <- resp_body_json(resp)$next_cursor
   if (is.null(cursor))
     return(NULL)
-  req \%>\% req_body_json_modify(cursor = cursor)
+  req |> req_body_json_modify(cursor = cursor)
 \}
 }\if{html}{\out{</div>}}
 
@@ -103,7 +103,7 @@ like this:
     return(NULL)
 
   signal_total_pages(body$pages)
-  req \%>\% req_body_json_modify(cursor = cursor)
+  req |> req_body_json_modify(cursor = cursor)
 \}
 }\if{html}{\out{</div>}}
 }
