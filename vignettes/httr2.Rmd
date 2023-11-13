@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = has_pipe
 )
+
 ```
 
 The goal of this document is show you the basics of httr2.
@@ -47,13 +48,18 @@ We can see exactly what this request will send to the server with a dry run:
 req |> req_dry_run()
 ```
 
+```{r}
+#| include: FALSE
+port <- if (has_pipe) paste0("`", url_parse(example_url())$port, "`") else "e.g. `1234`"
+```
+
 The first line of the request contains three important pieces of information:
 
 -   The HTTP **method**, which is a verb that tells the server what you want to do.
     Here's its GET, the most common verb, indicating that we want to *get* a resource.
     Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.
 
--   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`r url_parse(example_url())$port`).
+-   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`r port`).
 
 -   The version of the HTTP protocol.
     This is unimportant for our purposes because it's handled at a lower level.
