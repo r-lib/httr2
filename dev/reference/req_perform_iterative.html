@@ -89,13 +89,13 @@ the current request and response. You will probably want to it pair with an
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>req</dt>
-<dd><p>A <a href="request.html">request</a>.</p></dd>
+<dd><p>The first <a href="request.html">request</a> to perform.</p></dd>
 
 
 <dt>next_req</dt>
 <dd><p>A function that takes the previous response (<code>resp</code>) and
 request (<code>req</code>) and returns a <a href="request.html">request</a> for the next page or <code>NULL</code> if
-the iteration should terminate.</p></dd>
+the iteration should terminate. See below for more details.</p></dd>
 
 
 <dt>path</dt>
