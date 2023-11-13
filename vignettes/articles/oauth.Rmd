@@ -14,7 +14,7 @@ library(httr2)
 ```
 
 OAuth[^1] is an authorization framework design for performing work on the behalf of a user.
-You've probably used it a bunch without knowing what it's called: it's used when you login to a non-Google website using your Google account, when you give a phone access to your twitter account, or when you login to a streaming app on your smart TV.
+You've probably used it a bunch without knowing what it's called: you use it when you login to a non-Google website using your Google account, when you give your phone access to your twitter account, or when you login to a streaming app on your smart TV.
 
 [^1]: Here I'll only talk about OAuth 2.0 which is the only version in common use today.
     OAuth 1.0 is largely only of historical interest.
