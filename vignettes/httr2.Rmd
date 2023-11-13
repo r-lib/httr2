@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = has_pipe
 )
-
 ```
 
 The goal of this document is show you the basics of httr2.
@@ -24,6 +23,7 @@ httr2 is designed to map closely to the underlying HTTP protocol, which I'll exp
 For more details, I also recommend "[An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)" from MDN.
 
 ```{r setup}
+#| eval: true
 library(httr2)
 ```
 
@@ -50,6 +50,7 @@ req |> req_dry_run()
 
 ```{r}
 #| include: FALSE
+#| eval: true
 port <- if (has_pipe) paste0("`", url_parse(example_url())$port, "`") else "e.g. `1234`"
 ```
 
