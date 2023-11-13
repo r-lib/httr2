@@ -1,10 +1,10 @@
 #' Perform a list of requests in parallel
 #'
 #' @description
-#' This variation on [req_perform()] performs multiple requests in parallel.
-#' Exercise caution when using this function; it's easy to pummel a server
-#' with many simultaneous requests. Only use it with hosts designed to serve
-#' many files at once, which are typically web servers, not API servers.
+#' This variation on [req_perform_sequential()] performs multiple requests in
+#' parallel. Exercise caution when using this function; it's easy to pummel a
+#' server with many simultaneous requests. Only use it with hosts designed to
+#' serve many files at once, which are typically web servers, not API servers.
 #'
 #' `req_perform_parallel()` has a few limitations:
 #'
@@ -17,27 +17,10 @@
 #' If any of these limitations are problematic for your use case, we recommend
 #' [req_perform_sequential()] instead.
 #'
-#' @param reqs A list of [request]s.
-#' @param paths An optional list of paths, if you want to download the request
-#'   bodies to disks. If supplied, must be the same length as `reqs`.
+#' @inherit req_perform_sequential params return
 #' @param pool Optionally, a curl pool made by [curl::new_pool()]. Supply
 #'   this if you want to override the defaults for total concurrent connections
 #'   (100) or concurrent connections per host (6).
-#' @param on_error What should happen if one of the requests fails?
-#'
-#'   * `stop`, the default: stop iterating with an error.
-#'   * `return`: stop iterating, returning all the successful responses
-#'     received so far, as well as an error object for the failed request.
-#'   * `continue`: continue iterating, recording errors in the result.
-#' @return
-#' A list, the same length as `reqs`, containing [response]s and possibly
-#' error objects, if `on_error` is `"return"` or `"continue"` and one of the
-#' responses errors. If `on_error` is `"return"` and it errors on the ith
-#' request, the ith element of the result will be an error object, and the
-#' remaining elements will be `NULL`. If `on_error` is `"continue"`, it will
-#' be a mix of requests and error objects.
-#'
-#' Only httr2 errors are captured; see [req_error()] for more details.
 #' @export
 #' @examples
 #' # Requesting these 4 pages one at a time would take 2 seconds:
@@ -70,21 +53,31 @@
 req_perform_parallel <- function(reqs,
                                  paths = NULL,
                                  pool = NULL,
-                                 on_error = c("stop", "return", "continue")) {
+                                 on_error = c("stop", "return", "continue"),
+                                 progress = TRUE) {
   check_paths(paths, reqs)
   on_error <- arg_match(on_error)
+
+  progress <- create_progress_bar(
+    total = length(reqs),
+    name = "Iterating",
+    config = progress
+  )
 
   perfs <- vector("list", length(reqs))
   for (i in seq_along(reqs)) {
     perfs[[i]] <- Performance$new(
       req = reqs[[i]],
       path = paths[[i]],
+      progress = progress,
       error_call = environment()
     )
     perfs[[i]]$submit(pool)
   }
 
   pool_run(pool, perfs, on_error = on_error)
+  progress$done()
+
   map(perfs, ~ .$resp)
 }
 
@@ -139,7 +132,6 @@ pool_run <- function(pool, perfs, on_error = "continue") {
 
   try_fetch(
     repeat({
-      # TODO: progress bar
       run <- curl::multi_run(0.1, pool = pool, poll = TRUE)
       if (run$pending == 0) {
         break
@@ -161,10 +153,12 @@ Performance <- R6Class("Performance", public = list(
   resp = NULL,
   pool = NULL,
   error_call = NULL,
+  progress = NULL,
 
-  initialize = function(req, path = NULL, error_call = NULL) {
+  initialize = function(req, path = NULL, progress = NULL, error_call = NULL) {
     self$req <- req
     self$path <- path
+    self$progress <- progress
     self$error_call <- error_call
 
     req <- auth_oauth_sign(req)
@@ -195,6 +189,8 @@ Performance <- R6Class("Performance", public = list(
   },
 
   succeed = function(res) {
+    self$progress$update()
+
     body <- if (is.null(self$path)) res$content else new_path(self$path)
     resp <- new_response(
       method = req_method_get(self$req),
@@ -216,6 +212,8 @@ Performance <- R6Class("Performance", public = list(
   },
 
   fail = function(msg) {
+    self$progress$update()
+
     self$resp <- error_cnd(
       "httr2_failure",
       message = msg,

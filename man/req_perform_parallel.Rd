@@ -8,7 +8,8 @@ req_perform_parallel(
   reqs,
   paths = NULL,
   pool = NULL,
-  on_error = c("stop", "return", "continue")
+  on_error = c("stop", "return", "continue"),
+  progress = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ this if you want to override the defaults for total concurrent connections
 received so far, as well as an error object for the failed request.
 \item \code{continue}: continue iterating, recording errors in the result.
 }}
+
+\item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
+progress bar, use a string to give it a name, or see \link{progress_bars} to
+customise it in other ways.}
 }
 \value{
 A list, the same length as \code{reqs}, containing \link{response}s and possibly
@@ -40,10 +45,10 @@ be a mix of requests and error objects.
 Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for more details.
 }
 \description{
-This variation on \code{\link[=req_perform]{req_perform()}} performs multiple requests in parallel.
-Exercise caution when using this function; it's easy to pummel a server
-with many simultaneous requests. Only use it with hosts designed to serve
-many files at once, which are typically web servers, not API servers.
+This variation on \code{\link[=req_perform_sequential]{req_perform_sequential()}} performs multiple requests in
+parallel. Exercise caution when using this function; it's easy to pummel a
+server with many simultaneous requests. Only use it with hosts designed to
+serve many files at once, which are typically web servers, not API servers.
 
 \code{req_perform_parallel()} has a few limitations:
 \itemize{

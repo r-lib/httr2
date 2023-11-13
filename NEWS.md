@@ -31,7 +31,7 @@
   is derived from the previous response (@mgirlich, #8).
 
 * `req_perform_parallel()` replaces `multi_req_perform()` to match the new
-  naming scheme (#314).
+  naming scheme (#314). It gains a `progress` argument.
 
 * `req_perform_iterative()`, `req_perform_parallel()`, and
   `req_perform_sequential()` share a new error handling strategy. By
