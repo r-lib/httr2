@@ -65,7 +65,8 @@
 #' }
 #' ```
 #'
-#' @inheritParams req_perform
+#' @inheritParams req_perform_sequential
+#' @param req The first [request] to perform.
 #' @param next_req A function that takes the previous response (`resp`) and
 #'   request (`req`) and returns a [request] for the next page or `NULL` if
 #'   the iteration should terminate. See below for more details.
@@ -76,9 +77,6 @@
 #'   * `"stop"`, the default: stop iterating with an error.
 #'   * `"return"`: stop iterating, returning all the successful responses so
 #'     far, as well as an error object for the failed request.
-#' @param progress Display a progress bar? Use `TRUE` to turn on a basic
-#'   progress bar, use a string to give it a name, or see [progress_bars] to
-#'   customise it in other ways.
 #' @param path Optionally, path to save the body of request. This should be
 #'   a glue string that uses `{i}` to distinguish different requests.
 #'   Useful for large responses because it avoids storing the response in

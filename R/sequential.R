@@ -4,9 +4,27 @@
 #' a list of responses. It's slower than [req_perform_parallel()] but
 #' has fewer limitations.
 #'
-#' @inheritParams req_perform_parallel
-#' @inheritParams req_perform_iterative
-#' @inherit req_perform_parallel return
+#' @param reqs A list of [request]s.
+#' @param paths An optional list of paths, if you want to download the request
+#'   bodies to disks. If supplied, must be the same length as `reqs`.
+#' @param on_error What should happen if one of the requests fails?
+#'
+#'   * `stop`, the default: stop iterating with an error.
+#'   * `return`: stop iterating, returning all the successful responses
+#'     received so far, as well as an error object for the failed request.
+#'   * `continue`: continue iterating, recording errors in the result.
+#' @param progress Display a progress bar? Use `TRUE` to turn on a basic
+#'   progress bar, use a string to give it a name, or see [progress_bars] to
+#'   customise it in other ways.
+#' @return
+#' A list, the same length as `reqs`, containing [response]s and possibly
+#' error objects, if `on_error` is `"return"` or `"continue"` and one of the
+#' responses errors. If `on_error` is `"return"` and it errors on the ith
+#' request, the ith element of the result will be an error object, and the
+#' remaining elements will be `NULL`. If `on_error` is `"continue"`, it will
+#' be a mix of requests and error objects.
+#'
+#' Only httr2 errors are captured; see [req_error()] for more details.
 #' @export
 #' @examples
 #' # One use of req_perform_sequential() is if the API allows you to request

@@ -14,11 +14,11 @@ req_perform_iterative(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{The first \link{request} to perform.}
 
 \item{next_req}{A function that takes the previous response (\code{resp}) and
 request (\code{req}) and returns a \link{request} for the next page or \code{NULL} if
-the iteration should terminate.}
+the iteration should terminate. See below for more details.}
 
 \item{path}{Optionally, path to save the body of request. This should be
 a glue string that uses \code{{i}} to distinguish different requests.
