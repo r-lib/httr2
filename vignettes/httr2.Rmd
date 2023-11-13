@@ -8,9 +8,12 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+has_pipe <- getRversion() >= "4.1.0"
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = has_pipe
 )
 ```
 
@@ -41,7 +44,7 @@ Here, instead of an external website, we use a test server that's built-in to ht
 We can see exactly what this request will send to the server with a dry run:
 
 ```{r}
-req %>% req_dry_run()
+req |> req_dry_run()
 ```
 
 The first line of the request contains three important pieces of information:
@@ -59,12 +62,12 @@ The following lines specify the HTTP **headers**, a series of name-value pairs s
 The headers in this request were automatically added by httr2, but you can override them or add your own with `req_headers()`:
 
 ```{r}
-req %>%
+req |>
   req_headers(
     Name = "Hadley", 
     `Shoe-Size` = "11", 
     Accept = "application/json"
-  ) %>% 
+  ) |> 
   req_dry_run()
 ```
 
@@ -76,8 +79,8 @@ The `req_body_*()` functions provide a variety of ways to add data to the body.
 Here we'll use `req_body_json()` to add some data encoded as JSON:
 
 ```{r}
-req %>%
-  req_body_json(list(x = 1, y = "a")) %>% 
+req |>
+  req_body_json(list(x = 1, y = "a")) |> 
   req_dry_run()
 ```
 
@@ -96,16 +99,16 @@ Different servers want data encoded differently so httr2 provides a selection of
 For example, `req_body_form()` uses the encoding used when you submit a form from a web browser:
 
 ```{r}
-req %>%
-  req_body_form(x = "1", y = "a") %>% 
+req |>
+  req_body_form(x = "1", y = "a") |> 
   req_dry_run()
 ```
 
 And `req_body_multipart()` uses the multipart encoding which is particularly important when you need to send larger amounts of data or complete files:
 
 ```{r}
-req %>%
-  req_body_multipart(x = "1", y = "a") %>% 
+req |>
+  req_body_multipart(x = "1", y = "a") |> 
   req_dry_run()
 ```
 
@@ -116,15 +119,15 @@ If you need to send data encoded in a different form, you can use `req_body_raw(
 To actually perform a request and fetch the response back from the server, call `req_perform()`:
 
 ```{r}
-req <- request(example_url()) %>% req_url_path("/json")
-resp <- req %>% req_perform()
+req <- request(example_url()) |> req_url_path("/json")
+resp <- req |> req_perform()
 resp
 ```
 
 You can see a simulation of what httr2 actually received with `resp_raw()`:
 
 ```{r}
-resp %>% resp_raw()
+resp |> resp_raw()
 ```
 
 An HTTP response has a very similar structure to an HTTP request.
@@ -137,40 +140,40 @@ You can extract data from the response using the `resp_()` functions:
 -   `resp_status()` returns the status code and `resp_status_desc()` returns the description:
 
     ```{r}
-    resp %>% resp_status()
-    resp %>% resp_status_desc()
+    resp |> resp_status()
+    resp |> resp_status_desc()
     ```
 
 -   You can extract all headers with `resp_headers()` or a specific header with `resp_header()`:
 
     ```{r}
-    resp %>% resp_headers()
-    resp %>% resp_header("Content-Length")
+    resp |> resp_headers()
+    resp |> resp_header("Content-Length")
     ```
 
     Headers are case insensitive:
 
     ```{r}
-    resp %>% resp_header("ConTEnT-LeNgTH")
+    resp |> resp_header("ConTEnT-LeNgTH")
     ```
 
 -   You can extract the body in various forms using the `resp_body_*()` family of functions.
     Since this response returns JSON we can use `resp_body_json()`:
 
     ```{r}
-    resp %>% resp_body_json() %>% str()
+    resp |> resp_body_json() |> str()
     ```
 
 Responses with status codes 4xx and 5xx are HTTP errors.
 httr2 automatically turns these into R errors:
 
 ```{r, error = TRUE}
-request(example_url()) %>% 
-  req_url_path("/status/404") %>% 
+request(example_url()) |> 
+  req_url_path("/status/404") |> 
   req_perform()
 
-request(example_url()) %>% 
-  req_url_path("/status/500") %>% 
+request(example_url()) |> 
+  req_url_path("/status/500") |> 
   req_perform()
 ```
 
