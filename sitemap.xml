@@ -16,6 +16,9 @@
     <loc>https://httr2.r-lib.org/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/articles/oauth.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/articles/wrapping-apis.html</loc>
   </url>
   <url>
@@ -40,6 +43,9 @@
     <loc>https://httr2.r-lib.org/reference/index.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/iterate_with_offset.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/jwt_claim.html</loc>
   </url>
   <url>
@@ -49,37 +55,34 @@
     <loc>https://httr2.r-lib.org/reference/multi_req_perform.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_cache_path.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/oauth_client.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_client_req_auth.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code.html</loc>
+    <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code_url.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_bearer_jwt.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_client_credentials.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_device.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_password.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_refresh.html</loc>
+    <loc>https://httr2.r-lib.org/reference/oauth_redirect_uri.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/oauth_token.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/oauth_token_cached.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/obfuscate.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/progress_bars.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_auth_basic.html</loc>
@@ -92,6 +95,9 @@
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_cache.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_cookie_preserve.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_dry_run.html</loc>
@@ -133,13 +139,25 @@
     <loc>https://httr2.r-lib.org/reference/req_perform.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/req_perform_iterative.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_perform_parallel.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_perform_sequential.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_perform_stream.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/req_progress.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/req_proxy.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_retry.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_stream.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/req_template.html</loc>
@@ -166,6 +184,9 @@
     <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resp_check_content_type.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/resp_content_type.html</loc>
   </url>
   <url>
@@ -187,10 +208,19 @@
     <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resp_url.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/response.html</loc>
   </url>
   <url>
+    <loc>https://httr2.r-lib.org/reference/resps_successes.html</loc>
+  </url>
+  <url>
     <loc>https://httr2.r-lib.org/reference/secrets.html</loc>
+  </url>
+  <url>
+    <loc>https://httr2.r-lib.org/reference/signal_total_pages.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/throttle_status.html</loc>
@@ -199,7 +229,7 @@
     <loc>https://httr2.r-lib.org/reference/url_parse.html</loc>
   </url>
   <url>
-    <loc>https://httr2.r-lib.org/reference/with_mock.html</loc>
+    <loc>https://httr2.r-lib.org/reference/with_mocked_responses.html</loc>
   </url>
   <url>
     <loc>https://httr2.r-lib.org/reference/with_verbosity.html</loc>
