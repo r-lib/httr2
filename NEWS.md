@@ -3,6 +3,9 @@
 * `req_retry()` gives a clearer error if `after` returns the wrong type of 
   value (#385).
 
+* `req_template()` now works when you have a bare `:` in a template that
+  uses "uri" style (#389).
+
 # httr2 1.0.0
 
 ## Function lifecycle
