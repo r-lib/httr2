@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_template()` now works when you have a bare `:` in a template that
+  uses "uri" style (#389).
+
 # httr2 1.0.0
 
 ## Function lifecycle
