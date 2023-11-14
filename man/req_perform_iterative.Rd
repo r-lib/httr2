@@ -51,7 +51,7 @@ Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for mo
 
 \code{req_perform_iterative()} iteratively generates and performs requests,
 using a callback function, \code{next_req}, to define the next request based on
-the current request and response. You will probably want to it pair with an
+the current request and response. You will probably want to pair it with an
 \link[=iterate_with_offset]{iteration helper} and use a
 \link[=resps_successes]{multi-response handler} to process the result.
 }
@@ -64,7 +64,7 @@ gives some advice.
 
 Generally, your function needs to inspect the response, extract some data
 from it, then use that to modify the previous request. For example, imagine
-that the response returns a cursor, which needs to be add to the body of
+that the response returns a cursor, which needs to be added to the body of
 the request. The simplest version of this function might look like this:
 
 \if{html}{\out{<div class="sourceCode R">}}\preformatted{next_req <- function(resp, req) \{
@@ -73,7 +73,7 @@ the request. The simplest version of this function might look like this:
 \}
 }\if{html}{\out{</div>}}
 
-There's one problem here: if there are no more pages to return then
+There's one problem here: if there are no more pages to return, then
 \code{cursor} will be \code{NULL}, but \code{req_body_json_modify()} will still generate
 a meaningful request. So we need to handle this specifically by
 returning \code{NULL}:
@@ -86,8 +86,8 @@ returning \code{NULL}:
 \}
 }\if{html}{\out{</div>}}
 
-A value of \code{NULL} lets \code{req_perform_iterative()} know there are no pages
-remaining.
+A value of \code{NULL} lets \code{req_perform_iterative()} know there are no more
+pages remaining.
 
 There's one last feature you might want to add to your iterator: if you
 know the total number of pages, then it's nice to let
