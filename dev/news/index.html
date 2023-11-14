@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,8 +31,14 @@
     <a class="dropdown-item" href="../articles/oauth.html">OAuth</a>
   </div>
 </li>
-<li class="active nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-news">
+    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../news/index.html">Changelog</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -56,8 +62,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="httr2-100">httr2 1.0.0<a class="anchor" aria-label="anchor" href="#httr2-100"></a></h2><p class="text-muted">CRAN release: 2023-11-14</p>
 <div class="section level3">
-<h3 id="function-lifecycle-development-version">Function lifecycle<a class="anchor" aria-label="anchor" href="#function-lifecycle-development-version"></a></h3>
+<h3 id="function-lifecycle-1-0-0">Function lifecycle<a class="anchor" aria-label="anchor" href="#function-lifecycle-1-0-0"></a></h3>
 <ul><li><p><code><a href="../reference/with_mocked_responses.html">local_mock()</a></code> and <code><a href="../reference/with_mocked_responses.html">with_mock()</a></code> have been deprecated in favour of <code><a href="../reference/with_mocked_responses.html">local_mocked_responses()</a></code> and <code><a href="../reference/with_mocked_responses.html">with_mocked_responses()</a></code> (<a href="https://github.com/r-lib/httr2/issues/301" class="external-link">#301</a>).</p></li>
 <li><p><code><a href="../reference/multi_req_perform.html">multi_req_perform()</a></code> is deprecated in favour of <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code>. <code><a href="../reference/req_perform_stream.html">req_stream()</a></code> is deprecated in favour of <code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> (<a href="https://github.com/r-lib/httr2/issues/314" class="external-link">#314</a>).</p></li>
 <li><p><code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> deprecates <code>host_name</code> and <code>port</code> arguments in favour of using <code>redirect_uri</code>. It also deprecates <code>host_ip</code> since it seems unlikely that changing this is ever useful.</p></li>
@@ -65,7 +74,7 @@
 <li><p><code><a href="../reference/req_body.html">req_body_form()</a></code> and <code><a href="../reference/req_body.html">req_body_multipart()</a></code> now require data <code>...</code>; they no longer accept a single list for compatibility with the 0.1.0 API.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="multiple-requests-development-version">Multiple requests<a class="anchor" aria-label="anchor" href="#multiple-requests-development-version"></a></h3>
+<h3 id="multiple-requests-1-0-0">Multiple requests<a class="anchor" aria-label="anchor" href="#multiple-requests-1-0-0"></a></h3>
 <ul><li><p>New <code><a href="../reference/req_perform_sequential.html">req_perform_sequential()</a></code> performs a known set of requests sequentially. It has an interface similar to <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> but with no limitations, and the cost of being slower (<a href="https://github.com/r-lib/httr2/issues/361" class="external-link">#361</a>).</p></li>
 <li><p>New <code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code> performs multiple requests, where each request is derived from the previous response (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/8" class="external-link">#8</a>).</p></li>
 <li><p><code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> replaces <code><a href="../reference/multi_req_perform.html">multi_req_perform()</a></code> to match the new naming scheme (<a href="https://github.com/r-lib/httr2/issues/314" class="external-link">#314</a>). It gains a <code>progress</code> argument.</p></li>
@@ -74,7 +83,7 @@
 <li><p><code><a href="../reference/resp_body_raw.html">resp_body_json()</a></code> and <code><a href="../reference/resp_body_raw.html">resp_body_xml()</a></code> now cache the parsed values so that you can use them repeatedly without worrying about the performance cost. This supports the design <code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code> by avoiding the need to carefully pass around a parsed object.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="oauth-features-development-version">OAuth features<a class="anchor" aria-label="anchor" href="#oauth-features-development-version"></a></h3>
+<h3 id="oauth-features-1-0-0">OAuth features<a class="anchor" aria-label="anchor" href="#oauth-features-1-0-0"></a></h3>
 <ul><li><p>A new <code><a href="../articles/oauth.html">vignette("oauth")</a></code> gives many more details about how OAuth works and how to use it with httr2 (<a href="https://github.com/r-lib/httr2/issues/234" class="external-link">#234</a>), and the OAuth docs have been overhauled to make it more clear that you should use <code>req_oauth_*()</code>, not <code>oauth_*()</code> (<a href="https://github.com/r-lib/httr2/issues/330" class="external-link">#330</a>).</p></li>
 <li><p>If you are using an OAuth token with a refresh token, and that refresh token has expired, then httr2 will now re-run the entire flow to get you a new token (<a href="https://github.com/r-lib/httr2/issues/349" class="external-link">#349</a>).</p></li>
 <li><p>New <code><a href="../reference/oauth_cache_path.html">oauth_cache_path()</a></code> returns the path that httr2 uses for caching OAuth tokens. Additionally, you can now change the cache location by setting the <code>HTTR2_OAUTH_CACHE</code> env var. This is now more obvious to the user, because httr2 now informs the user whenever a token is cached.</p></li>
@@ -83,7 +92,7 @@ auth code, either launching a temporary web server or, new, allowing you to manu
 <li><p>New <code><a href="../reference/oauth_token_cached.html">oauth_token_cached()</a></code> allows you to get an OAuth token while still taking advantage of httr2’s caching and auto-renewal features. For expert use only (<a href="https://github.com/r-lib/httr2/issues/328" class="external-link">#328</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-new-features-development-version">Other new features<a class="anchor" aria-label="anchor" href="#other-new-features-development-version"></a></h3>
+<h3 id="other-new-features-1-0-0">Other new features<a class="anchor" aria-label="anchor" href="#other-new-features-1-0-0"></a></h3>
 <ul><li><p>@mgirlich is now a httr2 contributor in recognition of his many contributions.</p></li>
 <li><p><code><a href="../reference/req_cache.html">req_cache()</a></code> gains <code>max_n</code>, <code>max_size</code>, and <code>max_age</code> arguments to automatically prune the cache. By default, the cache will stay under 1 GB (<a href="https://github.com/r-lib/httr2/issues/207" class="external-link">#207</a>).</p></li>
 <li><p>New <code><a href="../reference/req_body.html">req_body_json_modify()</a></code> allows you to iteratively modify a JSON body of a request.</p></li>
@@ -96,7 +105,7 @@ auth code, either launching a temporary web server or, new, allowing you to manu
 <li><p>New <code><a href="../reference/secrets.html">secret_encrypt_file()</a></code> and <code><a href="../reference/secrets.html">secret_decrypt_file()</a></code> for encrypting and decrypting files (<a href="https://github.com/r-lib/httr2/issues/237" class="external-link">#237</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-improvements-and-bug-fixes-development-version">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-development-version"></a></h3>
+<h3 id="minor-improvements-and-bug-fixes-1-0-0">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-1-0-0"></a></h3>
 <ul><li><p>The httr2 examples now only run on R 4.2 and later so that we can use the base pipe and lambda syntax (<a href="https://github.com/r-lib/httr2/issues/345" class="external-link">#345</a>).</p></li>
 <li><p>OAuth errors containing a url now correctly display that URL (instead of the string “uri”).</p></li>
 <li><p><code><a href="../reference/curl_translate.html">curl_translate()</a></code> now uses the base pipe, and produces escapes with single quotes or raw strings in case double quotes can’t be used (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/264" class="external-link">#264</a>). It gains the argument <code>simplify_headers</code> that removes some common but unimportant headers, like <code>Sec-Fetch-Dest</code> or <code>sec-ch-ua-mobile</code> (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/256" class="external-link">#256</a>). It also parses the query components of the url (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/259" class="external-link">#259</a>) and works with multiline commands from the clipboard (<a href="https://github.com/mgirlich" class="external-link">@mgirlich</a>, <a href="https://github.com/r-lib/httr2/issues/254" class="external-link">#254</a>).</p></li>
