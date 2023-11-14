@@ -110,13 +110,27 @@ retry_backoff <- function(req, i) {
   req_policy_call(req, "retry_backoff", list(i), default = backoff_default)
 }
 
-retry_after <- function(req, resp, i) {
+retry_after <- function(req, resp, i, error_call = caller_env()) {
   after <- req_policy_call(req, "retry_after", list(resp), default = resp_retry_after)
+
+  # TODO: apply this idea to all callbacks
+  if (!is_number_or_na(after)) {
+    not <- obj_type_friendly(after)
+    cli::cli_abort(
+      "The {.code after} callback to {.fn req_retry} must return a single number or NA, not {not}.",
+      call = error_call
+    )
+  }
+
   if (is.na(after)) {
     retry_backoff(req, i)
   } else {
     after
   }
+}
+
+is_number_or_na <- function(x) {
+  (is.numeric(x) && length(x) == 1) || identical(x, NA)
 }
 
 # Helpers -----------------------------------------------------------------
