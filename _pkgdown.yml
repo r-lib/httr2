@@ -90,3 +90,10 @@ articles:
   contents:
   - articles/wrapping-apis
   - articles/oauth
+
+
+news:
+ releases:
+ - text: "httr2 1.0.0"
+   href: https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/
+
