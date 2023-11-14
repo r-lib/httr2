@@ -55,3 +55,23 @@ test_that("missing retry-after uses backoff", {
 
   expect_equal(retry_after(req, response(429), 1), 10)
 })
+
+test_that("useful message if `after` wrong", {
+  req <- request_test() %>%
+    req_retry(
+      is_transient = function(resp) TRUE,
+      after = function(resp) resp
+    )
+
+  expect_snapshot(req_perform(req), error = TRUE)
+})
+
+test_that("is_number_or_na implemented correctly", {
+  expect_equal(is_number_or_na(1), TRUE)
+  expect_equal(is_number_or_na(NA_real_), TRUE)
+  expect_equal(is_number_or_na(NA), TRUE)
+
+  expect_equal(is_number_or_na(1:2), FALSE)
+  expect_equal(is_number_or_na(numeric()), FALSE)
+  expect_equal(is_number_or_na("x"), FALSE)
+})
