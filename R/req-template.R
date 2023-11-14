@@ -112,10 +112,10 @@ template_vars <- function(x, type) {
 }
 
 template_type <- function(x) {
-  if (grepl(":", x)) {
-    "colon"
-  } else if (grepl("\\{\\w+?\\}", x)) {
+  if (grepl("\\{\\w+?\\}", x)) {
     "uri"
+  } else if (grepl(":", x)) {
+    "colon"
   } else {
     "none"
   }

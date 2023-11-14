@@ -54,3 +54,9 @@ test_that("supports three template styles", {
   expect_equal(template_process("/{x}/"), "/x/")
   expect_equal(template_process("/constant"), "/constant")
 })
+
+test_that("can use colon in uri style", {
+  x <- "x"
+  expect_equal(template_process("/:{x}:/"), "/:x:/")
+})
+
