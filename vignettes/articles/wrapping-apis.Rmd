@@ -393,7 +393,7 @@ resp |> resp_body_json()
 It looks like there's some useful additional info in the `faultstring`:
 
 ```{r}
-resp |> resp_body_json() |> .$fault |> .$faultstring
+resp |> resp_body_json() |> _$fault |> _$faultstring
 ```
 
 To add that information to future errors we can use the `body` argument to `req_error()`.
@@ -402,7 +402,7 @@ Once we do that and re-fetch the request, we see the additional information disp
 
 ```{r, error = TRUE}
 nytimes_error_body <- function(resp) {
-  resp |> resp_body_json() |> .$fault |> .$faultstring
+  resp |> resp_body_json() |> _$fault |> _$faultstring
 }
 
 resp <- request("https://api.nytimes.com/svc/books/v3") |> 
@@ -721,7 +721,7 @@ Here I'll extract the gist ID so we can use it in the next examples, culminating
 
 ```{r}
 resp <- req |> req_perform()
-id <- resp |> resp_body_json() |> .$id
+id <- resp |> resp_body_json() |> _$id
 id
 ```
 
