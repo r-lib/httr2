@@ -46,22 +46,22 @@ You can tailor this request with the `req_` family of functions:
 
 ```{r}
 # Add custom headers
-req %>% req_headers("Accept" = "application/json")
+req |> req_headers("Accept" = "application/json")
 
 # Add a body, turning it into a POST
-req %>% req_body_json(list(x = 1, y = 2))
+req |> req_body_json(list(x = 1, y = 2))
 
 # Automatically retry if the request fails
-req %>% req_retry(max_tries = 5)
+req |> req_retry(max_tries = 5)
 
 # Change the HTTP method
-req %>% req_method("PATCH")
+req |> req_method("PATCH")
 ```
 
 And see exactly what httr2 will send to the server with `req_dry_run()`:
 
 ```{r}
-req %>% req_dry_run()
+req |> req_dry_run()
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -74,9 +74,9 @@ resp
 The `resp_` functions help you extract various useful components of the response:
 
 ```{r}
-resp %>% resp_content_type()
-resp %>% resp_status_desc()
-resp %>% resp_body_html()
+resp |> resp_content_type()
+resp |> resp_status_desc()
+resp |> resp_body_html()
 ```
 
 ## Major differences to httr

@@ -42,7 +42,7 @@ You can tailor this request with the `req_` family of functions:
 
 ``` r
 # Add custom headers
-req %>% req_headers("Accept" = "application/json")
+req |> req_headers("Accept" = "application/json")
 #> <httr2_request>
 #> GET https://r-project.org
 #> Headers:
@@ -50,13 +50,13 @@ req %>% req_headers("Accept" = "application/json")
 #> Body: empty
 
 # Add a body, turning it into a POST
-req %>% req_body_json(list(x = 1, y = 2))
+req |> req_body_json(list(x = 1, y = 2))
 #> <httr2_request>
 #> POST https://r-project.org
 #> Body: json encoded data
 
 # Automatically retry if the request fails
-req %>% req_retry(max_tries = 5)
+req |> req_retry(max_tries = 5)
 #> <httr2_request>
 #> GET https://r-project.org
 #> Body: empty
@@ -64,7 +64,7 @@ req %>% req_retry(max_tries = 5)
 #> • retry_max_tries: 5
 
 # Change the HTTP method
-req %>% req_method("PATCH")
+req |> req_method("PATCH")
 #> <httr2_request>
 #> PATCH https://r-project.org
 #> Body: empty
@@ -73,12 +73,12 @@ req %>% req_method("PATCH")
 And see exactly what httr2 will send to the server with `req_dry_run()`:
 
 ``` r
-req %>% req_dry_run()
+req |> req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/8.3.0
+#> User-Agent: httr2/1.0.0.9000 r-curl/5.1.0 libcurl/8.4.0
 #> Accept: */*
-#> Accept-Encoding: deflate, gzip
+#> Accept-Encoding: deflate, gzip, br, zstd
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -97,11 +97,11 @@ The `resp_` functions help you extract various useful components of the
 response:
 
 ``` r
-resp %>% resp_content_type()
+resp |> resp_content_type()
 #> [1] "text/html"
-resp %>% resp_status_desc()
+resp |> resp_status_desc()
 #> [1] "OK"
-resp %>% resp_body_html()
+resp |> resp_body_html()
 #> {html_document}
 #> <html lang="en">
 #> [1] <head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8 ...
