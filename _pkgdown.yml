@@ -89,7 +89,7 @@ articles:
   navbar: ~
   contents:
   - articles/wrapping-apis
-  - articles/oauth
+  - oauth
 
 
 news:
