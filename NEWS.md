@@ -6,6 +6,9 @@
 * `req_template()` now works when you have a bare `:` in a template that
   uses "uri" style (#389).
 
+* `vignette("oauth")` is now available as a package vignette, not just on the 
+  package website (@jonthegeek, #398).
+
 # httr2 1.0.0
 
 ## Function lifecycle
