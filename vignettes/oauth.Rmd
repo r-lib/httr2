@@ -1,5 +1,10 @@
 ---
 title: "OAuth"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{oauth}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
