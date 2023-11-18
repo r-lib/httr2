@@ -123,7 +123,7 @@
 <p>You can tailor this request with the <code>req_</code> family of functions:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add custom headers</span></span>
-<span><span class="va">req</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_headers.html">req_headers</a></span><span class="op">(</span><span class="st">"Accept"</span> <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span></span>
+<span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/req_headers.html">req_headers</a></span><span class="op">(</span><span class="st">"Accept"</span> <span class="op">=</span> <span class="st">"application/json"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
 <span><span class="co">#&gt; GET https://r-project.org</span></span>
 <span><span class="co">#&gt; Headers:</span></span>
@@ -131,13 +131,13 @@
 <span><span class="co">#&gt; Body: empty</span></span>
 <span></span>
 <span><span class="co"># Add a body, turning it into a POST</span></span>
-<span><span class="va">req</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
 <span><span class="co">#&gt; POST https://r-project.org</span></span>
 <span><span class="co">#&gt; Body: json encoded data</span></span>
 <span></span>
 <span><span class="co"># Automatically retry if the request fails</span></span>
-<span><span class="va">req</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_retry.html">req_retry</a></span><span class="op">(</span>max_tries <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/req_retry.html">req_retry</a></span><span class="op">(</span>max_tries <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
 <span><span class="co">#&gt; GET https://r-project.org</span></span>
 <span><span class="co">#&gt; Body: empty</span></span>
@@ -145,18 +145,18 @@
 <span><span class="co">#&gt; • retry_max_tries: 5</span></span>
 <span></span>
 <span><span class="co"># Change the HTTP method</span></span>
-<span><span class="va">req</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span></span>
+<span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;httr2_request&gt;</span></span>
 <span><span class="co">#&gt; PATCH https://r-project.org</span></span>
 <span><span class="co">#&gt; Body: empty</span></span></code></pre></div>
 <p>And see exactly what httr2 will send to the server with <code><a href="reference/req_dry_run.html">req_dry_run()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET / HTTP/1.1</span></span>
 <span><span class="co">#&gt; Host: r-project.org</span></span>
-<span><span class="co">#&gt; User-Agent: httr2/0.2.3.9000 r-curl/5.1.0 libcurl/8.3.0</span></span>
+<span><span class="co">#&gt; User-Agent: httr2/1.0.0.9000 r-curl/5.1.0 libcurl/8.4.0</span></span>
 <span><span class="co">#&gt; Accept: */*</span></span>
-<span><span class="co">#&gt; Accept-Encoding: deflate, gzip</span></span></code></pre></div>
+<span><span class="co">#&gt; Accept-Encoding: deflate, gzip, br, zstd</span></span></code></pre></div>
 <p>Use <code><a href="reference/req_perform.html">req_perform()</a></code> to perform the request, retrieving a <strong>response</strong>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
@@ -168,11 +168,11 @@
 <span><span class="co">#&gt; Body: In memory (6446 bytes)</span></span></code></pre></div>
 <p>The <code>resp_</code> functions help you extract various useful components of the response:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "text/html"</span></span>
-<span><span class="va">resp</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/resp_status.html">resp_status_desc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "OK"</span></span>
-<span><span class="va">resp</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/resp_body_raw.html">resp_body_html</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/resp_body_raw.html">resp_body_html</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; {html_document}</span></span>
 <span><span class="co">#&gt; &lt;html lang="en"&gt;</span></span>
 <span><span class="co">#&gt; [1] &lt;head&gt;\n&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8 ...</span></span>
