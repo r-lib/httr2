@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* `req_timeout()` now resets the value of `connecttimeout` set by curl.
+  This ensures that you can use `req_timeout()` to increase the connection
+  timeout past 10s (#395).
+
 * `req_retry()` gives a clearer error if `after` returns the wrong type of 
   value (#385).
 

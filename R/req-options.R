@@ -80,7 +80,13 @@ req_timeout <- function(req, seconds) {
     cli::cli_abort("{.arg seconds} must be >1 ms.")
   }
 
-  req_options(req, timeout_ms = seconds * 1000)
+  req_options(
+    req,
+    timeout_ms = seconds * 1000,
+    # reset value set by curl
+    # https://github.com/jeroen/curl/blob/1bcf1ab3/src/handle.c#L159
+    connecttimeout = 0
+  )
 }
 
 
