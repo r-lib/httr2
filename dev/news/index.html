@@ -62,7 +62,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> gives a clearer error if <code>after</code> returns the wrong type of value (<a href="https://github.com/r-lib/httr2/issues/385" class="external-link">#385</a>).</p></li>
+<ul><li><p><code><a href="../reference/req_timeout.html">req_timeout()</a></code> now resets the value of <code>connecttimeout</code> set by curl. This ensures that you can use <code><a href="../reference/req_timeout.html">req_timeout()</a></code> to increase the connection timeout past 10s (<a href="https://github.com/r-lib/httr2/issues/395" class="external-link">#395</a>).</p></li>
+<li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> gives a clearer error if <code>after</code> returns the wrong type of value (<a href="https://github.com/r-lib/httr2/issues/385" class="external-link">#385</a>).</p></li>
 <li><p><code><a href="../reference/req_template.html">req_template()</a></code> now works when you have a bare <code>:</code> in a template that uses “uri” style (<a href="https://github.com/r-lib/httr2/issues/389" class="external-link">#389</a>).</p></li>
 </ul></div>
     <div class="section level2">
