@@ -2,7 +2,7 @@ test_that("can read/write cookies", {
   cookie_path <- withr::local_tempfile()
 
   set_cookie <- function(req, name, value) {
-    request_test("/cookies/set/:name/:value", name = name, vaue = value) %>%
+    request_test("/cookies/set/:name/:value", name = name, value = value) %>%
       req_cookie_preserve(cookie_path) %>%
       req_perform()
   }
