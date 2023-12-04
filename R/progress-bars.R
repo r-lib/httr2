@@ -47,5 +47,6 @@
 #' and [Advanced cli progress bars](https://cli.r-lib.org/articles/progress-advanced.html)
 #' for more details.
 #'
+#' @keywords internal
 #' @name progress_bars
 NULL

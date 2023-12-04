@@ -22,6 +22,7 @@
 #'   If omitted, uses a random 32-byte sequence encoded with base64url.
 #' @param ... Any additional claims to include in the claim set.
 #' @returns An S3 list with class `jwt_claim`.
+#' @keywords internal
 #' @export
 #' @examples
 #' claim <- jwt_claim()

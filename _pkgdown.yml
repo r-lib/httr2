@@ -74,13 +74,11 @@ reference:
   - secrets
   - obfuscate
   - url_parse
-  - progress_bars
 
 - title: OAuth
   desc: >
     These functions implement the low-level components of OAuth.
   contents:
-  - starts_with("jwt_")
   - starts_with("oauth_")
   - -starts_with("req_oauth")
 

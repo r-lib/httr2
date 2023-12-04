@@ -55,3 +55,4 @@ and \href{https://cli.r-lib.org/articles/progress-advanced.html}{Advanced cli pr
 for more details.
 }
 }
+\keyword{internal}

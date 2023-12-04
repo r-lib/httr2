@@ -72,3 +72,4 @@ in other functions a little simpler.
 claim <- jwt_claim()
 str(claim)
 }
+\keyword{internal}
