@@ -106,7 +106,6 @@ req_oauth_auth_code <- function(req,
                                 host_name = deprecated(),
                                 host_ip = deprecated(),
                                 port = deprecated()) {
-
   redirect <- normalize_redirect_uri(
     redirect_uri = redirect_uri,
     host_name = host_name,
@@ -139,9 +138,7 @@ oauth_flow_auth_code <- function(client,
                                  redirect_uri = oauth_redirect_uri(),
                                  host_name = deprecated(),
                                  host_ip = deprecated(),
-                                 port = deprecated()
-) {
-
+                                 port = deprecated()) {
   oauth_flow_check("authorization code", client, interactive = TRUE)
 
   redirect <- normalize_redirect_uri(
@@ -204,7 +201,6 @@ normalize_redirect_uri <- function(redirect_uri,
                                    host_ip = deprecated(),
                                    port = deprecated(),
                                    error_call = caller_env()) {
-
   parsed <- url_parse(redirect_uri)
 
   if (lifecycle::is_present(host_name)) {
@@ -250,7 +246,6 @@ normalize_redirect_uri <- function(redirect_uri,
     localhost = localhost,
     can_fetch_code = can_fetch_oauth_code(redirect_uri)
   )
-
 }
 
 
@@ -418,9 +413,12 @@ is_hosted_session <- function() {
     !grepl("localhost", Sys.getenv("RSTUDIO_HTTP_REFERER"), fixed = TRUE)
 }
 
+is_rstudio_session <- function() {
+  !is.na(Sys.getenv("RSTUDIO_PROGRAM_MODE", unset = NA))
+}
+
 oauth_flow_auth_code_read <- function(state) {
-  check_installed("askpass")
-  code <- askpass::askpass("Enter authorization code or URL")
+  code <- ask_user_prompt("Enter authorization code or URL: ")
 
   if (is_string_url(code)) {
     # minimal setup where user copy & pastes a URL
@@ -440,7 +438,7 @@ oauth_flow_auth_code_read <- function(state) {
     # Full manual approach, where the code and state are entered
     # independently.
 
-    new_state <- askpass::askpass("Enter state parameter")
+    new_state <- ask_user_prompt("Enter state parameter: ")
   }
 
   if (!identical(state, new_state)) {

@@ -69,9 +69,21 @@ oauth_flow_password <- function(client,
 
 check_password <- function(password, call = caller_env()) {
   if (is.null(password)) {
-    check_installed("askpass", call = call)
-    password <- askpass::askpass()
+    password <- ask_user_prompt()
   }
   check_string(password, call = call)
   password
+}
+
+ask_user_prompt <- function(prompt = "Please enter your password: ") {
+  if (is_rstudio_session()) {
+    check_installed("rstudioapi")
+    result <- rstudioapi::askForPassword(prompt)
+  } else {
+    # use askpass as a fall back, which does not work when called non-interactively
+    # (including when knitting from RStudio)
+    check_installed("askpass")
+    result <- askpass::askpass(prompt)
+  }
+  result
 }
