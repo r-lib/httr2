@@ -38,6 +38,7 @@ Suggests:
     jsonlite,
     knitr,
     rmarkdown,
+    rstudioapi,
     testthat (>= 3.1.8),
     tibble,
     webfakes,
