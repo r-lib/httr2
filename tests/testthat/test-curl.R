@@ -157,6 +157,7 @@ test_that("can read from clipboard", {
   skip_on_cran()
   skip_if_not_installed("clipr")
   skip_if(getRversion() < "4.1")
+  skip_if(is_hosted_session())
 
   # need to set env var so that `read/write_clip()` works in non-interactive mode
   withr::local_envvar(CLIPR_ALLOW = TRUE)
