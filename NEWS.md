@@ -10,6 +10,9 @@
 * `req_template()` now works when you have a bare `:` in a template that
   uses "uri" style (#389).
 
+* `oauth_flow_auth_code()` now uses `askpass::askpass()` instead of `readline()` 
+  when prompting the user to enter character strings (@fh-mthomson, #406).
+
 # httr2 1.0.0
 
 ## Function lifecycle

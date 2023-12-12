@@ -419,7 +419,8 @@ is_hosted_session <- function() {
 }
 
 oauth_flow_auth_code_read <- function(state) {
-  code <- trimws(readline("Enter authorization code or URL: "))
+  check_installed("askpass")
+  code <- askpass::askpass("Enter authorization code or URL")
 
   if (is_string_url(code)) {
     # minimal setup where user copy & pastes a URL
@@ -439,7 +440,7 @@ oauth_flow_auth_code_read <- function(state) {
     # Full manual approach, where the code and state are entered
     # independently.
 
-    new_state <- trimws(readline("Enter state parameter: "))
+    new_state <- askpass::askpass("Enter state parameter")
   }
 
   if (!identical(state, new_state)) {
@@ -486,6 +487,3 @@ oauth_flow_auth_code_fetch <- function(state) {
   body <- resp_body_json(resp)
   body$code
 }
-
-# Make base::readline() mockable
-readline <- NULL
