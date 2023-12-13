@@ -34,7 +34,7 @@ example_url <- function() {
     n <- nrow(datasets::iris)
     start <- (page - 1L) * page_size + 1L
     end <- start + page_size - 1L
-    ids <- seq2(start, end)
+    ids <- rlang::seq2(start, end)
     data <- vctrs::vec_slice(datasets::iris, intersect(ids, seq_len(n)))
 
     res$set_status(200L)$send_json(
