@@ -49,12 +49,12 @@ req_user_agent <- function(req, string = NULL) {
   check_request(req)
 
   if (is.null(string)) {
-    versions <- c(
+    versions <- list(
       httr2 = utils::packageVersion("httr2"),
       `r-curl` = utils::packageVersion("curl"),
       libcurl = curl::curl_version()$version
     )
-    string <- paste0(names(versions), "/", versions, collapse = " ")
+    string <- paste0(names(versions), "/", vapply(versions, as.character, ""), collapse = " ")
   } else {
     check_string(string)
   }
