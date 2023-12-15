@@ -4,8 +4,10 @@
 ## usethis namespace: start
 #' @import R6
 #' @import rlang
+#' @importFrom curl curl_version
 #' @importFrom glue glue
 #' @importFrom lifecycle deprecated
+#' @importFrom utils packageVersion
 ## usethis namespace: end
 NULL
 

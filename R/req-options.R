@@ -50,9 +50,9 @@ req_user_agent <- function(req, string = NULL) {
 
   if (is.null(string)) {
     versions <- list(
-      httr2 = utils::packageVersion("httr2"),
-      `r-curl` = utils::packageVersion("curl"),
-      libcurl = curl::curl_version()$version
+      httr2 = packageVersion("httr2"),
+      `r-curl` = packageVersion("curl"),
+      libcurl = curl_version()$version
     )
     string <- paste0(names(versions), "/", vapply(versions, as.character, ""), collapse = " ")
   } else {
