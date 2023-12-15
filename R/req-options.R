@@ -49,7 +49,7 @@ req_user_agent <- function(req, string = NULL) {
   check_request(req)
 
   if (is.null(string)) {
-    versions <- list(
+    versions <- c(
       httr2 = as.character(utils::packageVersion("httr2")),
       `r-curl` = as.character(utils::packageVersion("curl")),
       libcurl = curl_system_version()
