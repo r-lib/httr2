@@ -22,6 +22,12 @@ test_that("can set user agent", {
 
   expect_match(ua(), "libcurl")
   expect_equal(ua("abc"), "abc")
+
+  # non-R-ish library version for curl, #416
+  with_mocked_bindings(
+    curl_system_version = function(...) "8.4.0-DEV",
+    code = expect_match(ua(), "libcurl/8.4.0-DEV")
+  )
 })
 
 test_that("can set timeout", {
