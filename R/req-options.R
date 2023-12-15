@@ -24,8 +24,6 @@ req_options <- function(.req, ...) {
   .req
 }
 
-curl_system_version <- function() curl::curl_version()$version
-
 #' Set user-agent for a request
 #'
 #' This overrides the default user-agent set by httr2 which includes the
@@ -51,11 +49,11 @@ req_user_agent <- function(req, string = NULL) {
   check_request(req)
 
   if (is.null(string)) {
-    versions <- vapply(FUN = as.character, FUN.VALUE = "", list(
-      httr2 = utils::packageVersion("httr2"),
-      `r-curl` = utils::packageVersion("curl"),
+    versions <- list(
+      httr2 = as.character(utils::packageVersion("httr2")),
+      `r-curl` = as.character(utils::packageVersion("curl")),
       libcurl = curl_system_version()
-    ))
+    )
     string <- paste0(names(versions), "/", versions, collapse = " ")
   } else {
     check_string(string)
@@ -63,6 +61,8 @@ req_user_agent <- function(req, string = NULL) {
 
   req_options(req, useragent = string)
 }
+
+curl_system_version <- function() curl::curl_version()$version
 
 #' Set time limit for a request
 #'
