@@ -25,7 +25,7 @@ test_that("can set user agent", {
 
   # non-R-ish library version for curl, #416
   with_mocked_bindings(
-    curl_version = function(...) "8.4.0-DEV",
+    curl_version = function(...) list(version = "8.4.0-DEV"),
     code = expect_match(ua(), "libcurl/8.4.0-DEV")
   )
 })
