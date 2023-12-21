@@ -152,11 +152,12 @@ test_that("can evaluate simple calls", {
 })
 
 test_that("can read from clipboard", {
-  # need to skip on CI and CRAN as can't read from clipboard there
+  # need to skip on remote environment (CI or Workbench) and CRAN as can't read from clipboard there
   skip_on_ci()
   skip_on_cran()
   skip_if_not_installed("clipr")
   skip_if(getRversion() < "4.1")
+  skip_if(is_hosted_session())
 
   # need to set env var so that `read/write_clip()` works in non-interactive mode
   withr::local_envvar(CLIPR_ALLOW = TRUE)
