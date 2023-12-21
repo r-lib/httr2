@@ -140,7 +140,7 @@ oauth_flow_auth_code <- function(client,
                                  host_name = deprecated(),
                                  host_ip = deprecated(),
                                  port = deprecated()
- ) {
+) {
 
   oauth_flow_check("authorization code", client, interactive = TRUE)
 
