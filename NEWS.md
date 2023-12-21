@@ -11,8 +11,8 @@
   uses "uri" style (#389).
 
 * `oauth_flow_auth_code()` now uses `rstudioapi::askForPassword()` 
-  (if in RStudio, `askpass::askpass()` otherwise) instead of `readline()` 
-  when prompting the user to enter password / auth codes (@fh-mthomson, #406).
+  (if in RStudio, `readline()` otherwise) when prompting the user to 
+  input auth codes (@fh-mthomson, #406).
 
 # httr2 1.0.0
 

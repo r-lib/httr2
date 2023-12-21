@@ -80,10 +80,9 @@ ask_user_prompt <- function(prompt = "Please enter your password: ") {
     check_installed("rstudioapi")
     result <- rstudioapi::askForPassword(prompt)
   } else {
-    # use askpass as a fall back, which does not work when called non-interactively
-    # (including when knitting from RStudio)
-    check_installed("askpass")
-    result <- askpass::askpass(prompt)
+    # use readline as a fall back which works in R (or JupyterHub, see)
+    # https://github.com/r-lib/httr2/pull/410#issuecomment-1852721581
+    result <- trimws(readline(prompt))
   }
   result
 }

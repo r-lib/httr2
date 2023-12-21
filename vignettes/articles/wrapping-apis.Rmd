@@ -501,13 +501,13 @@ You can make this approach a little more user friendly by providing a helper tha
 ```{r}
 set_api_key <- function(key = NULL) {
   if (is.null(key)) {
-    key <- askpass::askpass("Please enter your API key")
+    key <- rstudioapi::askForPassword("Please enter your API key")
   }
   Sys.setenv("NYTIMES_KEY" = key)
 }
 ```
 
-Using askpass (or similar) here is good practice since you don't want to encourage the user to type their secret key into the console, as mentioned above.
+Using `rstudioapi` (or similar) here is good practice since you don't want to encourage the user to type their secret key into the console, as mentioned above.
 
 It's a good idea to extend `get_api_key()` to automatically use your encrypted key to make it easier to write tests:
 

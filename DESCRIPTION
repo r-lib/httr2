@@ -28,7 +28,6 @@ Imports:
     vctrs (>= 0.6.3),
     withr
 Suggests:
-    askpass,
     bench,
     clipr,
     covr,
