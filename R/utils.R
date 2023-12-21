@@ -284,7 +284,7 @@ create_progress_bar <- function(total,
 
 prompt_user <- function(prompt = "Please enter your password: ") {
   if (is_rstudio_session()) {
-    check_installed("rstudioapi")
+    check_installed("rstudioapi", reason = "to ask user for inputs.")
     result <- rstudioapi::askForPassword(prompt)
   } else {
     # use readline over askpass outside of RStudio IDE since it generalizes better to
