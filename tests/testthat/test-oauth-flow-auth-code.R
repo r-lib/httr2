@@ -22,7 +22,7 @@ test_that("so-called 'hosted' sessions are detected correctly", {
 
 test_that("URL embedding authorisation code and state can be input manually", {
   local_mocked_bindings(
-    ask_user_prompt = function(prompt = "") "https://x.com?code=code&state=state"
+    prompt_user = function(prompt = "") "https://x.com?code=code&state=state"
   )
   expect_equal(oauth_flow_auth_code_read("state"), "code")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
@@ -32,7 +32,7 @@ test_that("JSON-encoded authorisation codes can be input manually", {
   input <- list(state = "state", code = "code")
   encoded <- openssl::base64_encode(jsonlite::toJSON(input))
   local_mocked_bindings(
-    ask_user_prompt = function(prompt = "") encoded
+    prompt_user = function(prompt = "") encoded
   )
   expect_equal(oauth_flow_auth_code_read("state"), "code")
   expect_error(oauth_flow_auth_code_read("invalid"), "state does not match")
@@ -42,7 +42,7 @@ test_that("bare authorisation codes can be input manually", {
   state <- base64_url_rand(32)
   sent_code <- FALSE
   local_mocked_bindings(
-    ask_user_prompt = function(prompt = "") {
+    prompt_user = function(prompt = "") {
       if (sent_code) {
         state
       } else {

@@ -69,20 +69,9 @@ oauth_flow_password <- function(client,
 
 check_password <- function(password, call = caller_env()) {
   if (is.null(password)) {
-    password <- ask_user_prompt()
+    password <- prompt_user()
   }
   check_string(password, call = call)
   password
 }
 
-ask_user_prompt <- function(prompt = "Please enter your password: ") {
-  if (is_rstudio_session()) {
-    check_installed("rstudioapi")
-    result <- rstudioapi::askForPassword(prompt)
-  } else {
-    # use readline over askpass outside of RStudio IDE since it generalizes better to
-    # JupyterHub + Google Colab, see https://github.com/r-lib/httr2/pull/410#issuecomment-1852721581
-    result <- trimws(readline(prompt))
-  }
-  result
-}
