@@ -80,8 +80,8 @@ ask_user_prompt <- function(prompt = "Please enter your password: ") {
     check_installed("rstudioapi")
     result <- rstudioapi::askForPassword(prompt)
   } else {
-    # use readline as a fall back which works in R (or JupyterHub, see)
-    # https://github.com/r-lib/httr2/pull/410#issuecomment-1852721581
+    # use readline over askpass outside of RStudio IDE since it generalizes better to
+    # JupyterHub + Google Colab, see https://github.com/r-lib/httr2/pull/410#issuecomment-1852721581
     result <- trimws(readline(prompt))
   }
   result
