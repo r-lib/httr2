@@ -189,15 +189,14 @@ req_verbose <- function(req,
 
 # helpers -----------------------------------------------------------------
 
-verbose_message <- function(prefix, x) {
-  if (any(x > 128)) {
-    # This doesn't handle unicode, but it seems like most output
-    # will be compressed in some way, so displaying bodies is unlikely
-    # to be useful anyway.
-    lines <- paste0(length(x), " bytes of binary data")
-  } else {
+verbose_message <- function(prefix, x, is_text = NULL) {
+  is_text <- is_text %||% all(x <= 128)
+
+  if (is_text) {
     x <- readBin(x, character())
     lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
+  } else {
+    lines <- paste0(length(x), " bytes of binary data")
   }
   cli::cat_line(prefix, lines)
 }
@@ -214,6 +213,8 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
       cli::cat_line(prefix, line)
     }
   }
+
+  invisible(x)
 }
 
 auth_flags <- function(x = "basic") {

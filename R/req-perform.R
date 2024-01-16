@@ -250,9 +250,27 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 
   if (!quiet) {
     to_redact <- attr(req$headers, "redact")
+
+    headers <- raw()
+    is_text <- NULL
+
     debug <- function(type, msg) {
-      if (type == 2L) verbose_header("", msg, redact = redact_headers, to_redact = to_redact)
-      if (type == 4L) verbose_message("", msg)
+
+      if (type == 2L) {
+        headers <<- c(
+          headers,
+          verbose_header("", msg, redact = redact_headers, to_redact = to_redact)
+        )
+      }
+      if (type == 4L) {
+        if (is.character(headers)) {
+          headers <- as_headers(headers)
+          if (has_name(headers, "Content-Type")) {
+            is_text <- is_text_type(headers$"Content-Type")
+          }
+        }
+        verbose_message("", msg, is_text = is_text)
+      }
     }
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
   }
