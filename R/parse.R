@@ -52,17 +52,18 @@ parse_delim <- function(x, delim, quote = "\"", ...) {
 }
 
 parse_name_equals_value <- function(x) {
-  loc <- regexpr("=", x, fixed = TRUE)
-  pieces <- regmatches(x, loc, invert = TRUE)
+  if (length(x) == 0) return(NULL)
+  pieces <- strsplit(x, "=")
+  pieces_matrix <- do.call(rbind, pieces)
+
+  if (ncol(pieces_matrix) == 1) {
+    pieces_matrix <- cbind(pieces_matrix, rep("", nrow(pieces_matrix)))
+  }
 
   # If only one piece, assume it's a field name with empty value
-  expand <- function(x) if (length(x) == 1) c(x, "") else x
-  pieces <- map(pieces, expand)
-
-  val <- trimws(map_chr(pieces, "[[", 2))
-  name <- trimws(map_chr(pieces, "[[", 1))
-
-  set_names(as.list(val), name)
+  found <- pieces_matrix[,1] == pieces_matrix[,2]
+  pieces_matrix[found, 2] <- ""
+  set_names(as.list(pieces_matrix[,2]), pieces_matrix[,1])
 }
 
 parse_in_half <- function(x, pattern) {
@@ -77,7 +78,10 @@ parse_in_half <- function(x, pattern) {
 parse_match <- function(x, pattern) {
   m <- regexec(pattern, x, perl = TRUE)
   pieces <- regmatches(x, m)[[1]][-1]
-  map(pieces, empty_to_null)
+
+  # replace empty element with null
+  pieces[pieces == ""] <- list(NULL)
+  return(pieces)
 }
 
 empty_to_null <- function(x) {
