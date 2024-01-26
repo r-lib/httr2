@@ -64,6 +64,21 @@ test_that("empty queries become NULL", {
   expect_equal(query_parse(""), NULL)
 })
 
+test_that("multiple equals in the string", {
+  query <- c(
+    "i=main&mode=front&sid=12ab&enc=+Hello",
+    "var1=&var2=&var3=",
+    "foo==&bar=="
+  )
+  expect_equal(
+    lapply(query, query_parse), list(
+      list(i = "main", mode = "front", sid = "12ab", enc= "+Hello"),
+      list(var1 = "", var2 = "", var3 = ""),
+      list(foo = "=", bar = "=")
+    )
+  )
+})
+
 test_that("validates inputs", {
   expect_snapshot(error = TRUE, {
     query_build(1:3)
