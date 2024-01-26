@@ -62,3 +62,18 @@ test_that("parse_name_equals_value handles empty values", {
   expect_equal(parse_name_equals_value("a"), list(a = ""))
 })
 
+test_that("parse_name_equals_value multiple params", {
+  expect <- list(
+    list(foo = "=", var1 = "12ab,var2=;var3=,", var4 = "&var5=;out"),
+    list(foo = "=&var1=12ab,var2=", var3 = ",&var4=&var5=", out = ""),
+    list(foo = "=&var1=12ab", var2 = ";var3=", "&var4" = "&var5=;out")
+  )
+  safe <- c("&", ";", ",")
+  params <- "foo==&var1=12ab,var2=;var3=,&var4=\"&\"var5=;out"
+
+  for (i in seq_along(safe)) {
+    pieces <- parse_delim(params, safe[[i]])
+    actual <- parse_name_equals_value(pieces, safe[[i]])
+    expect_equal(actual, expect[[i]])
+  }
+})
