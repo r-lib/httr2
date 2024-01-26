@@ -154,7 +154,7 @@ url_build <- function(url) {
 
 query_parse <- function(x) {
   x <- gsub("^\\?", "", x) # strip leading ?, if present
-  params <- parse_name_equals_value(parse_delim(x, "&"))
+  params <- parse_name_equals_value(parse_delim(x, "&"), "&")
 
   if (length(params) == 0) {
     return(NULL)
