@@ -84,9 +84,10 @@ parse_match <- function(x, pattern) {
   m <- regexec(pattern, x, perl = TRUE)
   pieces <- regmatches(x, m)[[1]][-1]
 
+  empty <- pieces == ""
   pieces <- as.list(pieces)
   # replace empty element with null
-  pieces[pieces == ""] <- list(NULL)
+  pieces[empty] <- list(NULL)
   return(pieces)
 }
 
