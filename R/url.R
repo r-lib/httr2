@@ -43,10 +43,9 @@ url_parse <- function(url) {
 
   userinfo <- pieces[[2]]
   if (!is.null(userinfo)) {
-    if (grepl(":", userinfo)) {
-      userinfo <- parse_in_half(userinfo, ":")
-    } else {
-      userinfo <- list(userinfo, NULL)
+    userinfo <- parse_in_half(userinfo, ":")
+    if (userinfo$right == "") {
+      userinfo$right <- NULL
     }
   }
   hostname <- pieces[[3]]
@@ -56,8 +55,8 @@ url_parse <- function(url) {
     list(
       scheme = scheme,
       hostname = hostname,
-      username = userinfo[[1]],
-      password = userinfo[[2]],
+      username = userinfo$left,
+      password = userinfo$right,
       port = port,
       path = path,
       query = query,

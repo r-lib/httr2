@@ -129,8 +129,8 @@ curl_normalize <- function(cmd, error_call = caller_env()) {
   if (has_name(args, "--user")) {
     pieces <- parse_in_half(args[["--user"]], ":")
     auth <- list(
-      username = pieces[[1]],
-      password = pieces[[2]]
+      username = pieces$left,
+      password = pieces$right
     )
   } else {
     auth <- NULL
@@ -226,16 +226,16 @@ curl_args <- function(cmd, error_call = caller_env()) {
   check_installed("docopt")
 
   pieces <- parse_in_half(cmd, " ")
-  if (pieces[[1]] != "curl") {
+  if (pieces$left != "curl") {
     cli::cli_abort(
       "Expecting call to {.str curl} not to {.str {pieces[[1]]}}.",
       call = error_call
     )
   }
   if (grepl("'", cmd)) {
-    args <- parse_delim(pieces[[2]], " ", quote = "'")
+    args <- parse_delim(pieces$right, " ", quote = "'")
   } else {
-    args <- parse_delim(pieces[[2]], " ", quote = '"')
+    args <- parse_delim(pieces$right, " ", quote = '"')
   }
 
   args <- args[args != "" & args != "\\"]

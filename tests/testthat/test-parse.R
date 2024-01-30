@@ -49,14 +49,36 @@ test_that("can parse links", {
   )
 })
 
-
 # Helpers -----------------------------------------------------------------
 
-test_that("parse_in_half always returns two pieces", {
-  expect_equal(parse_in_half("a", " "), c("a", ""))
-  expect_equal(parse_in_half("a b", " "), c("a", "b"))
-  expect_equal(parse_in_half("a b c", " "), c("a", "b c"))
+test_that("parse_in_half handles common cases", {
+  parsed <- parse_in_half(c("a=b", "c=d", "e", "=f", "g=", "h=i=j"), "=")
+  expect_equal(parsed$left, c("a", "c", "e", "", "g", "h"))
+  expect_equal(parsed$right, c("b", "d", "", "f", "", "i=j"))
 })
+
+test_that("parse_in_half handles problematic inputs", {
+  expect_equal(
+    parse_in_half(character(0), "="),
+    list(left = character(0), right = character(0))
+  )
+  expect_equal(
+    parse_in_half("", "="),
+    list(left = "", right = "")
+  )
+  expect_equal(
+    parse_in_half(NA, "="),
+    list(left = NA_character_, right = NA_character_)
+  )
+})
+
+test_that("parse_in_half always returns two pieces", {
+  expect_equal(parse_in_half("a", " "), list(left = "a", right = ""))
+  expect_equal(parse_in_half("a b", " "), list(left = "a", right = "b"))
+  expect_equal(parse_in_half("a b c", " "), list(left = "a", right = "b c"))
+})
+
+
 
 test_that("parse_name_equals_value handles empty values", {
   expect_equal(parse_name_equals_value("a"), list(a = ""))
