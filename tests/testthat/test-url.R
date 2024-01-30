@@ -59,6 +59,10 @@ test_that("missing query values become empty strings", {
   expect_equal(query_parse("?a&q"), list(a = "", q = ""))
 })
 
+test_that("handles equals in values", {
+  expect_equal(query_parse("?x==&y=="), list(x = "=", y = "="))
+ })
+
 test_that("empty queries become NULL", {
   expect_equal(query_parse("?"), NULL)
   expect_equal(query_parse(""), NULL)

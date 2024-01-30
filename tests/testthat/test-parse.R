@@ -79,8 +79,7 @@ test_that("parse_in_half always returns two pieces", {
 })
 
 
-
 test_that("parse_name_equals_value handles empty values", {
-  expect_equal(parse_name_equals_value("a"), list(a = ""))
+  expect_equal(parse_name_equals_value("a"), c(a = ""))
 })
 

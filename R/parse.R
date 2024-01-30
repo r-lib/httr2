@@ -1,11 +1,11 @@
 parse_media <- function(x) {
   # https://datatracker.ietf.org/doc/html/rfc2616#section-3.7
   pieces <- parse_delim(x, ";")
-  params <- parse_name_equals_value(pieces[-1])
 
   if (is_empty(pieces)) {
     list(type = NA_character_)
   } else {
+    params <- parse_name_equals_value(pieces[-1])
     c(list(type = pieces[[1]]), params)
   }
 }
@@ -52,17 +52,8 @@ parse_delim <- function(x, delim, quote = "\"", ...) {
 }
 
 parse_name_equals_value <- function(x) {
-  loc <- regexpr("=", x, fixed = TRUE)
-  pieces <- regmatches(x, loc, invert = TRUE)
-
-  # If only one piece, assume it's a field name with empty value
-  expand <- function(x) if (length(x) == 1) c(x, "") else x
-  pieces <- map(pieces, expand)
-
-  val <- trimws(map_chr(pieces, "[[", 2))
-  name <- trimws(map_chr(pieces, "[[", 1))
-
-  set_names(as.list(val), name)
+  halves <- parse_in_half(x, "=")
+  set_names(halves$right, halves$left)
 }
 
 parse_in_half <- function(x, char = "=") {
