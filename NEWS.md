@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `url_parse()` is considerably faster thanks to performance optimisations
+  by and discussion with @DyfanJones (#429).
+
 * `req_timeout()` now resets the value of `connecttimeout` set by curl.
   This ensures that you can use `req_timeout()` to increase the connection
   timeout past 10s (#395).
