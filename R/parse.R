@@ -15,7 +15,7 @@ parse_www_authenticate <- function(x) {
   # https://stackoverflow.com/questions/10239970
 
   pieces <- parse_in_half(x, " ")
-  params <- parse_name_equals_value(parse_delim(pieces[[2]], ","), ";")
+  params <- parse_name_equals_value(parse_delim(pieces[[2]], ","), ",")
 
   c(list(scheme = pieces[[1]]), params)
 }
@@ -56,18 +56,29 @@ parse_name_equals_value <- function(x, safe = "&", quote = "\"") {
     return(NULL)
   }
   # Note: quotes are removed in the parse_delim function
-  # re-introduce quotes to create a safe pattern to split on
+  # - Re-introduce quotes to create a safe pattern to split on
+  # - Replaces the first instance of = with the safe pattern
+  # For example:
+  # c("var1=&", "var2==") -> c("var1\"&\"&", "var2\"&\"=")
   safe_pattern <- paste0(quote, safe, quote)
   pieces <- strsplit(sub("=", safe_pattern, x, fixed = T), safe_pattern, fixed = TRUE)
+
+  pieces_len <- lengths(pieces)
+  # If only one piece, assume it's a field name with empty value
+  found_single_field_piece <- pieces_len == 1
+
+  # replace empty pieces
+  # i.e. character(0) -> ""
+  pieces[pieces_len == 0] <- ""
+
+  # create matrix from nested list
   pieces_matrix <- do.call(rbind, pieces)
 
   if (ncol(pieces_matrix) == 1) {
     pieces_matrix <- cbind(pieces_matrix, rep("", nrow(pieces_matrix)))
   }
-
-  # If only one piece, assume it's a field name with empty value
-  found <- pieces_matrix[, 1] == pieces_matrix[, 2]
-  pieces_matrix[found, 2] <- ""
+  # replace single field piece with empty value
+  pieces_matrix[found_single_field_piece, 2] <- ""
   set_names(as.list(pieces_matrix[, 2]), pieces_matrix[, 1])
 }
 
@@ -86,7 +97,6 @@ parse_match <- function(x, pattern) {
 
   empty <- pieces == ""
   pieces <- as.list(pieces)
-  # replace empty element with null
   pieces[empty] <- list(NULL)
   return(pieces)
 }
