@@ -78,8 +78,13 @@ test_that("parse_in_half always returns two pieces", {
   expect_equal(parse_in_half("a b c", " "), list(left = "a", right = "b c"))
 })
 
-
 test_that("parse_name_equals_value handles empty values", {
   expect_equal(parse_name_equals_value("a"), c(a = ""))
 })
 
+test_that("parse_match converts missing matches to NULL", {
+  expect_equal(
+    parse_match("abbbd", "(a)(b+)(c*)(d)"),
+    list("a", "bbb", NULL, "d"
+  ))
+})
