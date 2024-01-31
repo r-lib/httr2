@@ -15,7 +15,7 @@
 #' @export
 #' @param resps A list of responses (possibly including errors).
 #' @param resp_data A function that takes a response (`resp`) and
-#'   returns the data foind inside that response as a vector or data frame.
+#'   returns the data found inside that response as a vector or data frame.
 #' @examples
 #' reqs <- list(
 #'   request(example_url()) |> req_url_path("/ip"),
