@@ -19,7 +19,7 @@ resps_data(resps, resp_data)
 \item{resps}{A list of responses (possibly including errors).}
 
 \item{resp_data}{A function that takes a response (\code{resp}) and
-returns the data foind inside that response as a vector or data frame.}
+returns the data found inside that response as a vector or data frame.}
 }
 \description{
 These function provide a basic toolkit for operating with lists of
