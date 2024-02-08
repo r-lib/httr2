@@ -52,6 +52,40 @@ req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64)
   )
 }
 
+#' @param n number of lines to read from the stream
+#' @rdname req_perform_stream
+#' @export
+req_perform_stream_lines <- function(req, callback, timeout_sec = Inf, n = 1L) {
+  check_request(req)
+
+  handle <- req_handle(req)
+  callback <- as_function(callback)
+
+  stopifnot(is.numeric(timeout_sec), timeout_sec > 0)
+  stop_time <- Sys.time() + timeout_sec
+
+  stream <- curl::curl(req$url, handle = handle)
+  open(stream, "rbf")
+  withr::defer(close(stream))
+
+  continue <- TRUE
+  while(continue && isIncomplete(stream) && Sys.time() < stop_time) {
+    buf <- readLines(stream, n = n)
+    if (length(buf) > 0) {
+      continue <- isTRUE(callback(buf))
+    }
+  }
+
+  data <- curl::handle_data(handle)
+  new_response(
+    method = req_method_get(req),
+    url = data$url,
+    status_code = data$status_code,
+    headers = as_headers(data$headers),
+    body = NULL
+  )
+}
+
 #' @export
 #' @rdname req_perform_stream
 #' @usage NULL
