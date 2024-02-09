@@ -69,12 +69,24 @@ req_perform_stream_lines <- function(req, callback, timeout_sec = Inf, n = 1L) {
   withr::defer(close(stream))
 
   continue <- TRUE
+  buffer <- c()
   while(continue && isIncomplete(stream) && Sys.time() < stop_time) {
-    buf <- readLines(stream, n = n)
-    if (length(buf) > 0) {
-      continue <- isTRUE(callback(buf))
+    buffer <- c(buffer, readBin(stream, raw(), 128))
+
+    nlines <- sum(buffer == charToRaw("\n"))
+    if (nlines >= n) {
+      con <- rawConnection(buffer)
+      lines <- readLines(con, n = n)
+      buffer <- readBin(con, raw(), n = length(buffer))
+      close(con)
+
+      continue <- isTRUE(callback(lines))
     }
   }
+
+  con <- rawConnection(buffer)
+  callback(readLines(con, n = n))
+  close(con)
 
   data <- curl::handle_data(handle)
   new_response(
