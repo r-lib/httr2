@@ -78,11 +78,12 @@ parse_in_half <- function(x, char = "=") {
 }
 
 parse_match <- function(x, pattern) {
-  m <- regexec(pattern, x, perl = TRUE)
-  pieces <- regmatches(x, m)[[1]][-1]
-
-  empty <- pieces == ""
-  pieces <- as.list(pieces)
-  pieces[empty] <- list(NULL)
-  pieces
+  match_loc <- regexpr(pattern, x, perl = TRUE)
+  cap_start <- attr(match_loc,"capture.start")
+  cap_len <- attr(match_loc, "capture.length")
+  cap_end <- (cap_start + cap_len - 1)
+  cap_end[cap_end == -1] <- 0
+  pieces <- as.list(substring(x, cap_start, cap_end))
+  pieces[pieces == ""] <- list(NULL)
+  return(pieces)
 }
