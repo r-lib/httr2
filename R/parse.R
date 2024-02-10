@@ -85,5 +85,5 @@ parse_match <- function(x, pattern) {
   cap_end[cap_end == -1] <- 0
   pieces <- as.list(substring(x, cap_start, cap_end))
   pieces[pieces == ""] <- list(NULL)
-  return(pieces)
+  pieces
 }
