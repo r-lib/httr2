@@ -11,7 +11,9 @@
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to process stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
-#' @param round Either "bytes" or "lines".
+#' @param round How to round the raw vector that is handed to the callback.
+#'   "bytes" does no rounding and sends the entire available raw vector,
+#'   "lines" rounds the buffer at its last newline character.
 #' @returns An HTTP [response].
 #' @export
 #' @examples
@@ -44,32 +46,26 @@ req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64,
     if (incomplete) {
       buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
     }
-    if (length(buf) > 0) {
-      continue <- switch(round,
-        # process the entire buffer
-        bytes = isTRUE(callback(buf)),
 
-        lines = {
-          new_lines <- which(buf == charToRaw("\n"))
-          if (length(new_lines)) {
-            # process as characters until the last newline
-            cut <- new_lines[length(new_lines)]
-            lines <- rawToChar(head(buf, n = cut))
-            buf <- tail(buf, n = -cut)
-            isTRUE(callback(lines))
-          } else if (incomplete) {
-            # keep going, i.e. this needs more bytes to make lines
-            TRUE
-          } else {
-            # process the leftover bytes and stop
-            callback(lines)
-            FALSE
-          }
+    if (length(buf) > 0) {
+      if (round == "bytes") {
+        # no rounding: process the entire available buffer
+        continue <- isTRUE(callback(buf))
+        buf <- raw()
+      } else {
+        # lines rounding: truncate the buffer to its last newline character
+        new_lines <- which(buf == charToRaw("\n"))
+        if (length(new_lines)) {
+          cut <- new_lines[length(new_lines)]
+          truncated_buf <- head(buf, n = cut)
+          buf <- tail(buf, n = -cut)
+
+          continue <- isTRUE(callback(truncated_buf))
         }
-      )
-    } else if (!incomplete) {
-      # buffer is empty and stream is complete. Done.
-      continue <- FALSE
+      }
+    } else {
+      # no more bytes to process, only continue if the stream is incomplete
+      continue <- incomplete
     }
   }
 

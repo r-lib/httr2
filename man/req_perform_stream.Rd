@@ -24,7 +24,9 @@ worth of data to process. It must return \code{TRUE} to continue streaming.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
 
-\item{round}{Either "bytes" or "lines".}
+\item{round}{How to round the raw vector that is handed to the callback.
+"bytes" does no rounding and sends the entire available raw vector,
+"lines" rounds the buffer at its last newline character.}
 }
 \value{
 An HTTP \link{response}.
