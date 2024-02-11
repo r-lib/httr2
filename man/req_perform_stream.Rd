@@ -2,13 +2,16 @@
 % Please edit documentation in R/req-perform-stream.R
 \name{req_perform_stream}
 \alias{req_perform_stream}
-\alias{req_perform_stream_lines}
 \alias{req_stream}
 \title{Perform a request and handle data as it streams back}
 \usage{
-req_perform_stream(req, callback, timeout_sec = Inf, buffer_kb = 64)
-
-req_perform_stream_lines(req, callback, timeout_sec = Inf, n = 1L)
+req_perform_stream(
+  req,
+  callback,
+  timeout_sec = Inf,
+  buffer_kb = 64,
+  round = c("bytes", "lines")
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -17,11 +20,11 @@ req_perform_stream_lines(req, callback, timeout_sec = Inf, n = 1L)
 repeatedly with a raw vector whenever there is at least \code{buffer_kb}
 worth of data to process. It must return \code{TRUE} to continue streaming.}
 
-\item{timeout_sec}{Number of seconds to processs stream for.}
+\item{timeout_sec}{Number of seconds to process stream for.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
 
-\item{n}{number of lines to read from the stream}
+\item{round}{Either "bytes" or "lines".}
 }
 \value{
 An HTTP \link{response}.
