@@ -10,7 +10,7 @@ req_perform_stream(
   callback,
   timeout_sec = Inf,
   buffer_kb = 64,
-  round = c("bytes", "lines")
+  round = c("byte", "line")
 )
 }
 \arguments{
@@ -24,9 +24,8 @@ worth of data to process. It must return \code{TRUE} to continue streaming.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
 
-\item{round}{How to round the raw vector that is handed to the callback.
-"bytes" does no rounding and sends the entire available raw vector,
-"lines" rounds the buffer at its last newline character.}
+\item{round}{round the raw vector that is sent to \code{callback} to the
+last "byte" or "line"}
 }
 \value{
 An HTTP \link{response}.

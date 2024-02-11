@@ -11,9 +11,8 @@
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to process stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
-#' @param round How to round the raw vector that is handed to the callback.
-#'   "bytes" does no rounding and sends the entire available raw vector,
-#'   "lines" rounds the buffer at its last newline character.
+#' @param round round the raw vector that is sent to `callback` to the
+#'   last "byte" or "line"
 #' @returns An HTTP [response].
 #' @export
 #' @examples
@@ -24,7 +23,7 @@
 #' resp <- request(example_url()) |>
 #'   req_url_path("/stream-bytes/100000") |>
 #'   req_perform_stream(show_bytes, buffer_kb = 32)
-req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64, round = c("bytes", "lines")) {
+req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64, round = c("byte", "line")) {
   check_request(req)
 
   handle <- req_handle(req)
@@ -48,7 +47,7 @@ req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64,
     }
 
     if (length(buf) > 0) {
-      if (round == "bytes") {
+      if (round == "byte") {
         # no rounding: process the entire available buffer
         continue <- isTRUE(callback(buf))
         buf <- raw()
