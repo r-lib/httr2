@@ -81,13 +81,13 @@ as_round_function <- function(round = c("byte", "line"), error_call = caller_env
   if (is.function(round)) {
     round
   } else if (is.character(round)) {
-    round <- match.arg(round)
+    round <- arg_match(round, error_call = error_call)
     switch(round,
       byte = round_byte,
       line = round_line
     )
   } else {
-    cli::cli_abort('{.arg round} must "byte", "line" or a function', call = error_call)
+    cli::cli_abort('{.arg round} must be "byte", "line" or a function', call = error_call)
   }
 }
 
