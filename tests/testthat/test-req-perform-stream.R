@@ -30,7 +30,7 @@ test_that("eventually terminates even if never rounded", {
 
   resp <- request_test("/stream-bytes/1024") |>
     req_perform_stream(
-      accumulate_lines,
+      accumulate,
       buffer_kb = 0.1,
       round = function(bytes) integer()
     )
