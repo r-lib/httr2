@@ -56,7 +56,7 @@ req_perform_stream <- function(req,
       cut <- cut_points(buf)
       n <- length(cut)
       if (n) {
-        continue <- isTRUE(callback(head(buf, n = cut)))
+        continue <- isTRUE(callback(head(buf, n = cut[n])))
         buf <- tail(buf, n = -cut[n])
       }
     } else {
