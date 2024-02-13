@@ -58,6 +58,8 @@ req_perform_stream <- function(req,
       if (n) {
         continue <- isTRUE(callback(head(buf, n = cut[n])))
         buf <- tail(buf, n = -cut[n])
+      } else {
+        continue <- incomplete
       }
     } else {
       continue <- incomplete
@@ -78,6 +80,7 @@ as_round_function <- function(round = c("byte", "line"),
                               error_call = caller_env()) {
   if (is.function(round)) {
     check_function2(round, args = "bytes")
+    round
   } else if (is.character(round)) {
     round <- arg_match(round, error_call = error_call)
     switch(round,

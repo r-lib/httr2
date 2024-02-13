@@ -21,6 +21,22 @@ test_that("can buffer to lines", {
   expect_equal(valid_json, rep(TRUE, 10))
 })
 
+test_that("eventually terminates even if never rounded", {
+  out <- raw()
+  accumulate <- function(x) {
+    out <<- c(out, x)
+    TRUE
+  }
+
+  resp <- request_test("/stream-bytes/1024") |>
+    req_perform_stream(
+      accumulate_lines,
+      buffer_kb = 0.1,
+      round = function(bytes) integer()
+    )
+  expect_equal(length(out), 0)
+})
+
 test_that("as_round_function checks its inputs", {
   expect_snapshot(error = TRUE, {
     as_round_function(1)
