@@ -11,8 +11,10 @@
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to process stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
-#' @param round round the raw vector that is sent to `callback` to the
-#'   last "byte" or "line".
+#' @param round How should the raw vector sent to `callback` be rounded?
+#'   Choose `"byte"`, `"line"`, or supply your own function that takes a
+#'   raw vector of `bytes` and returns the locations of possible cut points
+#'   (or `integer()` if there are none).
 #' @returns An HTTP [response].
 #' @export
 #' @examples
@@ -23,12 +25,16 @@
 #' resp <- request(example_url()) |>
 #'   req_url_path("/stream-bytes/100000") |>
 #'   req_perform_stream(show_bytes, buffer_kb = 32)
-req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64, round = c("byte", "line")) {
+req_perform_stream <- function(req,
+                               callback,
+                               timeout_sec = Inf,
+                               buffer_kb = 64,
+                               round = c("byte", "line")) {
   check_request(req)
 
   handle <- req_handle(req)
   callback <- as_function(callback)
-  round <- as_round_function(round)
+  cut_points <- as_round_function(round)
 
   stopifnot(is.numeric(timeout_sec), timeout_sec > 0)
   stop_time <- Sys.time() + timeout_sec
@@ -47,10 +53,11 @@ req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64,
     }
 
     if (length(buf) > 0) {
-      cut <- as.integer(round(buf))
-      if (length(cut)) {
+      cut <- cut_points(buf)
+      n <- length(cut)
+      if (n) {
         continue <- isTRUE(callback(head(buf, n = cut)))
-        buf <- tail(buf, n = -cut)
+        buf <- tail(buf, n = -cut[n])
       }
     } else {
       continue <- incomplete
@@ -67,27 +74,21 @@ req_perform_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64,
   )
 }
 
-round_byte <- function(bytes) {
-  length(bytes)
-}
-
-round_line <- function(bytes) {
-  new_lines <- which(bytes == charToRaw("\n"))
-  # this returns integer(0) when there are no newline
-  new_lines[length(new_lines)]
-}
-
-as_round_function <- function(round = c("byte", "line"), error_call = caller_env()) {
+as_round_function <- function(round = c("byte", "line"),
+                              error_call = caller_env()) {
   if (is.function(round)) {
-    round
+    check_function2(round, args = "bytes")
   } else if (is.character(round)) {
     round <- arg_match(round, error_call = error_call)
     switch(round,
-      byte = round_byte,
-      line = round_line
+      byte = function(bytes) length(bytes),
+      line = function(bytes) which(bytes == charToRaw("\n"))
     )
   } else {
-    cli::cli_abort('{.arg round} must be "byte", "line" or a function', call = error_call)
+    cli::cli_abort(
+      '{.arg round} must be "byte", "line" or a function.',
+      call = error_call
+    )
   }
 }
 

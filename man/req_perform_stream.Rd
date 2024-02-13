@@ -24,8 +24,10 @@ worth of data to process. It must return \code{TRUE} to continue streaming.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
 
-\item{round}{round the raw vector that is sent to \code{callback} to the
-last "byte" or "line"}
+\item{round}{How should the raw vector sent to \code{callback} be rounded?
+Choose \code{"byte"}, \code{"line"}, or supply your own function that takes a
+raw vector of \code{bytes} and returns the locations of possible cut points
+(or \code{integer()} if there are none).}
 }
 \value{
 An HTTP \link{response}.

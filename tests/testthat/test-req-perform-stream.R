@@ -4,3 +4,11 @@ test_that("req_stream() is deprecated", {
     resp <- req_stream(req, identity, buffer_kb = 32)
   )
 })
+
+test_that("as_round_function checks its inputs", {
+  expect_snapshot(error = TRUE, {
+    as_round_function(1)
+    as_round_function("bytes")
+    as_round_function(function(x) 1)
+  })
+})
