@@ -66,6 +66,7 @@
 <li><p><code><a href="../reference/req_timeout.html">req_timeout()</a></code> now resets the value of <code>connecttimeout</code> set by curl. This ensures that you can use <code><a href="../reference/req_timeout.html">req_timeout()</a></code> to increase the connection timeout past 10s (<a href="https://github.com/r-lib/httr2/issues/395" class="external-link">#395</a>).</p></li>
 <li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> gives a clearer error if <code>after</code> returns the wrong type of value (<a href="https://github.com/r-lib/httr2/issues/385" class="external-link">#385</a>).</p></li>
 <li><p><code><a href="../reference/req_template.html">req_template()</a></code> now works when you have a bare <code>:</code> in a template that uses “uri” style (<a href="https://github.com/r-lib/httr2/issues/389" class="external-link">#389</a>).</p></li>
+<li><p><code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> gains a <code>round = c("byte", "line")</code> argument to control how the stream is rounded (<a href="https://github.com/r-lib/httr2/issues/437" class="external-link">#437</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="httr2-100">httr2 1.0.0<a class="anchor" aria-label="anchor" href="#httr2-100"></a></h2><p class="text-muted">CRAN release: 2023-11-14</p>
