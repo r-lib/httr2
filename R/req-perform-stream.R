@@ -67,7 +67,9 @@ req_perform_stream <- function(req,
         buf <- tail(buf, n = -cut[n])
       }
     } else {
-      continue <- incomplete
+      if (!incomplete) {
+        break
+      }
     }
   }
 
