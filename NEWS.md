@@ -12,6 +12,9 @@
 
 * `req_template()` now works when you have a bare `:` in a template that
   uses "uri" style (#389).
+  
+* `req_perform_stream()` gains a `round = c("byte", "line")` argument to control 
+  how the stream is rounded (#437).
 
 # httr2 1.0.0
 

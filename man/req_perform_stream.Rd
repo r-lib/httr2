@@ -5,7 +5,13 @@
 \alias{req_stream}
 \title{Perform a request and handle data as it streams back}
 \usage{
-req_perform_stream(req, callback, timeout_sec = Inf, buffer_kb = 64)
+req_perform_stream(
+  req,
+  callback,
+  timeout_sec = Inf,
+  buffer_kb = 64,
+  round = c("byte", "line")
+)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -14,9 +20,14 @@ req_perform_stream(req, callback, timeout_sec = Inf, buffer_kb = 64)
 repeatedly with a raw vector whenever there is at least \code{buffer_kb}
 worth of data to process. It must return \code{TRUE} to continue streaming.}
 
-\item{timeout_sec}{Number of seconds to processs stream for.}
+\item{timeout_sec}{Number of seconds to process stream for.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
+
+\item{round}{How should the raw vector sent to \code{callback} be rounded?
+Choose \code{"byte"}, \code{"line"}, or supply your own function that takes a
+raw vector of \code{bytes} and returns the locations of possible cut points
+(or \code{integer()} if there are none).}
 }
 \value{
 An HTTP \link{response}.
