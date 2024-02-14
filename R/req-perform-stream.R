@@ -46,29 +46,15 @@ req_perform_stream <- function(req,
   continue <- TRUE
   incomplete <- TRUE
   buf <- raw()
-  while(continue && Sys.time() < stop_time) {
-    incomplete <- isIncomplete(stream)
-    if (incomplete) {
-      buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
-    }
+  while(continue && isIncomplete(stream) && Sys.time() < stop_time) {
+    buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
 
     if (length(buf) > 0) {
-      # there are leftover bytes, but the stream is complete
-      # break the loop so that the callback() is given the
-      # whole buffer
-      if (!incomplete) {
-        break
-      }
-
       cut <- cut_points(buf)
       n <- length(cut)
       if (n) {
         continue <- isTRUE(callback(head(buf, n = cut[n])))
         buf <- tail(buf, n = -cut[n])
-      }
-    } else {
-      if (!incomplete) {
-        break
       }
     }
   }
