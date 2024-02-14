@@ -34,7 +34,7 @@ test_that("can supply custom rounding", {
       buffer_kb = 0.1,
       round = function(bytes) if (length(bytes) > 100) 100 else integer()
     )
-  expect_equal(lengths(out), rep(100, 10))
+  expect_equal(lengths(out), c(rep(100, 10), 24))
 })
 
 test_that("eventually terminates even if never rounded", {
@@ -50,7 +50,7 @@ test_that("eventually terminates even if never rounded", {
       buffer_kb = 0.1,
       round = function(bytes) integer()
     )
-  expect_equal(length(out), 0)
+  expect_equal(length(out), 1024)
 })
 
 test_that("as_round_function checks its inputs", {

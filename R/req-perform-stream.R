@@ -53,17 +53,28 @@ req_perform_stream <- function(req,
     }
 
     if (length(buf) > 0) {
+      # there are leftover bytes, but the stream is complete
+      # break the loop so that the callback() is given the
+      # whole buffer
+      if (!incomplete) {
+        break
+      }
+
       cut <- cut_points(buf)
       n <- length(cut)
       if (n) {
         continue <- isTRUE(callback(head(buf, n = cut[n])))
         buf <- tail(buf, n = -cut[n])
-      } else {
-        continue <- incomplete
       }
     } else {
       continue <- incomplete
     }
+  }
+
+  # if there are leftover bytes and none of the callback()
+  # returned FALSE.
+  if (continue && length(buf)) {
+    callback(buf)
   }
 
   data <- curl::handle_data(handle)
