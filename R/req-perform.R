@@ -30,8 +30,8 @@
 #' `options(httr2_progress = FALSE)`.
 #'
 #' @param req A [request].
-#' @param path Optionally, path to save body of request. This is useful for
-#'   large responses since it avoids storing the response in memory.
+#' @param path Optionally, path to save body of the response. This is useful 
+#'   for large responses since it avoids storing the response in memory.
 #' @param mock A mocking function. If supplied, this function is called
 #'   with the request. It should return either `NULL` (if it doesn't want to
 #'   handle the request) or a [response] (if it does). See [with_mock()]/
