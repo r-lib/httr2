@@ -15,8 +15,8 @@ req_perform(
 \arguments{
 \item{req}{A \link{request}.}
 
-\item{path}{Optionally, path to save body of request. This is useful for
-large responses since it avoids storing the response in memory.}
+\item{path}{Optionally, path to save body of the response. This is useful
+for large responses since it avoids storing the response in memory.}
 
 \item{verbosity}{How much information to print? This is a wrapper
 around \code{req_verbose()} that uses an integer to control verbosity:
