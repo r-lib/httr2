@@ -403,23 +403,10 @@ oauth_flow_auth_code_pkce <- function() {
   )
 }
 
-# Try to determine whether we can redirect the user's browser to a server on
-# localhost, which isn't possible if we are running on a hosted platform.
-#
-# Currently this detects RStudio Server, Posit Workbench, and Google Colab. It
-# is based on the strategy pioneered by the {gargle} package.
-is_hosted_session <- function() {
-  if (nzchar(Sys.getenv("COLAB_RELEASE_TAG"))) {
-    return(TRUE)
-  }
-  # If RStudio Server or Posit Workbench is running locally (which is possible,
-  # though unusual), it's not acting as a hosted environment.
-  Sys.getenv("RSTUDIO_PROGRAM_MODE") == "server" &&
-    !grepl("localhost", Sys.getenv("RSTUDIO_HTTP_REFERER"), fixed = TRUE)
-}
+
 
 oauth_flow_auth_code_read <- function(state) {
-  code <- trimws(readline("Enter authorization code or URL: "))
+  code <- prompt_user("Enter authorization code or URL: ")
 
   if (is_string_url(code)) {
     # minimal setup where user copy & pastes a URL
@@ -439,7 +426,7 @@ oauth_flow_auth_code_read <- function(state) {
     # Full manual approach, where the code and state are entered
     # independently.
 
-    new_state <- trimws(readline("Enter state parameter: "))
+    new_state <- prompt_user("Enter state parameter: ")
   }
 
   if (!identical(state, new_state)) {
@@ -486,6 +473,3 @@ oauth_flow_auth_code_fetch <- function(state) {
   body <- resp_body_json(resp)
   body$code
 }
-
-# Make base::readline() mockable
-readline <- NULL

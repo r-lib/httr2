@@ -16,6 +16,10 @@
 * `req_perform_stream()` gains a `round = c("byte", "line")` argument to control 
   how the stream is rounded (#437).
 
+* `oauth_flow_auth_code()` now uses `rstudioapi::askForPassword()` 
+  (if in RStudio, `readline()` otherwise) when prompting the user to 
+  input auth codes (@fh-mthomson, #406).
+
 # httr2 1.0.0
 
 ## Function lifecycle

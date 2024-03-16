@@ -69,9 +69,9 @@ oauth_flow_password <- function(client,
 
 check_password <- function(password, call = caller_env()) {
   if (is.null(password)) {
-    check_installed("askpass", call = call)
-    password <- askpass::askpass()
+    password <- prompt_user()
   }
   check_string(password, call = call)
   password
 }
+

@@ -28,7 +28,6 @@ Imports:
     vctrs (>= 0.6.3),
     withr
 Suggests:
-    askpass,
     bench,
     clipr,
     covr,
@@ -38,6 +37,7 @@ Suggests:
     jsonlite,
     knitr,
     rmarkdown,
+    rstudioapi,
     testthat (>= 3.1.8),
     tibble,
     webfakes,

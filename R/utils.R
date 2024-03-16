@@ -281,3 +281,37 @@ create_progress_bar <- function(total,
     done = function() cli::cli_progress_done(id = id)
   )
 }
+
+prompt_user <- function(prompt = "Please enter your password: ") {
+  if (is_rstudio_session()) {
+    check_installed("rstudioapi", reason = "to ask user for inputs.")
+    result <- rstudioapi::askForPassword(prompt)
+  } else if (rlang::is_interactive()) {
+    # use readline over askpass outside of RStudio IDE since it generalizes better to
+    # JupyterHub + Google Colab, see https://github.com/r-lib/httr2/pull/410#issuecomment-1852721581
+    result <- trimws(readline(prompt))
+  } else {
+    cli::cli_abort("Unable to obtain user input in a non-interactive session.")
+  }
+
+  result
+}
+
+is_rstudio_session <- function() {
+  !is.na(Sys.getenv("RSTUDIO_PROGRAM_MODE", unset = NA))
+}
+
+# Try to determine whether we can redirect the user's browser to a server on
+# localhost, which isn't possible if we are running on a hosted platform.
+#
+# Currently this detects RStudio Server, Posit Workbench, and Google Colab. It
+# is based on the strategy pioneered by the {gargle} package.
+is_hosted_session <- function() {
+  if (nzchar(Sys.getenv("COLAB_RELEASE_TAG"))) {
+    return(TRUE)
+  }
+  # If RStudio Server or Posit Workbench is running locally (which is possible,
+  # though unusual), it's not acting as a hosted environment.
+  Sys.getenv("RSTUDIO_PROGRAM_MODE") == "server" &&
+    !grepl("localhost", Sys.getenv("RSTUDIO_HTTP_REFERER"), fixed = TRUE)
+}
