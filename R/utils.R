@@ -286,11 +286,14 @@ prompt_user <- function(prompt = "Please enter your password: ") {
   if (is_rstudio_session()) {
     check_installed("rstudioapi", reason = "to ask user for inputs.")
     result <- rstudioapi::askForPassword(prompt)
-  } else {
+  } else if (rlang::is_interactive()) {
     # use readline over askpass outside of RStudio IDE since it generalizes better to
     # JupyterHub + Google Colab, see https://github.com/r-lib/httr2/pull/410#issuecomment-1852721581
     result <- trimws(readline(prompt))
+  } else {
+    cli::cli_abort("Unable to obtain user input in a non-interactive session.")
   }
+
   result
 }
 
