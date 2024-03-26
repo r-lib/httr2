@@ -450,7 +450,7 @@ Putting together all the pieces above yields a function something like this:
 ```{r}
 nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") |> 
-    req_url_path_append("/reviews.json") |> 
+    req_url_path_append(path) |> 
     req_url_query(..., `api-key` = api_key) |> 
     req_error(body = nytimes_error_body) |> 
     req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") |> 
