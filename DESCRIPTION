@@ -1,6 +1,6 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
-Version: 1.0.0.9000
+Version: 1.0.1
 Authors@R: c(
     person("Hadley", "Wickham", , "hadley@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = c("cph", "fnd")),
