@@ -3,7 +3,7 @@
 #' @description
 #' The curl command line tool is commonly used to demonstrate HTTP APIs and can
 #' easily be generated from
-#' [browser developer tools](https://everything.curl.dev/usingcurl/copyas).
+#' [browser developer tools](https://everything.curl.dev/cmdline/copyas.html).
 #' `curl_translate()` saves you the pain of manually translating these calls
 #' by implementing a partial, but frequently used, subset of curl options.
 #' Use `curl_help()` to see the supported options, and `curl_translate()`

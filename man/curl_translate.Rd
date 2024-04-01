@@ -29,7 +29,7 @@ to the clipboard.
 \description{
 The curl command line tool is commonly used to demonstrate HTTP APIs and can
 easily be generated from
-\href{https://everything.curl.dev/usingcurl/copyas}{browser developer tools}.
+\href{https://everything.curl.dev/cmdline/copyas.html}{browser developer tools}.
 \code{curl_translate()} saves you the pain of manually translating these calls
 by implementing a partial, but frequently used, subset of curl options.
 Use \code{curl_help()} to see the supported options, and \code{curl_translate()}
