@@ -1,20 +1,20 @@
 # httr2 (development version)
 
-* `url_parse()` is considerably faster thanks to performance optimisations
-  by and discussion with @DyfanJones (#429).
-
-* `req_timeout()` now resets the value of `connecttimeout` set by curl.
-  This ensures that you can use `req_timeout()` to increase the connection
-  timeout past 10s (#395).
+* `req_perform_stream()` gains a `round = c("byte", "line")` argument to control 
+  how the stream is rounded (#437).
 
 * `req_retry()` gives a clearer error if `after` returns the wrong type of 
   value (#385).
 
 * `req_template()` now works when you have a bare `:` in a template that
   uses "uri" style (#389).
-  
-* `req_perform_stream()` gains a `round = c("byte", "line")` argument to control 
-  how the stream is rounded (#437).
+
+* `req_timeout()` now resets the value of `connecttimeout` set by curl.
+  This ensures that you can use `req_timeout()` to increase the connection
+  timeout past 10s (#395).
+
+* `url_parse()` is considerably faster thanks to performance optimisations
+  by and discussion with @DyfanJones (#429).
 
 # httr2 1.0.0
 
