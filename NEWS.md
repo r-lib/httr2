@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.0.1
 
 * `req_perform_stream()` gains a `round = c("byte", "line")` argument to control 
