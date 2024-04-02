@@ -5,7 +5,7 @@ articles:
   oauth: oauth.html
   wrapping-apis: wrapping-apis.html
   httr2: httr2.html
-last_built: 2024-04-01T21:17Z
+last_built: 2024-04-02T13:45Z
 urls:
   reference: https://httr2.r-lib.org/reference
   article: https://httr2.r-lib.org/articles
