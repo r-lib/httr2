@@ -14,8 +14,9 @@ Usually easiest expressed as a fraction,
 \code{number_of_requests / number_of_seconds}, e.g. 15 requests per minute
 is \code{15 / 60}.}
 
-\item{realm}{An unique identifier that for throttle pool. If not supplied,
-defaults to the hostname of the request.}
+\item{realm}{A string that uniquely identifies the throttle pool to use
+(throttling limits always apply \emph{per pool}). If not supplied, defaults
+to the hostname of the request.}
 }
 \value{
 A modified HTTP \link{request}.
