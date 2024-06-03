@@ -10,7 +10,7 @@ request(base_url)
 \item{base_url}{Base URL for request.}
 }
 \value{
-An HTTP response: an S3 list with class \code{httr2_request}.
+An HTTP request: an S3 list with class \code{httr2_request}.
 }
 \description{
 To perform a HTTP request, first create a request object with \code{request()},
