@@ -125,6 +125,7 @@ test_that("external auth code sources are detected correctly", {
 
 test_that("auth codes can be retrieved from an external source", {
   skip_on_cran()
+  skip_on_covr()
 
   app <- webfakes::new_app()
   authorized <- FALSE

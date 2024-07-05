@@ -20,6 +20,9 @@ request_test <- function(template = "/get", ...) {
 #' @export
 example_url <- function() {
   check_installed("webfakes")
+  if (is_testing()) {
+    testthat::skip_on_covr()
+  }
 
   app <- webfakes::httpbin_app()
   # paginated iris endpoint
