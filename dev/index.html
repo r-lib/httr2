@@ -148,7 +148,7 @@
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET / HTTP/1.1</span></span>
 <span><span class="co">#&gt; Host: r-project.org</span></span>
-<span><span class="co">#&gt; User-Agent: httr2/1.0.0.9000 r-curl/5.2.1 libcurl/8.4.0</span></span>
+<span><span class="co">#&gt; User-Agent: httr2/1.0.1.9000 r-curl/5.2.1 libcurl/8.4.0</span></span>
 <span><span class="co">#&gt; Accept: */*</span></span>
 <span><span class="co">#&gt; Accept-Encoding: deflate, gzip</span></span></code></pre></div>
 <p>Use <code><a href="reference/req_perform.html">req_perform()</a></code> to perform the request, retrieving a <strong>response</strong>:</p>
@@ -159,7 +159,7 @@
 <span><span class="co">#&gt; GET https://www.r-project.org/</span></span>
 <span><span class="co">#&gt; Status: 200 OK</span></span>
 <span><span class="co">#&gt; Content-Type: text/html</span></span>
-<span><span class="co">#&gt; Body: In memory (6854 bytes)</span></span></code></pre></div>
+<span><span class="co">#&gt; Body: In memory (7040 bytes)</span></span></code></pre></div>
 <p>The <code>resp_</code> functions help you extract various useful components of the response:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -229,7 +229,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/r-lib/httr2/actions" class="external-link"><img src="https://github.com/r-lib/httr2/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/r-lib/httr2/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/r-lib/httr2/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/r-lib/httr2?branch=main" class="external-link"><img src="https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
