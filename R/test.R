@@ -20,7 +20,7 @@ request_test <- function(template = "/get", ...) {
 #' @export
 example_url <- function() {
   check_installed("webfakes")
-  if (is_installed("testthat")) {
+  if (is_testing()) {
     testthat::skip_on_covr()
   }
 
