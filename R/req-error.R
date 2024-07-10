@@ -15,7 +15,7 @@
 #'   `c("httr2_failure", "httr2_error")`.
 #'
 #' * The HTTP request might succeed, but return an HTTP status code that
-#'   represents a error, e.g. a `404 Not Found` if the specified resource is
+#'   represents an error, e.g. a `404 Not Found` if the specified resource is
 #'   not found. This type of error will have (e.g.) class
 #'   `c("httr2_http_404", "httr2_http", "httr2_error")`.
 #'
@@ -49,7 +49,7 @@
 #' @inheritParams req_perform
 #' @param is_error A predicate function that takes a single argument (the
 #'   response) and returns `TRUE` or `FALSE` indicating whether or not an
-#'   R error should signalled.
+#'   R error should be signalled.
 #' @param body A callback function that takes a single argument (the response)
 #'   and returns a character vector of additional information to include in the
 #'   body of the error. This vector is passed along to the `message` argument

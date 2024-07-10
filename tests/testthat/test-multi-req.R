@@ -42,6 +42,14 @@ test_that("can download files", {
   expect_gt(file.size(paths[[2]]), 0)
 })
 
+test_that("can download 0 byte file", {
+  reqs <- list(request_test("/bytes/0"))
+  paths <- withr::local_tempfile()
+  resps <- req_perform_parallel(reqs, paths = paths)
+
+  expect_equal(file.size(paths[[1]]), 0)
+})
+
 test_that("immutable objects retrieved from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
   resp <- response(200,
