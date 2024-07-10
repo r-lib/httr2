@@ -9,6 +9,7 @@ test_that("first request isn't throttled", {
 
 test_that("throttling causes expected average request rate", {
   skip_on_cran()
+  skip_on_covr()
   throttle_reset()
 
   nps <- 20
