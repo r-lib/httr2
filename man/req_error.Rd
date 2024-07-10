@@ -11,7 +11,7 @@ req_error(req, is_error = NULL, body = NULL)
 
 \item{is_error}{A predicate function that takes a single argument (the
 response) and returns \code{TRUE} or \code{FALSE} indicating whether or not an
-R error should signalled.}
+R error should be signalled.}
 
 \item{body}{A callback function that takes a single argument (the response)
 and returns a character vector of additional information to include in the
@@ -35,7 +35,7 @@ response. There are two ways a request can fail:
 or the server doesn't exist. This type of error will have class
 \code{c("httr2_failure", "httr2_error")}.
 \item The HTTP request might succeed, but return an HTTP status code that
-represents a error, e.g. a \verb{404 Not Found} if the specified resource is
+represents an error, e.g. a \verb{404 Not Found} if the specified resource is
 not found. This type of error will have (e.g.) class
 \code{c("httr2_http_404", "httr2_http", "httr2_error")}.
 }
