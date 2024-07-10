@@ -37,7 +37,7 @@
 #'   handle the request) or a [response] (if it does). See [with_mock()]/
 #'   `local_mock()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
-#'   around [`req_verbose()`] that uses an integer to control verbosity:
+#'   around [req_verbose()] that uses an integer to control verbosity:
 #'
 #'   * `0`: no output
 #'   * `1`: show headers
