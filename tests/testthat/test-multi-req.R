@@ -23,7 +23,7 @@ test_that("requests happen in parallel", {
 
 test_that("can perform >128 file uploads in parallel", {
   temp <- withr::local_tempfile(lines = letters)
-  req <- request(example_url()) |> req_body_file(temp)
+  req <- request(example_url()) %>% req_body_file(temp)
   reqs <- rep(list(req), 150)
   
   expect_no_error(req_perform_parallel(reqs, on_error = "continue"))
