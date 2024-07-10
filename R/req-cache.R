@@ -89,10 +89,23 @@ cache_debug <- function(req) {
 
 cache_exists <- function(req) {
   if (!req_policy_exists(req, "cache_path")) {
-    FALSE
-  } else {
-    file.exists(req_cache_path(req))
+    return(FALSE)
   }
+  
+  path <- req_cache_path(req)
+  if (!file.exists(path)) {
+    return(FALSE)
+  }
+
+  tryCatch(
+    {
+      readRDS(path)
+      TRUE
+    },
+    error = function(e) {
+      FALSE
+    }
+  )
 }
 
 # Callers responsibility to check that cache exists

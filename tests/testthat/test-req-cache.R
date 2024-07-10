@@ -160,6 +160,16 @@ test_that("handles responses with files", {
   expect_equal(body, new_path(path2))
 })
 
+test_that("corrupt files are ignored", {
+  cache_dir <- withr::local_tempdir()
+  req <- request("http://example.com") %>% req_cache(cache_dir)
+
+  writeLines(letters, req_cache_path(req))
+  expect_false(cache_exists(req))
+
+  saveRDS(1:10, req_cache_path(req))
+  expect_true(cache_exists(req))
+})
 
 # pruning -----------------------------------------------------------------
 
