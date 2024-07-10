@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_body_file()` now only opens a connection when the request actually needs data. In particular, this makes it work better with `req_perform_parallel()` (#487).
 * `req_perform_parallel()` now works when downloading 0 byte files (#478)
 * Corrupt `rds` files no longer cause the request to fail.
 
