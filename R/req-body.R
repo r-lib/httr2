@@ -203,23 +203,31 @@ req_body_apply <- function(req) {
 
   if (type == "raw-file") {
     size <- file.info(data)$size
-    con <- file(data, "rb")
+    started <- FALSE
+    done <- FALSE
+    con <- NULL
+
     # Leaks connection if request doesn't complete
     readfunction <- function(nbytes, ...) {
-      if (is.null(con)) {
-        raw()
-      } else {
-        out <- readBin(con, "raw", nbytes)
-        if (length(out) < nbytes) {
-          close(con)
-          con <<- NULL
-        }
-        out
+      if (!started) {
+        con <<- file(data, "rb")
+        started <<- TRUE
+      } else if (done) {
+        return(raw())
       }
+      out <- readBin(con, "raw", nbytes)
+      if (length(out) <= nbytes) {
+        close(con)
+        done <<- TRUE
+        con <<- NULL
+      }
+      out
     }
     seekfunction <- function(offset, ...) {
-      if (is.null(con)) {
+      if (done) {
         con <<- file(data, "rb")
+        started <<- TRUE
+        done <<- FALSE
       }
       seek(con, where = offset)
     }
