@@ -64,6 +64,13 @@ test_that("repeated transient errors still fail", {
   expect_equal(cnd$n, 3)
 })
 
+test_that("can download 0 byte file", {
+  path <- withr::local_tempfile()
+  resps <- req_perform(request_test("/bytes/0"), path = path)
+
+  expect_equal(file.size(path[[1]]), 0)
+})
+
 test_that("can cache requests with etags", {
   req <- request_test("/etag/:etag", etag = "abc") %>% req_cache(tempfile())
 
@@ -128,4 +135,3 @@ test_that("authorization headers are redacted", {
       req_dry_run()
   })
 })
-

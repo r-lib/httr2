@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_parallel()` now works when downloading 0 byte files (#478)
 * Corrupt `rds` files no longer cause the request to fail.
 
 # httr2 1.0.1

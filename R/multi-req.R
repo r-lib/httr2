@@ -191,7 +191,15 @@ Performance <- R6Class("Performance", public = list(
   succeed = function(res) {
     self$progress$update()
 
-    body <- if (is.null(self$path)) res$content else new_path(self$path)
+    if (is.null(self$path)) {
+      body <- res$content
+    } else {
+      # Only needed with curl::multi_run()
+      if (!file.exists(self$path)) {
+        file.create(self$path)
+      }
+      body <- new_path(self$path)
+    }
     resp <- new_response(
       method = req_method_get(self$req),
       url = res$url,
