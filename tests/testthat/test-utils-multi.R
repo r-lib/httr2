@@ -17,6 +17,13 @@ test_that("can handle multi query params", {
   )
 })
 
+test_that("can opt-out of escaping for' vectors", {
+  expect_equal(
+    multi_dots(a = I(c(" ", " ")), .multi = "comma"),
+    list(a = I(" , "))
+  )
+})
+
 test_that("can handle empty dots", {
   expect_equal(multi_dots(), list())
 })

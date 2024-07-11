@@ -281,3 +281,7 @@ create_progress_bar <- function(total,
     done = function() cli::cli_progress_done(id = id)
   )
 }
+
+imap <- function(.x, .f, ...) {
+  map2(.x, names(.x), .f, ...)
+}
