@@ -4,7 +4,7 @@
 * `req_perform_parallel()` now works correctly with `req_cache()` (#447).
 * `req_body_file()` now only opens a connection when the request actually needs data. In particular, this makes it work better with `req_perform_parallel()` (#487).
 * `req_perform_parallel()` now works when downloading 0 byte files (#478)
-* Corrupt `rds` files no longer cause the request to fail.
+* `req_cache()` no longer fails if the `rds` files are somehow corrupted
 
 # httr2 1.0.1
 
