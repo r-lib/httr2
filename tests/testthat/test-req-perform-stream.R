@@ -5,6 +5,44 @@ test_that("req_stream() is deprecated", {
   )
 })
 
+test_that("returns empty body; sets last request & response", {
+  req <- request_test("/stream-bytes/1024")
+  resp <- req_perform_stream(req, function(x) NULL)
+  expect_s3_class(resp, "httr2_response")
+  expect_false(resp_has_body(resp))
+
+  expect_equal(last_request(), req)
+  expect_equal(last_response(), resp)
+})
+
+test_that("HTTP errors become R errors", {
+  req <- request_test("/status/404") 
+  expect_error(
+    req_perform_stream(req, function(x) TRUE),
+    class = "httr2_http_404"
+  )
+
+  resp <- last_response()
+  expect_s3_class(resp, "httr2_response")
+  expect_equal(resp$status_code, 404)
+})
+
+test_that("can override error handling", {
+  req <- request_test("/base64/:value", value = "YWJj") %>%
+    req_error(is_error = function(resp) TRUE) 
+  
+  expect_error(
+    req %>% req_perform_stream(function(x) NULL),
+    class = "httr2_http_200"
+  )
+
+  resp <- last_response()
+  expect_s3_class(resp, "httr2_response")
+  # This also allows us to check that the body is set correctly
+  # since that httpbin error responses have empty bodies
+  expect_equal(resp_body_string(resp), "abc")
+})
+
 test_that("can buffer to lines", {
   lines <- character()
   accumulate_lines <- function(x) {
