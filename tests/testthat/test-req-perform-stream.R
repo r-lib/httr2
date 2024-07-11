@@ -53,6 +53,18 @@ test_that("eventually terminates even if never rounded", {
   expect_equal(length(out), 1024)
 })
 
+test_that("req_perform_stream checks its inputs", {
+  req <- request_test("/stream-bytes/1024")
+  callback <- function(x) NULL
+  
+  expect_snapshot(error = TRUE, {
+    req_perform_stream(1)
+    req_perform_stream(req, 1)
+    req_perform_stream(req, callback, timeout_sec = -1)
+    req_perform_stream(req, callback, buffer_kb = "x")
+  })
+})
+
 test_that("as_round_function checks its inputs", {
   expect_snapshot(error = TRUE, {
     as_round_function(1)
