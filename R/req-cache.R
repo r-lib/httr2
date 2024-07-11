@@ -226,6 +226,7 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
     resp
   } else if (resp_is_cacheable(resp)) {
+    signal("", "httr2_cache_save")
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
     cache_set(req, resp)
     resp
