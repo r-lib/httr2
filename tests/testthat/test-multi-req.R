@@ -52,7 +52,7 @@ test_that("can download 0 byte file", {
 
 test_that("objects are cached", {
   temp <- withr::local_tempdir()
-  req <- request_test("etag/:etag", etag = "abcd") |> req_cache(temp)
+  req <- request_test("etag/:etag", etag = "abcd") %>% req_cache(temp)
   
   expect_condition(
     resps1 <- req_perform_parallel(list(req)),
