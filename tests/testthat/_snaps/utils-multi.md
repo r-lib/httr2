@@ -9,7 +9,7 @@
       multi_dots(x = I(1))
     Condition
       Error:
-      ! Escaped query value must be a single string, not the number 1.
+      ! Escaped query value `x` must be a single string, not the number 1.
     Code
       multi_dots(x = 1:2)
     Condition

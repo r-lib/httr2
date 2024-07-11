@@ -174,31 +174,50 @@ query_build <- function(x, error_call = caller_env()) {
     return(NULL)
   }
 
-  bad_val <- lengths(x) != 1 | !map_lgl(x, is_atomic)
-  if (any(bad_val)) {
-    cli::cli_abort(
-      c(
-        "Query parameters must be length 1 atomic vectors.",
-        "*" = "Problems: {.str {names(x)[bad_val]}}."
-      ),
-      call = error_call
-    )
-  }
-
+  values <- map2_chr(x, names(x), format_query_param, error_call = error_call)
   names <- curl::curl_escape(names(x))
-  values <- map_chr(x, format_query_param, error_call = error_call)
 
   paste0(names, "=", values, collapse = "&")
 }
 
+format_query_param <- function(x,
+                               name,
+                               multi = FALSE,
+                               error_call = caller_env()) {
+  check_query_param(x, name, multi = multi, error_call = error_call)
 
-format_query_param <- function(x, error_call = caller_env()) {
   if (inherits(x, "AsIs")) {
+    unclass(x)
+  } else {
+    x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
+    curl::curl_escape(x)  
+  }
+}
+check_query_param <- function(x, name, multi = FALSE, error_call = caller_env()) {
+  if (inherits(x, "AsIs") ) {
+    if (multi) {
+      ok <- is.character(x)
+      expected <- "a character vector"
+    } else {
+      ok <- is.character(x) && length(x) == 1
+      expected <- "a single string"
+    }
+    arg <- paste0("Escaped query value `", name, "`")
     x <- unclass(x)
-    check_string(x, call = error_call, arg = I("Escaped query value"))
-    return(x)
+  } else {
+    if (multi) {
+      ok <- is.atomic(x)
+      expected <- "an atomic vector"
+    } else {
+      ok <- is.atomic(x) && length(x) == 1
+      expected <- "a length-1 atomic vector"
+    }
+    arg <- paste0("Query value `", name, "`")
   }
 
-  x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
-  curl::curl_escape(x)
+  if (ok) {
+    invisible()
+  } else {
+    stop_input_type(x, expected, arg = I(arg), call = error_call)
+  }
 }
