@@ -33,10 +33,11 @@ req_perform_stream <- function(req,
   check_request(req)
 
   handle <- req_handle(req)
-  callback <- as_function(callback)
+  check_function(callback)
+  check_number_decimal(timeout_sec, min = 0)
+  check_number_decimal(buffer_kb, min = 0)
   cut_points <- as_round_function(round)
 
-  stopifnot(is.numeric(timeout_sec), timeout_sec > 0)
   stop_time <- Sys.time() + timeout_sec
 
   stream <- curl::curl(req$url, handle = handle)
