@@ -33,7 +33,6 @@ req_oauth_password <- function(req,
                                cache_disk = FALSE,
                                cache_key = username) {
 
-  password <- check_password(password)
   params <- list(
     client = client,
     username = username,
@@ -56,12 +55,11 @@ oauth_flow_password <- function(client,
     interactive = is.null(password)
   )
   check_string(username)
-  password <- check_password(password)
 
   oauth_client_get_token(client,
     grant_type = "password",
     username = username,
-    password = password,
+    password = check_password(password),
     scope = scope,
     !!!token_params
   )
