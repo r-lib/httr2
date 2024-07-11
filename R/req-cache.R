@@ -54,7 +54,7 @@
 req_cache <- function(req,
                       path,
                       use_on_error = FALSE,
-                      debug = FALSE,
+                      debug = getOption("httr2_cache_debug", FALSE),
                       max_age = Inf,
                       max_n = Inf,
                       max_size = 1024^3) {
