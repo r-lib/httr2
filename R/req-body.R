@@ -203,16 +203,13 @@ req_body_apply <- function(req) {
 
   if (type == "raw-file") {
     size <- file.info(data)$size
-    started <- FALSE
     done <- FALSE
-    con <- NULL
+    # Only open connection if needed
+    delayedAssign("con", file(data, "rb"))
 
     # Leaks connection if request doesn't complete
     readfunction <- function(nbytes, ...) {
-      if (!started) {
-        con <<- file(data, "rb")
-        started <<- TRUE
-      } else if (done) {
+      if (done) {
         return(raw())
       }
       out <- readBin(con, "raw", nbytes)
@@ -226,7 +223,6 @@ req_body_apply <- function(req) {
     seekfunction <- function(offset, ...) {
       if (done) {
         con <<- file(data, "rb")
-        started <<- TRUE
         done <<- FALSE
       }
       seek(con, where = offset)
