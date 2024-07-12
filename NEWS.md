@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* `req_cache()` now defaults the `debug` argument to the `httr2_cache_debug` option to make it easier to debug caching buried in other peoples' code (#486).
+* `req_cache()` now defaults the `debug` argument to the `httr2_cache_debug` option to make it easier to debug caching buried in other people's code (#486).
 * `req_url_query()` now allows you to opt out of escaping for multi-value parameters (#404).
 * `req_perform_parallel()` now works correctly with `req_cache()` (#447).
 * `req_body_file()` now only opens a connection when the request actually needs data. In particular, this makes it work better with `req_perform_parallel()` (#487).
