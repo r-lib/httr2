@@ -208,8 +208,7 @@ Performance <- R6Class("Performance", public = list(
       body = body,
       request = self$req
     )
-    resp <- cache_post_fetch(self$reqs, resp, path = self$paths)
-
+    resp <- cache_post_fetch(self$req, resp, path = self$path)
     self$resp <- tryCatch(
       resp_check_status(resp, error_call = self$error_call),
       error = identity

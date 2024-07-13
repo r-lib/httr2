@@ -50,6 +50,21 @@ test_that("can download 0 byte file", {
   expect_equal(file.size(paths[[1]]), 0)
 })
 
+test_that("objects are cached", {
+  temp <- withr::local_tempdir()
+  req <- request_test("etag/:etag", etag = "abcd") %>% req_cache(temp)
+  
+  expect_condition(
+    resps1 <- req_perform_parallel(list(req)),
+    class = "httr2_cache_save"
+  )
+
+  expect_condition(
+    resps2 <- req_perform_parallel(list(req)),
+    class = "httr2_cache_not_modified"
+  )
+})
+
 test_that("immutable objects retrieved from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
   resp <- response(200,

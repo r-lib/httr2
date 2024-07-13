@@ -31,20 +31,20 @@ multi_dots <- function(...,
   n <- lengths(dots)
   if (any(n > 1)) {
     if (is.function(.multi)) {
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
       dots[n > 1] <- lapply(dots[n > 1], .multi)
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "comma") {
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
       dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = ",")
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "pipe") {
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
       dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = "|")
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "explode") {
       dots <- explode(dots)
-      dots[n > 1] <- lapply(dots[n > 1], format_query_param)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "error") {
       cli::cli_abort(
@@ -58,7 +58,7 @@ multi_dots <- function(...,
   }
 
   # Format other params
-  dots[n == 1] <- lapply(dots[n == 1], format_query_param, error_call = error_call)
+  dots[n == 1] <- imap(dots[n == 1], format_query_param, error_call = error_call)
   dots[n == 1] <- lapply(dots[n == 1], I)
 
   dots

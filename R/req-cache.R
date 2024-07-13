@@ -54,7 +54,7 @@
 req_cache <- function(req,
                       path,
                       use_on_error = FALSE,
-                      debug = FALSE,
+                      debug = getOption("httr2_cache_debug", FALSE),
                       max_age = Inf,
                       max_n = Inf,
                       max_size = 1024^3) {
@@ -226,6 +226,7 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
     resp
   } else if (resp_is_cacheable(resp)) {
+    signal("", "httr2_cache_save")
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
     cache_set(req, resp)
     resp

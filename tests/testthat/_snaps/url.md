@@ -35,14 +35,13 @@
       query_build(list(x = 1:2, y = 1:3))
     Condition
       Error:
-      ! Query parameters must be length 1 atomic vectors.
-      * Problems: "x" and "y".
+      ! Query value `x` must be a length-1 atomic vector, not an integer vector.
 
 # can't opt out of escaping non strings
 
     Code
-      format_query_param(I(1))
+      format_query_param(I(1), "x")
     Condition
       Error:
-      ! Escaped query value must be a single string, not the number 1.
+      ! Escaped query value `x` must be a single string, not the number 1.
 

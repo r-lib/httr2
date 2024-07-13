@@ -78,27 +78,33 @@ test_that("validates inputs", {
 # format_query_param ------------------------------------------------------
 
 test_that("handles all atomic vectors", {
-  expect_equal(format_query_param(NA), "NA")
-  expect_equal(format_query_param(TRUE), "TRUE")
-  expect_equal(format_query_param(1L), "1")
-  expect_equal(format_query_param(1.3), "1.3")
-  expect_equal(format_query_param("x"), "x")
-  expect_equal(format_query_param(" "), "%20")
+  expect_equal(format_query_param(NA, "x"), "NA")
+  expect_equal(format_query_param(TRUE, "x"), "TRUE")
+  expect_equal(format_query_param(1L, "x"), "1")
+  expect_equal(format_query_param(1.3, "x"), "1.3")
+  expect_equal(format_query_param("x", "x"), "x")
+  expect_equal(format_query_param(" ", "x"), "%20")
 })
 
 test_that("doesn't add extra spaces", {
-  expect_equal(format_query_param(c(1, 1000)), c("1", "1000"))
-  expect_equal(format_query_param(c("a", "bcdef")), c("a", "bcdef"))
+  expect_equal(
+    format_query_param(c(1, 1000), "x", multi = TRUE),
+    c("1", "1000")
+  )
+  expect_equal(
+    format_query_param(c("a", "bcdef"), multi = TRUE, "x"),
+    c("a", "bcdef")
+  )
 })
 
 test_that("formats numbers nicely", {
-  expect_equal(format_query_param(1e9), "1000000000")
+  expect_equal(format_query_param(1e9, "x"), "1000000000")
 })
 
 test_that("can opt out of escaping", {
-  expect_equal(format_query_param(I(",")), ",")
+  expect_equal(format_query_param(I(","), "x"), ",")
 })
 
 test_that("can't opt out of escaping non strings", {
-  expect_snapshot(format_query_param(I(1)), error = TRUE)
+  expect_snapshot(format_query_param(I(1), "x"), error = TRUE)
 })
