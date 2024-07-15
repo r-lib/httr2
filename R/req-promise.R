@@ -99,7 +99,7 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
         self$resolve(self$resp)
         return()
       }
-      super$submit()
+      super$submit(pool)
       ensure_pool_poller(pool, self$reject)
     },
 
