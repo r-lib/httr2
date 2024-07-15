@@ -28,8 +28,7 @@
 #' successful or rejects on the same errors thrown by [req_perform()].
 #' @export
 #'
-#' @examples
-#' if (FALSE) { # Don't run
+#' @examplesIf requireNamespace("promises", quietly = TRUE)
 #' library(promises)
 #' request_base <- request(example_url()) |> req_url_path_append("delay")
 #'
