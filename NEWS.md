@@ -1,6 +1,8 @@
 # httr2 (development version)
 
 * `req_perform_parallel()` now respects error handling in `req_error()`
+* `req_perform_stream()` no longer applies the `callback` to unsuccessful
+  responses, instead creating a regular response. It also now sets `last_request()` and `last_response()` (#479).
 * `req_cache()` now defaults the `debug` argument to the `httr2_cache_debug` option to make it easier to debug caching buried in other people's code (#486).
 * `req_oauth_password()` now only asks for your password once (#498).
 * `req_url_query()` now allows you to opt out of escaping for multi-value parameters (#404).

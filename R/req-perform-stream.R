@@ -1,9 +1,14 @@
 
 #' Perform a request and handle data as it streams back
-#'
+#' 
+#' @description
 #' After preparing a request, call `req_perform_stream()` to perform the request
 #' and handle the result with a streaming callback. This is useful for
 #' streaming HTTP APIs where potentially the stream never ends.
+#' 
+#' The `callback` will only be called if the result is successful. If you need 
+#' to stream an error response, you can use [req_error()] to suppress error
+#' handling so that the body is streamed to you.
 #'
 #' @inheritParams req_perform
 #' @param callback A single argument callback function. It will be called
@@ -15,7 +20,9 @@
 #'   Choose `"byte"`, `"line"`, or supply your own function that takes a
 #'   raw vector of `bytes` and returns the locations of possible cut points
 #'   (or `integer()` if there are none).
-#' @returns An HTTP [response].
+#' @returns An HTTP [response]. The body will be empty if the request was
+#'   successful (since the `callback` function will have handled it). The body
+#'   will contain the HTTP response body if the request was unsuccessful.
 #' @export
 #' @examples
 #' show_bytes <- function(x) {
@@ -25,6 +32,7 @@
 #' resp <- request(example_url()) |>
 #'   req_url_path("/stream-bytes/100000") |>
 #'   req_perform_stream(show_bytes, buffer_kb = 32)
+#' resp
 req_perform_stream <- function(req,
                                callback,
                                timeout_sec = Inf,
@@ -44,12 +52,31 @@ req_perform_stream <- function(req,
   open(stream, "rbf")
   withr::defer(close(stream))
 
+  res <- curl::handle_data(handle)
+  the$last_request <- req
+
+  # Return early if there's a problem
+  resp <- new_response(
+    method = req_method_get(req),
+    url = res$url,
+    status_code = res$status_code,
+    headers = as_headers(res$headers),
+    body = NULL,
+    request = req
+  )
+  if (error_is_error(req, resp)) {
+    resp$body <- read_con(stream)
+    the$last_response <- resp
+    handle_resp(req, resp)
+  }
+
   continue <- TRUE
   incomplete <- TRUE
   buf <- raw()
+  
   while(continue && isIncomplete(stream) && Sys.time() < stop_time) {
     buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
-
+   
     if (length(buf) > 0) {
       cut <- cut_points(buf)
       n <- length(cut)
@@ -66,14 +93,8 @@ req_perform_stream <- function(req,
     callback(buf)
   }
 
-  data <- curl::handle_data(handle)
-  new_response(
-    method = req_method_get(req),
-    url = data$url,
-    status_code = data$status_code,
-    headers = as_headers(data$headers),
-    body = NULL
-  )
+  the$last_response <- resp
+  resp
 }
 
 as_round_function <- function(round = c("byte", "line"),
@@ -92,6 +113,20 @@ as_round_function <- function(round = c("byte", "line"),
       '{.arg round} must be "byte", "line" or a function.',
       call = error_call
     )
+  }
+}
+
+read_con <- function(con, buffer = 32 * 1024) {
+  bytes <- raw()
+  repeat {
+    new <- readBin(con, "raw", n = buffer)
+    if (length(new) == 0) break
+    bytes <- c(bytes, new)
+  }
+  if (length(bytes) == 0) {
+    NULL
+  } else {
+    bytes
   }
 }
 
