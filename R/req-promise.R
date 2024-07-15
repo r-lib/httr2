@@ -105,7 +105,7 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
     },
 
     succeed = function(res) {
-      try_fetch({
+      tryCatch({
         super$succeed(res)
         self$resolve(self$resp)
       },
@@ -115,7 +115,7 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
     },
 
     fail = function(msg) {
-      try_fetch(
+      tryCatch(
         super$fail(msg),
         httr2_fail = function(cnd) self$reject(cnd$error),
         error = function(cnd) self$reject(cnd)
@@ -128,7 +128,7 @@ ensure_pool_poller <- function(pool, reject) {
   if (monitor$already_going()) return()
 
   poll_pool <- function() {
-    try_fetch({
+    tryCatch({
       status <- curl::multi_run(0, pool = pool)
       if (status$pending > 0) {
         later::later(poll_pool, delay = 0.1, loop = later::global_loop())
