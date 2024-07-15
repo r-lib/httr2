@@ -19,6 +19,15 @@
       Error in `req_perform_parallel()`:
       ! Could not resolve host: INVALID
 
+# req_perform_parallel respects http_error() body message
+
+    Code
+      req_perform_parallel(reqs)
+    Condition
+      Error in `req_perform_parallel()`:
+      ! HTTP 404 Not Found.
+      * hello
+
 # multi_req_perform is deprecated
 
     Code
