@@ -60,6 +60,7 @@ reference:
   contents:
   - req_perform_iterative
   - req_perform_parallel
+  - req_perform_promise
   - req_perform_sequential
   - starts_with("iterate_")
   - starts_with("resps_")
