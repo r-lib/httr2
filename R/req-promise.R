@@ -104,10 +104,11 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
     },
 
     succeed = function(res) {
-      tryCatch({
-        super$succeed(res)
-        self$resolve(self$resp)
-      },
+      tryCatch(
+        {
+          super$succeed(res)
+          self$resolve(self$resp)
+        },
         httr2_fail = function(cnd) self$reject(cnd$error),
         error = function(cnd) self$reject(cnd)
       )
