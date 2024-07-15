@@ -117,8 +117,8 @@ test_that("errors can cancel outstanding requests", {
 
 test_that("req_perform_parallel resspects http_error() error override", {
   reqs <- list2(
-    request_test("/status/:status", status = 404) |> req_error(is_error = ~FALSE),
-    request_test("/status/:status", status = 500) |> req_error(is_error = ~FALSE)
+    req_error(request_test("/status/:status", status = 404), is_error = ~FALSE),
+    req_error(request_test("/status/:status", status = 500), is_error = ~FALSE)
   )
   resps <- req_perform_parallel(reqs)
 
@@ -129,7 +129,7 @@ test_that("req_perform_parallel resspects http_error() error override", {
 
 test_that("req_perform_parallel respects http_error() body message", {
   reqs <- list2(
-    request_test("/status/:status", status = 404) |> req_error(body = ~"hello")
+    req_error(request_test("/status/:status", status = 404), body = ~"hello")
   )
   expect_snapshot(req_perform_parallel(reqs), error = TRUE)
 })
