@@ -92,3 +92,15 @@ test_that("req_perform_promise doesn't leave behind poller", {
   # But now that that our promise is resolved, we shouldn't still be polling the pool
   expect_true(later::loop_empty())
 })
+
+
+test_that("req_perform_promise can use non-default pool", {
+  custom_pool <- curl::new_pool()
+  p1 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
+  p2 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25), pool = custom_pool)
+  expect_equal(length(curl::multi_list(custom_pool)), 1)
+  p1_value <- extract_promise(p1)
+  expect_equal(resp_status(p1_value), 200)
+  p2_value <- extract_promise(p2)
+  expect_equal(resp_status(p2_value), 200)
+})
