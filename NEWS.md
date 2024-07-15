@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.0.2
 
 * `req_body_file()` now only opens a connection when the request actually needs data. In particular, this makes it work better with `req_perform_parallel()` (#487).
 * `req_cache()` no longer fails if the `rds` files are somehow corrupted and now defaults the `debug` argument to the `httr2_cache_debug` option to make it easier to debug caching buried in other people's code (#486).
