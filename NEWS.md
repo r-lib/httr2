@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* New function `req_perform_promise()` allows creating a `promises::promise` for a request that runs in the background (#501, @gergness).
 * `req_cache()` now defaults the `debug` argument to the `httr2_cache_debug` option to make it easier to debug caching buried in other people's code (#486).
 * `req_oauth_password()` now only asks for your password once (#498).
 * `req_url_query()` now allows you to opt out of escaping for multi-value parameters (#404).
