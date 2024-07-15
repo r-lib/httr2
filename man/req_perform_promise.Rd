@@ -43,7 +43,7 @@ is created but before it is actually requested.
 }
 }
 \examples{
-if (FALSE) { # Don't run
+\dontshow{if (requireNamespace("promises", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(promises)
 request_base <- request(example_url()) |> req_url_path_append("delay")
 
@@ -74,5 +74,5 @@ p2 \%...>\%
 
 # See the [promises package documentation](https://rstudio.github.io/promises/)
 # for more information on working with promises
-}
+\dontshow{\}) # examplesIf}
 }

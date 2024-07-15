@@ -59,7 +59,6 @@
 #'
 #' # See the [promises package documentation](https://rstudio.github.io/promises/)
 #' # for more information on working with promises
-#' }
 req_perform_promise <- function(req,
                                 path = NULL,
                                 pool = NULL) {
