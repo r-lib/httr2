@@ -46,6 +46,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform_iterative.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform_parallel.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/req_perform_promise.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform_sequential.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform_stream.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_progress.html</loc></url>
