@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_parallel()` now respects error handling in `req_error()`
 * New function `req_perform_promise()` allows creating a `promises::promise` for a request that runs in the background (#501, @gergness).
 
 # httr2 1.0.2

@@ -25,7 +25,7 @@ test_that("can perform >128 file uploads in parallel", {
   temp <- withr::local_tempfile(lines = letters)
   req <- request(example_url()) %>% req_body_file(temp)
   reqs <- rep(list(req), 150)
-  
+
   expect_no_error(req_perform_parallel(reqs, on_error = "continue"))
 })
 
@@ -53,7 +53,7 @@ test_that("can download 0 byte file", {
 test_that("objects are cached", {
   temp <- withr::local_tempdir()
   req <- request_test("etag/:etag", etag = "abcd") %>% req_cache(temp)
-  
+
   expect_condition(
     resps1 <- req_perform_parallel(list(req)),
     class = "httr2_cache_save"
@@ -113,6 +113,25 @@ test_that("errors can cancel outstanding requests", {
   out <- req_perform_parallel(reqs, on_error = "return")
   expect_s3_class(out[[1]], "httr2_http_404")
   expect_null(out[[2]])
+})
+
+test_that("req_perform_parallel resspects http_error() error override", {
+  reqs <- list2(
+    req_error(request_test("/status/:status", status = 404), is_error = ~FALSE),
+    req_error(request_test("/status/:status", status = 500), is_error = ~FALSE)
+  )
+  resps <- req_perform_parallel(reqs)
+
+  expect_equal(resp_status(resps[[1]]), 404)
+  expect_equal(resp_status(resps[[2]]), 500)
+})
+
+
+test_that("req_perform_parallel respects http_error() body message", {
+  reqs <- list2(
+    req_error(request_test("/status/:status", status = 404), body = ~"hello")
+  )
+  expect_snapshot(req_perform_parallel(reqs), error = TRUE)
 })
 
 test_that("multi_req_perform is deprecated", {
