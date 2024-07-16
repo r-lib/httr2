@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* New function `req_perform_promise()` allows creating a `promises::promise` for a request that runs in the background (#501, @gergness).
+
 # httr2 1.0.2
 
 * `req_body_file()` now only opens a connection when the request actually needs data. In particular, this makes it work better with `req_perform_parallel()` (#487).
