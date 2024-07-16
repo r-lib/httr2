@@ -1,237 +1,81 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://httr2.r-lib.org/404.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/articles/httr2.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/articles/oauth.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/articles/wrapping-apis.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/index.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/curl_translate.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/example_url.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/httr2-package.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/iterate_with_offset.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/jwt_claim.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/last_response.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/multi_req_perform.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_cache_path.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_client.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_client_req_auth.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code_url.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_redirect_uri.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_token.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/oauth_token_cached.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/obfuscate.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/progress_bars.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_auth_basic.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_auth_bearer_token.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_body.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_cache.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_cookie_preserve.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_dry_run.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_error.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_headers.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_method.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_auth_code.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_bearer_jwt.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_client_credentials.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_device.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_password.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_oauth_refresh.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_options.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_perform.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_perform_iterative.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_perform_parallel.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_perform_sequential.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_perform_stream.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_progress.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_proxy.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_retry.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_template.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_throttle.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_timeout.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_url.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_user_agent.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/req_verbose.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/request.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_check_content_type.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_content_type.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_date.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_headers.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_link_url.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_raw.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_retry_after.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_status.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resp_url.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/response.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/resps_successes.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/secrets.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/signal_total_pages.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/throttle_status.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/url_parse.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/with_mocked_responses.html</loc>
-  </url>
-  <url>
-    <loc>https://httr2.r-lib.org/reference/with_verbosity.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://httr2.r-lib.org/404.html</loc></url>
+<url><loc>https://httr2.r-lib.org/LICENSE-text.html</loc></url>
+<url><loc>https://httr2.r-lib.org/LICENSE.html</loc></url>
+<url><loc>https://httr2.r-lib.org/articles/httr2.html</loc></url>
+<url><loc>https://httr2.r-lib.org/articles/index.html</loc></url>
+<url><loc>https://httr2.r-lib.org/articles/oauth.html</loc></url>
+<url><loc>https://httr2.r-lib.org/articles/wrapping-apis.html</loc></url>
+<url><loc>https://httr2.r-lib.org/authors.html</loc></url>
+<url><loc>https://httr2.r-lib.org/index.html</loc></url>
+<url><loc>https://httr2.r-lib.org/news/index.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/curl_translate.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/example_url.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/httr2-package.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/index.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/iterate_with_offset.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/jwt_claim.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/last_response.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/multi_req_perform.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_cache_path.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_client.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_client_req_auth.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code_url.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_redirect_uri.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_token.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_token_cached.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/obfuscate.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/pipe.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/progress_bars.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_auth_basic.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_auth_bearer_token.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_body.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_cache.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_cookie_preserve.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_dry_run.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_error.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_headers.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_method.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth_auth_code.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth_bearer_jwt.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth_client_credentials.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth_device.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth_password.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_oauth_refresh.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_options.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_perform.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_perform_iterative.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_perform_parallel.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_perform_sequential.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_perform_stream.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_progress.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_proxy.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_retry.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_template.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_throttle.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_timeout.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_url.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_user_agent.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_verbose.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/request.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_body_raw.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_check_content_type.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_content_type.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_date.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_headers.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_link_url.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_raw.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_retry_after.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_status.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_url.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/response.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resps_successes.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/secrets.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/signal_total_pages.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/throttle_status.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/url_parse.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/with_mocked_responses.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/with_verbosity.html</loc></url>
 </urlset>
+
