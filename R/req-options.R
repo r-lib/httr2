@@ -98,7 +98,7 @@ req_timeout <- function(req, seconds) {
 #' @param url,port Location of proxy.
 #' @param username,password Login details for proxy, if needed.
 #' @param auth Type of HTTP authentication to use. Should be one of the
-#'   following: `basic`, digest, digest_ie, gssnegotiate, ntlm, any.
+#'   following: `basic`, `digest`, `digest_ie`, `gssnegotiate`, `ntlm`, `any`.
 #' @examples
 #' # Proxy from https://www.proxynova.com/proxy-server-list/
 #' \dontrun{
