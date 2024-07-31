@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `jwt_encode_hmac()` now calls correct underlying function `jose::jwt_encode_hmac()` and has correct default size parameter value' (@denskh, #508).
 * `req_perform_parallel()` now respects error handling in `req_error()`
 * New function `req_perform_promise()` allows creating a `promises::promise` for a request that runs in the background (#501, @gergness).
 

@@ -19,7 +19,7 @@ jwt_claim(
 
 jwt_encode_sig(claim, key, size = 256, header = list())
 
-jwt_encode_hmac(claim, secret, size = size, header = list())
+jwt_encode_hmac(claim, secret, size = 256, header = list())
 }
 \arguments{
 \item{iss}{Issuer claim. Identifies the principal that issued the JWT.}
