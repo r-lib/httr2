@@ -65,7 +65,7 @@ jwt_encode_sig <- function(claim, key, size = 256, header = list()) {
 #' @export
 #' @rdname jwt_claim
 #' @param secret String or raw vector with a secret passphrase.
-jwt_encode_hmac <- function(claim, secret, size = size, header = list()) {
+jwt_encode_hmac <- function(claim, secret, size = 256, header = list()) {
   check_installed("jose")
-  jose::jwt_encode_sig(claim, secret, size = size, header = header)
+  jose::jwt_encode_hmac(claim, secret, size = size, header = header)
 }
