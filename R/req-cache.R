@@ -186,13 +186,12 @@ cache_pre_fetch <- function(req) {
   if (is.null(cached_resp)) {
     return(req)
   }
-
-  info <- resp_cache_info(cached_resp)
   if (debug) cli::cli_text("Found url in cache {.val {hash(req$url)}}")
 
+  info <- resp_cache_info(cached_resp)
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
     signal("", "httr2_cache_cached")
-    if (debug) cli::cli_text("Cached value is fresh; using response in cache")
+    if (debug) cli::cli_text("Cached value is fresh; using response from cache")
     cached_resp
   } else {
     if (debug) cli::cli_text("Cached value is stale; checking for updates")
