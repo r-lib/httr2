@@ -34,7 +34,7 @@ test_that("can override default backoff", {
   expect_equal(retry_backoff(req, 5), 26.9)
   expect_equal(retry_backoff(req, 10), 60)
 
-  req <- req_retry(req, backoff = ~ 10)
+  req <- req_retry(req, backoff = ~10)
   expect_equal(retry_backoff(req, 1), 10)
   expect_equal(retry_backoff(req, 5), 10)
   expect_equal(retry_backoff(req, 10), 10)
@@ -51,7 +51,7 @@ test_that("can override default retry wait", {
 
 test_that("missing retry-after uses backoff", {
   req <- request_test()
-  req <- req_retry(req, backoff = ~ 10)
+  req <- req_retry(req, backoff = ~10)
 
   expect_equal(retry_after(req, response(429), 1), 10)
 })

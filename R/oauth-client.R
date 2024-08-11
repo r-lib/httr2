@@ -240,4 +240,3 @@ oauth_client_get_token <- function(client,
   resp <- oauth_flow_fetch(req, "client$token_url", error_call = error_call)
   exec(oauth_token, !!!resp)
 }
-

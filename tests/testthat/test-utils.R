@@ -13,7 +13,7 @@ test_that("replacement affects all components with name", {
   x <- list(a = 1, a = 2)
   expect_equal(modify_list(x, a = NULL), list())
   expect_equal(modify_list(x, a = 3), list(a = 3))
-  expect_equal(modify_list(x, a = 3, a = 4), list(a = 3, a =4))
+  expect_equal(modify_list(x, a = 3, a = 4), list(a = 3, a = 4))
 })
 
 test_that("respects httr2 verbosity option", {

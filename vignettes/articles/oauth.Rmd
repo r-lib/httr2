@@ -163,7 +163,7 @@ For example, you could get a token to access the GitHub API (using the client de
 
 ```{r, eval = FALSE}
 token <- oauth_flow_auth_code(
-  client = client, 
+  client = client,
   auth_url = "https://github.com/login/oauth/authorize"
 )
 ```
@@ -200,7 +200,7 @@ If we make a request to this endpoint without authentication, we'll get an error
 ```{r}
 #| error: true
 req <- request("https://api.github.com/user")
-req |> 
+req |>
   req_perform()
 ```
 
@@ -208,13 +208,13 @@ We can authenticate this request with `req_oauth_auth_code()`, using the same ar
 
 ```{r}
 #| eval: false
-req |> 
+req |>
   req_oauth_auth_code(
     client = github_client(),
     auth_url = "https://github.com/login/oauth/authorize"
-  ) |> 
-  req_perform() |> 
-  resp_body_json() |> 
+  ) |>
+  req_perform() |>
+  resp_body_json() |>
   str()
 ```
 

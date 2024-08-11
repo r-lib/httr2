@@ -71,10 +71,10 @@ The headers in this request were automatically added by httr2, but you can overr
 ```{r}
 req |>
   req_headers(
-    Name = "Hadley", 
-    `Shoe-Size` = "11", 
+    Name = "Hadley",
+    `Shoe-Size` = "11",
     Accept = "application/json"
-  ) |> 
+  ) |>
   req_dry_run()
 ```
 
@@ -87,7 +87,7 @@ Here we'll use `req_body_json()` to add some data encoded as JSON:
 
 ```{r}
 req |>
-  req_body_json(list(x = 1, y = "a")) |> 
+  req_body_json(list(x = 1, y = "a")) |>
   req_dry_run()
 ```
 
@@ -107,7 +107,7 @@ For example, `req_body_form()` uses the encoding used when you submit a form fro
 
 ```{r}
 req |>
-  req_body_form(x = "1", y = "a") |> 
+  req_body_form(x = "1", y = "a") |>
   req_dry_run()
 ```
 
@@ -115,7 +115,7 @@ And `req_body_multipart()` uses the multipart encoding which is particularly imp
 
 ```{r}
 req |>
-  req_body_multipart(x = "1", y = "a") |> 
+  req_body_multipart(x = "1", y = "a") |>
   req_dry_run()
 ```
 
@@ -175,12 +175,12 @@ Responses with status codes 4xx and 5xx are HTTP errors.
 httr2 automatically turns these into R errors:
 
 ```{r, error = TRUE}
-request(example_url()) |> 
-  req_url_path("/status/404") |> 
+request(example_url()) |>
+  req_url_path("/status/404") |>
   req_perform()
 
-request(example_url()) |> 
-  req_url_path("/status/500") |> 
+request(example_url()) |>
+  req_url_path("/status/500") |>
   req_perform()
 ```
 

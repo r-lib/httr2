@@ -31,7 +31,7 @@ test_that("captures key components of call", {
   )
 
   # Captures flags
-  expect_equal(curl_args("curl 'http://example.com' --verbose")$`--verbose`,  TRUE)
+  expect_equal(curl_args("curl 'http://example.com' --verbose")$`--verbose`, TRUE)
 })
 
 test_that("can handle line breaks", {

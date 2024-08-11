@@ -30,7 +30,7 @@
 #' `options(httr2_progress = FALSE)`.
 #'
 #' @param req A [request].
-#' @param path Optionally, path to save body of the response. This is useful 
+#' @param path Optionally, path to save body of the response. This is useful
 #'   for large responses since it avoids storing the response in memory.
 #' @param mock A mocking function. If supplied, this function is called
 #'   with the request. It should return either `NULL` (if it doesn't want to
@@ -105,7 +105,7 @@ req_perform <- function(
   throttle_delay(req)
 
   delay <- 0
-  while(tries < max_tries && Sys.time() < deadline) {
+  while (tries < max_tries && Sys.time() < deadline) {
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 

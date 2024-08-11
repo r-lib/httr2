@@ -56,7 +56,7 @@
 #'
 #' # use a constant 10s delay after every failure
 #' request("http://example.com") |>
-#'   req_retry(backoff = ~ 10)
+#'   req_retry(backoff = ~10)
 #'
 #' # When rate-limited, GitHub's API returns a 403 with
 #' # `X-RateLimit-Remaining: 0` and an Unix time stored in the

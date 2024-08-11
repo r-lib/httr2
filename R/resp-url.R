@@ -47,4 +47,3 @@ resp_url_queries <- function(resp) {
 
   url_parse(resp$url)$query
 }
-

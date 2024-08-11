@@ -37,4 +37,3 @@ test_that("converts expires_in to numeric", {
   body <- oauth_flow_parse(resp, "test")
   expect_equal(body$expires_in, 20)
 })
-

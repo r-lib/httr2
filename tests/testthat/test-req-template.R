@@ -59,4 +59,3 @@ test_that("can use colon in uri style", {
   x <- "x"
   expect_equal(template_process("/:{x}:/"), "/:x:/")
 })
-
