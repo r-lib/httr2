@@ -13,7 +13,7 @@
       invisible(cache_pre_fetch(req))
     Message
       Found url in cache "f3805db63ff822b4743f247cfdde10a3"
-      Cached value is fresh; retrieving response from cache
+      Cached value is fresh; using response in cache
 
 ---
 

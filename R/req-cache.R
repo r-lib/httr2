@@ -91,29 +91,18 @@ cache_active <- function(req) {
   req_policy_exists(req, "cache_path")
 }
 
-cache_exists <- function(req) {
-  path <- req_cache_path(req)
-  if (!file.exists(path)) {
-    return(FALSE)
+cache_get <- function(req) {
+  if (!cache_active(req)) {
+    return(req)
   }
 
-  tryCatch(
-    {
-      readRDS(path)
-      TRUE
-    },
-    error = function(e) {
-      FALSE
-    }
-  )
-}
-
-# Callers responsibility to check that cache exists
-cache_get <- function(req) {
   path <- req_cache_path(req)
+  if (!file.exists(path)) {
+    return(NULL)
+  }
 
   touch(path)
-  readRDS(path)
+  tryCatch(readRDS(path), error = function(e) NULL)
 }
 
 cache_set <- function(req, resp) {
@@ -184,17 +173,19 @@ cache_pre_fetch <- function(req) {
 
   debug <- cache_debug(req)
   cache_prune_if_needed(req, debug = debug)
-  if (!cache_exists(req)) {
+
+  cached_resp <- cache_get(req)
+  if (is.null(cached_resp)) {
     return(req)
   }
 
-  info <- resp_cache_info(cache_get(req))
+  info <- resp_cache_info(cached_resp)
   if (debug) cli::cli_text("Found url in cache {.val {hash(req$url)}}")
 
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
     signal("", "httr2_cache_cached")
-    if (debug) cli::cli_text("Cached value is fresh; retrieving response from cache")
-    cache_get(req)
+    if (debug) cli::cli_text("Cached value is fresh; using response in cache")
+    cached_resp
   } else {
     if (debug) cli::cli_text("Cached value is stale; checking for updates")
     req_headers(req,
@@ -208,24 +199,26 @@ cache_post_fetch <- function(req, resp, path = NULL) {
   if (!cache_active(req)) {
     return(resp)
   }
+
   debug <- cache_debug(req)
+  cached_resp <- cache_get(req)
 
   if (is_error(resp)) {
-    if (cache_use_on_error(req) && cache_exists(req)) {
+    if (cache_use_on_error(req) && !is.null(cached_resp)) {
       if (debug) cli::cli_text("Request errored; retrieving response from cache")
-      cache_get(req)
+      cached_resp
     } else {
       resp
     }
-  } else if (resp_status(resp) == 304 && cache_exists(req)) {
+  } else if (resp_status(resp) == 304 && !is.null(cached_resp)) {
     signal("", "httr2_cache_not_modified")
     if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
 
     # Replace body with cached result
-    resp$body <- cache_body(req, path)
+    resp$body <- cache_body(cached_resp, path)
 
     # Combine headers
-    resp$headers <- cache_headers(req, resp)
+    resp$headers <- cache_headers(cached_resp, resp)
 
     resp
   } else if (resp_is_cacheable(resp)) {
@@ -238,8 +231,10 @@ cache_post_fetch <- function(req, resp, path = NULL) {
   }
 }
 
-cache_body <- function(req, path = NULL) {
-  body <- cache_get(req)$body
+cache_body <- function(cached_resp, path = NULL) {
+  check_response(cached_resp)
+
+  body <- cached_resp$body
 
   if (is.null(path)) {
     return(body)
@@ -253,10 +248,10 @@ cache_body <- function(req, path = NULL) {
   new_path(path)
 }
 
-cache_headers <- function(req, resp) {
-  # https://www.rfc-editor.org/rfc/rfc7232#section-4.1
-  cached_headers <- cache_get(req)$headers
-  as_headers(modify_list(cached_headers, !!!resp$headers))
+# https://www.rfc-editor.org/rfc/rfc7232#section-4.1
+cache_headers <- function(cached_resp, resp) {
+  check_response(cached_resp)
+  as_headers(modify_list(cached_resp$headers, !!!resp$headers))
 }
 
 # Caching headers ---------------------------------------------------------
