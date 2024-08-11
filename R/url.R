@@ -190,11 +190,11 @@ format_query_param <- function(x,
     unclass(x)
   } else {
     x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
-    curl::curl_escape(x)  
+    curl::curl_escape(x)
   }
 }
 check_query_param <- function(x, name, multi = FALSE, error_call = caller_env()) {
-  if (inherits(x, "AsIs") ) {
+  if (inherits(x, "AsIs")) {
     if (multi) {
       ok <- is.character(x)
       expected <- "a character vector"

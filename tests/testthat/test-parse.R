@@ -26,8 +26,8 @@ test_that("can parse media type", {
 test_that("can parse authenticate header", {
   header <- paste0(
     'Bearer realm="example",',
-    'error="invalid_token",','
-    error_description="The access token expired"'
+    'error="invalid_token",',
+    'error_description="The access token expired"'
   )
   out <- parse_www_authenticate(header)
   expect_equal(out$scheme, "Bearer")

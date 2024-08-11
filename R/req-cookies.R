@@ -35,4 +35,3 @@ req_cookie_preserve <- function(req, path) {
     cookiefile = path
   )
 }
-

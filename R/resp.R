@@ -102,7 +102,7 @@ new_response <- function(method,
 
 
 #' @export
-print.httr2_response <- function(x,...) {
+print.httr2_response <- function(x, ...) {
   cli::cli_text("{.cls {class(x)}}")
   cli::cli_text("{.strong {x$method}} {x$url}")
   cli::cli_text("{.field Status}: {x$status_code} {resp_status_desc(x)}")

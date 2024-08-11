@@ -56,7 +56,7 @@ test_that("persistent HTTP errors only get single attempt", {
 
 test_that("repeated transient errors still fail", {
   req <- request_test("/status/:status", status = 429) %>%
-    req_retry(max_tries = 3, backoff = ~ 0)
+    req_retry(max_tries = 3, backoff = ~0)
 
   cnd <- req_perform(req) %>%
     expect_error(class = "httr2_http_429") %>%

@@ -91,7 +91,7 @@ cache_exists <- function(req) {
   if (!req_policy_exists(req, "cache_path")) {
     return(FALSE)
   }
-  
+
   path <- req_cache_path(req)
   if (!file.exists(path)) {
     return(FALSE)

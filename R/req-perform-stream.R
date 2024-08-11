@@ -1,12 +1,11 @@
-
 #' Perform a request and handle data as it streams back
-#' 
+#'
 #' @description
 #' After preparing a request, call `req_perform_stream()` to perform the request
 #' and handle the result with a streaming callback. This is useful for
 #' streaming HTTP APIs where potentially the stream never ends.
-#' 
-#' The `callback` will only be called if the result is successful. If you need 
+#'
+#' The `callback` will only be called if the result is successful. If you need
 #' to stream an error response, you can use [req_error()] to suppress error
 #' handling so that the body is streamed to you.
 #'
@@ -73,10 +72,10 @@ req_perform_stream <- function(req,
   continue <- TRUE
   incomplete <- TRUE
   buf <- raw()
-  
-  while(continue && isIncomplete(stream) && Sys.time() < stop_time) {
+
+  while (continue && isIncomplete(stream) && Sys.time() < stop_time) {
     buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
-   
+
     if (length(buf) > 0) {
       cut <- cut_points(buf)
       n <- length(cut)
