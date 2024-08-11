@@ -87,11 +87,11 @@ cache_debug <- function(req) {
 
 # Cache management --------------------------------------------------------
 
+cache_active <- function(req) {
+  req_policy_exists(req, "cache_path")
+}
+
 cache_exists <- function(req) {
-  if (!req_policy_exists(req, "cache_path")) {
-    return(FALSE)
-  }
-  
   path <- req_cache_path(req)
   if (!file.exists(path)) {
     return(FALSE)
@@ -178,12 +178,15 @@ cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
 
 # Can return request or response
 cache_pre_fetch <- function(req) {
-  if (!cache_exists(req)) {
+  if (!cache_active(req)) {
     return(req)
   }
 
   debug <- cache_debug(req)
   cache_prune_if_needed(req, debug = debug)
+  if (!cache_exists(req)) {
+    return(req)
+  }
 
   info <- resp_cache_info(cache_get(req))
   if (debug) cli::cli_text("Found url in cache {.val {hash(req$url)}}")
@@ -202,7 +205,7 @@ cache_pre_fetch <- function(req) {
 }
 
 cache_post_fetch <- function(req, resp, path = NULL) {
-  if (!req_policy_exists(req, "cache_path")) {
+  if (!cache_active(req)) {
     return(resp)
   }
   debug <- cache_debug(req)

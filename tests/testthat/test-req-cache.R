@@ -1,7 +1,5 @@
 test_that("nothing happens if cache not enabled", {
   req <- request("http://example.com")
-
-  expect_false(cache_exists(req))
   expect_equal(cache_pre_fetch(req), req)
 
   resp <- response()
