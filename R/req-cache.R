@@ -91,9 +91,7 @@ cache_active <- function(req) {
   req_policy_exists(req, "cache_path")
 }
 
-cache_get <- function(
-    req
-) {
+cache_get <- function(req) {
   # This check should be redudant but we keep it in for safety
   if (!cache_active(req)) {
     return(req)
