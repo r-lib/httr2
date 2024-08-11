@@ -91,7 +91,10 @@ cache_active <- function(req) {
   req_policy_exists(req, "cache_path")
 }
 
-cache_get <- function(req) {
+cache_get <- function(
+    req
+) {
+  # This check should be redudant but we keep it in for safety
   if (!cache_active(req)) {
     return(req)
   }
@@ -101,8 +104,15 @@ cache_get <- function(req) {
     return(NULL)
   }
 
-  touch(path)
-  tryCatch(readRDS(path), error = function(e) NULL)
+  tryCatch(
+    {
+      rds <- readRDS(path)
+      # Update file time if read successfully
+      Sys.setFileTime(path, Sys.time())
+      rds
+    },
+    error = function(e) NULL
+  )
 }
 
 cache_set <- function(req, resp) {
@@ -195,6 +205,7 @@ cache_pre_fetch <- function(req) {
   }
 }
 
+# Always returns response
 cache_post_fetch <- function(req, resp, path = NULL) {
   if (!cache_active(req)) {
     return(resp)
@@ -216,10 +227,8 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
     # Replace body with cached result
     resp$body <- cache_body(cached_resp, path)
-
     # Combine headers
     resp$headers <- cache_headers(cached_resp, resp)
-
     resp
   } else if (resp_is_cacheable(resp)) {
     signal("", "httr2_cache_save")
