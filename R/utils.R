@@ -67,7 +67,7 @@ sys_sleep <- function(seconds,
     total = seconds * fps
   )
 
-  while({left <- start + seconds - cur_time(); left > 0}) {
+  while ({left <- start + seconds - cur_time(); left > 0}) {
     Sys.sleep(min(1 / fps, left))
     cli::cli_progress_update(set = (seconds - left) * fps)
   }

@@ -36,15 +36,15 @@ library(httr2)
 ```{r, include = FALSE}
 # Seems to return 500s from time-to-time, so avoid any problems
 # by only evaluating other chunks if a simple request succeeds.
-faker_status_images <- request("https://fakerapi.it/api/v1") |> 
-  req_url_path_append("images") |> 
-  req_error(is_error = ~ FALSE) |> 
-  req_perform() |> 
+faker_status_images <- request("https://fakerapi.it/api/v1") |>
+  req_url_path_append("images") |>
+  req_error(is_error = ~FALSE) |>
+  req_perform() |>
   resp_status()
-faker_status_persons <- request("https://fakerapi.it/api/v1") |> 
-  req_url_path_append("persons") |> 
-  req_error(is_error = ~ FALSE) |> 
-  req_perform() |> 
+faker_status_persons <- request("https://fakerapi.it/api/v1") |>
+  req_url_path_append("persons") |>
+  req_error(is_error = ~FALSE) |>
+  req_perform() |>
   resp_status()
 
 faker_ok <- faker_status_images < 400 && faker_status_persons < 400
@@ -56,11 +56,11 @@ Before we start writing the sort of functions that you might put in a package, w
 ```{r, eval = faker_ok}
 # We start by creating a request that uses the base API url
 req <- request("https://fakerapi.it/api/v1")
-resp <- req |> 
+resp <- req |>
   # Then we add on the images path
-  req_url_path_append("images") |> 
+  req_url_path_append("images") |>
   # Add query parameters _width and _quantity
-  req_url_query(`_width` = 380, `_quantity` = 1) |> 
+  req_url_query(`_width` = 380, `_quantity` = 1) |>
   req_perform()
 
 # The result comes back as JSON
@@ -73,8 +73,8 @@ It's always worth a little early experimentation to see if we get any useful inf
 The httr2 defaults get in your way here, because if you retrieve an unsuccessful HTTP response, you automatically get an error that prevents you from further inspecting the body:
 
 ```{r, error = TRUE, eval = faker_ok}
-req |> 
-  req_url_path_append("invalid") |> 
+req |>
+  req_url_path_append("invalid") |>
   req_perform()
 ```
 
@@ -102,7 +102,7 @@ You can do this with the `req_user_agent()` function:
 
 ```{r, eval = faker_ok}
 req |>
-  req_user_agent("my_package_name (http://my.package.web.site)") |> 
+  req_user_agent("my_package_name (http://my.package.web.site)") |>
   req_dry_run()
 ```
 
@@ -130,12 +130,12 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
     seed = seed
   )
   names(params) <- paste0("_", names(params))
-  
-  request("https://fakerapi.it/api/v1") |> 
-    req_url_path_append(resource) |> 
-    req_url_query(!!!params) |> 
-    req_user_agent("my_package_name (http://my.package.web.site)") |> 
-    req_perform() |> 
+
+  request("https://fakerapi.it/api/v1") |>
+    req_url_path_append(resource) |>
+    req_url_query(!!!params) |>
+    req_user_agent("my_package_name (http://my.package.web.site)") |>
+    req_perform() |>
     resp_body_json()
 }
 
@@ -176,7 +176,7 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
     quantity = quantity,
     locale = locale,
     seed = seed
-  )  
+  )
 }
 str(faker_person("male"))
 ```
@@ -203,7 +203,7 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
     }
     birthday_end <- format(birthday_end, "%Y-%m-%d")
   }
-  
+
   json <- faker(
     "persons",
     gender = gender,
@@ -212,8 +212,8 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
     quantity = quantity,
     locale = locale,
     seed = seed
-  )  
-  
+  )
+
   tibble::tibble(
     firstname = map_chr(json$data, "firstname"),
     lastname = map_chr(json$data, "lastname"),
@@ -270,7 +270,7 @@ In this section, I'll show you how to store that key so that you (and your autom
 httr2 is built around the notion that this key should live in an environment variable.
 So the first step is to make your package key available on your local development machine by adding a line to your your user-level `.Renviron` (which you can easily open with `usethis::edit_r_environ()`):
 
-```         
+```
 YOURPACKAGE_KEY=key_you_generated_with_secret_make_key
 ```
 
@@ -317,7 +317,7 @@ So if you want to share your package on CRAN or make it easy for others to contr
 ## NYTimes Books API
 
 ```{r include = FALSE}
-has_auth <- secret_has_key("HTTR2_KEY") && 
+has_auth <- secret_has_key("HTTR2_KEY") &&
   # Don't run in R CMD check on GHA because it hits NYTimes rate limits
   !identical(Sys.getenv("GITHUB_WORKFLOW"), "R-CMD-check")
 knitr::opts_chunk$set(eval = has_auth)
@@ -353,9 +353,9 @@ And indeed, you'll see that in the examples below --- this is bad practice for a
 Now let's perform a test request and look at the response:
 
 ```{r}
-resp <- request("https://api.nytimes.com/svc/books/v3") |> 
-  req_url_path_append("/reviews.json") |> 
-  req_url_query(`api-key` = my_key, isbn = 9780307476463) |> 
+resp <- request("https://api.nytimes.com/svc/books/v3") |>
+  req_url_path_append("/reviews.json") |>
+  req_url_query(`api-key` = my_key, isbn = 9780307476463) |>
   req_perform()
 resp
 ```
@@ -363,8 +363,8 @@ resp
 Like most modern APIs, this one returns the results as JSON:
 
 ```{r}
-resp |> 
-  resp_body_json() |> 
+resp |>
+  resp_body_json() |>
   str()
 ```
 
@@ -376,9 +376,9 @@ What happens if there's an error?
 For example, if we deliberately supply an invalid key:
 
 ```{r, error = TRUE}
-resp <- request("https://api.nytimes.com/svc/books/v3") |> 
-  req_url_path_append("/reviews.json") |> 
-  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |> 
+resp <- request("https://api.nytimes.com/svc/books/v3") |>
+  req_url_path_append("/reviews.json") |>
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
   req_perform()
 ```
 
@@ -405,10 +405,10 @@ nytimes_error_body <- function(resp) {
   resp |> resp_body_json() |> _$fault |> _$faultstring
 }
 
-resp <- request("https://api.nytimes.com/svc/books/v3") |> 
-  req_url_path_append("/reviews.json") |> 
-  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |> 
-  req_error(body = nytimes_error_body) |> 
+resp <- request("https://api.nytimes.com/svc/books/v3") |>
+  req_url_path_append("/reviews.json") |>
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
+  req_error(body = nytimes_error_body) |>
   req_perform()
 ```
 
@@ -427,9 +427,9 @@ That means we can't use `req_retry()`, which automatically waits the amount of t
 Instead, we'll use `req_throttle()` to ensure we don't make more than 10 requests every 60 seconds:
 
 ```{r}
-req <- request("https://api.nytimes.com/svc/books/v3") |> 
-  req_url_path_append("/reviews.json") |> 
-  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |> 
+req <- request("https://api.nytimes.com/svc/books/v3") |>
+  req_url_path_append("/reviews.json") |>
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
   req_throttle(10 / 60)
 ```
 
@@ -437,9 +437,9 @@ By default, `req_throttle()` shares the limit across all requests made to the ho
 Since the docs suggest the rate limit applies per API, you might want to use the `realm` argument to be a bit more specific:
 
 ```{r}
-req <- request("https://api.nytimes.com/svc/books/v3") |> 
-  req_url_path_append("/reviews.json") |> 
-  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |> 
+req <- request("https://api.nytimes.com/svc/books/v3") |>
+  req_url_path_append("/reviews.json") |>
+  req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
   req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books")
 ```
 
@@ -449,12 +449,12 @@ Putting together all the pieces above yields a function something like this:
 
 ```{r}
 nytimes_books <- function(api_key, path, ...) {
-  request("https://api.nytimes.com/svc/books/v3") |> 
-    req_url_path_append(path) |> 
-    req_url_query(..., `api-key` = api_key) |> 
-    req_error(body = nytimes_error_body) |> 
-    req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") |> 
-    req_perform() |> 
+  request("https://api.nytimes.com/svc/books/v3") |>
+    req_url_path_append(path) |>
+    req_url_query(..., `api-key` = api_key) |>
+    req_error(body = nytimes_error_body) |>
+    req_throttle(10 / 60, realm = "https://api.nytimes.com/svc/books") |>
+    req_perform() |>
     resp_body_json()
 }
 
@@ -517,11 +517,11 @@ get_api_key <- function() {
   if (!identical(key, "")) {
     return(key)
   }
-  
+
   if (is_testing()) {
     return(testing_key())
   } else {
-    stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var") 
+    stop("No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var")
   }
 }
 
@@ -559,7 +559,7 @@ It's also a good idea to give every token a descriptive name, that reminds you o
 To authenticate a request with the token, we need to put it in the `Authorization` header with a ["token" prefix](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication):
 
 ```{r}
-req <- request("https://api.github.com/gists") |> 
+req <- request("https://api.github.com/gists") |>
   req_headers(Authorization = paste("token", token))
 
 req |> req_perform()
@@ -585,9 +585,9 @@ You'll typically need to tackle your error handling iteratively, improving your 
 While GitHub does [document its errors](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#client-errors), I'm sufficiently distrustful that I still want to construct a deliberately malformed query and see what happens:
 
 ```{r, error = TRUE}
-resp <- request("https://api.github.com/gists") |> 
-  req_url_query(since = "abcdef") |> 
-  req_headers(Authorization = paste("token", token)) |> 
+resp <- request("https://api.github.com/gists") |>
+  req_url_query(since = "abcdef") |>
+  req_headers(Authorization = paste("token", token)) |>
   req_perform()
 ```
 
@@ -605,7 +605,7 @@ I'll proceed anyway, writing a function that extracts the data and formats it fo
 ```{r}
 gist_error_body <- function(resp) {
   body <- resp_body_json(resp)
-  
+
   message <- body$message
   if (!is.null(body$documentation_url)) {
     message <- c(message, paste0("See docs at <", body$documentation_url, ">"))
@@ -618,10 +618,10 @@ gist_error_body(resp)
 Now I can pass this function to the `body` argument of `req_error()` and it will be automatically included in the error when a request fails:
 
 ```{r, error = TRUE}
-request("https://api.github.com/gists") |> 
-  req_url_query(since = "yesterday") |> 
-  req_headers(Authorization = paste("token", token)) |> 
-  req_error(body = gist_error_body) |> 
+request("https://api.github.com/gists") |>
+  req_url_query(since = "yesterday") |>
+  req_headers(Authorization = paste("token", token)) |>
+  req_error(body = gist_error_body) |>
   req_perform()
 ```
 
@@ -633,7 +633,7 @@ While we're thinking about errors, it's useful to look at what happens if the re
 Luckily, GitHub consistently uses response headers to provide information about the remaining [rate limits](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting).
 
 ```{r}
-resp <- req |> req_perform() 
+resp <- req |> req_perform()
 resp |> resp_headers("ratelimit")
 ```
 
@@ -644,7 +644,7 @@ For GitHub, when the rate limit is [exceeded](https://docs.github.com/en/rest/ov
 
 ```{r}
 gist_is_transient <- function(resp) {
-  resp_status(resp) == 403 && 
+  resp_status(resp) == 403 &&
     resp_header(resp, "X-RateLimit-Remaining") == "0"
 }
 gist_is_transient(resp)
@@ -681,9 +681,9 @@ Let's wrap up everything we've learned so far into a single function that create
 
 ```{r}
 req_gist <- function(token) {
-  request("https://api.github.com/gists") |> 
-    req_headers(Authorization = paste("token", token)) |> 
-    req_error(body = gist_error_body) |> 
+  request("https://api.github.com/gists") |>
+    req_headers(Authorization = paste("token", token)) |>
+    req_error(body = gist_error_body) |>
     req_retry(
       is_transient = gist_is_transient,
       after = gist_after
@@ -691,7 +691,7 @@ req_gist <- function(token) {
 }
 
 # Check it works:
-req_gist(token) |> 
+req_gist(token) |>
   req_perform()
 ```
 
@@ -703,7 +703,7 @@ To [create a gist](https://docs.github.com/en/rest/reference/gists#create-a-gist
 httr2 provides one function that does both of these things: `req_body_json()`:
 
 ```{r}
-req <- req_gist(token) |> 
+req <- req_gist(token) |>
   req_body_json(list(
     description = "This is my cool gist!",
     files = list(test.R = list(content = "print('Hi!')")),
@@ -732,9 +732,9 @@ To do so, I need to again send JSON encoded data, but this time I need to use th
 So after adding the data to request, I use `req_method()` to override the default method:
 
 ```{r}
-req <- req_gist(token) |> 
-  req_url_path_append(id) |> 
-  req_body_json(list(description = "This is a simple gist")) |> 
+req <- req_gist(token) |>
+  req_url_path_append(id) |>
+  req_body_json(list(description = "This is a simple gist")) |>
   req_method("PATCH")
 req |> req_dry_run()
 ```
@@ -744,8 +744,8 @@ req |> req_dry_run()
 Deleting a gist is similar, except we don't send any data, we just need to adjust the default method from `GET` to `DELETE`.
 
 ```{r}
-req <- req_gist(token) |> 
-  req_url_path_append(id) |> 
+req <- req_gist(token) |>
+  req_url_path_append(id) |>
   req_method("DELETE")
 req |> req_dry_run()
 req |> req_perform()

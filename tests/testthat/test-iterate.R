@@ -80,7 +80,7 @@ test_that("can choose to return on failure", {
 
 test_that("checks its inputs", {
   req <- request_test()
-  expect_snapshot(error = TRUE,{
+  expect_snapshot(error = TRUE, {
     req_perform_iterative(1)
     req_perform_iterative(req, function(x, y) x + y)
     req_perform_iterative(req, function(resp, req) {}, path = 1)

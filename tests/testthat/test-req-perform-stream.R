@@ -16,7 +16,7 @@ test_that("returns empty body; sets last request & response", {
 })
 
 test_that("HTTP errors become R errors", {
-  req <- request_test("/status/404") 
+  req <- request_test("/status/404")
   expect_error(
     req_perform_stream(req, function(x) TRUE),
     class = "httr2_http_404"
@@ -29,8 +29,8 @@ test_that("HTTP errors become R errors", {
 
 test_that("can override error handling", {
   req <- request_test("/base64/:value", value = "YWJj") %>%
-    req_error(is_error = function(resp) TRUE) 
-  
+    req_error(is_error = function(resp) TRUE)
+
   expect_error(
     req %>% req_perform_stream(function(x) NULL),
     class = "httr2_http_200"
@@ -94,7 +94,7 @@ test_that("eventually terminates even if never rounded", {
 test_that("req_perform_stream checks its inputs", {
   req <- request_test("/stream-bytes/1024")
   callback <- function(x) NULL
-  
+
   expect_snapshot(error = TRUE, {
     req_perform_stream(1)
     req_perform_stream(req, 1)
