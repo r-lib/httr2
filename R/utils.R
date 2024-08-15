@@ -111,6 +111,43 @@ base64_url_rand <- function(bytes = 32) {
   base64_url_encode(openssl::rand_bytes(bytes))
 }
 
+base64_img_encode <- function(input) {
+  # Check if the input is a file path and exists
+  is_file <- file.exists(input)
+
+  if (!is_file && !grepl("<svg", input, ignore.case = TRUE)) {
+    cli::cli_abort("Input is neither an existing file nor valid SVG code.")
+  }
+
+  if (is_file) {
+    ext <- tolower(tools::file_ext(input))
+
+    if (!ext %in% c("gif", "jpg", "jpeg", "png", "svg")) {
+      cli::cli_abort("File extension not gif, jpg, jpeg, png or svg.")
+    }
+
+    format <- switch(
+      ext,
+      gif = "image/gif",
+      jpg = "image/jpeg",
+      jpeg = "image/jpeg",
+      png = "image/png",
+      svg = "image/svg+xml"
+    )
+
+    bin <- readBin(input, raw(0), 1048576L)
+  } else {
+    # If the input is SVG code, handle it directly
+    format <- "image/svg+xml"
+    bin <- charToRaw(input)
+  }
+
+  src <- paste0("data:", format, ";base64,", openssl::base64_encode(bin))
+  src
+}
+
+
+
 #' Temporarily set verbosity for all requests
 #'
 #' `with_verbosity()` is useful for debugging httr2 code buried deep inside
