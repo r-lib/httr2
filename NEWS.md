@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_cache()` now prunes cache _before_ checking if a given key exists, eliminating the occassional error about reading from an invalid RDS file. It also no longer tests for existence then later reads the cache, avoiding potential race conditions.
 * `jwt_encode_hmac()` now calls correct underlying function `jose::jwt_encode_hmac()` and has correct default size parameter value' (@denskh, #508).
 * `req_perform_parallel()` now respects error handling in `req_error()`
 * New function `req_perform_promise()` allows creating a `promises::promise` for a request that runs in the background (#501, @gergness).
