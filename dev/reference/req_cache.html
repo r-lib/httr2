@@ -141,13 +141,13 @@ most this many bytes.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># First request downloads the data</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Pruning cache</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Saving response to cache <span style="color: #0000BB;">"d5d1ddd7f99f55dbc920c63f942804c0"</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Second request retrieves it from the cache</span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Pruning cache</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found url in cache <span style="color: #0000BB;">"d5d1ddd7f99f55dbc920c63f942804c0"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Cached value is fresh; retrieving response from cache</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cached value is fresh; using response from cache</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
