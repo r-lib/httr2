@@ -8,12 +8,13 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-has_pipe <- getRversion() >= "4.1.0"
+# needs pipe & avoids error = TRUE problem in 4.3.0
+run_code <- getRversion() >= "4.4.0"
 
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = has_pipe
+  eval = run_code
 )
 ```
 
@@ -51,7 +52,7 @@ req |> req_dry_run()
 ```{r}
 #| include: FALSE
 #| eval: true
-port <- if (has_pipe) paste0("`", url_parse(example_url())$port, "`") else "e.g. `1234`"
+port <- if (run_code) paste0("`", url_parse(example_url())$port, "`") else "e.g. `1234`"
 ```
 
 The first line of the request contains three important pieces of information:
