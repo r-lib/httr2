@@ -84,7 +84,7 @@ resp |> resp_body_html()
 -   You can now create and modify a request without performing it.
     This means that there's now a single function to perform the request and fetch the result: `req_perform()`.
     `req_perform()` replaces `httr::GET()`, `httr::POST()`, `httr::DELETE()`, and more.
-  
+
 -   HTTP errors are automatically converted into R errors.
     Use `req_error()` to override the defaults (which turn all 4xx and 5xx responses into errors) or to add additional details to the error message.
 
@@ -102,4 +102,4 @@ resp |> resp_body_html()
 ## Acknowledgements
 
 httr2 wouldn't be possible without [curl](https://jeroen.cran.dev/curl/), [openssl](https://github.com/jeroen/openssl/), [jsonlite](https://jeroen.cran.dev/jsonlite/), and [jose](https://github.com/r-lib/jose/), which are all maintained by [Jeroen Ooms](https://github.com/jeroen).
-A big thanks also go to [Jenny Bryan](https://jennybryan.org) and [Craig Citro](https://research.google/people/CraigCitro/) who have given me much useful feedback on both the design of the internals and the user facing API.
+A big thanks also go to [Jenny Bryan](https://jennybryan.org) and [Craig Citro](https://www.craigcitro.org) who have given me much useful feedback on both the design of the internals and the user facing API.

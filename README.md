@@ -76,7 +76,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/1.0.1.9000 r-curl/5.2.1 libcurl/8.6.0
+#> User-Agent: httr2/1.0.2.9000 r-curl/5.2.1 libcurl/8.6.0
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
@@ -147,6 +147,5 @@ httr2 wouldn’t be possible without
 [jose](https://github.com/r-lib/jose/), which are all maintained by
 [Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
 Bryan](https://jennybryan.org) and [Craig
-Citro](https://research.google/people/CraigCitro/) who have given me
-much useful feedback on both the design of the internals and the user
-facing API.
+Citro](https://www.craigcitro.org) who have given me much useful
+feedback on both the design of the internals and the user facing API.
