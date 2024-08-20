@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.0.3
 
 * `jwt_encode_hmac()` now calls correct underlying function
   `jose::jwt_encode_hmac()` and has correct default size parameter value
