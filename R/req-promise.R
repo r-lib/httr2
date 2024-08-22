@@ -28,7 +28,8 @@
 #' successful or rejects on the same errors thrown by [req_perform()].
 #' @export
 #'
-#' @examplesIf requireNamespace("promises", quietly = TRUE)
+#' @examples
+#' \dontrun{
 #' library(promises)
 #' request_base <- request(example_url()) |> req_url_path_append("delay")
 #'
@@ -44,7 +45,7 @@
 #'
 #'
 #' # Can run two requests at the same time
-#' p1 <- request_base |> req_url_path_append(4) |> req_perform_promise()
+#' p1 <- request_base |> req_url_path_append(2) |> req_perform_promise()
 #' p2 <- request_base |> req_url_path_append(1) |> req_perform_promise()
 #'
 #' p1 %...>%
@@ -59,6 +60,7 @@
 #'
 #' # See the [promises package documentation](https://rstudio.github.io/promises/)
 #' # for more information on working with promises
+#' }
 req_perform_promise <- function(req,
                                 path = NULL,
                                 pool = NULL) {
