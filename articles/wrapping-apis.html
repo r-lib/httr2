@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,11 +110,11 @@ basics work:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We start by creating a request that uses the base API url</span></span>
 <span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span></span>
-<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Then we add on the images path</span></span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"images"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Add query parameters _width and _quantity</span></span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_width` <span class="op">=</span> <span class="fl">380</span>, `_quantity` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`_width` <span class="op">=</span> <span class="fl">380</span>, `_quantity` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The result comes back as JSON</span></span>
@@ -125,8 +125,8 @@ basics work:</p>
 <span><span class="co">#&gt;  $ total : int 1</span></span>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Corrupti est rerum sunt."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Alias nihil recusandae id architecto aut aut dolorem. Porro consequatur culpa molestias omnis pariatur libero e"| __truncated__</span></span>
+<span><span class="co">#&gt;   .. ..$ title      : chr "Tempora nihil aut nihil qui."</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Ipsam rerum et quidem illum. Rem molestias optio recusandae aut aut."</span></span>
 <span><span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/380/480/any"</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a>
@@ -136,8 +136,8 @@ useful information from errors. The httr2 defaults get in your way here,
 because if you retrieve an unsuccessful HTTP response, you automatically
 get an error that prevents you from further inspecting the body:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 404 Not Found.</span></span></code></pre></div>
@@ -166,7 +166,7 @@ info is returned in the headers, so let’s check:</p>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Vary</span>: Accept-Encoding</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">X-Powered-By</span>: PHP/7.3.33</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Cache-Control</span>: no-cache, private</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 16 Jul 2024 12:24:54 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Thu, 22 Aug 2024 13:10:12 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Origin</span>: *</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Methods</span>: GET</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Credentials</span>: true</span></span>
@@ -187,7 +187,7 @@ who to reach out to. You can do this with the
 <code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET /api/v1 HTTP/1.1</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: fakerapi.it</span></span>
@@ -223,12 +223,12 @@ to the resource with query parameters. All parameters start with
 <span>    seed <span class="op">=</span> <span class="va">seed</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span></span>
+<span>  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://fakerapi.it/api/v1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">resource</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">params</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -239,8 +239,8 @@ to the resource with query parameters. All parameters start with
 <span><span class="co">#&gt;  $ total : int 1</span></span>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Ea eum iste et sit et sed."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Magnam ea sed non ad eos aut repellendus. Magni nihil aut a harum. Vero eius molestiae distinctio pariatur cumq"| __truncated__</span></span>
+<span><span class="co">#&gt;   .. ..$ title      : chr "Voluptas at in et."</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Deleniti aut quas consectetur est repellat repellat. Natus molestias ipsa asperiores temporibus nihil labore sunt."</span></span>
 <span><span class="co">#&gt;   .. ..$ url        : chr "http://placeimg.com/300/480/any"</span></span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
@@ -290,7 +290,7 @@ wrapper would start something like this:</p>
 <span>    quantity <span class="op">=</span> <span class="va">quantity</span>,</span>
 <span>    locale <span class="op">=</span> <span class="va">locale</span>,</span>
 <span>    seed <span class="op">=</span> <span class="va">seed</span></span>
-<span>  <span class="op">)</span>  </span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 4</span></span>
@@ -300,24 +300,24 @@ wrapper would start something like this:</p>
 <span><span class="co">#&gt;  $ data  :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ :List of 10</span></span>
 <span><span class="co">#&gt;   .. ..$ id       : int 1</span></span>
-<span><span class="co">#&gt;   .. ..$ firstname: chr "Lance"</span></span>
-<span><span class="co">#&gt;   .. ..$ lastname : chr "Jacobi"</span></span>
-<span><span class="co">#&gt;   .. ..$ email    : chr "frederique.effertz@hotmail.com"</span></span>
-<span><span class="co">#&gt;   .. ..$ phone    : chr "+2003253547818"</span></span>
-<span><span class="co">#&gt;   .. ..$ birthday : chr "2024-03-24"</span></span>
+<span><span class="co">#&gt;   .. ..$ firstname: chr "Agustin"</span></span>
+<span><span class="co">#&gt;   .. ..$ lastname : chr "Rempel"</span></span>
+<span><span class="co">#&gt;   .. ..$ email    : chr "wuckert.dorris@bradtke.com"</span></span>
+<span><span class="co">#&gt;   .. ..$ phone    : chr "+9034409476195"</span></span>
+<span><span class="co">#&gt;   .. ..$ birthday : chr "1953-03-02"</span></span>
 <span><span class="co">#&gt;   .. ..$ gender   : chr "male"</span></span>
 <span><span class="co">#&gt;   .. ..$ address  :List of 10</span></span>
 <span><span class="co">#&gt;   .. .. ..$ id            : int 0</span></span>
-<span><span class="co">#&gt;   .. .. ..$ street        : chr "4646 Grant Overpass Suite 386"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Hodkiewicz Vista"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "94640"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ city          : chr "Grantton"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "46773"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ country       : chr "Tonga"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ county_code   : chr "TZ"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ latitude      : num 3.45</span></span>
-<span><span class="co">#&gt;   .. .. ..$ longitude     : num -180</span></span>
-<span><span class="co">#&gt;   .. ..$ website  : chr "http://cartwright.com"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ street        : chr "956 Wiza Station Apt. 387"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Dedric Causeway"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "752"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ city          : chr "North Antoninaville"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "48349"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ country       : chr "Australia"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ county_code   : chr "AZ"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ latitude      : num -11.2</span></span>
+<span><span class="co">#&gt;   .. .. ..$ longitude     : num -155</span></span>
+<span><span class="co">#&gt;   .. ..$ website  : chr "http://hodkiewicz.org"</span></span>
 <span><span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and
 returning the result as a tibble. I did a quick and dirty conversion
@@ -342,7 +342,7 @@ using purrr; depending on your needs you could use base R code or
 <span>    <span class="op">}</span></span>
 <span>    <span class="va">birthday_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">birthday_end</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">json</span> <span class="op">&lt;-</span> <span class="fu">faker</span><span class="op">(</span></span>
 <span>    <span class="st">"persons"</span>,</span>
 <span>    gender <span class="op">=</span> <span class="va">gender</span>,</span>
@@ -351,8 +351,8 @@ using purrr; depending on your needs you could use base R code or
 <span>    quantity <span class="op">=</span> <span class="va">quantity</span>,</span>
 <span>    locale <span class="op">=</span> <span class="va">locale</span>,</span>
 <span>    seed <span class="op">=</span> <span class="va">seed</span></span>
-<span>  <span class="op">)</span>  </span>
-<span>  </span>
+<span>  <span class="op">)</span></span>
+<span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    firstname <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"firstname"</span><span class="op">)</span>,</span>
 <span>    lastname <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"lastname"</span><span class="op">)</span>,</span>
@@ -362,13 +362,13 @@ using purrr; depending on your needs you could use base R code or
 <span><span class="op">}</span></span>
 <span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span></span>
-<span><span class="co">#&gt;   firstname lastname     email                          gender</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Leopoldo  Treutel      bartoletti.maxime@jacobs.biz   male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Allan     Christiansen runolfsdottir.oren@hotmail.com male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Jamar     Waters       ramiro.streich@becker.org      male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Bradford  Lockman      qhyatt@yahoo.com               male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Kenneth   Swift        karlee46@gmail.com             male</span></span></code></pre></div>
+<span><span class="co">#&gt;   firstname lastname  email                           gender</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Modesto   Daugherty tullrich@reinger.com            male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Paolo     Lueilwitz luciano.wisoky@rippin.com       male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Leon      Reinger   kathleen.champlin@marquardt.org male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Tito      Zemlak    rachael.ritchie@gmail.com       male  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Kamryn    Willms    melvina.treutel@sipes.com       male</span></span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll
 leave that up to you.</p>
 </div>
@@ -405,7 +405,7 @@ secrets using symmetric cryptography:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">key</span></span>
-<span><span class="co">#&gt; [1] "YVi_-snkZkIxntfDvAeRJA"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "lIhwa3U-bjNSucVOiVDCyQ"</span></span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically
 secure random number generator provided by OpenSSL; it is not affected
 by R’s RNG settings, and there’s no way to make it
@@ -418,7 +418,7 @@ package:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "IthZVndE2ePJVSovZiyVlsuEEFG88AF8sRtE74U4cAVetqBpkg9CMfu-b0cqqKTFsg"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "7-ZfTda-8_twDFS-djGQWuyQmguEpUqFYejFXC6KH-JflM5SJSUgY7vFiXsPH4aPSw"</span></span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the secret using
@@ -451,7 +451,7 @@ natural usage.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "g2gpZbwnbRqcK2C1lczdI7fKxt8LTN4jfqAdWcODfIei-e_EZzb54g4jalj4VDdagQ"</span></span>
+<span><span class="co">#&gt; [1] "X9ePK0On7szhmYIxFglAvBKnBXs9OF0AUlaFwFAkcj_k_5smgsgY86yQH5Zy-9XWGQ"</span></span>
 <span><span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "secret I need to work with an API"</span></span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions
@@ -537,15 +537,15 @@ easier.</p>
 </h3>
 <p>Now let’s perform a test request and look at the response:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="va">my_key</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="va">my_key</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">resp</span></span></code></pre></div>
 <p>Like most modern APIs, this one returns the results as JSON:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Before we start wrapping this up into a function, let’s consider what
 happens with errors.</p>
@@ -556,9 +556,9 @@ happens with errors.</p>
 <p>What happens if there’s an error? For example, if we deliberately
 supply an invalid key:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To see if there’s any extra useful information we can again look at
 <code>last_response():</code></p>
@@ -581,10 +581,10 @@ R error:</p>
 <span>  <span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="va">_</span><span class="op">$</span><span class="va">fault</span> <span class="op">|&gt;</span> <span class="va">_</span><span class="op">$</span><span class="va">faultstring</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">nytimes_error_body</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">nytimes_error_body</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -610,18 +610,18 @@ either the response body or the headers. That means we can’t use
 the server requests. Instead, we’ll use <code><a href="../reference/req_throttle.html">req_throttle()</a></code> to
 ensure we don’t make more than 10 requests every 60 seconds:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span></span></code></pre></div>
 <p>By default, <code><a href="../reference/req_throttle.html">req_throttle()</a></code> shares the limit across all
 requests made to the host (i.e. <code>api.nytimes.com</code>). Since the
 docs suggest the rate limit applies per API, you might want to use the
 <code>realm</code> argument to be a bit more specific:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"/reviews.json"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>`api-key` <span class="op">=</span> <span class="st">"invalid"</span>, isbn <span class="op">=</span> <span class="fl">9780307476463</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -631,12 +631,12 @@ docs suggest the rate limit applies per API, you might want to use the
 like this:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nytimes_books</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">api_key</span>, <span class="va">path</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="va">...</span>, `api-key` <span class="op">=</span> <span class="va">api_key</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">nytimes_error_body</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.nytimes.com/svc/books/v3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span><span class="va">...</span>, `api-key` <span class="op">=</span> <span class="va">api_key</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">nytimes_error_body</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_throttle.html">req_throttle</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">60</span>, realm <span class="op">=</span> <span class="st">"https://api.nytimes.com/svc/books"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -699,11 +699,11 @@ tests:</p>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">key</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu">is_testing</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">testing_key</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var"</span><span class="op">)</span> </span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"No API key found, please supply with `api_key` argument or with NYTIMES_KEY env var"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -748,7 +748,7 @@ re-generate it because it expired.</p>
 <code>Authorization</code> header with a <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication" class="external-link">“token”
 prefix</a>:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -776,9 +776,9 @@ a new problem.</p>
 its errors</a>, I’m sufficiently distrustful that I still want to
 construct a deliberately malformed query and see what happens:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"abcdef"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"abcdef"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>As documented I get a 422 “Unprocessable Entity” error. But the
 response is rather different to documentation which suggests there
@@ -793,7 +793,7 @@ formats it for presentation to the user:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gist_error_body</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">body</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">message</span> <span class="op">&lt;-</span> <span class="va">body</span><span class="op">$</span><span class="va">message</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">body</span><span class="op">$</span><span class="va">documentation_url</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">message</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">message</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"See docs at &lt;"</span>, <span class="va">body</span><span class="op">$</span><span class="va">documentation_url</span>, <span class="st">"&gt;"</span><span class="op">)</span><span class="op">)</span></span>
@@ -805,10 +805,10 @@ formats it for presentation to the user:</p>
 <code><a href="../reference/req_error.html">req_error()</a></code> and it will be automatically included in the
 error when a request fails:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"yesterday"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">gist_error_body</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_query</a></span><span class="op">(</span>since <span class="op">=</span> <span class="st">"yesterday"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">gist_error_body</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that each element of the character vector produced by
 <code>gh_error_body()</code> becomes a bullet in the resulting
@@ -822,7 +822,7 @@ happens if the requests are rate limited. Luckily, GitHub consistently
 uses response headers to provide information about the remaining <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting" class="external-link">rate
 limits</a>.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="st">"ratelimit"</span><span class="op">)</span></span></code></pre></div>
 <p>We can teach httr2 about this so it can automatically wait for a
 reset if the rate limit is hit. We need to define two functions. The
@@ -833,7 +833,7 @@ the response has a 403 status and a
 <code>X-RateLimit-Remaining: 0</code> header:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gist_is_transient</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">403</span> <span class="op">&amp;&amp;</span> </span>
+<span>  <span class="fu"><a href="../reference/resp_status.html">resp_status</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">403</span> <span class="op">&amp;&amp;</span></span>
 <span>    <span class="fu"><a href="../reference/resp_headers.html">resp_header</a></span><span class="op">(</span><span class="va">resp</span>, <span class="st">"X-RateLimit-Remaining"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"0"</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">gist_is_transient</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span></code></pre></div>
@@ -869,9 +869,9 @@ the information it needs to handle rate-limiting automatically:</p>
 that creates a request:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req_gist</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">gist_error_body</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/gists"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_headers.html">req_headers</a></span><span class="op">(</span>Authorization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"token"</span>, <span class="va">token</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/req_error.html">req_error</a></span><span class="op">(</span>body <span class="op">=</span> <span class="va">gist_error_body</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/req_retry.html">req_retry</a></span><span class="op">(</span></span>
 <span>      is_transient <span class="op">=</span> <span class="va">gist_is_transient</span>,</span>
 <span>      after <span class="op">=</span> <span class="va">gist_after</span></span>
@@ -879,7 +879,7 @@ that creates a request:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Check it works:</span></span>
-<span><span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>We’ll use this as the basis to solve the next challenge: uploading a
 gist.</p>
@@ -892,7 +892,7 @@ a gist</a> we need to change the method to <code>POST</code> and add a
 body that contains data encoded as JSON. httr2 provides one function
 that does both of these things: <code><a href="../reference/req_body.html">req_body_json()</a></code>:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    description <span class="op">=</span> <span class="st">"This is my cool gist!"</span>,</span>
 <span>    files <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>test.R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>content <span class="op">=</span> <span class="st">"print('Hi!')"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -921,9 +921,9 @@ To do so, I need to again send JSON encoded data, but this time I need
 to use the <code>PATCH</code> verb. So after adding the data to request,
 I use <code><a href="../reference/req_method.html">req_method()</a></code> to override the default method:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> <span class="st">"This is a simple gist"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>description <span class="op">=</span> <span class="st">"This is a simple gist"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"PATCH"</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -934,8 +934,8 @@ I use <code><a href="../reference/req_method.html">req_method()</a></code> to ov
 need to adjust the default method from <code>GET</code> to
 <code>DELETE</code>.</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">req_gist</span><span class="op">(</span><span class="va">token</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_method.html">req_method</a></span><span class="op">(</span><span class="st">"DELETE"</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
