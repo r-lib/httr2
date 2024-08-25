@@ -18,3 +18,4 @@ An HTTP response object or \code{NULL} if no client is matched.
 This function manages the logout process for OAuth clients. It deletes the
 relevant cookies and redirects the user back to the app.
 }
+\keyword{internal}

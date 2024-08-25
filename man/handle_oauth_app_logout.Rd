@@ -26,3 +26,4 @@ This function handles the logout process for the app. It deletes the relevant
 cookies from the user's browser and returns an HTTP response that either
 displays a logout UI or redirects the user directly.
 }
+\keyword{internal}

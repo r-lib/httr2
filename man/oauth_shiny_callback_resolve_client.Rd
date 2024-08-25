@@ -20,3 +20,4 @@ the callback phase based on the query parameters returned by the OAuth
 server. It ensures that the client matches either the state parameter or the
 OpenID issuer URL.
 }
+\keyword{internal}

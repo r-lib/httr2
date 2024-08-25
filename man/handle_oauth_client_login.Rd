@@ -19,3 +19,4 @@ This function initiates the OAuth login process for clients configured with
 the app. It loops through the client configurations and redirects the user to
 the appropriate OAuth authorization URL.
 }
+\keyword{internal}

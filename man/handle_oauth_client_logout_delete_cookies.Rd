@@ -19,3 +19,4 @@ the client's logout path.
 This function deletes the cookies associated with a specific OAuth client
 during the logout process. It then redirects the user back to the app.
 }
+\keyword{internal}

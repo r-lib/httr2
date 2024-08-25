@@ -35,3 +35,4 @@ checks for an existing OAuth token, and if none is found and authentication
 is required, it returns \code{NULL}. Otherwise, it invokes the provided HTTP
 handler to continue processing the request.
 }
+\keyword{internal}

@@ -35,3 +35,4 @@ This function processes the OAuth callback after the user has authorized the
 app. It exchanges the authorization code for an access token, handles PKCE
 verification, and sets cookies for both the app and the client access token.
 }
+\keyword{internal}

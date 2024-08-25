@@ -20,3 +20,4 @@ This function handles redirection to the OAuth authorization URL for a
 specific client. It manages PKCE (Proof Key for Code Exchange) if enabled,
 and sets up necessary cookies before redirecting the user.
 }
+\keyword{internal}

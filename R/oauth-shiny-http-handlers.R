@@ -12,6 +12,7 @@
 #' @param key A secret key used to encrypt and decrypt tokens.
 #' @param httpHandler A function to handle HTTP requests after authentication.
 #'
+#' @keywords internal
 #' @return An HTTP response object or `NULL` if authentication fails.
 handle_oauth_app_logged_in <- function(req, client_config, require_auth, cookie, key, httpHandler) {
   token <- oauth_shiny_get_app_token_from_request(req, cookie, key)
@@ -35,6 +36,7 @@ handle_oauth_app_logged_in <- function(req, client_config, require_auth, cookie,
 #'
 #' @return An HTTP response object or `NULL` if the request path is not the
 #'   root.
+#' @keywords internal
 handle_oauth_app_login <- function(req, client_config, login_ui) {
   if (!isTRUE(req$PATH_INFO == "/")) {
     return(NULL)
@@ -85,6 +87,7 @@ handle_oauth_app_login <- function(req, client_config, login_ui) {
 #'
 #' @return An HTTP response object or `NULL` if the request path does not match
 #'   the logout path.
+#' @keywords internal
 handle_oauth_app_logout <- function(req, client_config, logout_path, cookie, logout_ui) {
   if (sub("^/", "", req$PATH_INFO) != logout_path) {
     return(NULL)
@@ -116,6 +119,7 @@ handle_oauth_app_logout <- function(req, client_config, logout_path, cookie, log
 #' @param client_config A list of client configurations used for OAuth.
 #'
 #' @return An HTTP response object or `NULL` if no client is matched.
+#' @keywords internal
 handle_oauth_client_login <- function(req, client_config) {
   for (client in client_config) {
     resp <- handle_oauth_client_login_redirect(req, client)
@@ -136,6 +140,7 @@ handle_oauth_client_login <- function(req, client_config) {
 #'
 #' @return An HTTP response object or `NULL` if the request path does not match
 #'   the client's login path.
+#' @keywords internal
 handle_oauth_client_login_redirect <- function(req, client) {
   if (sub("^/", "", req$PATH_INFO) != client$login_path) {
     return(NULL)
@@ -195,6 +200,7 @@ handle_oauth_client_login_redirect <- function(req, client) {
 #'
 #' @return An HTTP response object or `NULL` if the callback parameters are
 #'   invalid.
+#' @keywords internal
 handle_oauth_client_callback <- function(req, client_config, require_auth, cookie, key, token_validity) {
   query <- shiny::parseQueryString(req[["QUERY_STRING"]])
   if (is.null(query$code) || is.null(query$state)) {
@@ -309,6 +315,7 @@ handle_oauth_client_callback <- function(req, client_config, require_auth, cooki
 #' @param client_config A list of client configurations used for OAuth.
 #'
 #' @return An HTTP response object or `NULL` if no client is matched.
+#' @keywords internal
 handle_oauth_client_logout <- function(req, client_config) {
   for (client in client_config) {
     resp <- handle_oauth_client_logout_delete_cookies(req, client)
@@ -328,6 +335,7 @@ handle_oauth_client_logout <- function(req, client_config) {
 #'
 #' @return An HTTP response object or `NULL` if the request path does not match
 #'   the client's logout path.
+#' @keywords internal
 handle_oauth_client_logout_delete_cookies <- function(req, client) {
   if (sub("^/", "", req$PATH_INFO) != client$logout_path) {
     return(NULL)
@@ -357,6 +365,7 @@ handle_oauth_client_logout_delete_cookies <- function(req, client) {
 #' @param client_config A list of client configurations used for OAuth.
 #' @param query A list of query parameters from the OAuth callback request.
 #'
+#' @keywords internal
 #' @return The matching client configuration object.
 oauth_shiny_callback_resolve_client <- function(client_config, query) {
   for (client in client_config) {

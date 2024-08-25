@@ -23,3 +23,4 @@ request path is the root ("/"), and if so, either redirects to the primary
 authentication provider or displays a custom login UI. The custom UI can
 include a message and login options.
 }
+\keyword{internal}

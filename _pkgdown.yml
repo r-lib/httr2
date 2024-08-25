@@ -89,6 +89,7 @@ articles:
   contents:
   - articles/wrapping-apis
   - articles/oauth
+  - articles/shiny
 
 
 news:
