@@ -134,6 +134,7 @@ oauth_shiny_client <- function(
       auth_params = auth_params,
       token_params = token_params,
       pkce = pkce,
+      postprocess_token = postprocess_token,
       auth_provider = auth_provider,
       auth_provider_primary = auth_provider_primary,
       auth_set_custom_claim = auth_set_custom_claim,
