@@ -98,13 +98,11 @@ req_perform_stream <- function(req,
 
 
 #' @export
-req_perform_open <- function(req,
-  buffer_kb = 64) {
+req_perform_open <- function(req) {
 
   check_request(req)
 
   handle <- req_handle(req)
-  check_number_decimal(buffer_kb, min = 0)
 
   stream <- curl::curl(req$url, handle = handle)
   open(stream, "rbf", blocking = FALSE)
