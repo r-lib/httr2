@@ -41,7 +41,7 @@
       as_round_function("bytes")
     Condition
       Error:
-      ! `round` must be one of "byte" or "line", not "bytes".
+      ! `round` must be one of "byte", "line", or "sse", not "bytes".
       i Did you mean "byte"?
     Code
       as_round_function(function(x) 1)
