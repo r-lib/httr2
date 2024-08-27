@@ -15,6 +15,11 @@
 #'   worth of data to process. It must return `TRUE` to continue streaming.
 #' @param timeout_sec Number of seconds to process stream for.
 #' @param buffer_kb Buffer size, in kilobytes.
+#' @param wait_for Number of seconds to wait for more data before calling
+#'   `callback`. If this is `Inf` (the default), `callback` will be called
+#'   whenever the buffer is full. If this is `0`, `callback` will be
+#'   called whenever there is any data. For other values, `callback` will be
+#'   called whenever the buffer is full or `wait_for` seconds have passed.
 #' @param round How should the raw vector sent to `callback` be rounded?
 #'   Choose `"byte"`, `"line"`, or supply your own function that takes a
 #'   raw vector of `bytes` and returns the locations of possible cut points
@@ -36,6 +41,7 @@ req_perform_stream <- function(req,
                                callback,
                                timeout_sec = Inf,
                                buffer_kb = 64,
+                               wait_for = Inf,
                                round = c("byte", "line")) {
   check_request(req)
 
@@ -43,12 +49,14 @@ req_perform_stream <- function(req,
   check_function(callback)
   check_number_decimal(timeout_sec, min = 0)
   check_number_decimal(buffer_kb, min = 0)
+  check_number_decimal(wait_for, min = 0)
   cut_points <- as_round_function(round)
 
   stop_time <- Sys.time() + timeout_sec
 
   stream <- curl::curl(req$url, handle = handle)
-  open(stream, "rbf")
+  is_blocking <- is.infinite(wait_for)
+  open(stream, "rbf", blocking = is_blocking)
   withr::defer(close(stream))
 
   res <- curl::handle_data(handle)
@@ -74,7 +82,20 @@ req_perform_stream <- function(req,
   buf <- raw()
 
   while (continue && isIncomplete(stream) && Sys.time() < stop_time) {
-    buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
+    if (is_blocking) {
+      buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
+    } else {
+      stop <- Sys.time() + wait_for
+      repeat({
+        buf <- c(buf, readBin(stream, raw(), buffer_kb))
+        if (length(buf) > buffer_kb * 1024) {
+          break
+        }
+        if (Sys.time() > stop) {
+          break
+        }
+      })
+    }
 
     if (length(buf) > 0) {
       cut <- cut_points(buf)

@@ -10,6 +10,7 @@ req_perform_stream(
   callback,
   timeout_sec = Inf,
   buffer_kb = 64,
+  wait_for = Inf,
   round = c("byte", "line")
 )
 }
@@ -23,6 +24,11 @@ worth of data to process. It must return \code{TRUE} to continue streaming.}
 \item{timeout_sec}{Number of seconds to process stream for.}
 
 \item{buffer_kb}{Buffer size, in kilobytes.}
+
+\item{wait_for}{Number of seconds to wait for more data before calling
+\code{callback}. If this is \code{Inf} (the default), \code{callback} will be called
+whenever there is the buffer is full. If this is \code{0}, \code{callback} will be
+called whenever there is any data.}
 
 \item{round}{How should the raw vector sent to \code{callback} be rounded?
 Choose \code{"byte"}, \code{"line"}, or supply your own function that takes a

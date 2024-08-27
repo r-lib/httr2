@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_perform_stream()` can now stream data as it arrives rather than
+   waiting for the buffer to fill (#519).
+
 # httr2 1.0.3
 
 * `jwt_encode_hmac()` now calls correct underlying function

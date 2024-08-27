@@ -59,6 +59,32 @@ test_that("can buffer to lines", {
   expect_equal(valid_json, rep(TRUE, 10))
 })
 
+test_that("can stream data as it arrives", {
+  bytes <- integer()
+  accumulate_bytes <- function(x) {
+    bytes <<- c(bytes, length(x))
+    TRUE
+  }
+
+  resp <- request_test("/stream-bytes/1024?chunk-size=64") |>
+    req_perform_stream(accumulate_bytes, wait_for = 0)
+  expect_equal(sum(bytes), 1024)
+  expect_equal(length(bytes), 1024 / 64)
+})
+
+test_that("can accumulate bytes up to a certain time", {
+  bytes <- integer()
+  accumulate_bytes <- function(x) {
+    bytes <<- c(bytes, length(x))
+    TRUE
+  }
+
+  resp <- request_test("/drip") |>
+    req_url_query(duration = 1, numbytes = 2) |>
+    req_perform_stream(accumulate_bytes, wait_for = 0.5)
+  expect_equal(bytes, c(1, 1))
+})
+
 test_that("can supply custom rounding", {
   out <- list()
   accumulate <- function(x) {
