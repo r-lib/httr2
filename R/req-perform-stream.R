@@ -98,14 +98,14 @@ req_perform_stream <- function(req,
 
 
 #' @export
-req_perform_open <- function(req) {
+req_perform_open <- function(req, blocking = TRUE) {
 
   check_request(req)
 
   handle <- req_handle(req)
 
   stream <- curl::curl(req$url, handle = handle)
-  open(stream, "rbf", blocking = FALSE)
+  open(stream, "rbf", blocking = blocking)
 
   res <- curl::handle_data(handle)
   the$last_request <- req
