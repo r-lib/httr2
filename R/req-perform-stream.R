@@ -98,7 +98,7 @@ req_perform_stream <- function(req,
 
 
 #' @export
-req_perform_open <- function(req, blocking = TRUE) {
+req_perform_connection <- function(req, blocking = TRUE) {
 
   check_request(req)
 
