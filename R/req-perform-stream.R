@@ -96,6 +96,41 @@ req_perform_stream <- function(req,
   resp
 }
 
+
+#' @export
+req_perform_open <- function(req,
+  buffer_kb = 64) {
+
+  check_request(req)
+
+  handle <- req_handle(req)
+  check_number_decimal(buffer_kb, min = 0)
+
+  stream <- curl::curl(req$url, handle = handle)
+  open(stream, "rbf", blocking = FALSE)
+
+  res <- curl::handle_data(handle)
+  the$last_request <- req
+
+  # Return early if there's a problem
+  resp <- new_response(
+    method = req_method_get(req),
+    url = res$url,
+    status_code = res$status_code,
+    headers = as_headers(res$headers),
+    body = NULL,
+    request = req
+  )
+  the$last_repsonse <- resp
+  if (error_is_error(req, resp)) {
+    resp$body <- read_con(stream)
+    handle_resp(req, resp)
+  } else {
+    resp$body <- stream
+    resp
+  }
+}
+
 as_round_function <- function(round = c("byte", "line"),
                               error_call = caller_env()) {
   if (is.function(round)) {
