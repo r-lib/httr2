@@ -27,13 +27,14 @@ worth of data to process. It must return \code{TRUE} to continue streaming.}
 
 \item{wait_for}{Number of seconds to wait for more data before calling
 \code{callback}. If this is \code{Inf} (the default), \code{callback} will be called
-whenever there is the buffer is full. If this is \code{0}, \code{callback} will be
-called whenever there is any data.}
+whenever the buffer is full. If this is \code{0}, \code{callback} will be
+called whenever there is any data. For other values, \code{callback} will be
+called whenever the buffer is full or \code{wait_for} seconds have passed.}
 
 \item{round}{How should the raw vector sent to \code{callback} be rounded?
-Choose \code{"byte"}, \code{"line"}, or supply your own function that takes a
-raw vector of \code{bytes} and returns the locations of possible cut points
-(or \code{integer()} if there are none).}
+Choose \code{"byte"}, \code{"line"}, \code{"sse"} (for server-sent events) or supply
+your own function that takes a raw vector of \code{bytes} and returns the
+locations of possible cut points (or \code{integer()} if there are none).}
 }
 \value{
 An HTTP \link{response}. The body will be empty if the request was

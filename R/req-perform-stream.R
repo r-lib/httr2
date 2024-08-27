@@ -21,9 +21,9 @@
 #'   called whenever there is any data. For other values, `callback` will be
 #'   called whenever the buffer is full or `wait_for` seconds have passed.
 #' @param round How should the raw vector sent to `callback` be rounded?
-#'   Choose `"byte"`, `"line"`, or supply your own function that takes a
-#'   raw vector of `bytes` and returns the locations of possible cut points
-#'   (or `integer()` if there are none).
+#'   Choose `"byte"`, `"line"`, `"sse"` (for server-sent events) or supply
+#'   your own function that takes a raw vector of `bytes` and returns the
+#'   locations of possible cut points (or `integer()` if there are none).
 #' @returns An HTTP [response]. The body will be empty if the request was
 #'   successful (since the `callback` function will have handled it). The body
 #'   will contain the HTTP response body if the request was unsuccessful.
@@ -126,7 +126,11 @@ as_round_function <- function(round = c("byte", "line"),
     round <- arg_match(round, error_call = error_call)
     switch(round,
       byte = function(bytes) length(bytes),
-      line = function(bytes) which(bytes == charToRaw("\n"))
+      line = function(bytes) which(bytes == charToRaw("\n")),
+      sse  = function(bytes) {
+        is_newline <- which(bytes == charToRaw("\n"))
+        intersect(is_newline, is_newline + 1)
+      }
     )
   } else {
     cli::cli_abort(
