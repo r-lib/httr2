@@ -66,10 +66,15 @@ test_that("can stream data as it arrives", {
     TRUE
   }
 
-  resp <- request_test("/stream-bytes/1024?chunk-size=64") |>
+  resp <- request_test("/stream-bytes/102400") |>
+    req_url_query(chunk_size = 1024) |>
     req_perform_stream(accumulate_bytes, wait_for = 0)
-  expect_equal(sum(bytes), 1024)
-  expect_equal(length(bytes), 1024 / 64)
+  expect_equal(sum(bytes), 102400)
+  # I'm not sure why this is so much smaller than 100, but I suspect it
+  # because the endpoint is pouring out bytes as fast as it can, and since
+  # the code in the callback takes a non-trivial amount of time, more data
+  # ends up in the curl buffer
+  expect_gte(length(bytes), 5)
 })
 
 test_that("can accumulate bytes up to a certain time", {

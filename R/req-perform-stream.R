@@ -87,7 +87,7 @@ req_perform_stream <- function(req,
     } else {
       stop <- Sys.time() + wait_for
       repeat({
-        buf <- c(buf, readBin(stream, raw(), buffer_kb))
+        buf <- c(buf, readBin(stream, raw(), (buffer_kb * 1024) - length(buf)))
         if (length(buf) > buffer_kb * 1024) {
           break
         }
