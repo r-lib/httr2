@@ -66,8 +66,8 @@ test_that("can stream data as it arrives", {
     TRUE
   }
 
-  resp <- request_test("/stream-bytes/102400") |>
-    req_url_query(chunk_size = 1024) |>
+  resp <- request_test("/stream-bytes/102400") %>%
+    req_url_query(chunk_size = 1024) %>%
     req_perform_stream(accumulate_bytes, wait_for = 0)
   expect_equal(sum(bytes), 102400)
   # I'm not sure why this is so much smaller than 100, but I suspect it
@@ -84,8 +84,8 @@ test_that("can accumulate bytes up to a certain time", {
     TRUE
   }
 
-  resp <- request_test("/drip") |>
-    req_url_query(duration = 1, numbytes = 2) |>
+  resp <- request_test("/drip") %>%
+    req_url_query(duration = 1, numbytes = 2) %>%
     req_perform_stream(accumulate_bytes, wait_for = 0.5)
   expect_equal(bytes, c(1, 1))
 })

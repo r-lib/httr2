@@ -11,7 +11,7 @@ req_perform_stream(
   timeout_sec = Inf,
   buffer_kb = 64,
   wait_for = Inf,
-  round = c("byte", "line")
+  round = c("byte", "line", "sse")
 )
 }
 \arguments{

@@ -42,7 +42,7 @@ req_perform_stream <- function(req,
                                timeout_sec = Inf,
                                buffer_kb = 64,
                                wait_for = Inf,
-                               round = c("byte", "line")) {
+                               round = c("byte", "line", "sse")) {
   check_request(req)
 
   handle <- req_handle(req)
@@ -117,7 +117,7 @@ req_perform_stream <- function(req,
   resp
 }
 
-as_round_function <- function(round = c("byte", "line"),
+as_round_function <- function(round = c("byte", "line", "sse"),
                               error_call = caller_env()) {
   if (is.function(round)) {
     check_function2(round, args = "bytes")
