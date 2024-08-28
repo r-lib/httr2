@@ -93,7 +93,7 @@ req_perform_stream <- function(req,
 #' between streaming inputs.
 #'
 #' @inheritParams req_perform_stream
-#' @inheritParams resp_body_raw
+#' @param resp,con A httr2 [response].
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has?
 #' @export
@@ -132,15 +132,7 @@ req_perform_connection <- function(req, blocking = TRUE) {
 
 #' @export
 #' @rdname req_perform_connection
-close.httr2_response <- function(con, ...) {
-  check_streaming_response(con)
-
-  close(con$body)
-  invisible()
-}
-
-#' @export
-#' @rdname req_perform_connection
+#' @param kb How many kilobytes (1024 bytes) of data to read.
 resp_stream_raw <- function(resp, kb = 32) {
   check_streaming_response(resp)
   conn <- resp$body
@@ -154,6 +146,7 @@ resp_stream_raw <- function(resp, kb = 32) {
 
 #' @export
 #' @rdname req_perform_connection
+#' @param lines How many lines to read
 resp_stream_lines <- function(resp, lines = 1) {
   check_streaming_response(resp)
   conn <- resp$body
@@ -193,6 +186,18 @@ resp_stream_sse <- function(resp) {
 
   return(NULL)
 }
+
+#' @export
+#' @param ... Not used; included for compatibility with generic.
+#' @rdname req_perform_connection
+close.httr2_response <- function(con, ...) {
+  check_streaming_response(con)
+
+  close(con$body)
+  invisible()
+}
+
+# Helpers ----------------------------------------------------------------------
 
 check_streaming_response <- function(resp,
                                      arg = caller_arg(resp),

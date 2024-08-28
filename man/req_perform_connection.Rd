@@ -2,21 +2,21 @@
 % Please edit documentation in R/req-perform-stream.R
 \name{req_perform_connection}
 \alias{req_perform_connection}
-\alias{close.httr2_response}
 \alias{resp_stream_raw}
 \alias{resp_stream_lines}
 \alias{resp_stream_sse}
+\alias{close.httr2_response}
 \title{Perform a request and return a streaming connection}
 \usage{
 req_perform_connection(req, blocking = TRUE)
-
-\method{close}{httr2_response}(con, ...)
 
 resp_stream_raw(resp, kb = 32)
 
 resp_stream_lines(resp, lines = 1)
 
 resp_stream_sse(resp)
+
+\method{close}{httr2_response}(con, ...)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -24,10 +24,13 @@ resp_stream_sse(resp)
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has?}
 
-\item{...}{Other arguments passed on to \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}} and
-\code{\link[xml2:read_xml]{xml2::read_xml()}} respectively.}
+\item{resp, con}{An httr2 \link{response}.}
 
-\item{resp}{A response object.}
+\item{kb}{How many kilobytes (1024 bytes) of data to read.}
+
+\item{lines}{How many lines to read}
+
+\item{...}{Not used; included for compatibility with generic.}
 }
 \description{
 Use \code{req_perform_connection()} to perform a request that includes a
