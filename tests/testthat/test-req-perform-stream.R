@@ -54,7 +54,7 @@ test_that("can feed sse events one at a time", {
 
   server <- webfakes::local_app_process(app)
   req <- request(server$url("/events"))
-  resp <- req_perform_connection(req, mode = "r")
+  resp <- req_perform_connection(req, mode = "text")
   on.exit(close(resp))
 
   expect_equal(
@@ -68,6 +68,13 @@ test_that("can feed sse events one at a time", {
   resp_stream_sse(resp)
 
   expect_equal(resp_stream_sse(resp), NULL)
+})
+
+test_that("resp_stream_sse() requires a text connection", {
+  resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
+  on.exit(close(resp))
+
+  expect_snapshot(resp_stream_sse(resp), error = TRUE)
 })
 
 # req_perform_stream() --------------------------------------------------------

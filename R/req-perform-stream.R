@@ -98,14 +98,17 @@ req_perform_stream <- function(req,
 #'
 #' @inheritParams req_perform_stream
 #' @param resp,con A httr2 [response].
-#' @param mode The mode that should be used for opening the connection. Use
-#'   `"rb"` (the default) for binary, `"r"` for text.
+#' @param mode The mode that should be used for opening the connection.
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has?
 #' @export
-req_perform_connection <- function(req, mode = "rb", blocking = TRUE) {
+req_perform_connection <- function(req,
+                                   mode = c("binary", "text"),
+                                   blocking = TRUE) {
   check_request(req)
   check_bool(blocking)
+  mode <- arg_match(mode)
+  con_mode <- if (mode == "text") "rf" else "rbf"
 
   handle <- req_handle(req)
   the$last_request <- req
@@ -121,7 +124,7 @@ req_perform_connection <- function(req, mode = "rb", blocking = TRUE) {
     if (!is.null(resp)) {
       close(resp$body)
     }
-    resp <- req_perform_connection1(req, handle, mode, blocking = blocking)
+    resp <- req_perform_connection1(req, handle, con_mode, blocking = blocking)
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -143,11 +146,11 @@ req_perform_connection <- function(req, mode = "rb", blocking = TRUE) {
   resp
 }
 
-req_perform_connection1 <- function(req, handle, mode, blocking = TRUE) {
+req_perform_connection1 <- function(req, handle, con_mode = "rbf", blocking = TRUE) {
   stream <- curl::curl(req$url, handle = handle)
 
   # Must open the stream in order to initiate the connection
-  open(stream, mode, blocking = blocking)
+  open(stream, con_mode, blocking = blocking)
   curl_data <- curl::handle_data(handle)
 
   new_response(
@@ -187,7 +190,10 @@ resp_stream_sse <- function(resp) {
   check_streaming_response(resp)
   conn <- resp$body
   if (!identical(summary(conn)$text, "text")) {
-    abort("`resp_stream_sse` requires a `resp` that was created with req_perform_connection(mode=\"r\")")
+    cli::cli_abort(c(
+      "{.arg resp} must have a text mode connection.",
+      i = 'Use {.code mode = "text"} when calling {.fn req_perform_connection}.'
+    ))
   }
 
   lines <- character(0)
