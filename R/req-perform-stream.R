@@ -47,27 +47,9 @@ req_perform_stream <- function(req,
 
   stop_time <- Sys.time() + timeout_sec
 
-  stream <- curl::curl(req$url, handle = handle)
-  open(stream, "rbf")
-  withr::defer(close(stream))
-
-  res <- curl::handle_data(handle)
-  the$last_request <- req
-
-  # Return early if there's a problem
-  resp <- new_response(
-    method = req_method_get(req),
-    url = res$url,
-    status_code = res$status_code,
-    headers = as_headers(res$headers),
-    body = NULL,
-    request = req
-  )
-  if (error_is_error(req, resp)) {
-    resp$body <- read_con(stream)
-    the$last_response <- resp
-    handle_resp(req, resp)
-  }
+  resp <- req_perform_connection(req)
+  stream <- resp$body
+  on.exit(close(stream))
 
   continue <- TRUE
   incomplete <- TRUE
@@ -92,6 +74,7 @@ req_perform_stream <- function(req,
     callback(buf)
   }
 
+  resp$body <- raw()
   the$last_response <- resp
   resp
 }
@@ -131,14 +114,15 @@ req_perform_connection <- function(req, blocking = TRUE) {
     body = NULL,
     request = req
   )
-  the$last_repsonse <- resp
 
   if (error_is_error(req, resp)) {
     # Read full body if there's an error
     resp$body <- read_con(stream)
+    close(stream)
   } else {
     resp$body <- stream
   }
+  the$last_response <- resp
   handle_resp(req, resp)
 
   resp

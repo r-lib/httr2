@@ -5,7 +5,7 @@ test_that("req_stream() is deprecated", {
   )
 })
 
-test_that("returns empty body; sets last request & response", {
+test_that("returns stream body; sets last request & response", {
   req <- request_test("/stream-bytes/1024")
   resp <- req_perform_stream(req, function(x) NULL)
   expect_s3_class(resp, "httr2_response")
