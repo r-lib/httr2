@@ -36,7 +36,7 @@ for the desired information or immediately return what it has?}
 }
 \description{
 Use \code{req_perform_connection()} to perform a request that includes a
-connection as the body of the response, then \code{resp_stream_bytes()},
+connection as the body of the response, then \code{resp_stream_raw()},
 \code{resp_stream_lines()}, or \code{resp_stream_sse()} to retrieve data a chunk at a
 timen, and finish by closing the connection with \code{close()}.
 
@@ -55,3 +55,16 @@ It only works with text mode connections so when calling
 \code{req_perform_connection()} you must use \code{mode = "text"}.
 }
 
+\examples{
+req <- request(example_url()) |>
+  req_url_path("/stream-bytes/32768")
+resp <- req_perform_connection(req)
+
+length(resp_stream_raw(resp, kb = 16))
+length(resp_stream_raw(resp, kb = 16))
+# When the stream has no more data, you'll get an empty result:
+length(resp_stream_raw(resp, kb = 16))
+
+# Always close the response when you're done
+close(resp)
+}

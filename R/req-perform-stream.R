@@ -84,7 +84,7 @@ req_perform_stream <- function(req,
 #'
 #' @description
 #' Use `req_perform_connection()` to perform a request that includes a
-#' connection as the body of the response, then `resp_stream_bytes()`,
+#' connection as the body of the response, then `resp_stream_raw()`,
 #' `resp_stream_lines()`, or `resp_stream_sse()` to retrieve data a chunk at a
 #'  timen, and finish by closing the connection with `close()`.
 #'
@@ -109,6 +109,18 @@ req_perform_stream <- function(req,
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has?
 #' @export
+#' @examples
+#' req <- request(example_url()) |>
+#'   req_url_path("/stream-bytes/32768")
+#' resp <- req_perform_connection(req)
+#'
+#' length(resp_stream_raw(resp, kb = 16))
+#' length(resp_stream_raw(resp, kb = 16))
+#' # When the stream has no more data, you'll get an empty result:
+#' length(resp_stream_raw(resp, kb = 16))
+#'
+#' # Always close the response when you're done
+#' close(resp)
 req_perform_connection <- function(req,
                                    mode = c("binary", "text"),
                                    blocking = TRUE) {
