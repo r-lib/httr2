@@ -43,6 +43,33 @@ test_that("can't read from a closed connection", {
   expect_no_error(close(resp))
 })
 
+test_that("can feed sse events one at a time", {
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    for(i in 1:3) {
+      res$send_chunk(sprintf("data: %s\n\n", i))
+    }
+  })
+
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+  resp <- req_perform_connection(req, mode = "r")
+  on.exit(close(resp))
+
+  expect_equal(
+    resp_stream_sse(resp),
+    list(type = "message", data = "1", id = character())
+  )
+  expect_equal(
+    resp_stream_sse(resp),
+    list(type = "message", data = "2", id = character())
+  )
+  resp_stream_sse(resp)
+
+  expect_equal(resp_stream_sse(resp), NULL)
+})
+
 # req_perform_stream() --------------------------------------------------------
 
 test_that("returns stream body; sets last request & response", {
