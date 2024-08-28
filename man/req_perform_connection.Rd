@@ -14,6 +14,8 @@ resp_stream_sse(resp)
 
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has?}
+
+\item{resp}{A response object.}
 }
 \description{
 Use \code{req_perform_connection()} to perform a request that includes a

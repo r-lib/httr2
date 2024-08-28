@@ -92,6 +92,7 @@ req_perform_stream <- function(req,
 #' between streaming inputs.
 #'
 #' @inheritParams req_perform_stream
+#' @inheritParams resp_body_raw
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has?
 #' @export
