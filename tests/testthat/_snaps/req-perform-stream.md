@@ -7,6 +7,14 @@
       `req_stream()` was deprecated in httr2 1.0.0.
       i Please use `req_perform_stream()` instead.
 
+# can't read from a closed connection
+
+    Code
+      resp_stream_raw(resp, 1)
+    Condition
+      Error in `resp_stream_raw()`:
+      ! `resp` has already been closed.
+
 # req_perform_stream checks its inputs
 
     Code

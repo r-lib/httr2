@@ -53,7 +53,7 @@ resp_has_body <- function(resp) {
   switch(resp_body_type(resp),
     disk = file.size(resp$body) > 0,
     memory = length(resp$body) > 0,
-    stream = TRUE
+    stream = isValid(resp$body)
   )
 }
 

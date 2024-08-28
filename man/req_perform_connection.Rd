@@ -2,10 +2,19 @@
 % Please edit documentation in R/req-perform-stream.R
 \name{req_perform_connection}
 \alias{req_perform_connection}
+\alias{close.httr2_response}
+\alias{resp_stream_raw}
+\alias{resp_stream_lines}
 \alias{resp_stream_sse}
 \title{Perform a request and return a streaming connection}
 \usage{
 req_perform_connection(req, blocking = TRUE)
+
+\method{close}{httr2_response}(con, ...)
+
+resp_stream_raw(resp, kb = 32)
+
+resp_stream_lines(resp, lines = 1)
 
 resp_stream_sse(resp)
 }
@@ -15,12 +24,16 @@ resp_stream_sse(resp)
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has?}
 
+\item{...}{Other arguments passed on to \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}} and
+\code{\link[xml2:read_xml]{xml2::read_xml()}} respectively.}
+
 \item{resp}{A response object.}
 }
 \description{
 Use \code{req_perform_connection()} to perform a request that includes a
-connection as the body of the response, then use \code{resp_steam_sse()} and
-friends to retrieve data a chunk at a time..
+connection as the body of the response, then \code{resp_stream_bytes()},
+\code{resp_stream_lines()}, or \code{resp_stream_sse()} to retrieve data a chunk at a
+timen, and finish by closing the connection with \code{close()}.
 
 This is an alternative interface to \code{\link[=req_perform_stream]{req_perform_stream()}} that returns a
 connection that you can pull from data, rather than callbacks that are called

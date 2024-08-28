@@ -83,8 +83,9 @@ req_perform_stream <- function(req,
 #'
 #' @description
 #' Use `req_perform_connection()` to perform a request that includes a
-#' connection as the body of the response, then use `resp_steam_sse()` and
-#' friends to retrieve data a chunk at a time..
+#' connection as the body of the response, then `resp_stream_bytes()`,
+#' `resp_stream_lines()`, or `resp_stream_sse()` to retrieve data a chunk at a
+#'  timen, and finish by closing the connection with `close()`.
 #'
 #' This is an alternative interface to [req_perform_stream()] that returns a
 #' connection that you can pull from data, rather than callbacks that are called
@@ -129,10 +130,44 @@ req_perform_connection <- function(req, blocking = TRUE) {
   resp
 }
 
-# TODO: max_size
+#' @export
+#' @rdname req_perform_connection
+close.httr2_response <- function(con, ...) {
+  check_streaming_response(con)
+
+  close(con$body)
+  invisible()
+}
 
 #' @export
 #' @rdname req_perform_connection
+resp_stream_raw <- function(resp, kb = 32) {
+  check_streaming_response(resp)
+  conn <- resp$body
+
+  if (isIncomplete(conn)) {
+    readBin(conn, raw(), kb * 1024)
+  } else {
+    raw()
+  }
+}
+
+#' @export
+#' @rdname req_perform_connection
+resp_stream_lines <- function(resp, lines = 1) {
+  check_streaming_response(resp)
+  conn <- resp$body
+
+  if (isIncomplete(conn)) {
+    readLines(conn, n = lines)
+  } else {
+    character()
+  }
+}
+
+#' @export
+#' @rdname req_perform_connection
+# TODO: max_size
 resp_stream_sse <- function(resp) {
   check_streaming_response(resp)
   conn <- resp$body
@@ -165,7 +200,7 @@ check_streaming_response <- function(resp,
 
   check_response(resp, arg = arg, call = call)
 
-  if (!inherits(resp$body)) {
+  if (resp_body_type(resp) != "stream") {
     stop_input_type(
       resp,
       "a streaming HTTP response object",
@@ -174,6 +209,24 @@ check_streaming_response <- function(resp,
       call = call
     )
   }
+
+  if (!isValid(resp$body)) {
+    cli::cli_abort("{.arg {arg}} has already been closed.", call = call)
+  }
+}
+
+# isOpen doesn't work for two reasons:
+# 1. It errors if con has been closed, rather than returning FALSE
+# 2. If returns TRUE if con has been closed and a new connection opened
+#
+# So instead we retrieve the connection from its number and compare to the
+# original connection. This works because connections have an undocumented
+# external pointer.
+isValid <- function(con) {
+  tryCatch(
+    identical(getConnection(con), con),
+    error = function(cnd) FALSE
+  )
 }
 
 

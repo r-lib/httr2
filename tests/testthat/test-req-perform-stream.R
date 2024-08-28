@@ -5,6 +5,29 @@ test_that("req_stream() is deprecated", {
   )
 })
 
+# req_perform_connection() ----------------------------------------------------
+
+test_that("can stream bytes from a connection", {
+  resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
+  on.exit(close(resp))
+
+  expect_s3_class(resp, "httr2_response")
+  expect_true(resp_has_body(resp))
+
+  out <- resp_stream_raw(resp, 1)
+  expect_length(out, 1024)
+})
+
+test_that("can't read from a closed connection", {
+  resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
+  close(resp)
+
+  expect_false(resp_has_body(resp))
+  expect_snapshot(resp_stream_raw(resp, 1), error = TRUE)
+})
+
+# req_perform_stream() --------------------------------------------------------
+
 test_that("returns stream body; sets last request & response", {
   req <- request_test("/stream-bytes/1024")
   resp <- req_perform_stream(req, function(x) NULL)
