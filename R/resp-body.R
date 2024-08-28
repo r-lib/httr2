@@ -36,11 +36,13 @@ resp_body_raw <- function(resp) {
 
   if (!resp_has_body(resp)) {
     cli::cli_abort("Can't retrieve empty body.")
-  } else if (is_path(resp$body)) {
-    readBin(resp$body, "raw", file.size(resp$body))
-  } else {
-    resp$body
   }
+
+  switch(resp_body_type(resp),
+    disk = readBin(resp$body, "raw", file.size(resp$body)),
+    memory = resp$body,
+    stream = read_con(resp$body, "raw")
+  )
 }
 
 #' @rdname resp_body_raw
@@ -48,10 +50,20 @@ resp_body_raw <- function(resp) {
 resp_has_body <- function(resp) {
   check_response(resp)
 
+  switch(resp_body_type(resp),
+    disk = file.size(resp$body) > 0,
+    memory = length(resp$body) > 0,
+    stream = TRUE
+  )
+}
+
+resp_body_type <- function(resp) {
   if (is_path(resp$body)) {
-    file.size(resp$body) > 0
+    "disk"
+  } else if (inherits(resp$body, "connection")) {
+    "stream"
   } else {
-    length(resp$body) > 0
+    "memory"
   }
 }
 

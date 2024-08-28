@@ -113,10 +113,12 @@ print.httr2_response <- function(x, ...) {
   body <- x$body
   if (!resp_has_body(x)) {
     cli::cli_text("{.field Body}: None")
-  } else if (is_path(body)) {
-    cli::cli_text("{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)")
   } else {
-    cli::cli_text("{.field Body}: In memory ({length(body)} bytes)")
+    switch(resp_body_type(x),
+      disk = cli::cli_text("{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)"),
+      memory = cli::cli_text("{.field Body}: In memory ({length(body)} bytes)"),
+      stream = cli::cli_text("{.field Body}: Streaming connection")
+    )
   }
 
   invisible(x)

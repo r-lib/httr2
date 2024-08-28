@@ -96,10 +96,23 @@ req_perform_stream <- function(req,
   resp
 }
 
-
+#' Perform a request and return a streaming connection
+#'
+#' @description
+#' Use `req_perform_connection()` to perform a request that includes a
+#' connection as the body of the response, then use `resp_steam_sse()` and
+#' friends to retrieve data a chunk at a time..
+#'
+#' This is an alternative interface to [req_perform_stream()] that returns a
+#' connection that you can pull from data, rather than callbacks that are called
+#' as the data streams in. This is useful if you want to do other work in
+#' between streaming inputs.
+#'
+#' @inheritParams req_perform_stream
+#' @param blocking When retrieving data, should the connection block and wait
+#'   for the desired information or immediately return what it has?
 #' @export
 req_perform_connection <- function(req, blocking = TRUE) {
-
   check_request(req)
 
   handle <- req_handle(req)
@@ -110,7 +123,6 @@ req_perform_connection <- function(req, blocking = TRUE) {
   res <- curl::handle_data(handle)
   the$last_request <- req
 
-  # Return early if there's a problem
   resp <- new_response(
     method = req_method_get(req),
     url = res$url,
@@ -120,18 +132,26 @@ req_perform_connection <- function(req, blocking = TRUE) {
     request = req
   )
   the$last_repsonse <- resp
+
   if (error_is_error(req, resp)) {
+    # Read full body if there's an error
     resp$body <- read_con(stream)
-    handle_resp(req, resp)
   } else {
     resp$body <- stream
-    resp
   }
+  handle_resp(req, resp)
+
+  resp
 }
 
 # TODO: max_size
+
 #' @export
-read_sse <- function(conn) {
+#' @rdname req_perform_connection
+resp_stream_sse <- function(resp) {
+  check_streaming_response(resp)
+  conn <- resp$body
+
   lines <- character(0)
   while (TRUE) {
     line <- readLines(conn, n = 1)
@@ -153,6 +173,24 @@ read_sse <- function(conn) {
 
   return(NULL)
 }
+
+check_streaming_response <- function(resp,
+                                     arg = caller_arg(resp),
+                                     call = caller_env()) {
+
+  check_response(resp, arg = arg, call = call)
+
+  if (!inherits(resp$body)) {
+    stop_input_type(
+      resp,
+      "a streaming HTTP response object",
+      allow_null = FALSE,
+      arg = arg,
+      call = call
+    )
+  }
+}
+
 
 parse_event <- function(lines) {
   m <- regexec("([^:]*)(: ?)?(.*)", lines)
