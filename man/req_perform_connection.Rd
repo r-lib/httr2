@@ -8,7 +8,7 @@
 \alias{close.httr2_response}
 \title{Perform a request and return a streaming connection}
 \usage{
-req_perform_connection(req, blocking = TRUE)
+req_perform_connection(req, mode = "rb", blocking = TRUE)
 
 resp_stream_raw(resp, kb = 32)
 
@@ -20,6 +20,9 @@ resp_stream_sse(resp)
 }
 \arguments{
 \item{req}{A \link{request}.}
+
+\item{mode}{The mode that should be used for opening the connection. Use
+\code{"rb"} (the default) for binary, \code{"r"} for text.}
 
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has?}
@@ -42,4 +45,7 @@ This is an alternative interface to \code{\link[=req_perform_stream]{req_perform
 connection that you can pull from data, rather than callbacks that are called
 as the data streams in. This is useful if you want to do other work in
 between streaming inputs.
+
+When using \code{resp_stream_sse()}, you must call \code{req_perform_connection} with
+\code{mode = "r"} or you will get intermittent errors.
 }

@@ -93,12 +93,17 @@ req_perform_stream <- function(req,
 #' as the data streams in. This is useful if you want to do other work in
 #' between streaming inputs.
 #'
+#' When using `resp_stream_sse()`, you must call `req_perform_connection` with
+#' `mode = "r"` or you will get intermittent errors.
+#'
 #' @inheritParams req_perform_stream
 #' @param resp,con A httr2 [response].
+#' @param mode The mode that should be used for opening the connection. Use
+#'   `"rb"` (the default) for binary, `"r"` for text.
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has?
 #' @export
-req_perform_connection <- function(req, blocking = TRUE) {
+req_perform_connection <- function(req, mode = "rb", blocking = TRUE) {
   check_request(req)
   check_bool(blocking)
 
@@ -116,7 +121,7 @@ req_perform_connection <- function(req, blocking = TRUE) {
     if (!is.null(resp)) {
       close(resp$body)
     }
-    resp <- req_perform_connection1(req, handle, blocking = blocking)
+    resp <- req_perform_connection1(req, handle, mode, blocking = blocking)
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -138,11 +143,11 @@ req_perform_connection <- function(req, blocking = TRUE) {
   resp
 }
 
-req_perform_connection1 <- function(req, handle, blocking = TRUE) {
+req_perform_connection1 <- function(req, handle, mode, blocking = TRUE) {
   stream <- curl::curl(req$url, handle = handle)
 
   # Must open the stream in order to initiate the connection
-  open(stream, "rbf", blocking = blocking)
+  open(stream, mode, blocking = blocking)
   curl_data <- curl::handle_data(handle)
 
   new_response(
