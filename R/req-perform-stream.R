@@ -49,7 +49,7 @@ req_perform_stream <- function(req,
 
   resp <- req_perform_connection(req)
   stream <- resp$body
-  on.exit(close(stream))
+  withr::defer(close(stream))
 
   continue <- TRUE
   incomplete <- TRUE
@@ -74,6 +74,7 @@ req_perform_stream <- function(req,
     callback(buf)
   }
 
+  # We're done streaming so convert to bodiless response
   resp$body <- raw()
   the$last_response <- resp
   resp
@@ -99,6 +100,7 @@ req_perform_stream <- function(req,
 #' @export
 req_perform_connection <- function(req, blocking = TRUE) {
   check_request(req)
+  check_bool(blocking)
 
   handle <- req_handle(req)
 

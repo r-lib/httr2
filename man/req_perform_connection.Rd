@@ -24,7 +24,7 @@ resp_stream_sse(resp)
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has?}
 
-\item{resp, con}{An httr2 \link{response}.}
+\item{resp, con}{A httr2 \link{response}.}
 
 \item{kb}{How many kilobytes (1024 bytes) of data to read.}
 
