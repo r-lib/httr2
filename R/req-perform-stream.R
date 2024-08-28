@@ -130,6 +130,7 @@ req_perform_connection <- function(req, blocking = TRUE) {
 }
 
 # TODO: max_size
+#' @export
 read_sse <- function(conn) {
   lines <- character(0)
   while (TRUE) {
