@@ -38,6 +38,9 @@ test_that("can't read from a closed connection", {
 
   expect_false(resp_has_body(resp))
   expect_snapshot(resp_stream_raw(resp, 1), error = TRUE)
+
+  # and no error if we try to close it again
+  expect_no_error(close(resp))
 })
 
 # req_perform_stream() --------------------------------------------------------

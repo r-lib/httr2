@@ -216,9 +216,12 @@ resp_stream_sse <- function(resp) {
 #' @param ... Not used; included for compatibility with generic.
 #' @rdname req_perform_connection
 close.httr2_response <- function(con, ...) {
-  check_streaming_response(con)
+  check_response(con)
 
-  close(con$body)
+  if (inherits(con$body, "connection") && isValid(con$body)) {
+    close(con$body)
+  }
+
   invisible()
 }
 
