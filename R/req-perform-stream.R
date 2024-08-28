@@ -110,14 +110,29 @@ req_perform_connection <- function(req, blocking = TRUE) {
   res <- curl::handle_data(handle)
   the$last_request <- req
 
-  resp <- new_response(
-    method = req_method_get(req),
-    url = res$url,
-    status_code = res$status_code,
-    headers = as_headers(res$headers),
-    body = NULL,
-    request = req
-  )
+  tries <- 0
+  delay <- 0
+  max_tries <- retry_max_tries(req)
+  deadline <- Sys.time() + retry_max_seconds(req)
+  while (tries < max_tries && Sys.time() < deadline) {
+    sys_sleep(delay, "for retry backoff")
+    
+    resp <- new_response(
+      method = req_method_get(req),
+      url = res$url,
+      status_code = res$status_code,
+      headers = as_headers(res$headers),
+      body = NULL,
+      request = req
+    )
+
+    if (retry_is_transient(req, resp)) {
+      tries <- tries + 1
+      delay <- retry_after(req, resp, tries)
+    } else {
+      break
+    }
+  }
 
   if (error_is_error(req, resp)) {
     # Read full body if there's an error
