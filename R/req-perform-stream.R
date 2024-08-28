@@ -93,8 +93,15 @@ req_perform_stream <- function(req,
 #' as the data streams in. This is useful if you want to do other work in
 #' between streaming inputs.
 #'
-#' When using `resp_stream_sse()`, you must call `req_perform_connection` with
-#' `mode = "r"`, not the default of `mode = "rb"`.
+#' # `resp_stream_sse()`
+#'
+#' `resp_stream_sse()` helps work with APIs that uses the
+#' [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
+#' protocol. Each call will return one event, as a list with components
+#' `type`, `data`, and `id`.
+#'
+#' It only works with text mode connections so when calling
+#' `req_perform_connection()` you must use `mode = "text"`.
 #'
 #' @inheritParams req_perform_stream
 #' @param resp,con A httr2 [response].
