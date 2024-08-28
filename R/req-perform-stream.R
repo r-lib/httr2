@@ -94,7 +94,7 @@ req_perform_stream <- function(req,
 #' between streaming inputs.
 #'
 #' When using `resp_stream_sse()`, you must call `req_perform_connection` with
-#' `mode = "r"` or you will get intermittent errors.
+#' `mode = "r"`, not the default of `mode = "rb"`.
 #'
 #' @inheritParams req_perform_stream
 #' @param resp,con A httr2 [response].
@@ -186,6 +186,9 @@ resp_stream_lines <- function(resp, lines = 1) {
 resp_stream_sse <- function(resp) {
   check_streaming_response(resp)
   conn <- resp$body
+  if (!identical(summary(conn)$text, "text")) {
+    abort("`resp_stream_sse` requires a `resp` that was created with req_perform_connection(mode=\"r\")")
+  }
 
   lines <- character(0)
   while (TRUE) {
