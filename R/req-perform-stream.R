@@ -129,6 +129,51 @@ req_perform_connection <- function(req, blocking = TRUE) {
   }
 }
 
+# TODO: max_size
+read_sse <- function(conn) {
+  lines <- character(0)
+  while (TRUE) {
+    line <- readLines(conn, n = 1)
+    if (length(line) == 0) {
+      break
+    }
+    if (line == "") {
+      # \n\n detected, end of event
+      return(parse_event(lines))
+    }
+    lines <- c(lines, line)
+  }
+
+  if (length(lines) > 0) {
+    # We have a partial event, put it back while we wait
+    # for more
+    pushBack(lines, conn)
+  }
+
+  return(NULL)
+}
+
+parse_event <- function(lines) {
+  m <- regexec("([^:]*)(: ?)?(.*)", lines)
+  matches <- regmatches(lines, m)
+  keys <- c("event", vapply(matches, \(x) x[2], character(1)))
+  values <- c("message", vapply(matches, \(x) x[4], character(1)))
+
+  remove_dupes <- duplicated(keys, fromLast = TRUE) & keys != "data"
+  keys <- keys[!remove_dupes]
+  values <- values[!remove_dupes]
+
+  event_type <- values[keys == "event"]
+  data <- values[keys == "data"]
+  id <- values[keys == "id"]
+
+  list(
+    type = event_type,
+    data = data,
+    id = id
+  )
+}
+
 as_round_function <- function(round = c("byte", "line"),
                               error_call = caller_env()) {
   if (is.function(round)) {
