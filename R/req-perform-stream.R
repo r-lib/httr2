@@ -103,28 +103,20 @@ req_perform_connection <- function(req, blocking = TRUE) {
   check_bool(blocking)
 
   handle <- req_handle(req)
-
-  stream <- curl::curl(req$url, handle = handle)
-  open(stream, "rbf", blocking = blocking)
-
-  res <- curl::handle_data(handle)
   the$last_request <- req
 
   tries <- 0
   delay <- 0
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
-  while (tries < max_tries && Sys.time() < deadline) {
+  resp <- NULL
+  while (tries <= max_tries && Sys.time() < deadline) {
     sys_sleep(delay, "for retry backoff")
-    
-    resp <- new_response(
-      method = req_method_get(req),
-      url = res$url,
-      status_code = res$status_code,
-      headers = as_headers(res$headers),
-      body = NULL,
-      request = req
-    )
+
+    if (!is.null(resp)) {
+      close(resp$body)
+    }
+    resp <- req_perform_connection1(req, handle, blocking = blocking)
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -136,15 +128,31 @@ req_perform_connection <- function(req, blocking = TRUE) {
 
   if (error_is_error(req, resp)) {
     # Read full body if there's an error
-    resp$body <- read_con(stream)
-    close(stream)
-  } else {
-    resp$body <- stream
+    conn <- resp$body
+    resp$body <- read_con(conn)
+    close(conn)
   }
   the$last_response <- resp
   handle_resp(req, resp)
 
   resp
+}
+
+req_perform_connection1 <- function(req, handle, blocking = TRUE) {
+  stream <- curl::curl(req$url, handle = handle)
+
+  # Must open the stream in order to initiate the connection
+  open(stream, "rbf", blocking = blocking)
+  curl_data <- curl::handle_data(handle)
+
+  new_response(
+    method = req_method_get(req),
+    url = curl_data$url,
+    status_code = curl_data$status_code,
+    headers = as_headers(curl_data$headers),
+    body = stream,
+    request = req
+  )
 }
 
 #' @export
