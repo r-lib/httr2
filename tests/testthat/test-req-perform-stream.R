@@ -44,6 +44,7 @@ test_that("can't read from a closed connection", {
 })
 
 test_that("can feed sse events one at a time", {
+  skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
