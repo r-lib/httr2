@@ -36,6 +36,13 @@
       GET https://example.com
       Status: 200 OK
       Body: On disk 'path-content' (15 bytes)
+    Code
+      response(200, body = con)
+    Message
+      <httr2_response>
+      GET https://example.com
+      Status: 200 OK
+      Body: Streaming connection
 
 # check_response produces helpful error
 

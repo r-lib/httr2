@@ -114,7 +114,7 @@ cache_get <- function(req) {
 }
 
 cache_set <- function(req, resp) {
-  if (is_path(resp$body)) {
+  if (resp_body_type(resp) == "disk") {
     body_path <- req_cache_path(req, ".body")
     file.copy(resp$body, body_path, overwrite = TRUE)
     resp$body <- new_path(body_path)
@@ -246,11 +246,12 @@ cache_body <- function(cached_resp, path = NULL) {
     return(body)
   }
 
-  if (is_path(body)) {
-    file.copy(body, path, overwrite = TRUE)
-  } else {
-    writeBin(body, path)
-  }
+  switch(resp_body_type(cached_resp),
+    disk = file.copy(body, path, overwrite = TRUE),
+    memory = writeBin(body, path),
+    stream = cli::cli_abort("Invalid body type", .internal = TRUE)
+  )
+
   new_path(path)
 }
 
@@ -268,6 +269,10 @@ resp_is_cacheable <- function(resp, control = NULL) {
   }
 
   if (resp_status(resp) != 200L) {
+    return(FALSE)
+  }
+
+  if (resp_body_type(resp) == "stream") {
     return(FALSE)
   }
 
