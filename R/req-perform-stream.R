@@ -137,11 +137,7 @@ resp_stream_raw <- function(resp, kb = 32) {
   check_streaming_response(resp)
   conn <- resp$body
 
-  if (isIncomplete(conn)) {
-    readBin(conn, raw(), kb * 1024)
-  } else {
-    raw()
-  }
+  readBin(conn, raw(), kb * 1024)
 }
 
 #' @export
@@ -151,11 +147,7 @@ resp_stream_lines <- function(resp, lines = 1) {
   check_streaming_response(resp)
   conn <- resp$body
 
-  if (isIncomplete(conn)) {
-    readLines(conn, n = lines)
-  } else {
-    character()
-  }
+  readLines(conn, n = lines)
 }
 
 #' @export

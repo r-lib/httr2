@@ -41,7 +41,11 @@ resp_body_raw <- function(resp) {
   switch(resp_body_type(resp),
     disk = readBin(resp$body, "raw", file.size(resp$body)),
     memory = resp$body,
-    stream = read_con(resp$body, "raw")
+    stream = {
+      out <- read_con(resp$body)
+      close(resp)
+      out
+    }
   )
 }
 
