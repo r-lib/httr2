@@ -235,6 +235,10 @@ Shiny Server is not compatible with Shiny OAuth apps because it
 which are essential for maintaining authentication.
 
 ## Understanding the OAuth Flow in Shiny with httr2
+The OAuth flow is triggered by http handlers which listen to login, logout 
+and callback endpoints as shown in the following figure:
+
+![](images/shiny_app_oauth_handlers_and_flow.png)
 
 ### Step 0: User visits a Shiny OAuth App
 When a user accesses the app, `oauth_shiny_app()` checks for an existing
