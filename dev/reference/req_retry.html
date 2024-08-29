@@ -147,7 +147,9 @@ prefer a different strategy, you can override the default with <code>backoff</co
 <dd><p>Cap the maximum number of attempts with
 <code>max_tries</code> or the total elapsed time from the first request with
 <code>max_seconds</code>. If neither option is supplied (the default), <code><a href="req_perform.html">req_perform()</a></code>
-will not retry.</p></dd>
+will not retry.</p>
+<p><code>max_tries</code> is the total number of attempts make, so this should always
+be greater than one.`</p></dd>
 
 
 <dt id="arg-is-transient">is_transient<a class="anchor" aria-label="anchor" href="#arg-is-transient"></a></dt>
