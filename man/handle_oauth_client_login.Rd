@@ -4,12 +4,18 @@
 \alias{handle_oauth_client_login}
 \title{Handle OAuth Client Login}
 \usage{
-handle_oauth_client_login(req, client_config)
+handle_oauth_client_login(req, client_config, require_auth, cookie, key)
 }
 \arguments{
 \item{req}{A \code{shiny} request object.}
 
 \item{client_config}{A list of client configurations used for OAuth.}
+
+\item{require_auth}{Logical, whether authentication is required.}
+
+\item{cookie}{The name of the cookie where the app's token is stored.}
+
+\item{key}{A secret key used to encrypt and decrypt tokens.}
 }
 \value{
 An HTTP response object or \code{NULL} if no client is matched.

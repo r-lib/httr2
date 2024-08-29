@@ -117,12 +117,15 @@ handle_oauth_app_logout <- function(req, client_config, logout_path, cookie, log
 #'
 #' @param req A `shiny` request object.
 #' @param client_config A list of client configurations used for OAuth.
+#' @param require_auth Logical, whether authentication is required.
+#' @param cookie The name of the cookie where the app's token is stored.
+#' @param key A secret key used to encrypt and decrypt tokens.
 #'
 #' @return An HTTP response object or `NULL` if no client is matched.
 #' @keywords internal
-handle_oauth_client_login <- function(req, client_config) {
+handle_oauth_client_login <- function(req, client_config, require_auth, cookie, key) {
   for (client in client_config) {
-    resp <- handle_oauth_client_login_redirect(req, client)
+    resp <- handle_oauth_client_login_redirect(req, client, require_auth, cookie, key)
     if (!is.null(resp)) {
       return(resp)
     }
@@ -131,18 +134,28 @@ handle_oauth_client_login <- function(req, client_config) {
 
 #' Handle OAuth Client Login Redirect
 #'
-#' This function handles redirection to the OAuth authorization URL for a
-#' specific client. It manages PKCE (Proof Key for Code Exchange) if enabled,
-#' and sets up necessary cookies before redirecting the user.
+#' This function is invoked when the user is redirected to a client login
+#' endpoint set by `login_path`. It handles redirection to the OAuth
+#' authorization URL for a specific client. It manages state and PKCE (if
+#' enabled) by setting cookies when redirecting the user to the OAuth endpoint.
 #'
 #' @param req A `shiny` request object.
 #' @param client A single client configuration object.
+#' @param require_auth Logical, whether authentication is required.
+#' @param cookie The name of the cookie where the app's token is stored.
+#' @param key A secret key used to encrypt and decrypt tokens.
 #'
 #' @return An HTTP response object or `NULL` if the request path does not match
 #'   the client's login path.
 #' @keywords internal
-handle_oauth_client_login_redirect <- function(req, client) {
+handle_oauth_client_login_redirect <- function(req, client, require_auth, cookie, key) {
   if (sub("^/", "", req$PATH_INFO) != client$login_path) {
+    return(NULL)
+  }
+
+  # Don't accept request for non-auth login endpoints if user is not authenticated
+  has_auth <- !is.null(oauth_shiny_get_app_token_from_request(req, cookie, key))
+  if(require_auth && !has_auth && !client$auth_provider) {
     return(NULL)
   }
 
@@ -313,12 +326,15 @@ handle_oauth_client_callback <- function(req, client_config, require_auth, cooki
 #'
 #' @param req A `shiny` request object.
 #' @param client_config A list of client configurations used for OAuth.
+#' @param require_auth Logical, whether authentication is required.
+#' @param cookie The name of the cookie where the app's token is stored.
+#' @param key A secret key used to encrypt and decrypt tokens.
 #'
 #' @return An HTTP response object or `NULL` if no client is matched.
 #' @keywords internal
-handle_oauth_client_logout <- function(req, client_config) {
+handle_oauth_client_logout <- function(req, client_config, require_auth, cookie, key) {
   for (client in client_config) {
-    resp <- handle_oauth_client_logout_delete_cookies(req, client)
+    resp <- handle_oauth_client_logout_delete_cookies(req, client, require_auth, cookie, key)
     if (!is.null(resp)) {
       return(resp)
     }
@@ -332,12 +348,20 @@ handle_oauth_client_logout <- function(req, client_config) {
 #'
 #' @param req A `shiny` request object.
 #' @param client A single client configuration object.
+#' @param require_auth Logical, whether authentication is required.
+#' @param cookie The name of the cookie where the app's token is stored.
+#' @param key A secret key used to encrypt and decrypt tokens.
 #'
 #' @return An HTTP response object or `NULL` if the request path does not match
 #'   the client's logout path.
 #' @keywords internal
-handle_oauth_client_logout_delete_cookies <- function(req, client) {
+handle_oauth_client_logout_delete_cookies <- function(req, client, require_auth, cookie, key) {
   if (sub("^/", "", req$PATH_INFO) != client$logout_path) {
+    return(NULL)
+  }
+
+  has_auth <- !is.null(oauth_shiny_get_app_token_from_request(req, cookie, key))
+  if(require_auth && !has_auth) {
     return(NULL)
   }
 

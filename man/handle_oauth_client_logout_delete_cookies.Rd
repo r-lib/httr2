@@ -4,12 +4,24 @@
 \alias{handle_oauth_client_logout_delete_cookies}
 \title{Handle OAuth Client Logout - Delete Cookies}
 \usage{
-handle_oauth_client_logout_delete_cookies(req, client)
+handle_oauth_client_logout_delete_cookies(
+  req,
+  client,
+  require_auth,
+  cookie,
+  key
+)
 }
 \arguments{
 \item{req}{A \code{shiny} request object.}
 
 \item{client}{A single client configuration object.}
+
+\item{require_auth}{Logical, whether authentication is required.}
+
+\item{cookie}{The name of the cookie where the app's token is stored.}
+
+\item{key}{A secret key used to encrypt and decrypt tokens.}
 }
 \value{
 An HTTP response object or \code{NULL} if the request path does not match

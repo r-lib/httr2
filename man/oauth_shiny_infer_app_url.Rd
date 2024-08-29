@@ -15,7 +15,8 @@ The app url.
 \description{
 Inferring the correct app url on the server requires some work.
 This function attempts to guess the correct server url, but may fail outside
-of tested hosts (´127.0.0.1\code{and}shinyapps.io\verb{). To be sure, set the environment variable }HTTR2_OAUTH_APP_URL` explicitly. Logic inspired by
+of tested hosts (\verb{127.0.0.1} and \code{shinyapps.io}). To be sure, set the
+environment variable \code{HTTR2_OAUTH_APP_URL} explicitly. Logic inspired by
 \href{r4ds/shinyslack}{https://github.com/r4ds/shinyslack}.
 }
 \keyword{internal}

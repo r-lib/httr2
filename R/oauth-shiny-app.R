@@ -92,7 +92,8 @@ oauth_shiny_app <- function(
   # This function takes the app object and transforms/decorates it to create a
   # new app object. The new app object will wrap the original ui/server with
   # authentication logic, so that the original ui/server is not invoked unless
-  # and until the user has a valid Google token.
+  # and until the user has an app token from an auth provider if `require_auth`
+  # is `TRUE`.
 
   check_installed("jose")
   check_installed("sodium")
@@ -119,12 +120,12 @@ oauth_shiny_app <- function(
     # request, and either HTML tag objects or a shiny::httpResponse if it
     # decided to handle it.
     resp <-
-      # The logout_path revokes all app and client tokens and deletes cookies
+      # The logout_path revokes all app and access tokens and deletes cookies
       handle_oauth_app_logout(req, client_config, logout_path, cookie_name, logout_ui) %||%
-      # The client logout_path revokes a single client token and deletes cookies
-      handle_oauth_client_logout(req, client_config) %||%
+      # The client logout_path revokes a single access token and deletes cookies
+      handle_oauth_client_logout(req, client_config, require_auth, cookie_name, key) %||%
       # The client login_path handles redirection to the specific client
-      handle_oauth_client_login(req, client_config) %||%
+      handle_oauth_client_login(req, client_config, require_auth, cookie_name, key) %||%
       # Handles callback from oauth client (after login)
       handle_oauth_client_callback(req, client_config, require_auth, cookie_name, key, token_validity) %||%
       # Handles requests that have good cookies or does not require auth
@@ -178,7 +179,7 @@ oauth_shiny_app <- function(
 #'
 #' @description Inferring the correct app url on the server requires some work.
 #' This function attempts to guess the correct server url, but may fail outside
-#' of tested hosts (´127.0.0.1` and `shinyapps.io`). To be sure, set the
+#' of tested hosts (`127.0.0.1` and `shinyapps.io`). To be sure, set the
 #' environment variable `HTTR2_OAUTH_APP_URL` explicitly. Logic inspired by
 #' [https://github.com/r4ds/shinyslack](r4ds/shinyslack).
 #' @param req A request object.

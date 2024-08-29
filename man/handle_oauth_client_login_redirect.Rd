@@ -4,20 +4,27 @@
 \alias{handle_oauth_client_login_redirect}
 \title{Handle OAuth Client Login Redirect}
 \usage{
-handle_oauth_client_login_redirect(req, client)
+handle_oauth_client_login_redirect(req, client, require_auth, cookie, key)
 }
 \arguments{
 \item{req}{A \code{shiny} request object.}
 
 \item{client}{A single client configuration object.}
+
+\item{require_auth}{Logical, whether authentication is required.}
+
+\item{cookie}{The name of the cookie where the app's token is stored.}
+
+\item{key}{A secret key used to encrypt and decrypt tokens.}
 }
 \value{
 An HTTP response object or \code{NULL} if the request path does not match
 the client's login path.
 }
 \description{
-This function handles redirection to the OAuth authorization URL for a
-specific client. It manages PKCE (Proof Key for Code Exchange) if enabled,
-and sets up necessary cookies before redirecting the user.
+This function is invoked when the user is redirected to a client login
+endpoint set by \code{login_path}. It handles redirection to the OAuth
+authorization URL for a specific client. It manages state and PKCE (if
+enabled) by setting cookies when redirecting the user to the OAuth endpoint.
 }
 \keyword{internal}
