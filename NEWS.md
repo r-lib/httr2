@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_retry()` now correctly tries `max_tries` times, rather than `max_tries - 1`.
 * New `req_perform_connection()` for working with streaming data. Unlike `req_perform_stream()` which uses callbacks, `req_perform_connection()` returns a regular response object with a connection as the body. It's paired with `resp_stream_bytes()`, `resp_stream_lines()`, and `resp_stream_sse()` that allows you to stream chunks as you want them. Unlike `req_perform_stream()` it supports `req_retry()` (with @jcheng5, #519).
 
 # httr2 1.0.3

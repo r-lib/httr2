@@ -54,6 +54,34 @@ test_that("persistent HTTP errors only get single attempt", {
   expect_equal(cnd$n, 1)
 })
 
+test_that("can retry a transient error", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/retry", function(req, res) {
+    i <- res$app$locals$i %||% 1
+    if (i == 1) {
+      res$app$locals$i <- 2
+      res$
+        set_status(429)$
+        set_header("retry-after", 0)$
+        send_json(list(status = "waiting"))
+    } else {
+      res$send_json(list(status = "done"))
+    }
+  })
+
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/retry")) %>%
+    req_retry(max_tries = 2)
+
+  cnd <- catch_cnd(resp <- req_perform(req), "httr2_retry")
+  expect_s3_class(cnd, "httr2_retry")
+  expect_equal(cnd$tries, 1)
+  expect_equal(cnd$delay, 0)
+})
+
+
 test_that("repeated transient errors still fail", {
   req <- request_test("/status/:status", status = 429) %>%
     req_retry(max_tries = 3, backoff = ~0)
@@ -87,7 +115,7 @@ test_that("can retrieve last request and response", {
 })
 
 test_that("can last response is NULL if it fails", {
-  req <- request("frooble")
+  req <- request("frooble") %>% req_timeout(0.1)
   try(req_perform(req), silent = TRUE)
 
   expect_equal(last_request(), req)

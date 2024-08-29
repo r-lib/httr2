@@ -134,6 +134,7 @@ req_perform <- function(
     } else if (retry_is_transient(req, resp)) {
       tries <- tries + 1
       delay <- retry_after(req, resp, tries)
+      signal(class = "httr2_retry", tries = tries, delay = delay)
     } else {
       # done
       break

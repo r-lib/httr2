@@ -66,6 +66,15 @@ test_that("useful message if `after` wrong", {
   expect_snapshot(req_perform(req), error = TRUE)
 })
 
+test_that("validates its inputs", {
+  req <- new_request("http://example.com")
+
+  expect_snapshot(error = TRUE, {
+    req_retry(req, max_tries = 1)
+    req_retry(req, max_seconds = "x")
+  })
+})
+
 test_that("is_number_or_na implemented correctly", {
   expect_equal(is_number_or_na(1), TRUE)
   expect_equal(is_number_or_na(NA_real_), TRUE)
