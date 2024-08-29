@@ -105,7 +105,7 @@ req_perform <- function(
   throttle_delay(req)
 
   delay <- 0
-  while (tries < max_tries && Sys.time() < deadline) {
+  while (tries <= max_tries && Sys.time() < deadline) {
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
