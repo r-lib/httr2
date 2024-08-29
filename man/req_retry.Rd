@@ -19,7 +19,10 @@ req_retry(
 \item{max_tries, max_seconds}{Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with
 \code{max_seconds}. If neither option is supplied (the default), \code{\link[=req_perform]{req_perform()}}
-will not retry.}
+will not retry.
+
+\code{max_tries} is the total number of attempts make, so this should always
+be greater than one.`}
 
 \item{is_transient}{A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not

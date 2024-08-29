@@ -137,7 +137,7 @@ req_perform_connection <- function(req,
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
   resp <- NULL
-  while (tries <= max_tries && Sys.time() < deadline) {
+  while (tries < max_tries && Sys.time() < deadline) {
     sys_sleep(delay, "for retry backoff")
 
     if (!is.null(resp)) {

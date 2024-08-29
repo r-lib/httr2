@@ -33,9 +33,12 @@
 #'
 #' @inheritParams req_perform
 #' @param max_tries,max_seconds Cap the maximum number of attempts with
-#'  `max_tries` or the total elapsed time from the first request with
-#'  `max_seconds`. If neither option is supplied (the default), [req_perform()]
-#'  will not retry.
+#'   `max_tries` or the total elapsed time from the first request with
+#'   `max_seconds`. If neither option is supplied (the default), [req_perform()]
+#'   will not retry.
+#'
+#'   `max_tries` is the total number of attempts make, so this should always
+#'   be greater than one.`
 #' @param is_transient A predicate function that takes a single argument
 #'   (the response) and returns `TRUE` or `FALSE` specifying whether or not
 #'   the response represents a transient error.
@@ -81,6 +84,8 @@ req_retry <- function(req,
                       backoff = NULL,
                       after = NULL) {
   check_request(req)
+  check_number_whole(max_tries, min = 2, allow_null = TRUE)
+  check_number_whole(max_seconds, min = 0, allow_null = TRUE)
 
   req_policies(req,
     retry_max_tries = max_tries,
