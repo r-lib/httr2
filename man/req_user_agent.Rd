@@ -7,7 +7,7 @@
 req_user_agent(req, string = NULL)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{string}{String to be sent in the \code{User-Agent} header. If \code{NULL},
 will user default.}

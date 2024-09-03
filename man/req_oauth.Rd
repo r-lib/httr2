@@ -7,7 +7,7 @@
 req_oauth(req, flow, flow_params, cache)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{flow}{An \code{oauth_flow_} function used to generate the access token.}
 

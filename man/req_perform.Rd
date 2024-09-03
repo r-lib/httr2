@@ -13,7 +13,7 @@ req_perform(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{path}{Optionally, path to save body of the response. This is useful
 for large responses since it avoids storing the response in memory.}

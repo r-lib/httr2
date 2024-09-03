@@ -29,7 +29,7 @@
 #' progress bar off (and just show the total time to wait) by setting
 #' `options(httr2_progress = FALSE)`.
 #'
-#' @param req A [request].
+#' @param req A httr2 [request] object.
 #' @param path Optionally, path to save body of the response. This is useful
 #'   for large responses since it avoids storing the response in memory.
 #' @param mock A mocking function. If supplied, this function is called

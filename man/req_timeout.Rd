@@ -7,7 +7,7 @@
 req_timeout(req, seconds)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{seconds}{Maximum number of seconds to wait}
 }

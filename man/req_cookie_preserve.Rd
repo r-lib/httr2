@@ -7,7 +7,7 @@
 req_cookie_preserve(req, path)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{path}{A path to a file where cookies will be read from before and updated after the request.}
 }

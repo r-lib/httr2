@@ -19,7 +19,7 @@ resp_stream_sse(resp)
 \method{close}{httr2_response}(con, ...)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{mode}{The mode that should be used for opening the connection.}
 

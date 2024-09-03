@@ -16,7 +16,7 @@ req_url_path(req, ...)
 req_url_path_append(req, ...)
 }
 \arguments{
-\item{req, .req}{A \link{request}.}
+\item{req, .req}{A httr2 \link{request} object.}
 
 \item{url}{New URL; completely replaces existing.}
 

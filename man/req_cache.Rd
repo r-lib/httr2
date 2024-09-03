@@ -15,7 +15,7 @@ req_cache(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{path}{Path to cache directory.
 

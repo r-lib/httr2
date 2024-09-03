@@ -7,7 +7,7 @@
 req_error(req, is_error = NULL, body = NULL)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{is_error}{A predicate function that takes a single argument (the
 response) and returns \code{TRUE} or \code{FALSE} indicating whether or not an

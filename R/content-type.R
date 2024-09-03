@@ -4,7 +4,7 @@
 #' the response body. This function checks that the content type of the response
 #' is as expected and fails otherwise.
 #'
-#' @param resp A response object.
+#' @param resp A httr2 [response] object.
 #' @param valid_types A character vector of valid MIME types. Should only
 #'   be specified with `type/subtype`.
 #' @param valid_suffix A string given an "structured media type" suffix.

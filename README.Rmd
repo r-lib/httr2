@@ -51,6 +51,9 @@ req |> req_headers("Accept" = "application/json")
 # Add a body, turning it into a POST
 req |> req_body_json(list(x = 1, y = 2))
 
+# Modify the path in the url
+req |> req_url_path(path = "path/to/my/file")
+
 # Automatically retry if the request fails
 req |> req_retry(max_tries = 5)
 
