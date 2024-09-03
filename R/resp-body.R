@@ -125,7 +125,8 @@ resp_body_html <- function(resp, check_type = TRUE, ...) {
     check_type = check_type
   )
 
-  xml2::read_html(resp$body, ...)
+  body <- resp_body_raw(resp)
+  xml2::read_html(body, ...)
 }
 
 #' @rdname resp_body_raw
@@ -146,7 +147,8 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
     check_type = check_type
   )
 
-  resp$cache[[key]] <- xml2::read_xml(resp$body, ...)
+  body <- resp_body_raw(resp)
+  resp$cache[[key]] <- xml2::read_xml(body, ...)
   resp$cache[[key]]
 }
 
