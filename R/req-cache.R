@@ -174,7 +174,7 @@ cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
 # Hooks for req_perform -----------------------------------------------------
 
 # Can return request or response
-cache_pre_fetch <- function(req) {
+cache_pre_fetch <- function(req, path = NULL) {
   if (!cache_active(req)) {
     return(req)
   }
@@ -192,7 +192,10 @@ cache_pre_fetch <- function(req) {
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
     signal("", "httr2_cache_cached")
     if (debug) cli::cli_text("Cached value is fresh; using response from cache")
-    cached_resp
+
+    resp <- cached_resp
+    resp$body <- cache_body(cached_resp, path)
+    resp
   } else {
     if (debug) cli::cli_text("Cached value is stale; checking for updates")
     req_headers(req,
@@ -241,7 +244,6 @@ cache_body <- function(cached_resp, path = NULL) {
   check_response(cached_resp)
 
   body <- cached_resp$body
-
   if (is.null(path)) {
     return(body)
   }

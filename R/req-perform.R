@@ -89,7 +89,7 @@ req_perform <- function(
   req <- req_verbosity(req, verbosity)
   req <- auth_oauth_sign(req)
 
-  req <- cache_pre_fetch(req)
+  req <- cache_pre_fetch(req, path)
   if (is_response(req)) {
     return(req)
   }

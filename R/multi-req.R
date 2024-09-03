@@ -162,7 +162,7 @@ Performance <- R6Class("Performance", public = list(
     self$error_call <- error_call
 
     req <- auth_oauth_sign(req)
-    req <- cache_pre_fetch(req)
+    req <- cache_pre_fetch(req, path)
     if (is_response(req)) {
       self$resp <- req
     } else {
