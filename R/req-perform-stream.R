@@ -329,11 +329,24 @@ as_round_function <- function(round = c("byte", "line"),
 }
 
 read_con <- function(con, buffer = 32 * 1024) {
-  bytes <- raw()
-  repeat {
-    new <- readBin(con, "raw", n = buffer)
-    if (length(new) == 0) break
-    bytes <- c(bytes, new)
+  if (identical(summary(con)$text, "text")) {
+    # The connection is in text mode; readBin will error. So we must read it as
+    # characters and then convert to bytes.
+    chars <- character()
+    repeat {
+      new <- readChar(con, nchars = buffer)
+      if (length(new) == 0) break
+      chars <- c(chars, new)
+    }
+    # TODO: Seems wrong that there's no mention of encodings here??
+    bytes <- charToRaw(chars)
+  } else {
+    bytes <- raw()
+    repeat {
+      new <- readBin(con, "raw", n = buffer)
+      if (length(new) == 0) break
+      bytes <- c(bytes, new)
+    }
   }
   if (length(bytes) == 0) {
     NULL
