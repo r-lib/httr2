@@ -10,7 +10,7 @@ resp_content_type(resp)
 resp_encoding(resp)
 }
 \arguments{
-\item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 }
 \value{
 A string. If no content type is specified \code{resp_content_type()}

@@ -7,7 +7,7 @@
 req_template(req, template, ..., .env = parent.frame())
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{template}{A template string which consists of a optional HTTP method
 and a path containing variables labelled like either \verb{:foo} or \code{{foo}}.}

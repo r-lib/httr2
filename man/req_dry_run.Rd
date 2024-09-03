@@ -7,7 +7,7 @@
 req_dry_run(req, quiet = FALSE, redact_headers = TRUE)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{quiet}{If \code{TRUE} doesn't print anything.}
 

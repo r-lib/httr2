@@ -13,9 +13,19 @@ request(base_url)
 An HTTP request: an S3 list with class \code{httr2_request}.
 }
 \description{
-To perform a HTTP request, first create a request object with \code{request()},
-then define its behaviour with \code{req_} functions, then perform the request
-and fetch the response with \code{\link[=req_perform]{req_perform()}}.
+There are three steps needed to perform a HTTP request with httr2:
+\enumerate{
+\item Create a request object with \code{request(url)} (this function).
+\item Define its behaviour with \code{req_} functions, e.g.:
+\itemize{
+\item \code{\link[=req_headers]{req_headers()}} to set header values.
+\item \code{\link[=req_url_path]{req_url_path()}} and friends to modify the url.
+\item \code{\link[=req_body_json]{req_body_json()}} and friends to add a body.
+\item \code{\link[=req_auth_basic]{req_auth_basic()}} to perform basic HTTP authentication.
+\item \code{\link[=req_oauth_auth_code]{req_oauth_auth_code()}} to use the OAuth auth code flow.
+}
+\item Perform the request and fetch the response with \code{\link[=req_perform]{req_perform()}}.
+}
 }
 \examples{
 request("http://r-project.org")

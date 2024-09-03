@@ -7,7 +7,7 @@
 req_auth_basic(req, username, password = NULL)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{username}{User name.}
 

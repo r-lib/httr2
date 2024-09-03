@@ -14,7 +14,7 @@ req_retry(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{max_tries, max_seconds}{Cap the maximum number of attempts with
 \code{max_tries} or the total elapsed time from the first request with

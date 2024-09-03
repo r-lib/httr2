@@ -15,7 +15,7 @@ req_verbose(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{header_req, header_resp}{Show request/response headers?}
 

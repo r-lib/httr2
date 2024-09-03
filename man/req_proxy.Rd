@@ -14,7 +14,7 @@ req_proxy(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{url, port}{Location of proxy.}
 

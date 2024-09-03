@@ -55,6 +55,12 @@ req |> req_body_json(list(x = 1, y = 2))
 #> POST https://r-project.org
 #> Body: json encoded data
 
+# Modify the path in the url
+req |> req_url_path(path = "path/to/my/file")
+#> <httr2_request>
+#> GET https://r-project.org/path/to/my/file
+#> Body: empty
+
 # Automatically retry if the request fails
 req |> req_retry(max_tries = 5)
 #> <httr2_request>
@@ -76,7 +82,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/1.0.2.9000 r-curl/5.2.1 libcurl/8.6.0
+#> User-Agent: httr2/1.0.3.9000 r-curl/5.2.1 libcurl/8.6.0
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```

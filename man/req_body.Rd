@@ -30,7 +30,7 @@ req_body_form(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
 req_body_multipart(.req, ...)
 }
 \arguments{
-\item{req, .req}{A \link{request}.}
+\item{req, .req}{A httr2 \link{request} object.}
 
 \item{body}{A literal string or raw vector to send as body.}
 

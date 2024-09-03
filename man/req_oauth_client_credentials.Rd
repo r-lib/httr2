@@ -10,7 +10,7 @@ req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
 oauth_flow_client_credentials(client, scope = NULL, token_params = list())
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 

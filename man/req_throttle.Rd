@@ -7,7 +7,7 @@
 req_throttle(req, rate, realm = NULL)
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{rate}{Maximum rate, i.e. maximum number of requests per second.
 Usually easiest expressed as a fraction,

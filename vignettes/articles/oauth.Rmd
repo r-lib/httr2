@@ -72,7 +72,7 @@ To create a client, you'll need to first register for a developer account on the
 In most cases this is easy, totally automated, and only takes a couple of minutes.
 That will give you access to some sort of developer portal which you can then use to register a new OAuth app (aka a client).
 This process varies from API to API (it's normal to spend some time hunting through the docs and settings), but at the end of it you'll get a client id (another random string of numbers and letters).
-Sometimes the client id is all you need, and you can create an httr2 client with `oauth_client()`, e.g.:
+Sometimes the client id is all you need, and you can create a httr2 client with `oauth_client()`, e.g.:
 
 ```{r}
 client <- oauth_client(

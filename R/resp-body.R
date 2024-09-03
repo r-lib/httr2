@@ -13,7 +13,7 @@
 #' check with `check_type = FALSE`. These two functions also cache the parsed
 #' object so the second and subsequent calls are low-cost.
 #'
-#' @param resp A response object.
+#' @inheritParams resp_headers
 #' @returns
 #' * `resp_body_raw()` returns a raw vector.
 #' * `resp_body_string()` returns a string.

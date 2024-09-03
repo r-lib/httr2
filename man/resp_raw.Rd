@@ -7,7 +7,7 @@
 resp_raw(resp)
 }
 \arguments{
-\item{resp}{An HTTP \link{response}}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 }
 \value{
 \code{resp} (invisibly).

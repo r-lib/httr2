@@ -5,7 +5,7 @@
 #' * `resp_header()` retrieves a single header.
 #' * `resp_header_exists()` checks if a header is present.
 #'
-#' @param resp An HTTP response object, as created by [req_perform()].
+#' @param resp A httr2 [response] object, created by [req_perform()].
 #' @param filter A regular expression used to filter the header names.
 #'   `NULL`, the default, returns all headers.
 #' @return

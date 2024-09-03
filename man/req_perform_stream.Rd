@@ -14,7 +14,7 @@ req_perform_stream(
 )
 }
 \arguments{
-\item{req}{A \link{request}.}
+\item{req}{A httr2 \link{request} object.}
 
 \item{callback}{A single argument callback function. It will be called
 repeatedly with a raw vector whenever there is at least \code{buffer_kb}

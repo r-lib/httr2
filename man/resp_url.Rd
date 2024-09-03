@@ -16,7 +16,7 @@ resp_url_query(resp, name, default = NULL)
 resp_url_queries(resp)
 }
 \arguments{
-\item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{name}{Query parameter name.}
 
