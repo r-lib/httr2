@@ -2,21 +2,9 @@
 % Please edit documentation in R/req-perform-stream.R
 \name{req_perform_connection}
 \alias{req_perform_connection}
-\alias{resp_stream_raw}
-\alias{resp_stream_lines}
-\alias{resp_stream_sse}
-\alias{close.httr2_response}
 \title{Perform a request and return a streaming connection}
 \usage{
 req_perform_connection(req, mode = c("binary", "text"), blocking = TRUE)
-
-resp_stream_raw(resp, kb = 32)
-
-resp_stream_lines(resp, lines = 1)
-
-resp_stream_sse(resp)
-
-\method{close}{httr2_response}(con, ...)
 }
 \arguments{
 \item{req}{A \link{request}.}
@@ -25,36 +13,21 @@ resp_stream_sse(resp)
 
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has?}
-
-\item{resp, con}{A httr2 \link{response}.}
-
-\item{kb}{How many kilobytes (1024 bytes) of data to read.}
-
-\item{lines}{How many lines to read}
-
-\item{...}{Not used; included for compatibility with generic.}
 }
 \description{
-Use \code{req_perform_connection()} to perform a request that includes a
-connection as the body of the response, then \code{resp_stream_raw()},
-\code{resp_stream_lines()}, or \code{resp_stream_sse()} to retrieve data a chunk at a
-timen, and finish by closing the connection with \code{close()}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+Use \code{req_perform_connection()} to perform a streaming request where the
+reponse inludes a connnection as the body. You can then use
+\code{\link[=resp_stream_raw]{resp_stream_raw()}}, \code{\link[=resp_stream_lines]{resp_stream_lines()}}, or \code{\link[=resp_stream_sse]{resp_stream_sse()}} to
+retrieve data a chunk at a time. Always finish up by closing the
+connection by calling \code{close()}.
 
 This is an alternative interface to \code{\link[=req_perform_stream]{req_perform_stream()}} that returns a
-connection that you can pull from data, rather than callbacks that are called
-as the data streams in. This is useful if you want to do other work in
-between streaming inputs.
+connection that you can use to pull the data, rather than providing callbacks
+that the data is pushed to. This is useful if you want to do other work in
+between handling inputs from the stream.
 }
-\section{\code{resp_stream_sse()}}{
-\code{resp_stream_sse()} helps work with APIs that uses the
-\href{https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events}{server-sent events}
-protocol. Each call will return one event, as a list with components
-\code{type}, \code{data}, and \code{id}.
-
-It only works with text mode connections so when calling
-\code{req_perform_connection()} you must use \code{mode = "text"}.
-}
-
 \examples{
 req <- request(example_url()) |>
   req_url_path("/stream-bytes/32768")

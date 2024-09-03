@@ -45,6 +45,7 @@ reference:
   contents:
   - req_perform
   - req_perform_stream
+  - req_perform_connection
 
 - subtitle: Control the process
   desc: >
@@ -95,4 +96,3 @@ news:
  releases:
  - text: "httr2 1.0.0"
    href: https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/
-
