@@ -103,7 +103,10 @@ test_that("can cache requests with etags", {
   req <- request_test("/etag/:etag", etag = "abc") %>% req_cache(tempfile())
 
   resp1 <- req_perform(req)
-  expect_condition(resp2 <- req_perform(req), class = "httr2_cache_not_modified")
+  expect_condition(
+    expect_condition(resp2 <- req_perform(req), class = "httr2_cache_not_modified"),
+    class = "httr2_cache_save"
+  )
 })
 
 test_that("can cache requests with paths (cache-control)", {
@@ -148,8 +151,11 @@ test_that("can cache requests with paths (if-modified-since)", {
 
   path2 <- tempfile()
   expect_condition(
-    resp2 <- req |> req_perform(path = path2),
-    class = "httr2_cache_not_modified"
+    expect_condition(
+      resp2 <- req |> req_perform(path = path2),
+      class = "httr2_cache_not_modified"
+    ),
+    class = "httr2_cache_save"
   )
   expect_equal(resp2$body[[1]], path2)
 })

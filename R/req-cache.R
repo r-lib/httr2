@@ -114,6 +114,8 @@ cache_get <- function(req) {
 }
 
 cache_set <- function(req, resp) {
+  signal("", "httr2_cache_save")
+
   if (resp_body_type(resp) == "disk") {
     body_path <- req_cache_path(req, ".body")
     file.copy(resp$body, body_path, overwrite = TRUE)
@@ -225,14 +227,16 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     signal("", "httr2_cache_not_modified")
     if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
 
+    # Combine headers & re-cache
+    resp$headers <- cache_headers(cached_resp, resp)
+    cache_set(req, resp)
+
     # Replace body with cached result
     resp$body <- cache_body(cached_resp, path)
-    # Combine headers
-    resp$headers <- cache_headers(cached_resp, resp)
     resp
   } else if (resp_is_cacheable(resp)) {
-    signal("", "httr2_cache_save")
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
+
     cache_set(req, resp)
     resp
   } else {

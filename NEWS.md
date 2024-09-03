@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_cache()` now re-caches the response if the body is hasn't been modified but the headers have changed (#442).
 * `req_cache()` works better when `req_perform()` sets a path (#442).
 * `resp_body_html()` and `resp_body_xml()` now work when `req_perform()` is given a path (#448).
 * `req_body_file()` now works with files >64kb once more (#524).
