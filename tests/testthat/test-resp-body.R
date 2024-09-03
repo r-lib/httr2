@@ -42,7 +42,6 @@ test_that("can retrieve parsed body when saved to a file", {
   expect_s3_class(resp_body_xml(resp), "xml_document")
 })
 
-
 test_that("resp_body_json stores parsed result", {
   resp <- request_test("/json") %>% req_perform()
   json1 <- resp_body_json(resp)
