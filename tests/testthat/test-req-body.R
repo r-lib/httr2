@@ -158,6 +158,9 @@ test_that("no issues with partial name matching", {
     req_body_multipart(d = "some data")
 
   expect_named(req$body$data, "d")
+})
 
-
+test_that("can't change body type", {
+  req <- request("http://example.com") %>% req_body_raw(raw(1))
+  expect_snapshot(req %>% req_body_json(list(x = 1)), error = TRUE)
 })
