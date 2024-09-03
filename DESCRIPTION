@@ -13,11 +13,11 @@ Description: Tools for creating and modifying HTTP requests, then
 License: MIT + file LICENSE
 URL: https://httr2.r-lib.org, https://github.com/r-lib/httr2
 BugReports: https://github.com/r-lib/httr2/issues
-Depends: 
+Depends:
     R (>= 4.0)
-Imports: 
+Imports:
     cli (>= 3.0.0),
-    curl (>= 5.1.0),
+    curl (>= 5.2.2),
     glue,
     lifecycle,
     magrittr,
@@ -44,7 +44,7 @@ Suggests:
     tibble,
     webfakes,
     xml2
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
