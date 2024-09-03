@@ -114,6 +114,8 @@ cache_get <- function(req) {
 }
 
 cache_set <- function(req, resp) {
+  signal("", "httr2_cache_save")
+
   if (resp_body_type(resp) == "disk") {
     body_path <- req_cache_path(req, ".body")
     file.copy(resp$body, body_path, overwrite = TRUE)
@@ -174,7 +176,7 @@ cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
 # Hooks for req_perform -----------------------------------------------------
 
 # Can return request or response
-cache_pre_fetch <- function(req) {
+cache_pre_fetch <- function(req, path = NULL) {
   if (!cache_active(req)) {
     return(req)
   }
@@ -192,7 +194,10 @@ cache_pre_fetch <- function(req) {
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
     signal("", "httr2_cache_cached")
     if (debug) cli::cli_text("Cached value is fresh; using response from cache")
-    cached_resp
+
+    resp <- cached_resp
+    resp$body <- cache_body(cached_resp, path)
+    resp
   } else {
     if (debug) cli::cli_text("Cached value is stale; checking for updates")
     req_headers(req,
@@ -222,14 +227,16 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     signal("", "httr2_cache_not_modified")
     if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
 
+    # Combine headers & re-cache
+    resp$headers <- cache_headers(cached_resp, resp)
+    cache_set(req, resp)
+
     # Replace body with cached result
     resp$body <- cache_body(cached_resp, path)
-    # Combine headers
-    resp$headers <- cache_headers(cached_resp, resp)
     resp
   } else if (resp_is_cacheable(resp)) {
-    signal("", "httr2_cache_save")
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
+
     cache_set(req, resp)
     resp
   } else {
@@ -241,7 +248,6 @@ cache_body <- function(cached_resp, path = NULL) {
   check_response(cached_resp)
 
   body <- cached_resp$body
-
   if (is.null(path)) {
     return(body)
   }
