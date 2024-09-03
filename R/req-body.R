@@ -213,7 +213,7 @@ req_body_apply <- function(req) {
         return(raw())
       }
       out <- readBin(con, "raw", nbytes)
-      if (length(out) <= nbytes) {
+      if (length(out) < nbytes) {
         close(con)
         done <<- TRUE
         con <<- NULL
