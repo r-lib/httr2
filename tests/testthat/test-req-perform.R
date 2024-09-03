@@ -116,14 +116,14 @@ test_that("can cache requests with paths (cache-control)", {
 
   path1 <- tempfile()
   expect_condition(
-    resp1 <- req |> req_perform(path = path1),
+    resp1 <- req %>% req_perform(path = path1),
     class = "httr2_cache_save"
   )
   expect_equal(resp1$body[[1]], path1)
 
   path2 <- tempfile()
   expect_condition(
-    resp2 <- req |> req_perform(path = path2),
+    resp2 <- req %>% req_perform(path = path2),
     class = "httr2_cache_cached"
   )
   expect_equal(resp2$body[[1]], path2)
@@ -131,7 +131,7 @@ test_that("can cache requests with paths (cache-control)", {
   Sys.sleep(1) # wait for cache to expire
   path3 <- tempfile()
   expect_condition(
-    resp3 <- req |> req_perform(path = path3),
+    resp3 <- req %>% req_perform(path = path3),
     class = "httr2_cache_save"
   )
   expect_equal(resp3$body[[1]], path3)
@@ -144,7 +144,7 @@ test_that("can cache requests with paths (if-modified-since)", {
 
   path1 <- tempfile()
   expect_condition(
-    resp1 <- req |> req_perform(path = path1),
+    resp1 <- req %>% req_perform(path = path1),
     class = "httr2_cache_save"
   )
   expect_equal(resp1$body[[1]], path1)
@@ -152,7 +152,7 @@ test_that("can cache requests with paths (if-modified-since)", {
   path2 <- tempfile()
   expect_condition(
     expect_condition(
-      resp2 <- req |> req_perform(path = path2),
+      resp2 <- req %>% req_perform(path = path2),
       class = "httr2_cache_not_modified"
     ),
     class = "httr2_cache_save"
