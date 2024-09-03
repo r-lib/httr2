@@ -15,3 +15,12 @@
       ! Unexpected content type "application/xml".
       * Expecting type "application/json" or suffix "json".
 
+# can't change body type
+
+    Code
+      req %>% req_body_json(list(x = 1))
+    Condition
+      Error in `req_body_json()`:
+      ! Can't change body type from raw to json.
+      i You must use only one type of `req_body_*()` per request.
+
