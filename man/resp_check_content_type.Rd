@@ -13,7 +13,7 @@ resp_check_content_type(
 )
 }
 \arguments{
-\item{resp}{A httr2 \link{response} object.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{valid_types}{A character vector of valid MIME types. Should only
 be specified with \code{type/subtype}.}

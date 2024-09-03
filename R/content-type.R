@@ -4,12 +4,12 @@
 #' the response body. This function checks that the content type of the response
 #' is as expected and fails otherwise.
 #'
-#' @param resp A httr2 [response] object.
 #' @param valid_types A character vector of valid MIME types. Should only
 #'   be specified with `type/subtype`.
 #' @param valid_suffix A string given an "structured media type" suffix.
 #' @param check_type Should the type actually be checked? Provided as a
 #'   convenience for when using this function inside `resp_body_*` helpers.
+#' @inheritParams resp_headers
 #' @inheritParams rlang::args_error_context
 #' @return Called for its side-effect; erroring if the response does not
 #'   have the expected content type.

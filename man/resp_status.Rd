@@ -16,7 +16,7 @@ resp_is_error(resp)
 resp_check_status(resp, info = NULL, error_call = caller_env())
 }
 \arguments{
-\item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{info}{A character vector of additional information to include in
 the error message. Passed to \code{\link[rlang:abort]{rlang::abort()}}.}

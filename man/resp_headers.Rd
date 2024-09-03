@@ -13,7 +13,7 @@ resp_header(resp, header, default = NULL)
 resp_header_exists(resp, header)
 }
 \arguments{
-\item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{filter}{A regular expression used to filter the header names.
 \code{NULL}, the default, returns all headers.}

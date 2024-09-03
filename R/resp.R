@@ -131,7 +131,7 @@ print.httr2_response <- function(x, ...) {
 #' servers compress at least the body, and HTTP/2 can also compress the
 #' headers), but it conveys the same information.
 #'
-#' @param resp An HTTP [response]
+#' @inheritParams resp_headers
 #' @returns `resp` (invisibly).
 #' @export
 #' @examples

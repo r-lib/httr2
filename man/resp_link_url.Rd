@@ -7,7 +7,7 @@
 resp_link_url(resp, rel)
 }
 \arguments{
-\item{resp}{An HTTP response object, as created by \code{\link[=req_perform]{req_perform()}}.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{rel}{The "link relation type" value for which to retrieve a URL.}
 }

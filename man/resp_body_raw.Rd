@@ -22,7 +22,7 @@ resp_body_html(resp, check_type = TRUE, ...)
 resp_body_xml(resp, check_type = TRUE, ...)
 }
 \arguments{
-\item{resp}{A response object.}
+\item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{encoding}{Character encoding of the body text. If not specified,
 will use the encoding specified by the content-type, falling back to
