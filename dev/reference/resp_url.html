@@ -82,7 +82,7 @@ resp_url_queries() returns the query component as a named list.
 
 
 <dl><dt id="arg-resp">resp<a class="anchor" aria-label="anchor" href="#arg-resp"></a></dt>
-<dd><p>An HTTP response object, as created by <code><a href="req_perform.html">req_perform()</a></code>.</p></dd>
+<dd><p>A httr2 <a href="response.html">response</a> object, created by <code><a href="req_perform.html">req_perform()</a></code>.</p></dd>
 
 
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
@@ -101,7 +101,7 @@ resp_url_queries() returns the query component as a named list.
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "http://127.0.0.1:45851/get?hello=world"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "http://127.0.0.1:44409/get?hello=world"</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_url_path</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/get"</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_url_queries</span><span class="op">(</span><span class="op">)</span></span></span>

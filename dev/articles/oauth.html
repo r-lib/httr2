@@ -187,7 +187,7 @@ new OAuth app (aka a client). This process varies from API to API (it’s
 normal to spend some time hunting through the docs and settings), but at
 the end of it you’ll get a client id (another random string of numbers
 and letters). Sometimes the client id is all you need, and you can
-create an httr2 client with <code><a href="../reference/oauth_client.html">oauth_client()</a></code>, e.g.:</p>
+create a httr2 client with <code><a href="../reference/oauth_client.html">oauth_client()</a></code>, e.g.:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
@@ -234,7 +234,7 @@ paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
 your client specification.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("7BBCwvk3fUwMiLvAdtLHU9Dqj1S_pQ")</span></span></code></pre></div>
+<span><span class="co">#&gt; obfuscated("F_fwiZmDb3EsGSaSdV0DhKvOAzDw_Q")</span></span></code></pre></div>
 <p>Here’s what a complete client specification for GitHub looks like,
 using a real app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
