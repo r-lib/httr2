@@ -28,19 +28,18 @@ resp_stream_sse(resp)
 \itemize{
 \item \code{resp_stream_raw()}: a raw vector.
 \item \code{resp_stream_lines()}: a character vector.
-\item \code{resp_stream_sse()}: A list with components \code{type}, \code{data}, and \code{id}.
+\item \code{resp_stream_sse()}: a list with components \code{type}, \code{data}, and \code{id}; or
+\code{NULL}, signifying that the end of the stream has been reached or--if in
+nonblocking mode--that no event is currently available.
 }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \itemize{
-\item \code{resp_stream_raw()} retrieves one or more bytes.
-\item \code{resp_stream_lines()} retrieves one or more lines.
-\item \code{resp_stream_sse()} retrieves a single
-\href{https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events}{server-sent events}
-from the stream. It current  only works with text mode connections so when
-calling\code{req_perform_connection()} you must use \code{mode = "text"}.
+\item \code{resp_stream_raw()} retrieves bytes (\code{raw} vectors).
+\item \code{resp_stream_lines()} retrieves lines of text (\code{character} vectors).
+\item \code{resp_stream_sse()} retrieves \href{https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events}{server-sent events}
+from the stream. It currently only works with text mode connections so when calling
+\code{req_perform_connection()} you must use \code{mode = "text"}.
 }
-
-\code{resp_stream_sse()} helps work with APIs that uses the
 }

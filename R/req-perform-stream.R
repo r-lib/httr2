@@ -85,21 +85,23 @@ req_perform_stream <- function(req,
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' Use `req_perform_connection()` to perform a streaming request where the
-#' reponse inludes a connnection as the body. You can then use
-#' [resp_stream_raw()], [resp_stream_lines()], or [resp_stream_sse()] to
-#' retrieve data a chunk at a time. Always finish up by closing the
-#' connection by calling `close()`.
+#' Use `req_perform_connection()` to perform a request if you want to stream the
+#' response body. A response returned by `req_perform_connection()` includes a
+#' connection as the body. You can then use [resp_stream_raw()],
+#' [resp_stream_lines()], or [resp_stream_sse()] to retrieve data a chunk at a
+#' time. Always finish up by closing the connection by calling
+#' `close(response)`.
 #'
 #' This is an alternative interface to [req_perform_stream()] that returns a
-#' connection that you can use to pull the data, rather than providing callbacks
-#' that the data is pushed to. This is useful if you want to do other work in
-#' between handling inputs from the stream.
+#' [connection][base::connections] that you can use to pull the data, rather
+#' than providing callbacks that the data is pushed to. This is useful if you
+#' want to do other work in between handling inputs from the stream.
 #'
 #' @inheritParams req_perform_stream
 #' @param mode The mode that should be used for opening the connection.
 #' @param blocking When retrieving data, should the connection block and wait
-#'   for the desired information or immediately return what it has?
+#'   for the desired information or immediately return what it has (possibly
+#'   nothing)?
 #' @export
 #' @examples
 #' req <- request(example_url()) |>
@@ -179,19 +181,19 @@ req_perform_connection1 <- function(req, handle, con_mode = "rbf", blocking = TR
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' * `resp_stream_raw()` retrieves one or more bytes.
-#' * `resp_stream_lines()` retrieves one or more lines.
-#' * `resp_stream_sse()` retrieves a single
-#'   [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
-#'   from the stream. It current  only works with text mode connections so when
-#'   calling`req_perform_connection()` you must use `mode = "text"`.
-#'
-#' `resp_stream_sse()` helps work with APIs that uses the
+#' * `resp_stream_raw()` retrieves bytes (`raw` vectors).
+#' * `resp_stream_lines()` retrieves lines of text (`character` vectors).
+#' * `resp_stream_sse()` retrieves [server-sent
+#'   events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
+#'   from the stream. It currently only works with text mode connections so when calling
+#'   `req_perform_connection()` you must use `mode = "text"`.
 #'
 #' @returns
 #' * `resp_stream_raw()`: a raw vector.
 #' * `resp_stream_lines()`: a character vector.
-#' * `resp_stream_sse()`: A list with components `type`, `data`, and `id`.
+#' * `resp_stream_sse()`: a list with components `type`, `data`, and `id`; or
+#'   `NULL`, signifying that the end of the stream has been reached or--if in
+#'   nonblocking mode--that no event is currently available.
 #' @export
 #' @param resp,con A streaming [response] created by [req_perform_connection()].
 #' @param kb How many kilobytes (1024 bytes) of data to read.

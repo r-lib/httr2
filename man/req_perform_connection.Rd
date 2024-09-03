@@ -12,21 +12,23 @@ req_perform_connection(req, mode = c("binary", "text"), blocking = TRUE)
 \item{mode}{The mode that should be used for opening the connection.}
 
 \item{blocking}{When retrieving data, should the connection block and wait
-for the desired information or immediately return what it has?}
+for the desired information or immediately return what it has (possibly
+nothing)?}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Use \code{req_perform_connection()} to perform a streaming request where the
-reponse inludes a connnection as the body. You can then use
-\code{\link[=resp_stream_raw]{resp_stream_raw()}}, \code{\link[=resp_stream_lines]{resp_stream_lines()}}, or \code{\link[=resp_stream_sse]{resp_stream_sse()}} to
-retrieve data a chunk at a time. Always finish up by closing the
-connection by calling \code{close()}.
+Use \code{req_perform_connection()} to perform a request if you want to stream the
+response body. A response returned by \code{req_perform_connection()} includes a
+connection as the body. You can then use \code{\link[=resp_stream_raw]{resp_stream_raw()}},
+\code{\link[=resp_stream_lines]{resp_stream_lines()}}, or \code{\link[=resp_stream_sse]{resp_stream_sse()}} to retrieve data a chunk at a
+time. Always finish up by closing the connection by calling
+\code{close(response)}.
 
 This is an alternative interface to \code{\link[=req_perform_stream]{req_perform_stream()}} that returns a
-connection that you can use to pull the data, rather than providing callbacks
-that the data is pushed to. This is useful if you want to do other work in
-between handling inputs from the stream.
+\link[base:connections]{connection} that you can use to pull the data, rather
+than providing callbacks that the data is pushed to. This is useful if you
+want to do other work in between handling inputs from the stream.
 }
 \examples{
 req <- request(example_url()) |>
