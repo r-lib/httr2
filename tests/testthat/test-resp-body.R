@@ -30,6 +30,19 @@ test_that("can retrieve parsed body", {
   expect_s3_class(resp_body_xml(resp), "xml_document")
 })
 
+test_that("can retrieve parsed body when saved to a file", {
+  path <- withr::local_tempfile()
+  resp <- request_test("/json") %>% req_perform(path)
+  expect_type(resp_body_json(resp), "list")
+
+  resp <- request_test("/html") %>% req_perform(path)
+  expect_s3_class(resp_body_html(resp), "xml_document")
+
+  resp <- request_test("/xml") %>% req_perform(path)
+  expect_s3_class(resp_body_xml(resp), "xml_document")
+})
+
+
 test_that("resp_body_json stores parsed result", {
   resp <- request_test("/json") %>% req_perform()
   json1 <- resp_body_json(resp)
