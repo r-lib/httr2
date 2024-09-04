@@ -158,7 +158,7 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
   stream <- curl::curl(req$url, handle = handle)
 
   # Must open the stream in order to initiate the connection
-  open(stream,  "rbf", blocking = blocking)
+  open(stream, "rbf", blocking = blocking)
   curl_data <- curl::handle_data(handle)
 
   new_response(
