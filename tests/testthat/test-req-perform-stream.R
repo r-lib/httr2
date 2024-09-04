@@ -82,7 +82,7 @@ test_that("can join sse events across multiple reads", {
     res$send_chunk("data")
     Sys.sleep(0.2)
     res$send_chunk(": 2\n")
-    res$send_chunk("\n")
+    res$send_chunk("\ndata: 3\n\n")
   })
   server <- webfakes::local_app_process(app)
   req <- request(server$url("/events"))
@@ -100,8 +100,10 @@ test_that("can join sse events across multiple reads", {
     out <- resp_stream_sse(resp1)
   }
   expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
-  expect_equal(resp1$cache$push_back, raw())
-
+  expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
+  out <- resp_stream_sse(resp1)
+  expect_equal(out, list(type = "message", data = "3", id = character()))
+  
   # Blocking waits for a complete event
   resp2 <- req_perform_connection(req)
   withr::defer(close(resp2))
@@ -185,6 +187,8 @@ test_that("has a working slice", {
   # starting off the end is fine
   expect_identical(slice(x, length(x) + 1), character())
   expect_identical(slice(x, length(x) + 1, length(x) + 1), character())
+  # slicing zero-length is fine
+  expect_identical(slice(character()), character())
 
   # out of bounds
   expect_error(slice(x, 0, 1))

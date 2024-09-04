@@ -209,7 +209,15 @@ resp_stream_lines <- function(resp, lines = 1) {
   readLines(conn, n = lines)
 }
 
-# Slices the vector using the only sane semantics: start inclusive, end exclusive
+# Slices the vector using the only sane semantics: start inclusive, end
+# exclusive.
+#
+# * Allows start == end, which means return no elements.
+# * Allows start == length(vector) + 1, which means return no elements.
+# * Allows zero-length vectors.
+#
+# Otherwise, slice() is quite strict about what it allows start/end to be: no
+# negatives, no reversed order.
 slice <- function(vector, start = 1, end = length(vector) + 1) {
   stopifnot(start > 0)
   stopifnot(start <= length(vector) + 1)
@@ -224,13 +232,23 @@ slice <- function(vector, start = 1, end = length(vector) + 1) {
   }
 }
 
-# Function to find the first double line ending in a buffer
+# Function to find the first double line ending in a buffer, or NULL if no
+# double line ending is found
+#
+# Example:
+#   find_event_boundary(charToRaw("data: 1\n\nid: 12345"))
+# Returns:
+#   list(
+#     matched = charToRaw("data: 1\n\n"),
+#     remaining = charToRaw("id: 12345")
+#   )
 find_event_boundary <- function(buffer) {
-  # Look for double line endings (CRLF CRLF, LF LF, or CR CR)
   if (length(buffer) < 2) {
     return(NULL)
   }
 
+  # leftX means look behind by X bytes. For example, left1[2] equals buffer[1].
+  # Any attempt to read past the beginning of the buffer results in 0x00.
   left1 <- c(0x00, head(buffer, -1))
   left2 <- c(0x00, head(left1, -1))
   left3 <- c(0x00, head(left2, -1))
@@ -261,6 +279,7 @@ find_event_boundary <- function(buffer) {
 resp_stream_sse <- function(resp) {
   check_streaming_response(resp)
 
+  # Grab data left over from last resp_stream_sse() call (if any)
   buffer <- resp$cache$push_back %||% raw()
   resp$cache$push_back <- raw()
 
@@ -270,23 +289,8 @@ resp_stream_sse <- function(resp) {
 
   # Read chunks until we find an event or reach the end of input
   while (TRUE) {
-    # Read a chunk of data (adjust chunk size as needed)
-    chunk_size <- 1024
-    chunk <- readBin(resp$body, raw(), n = chunk_size)
-
-    print_buffer(chunk, "Received chunk")
-
-    # If we've reached the end of input and have no complete event, return NULL
-    if (length(chunk) == 0 && length(buffer) == 0) {
-      print_buffer(buffer, "Final buffer (empty)")
-      return(NULL)
-    }
-
-    # Combine with existing buffer
-    buffer <- c(buffer, chunk)
-    print_buffer(buffer, "Combined buffer")
-
-    # Try to find an event boundary
+    # Try to find an event boundary using the data we have
+    print_buffer(buffer, "Buffer to parse")
     result <- find_event_boundary(buffer)
 
     if (!is.null(result)) {
@@ -296,6 +300,12 @@ resp_stream_sse <- function(resp) {
       resp$cache$push_back <- result$remaining
       return(parse_event(result$matched))
     }
+    
+    # We didn't have enough data. Attempt to read more
+    chunk_size <- 1024
+    chunk <- readBin(resp$body, raw(), n = chunk_size)
+
+    print_buffer(chunk, "Received chunk")
 
     # If we've reached the end of input, store the buffer and return NULL
     if (length(chunk) == 0) {
@@ -303,8 +313,11 @@ resp_stream_sse <- function(resp) {
       resp$cache$push_back <- buffer
       return(NULL)
     }
-
-    # If we haven't found an event and haven't reached the end, continue reading
+    
+    # More data was received; combine it with existing buffer and continue the
+    # loop to try parsing again
+    buffer <- c(buffer, chunk)
+    print_buffer(buffer, "Combined buffer")
   }
 }
 
