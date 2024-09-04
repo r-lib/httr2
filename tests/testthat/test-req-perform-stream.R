@@ -79,6 +79,9 @@ test_that("can join sse events across multiple reads", {
   app$get("/events", function(req, res) {
     res$send_chunk("data: 1\n")
     Sys.sleep(0.2)
+    res$send_chunk("data")
+    Sys.sleep(0.2)
+    res$send_chunk(": 2\n")
     res$send_chunk("\n\n")
   })
   server <- webfakes::local_app_process(app)
@@ -96,7 +99,7 @@ test_that("can join sse events across multiple reads", {
     Sys.sleep(0.1)
     out <- resp_stream_sse(resp1)
   }
-  expect_equal(out, list(type = "message", data = "1", id = character()))
+  expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
   expect_equal(resp1$cache$push_back, character())
 
   # Blocking waits for a complete event
