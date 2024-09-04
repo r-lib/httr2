@@ -15,7 +15,12 @@
 #' [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching).
 #'
 #' @inheritParams req_perform
-#' @param path Path to cache directory.
+#' @param path Path to cache directory. Will be created automatically if it
+#'   does not exist.
+#'
+#'   For quick and easy caching within a session, you can use `tempfile()`.
+#'   To cache requests within a package, you can use something like
+#'   `file.path(tools::R_user_dir("pkgdown", "cache"), "httr2")`.
 #'
 #'   httr2 doesn't provide helpers to manage the cache, but if you want to
 #'   empty it, you can use something like
