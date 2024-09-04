@@ -92,8 +92,10 @@ test_that("can join sse events across multiple reads", {
   expect_equal(out, NULL)
   expect_equal(resp1$cache$push_back, "data: 1")
 
-  Sys.sleep(0.3)
-  out <- resp_stream_sse(resp1)
+  while(is.null(out)) {
+    Sys.sleep(0.1)
+    out <- resp_stream_sse(resp1)
+  }
   expect_equal(out, list(type = "message", data = "1", id = character()))
   expect_equal(resp1$cache$push_back, character())
 
