@@ -9,7 +9,7 @@ test_that("req_stream() is deprecated", {
 
 test_that("can stream bytes from a connection", {
   resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
-  on.exit(close(resp))
+  withr::defer(close(resp))
 
   expect_s3_class(resp, "httr2_response")
   expect_true(resp_has_body(resp))
@@ -26,7 +26,7 @@ test_that("can stream bytes from a connection", {
 
 test_that("can read all data from a connection", {
   resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
-  on.exit(close(resp))
+  withr::defer(close(resp))
 
   out <- resp_body_raw(resp)
   expect_length(out, 2048)
@@ -57,7 +57,7 @@ test_that("can feed sse events one at a time", {
   server <- webfakes::local_app_process(app)
   req <- request(server$url("/events"))
   resp <- req_perform_connection(req)
-  on.exit(close(resp))
+  withr::defer(close(resp))
 
   expect_equal(
     resp_stream_sse(resp),
