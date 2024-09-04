@@ -38,7 +38,9 @@ the raw vector in directly.}
 
 \item{encrypted}{String to decrypt}
 
-\item{path}{Path to \code{.rds} file}
+\item{path}{Path to file to encrypted file to read or write. For
+\code{secret_write_rds()} and \code{secret_read_rds()} this should be an \code{.rds}
+file.}
 
 \item{envir}{The decrypted file will be automatically deleted when
 this environment exits. You should only need to set this argument if you
@@ -47,6 +49,8 @@ want to pass the unencrypted file to another function.}
 \value{
 \itemize{
 \item \code{secret_decrypt()} and \code{secret_encrypt()} return strings.
+\item \code{secret_decrypt_file()} returns a path to a temporary file;
+\code{secret_encrypt_file()} encrypts the file in place.
 \item \code{secret_write_rds()} returns \code{x} invisibly; \code{secret_read_rds()}
 returns the saved object.
 \item \code{secret_make_key()} returns a string with class \code{AsIs}.
