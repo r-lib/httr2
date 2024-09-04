@@ -26,6 +26,7 @@ test_that("can stream bytes from a connection", {
 
 test_that("can read all data from a connection", {
   resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
+  on.exit(close(resp))
 
   out <- resp_body_raw(resp)
   expect_length(out, 2048)
@@ -76,27 +77,32 @@ test_that("can join sse events across multiple reads", {
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
-    i <- res$app$locals$i %||% 1
-    res$app$locals$i <- i + 1
-
     res$send_chunk("data: 1\n")
     Sys.sleep(0.2)
     res$send_chunk("\n\n")
   })
-
   server <- webfakes::local_app_process(app)
   req <- request(server$url("/events"))
-  resp <- req_perform_connection(req, blocking = FALSE)
-  on.exit(close(resp))
 
-  out <- resp_stream_sse(resp)
+  # Non-blocking returns NULL until data is ready
+  resp1 <- req_perform_connection(req, blocking = FALSE)
+  on.exit(close(resp1))
+
+  out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
-  expect_equal(resp$cache$push_back, "data: 1")
+  expect_equal(resp1$cache$push_back, "data: 1")
 
   Sys.sleep(0.3)
-  out <- resp_stream_sse(resp)
+  out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "1", id = character()))
-  expect_equal(resp$cache$push_back, character())
+  expect_equal(resp1$cache$push_back, character())
+
+  # Blocking waits for a complete event
+  resp2 <- req_perform_connection(req)
+  on.exit(close(resp2))
+
+  out <- resp_stream_sse(resp2)
+  expect_equal(out, list(type = "message", data = "1", id = character()))
 })
 
 # req_perform_stream() --------------------------------------------------------
