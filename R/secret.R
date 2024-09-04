@@ -44,6 +44,8 @@
 #' @name secrets
 #' @returns
 #' * `secret_decrypt()` and `secret_encrypt()` return strings.
+#' * `secret_decrypt_file()` returns a path to a temporary file;
+#'   `secret_encrypt_file()` encrypts the file in place.
 #' * `secret_write_rds()` returns `x` invisibly; `secret_read_rds()`
 #'   returns the saved object.
 #' * `secret_make_key()` returns a string with class `AsIs`.
@@ -112,7 +114,9 @@ secret_write_rds <- function(x, path, key) {
 }
 #' @export
 #' @rdname secrets
-#' @param path Path to `.rds` file
+#' @param path Path to file to encrypted file to read or write. For
+#'  `secret_write_rds()` and `secret_read_rds()` this should be an `.rds`
+#'  file.
 secret_read_rds <- function(path, key) {
   enc <- readBin(path, "raw", file.size(path))
   dec_cmp <- secret_decrypt_raw(enc, key)
