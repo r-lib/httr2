@@ -17,7 +17,12 @@ req_cache(
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
-\item{path}{Path to cache directory.
+\item{path}{Path to cache directory. Will be created automatically if it
+does not exist.
+
+For quick and easy caching within a session, you can use \code{tempfile()}.
+To cache requests within a package, you can use something like
+\code{file.path(tools::R_user_dir("pkgdown", "cache"), "httr2")}.
 
 httr2 doesn't provide helpers to manage the cache, but if you want to
 empty it, you can use something like
