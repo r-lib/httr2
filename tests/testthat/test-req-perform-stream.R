@@ -82,7 +82,7 @@ test_that("can join sse events across multiple reads", {
     res$send_chunk("data")
     Sys.sleep(0.2)
     res$send_chunk(": 2\n")
-    res$send_chunk("\n\n")
+    res$send_chunk("\n")
   })
   server <- webfakes::local_app_process(app)
   req <- request(server$url("/events"))
@@ -93,21 +93,105 @@ test_that("can join sse events across multiple reads", {
 
   out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
-  expect_equal(resp1$cache$push_back, "data: 1")
+  expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
 
   while(is.null(out)) {
     Sys.sleep(0.1)
     out <- resp_stream_sse(resp1)
   }
   expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
-  expect_equal(resp1$cache$push_back, character())
+  expect_equal(resp1$cache$push_back, raw())
 
   # Blocking waits for a complete event
   resp2 <- req_perform_connection(req)
   withr::defer(close(resp2))
 
   out <- resp_stream_sse(resp2)
-  expect_equal(out, list(type = "message", data = "1", id = character()))
+  expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
+})
+
+test_that("always interprets data as UTF-8", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    res$send_chunk("data: \xE3\x81\x82\r\n\r\n")
+  })
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+
+  withr::with_locale(c(LC_CTYPE = "C"), {
+    # Non-blocking returns NULL until data is ready
+    resp1 <- req_perform_connection(req, blocking = FALSE)
+    withr::defer(close(resp1))
+
+    out <- NULL
+    while(is.null(out)) {
+      Sys.sleep(0.1)
+      out <- resp_stream_sse(resp1)
+    }
+
+    s <- "\xE3\x81\x82"
+    Encoding(s) <- "UTF-8"
+    expect_equal(out, list(type = "message", data = s, id = character()))
+    expect_equal(Encoding(out$data), "UTF-8")
+    expect_equal(resp1$cache$push_back, raw())
+  })
+})
+
+test_that("has a working find_event_boundary", {
+  boundary_test <- function(x, matched, remaining) {
+    expect_identical(
+      find_event_boundary(charToRaw(x)),
+      list(matched=charToRaw(matched), remaining = charToRaw(remaining))
+    )  
+  }
+
+  # Basic matches
+  boundary_test("\r\r", matched = "\r\r", remaining = "")
+  boundary_test("\n\n", matched = "\n\n", remaining = "")
+  boundary_test("\r\n\r\n", matched = "\r\n\r\n", remaining = "")
+  boundary_test("a\r\r", matched = "a\r\r", remaining = "")
+  boundary_test("a\n\n", matched = "a\n\n", remaining = "")
+  boundary_test("a\r\n\r\n", matched = "a\r\n\r\n", remaining = "")
+  boundary_test("\r\ra", matched = "\r\r", remaining = "a")
+  boundary_test("\n\na", matched = "\n\n", remaining = "a")
+  boundary_test("\r\n\r\na", matched = "\r\n\r\n", remaining = "a")
+
+  # Matches the first boundary found
+  boundary_test("\r\r\r", matched = "\r\r", remaining = "\r")
+  boundary_test("\r\r\r\r", matched = "\r\r", remaining = "\r\r")
+  boundary_test("\n\n\r\r", matched = "\n\n", remaining = "\r\r")
+  boundary_test("\r\r\n\n", matched = "\r\r", remaining = "\n\n")
+  
+  # Non-matches
+  expect_null(find_event_boundary(charToRaw("\n\r\n\r")))
+  expect_null(find_event_boundary(charToRaw("hello\ngoodbye\n")))
+  expect_null(find_event_boundary(charToRaw("")))
+  expect_null(find_event_boundary(charToRaw("1")))
+  expect_null(find_event_boundary(charToRaw("12")))
+  expect_null(find_event_boundary(charToRaw("\r\n\r")))
+})
+
+test_that("has a working slice", {
+  x <- letters[1:5]
+  expect_identical(slice(x), x)
+  expect_identical(slice(x, 1, length(x) + 1), x)
+  
+  # start is inclusive, end is exclusive
+  expect_identical(slice(x, 1, length(x)), head(x, -1))
+  # zero-length slices are fine
+  expect_identical(slice(x, 1, 1), character())
+  # starting off the end is fine
+  expect_identical(slice(x, length(x) + 1), character())
+  expect_identical(slice(x, length(x) + 1, length(x) + 1), character())
+
+  # out of bounds
+  expect_error(slice(x, 0, 1))
+  expect_error(slice(x, length(x) + 2))
+  expect_error(slice(x, end = length(x) + 2))
+  # end too small relative to start
+  expect_error(slice(x, 2, 1))
 })
 
 # req_perform_stream() --------------------------------------------------------

@@ -209,34 +209,103 @@ resp_stream_lines <- function(resp, lines = 1) {
   readLines(conn, n = lines)
 }
 
+# Slices the vector using the only sane semantics: start inclusive, end exclusive
+slice <- function(vector, start = 1, end = length(vector) + 1) {
+  stopifnot(start > 0)
+  stopifnot(start <= length(vector) + 1)
+  stopifnot(end > 0)
+  stopifnot(end <= length(vector) + 1)
+  stopifnot(end >= start)
+
+  if (start == end) {
+    vector[FALSE] # Return an empty vector of the same type
+  } else {
+    vector[start:(end - 1)]
+  }
+}
+
+# Function to find the first double line ending in a buffer
+find_event_boundary <- function(buffer) {
+  # Look for double line endings (CRLF CRLF, LF LF, or CR CR)
+  if (length(buffer) < 2) {
+    return(NULL)
+  }
+
+  left1 <- c(0x00, head(buffer, -1))
+  left2 <- c(0x00, head(left1, -1))
+  left3 <- c(0x00, head(left2, -1))
+
+  boundary_end <- which(
+    (left1 == 0x0A & buffer == 0x0A) | # \n\n
+    (left1 == 0x0D & buffer == 0x0D) | # \r\r
+    (left3 == 0x0D & left2 == 0x0A & left1 == 0x0D & buffer == 0x0A) # \r\n\r\n
+  )
+  
+  if (length(boundary_end) == 0) {
+    return(NULL)  # No event boundary found
+  }
+
+  boundary_end <- boundary_end[1]  # Take the first occurrence
+  split_at <- boundary_end + 1  # Split at one after the boundary
+
+  # Return a list with the event data and the remaining buffer
+  list(
+    matched = slice(buffer, end = split_at),
+    remaining = slice(buffer, start = split_at)
+  )
+}
+
 #' @export
 #' @rdname resp_stream_raw
 # TODO: max_size
 resp_stream_sse <- function(resp) {
   check_streaming_response(resp)
 
-  lines <- resp$cache$push_back %||% character()
-  resp$cache$push_back <- character()
+  buffer <- resp$cache$push_back %||% raw()
+  resp$cache$push_back <- raw()
 
+  print_buffer <- function(buf, label) {
+    # cat(label, ":", paste(sprintf("%02X", as.integer(buf)), collapse = " "), "\n", file = stderr())
+  }
+
+  # Read chunks until we find an event or reach the end of input
   while (TRUE) {
-    line <- readLines(resp$body, n = 1)
-    if (length(line) == 0) {
-      break
-    }
-    if (line == "") {
-      # \n\n detected, end of event
-      return(parse_event(lines))
-    }
-    lines <- c(lines, line)
-  }
+    # Read a chunk of data (adjust chunk size as needed)
+    chunk_size <- 1024
+    chunk <- readBin(resp$body, raw(), n = chunk_size)
 
-  if (length(lines) > 0) {
-    # We have a partial event, put it back while we wait
-    # for more
-    resp$cache$push_back <- lines
-  }
+    print_buffer(chunk, "Received chunk")
 
-  return(NULL)
+    # If we've reached the end of input and have no complete event, return NULL
+    if (length(chunk) == 0 && length(buffer) == 0) {
+      print_buffer(buffer, "Final buffer (empty)")
+      return(NULL)
+    }
+
+    # Combine with existing buffer
+    buffer <- c(buffer, chunk)
+    print_buffer(buffer, "Combined buffer")
+
+    # Try to find an event boundary
+    result <- find_event_boundary(buffer)
+
+    if (!is.null(result)) {
+      # We found a complete event
+      print_buffer(result$matched, "Event data")
+      print_buffer(result$remaining, "Remaining buffer")
+      resp$cache$push_back <- result$remaining
+      return(parse_event(result$matched))
+    }
+
+    # If we've reached the end of input, store the buffer and return NULL
+    if (length(chunk) == 0) {
+      print_buffer(buffer, "Storing incomplete buffer")
+      resp$cache$push_back <- buffer
+      return(NULL)
+    }
+
+    # If we haven't found an event and haven't reached the end, continue reading
+  }
 }
 
 #' @export
@@ -290,7 +359,14 @@ isValid <- function(con) {
 }
 
 
-parse_event <- function(lines) {
+parse_event <- function(event_data) {
+  # always treat event_data as UTF-8, it's in the spec
+  str_data <- rawToChar(event_data)
+  Encoding(str_data) <- "UTF-8"
+
+  # The spec says \r\n, \r, and \n are all valid separators
+  lines <- strsplit(str_data, "\r\n|\r|\n")[[1]]
+
   m <- regexec("([^:]*)(: ?)?(.*)", lines)
   matches <- regmatches(lines, m)
   keys <- c("event", vapply(matches, function(x) x[2], character(1)))
