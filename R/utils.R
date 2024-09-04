@@ -46,7 +46,7 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
 sys_sleep <- function(seconds,
                       task,
                       fps = 10,
-                      progress = getOption("httr2_progress", TRUE)) {
+                      progress = getOption("httr2_progress", !is_testing())) {
   check_number_decimal(seconds)
 
   if (seconds == 0) {
