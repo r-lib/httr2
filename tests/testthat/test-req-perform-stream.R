@@ -86,7 +86,7 @@ test_that("can join sse events across multiple reads", {
 
   # Non-blocking returns NULL until data is ready
   resp1 <- req_perform_connection(req, blocking = FALSE)
-  on.exit(close(resp1))
+  withr::defer(close(resp1))
 
   out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
@@ -99,7 +99,7 @@ test_that("can join sse events across multiple reads", {
 
   # Blocking waits for a complete event
   resp2 <- req_perform_connection(req)
-  on.exit(close(resp2))
+  withr::defer(close(resp2))
 
   out <- resp_stream_sse(resp2)
   expect_equal(out, list(type = "message", data = "1", id = character()))
