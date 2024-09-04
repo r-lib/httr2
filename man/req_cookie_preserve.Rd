@@ -2,22 +2,39 @@
 % Please edit documentation in R/req-cookies.R
 \name{req_cookie_preserve}
 \alias{req_cookie_preserve}
-\title{Preserve cookies across requests}
+\alias{req_cookies_set}
+\title{Set and preserve cookies}
 \usage{
 req_cookie_preserve(req, path)
+
+req_cookies_set(req, ...)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
 \item{path}{A path to a file where cookies will be read from before and updated after the request.}
+
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
+Name-value pairs that define query parameters. Each value must be
+an atomic vector, which is automatically escaped. To opt-out of escaping,
+wrap strings in \code{I()}.}
 }
 \description{
+Use \code{req_cookie_set()} to set client side cookies that are sent to the
+server.
+
 By default, httr2 uses a clean slate for every request meaning that cookies
-are not automatically preserved across requests. To preserve cookies, you
-must set a cookie file which will be read before and updated after each
-request.
+are not automatically preserved across requests. To preserve cookies, use
+\code{req_cookie_preserve()} along with the path to cookie file that will be
+read before and updated after each request.
 }
 \examples{
+# Use `req_cookies_set()` to set client-side cookies
+request(example_url()) |>
+  req_cookies_set(a = 1, b = 1) |>
+  req_dry_run()
+
+# Use `req_cookie_preserve()` to preserve server-side cookies
 path <- tempfile()
 httpbin <- request(example_url()) |>
   req_cookie_preserve(path)
@@ -25,6 +42,11 @@ httpbin <- request(example_url()) |>
 # Manually set two cookies
 httpbin |>
   req_template("/cookies/set/:name/:value", name = "chocolate", value = "chip") |>
+  req_perform() |>
+  resp_body_json()
+
+httpbin |>
+  req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") |>
   req_perform() |>
   resp_body_json()
 

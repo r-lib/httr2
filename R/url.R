@@ -165,8 +165,12 @@ query_parse <- function(x) {
 }
 
 query_build <- function(x, error_call = caller_env()) {
+  elements_build(x, "Query", "&", error_call = error_call)
+}
+
+elements_build <- function(x, name, collapse, error_call = caller_env()) {
   if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
-    cli::cli_abort("Query must be a named list.", call = error_call)
+    cli::cli_abort("{name} must be a named list.", call = error_call)
   }
 
   x <- compact(x)
@@ -177,7 +181,7 @@ query_build <- function(x, error_call = caller_env()) {
   values <- map2_chr(x, names(x), format_query_param, error_call = error_call)
   names <- curl::curl_escape(names(x))
 
-  paste0(names, "=", values, collapse = "&")
+  paste0(names, "=", values, collapse = collapse)
 }
 
 format_query_param <- function(x,
