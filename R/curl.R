@@ -197,7 +197,7 @@ curl_data <- function(x, binary = FALSE, raw = FALSE) {
 }
 
 # Format described at <http://docopt.org>
-curl_opts <- "Usage: curl [<url>] [-H <header> ...] [options] [<url>]
+curl_opts <- "Usage: curl [<url>] [-H <header> ...] [-d <data> ...] [options] [<url>]
       --basic                  (IGNORED)
       --compressed             (IGNORED)
       --digest                 (IGNORED)
