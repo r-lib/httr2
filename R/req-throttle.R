@@ -37,7 +37,7 @@ req_throttle <- function(req, rate, realm = NULL) {
     if (is.null(last)) {
       wait <- 0
     } else {
-      wait <- delay - (unix_time() - last)
+      wait <- max(delay - (unix_time() - last), 0)
     }
 
     sys_sleep(wait, "for throttling delay")
