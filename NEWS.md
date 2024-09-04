@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_body_file()` no longer leaks a connection if the response doesn't complete succesfully (#534).
 * `req_cache()` now re-caches the response if the body is hasn't been modified but the headers have changed (#442).
 * `req_cache()` works better when `req_perform()` sets a path (#442).
 * `req_body_*()` now give informative error if you attempt to change the body type (#451).

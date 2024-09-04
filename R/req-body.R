@@ -229,31 +229,17 @@ req_body_apply <- function(req) {
 
   if (type == "raw-file") {
     size <- file.info(data)$size
-    done <- FALSE
     # Only open connection if needed
     delayedAssign("con", file(data, "rb"))
 
-    # Leaks connection if request doesn't complete
     readfunction <- function(nbytes, ...) {
-      if (done) {
-        return(raw())
-      }
-      out <- readBin(con, "raw", nbytes)
-      if (length(out) < nbytes) {
-        close(con)
-        done <<- TRUE
-        con <<- NULL
-      }
-      out
+      readBin(con, "raw", nbytes)
     }
     seekfunction <- function(offset, ...) {
-      if (done) {
-        con <<- file(data, "rb")
-        done <<- FALSE
-      }
       seek(con, where = offset)
     }
 
+    req <- req_policies(req, done = function() close(con))
     req <- req_options(req,
       post = TRUE,
       readfunction = readfunction,
@@ -297,4 +283,8 @@ req_body_apply_raw <- function(req, body) {
     postfieldsize = length(body),
     postfields = body
   )
+}
+
+req_done <- function(req) {
+  req_policy_call(req, "done", list(), NULL)
 }

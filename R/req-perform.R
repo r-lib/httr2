@@ -94,7 +94,8 @@ req_perform <- function(
     return(req)
   }
 
-  handle <- req_handle(req)
+  req_prep <- req_prepare(req)
+  handle <- req_handle(req_prep)
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
 
@@ -122,6 +123,7 @@ req_perform <- function(
         )
       }
     )
+    req_done(req_prep)
 
     if (is_error(resp)) {
       tries <- tries + 1
@@ -129,7 +131,8 @@ req_perform <- function(
     } else if (!reauth && resp_is_invalid_oauth_token(req, resp)) {
       reauth <- TRUE
       req <- auth_oauth_sign(req, TRUE)
-      handle <- req_handle(req)
+      req_prep <- req_prepare(req)
+      handle <- req_handle(req_prep)
       delay <- 0
     } else if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -258,6 +261,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
     req <- req_options(req, debugfunction = debug, verbose = TRUE)
   }
 
+  req <- req_prepare(req)
   handle <- req_handle(req)
   curl::handle_setopt(handle, url = req$url)
   resp <- curl::curl_echo(handle, progress = FALSE)
@@ -269,7 +273,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   ))
 }
 
-req_handle <- function(req) {
+req_prepare <- function(req) {
   req <- req_method_apply(req)
   req <- req_body_apply(req)
 
@@ -277,6 +281,9 @@ req_handle <- function(req) {
     req <- req_user_agent(req)
   }
 
+  req
+}
+req_handle <- function(req) {
   handle <- curl::new_handle()
   curl::handle_setheaders(handle, .list = headers_flatten(req$headers))
   curl::handle_setopt(handle, .list = req$options)
