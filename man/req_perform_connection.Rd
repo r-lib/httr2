@@ -4,12 +4,10 @@
 \alias{req_perform_connection}
 \title{Perform a request and return a streaming connection}
 \usage{
-req_perform_connection(req, mode = c("binary", "text"), blocking = TRUE)
+req_perform_connection(req, blocking = TRUE)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
-
-\item{mode}{The mode that should be used for opening the connection.}
 
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has (possibly

@@ -15,15 +15,6 @@
       Error in `resp_stream_raw()`:
       ! `resp` has already been closed.
 
-# resp_stream_sse() requires a text connection
-
-    Code
-      resp_stream_sse(resp)
-    Condition
-      Error in `resp_stream_sse()`:
-      ! `resp` must have a text mode connection.
-      i Use `mode = "text"` when calling `req_perform_connection()`.
-
 # req_perform_stream checks its inputs
 
     Code

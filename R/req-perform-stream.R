@@ -98,7 +98,6 @@ req_perform_stream <- function(req,
 #' want to do other work in between handling inputs from the stream.
 #'
 #' @inheritParams req_perform_stream
-#' @param mode The mode that should be used for opening the connection.
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has (possibly
 #'   nothing)?
@@ -115,13 +114,9 @@ req_perform_stream <- function(req,
 #'
 #' # Always close the response when you're done
 #' close(resp)
-req_perform_connection <- function(req,
-                                   mode = c("binary", "text"),
-                                   blocking = TRUE) {
+req_perform_connection <- function(req, blocking = TRUE) {
   check_request(req)
   check_bool(blocking)
-  mode <- arg_match(mode)
-  con_mode <- if (mode == "text") "rf" else "rbf"
 
   handle <- req_handle(req)
   the$last_request <- req
@@ -137,7 +132,7 @@ req_perform_connection <- function(req,
     if (!is.null(resp)) {
       close(resp$body)
     }
-    resp <- req_perform_connection1(req, handle, con_mode, blocking = blocking)
+    resp <- req_perform_connection1(req, handle, blocking = blocking)
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -159,11 +154,11 @@ req_perform_connection <- function(req,
   resp
 }
 
-req_perform_connection1 <- function(req, handle, con_mode = "rbf", blocking = TRUE) {
+req_perform_connection1 <- function(req, handle, blocking = TRUE) {
   stream <- curl::curl(req$url, handle = handle)
 
   # Must open the stream in order to initiate the connection
-  open(stream, con_mode, blocking = blocking)
+  open(stream,  "rbf", blocking = blocking)
   curl_data <- curl::handle_data(handle)
 
   new_response(
@@ -219,17 +214,12 @@ resp_stream_lines <- function(resp, lines = 1) {
 # TODO: max_size
 resp_stream_sse <- function(resp) {
   check_streaming_response(resp)
-  conn <- resp$body
-  if (!identical(summary(conn)$text, "text")) {
-    cli::cli_abort(c(
-      "{.arg resp} must have a text mode connection.",
-      i = 'Use {.code mode = "text"} when calling {.fn req_perform_connection}.'
-    ))
-  }
 
-  lines <- character(0)
+  lines <- resp$cache$push_back %||% character()
+  resp$cache$push_back <- character()
+
   while (TRUE) {
-    line <- readLines(conn, n = 1)
+    line <- readLines(resp$body, n = 1)
     if (length(line) == 0) {
       break
     }
@@ -243,7 +233,7 @@ resp_stream_sse <- function(resp) {
   if (length(lines) > 0) {
     # We have a partial event, put it back while we wait
     # for more
-    pushBack(lines, conn)
+    resp$cache$push_back <- lines
   }
 
   return(NULL)

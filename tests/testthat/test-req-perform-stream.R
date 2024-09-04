@@ -55,7 +55,7 @@ test_that("can feed sse events one at a time", {
 
   server <- webfakes::local_app_process(app)
   req <- request(server$url("/events"))
-  resp <- req_perform_connection(req, mode = "text")
+  resp <- req_perform_connection(req)
   on.exit(close(resp))
 
   expect_equal(
@@ -71,11 +71,32 @@ test_that("can feed sse events one at a time", {
   expect_equal(resp_stream_sse(resp), NULL)
 })
 
-test_that("resp_stream_sse() requires a text connection", {
-  resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
+test_that("can join sse events across multiple reads", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    i <- res$app$locals$i %||% 1
+    res$app$locals$i <- i + 1
+
+    res$send_chunk("data: 1\n")
+    Sys.sleep(0.2)
+    res$send_chunk("\n\n")
+  })
+
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+  resp <- req_perform_connection(req, blocking = FALSE)
   on.exit(close(resp))
 
-  expect_snapshot(resp_stream_sse(resp), error = TRUE)
+  out <- resp_stream_sse(resp)
+  expect_equal(out, NULL)
+  expect_equal(resp$cache$push_back, "data: 1")
+
+  Sys.sleep(0.3)
+  out <- resp_stream_sse(resp)
+  expect_equal(out, list(type = "message", data = "1", id = character()))
+  expect_equal(resp$cache$push_back, character())
 })
 
 # req_perform_stream() --------------------------------------------------------
