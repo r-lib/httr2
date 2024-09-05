@@ -45,7 +45,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>
+<ul><li>New <code>req_cookie_set()</code> allows you to set client side cookies (<a href="https://github.com/r-lib/httr2/issues/369" class="external-link">#369</a>).</li>
+<li>
 <code><a href="../reference/req_body.html">req_body_file()</a></code> no longer leaks a connection if the response doesn’t complete succesfully (<a href="https://github.com/r-lib/httr2/issues/534" class="external-link">#534</a>).</li>
 <li>
 <code><a href="../reference/req_perform.html">req_perform()</a></code> no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option <code>httr2_progress</code>.</li>
