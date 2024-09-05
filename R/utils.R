@@ -43,11 +43,12 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
 }
 
 
-sys_sleep <- function(seconds,
-                      task,
-                      fps = 10,
-                      progress = getOption("httr2_progress", !is_testing())) {
+sys_sleep <- function(seconds, task, fps = 10, progress = NULL) {
   check_number_decimal(seconds)
+  check_string(task)
+  check_number_decimal(fps)
+  progress <- progress %||% getOption("httr2_progress", !is_testing())
+  check_bool(progress, allow_null = TRUE)
 
   if (seconds == 0) {
     return(invisible())

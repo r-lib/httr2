@@ -6,10 +6,10 @@
       Error:
       ! All components of `...` must be named.
 
-# can suppress progress bar
+# progress bar suppressed in tests
 
     Code
-      sys_sleep(0.1, "for test")
+      sys_sleep(0.1, "in test")
     Message
-      > Waiting 1s for test
+      > Waiting 1s in test
 
