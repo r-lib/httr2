@@ -273,11 +273,15 @@ find_event_boundary <- function(buffer) {
   )
 }
 
+#' @param max_size The maximum number of bytes to buffer; once 
 #' @export
 #' @rdname resp_stream_raw
 # TODO: max_size
-resp_stream_sse <- function(resp) {
+resp_stream_sse <- function(resp, max_size = Inf) {
   check_streaming_response(resp)
+  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
+
+  chunk_size <- min(max_size + 1, 1024)
 
   # Grab data left over from last resp_stream_sse() call (if any)
   buffer <- resp$cache$push_back %||% raw()
@@ -301,9 +305,20 @@ resp_stream_sse <- function(resp) {
       return(parse_event(result$matched))
     }
     
+    if (length(buffer) > max_size) {
+      # Keep the buffer in place, so that if the user tries resp_stream_sse
+      # again, they'll get the same error rather than reading the stream
+      # having missed a bunch of bytes.
+      resp$cache$push_back <- buffer
+      cli::cli_abort("SSE event exceeded size limit of {max_size}")
+    }
+
     # We didn't have enough data. Attempt to read more
-    chunk_size <- 1024
-    chunk <- readBin(resp$body, raw(), n = chunk_size)
+    chunk <- readBin(resp$body, raw(),
+      # Don't let us exceed the max size by more than one byte; we do allow the
+      # one extra byte so we know to error.
+      n = min(chunk_size, max_size - length(buffer) + 1)
+    )
 
     print_buffer(chunk, "Received chunk")
 

@@ -141,6 +141,28 @@ test_that("always interprets data as UTF-8", {
   })
 })
 
+test_that("size limits enforced", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    data_size <- 1000
+    data <- paste(rep_len("0", data_size), collapse = "")
+    res$send_chunk(data)
+  })
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+
+  resp1 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp1))
+  expect_error(
+    while(is.null(out)) {
+      Sys.sleep(0.1)
+      out <- resp_stream_sse(resp1, max_size = 999)
+    }
+  )
+})
+
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {
     expect_identical(

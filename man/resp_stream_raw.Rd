@@ -11,7 +11,7 @@ resp_stream_raw(resp, kb = 32)
 
 resp_stream_lines(resp, lines = 1)
 
-resp_stream_sse(resp)
+resp_stream_sse(resp, max_size = Inf)
 
 \method{close}{httr2_response}(con, ...)
 }
@@ -21,6 +21,8 @@ resp_stream_sse(resp)
 \item{kb}{How many kilobytes (1024 bytes) of data to read.}
 
 \item{lines}{How many lines to read}
+
+\item{max_size}{The maximum number of bytes to buffer; once}
 
 \item{...}{Not used; included for compatibility with generic.}
 }
