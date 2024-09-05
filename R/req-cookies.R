@@ -18,19 +18,28 @@
 #'   req_cookies_set(a = 1, b = 1) |>
 #'   req_dry_run()
 #'
-#' # Use `req_cookie_preserve()` to preserve server-side cookies
+#' # Use `req_cookie_preserve()` to preserve server-side cookies across requests
 #' path <- tempfile()
-#' httpbin <- request(example_url()) |>
-#'   req_cookie_preserve(path)
 #'
-#' # Manually set two cookies
-#' httpbin |>
+#' # Set a server-side cookie
+#' request(example_url()) |>
+#'   req_cookie_preserve(path) |>
 #'   req_template("/cookies/set/:name/:value", name = "chocolate", value = "chip") |>
 #'   req_perform() |>
 #'   resp_body_json()
 #'
-#' httpbin |>
+#' # Set another sever-side cookie
+#' request(example_url()) |>
+#'   req_cookie_preserve(path) |>
 #'   req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") |>
+#'   req_perform() |>
+#'   resp_body_json()
+#'
+#' # Add a client side cookie
+#' request(example_url()) |>
+#'   req_url_path("/cookies/set") |>
+#'   req_cookie_preserve(path) |>
+#'   req_cookies_set(snicker = "doodle") |>
 #'   req_perform() |>
 #'   resp_body_json()
 #'
