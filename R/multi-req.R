@@ -147,6 +147,7 @@ pool_run <- function(pool, perfs, on_error = "continue") {
 # Wrap up all components of request -> response in a single object
 Performance <- R6Class("Performance", public = list(
   req = NULL,
+  req_prep = NULL,
   path = NULL,
 
   handle = NULL,
@@ -166,6 +167,7 @@ Performance <- R6Class("Performance", public = list(
     if (is_response(req)) {
       self$resp <- req
     } else {
+      self$req_prep <- req_prepare(req)
       self$handle <- req_handle(req)
       curl::handle_setopt(self$handle, url = req$url)
     }
@@ -190,6 +192,7 @@ Performance <- R6Class("Performance", public = list(
 
   succeed = function(res) {
     self$progress$update()
+    req_completed(self$req_prep)
 
     if (is.null(self$path)) {
       body <- res$content
@@ -220,6 +223,7 @@ Performance <- R6Class("Performance", public = list(
 
   fail = function(msg) {
     self$progress$update()
+    req_completed(self$req_prep)
 
     self$resp <- error_cnd(
       "httr2_failure",
