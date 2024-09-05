@@ -39,7 +39,6 @@ req_perform_stream <- function(req,
                                round = c("byte", "line")) {
   check_request(req)
 
-  handle <- req_handle(req)
   check_function(callback)
   check_number_decimal(timeout_sec, min = 0)
   check_number_decimal(buffer_kb, min = 0)
@@ -123,7 +122,8 @@ req_perform_connection <- function(req,
   mode <- arg_match(mode)
   con_mode <- if (mode == "text") "rf" else "rbf"
 
-  handle <- req_handle(req)
+  req_prep <- req_prepare(req)
+  handle <- req_handle(req_prep)
   the$last_request <- req
 
   tries <- 0
@@ -146,6 +146,8 @@ req_perform_connection <- function(req,
       break
     }
   }
+
+  req_completed(req_prep)
 
   if (error_is_error(req, resp)) {
     # Read full body if there's an error
