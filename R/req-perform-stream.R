@@ -288,7 +288,7 @@ resp_stream_sse <- function(resp) {
   }
 
   # Read chunks until we find an event or reach the end of input
-  while (TRUE) {
+  repeat {
     # Try to find an event boundary using the data we have
     print_buffer(buffer, "Buffer to parse")
     result <- find_event_boundary(buffer)
