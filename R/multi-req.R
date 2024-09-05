@@ -192,7 +192,7 @@ Performance <- R6Class("Performance", public = list(
 
   succeed = function(res) {
     self$progress$update()
-    req_done(self$req_prep)
+    req_completed(self$req_prep)
 
     if (is.null(self$path)) {
       body <- res$content
@@ -223,7 +223,7 @@ Performance <- R6Class("Performance", public = list(
 
   fail = function(msg) {
     self$progress$update()
-    req_done(self$req_prep)
+    req_completed(self$req_prep)
 
     self$resp <- error_cnd(
       "httr2_failure",

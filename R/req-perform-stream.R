@@ -147,7 +147,7 @@ req_perform_connection <- function(req,
     }
   }
 
-  req_done(req_prep)
+  req_completed(req_prep)
 
   if (error_is_error(req, resp)) {
     # Read full body if there's an error

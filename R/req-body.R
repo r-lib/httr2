@@ -232,18 +232,14 @@ req_body_apply <- function(req) {
     # Only open connection if needed
     delayedAssign("con", file(data, "rb"))
 
-    readfunction <- function(nbytes, ...) {
-      readBin(con, "raw", nbytes)
-    }
-    seekfunction <- function(offset, ...) {
-      seek(con, where = offset)
-    }
-
-    req <- req_policies(req, done = function() close(con))
+    req <- req_policies(
+      req,
+      done = function() close(con)
+    )
     req <- req_options(req,
       post = TRUE,
-      readfunction = readfunction,
-      seekfunction = seekfunction,
+      readfunction = function(nbytes, ...) readBin(con, "raw", nbytes),
+      seekfunction = function(offset, ...) seek(con, where = offset),
       postfieldsize_large = size
     )
   } else if (type == "raw") {
@@ -283,8 +279,4 @@ req_body_apply_raw <- function(req, body) {
     postfieldsize = length(body),
     postfields = body
   )
-}
-
-req_done <- function(req) {
-  req_policy_call(req, "done", list(), NULL)
 }

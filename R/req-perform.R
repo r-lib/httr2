@@ -123,7 +123,7 @@ req_perform <- function(
         )
       }
     )
-    req_done(req_prep)
+    req_completed(req_prep)
 
     if (is_error(resp)) {
       tries <- tries + 1
@@ -273,6 +273,8 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   ))
 }
 
+# Must call req_prepare(), then req_handle(), then after the request has been
+# performed, req_completed()
 req_prepare <- function(req) {
   req <- req_method_apply(req)
   req <- req_body_apply(req)
@@ -292,6 +294,9 @@ req_handle <- function(req) {
   }
 
   handle
+}
+req_completed <- function(req) {
+  req_policy_call(req, "done", list(), NULL)
 }
 
 new_path <- function(x) structure(x, class = "httr2_path")
