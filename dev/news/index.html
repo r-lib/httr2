@@ -46,6 +46,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/req_perform.html">req_perform()</a></code> no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option <code>httr2_progress</code>.</li>
+<li>
 <code><a href="../reference/req_cache.html">req_cache()</a></code> now re-caches the response if the body is hasn’t been modified but the headers have changed (<a href="https://github.com/r-lib/httr2/issues/442" class="external-link">#442</a>).</li>
 <li>
 <code><a href="../reference/req_cache.html">req_cache()</a></code> works better when <code><a href="../reference/req_perform.html">req_perform()</a></code> sets a path (<a href="https://github.com/r-lib/httr2/issues/442" class="external-link">#442</a>).</li>
