@@ -36,9 +36,9 @@ test_that("can retry a transient error", {
       res$
         set_status(429)$
         set_header("retry-after", 0)$
-        send_json(list(status = list("waiting")))
+        send_json(list(status = "waiting"), auto_unbox = TRUE)
     } else {
-      res$send_json(list(status = list("done")))
+      res$send_json(list(status = "done"), auto_unbox = TRUE)
     }
   })
 
@@ -46,10 +46,14 @@ test_that("can retry a transient error", {
   req <- request(server$url("/retry")) %>%
     req_retry(max_tries = 2)
 
-  cnd <- catch_cnd(resp <- req_perform_connection(req), "httr2_retry")
+  cnd <- expect_condition(
+    resp <- req_perform_connection(req),
+    class = "httr2_retry"
+  )
   expect_s3_class(cnd, "httr2_retry")
   expect_equal(cnd$tries, 1)
   expect_equal(cnd$delay, 0)
 
-  expect_equal(resp_body_json(resp), list(status = list("done")))
+  expect_equal(last_response(), resp)
+  expect_equal(resp_body_json(resp), list(status = "done"))
 })

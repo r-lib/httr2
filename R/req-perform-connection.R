@@ -39,19 +39,22 @@ req_perform_connection <- function(req, blocking = TRUE) {
 
   handle <- req_handle(req)
   the$last_request <- req
+  the$last_response <- NULL
 
   tries <- 0
   delay <- 0
   max_tries <- retry_max_tries(req)
   deadline <- Sys.time() + retry_max_seconds(req)
+  resp <- NULL
   while (tries < max_tries && Sys.time() < deadline) {
     sys_sleep(delay, "for retry backoff")
 
+    if (!is.null(resp)) {
+      close(resp)
+    }
     resp <- req_perform_connection1(req, handle, blocking = blocking)
 
     if (retry_is_transient(req, resp)) {
-      close(resp)
-
       tries <- tries + 1
       delay <- retry_after(req, resp, tries)
       signal(class = "httr2_retry", tries = tries, delay = delay)
