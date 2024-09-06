@@ -37,7 +37,8 @@ req_perform_connection <- function(req, blocking = TRUE) {
   check_request(req)
   check_bool(blocking)
 
-  handle <- req_handle(req)
+  req_prep <- req_prepare(req)
+  handle <- req_handle(req_prep)
   the$last_request <- req
   the$last_response <- NULL
 
@@ -62,6 +63,7 @@ req_perform_connection <- function(req, blocking = TRUE) {
       break
     }
   }
+  req_completed(req)
 
   if (error_is_error(req, resp)) {
     # Read full body if there's an error

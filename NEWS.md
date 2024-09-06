@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* New `req_cookie_set()` allows you to set client side cookies (#369).
+* `req_body_file()` no longer leaks a connection if the response doesn't complete succesfully (#534).
+* `req_perform()` no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option `httr2_progress`.
 * `req_cache()` now re-caches the response if the body is hasn't been modified but the headers have changed (#442).
 * `req_cache()` works better when `req_perform()` sets a path (#442).
 * `req_body_*()` now give informative error if you attempt to change the body type (#451).

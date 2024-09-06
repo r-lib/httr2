@@ -39,7 +39,6 @@ req_perform_stream <- function(req,
                                round = c("byte", "line")) {
   check_request(req)
 
-  handle <- req_handle(req)
   check_function(callback)
   check_number_decimal(timeout_sec, min = 0)
   check_number_decimal(buffer_kb, min = 0)
