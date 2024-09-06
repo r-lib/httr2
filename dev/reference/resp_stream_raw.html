@@ -54,7 +54,7 @@ req_perform_connection() you must use mode = "text".
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Read a streaming body a chunk at a time</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-perform-stream.R" class="external-link"><code>R/req-perform-stream.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/resp-stream.R" class="external-link"><code>R/resp-stream.R</code></a></small>
       <div class="d-none name"><code>resp_stream_raw.Rd</code></div>
     </div>
 
@@ -70,9 +70,9 @@ from the stream. It currently only works with text mode connections so when call
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">resp_stream_raw</span><span class="op">(</span><span class="va">resp</span>, kb <span class="op">=</span> <span class="fl">32</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">resp_stream_lines</span><span class="op">(</span><span class="va">resp</span>, lines <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu">resp_stream_lines</span><span class="op">(</span><span class="va">resp</span>, lines <span class="op">=</span> <span class="fl">1</span>, max_size <span class="op">=</span> <span class="cn">Inf</span>, warn <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">resp_stream_sse</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span>
+<span><span class="fu">resp_stream_sse</span><span class="op">(</span><span class="va">resp</span>, max_size <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'httr2_response'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">con</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -91,7 +91,17 @@ from the stream. It currently only works with text mode connections so when call
 
 
 <dt id="arg-lines">lines<a class="anchor" aria-label="anchor" href="#arg-lines"></a></dt>
-<dd><p>How many lines to read</p></dd>
+<dd><p>The maximum number of lines to return at once.</p></dd>
+
+
+<dt id="arg-max-size">max_size<a class="anchor" aria-label="anchor" href="#arg-max-size"></a></dt>
+<dd><p>The maximum number of bytes to buffer; once this number of
+bytes has been exceeded without a line/event boundary, an error is thrown.</p></dd>
+
+
+<dt id="arg-warn">warn<a class="anchor" aria-label="anchor" href="#arg-warn"></a></dt>
+<dd><p>Like <code><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines()</a></code>: warn if the connection ends without a final
+EOL.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
