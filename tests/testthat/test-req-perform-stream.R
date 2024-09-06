@@ -44,6 +44,118 @@ test_that("can't read from a closed connection", {
   expect_no_error(close(resp))
 })
 
+test_that("can join lines across multiple reads", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    res$send_chunk("This is a ")
+    Sys.sleep(0.2)
+    res$send_chunk("complete sentence.\n")
+  })
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+
+  # Non-blocking returns NULL until data is ready
+  resp1 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp1))
+
+  out <- resp_stream_lines(resp1)
+  expect_equal(out, character())
+  expect_equal(resp1$cache$push_back, charToRaw("This is a "))
+
+  while(length(out) == 0) {
+    Sys.sleep(0.1)
+    out <- resp_stream_lines(resp1)    
+  }
+  expect_equal(out, "This is a complete sentence.")
+})
+
+test_that("handles line endings of multiple kinds", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    res$send_chunk("crlf\r\n")
+    Sys.sleep(0.1)
+    res$send_chunk("lf\n")
+    Sys.sleep(0.1)
+    res$send_chunk("cr\r")
+    Sys.sleep(0.1)
+    res$send_chunk("half line/")
+    Sys.sleep(0.1)
+    res$send_chunk("other half\n")
+    Sys.sleep(0.1)
+    res$send_chunk("broken crlf\r")
+    Sys.sleep(0.1)
+    res$send_chunk("\nanother line\n")
+    Sys.sleep(0.1)
+    res$send_chunk("eof without line ending")
+  })
+
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+
+  resp1 <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp1))
+
+  for (expected in c("crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
+    rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
+  }
+  expect_warning(
+    expect_equal(resp_stream_lines(resp1), "eof without line ending"),
+    "incomplete final line"
+  )
+  expect_identical(resp_stream_lines(resp1), character(0))
+
+  # Same test, but now, non-blocking
+  resp2 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp2))
+
+  for (expected in c("crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
+    repeat {
+      out <- resp_stream_lines(resp2)
+      if (length(out) > 0) {
+        rlang::inject(expect_equal(out, !!expected))
+        break
+      }
+    }
+  }
+  expect_warning(
+    repeat {
+      out <- resp_stream_lines(resp2)
+      if (length(out) > 0) {
+        expect_equal(out, "eof without line ending")
+        break
+      }
+    },
+    "incomplete final line"
+  )
+})
+
+test_that("streams the specified number of lines", {
+  skip_on_covr()
+  app <- webfakes::new_app()
+
+  app$get("/events", function(req, res) {
+    res$send_chunk(paste(letters[1:5], collapse = "\n"))
+  })
+
+  server <- webfakes::local_app_process(app)
+  req <- request(server$url("/events"))
+
+  resp1 <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp1))
+  expect_equal(
+    resp_stream_lines(resp1, 3),
+    c("a", "b", "c")
+  )
+  expect_equal(
+    resp_stream_lines(resp1, 3),
+    c("d", "e")
+  )
+})
+
 test_that("can feed sse events one at a time", {
   skip_on_covr()
   app <- webfakes::new_app()
@@ -112,7 +224,7 @@ test_that("can join sse events across multiple reads", {
   expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
 })
 
-test_that("always interprets data as UTF-8", {
+test_that("sse always interprets data as UTF-8", {
   skip_on_covr()
   app <- webfakes::new_app()
 
@@ -141,7 +253,7 @@ test_that("always interprets data as UTF-8", {
   })
 })
 
-test_that("size limits enforced", {
+test_that("streaming size limits enforced", {
   skip_on_covr()
   app <- webfakes::new_app()
 
@@ -161,12 +273,31 @@ test_that("size limits enforced", {
       out <- resp_stream_sse(resp1, max_size = 999)
     }
   )
+
+  resp2 <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp2))
+  expect_error(
+    out <- resp_stream_sse(resp2, max_size = 999)
+  )
+
+  resp3 <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp3))
+  expect_error(
+    out <- resp_stream_lines(resp3, max_size = 999)
+  )
 })
 
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {
+    buffer <- charToRaw(x)
+    split_at <- find_event_boundary(buffer)
+    result <- if (is.null(split_at)) {
+      NULL
+    } else {
+      split_buffer(buffer, split_at)
+    }
     expect_identical(
-      find_event_boundary(charToRaw(x)),
+      result,
       list(matched=charToRaw(matched), remaining = charToRaw(remaining))
     )  
   }

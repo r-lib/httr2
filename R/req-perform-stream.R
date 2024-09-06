@@ -199,14 +199,70 @@ resp_stream_raw <- function(resp, kb = 32) {
   readBin(conn, raw(), kb * 1024)
 }
 
+find_line_boundary <- function(buffer) {
+  if (length(buffer) == 0) {
+    return(NULL)
+  }
+
+  # Look left 1 byte
+  right1 <- c(tail(buffer, -1), 0x00)
+
+  crlf <- buffer == 0x0D & right1 == 0x0A
+  cr <- buffer == 0x0D
+  lf <- buffer == 0x0A
+  
+  all <- which(crlf | cr | lf)
+  if (length(all) == 0) {
+    return(NULL)
+  }
+
+  first <- all[[1]]
+  if (crlf[first]) {
+    return(first + 2)
+  } else {
+    return(first + 1)
+  }
+}
+
 #' @export
 #' @rdname resp_stream_raw
 #' @param lines How many lines to read
-resp_stream_lines <- function(resp, lines = 1) {
+resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   check_streaming_response(resp)
-  conn <- resp$body
+  check_number_whole(lines, min = 0, allow_infinite = TRUE)
+  
+  if (lines == 0) {
+    # If you want to do that, who am I to judge?
+    return(character())
+  }
 
-  readLines(conn, n = lines)
+  line_bytes <- resp_boundary_pushback(resp, max_size, find_line_boundary, include_trailer = TRUE)
+  if (length(line_bytes) == 0) {
+    return(character())
+  }
+
+  eat_next_lf <- resp$cache$resp_stream_lines_eat_next_lf
+  resp$cache$resp_stream_lines_eat_next_lf <- FALSE
+  
+  if (identical(line_bytes, as.raw(0x0A)) && isTRUE(eat_next_lf)) {
+    # We hit that special edge case, see below
+    return(resp_stream_lines(resp, lines, max_size, warn))
+  }
+
+  # If ending on \r, there's a special edge case here where if the
+  # next line begins with \n, that byte should be eaten.
+  if (tail(line_bytes, 1) == 0x0D) {
+    resp$cache$resp_stream_lines_eat_next_lf <- TRUE
+  }
+
+  # Use `resp$body` as the variable name so that if warn=TRUE, you get
+  # "incomplete final line found on 'resp$body'" as the warning message
+  `resp$body` <- line_bytes
+  line_con <- rawConnection(`resp$body`)
+  on.exit(close(line_con))
+  # TODO: Use iconv to convert from whatever encoding is specified in the
+  # response header, to UTF-8
+  readLines(line_con, n = 1, warn = warn)
 }
 
 # Slices the vector using the only sane semantics: start inclusive, end
@@ -265,7 +321,13 @@ find_event_boundary <- function(buffer) {
 
   boundary_end <- boundary_end[1]  # Take the first occurrence
   split_at <- boundary_end + 1  # Split at one after the boundary
+  split_at
+}
 
+# Splits a buffer into the part before `split_at`, and the part starting at
+# `split_at`. It's possible for either of the returned parts to be zero-length
+# (i.e. if `split_at` is 1 or length(buffer)+1).
+split_buffer <- function(buffer, split_at) {
   # Return a list with the event data and the remaining buffer
   list(
     matched = slice(buffer, end = split_at),
@@ -273,11 +335,14 @@ find_event_boundary <- function(buffer) {
   )
 }
 
-#' @param max_size The maximum number of bytes to buffer; once 
-#' @export
-#' @rdname resp_stream_raw
-# TODO: max_size
-resp_stream_sse <- function(resp, max_size = Inf) {
+# @param max_size Maximum number of bytes to look for a boundary before throwing an error
+# @param boundary_func A function that takes a raw vector and returns NULL if no
+#   boundary was detected, or one position PAST the end of the first boundary in
+#   the vector
+# @param include_trailer If TRUE, at the end of the response, if there are
+#   bytes after the last boundary, then return those bytes; if FALSE, then those
+#   bytes are silently discarded.
+resp_boundary_pushback <- function(resp, max_size, boundary_func, include_trailer) {
   check_streaming_response(resp)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
@@ -295,14 +360,15 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   repeat {
     # Try to find an event boundary using the data we have
     print_buffer(buffer, "Buffer to parse")
-    result <- find_event_boundary(buffer)
+    split_at <- boundary_func(buffer)
 
-    if (!is.null(result)) {
+    if (!is.null(split_at)) {
+      result <- split_buffer(buffer, split_at)
       # We found a complete event
-      print_buffer(result$matched, "Event data")
+      print_buffer(result$matched, "Matched data")
       print_buffer(result$remaining, "Remaining buffer")
       resp$cache$push_back <- result$remaining
-      return(parse_event(result$matched))
+      return(result$matched)
     }
     
     if (length(buffer) > max_size) {
@@ -310,7 +376,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
       # again, they'll get the same error rather than reading the stream
       # having missed a bunch of bytes.
       resp$cache$push_back <- buffer
-      cli::cli_abort("SSE event exceeded size limit of {max_size}")
+      cli::cli_abort("Streaming read exceeded size limit of {max_size}")
     }
 
     # We didn't have enough data. Attempt to read more
@@ -324,6 +390,16 @@ resp_stream_sse <- function(resp, max_size = Inf) {
 
     # If we've reached the end of input, store the buffer and return NULL
     if (length(chunk) == 0) {
+      if (!isIncomplete(resp$body)) {
+        # We've truly reached the end of the connection; no more data is coming
+        if (include_trailer) {
+          return(buffer)
+        } else {
+          return(NULL)
+        }
+      }
+      
+      # More data might come later
       print_buffer(buffer, "Storing incomplete buffer")
       resp$cache$push_back <- buffer
       return(NULL)
@@ -333,6 +409,19 @@ resp_stream_sse <- function(resp, max_size = Inf) {
     # loop to try parsing again
     buffer <- c(buffer, chunk)
     print_buffer(buffer, "Combined buffer")
+  }
+}
+
+#' @param max_size The maximum number of bytes to buffer; once 
+#' @export
+#' @rdname resp_stream_raw
+# TODO: max_size
+resp_stream_sse <- function(resp, max_size = Inf) {
+  event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
+  if (!is.null(event_bytes)) {
+    parse_event(event_bytes)
+  } else {
+    return(NULL)
   }
 }
 
