@@ -102,7 +102,7 @@ resp_stream_oneline <- function(resp, max_size, warn, encoding) {
 
     # If ending on \r, there's a special edge case here where if the
     # next line begins with \n, that byte should be eaten.
-    if (tail(line_bytes, 1) == 0x0D) {
+    if (utils::tail(line_bytes, 1) == 0x0D) {
       resp$cache$resp_stream_oneline_eat_next_lf <- TRUE
     }
 
@@ -127,7 +127,7 @@ find_line_boundary <- function(buffer) {
   }
 
   # Look left 1 byte
-  right1 <- c(tail(buffer, -1), 0x00)
+  right1 <- c(utils::tail(buffer, -1), 0x00)
 
   crlf <- buffer == 0x0D & right1 == 0x0A
   cr <- buffer == 0x0D
@@ -163,9 +163,9 @@ find_event_boundary <- function(buffer) {
 
   # leftX means look behind by X bytes. For example, left1[2] equals buffer[1].
   # Any attempt to read past the beginning of the buffer results in 0x00.
-  left1 <- c(0x00, head(buffer, -1))
-  left2 <- c(0x00, head(left1, -1))
-  left3 <- c(0x00, head(left2, -1))
+  left1 <- c(0x00, utils::head(buffer, -1))
+  left2 <- c(0x00, utils::head(left1, -1))
+  left3 <- c(0x00, utils::head(left2, -1))
 
   boundary_end <- which(
     (left1 == 0x0A & buffer == 0x0A) | # \n\n
