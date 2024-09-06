@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_iterative()` is no longer experimental.
 * New `req_cookie_set()` allows you to set client side cookies (#369).
 * `req_body_file()` no longer leaks a connection if the response doesn't complete succesfully (#534).
 * `req_perform()` no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option `httr2_progress`.

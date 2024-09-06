@@ -47,8 +47,6 @@ If present, the error object will always be the last element in the list.
 Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for more details.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 \code{req_perform_iterative()} iteratively generates and performs requests,
 using a callback function, \code{next_req}, to define the next request based on
 the current request and response. You will probably want to pair it with an
@@ -116,7 +114,7 @@ req <- request(example_url()) |>
 
 resps <- req_perform_iterative(req, iterate_with_offset("page_index"))
 
-resps |> resps_data(function(resp) {
+data <- resps |> resps_data(function(resp) {
   data <- resp_body_json(resp)$data
   data.frame(
     Sepal.Length = sapply(data, `[[`, "Sepal.Length"),
@@ -126,4 +124,5 @@ resps |> resps_data(function(resp) {
     Species = sapply(data, `[[`, "Species")
   )
 })
+str(data)
 }

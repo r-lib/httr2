@@ -1,8 +1,6 @@
 #' Perform requests iteratively, generating new requests from previous responses
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
-#'
 #' `req_perform_iterative()` iteratively generates and performs requests,
 #' using a callback function, `next_req`, to define the next request based on
 #' the current request and response. You will probably want to pair it with an
@@ -96,7 +94,7 @@
 #'
 #' resps <- req_perform_iterative(req, iterate_with_offset("page_index"))
 #'
-#' resps |> resps_data(function(resp) {
+#' data <- resps |> resps_data(function(resp) {
 #'   data <- resp_body_json(resp)$data
 #'   data.frame(
 #'     Sepal.Length = sapply(data, `[[`, "Sepal.Length"),
@@ -106,6 +104,7 @@
 #'     Species = sapply(data, `[[`, "Species")
 #'   )
 #' })
+#' str(data)
 req_perform_iterative <- function(req,
                                   next_req,
                                   path = NULL,
