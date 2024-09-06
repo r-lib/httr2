@@ -11,7 +11,8 @@
 #' running on a hosted platform like RStudio Server), provide a custom
 #' `redirect_uri` and httr2 will prompt the user to enter the code manually.
 #'
-#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in
+#' <https://httr2.r-lib.org/articles/oauth.html>.
 #'
 #' # Security considerations
 #'
@@ -77,7 +78,7 @@
 #'   the number of times that you need to re-authenticate at the cost of
 #'   storing access credentials on disk.
 #'
-#'   Learn more in `vignette("oauth")`
+#'   Learn more in <https://httr2.r-lib.org/articles/oauth.html>.
 #' @param cache_key If you want to cache multiple tokens per app, use this
 #'   key to disambiguate them.
 #' @returns `req_oauth_auth_code()` returns a modified HTTP [request] that will

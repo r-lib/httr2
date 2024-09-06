@@ -82,7 +82,7 @@ completion of the authorization flow to the hosted platform.}
 the number of times that you need to re-authenticate at the cost of
 storing access credentials on disk.
 
-Learn more in \code{vignette("oauth")}}
+Learn more in \url{https://httr2.r-lib.org/articles/oauth.html}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
@@ -105,7 +105,8 @@ to capture the authorization code. When this is not possible (e.g. when
 running on a hosted platform like RStudio Server), provide a custom
 \code{redirect_uri} and httr2 will prompt the user to enter the code manually.
 
-Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in
+\url{https://httr2.r-lib.org/articles/oauth.html}.
 }
 \section{Security considerations}{
 The authorization code flow is used for both web applications and native

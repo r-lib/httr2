@@ -6,7 +6,8 @@
 #' It is often used for service accounts, accounts that are used primarily in
 #' automated environments.
 #'
-#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in
+#' <https://httr2.r-lib.org/articles/oauth.html>.
 #'
 #' @export
 #' @family OAuth flows

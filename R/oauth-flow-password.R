@@ -5,7 +5,8 @@
 #' defined by `r rfc(6749, 4.3)`. It allows the user to supply their password
 #' once, exchanging it for an access token that can be cached locally.
 #'
-#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in
+#' <https://httr2.r-lib.org/articles/oauth.html>
 #'
 #' @export
 #' @family OAuth flows

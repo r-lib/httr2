@@ -45,7 +45,7 @@ the documentation.}
 the number of times that you need to re-authenticate at the cost of
 storing access credentials on disk.
 
-Learn more in \code{vignette("oauth")}}
+Learn more in \url{https://httr2.r-lib.org/articles/oauth.html}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
@@ -63,7 +63,8 @@ It's designed for devices that don't have access to a web browser (if you've
 ever authenticated an app on your TV, this is probably the flow you've used),
 but it also works well from within R.
 
-Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in
+\url{https://httr2.r-lib.org/articles/oauth.html}.
 }
 \examples{
 req_auth_github <- function(req) {

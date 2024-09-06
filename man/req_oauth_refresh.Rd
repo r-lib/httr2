@@ -54,7 +54,8 @@ retrieve a new update refresh token and update the stored value. If you find
 this happening a lot, it's a sign that you should be using a different flow
 in your automated tests.
 
-Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in
+\url{https://httr2.r-lib.org/articles/oauth.html}.
 }
 \examples{
 client <- oauth_client("example", "https://example.com/get_token")

@@ -45,7 +45,7 @@ interactively.}
 the number of times that you need to re-authenticate at the cost of
 storing access credentials on disk.
 
-Learn more in \code{vignette("oauth")}}
+Learn more in \url{https://httr2.r-lib.org/articles/oauth.html}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
@@ -59,7 +59,8 @@ This function implements the OAuth \strong{resource owner password flow}, as
 defined by \href{https://datatracker.ietf.org/doc/html/rfc6749#section-4.3}{Section 4.3 of RFC 6749}. It allows the user to supply their password
 once, exchanging it for an access token that can be cached locally.
 
-Learn more about the overall OAuth authentication flow in \code{vignette("oauth")}.
+Learn more about the overall OAuth authentication flow in
+\url{https://httr2.r-lib.org/articles/oauth.html}
 }
 \examples{
 req_auth <- function(req) {

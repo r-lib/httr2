@@ -6,7 +6,8 @@
 #' ever authenticated an app on your TV, this is probably the flow you've used),
 #' but it also works well from within R.
 #'
-#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in
+#' <https://httr2.r-lib.org/articles/oauth.html>.
 #'
 #' @export
 #' @inheritParams oauth_flow_password

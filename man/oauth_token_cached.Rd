@@ -25,7 +25,7 @@ whose names match the argument names of \code{flow}.}
 the number of times that you need to re-authenticate at the cost of
 storing access credentials on disk.
 
-Learn more in \code{vignette("oauth")}}
+Learn more in \url{https://httr2.r-lib.org/articles/oauth.html}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}

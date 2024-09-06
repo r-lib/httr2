@@ -15,7 +15,8 @@
 #' this happening a lot, it's a sign that you should be using a different flow
 #' in your automated tests.
 #'
-#' Learn more about the overall OAuth authentication flow in `vignette("oauth")`.
+#' Learn more about the overall OAuth authentication flow in
+#' <https://httr2.r-lib.org/articles/oauth.html>.
 #'
 #' @inheritParams req_oauth_auth_code
 #' @param refresh_token A refresh token. This is equivalent to a password
