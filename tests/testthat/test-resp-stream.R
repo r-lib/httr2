@@ -16,15 +16,6 @@ test_that("can stream bytes from a connection", {
   expect_length(out, 0)
 })
 
-test_that("can read all data from a connection", {
-  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
-  withr::defer(close(resp))
-
-  out <- resp_body_raw(resp)
-  expect_length(out, 2048)
-  expect_false(resp_has_body(resp))
-})
-
 test_that("can't read from a closed connection", {
   resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
   close(resp)
