@@ -154,6 +154,26 @@ test_that("streams the specified number of lines", {
     resp_stream_lines(resp1, 3),
     c("d", "e")
   )
+  expect_equal(
+    resp_stream_lines(resp1, 3),
+    character()
+  )
+
+  resp2 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp2))
+  Sys.sleep(0.2)
+  expect_equal(
+    resp_stream_lines(resp2, 3),
+    c("a", "b", "c")
+  )
+  expect_equal(
+    resp_stream_lines(resp2, 3),
+    c("d", "e")
+  )
+  expect_equal(
+    resp_stream_lines(resp2, 3),
+    character()
+  )
 })
 
 test_that("can feed sse events one at a time", {

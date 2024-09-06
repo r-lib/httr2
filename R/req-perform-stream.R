@@ -226,43 +226,64 @@ find_line_boundary <- function(buffer) {
 
 #' @export
 #' @rdname resp_stream_raw
-#' @param lines How many lines to read
+#' @param lines The maximum number of lines to return at once.
+#' @param warn Like [readLines()]: warn if the connection ends without a final
+#'   EOL.
 resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   check_streaming_response(resp)
   check_number_whole(lines, min = 0, allow_infinite = TRUE)
-  
+  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
+  check_logical(warn)
+
   if (lines == 0) {
     # If you want to do that, who am I to judge?
     return(character())
   }
 
-  line_bytes <- resp_boundary_pushback(resp, max_size, find_line_boundary, include_trailer = TRUE)
-  if (length(line_bytes) == 0) {
-    return(character())
+  lines_read <- character(0)
+  while (lines > 0) {
+    line <- resp_stream_oneline(resp, max_size, warn)
+    if (length(line) == 0) {
+      # No more data, either because EOF or req_perform_connection(blocking=FALSE).
+      # Either way, return what we have
+      return(lines_read)
+    }
+    lines_read <- c(lines_read, line)
+    lines <- lines - 1
   }
+  lines_read
+}
 
-  eat_next_lf <- resp$cache$resp_stream_lines_eat_next_lf
-  resp$cache$resp_stream_lines_eat_next_lf <- FALSE
-  
-  if (identical(line_bytes, as.raw(0x0A)) && isTRUE(eat_next_lf)) {
-    # We hit that special edge case, see below
-    return(resp_stream_lines(resp, lines, max_size, warn))
+resp_stream_oneline <- function(resp, max_size, warn) {
+  repeat {
+    line_bytes <- resp_boundary_pushback(resp, max_size, find_line_boundary, include_trailer = TRUE)
+    if (length(line_bytes) == 0) {
+      return(character())
+    }
+
+    eat_next_lf <- resp$cache$resp_stream_oneline_eat_next_lf
+    resp$cache$resp_stream_oneline_eat_next_lf <- FALSE
+    
+    if (identical(line_bytes, as.raw(0x0A)) && isTRUE(eat_next_lf)) {
+      # We hit that special edge case, see below
+      next
+    }
+
+    # If ending on \r, there's a special edge case here where if the
+    # next line begins with \n, that byte should be eaten.
+    if (tail(line_bytes, 1) == 0x0D) {
+      resp$cache$resp_stream_oneline_eat_next_lf <- TRUE
+    }
+
+    # Use `resp$body` as the variable name so that if warn=TRUE, you get
+    # "incomplete final line found on 'resp$body'" as the warning message
+    `resp$body` <- line_bytes
+    line_con <- rawConnection(`resp$body`)
+    on.exit(close(line_con))
+    # TODO: Use iconv to convert from whatever encoding is specified in the
+    # response header, to UTF-8
+    return(readLines(line_con, n = 1, warn = warn))
   }
-
-  # If ending on \r, there's a special edge case here where if the
-  # next line begins with \n, that byte should be eaten.
-  if (tail(line_bytes, 1) == 0x0D) {
-    resp$cache$resp_stream_lines_eat_next_lf <- TRUE
-  }
-
-  # Use `resp$body` as the variable name so that if warn=TRUE, you get
-  # "incomplete final line found on 'resp$body'" as the warning message
-  `resp$body` <- line_bytes
-  line_con <- rawConnection(`resp$body`)
-  on.exit(close(line_con))
-  # TODO: Use iconv to convert from whatever encoding is specified in the
-  # response header, to UTF-8
-  readLines(line_con, n = 1, warn = warn)
 }
 
 # Slices the vector using the only sane semantics: start inclusive, end
@@ -412,7 +433,8 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
   }
 }
 
-#' @param max_size The maximum number of bytes to buffer; once 
+#' @param max_size The maximum number of bytes to buffer; once this number of
+#'   bytes has been exceeded without a line/event boundary, an error is thrown.
 #' @export
 #' @rdname resp_stream_raw
 # TODO: max_size

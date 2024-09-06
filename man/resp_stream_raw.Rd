@@ -9,7 +9,7 @@
 \usage{
 resp_stream_raw(resp, kb = 32)
 
-resp_stream_lines(resp, lines = 1)
+resp_stream_lines(resp, lines = 1, max_size = Inf, warn = TRUE)
 
 resp_stream_sse(resp, max_size = Inf)
 
@@ -20,9 +20,13 @@ resp_stream_sse(resp, max_size = Inf)
 
 \item{kb}{How many kilobytes (1024 bytes) of data to read.}
 
-\item{lines}{How many lines to read}
+\item{lines}{The maximum number of lines to return at once.}
 
-\item{max_size}{The maximum number of bytes to buffer; once}
+\item{max_size}{The maximum number of bytes to buffer; once this number of
+bytes has been exceeded without a line/event boundary, an error is thrown.}
+
+\item{warn}{Like \code{\link[=readLines]{readLines()}}: warn if the connection ends without a final
+EOL.}
 
 \item{...}{Not used; included for compatibility with generic.}
 }
