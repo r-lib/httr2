@@ -257,7 +257,7 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
 resp_stream_oneline <- function(resp, max_size, warn) {
   repeat {
     line_bytes <- resp_boundary_pushback(resp, max_size, find_line_boundary, include_trailer = TRUE)
-    if (length(line_bytes) == 0) {
+    if (is.null(line_bytes)) {
       return(character())
     }
 
@@ -413,7 +413,7 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
     if (length(chunk) == 0) {
       if (!isIncomplete(resp$body)) {
         # We've truly reached the end of the connection; no more data is coming
-        if (include_trailer) {
+        if (include_trailer && length(buffer) > 0) {
           return(buffer)
         } else {
           return(NULL)

@@ -138,7 +138,7 @@ test_that("streams the specified number of lines", {
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
-    res$send_chunk(paste(letters[1:5], collapse = "\n"))
+    res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
   })
 
   server <- webfakes::local_app_process(app)
