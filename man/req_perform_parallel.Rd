@@ -15,8 +15,8 @@ req_perform_parallel(
 \arguments{
 \item{reqs}{A list of \link{request}s.}
 
-\item{paths}{An optional list of paths, if you want to download the request
-bodies to disks. If supplied, must be the same length as \code{reqs}.}
+\item{paths}{An optional character vector of paths, if you want to download
+the request bodies to disk. If supplied, must be the same length as \code{reqs}.}
 
 \item{pool}{Optionally, a curl pool made by \code{\link[curl:multi]{curl::new_pool()}}. Supply
 this if you want to override the defaults for total concurrent connections
