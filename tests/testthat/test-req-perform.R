@@ -55,10 +55,7 @@ test_that("persistent HTTP errors only get single attempt", {
 })
 
 test_that("can retry a transient error", {
-  skip_on_covr()
-  app <- webfakes::new_app()
-
-  app$get("/retry", function(req, res) {
+  req <- local_app_request(function(req, res) {
     i <- res$app$locals$i %||% 1
     if (i == 1) {
       res$app$locals$i <- 2
@@ -70,10 +67,7 @@ test_that("can retry a transient error", {
       res$send_json(list(status = "done"))
     }
   })
-
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/retry")) %>%
-    req_retry(max_tries = 2)
+  req <- req_retry(req, max_tries = 2)
 
   cnd <- catch_cnd(resp <- req_perform(req), "httr2_retry")
   expect_s3_class(cnd, "httr2_retry")

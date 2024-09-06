@@ -286,3 +286,41 @@ create_progress_bar <- function(total,
 imap <- function(.x, .f, ...) {
   map2(.x, names(.x), .f, ...)
 }
+
+read_con <- function(con, buffer = 32 * 1024) {
+  bytes <- raw()
+  repeat {
+    new <- readBin(con, "raw", n = buffer)
+    if (length(new) == 0) break
+    bytes <- c(bytes, new)
+  }
+  if (length(bytes) == 0) {
+    NULL
+  } else {
+    bytes
+  }
+}
+
+
+# Slices the vector using the only sane semantics: start inclusive, end
+# exclusive.
+#
+# * Allows start == end, which means return no elements.
+# * Allows start == length(vector) + 1, which means return no elements.
+# * Allows zero-length vectors.
+#
+# Otherwise, slice() is quite strict about what it allows start/end to be: no
+# negatives, no reversed order.
+slice <- function(vector, start = 1, end = length(vector) + 1) {
+  stopifnot(start > 0)
+  stopifnot(start <= length(vector) + 1)
+  stopifnot(end > 0)
+  stopifnot(end <= length(vector) + 1)
+  stopifnot(end >= start)
+
+  if (start == end) {
+    vector[FALSE] # Return an empty vector of the same type
+  } else {
+    vector[start:(end - 1)]
+  }
+}
