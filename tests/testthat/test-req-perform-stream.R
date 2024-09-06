@@ -76,6 +76,9 @@ test_that("handles line endings of multiple kinds", {
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
+    res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
+    res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
+    Sys.sleep(0.1)
     res$send_chunk("crlf\r\n")
     Sys.sleep(0.1)
     res$send_chunk("lf\n")
@@ -99,7 +102,7 @@ test_that("handles line endings of multiple kinds", {
   resp1 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp1))
 
-  for (expected in c("crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
+  for (expected in c("\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
     rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
   }
   expect_warning(
@@ -112,7 +115,7 @@ test_that("handles line endings of multiple kinds", {
   resp2 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp2))
 
-  for (expected in c("crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
+  for (expected in c("\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
     repeat {
       out <- resp_stream_lines(resp2)
       if (length(out) > 0) {

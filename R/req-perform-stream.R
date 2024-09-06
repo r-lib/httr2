@@ -240,9 +240,11 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
     return(character())
   }
 
+  encoding <- resp_encoding(resp)
+
   lines_read <- character(0)
   while (lines > 0) {
-    line <- resp_stream_oneline(resp, max_size, warn)
+    line <- resp_stream_oneline(resp, max_size, warn, encoding)
     if (length(line) == 0) {
       # No more data, either because EOF or req_perform_connection(blocking=FALSE).
       # Either way, return what we have
@@ -254,7 +256,7 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   lines_read
 }
 
-resp_stream_oneline <- function(resp, max_size, warn) {
+resp_stream_oneline <- function(resp, max_size, warn, encoding) {
   repeat {
     line_bytes <- resp_boundary_pushback(resp, max_size, find_line_boundary, include_trailer = TRUE)
     if (is.null(line_bytes)) {
@@ -280,9 +282,13 @@ resp_stream_oneline <- function(resp, max_size, warn) {
     `resp$body` <- line_bytes
     line_con <- rawConnection(`resp$body`)
     on.exit(close(line_con))
-    # TODO: Use iconv to convert from whatever encoding is specified in the
+    
+    # readLines chomps the trailing newline. I assume this is desirable.
+    raw_text <- readLines(line_con, n = 1, warn = warn)
+
+    # Use iconv to convert from whatever encoding is specified in the
     # response header, to UTF-8
-    return(readLines(line_con, n = 1, warn = warn))
+    return(iconv(raw_text, encoding, "UTF-8"))
   }
 }
 
@@ -437,7 +443,6 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
 #'   bytes has been exceeded without a line/event boundary, an error is thrown.
 #' @export
 #' @rdname resp_stream_raw
-# TODO: max_size
 resp_stream_sse <- function(resp, max_size = Inf) {
   event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
   if (!is.null(event_bytes)) {
