@@ -1,6 +1,8 @@
 #' Perform request asynchronously using the promises package
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' This variation on [req_perform()] returns a [promises::promise()] object immediately
 #' and then performs the request in the background, returning program control before the request
 #' is finished. See the

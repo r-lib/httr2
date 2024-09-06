@@ -21,6 +21,8 @@ a \code{\link[promises:promise]{promises::promise()}} object which resolves to a
 successful or rejects on the same errors thrown by \code{\link[=req_perform]{req_perform()}}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This variation on \code{\link[=req_perform]{req_perform()}} returns a \code{\link[promises:promise]{promises::promise()}} object immediately
 and then performs the request in the background, returning program control before the request
 is finished. See the
