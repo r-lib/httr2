@@ -28,7 +28,6 @@ test_that("can't read from a closed connection", {
 })
 
 test_that("can join lines across multiple reads", {
-  skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -55,7 +54,6 @@ test_that("can join lines across multiple reads", {
 })
 
 test_that("handles line endings of multiple kinds", {
-  skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -120,7 +118,6 @@ test_that("handles line endings of multiple kinds", {
 })
 
 test_that("streams the specified number of lines", {
-  skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -163,7 +160,6 @@ test_that("streams the specified number of lines", {
 })
 
 test_that("can feed sse events one at a time", {
-  skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -191,7 +187,7 @@ test_that("can feed sse events one at a time", {
 })
 
 test_that("can join sse events across multiple reads", {
-  skip_on_covr()
+  # skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -231,7 +227,7 @@ test_that("can join sse events across multiple reads", {
 })
 
 test_that("sse always interprets data as UTF-8", {
-  skip_on_covr()
+  # skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -260,7 +256,6 @@ test_that("sse always interprets data as UTF-8", {
 })
 
 test_that("streaming size limits enforced", {
-  skip_on_covr()
   app <- webfakes::new_app()
 
   app$get("/events", function(req, res) {
@@ -332,27 +327,4 @@ test_that("has a working find_event_boundary", {
   expect_null(find_event_boundary(charToRaw("1")))
   expect_null(find_event_boundary(charToRaw("12")))
   expect_null(find_event_boundary(charToRaw("\r\n\r")))
-})
-
-test_that("has a working slice", {
-  x <- letters[1:5]
-  expect_identical(slice(x), x)
-  expect_identical(slice(x, 1, length(x) + 1), x)
-
-  # start is inclusive, end is exclusive
-  expect_identical(slice(x, 1, length(x)), head(x, -1))
-  # zero-length slices are fine
-  expect_identical(slice(x, 1, 1), character())
-  # starting off the end is fine
-  expect_identical(slice(x, length(x) + 1), character())
-  expect_identical(slice(x, length(x) + 1, length(x) + 1), character())
-  # slicing zero-length is fine
-  expect_identical(slice(character()), character())
-
-  # out of bounds
-  expect_error(slice(x, 0, 1))
-  expect_error(slice(x, length(x) + 2))
-  expect_error(slice(x, end = length(x) + 2))
-  # end too small relative to start
-  expect_error(slice(x, 2, 1))
 })

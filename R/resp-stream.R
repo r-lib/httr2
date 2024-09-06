@@ -1,4 +1,3 @@
-
 #' Read a streaming body a chunk at a time
 #'
 #' @description
@@ -25,31 +24,6 @@ resp_stream_raw <- function(resp, kb = 32) {
   conn <- resp$body
 
   readBin(conn, raw(), kb * 1024)
-}
-
-find_line_boundary <- function(buffer) {
-  if (length(buffer) == 0) {
-    return(NULL)
-  }
-
-  # Look left 1 byte
-  right1 <- c(tail(buffer, -1), 0x00)
-
-  crlf <- buffer == 0x0D & right1 == 0x0A
-  cr <- buffer == 0x0D
-  lf <- buffer == 0x0A
-
-  all <- which(crlf | cr | lf)
-  if (length(all) == 0) {
-    return(NULL)
-  }
-
-  first <- all[[1]]
-  if (crlf[first]) {
-    return(first + 2)
-  } else {
-    return(first + 1)
-  }
 }
 
 #' @export
@@ -82,6 +56,33 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
     lines <- lines - 1
   }
   lines_read
+}
+
+
+#' @param max_size The maximum number of bytes to buffer; once this number of
+#'   bytes has been exceeded without a line/event boundary, an error is thrown.
+#' @export
+#' @rdname resp_stream_raw
+resp_stream_sse <- function(resp, max_size = Inf) {
+  event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
+  if (!is.null(event_bytes)) {
+    parse_event(event_bytes)
+  } else {
+    return(NULL)
+  }
+}
+
+#' @export
+#' @param ... Not used; included for compatibility with generic.
+#' @rdname resp_stream_raw
+close.httr2_response <- function(con, ...) {
+  check_response(con)
+
+  if (inherits(con$body, "connection") && isValid(con$body)) {
+    close(con$body)
+  }
+
+  invisible()
 }
 
 resp_stream_oneline <- function(resp, max_size, warn, encoding) {
@@ -120,26 +121,28 @@ resp_stream_oneline <- function(resp, max_size, warn, encoding) {
   }
 }
 
-# Slices the vector using the only sane semantics: start inclusive, end
-# exclusive.
-#
-# * Allows start == end, which means return no elements.
-# * Allows start == length(vector) + 1, which means return no elements.
-# * Allows zero-length vectors.
-#
-# Otherwise, slice() is quite strict about what it allows start/end to be: no
-# negatives, no reversed order.
-slice <- function(vector, start = 1, end = length(vector) + 1) {
-  stopifnot(start > 0)
-  stopifnot(start <= length(vector) + 1)
-  stopifnot(end > 0)
-  stopifnot(end <= length(vector) + 1)
-  stopifnot(end >= start)
+find_line_boundary <- function(buffer) {
+  if (length(buffer) == 0) {
+    return(NULL)
+  }
 
-  if (start == end) {
-    vector[FALSE] # Return an empty vector of the same type
+  # Look left 1 byte
+  right1 <- c(tail(buffer, -1), 0x00)
+
+  crlf <- buffer == 0x0D & right1 == 0x0A
+  cr <- buffer == 0x0D
+  lf <- buffer == 0x0A
+
+  all <- which(crlf | cr | lf)
+  if (length(all) == 0) {
+    return(NULL)
+  }
+
+  first <- all[[1]]
+  if (crlf[first]) {
+    return(first + 2)
   } else {
-    vector[start:(end - 1)]
+    return(first + 1)
   }
 }
 
@@ -267,18 +270,35 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
   }
 }
 
-#' @param max_size The maximum number of bytes to buffer; once this number of
-#'   bytes has been exceeded without a line/event boundary, an error is thrown.
-#' @export
-#' @rdname resp_stream_raw
-resp_stream_sse <- function(resp, max_size = Inf) {
-  event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
-  if (!is.null(event_bytes)) {
-    parse_event(event_bytes)
-  } else {
-    return(NULL)
-  }
+parse_event <- function(event_data) {
+  # always treat event_data as UTF-8, it's in the spec
+  str_data <- rawToChar(event_data)
+  Encoding(str_data) <- "UTF-8"
+
+  # The spec says \r\n, \r, and \n are all valid separators
+  lines <- strsplit(str_data, "\r\n|\r|\n")[[1]]
+
+  m <- regexec("([^:]*)(: ?)?(.*)", lines)
+  matches <- regmatches(lines, m)
+  keys <- c("event", vapply(matches, function(x) x[2], character(1)))
+  values <- c("message", vapply(matches, function(x) x[4], character(1)))
+
+  remove_dupes <- duplicated(keys, fromLast = TRUE) & keys != "data"
+  keys <- keys[!remove_dupes]
+  values <- values[!remove_dupes]
+
+  event_type <- values[keys == "event"]
+  data <- values[keys == "data"]
+  id <- values[keys == "id"]
+
+  list(
+    type = event_type,
+    data = data,
+    id = id
+  )
 }
+
+# Helpers ----------------------------------------------------
 
 
 check_streaming_response <- function(resp,
@@ -314,47 +334,4 @@ isValid <- function(con) {
     identical(getConnection(con), con),
     error = function(cnd) FALSE
   )
-}
-
-
-parse_event <- function(event_data) {
-  # always treat event_data as UTF-8, it's in the spec
-  str_data <- rawToChar(event_data)
-  Encoding(str_data) <- "UTF-8"
-
-  # The spec says \r\n, \r, and \n are all valid separators
-  lines <- strsplit(str_data, "\r\n|\r|\n")[[1]]
-
-  m <- regexec("([^:]*)(: ?)?(.*)", lines)
-  matches <- regmatches(lines, m)
-  keys <- c("event", vapply(matches, function(x) x[2], character(1)))
-  values <- c("message", vapply(matches, function(x) x[4], character(1)))
-
-  remove_dupes <- duplicated(keys, fromLast = TRUE) & keys != "data"
-  keys <- keys[!remove_dupes]
-  values <- values[!remove_dupes]
-
-  event_type <- values[keys == "event"]
-  data <- values[keys == "data"]
-  id <- values[keys == "id"]
-
-  list(
-    type = event_type,
-    data = data,
-    id = id
-  )
-}
-
-
-#' @export
-#' @param ... Not used; included for compatibility with generic.
-#' @rdname resp_stream_raw
-close.httr2_response <- function(con, ...) {
-  check_response(con)
-
-  if (inherits(con$body, "connection") && isValid(con$body)) {
-    close(con$body)
-  }
-
-  invisible()
 }
