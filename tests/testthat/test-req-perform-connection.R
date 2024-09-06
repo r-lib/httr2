@@ -15,12 +15,9 @@ test_that("can read all data from a connection", {
 })
 
 test_that("reads body on error", {
-  app <- webfakes::new_app()
-  app$get("/fail", function(req, res) {
+  req <- local_app_request(function(req, res) {
     res$set_status(404L)$send_json(list(status = 404), auto_unbox = TRUE)
   })
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/fail"))
 
   expect_error(req_perform_connection(req), class = "httr2_http_404")
   resp <- last_response()
@@ -28,8 +25,7 @@ test_that("reads body on error", {
 })
 
 test_that("can retry a transient error", {
-  app <- webfakes::new_app()
-  app$get("/retry", function(req, res) {
+  req <- local_app_request(function(req, res) {
     i <- res$app$locals$i %||% 1
     if (i == 1) {
       res$app$locals$i <- 2
@@ -41,10 +37,7 @@ test_that("can retry a transient error", {
       res$send_json(list(status = "done"), auto_unbox = TRUE)
     }
   })
-
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/retry")) %>%
-    req_retry(max_tries = 2)
+  req <- req_retry(req, max_tries = 2)
 
   cnd <- expect_condition(
     resp <- req_perform_connection(req),

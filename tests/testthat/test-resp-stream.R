@@ -28,15 +28,11 @@ test_that("can't read from a closed connection", {
 })
 
 test_that("can join lines across multiple reads", {
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     res$send_chunk("This is a ")
     Sys.sleep(0.2)
     res$send_chunk("complete sentence.\n")
   })
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
 
   # Non-blocking returns NULL until data is ready
   resp1 <- req_perform_connection(req, blocking = FALSE)
@@ -54,9 +50,7 @@ test_that("can join lines across multiple reads", {
 })
 
 test_that("handles line endings of multiple kinds", {
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
     Sys.sleep(0.1)
@@ -76,9 +70,6 @@ test_that("handles line endings of multiple kinds", {
     Sys.sleep(0.1)
     res$send_chunk("eof without line ending")
   })
-
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
 
   resp1 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp1))
@@ -118,14 +109,9 @@ test_that("handles line endings of multiple kinds", {
 })
 
 test_that("streams the specified number of lines", {
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
   })
-
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
 
   resp1 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp1))
@@ -160,16 +146,11 @@ test_that("streams the specified number of lines", {
 })
 
 test_that("can feed sse events one at a time", {
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     for(i in 1:3) {
       res$send_chunk(sprintf("data: %s\n\n", i))
     }
   })
-
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
   resp <- req_perform_connection(req)
   withr::defer(close(resp))
 
@@ -187,10 +168,7 @@ test_that("can feed sse events one at a time", {
 })
 
 test_that("can join sse events across multiple reads", {
-  # skip_on_covr()
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     res$send_chunk("data: 1\n")
     Sys.sleep(0.2)
     res$send_chunk("data")
@@ -198,8 +176,6 @@ test_that("can join sse events across multiple reads", {
     res$send_chunk(": 2\n")
     res$send_chunk("\ndata: 3\n\n")
   })
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
 
   # Non-blocking returns NULL until data is ready
   resp1 <- req_perform_connection(req, blocking = FALSE)
@@ -227,14 +203,9 @@ test_that("can join sse events across multiple reads", {
 })
 
 test_that("sse always interprets data as UTF-8", {
-  # skip_on_covr()
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     res$send_chunk("data: \xE3\x81\x82\r\n\r\n")
   })
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
 
   withr::with_locale(c(LC_CTYPE = "C"), {
     # Non-blocking returns NULL until data is ready
@@ -256,15 +227,11 @@ test_that("sse always interprets data as UTF-8", {
 })
 
 test_that("streaming size limits enforced", {
-  app <- webfakes::new_app()
-
-  app$get("/events", function(req, res) {
+  req <- local_app_request(function(req, res) {
     data_size <- 1000
     data <- paste(rep_len("0", data_size), collapse = "")
     res$send_chunk(data)
   })
-  server <- webfakes::local_app_process(app)
-  req <- request(server$url("/events"))
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
