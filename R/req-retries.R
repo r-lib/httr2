@@ -11,7 +11,7 @@
 #' with some other property of the response), you can override the default
 #' with `is_transient`.
 #'
-#' Additionally, if you set `retry_on_error = TRUE`, the request will retry
+#' Additionally, if you set `retry_on_failure = TRUE`, the request will retry
 #' if either the HTTP request or HTTP response doesn't complete successfully
 #' leading to an error from curl, the lower-level library that httr2 uses to
 #' perform HTTP request. This occurs, for example, if your wifi is down.
@@ -42,8 +42,8 @@
 #' @param is_transient A predicate function that takes a single argument
 #'   (the response) and returns `TRUE` or `FALSE` specifying whether or not
 #'   the response represents a transient error.
-#' @param retry_on_error Treat low-level HTTP errors as if they are transient
-#'   errors, and can be retried.
+#' @param retry_on_failure Treat low-level failures as if they are
+#'   transient errors, and can be retried.
 #' @param backoff A function that takes a single argument (the number of failed
 #'   attempts so far) and returns the number of seconds to wait.
 #' @param after A function that takes a single argument (the response) and
@@ -82,19 +82,19 @@
 req_retry <- function(req,
                       max_tries = NULL,
                       max_seconds = NULL,
-                      retry_on_error = FALSE,
+                      retry_on_failure = FALSE,
                       is_transient = NULL,
                       backoff = NULL,
                       after = NULL) {
   check_request(req)
   check_number_whole(max_tries, min = 2, allow_null = TRUE)
   check_number_whole(max_seconds, min = 0, allow_null = TRUE)
-  check_bool(retry_on_error)
+  check_bool(retry_on_failure)
 
   req_policies(req,
     retry_max_tries = max_tries,
     retry_max_wait = max_seconds,
-    retry_on_error = retry_on_error,
+    retry_on_failure = retry_on_failure,
     retry_is_transient = as_callback(is_transient, 1, "is_transient"),
     retry_backoff = as_callback(backoff, 1, "backoff"),
     retry_after = as_callback(after, 1, "after")
@@ -112,7 +112,7 @@ retry_max_seconds <- function(req) {
 
 retry_is_transient <- function(req, resp) {
   if (is_error(resp)) {
-    return(req$policies$retry_on_error %||% FALSE)
+    return(req$policies$retry_on_failure %||% FALSE)
   }
 
   req_policy_call(req, "retry_is_transient", list(resp),
