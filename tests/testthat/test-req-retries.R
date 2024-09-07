@@ -72,6 +72,7 @@ test_that("validates its inputs", {
   expect_snapshot(error = TRUE, {
     req_retry(req, max_tries = 1)
     req_retry(req, max_seconds = "x")
+    req_retry(req, retry_on_error = "x")
   })
 })
 

@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_retry()` no longer treates low-level HTTP failures the same way as transient errors by default. You can return to the previous behaviour with `retry_on_error = TRUE`.
 * `req_perform_iterative()` is no longer experimental.
 * New `req_cookie_set()` allows you to set client side cookies (#369).
 * `req_body_file()` no longer leaks a connection if the response doesn't complete succesfully (#534).

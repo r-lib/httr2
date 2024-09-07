@@ -125,19 +125,16 @@ req_perform <- function(
     )
     req_completed(req_prep)
 
-    if (is_error(resp)) {
+    if (retry_is_transient(req, resp)) {
       tries <- tries + 1
-      delay <- retry_backoff(req, tries)
+      delay <- retry_after(req, resp, tries)
+      signal(class = "httr2_retry", tries = tries, delay = delay)
     } else if (!reauth && resp_is_invalid_oauth_token(req, resp)) {
       reauth <- TRUE
       req <- auth_oauth_sign(req, TRUE)
       req_prep <- req_prepare(req)
       handle <- req_handle(req_prep)
       delay <- 0
-    } else if (retry_is_transient(req, resp)) {
-      tries <- tries + 1
-      delay <- retry_after(req, resp, tries)
-      signal(class = "httr2_retry", tries = tries, delay = delay)
     } else {
       # done
       break
