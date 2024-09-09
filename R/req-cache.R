@@ -232,12 +232,12 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     signal("", "httr2_cache_not_modified")
     if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
 
-    # Combine headers & re-cache
+    # Combine headers
     resp$headers <- cache_headers(cached_resp, resp)
-    cache_set(req, resp)
-
     # Replace body with cached result
     resp$body <- cache_body(cached_resp, path)
+
+    cache_set(req, resp)
     resp
   } else if (resp_is_cacheable(resp)) {
     if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
