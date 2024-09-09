@@ -19,8 +19,8 @@
       Error in `req_retry()`:
       ! `max_seconds` must be a whole number or `NULL`, not the string "x".
     Code
-      req_retry(req, retry_on_error = "x")
+      req_retry(req, retry_on_failure = "x")
     Condition
       Error in `req_retry()`:
-      ! `retry_on_error` must be `TRUE` or `FALSE`, not the string "x".
+      ! `retry_on_failure` must be `TRUE` or `FALSE`, not the string "x".
 
