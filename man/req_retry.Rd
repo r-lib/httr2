@@ -8,6 +8,7 @@ req_retry(
   req,
   max_tries = NULL,
   max_seconds = NULL,
+  retry_on_failure = FALSE,
   is_transient = NULL,
   backoff = NULL,
   after = NULL
@@ -23,6 +24,9 @@ will not retry.
 
 \code{max_tries} is the total number of attempts make, so this should always
 be greater than one.`}
+
+\item{retry_on_failure}{Treat low-level failures as if they are
+transient errors, and can be retried.}
 
 \item{is_transient}{A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
@@ -43,17 +47,17 @@ A modified HTTP \link{request}.
 \code{req_retry()} alters \code{\link[=req_perform]{req_perform()}} so that it will automatically retry
 in the case of failure. To activate it, you must specify either the total
 number of requests to make with \code{max_tries} or the total amount of time
-to spend with \code{max_seconds}. Then \code{req_perform()} will retry if:
-\itemize{
-\item Either the HTTP request or HTTP response doesn't complete successfully
+to spend with \code{max_seconds}. Then \code{req_perform()} will retry if the error is
+"transient", i.e. it's an HTTP error that can be resolved by waiting. By
+default, 429 and 503 statuses are treated as transient, but if the API you
+are wrapping has other transient status codes (or conveys transient-ness
+with some other property of the response), you can override the default
+with \code{is_transient}.
+
+Additionally, if you set \code{retry_on_failure = TRUE}, the request will retry
+if either the HTTP request or HTTP response doesn't complete successfully
 leading to an error from curl, the lower-level library that httr2 uses to
 perform HTTP request. This occurs, for example, if your wifi is down.
-\item The error is "transient", i.e. it's an HTTP error that can be resolved
-by waiting. By default, 429 and 503 statuses are treated as transient,
-but if the API you are wrapping has other transient status codes (or
-conveys transient-ness with some other property of the response), you can
-override the default with \code{is_transient}.
-}
 
 It's a bad idea to immediately retry a request, so \code{req_perform()} will
 wait a little before trying again:
