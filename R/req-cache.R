@@ -237,6 +237,7 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     # Replace body with cached result
     resp$body <- cache_body(cached_resp, path)
 
+    # Re-cache, so we get any new headers
     cache_set(req, resp)
     resp
   } else if (resp_is_cacheable(resp)) {
