@@ -55,11 +55,11 @@ test_that("persistent HTTP errors only get single attempt", {
 })
 
 test_that("don't retry curl errors by default", {
-  req <- request("frooble") %>% req_retry(max_tries = 2)
+  req <- request("") %>% req_retry(max_tries = 2)
   expect_error(req_perform(req), class = "httr2_failure")
 
   # But can opt-in to it
-  req <- request("frooble") %>% req_retry(max_tries = 2, retry_on_failure = TRUE)
+  req <- request("") %>% req_retry(max_tries = 2, retry_on_failure = TRUE)
   cnd <- catch_cnd(req_perform(req), "httr2_retry")
   expect_equal(cnd$tries, 1)
 })
@@ -173,7 +173,7 @@ test_that("can retrieve last request and response", {
 })
 
 test_that("can last response is NULL if it fails", {
-  req <- request("frooble") %>% req_timeout(0.1)
+  req <- request("")
   try(req_perform(req), silent = TRUE)
 
   expect_equal(last_request(), req)
