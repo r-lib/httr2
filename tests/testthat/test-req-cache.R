@@ -54,6 +54,10 @@ test_that("304 retains headers but gets cached body", {
   cached <- cache_post_fetch(req, response(304, headers = "X: 2"))
   expect_equal(cached$headers$x, "2")
   expect_equal(cached$body, resp$body)
+
+  cached <- cache_post_fetch(req, response(304, headers = "X: 3"))
+  expect_equal(cached$headers$x, "3")
+  expect_equal(cached$body, resp$body)
 })
 
 test_that("automatically adds to cache", {
