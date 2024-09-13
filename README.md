@@ -68,6 +68,7 @@ req |> req_retry(max_tries = 5)
 #> Body: empty
 #> Policies:
 #> • retry_max_tries: 5
+#> • retry_on_failure: FALSE
 
 # Change the HTTP method
 req |> req_method("PATCH")
@@ -82,7 +83,7 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/1.0.3.9000 r-curl/5.2.1 libcurl/8.6.0
+#> User-Agent: httr2/1.0.3.9000 r-curl/5.2.2 libcurl/8.6.0
 #> Accept: */*
 #> Accept-Encoding: deflate, gzip
 ```
