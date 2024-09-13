@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.0.4
 
 * `req_body_file()` now works with files >64kb once more (#524) and no longer leaks a connection if the response doesn't complete succesfully (#534).
 * `req_body_*()` now give informative error if you attempt to change the body type (#451).
