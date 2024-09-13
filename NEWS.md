@@ -1,16 +1,15 @@
 # httr2 (development version)
 
-* `req_retry()` no longer treates low-level HTTP failures the same way as transient errors by default. You can return to the previous behaviour with `retry_on_error = TRUE`.
-* `req_perform_iterative()` is no longer experimental.
-* New `req_cookie_set()` allows you to set client side cookies (#369).
-* `req_body_file()` no longer leaks a connection if the response doesn't complete succesfully (#534).
-* `req_perform()` no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option `httr2_progress`.
-* `req_cache()` now re-caches the response if the body is hasn't been modified but the headers have changed (#442).
-* `req_cache()` works better when `req_perform()` sets a path (#442).
+* `req_body_file()` now works with files >64kb once more (#524) and no longer leaks a connection if the response doesn't complete succesfully (#534).
 * `req_body_*()` now give informative error if you attempt to change the body type (#451).
+* `req_cache()` now re-caches the response if the body is hasn't been modified but the headers have changed (#442). It also works better when `req_perform()` sets a path (#442).
+* New `req_cookie_set()` allows you to set client side cookies (#369).
+* `req_perform()` no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option `httr2_progress`.
+* `req_perform_iterative()` is no longer experimental.
+* New `req_perform_connection()` for working with streaming data. Unlike `req_perform_stream()` which uses callbacks, `req_perform_connection()` returns a regular response object with a connection as the body. Unlike `req_perform_stream()` it supports `req_retry()` (with @jcheng5, #519).
+* `req_retry()` no longer treates low-level HTTP failures the same way as transient errors by default. You can return to the previous behaviour with `retry_on_error = TRUE`.
 * `resp_body_html()` and `resp_body_xml()` now work when `req_perform()` is given a path (#448).
-* `req_body_file()` now works with files >64kb once more (#524).
-* New `req_perform_connection()` for working with streaming data. Unlike `req_perform_stream()` which uses callbacks, `req_perform_connection()` returns a regular response object with a connection as the body. It's paired with `resp_stream_bytes()`, `resp_stream_lines()`, and `resp_stream_sse()` that allows you to stream chunks as you want them. Unlike `req_perform_stream()` it supports `req_retry()` (with @jcheng5, #519).
+* New `resp_stream_bytes()`, `resp_stream_lines()`, and `resp_stream_sse()` for streaming chunk from a connection response  (#519).
 
 # httr2 1.0.3
 
