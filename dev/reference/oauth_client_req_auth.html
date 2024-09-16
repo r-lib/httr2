@@ -43,7 +43,7 @@ the auth_params argument."><meta property="og:image" content="https://httr2.r-li
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,7 +157,7 @@ JWT header.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="fu">oauth_client_req_auth</span><span class="op">(</span><span class="va">req</span>, <span class="va">client1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /whoami HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.3.9000 r-curl/5.2.2 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
@@ -176,7 +176,7 @@ JWT header.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="fu">oauth_client_req_auth</span><span class="op">(</span><span class="va">req</span>, <span class="va">client2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET /whoami HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.3.9000 r-curl/5.2.2 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
@@ -194,13 +194,13 @@ JWT header.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="fu">oauth_client_req_auth</span><span class="op">(</span><span class="va">req</span>, <span class="va">client3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /whoami HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.3.9000 r-curl/5.2.2 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 623</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3MjYyMzk2NDYsIm5iZiI6MTcyNjIzOTM0NiwiaWF0IjoxNzI2MjM5MzQ2LCJqdGkiOiItWko2VENGcGdNVlpSeWk1c0VjZGMzd0VvNWNWVG9mQUNKaEZPcnEwMTNnIn0.ClweyZPEfUF2aeBseapl2FYBDb9oCEHtfOT12TFTjBX1azrEEkYT2wffg6tGe7lMrnfvZPWeUMZQcwKsGfY5P4MY7ZCefjTADijuuFRo0ZNLRHn_jHbO1XoWmP9VKkOr8zzn0eIbt2aJJX5ScXf1YiM2gQZc69UoeWGWWBCI-q7qb0-Wo3KdXAconDcYHr9Xn_SlO4O-pepUQnwSpjTIRX5gXSv6BJvY9SAri-w8P6RIgZLWuufh_24i4zG_Hy1EC4pxHp7Tt7K7pVxgsCIaGoU2YpumhccoFvoATBfy2iFO-l7AiGJlxsqE1cvjy4Y0DdcKi5a8I5lPbCl1nM0ibA&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3MjY0OTU2NDgsIm5iZiI6MTcyNjQ5NTM0OCwiaWF0IjoxNzI2NDk1MzQ4LCJqdGkiOiJQRFNZYzl6RExPRVpNQ0tqNjREb0lWT2Z6d1JYUHR1bGZPUjJQaTVLc1BzIn0.KaDwS6KU5H_aEWtt80NBNbIPwDHELvSopJznSGYkKi_sd8O_qd7oQ_3f_QgH0DOGKcj-vWi03dvvFPJXy7yqBVKM0UpFhLgktpMiPFX_Ey0b1wZY0ff8edMy6cn4wRoGUsY517MmPCnMs8p0JHToK5EntPj2iLWlSVcFTGSRvmiU0hkhfzZ3R6QXODx164iLlLEkjXWXB7sxOVl8GxIviwh5k5HZGxyC3LwbKX9HxrrmCUrwmGeDExtepEQP5EtZUSeeje-YcX7TDtxuG62XiL1i8n3FK8Ik-MCfI4SKRNIOAnH6pJ_BSZvcfDtHrsatvAjGV9guYMpzmH7Zcevtdw&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
