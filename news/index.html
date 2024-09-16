@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,26 @@
       <small>Source: <a href="https://github.com/r-lib/httr2/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.4" id="httr2-104">httr2 1.0.4<a class="anchor" aria-label="anchor" href="#httr2-104"></a></h2><p class="text-muted">CRAN release: 2024-09-13</p>
+<ul><li>
+<code><a href="../reference/req_body.html">req_body_file()</a></code> now works with files &gt;64kb once more (<a href="https://github.com/r-lib/httr2/issues/524" class="external-link">#524</a>) and no longer leaks a connection if the response doesn’t complete succesfully (<a href="https://github.com/r-lib/httr2/issues/534" class="external-link">#534</a>).</li>
+<li>
+<code>req_body_*()</code> now give informative error if you attempt to change the body type (<a href="https://github.com/r-lib/httr2/issues/451" class="external-link">#451</a>).</li>
+<li>
+<code><a href="../reference/req_cache.html">req_cache()</a></code> now re-caches the response if the body is hasn’t been modified but the headers have changed (<a href="https://github.com/r-lib/httr2/issues/442" class="external-link">#442</a>). It also works better when <code><a href="../reference/req_perform.html">req_perform()</a></code> sets a path (<a href="https://github.com/r-lib/httr2/issues/442" class="external-link">#442</a>).</li>
+<li>New <code>req_cookie_set()</code> allows you to set client side cookies (<a href="https://github.com/r-lib/httr2/issues/369" class="external-link">#369</a>).</li>
+<li>
+<code><a href="../reference/req_perform.html">req_perform()</a></code> no longer displays a progress bar when sleeping during tests. You can override this behaviour by setting the option <code>httr2_progress</code>.</li>
+<li>
+<code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code> is no longer experimental.</li>
+<li>New <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> for working with streaming data. Unlike <code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> which uses callbacks, <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> returns a regular response object with a connection as the body. Unlike <code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> it supports <code><a href="../reference/req_retry.html">req_retry()</a></code> (with <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a>, <a href="https://github.com/r-lib/httr2/issues/519" class="external-link">#519</a>).</li>
+<li>
+<code><a href="../reference/req_retry.html">req_retry()</a></code> no longer treates low-level HTTP failures the same way as transient errors by default. You can return to the previous behaviour with <code>retry_on_error = TRUE</code>.</li>
+<li>
+<code><a href="../reference/resp_body_raw.html">resp_body_html()</a></code> and <code><a href="../reference/resp_body_raw.html">resp_body_xml()</a></code> now work when <code><a href="../reference/req_perform.html">req_perform()</a></code> is given a path (<a href="https://github.com/r-lib/httr2/issues/448" class="external-link">#448</a>).</li>
+<li>New <code>resp_stream_bytes()</code>, <code><a href="../reference/resp_stream_raw.html">resp_stream_lines()</a></code>, and <code><a href="../reference/resp_stream_raw.html">resp_stream_sse()</a></code> for streaming chunk from a connection response (<a href="https://github.com/r-lib/httr2/issues/519" class="external-link">#519</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.3" id="httr2-103">httr2 1.0.3<a class="anchor" aria-label="anchor" href="#httr2-103"></a></h2><p class="text-muted">CRAN release: 2024-08-22</p>
 <ul><li><p><code><a href="../reference/jwt_claim.html">jwt_encode_hmac()</a></code> now calls correct underlying function <code><a href="https://rdrr.io/pkg/jose/man/jwt_encode.html" class="external-link">jose::jwt_encode_hmac()</a></code> and has correct default size parameter value (<a href="https://github.com/denskh" class="external-link">@denskh</a>, <a href="https://github.com/r-lib/httr2/issues/508" class="external-link">#508</a>).</p></li>

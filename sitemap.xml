@@ -45,6 +45,7 @@
 <url><loc>https://httr2.r-lib.org/reference/req_oauth_refresh.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_options.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_perform.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_perform_connection.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_perform_iterative.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_perform_parallel.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_perform_promise.html</loc></url>
@@ -69,6 +70,7 @@
 <url><loc>https://httr2.r-lib.org/reference/resp_raw.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_retry_after.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_status.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_stream_raw.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/response.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resps_successes.html</loc></url>

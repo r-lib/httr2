@@ -25,7 +25,7 @@ HTTP caching."><meta property="og:image" content="https://httr2.r-lib.org/logo.p
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,11 +93,15 @@ but it will not need to re-download the body value.</p>
 
 
 <dl><dt id="arg-req">req<a class="anchor" aria-label="anchor" href="#arg-req"></a></dt>
-<dd><p>A <a href="request.html">request</a>.</p></dd>
+<dd><p>A httr2 <a href="request.html">request</a> object.</p></dd>
 
 
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>Path to cache directory.</p>
+<dd><p>Path to cache directory. Will be created automatically if it
+does not exist.</p>
+<p>For quick and easy caching within a session, you can use <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile()</a></code>.
+To cache requests within a package, you can use something like
+<code>file.path(tools::R_user_dir("pkgdown", "cache"), "httr2")</code>.</p>
 <p>httr2 doesn't provide helpers to manage the cache, but if you want to
 empty it, you can use something like
 <code>unlink(dir(cache_path, full.names = TRUE))</code>.</p></dd>

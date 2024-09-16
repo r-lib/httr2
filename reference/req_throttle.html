@@ -9,7 +9,7 @@ exceed a specified rate."><meta property="og:image" content="https://httr2.r-lib
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@ exceed a specified rate.</p>
 
 
 <dl><dt id="arg-req">req<a class="anchor" aria-label="anchor" href="#arg-req"></a></dt>
-<dd><p>A <a href="request.html">request</a>.</p></dd>
+<dd><p>A httr2 <a href="request.html">request</a> object.</p></dd>
 
 
 <dt id="arg-rate">rate<a class="anchor" aria-label="anchor" href="#arg-rate"></a></dt>
@@ -95,13 +95,13 @@ to the hostname of the request.</p></dd>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="throttle_status.html">throttle_status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       realm        last_request</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-08-22 13:09:55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-09-16 14:00:18</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for throttling delay <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for throttling delay <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
 <span class="r-in"><span><span class="fu"><a href="throttle_status.html">throttle_status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       realm        last_request</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-08-22 13:09:57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-09-16 14:00:20</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
