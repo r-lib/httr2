@@ -8,6 +8,7 @@ test_that("validates inputs", {
 test_that("correctly prepares request", {
   req <- request_test("/post") %>% req_method("POST")
   expect_no_error(resp <- req_perform_connection(req))
+  close(resp)
 })
 
 test_that("can read all data from a connection", {
