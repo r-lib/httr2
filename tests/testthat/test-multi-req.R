@@ -3,6 +3,11 @@ test_that("request and paths must match", {
   expect_snapshot(req_perform_parallel(req, letters), error = TRUE)
 })
 
+test_that("correctly prepares request", {
+  reqs <- list(request_test("/post") %>% req_method("POST"))
+  expect_no_error(req_perform_parallel(reqs))
+})
+
 test_that("requests happen in parallel", {
   # GHA MacOS builder seems to be very slow
   skip_if(

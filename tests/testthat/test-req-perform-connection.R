@@ -5,6 +5,11 @@ test_that("validates inputs", {
   })
 })
 
+test_that("correctly prepares request", {
+  req <- request_test("/post") %>% req_method("POST")
+  expect_no_error(resp <- req_perform_connection(req))
+})
+
 test_that("can read all data from a connection", {
   resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
   withr::defer(close(resp))

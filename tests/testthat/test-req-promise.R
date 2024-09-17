@@ -36,6 +36,12 @@ test_that("returns a promise that resolves", {
   expect_equal(resp_status(p2_value), 200)
 })
 
+test_that("correctly prepares request", {
+  req <- request_test("/post") %>% req_method("POST")
+  prom <- req_perform_promise(req)
+  expect_no_error(extract_promise(prom))
+})
+
 test_that("can promise to download files", {
   req <- request_test("/json")
   path <- withr::local_tempfile()
