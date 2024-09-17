@@ -168,7 +168,7 @@ Performance <- R6Class("Performance", public = list(
       self$resp <- req
     } else {
       self$req_prep <- req_prepare(req)
-      self$handle <- req_handle(req)
+      self$handle <- req_handle(self$req_prep)
       curl::handle_setopt(self$handle, url = req$url)
     }
   },
