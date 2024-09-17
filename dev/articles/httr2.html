@@ -105,7 +105,7 @@ well with the pipe.</p>
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="fu"><a href="../reference/example_url.html">example_url</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">req</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">GET</span> http://127.0.0.1:33777/</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">GET</span> http://127.0.0.1:44857/</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Body</span>: empty</span></span></code></pre></div>
 <p>Here, instead of an external website, we use a test server that’s
 built-in to httr2 itself. That ensures that this vignette will work
@@ -115,7 +115,7 @@ dry run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET / HTTP/1.1</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:33777</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:44857</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span></code></pre></div>
@@ -130,7 +130,7 @@ and DELETE, to delete a resource.</p></li>
 <li><p>The <strong>path</strong>, which is the URL stripped of details
 that the server already knows, i.e. the protocol (<code>http</code> or
 <code>https</code>), the host (<code>localhost</code>), and the port
-(<code>33777</code>).</p></li>
+(<code>44857</code>).</p></li>
 <li><p>The version of the HTTP protocol. This is unimportant for our
 purposes because it’s handled at a lower level.</p></li>
 </ul>
@@ -147,7 +147,7 @@ them or add your own with <code><a href="../reference/req_headers.html">req_head
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; GET / HTTP/1.1</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:33777</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:44857</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Name</span>: Hadley</span></span>
@@ -166,7 +166,7 @@ some data encoded as JSON:</p>
 <span>  <span class="fu"><a href="../reference/req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; POST / HTTP/1.1</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:33777</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:44857</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
@@ -193,7 +193,7 @@ uses the encoding used when you submit a form from a web browser:</p>
 <span>  <span class="fu"><a href="../reference/req_body.html">req_body_form</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; POST / HTTP/1.1</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:33777</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:44857</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
@@ -209,22 +209,22 @@ data or complete files:</p>
 <span>  <span class="fu"><a href="../reference/req_body.html">req_body_multipart</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"1"</span>, y <span class="op">=</span> <span class="st">"a"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; POST / HTTP/1.1</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:33777</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Host</span>: 127.0.0.1:44857</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.4.9000 r-curl/5.2.2 libcurl/7.81.0</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept</span>: */*</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 228</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------d8a6f7cac1864f20</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------14be2e0e42b067dd</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; --------------------------d8a6f7cac1864f20</span></span>
+<span><span class="co">#&gt; --------------------------14be2e0e42b067dd</span></span>
 <span><span class="co">#&gt; Content-Disposition: form-data; name="x"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 1</span></span>
-<span><span class="co">#&gt; --------------------------d8a6f7cac1864f20</span></span>
+<span><span class="co">#&gt; --------------------------14be2e0e42b067dd</span></span>
 <span><span class="co">#&gt; Content-Disposition: form-data; name="y"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; a</span></span>
-<span><span class="co">#&gt; --------------------------d8a6f7cac1864f20--</span></span></code></pre></div>
+<span><span class="co">#&gt; --------------------------14be2e0e42b067dd--</span></span></code></pre></div>
 <p>If you need to send data encoded in a different form, you can use
 <code><a href="../reference/req_body.html">req_body_raw()</a></code> to add the data to the body and set the
 <code>Content-Type</code> header.</p>
@@ -239,7 +239,7 @@ server, call <code><a href="../reference/req_perform.html">req_perform()</a></co
 <span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">resp</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">GET</span> http://127.0.0.1:33777/json</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">GET</span> http://127.0.0.1:44857/json</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">Status</span>: 200 OK</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">Content-Type</span>: application/json</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">Body</span>: In memory (407 bytes)</span></span></code></pre></div>
@@ -249,7 +249,7 @@ server, call <code><a href="../reference/req_perform.html">req_perform()</a></co
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_raw.html">resp_raw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; HTTP/1.1 200 OK</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Connection</span>: close</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 17 Sep 2024 21:44:56 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 17 Sep 2024 22:06:12 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/json</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 407</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">ETag</span>: "de760e6d"</span></span>
@@ -302,7 +302,7 @@ specific header with <code><a href="../reference/resp_headers.html">resp_header(
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Connection</span>: close</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 17 Sep 2024 21:44:56 GMT</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 17 Sep 2024 22:06:12 GMT</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/json</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Content-Length</span>: 407</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">ETag</span>: "de760e6d"</span></span>
