@@ -116,24 +116,24 @@ test_that("can cache requests with etags", {
 test_that("can cache requests with paths (cache-control)", {
   req <- request(example_url()) %>%
     req_url_path("/cache/1") %>%
-    req_cache(tempfile())
+    req_cache(withr::local_tempfile())
 
-  path1 <- tempfile()
+  path1 <- withr::local_tempfile()
   expect_condition(
     resp1 <- req %>% req_perform(path = path1),
     class = "httr2_cache_save"
   )
   expect_equal(resp1$body[[1]], path1)
 
-  path2 <- tempfile()
+  path2 <- withr::local_tempfile()
   expect_condition(
     resp2 <- req %>% req_perform(path = path2),
     class = "httr2_cache_cached"
   )
   expect_equal(resp2$body[[1]], path2)
 
-  Sys.sleep(1) # wait for cache to expire
-  path3 <- tempfile()
+  Sys.sleep(1.1) # wait for cache to expire
+  path3 <- withr::local_tempfile()
   expect_condition(
     resp3 <- req %>% req_perform(path = path3),
     class = "httr2_cache_save"
