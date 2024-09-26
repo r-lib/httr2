@@ -1,11 +1,11 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   httr2: httr2.html
   articles/oauth: oauth.html
   articles/wrapping-apis: wrapping-apis.html
-last_built: 2024-09-16T13:59Z
+last_built: 2024-09-26T12:35Z
 urls:
   reference: https://httr2.r-lib.org/reference
   article: https://httr2.r-lib.org/articles
