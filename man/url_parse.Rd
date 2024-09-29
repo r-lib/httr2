@@ -26,6 +26,10 @@ and elements \code{scheme}, \code{hostname}, \code{port}, \code{path}, \code{fra
 the reverse, converting a list of pieces into a string URL. See \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986}
 for the details of the parsing algorithm.
 }
+\details{
+\code{url_build()} accepts a named list. Valid element names are \code{scheme}, \code{hostname}, \code{port}, \code{path}, \code{fragment}, \code{query},
+\code{username}, \code{password}.
+}
 \examples{
 url_parse("http://google.com/")
 url_parse("http://google.com:80/")

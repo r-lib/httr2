@@ -11,6 +11,11 @@
 #' * `url_parse()` returns a URL: a S3 list with class `httr2_url`
 #'   and elements `scheme`, `hostname`, `port`, `path`, `fragment`, `query`,
 #'   `username`, `password`.
+#' 
+#' @details
+#' `url_build()` accepts a named list. Valid element names are `scheme`, `hostname`, `port`, `path`, `fragment`, `query`,
+#'   `username`, `password`.
+#' 
 #' @export
 #' @examples
 #' url_parse("http://google.com/")
@@ -112,6 +117,49 @@ print.httr2_url <- function(x, ...) {
 #' @export
 #' @rdname url_parse
 url_build <- function(url) {
+  
+  valid_url_parts <- c(
+    "query",
+    "username",
+    "password",
+    "hostname",
+    "port",
+    "authority",
+    "path",
+    "scheme",
+    "fragment"
+  )
+
+
+  if (!rlang::is_list(url)) {
+    cli::cli_abort("Expected {.cls} found {obj_type_friendly(url)}")
+  }
+
+  if (!rlang::is_named(url)) {
+    cli::cli_abort(
+      c(
+        "{.arg url} must be a named list",
+        i = "url elements can be any of {.val {valid_url_parts}}"
+      )
+    )
+  }
+
+  # extract names from the url list
+  url_names <- rlang::names2(url)
+
+  # identify which ones are invalid
+  invalid_elements <- !url_names %in% valid_url_parts
+
+  # check that the elements are named appropriately
+  if (anyNA(invalid_elements)) {
+    cli::cli_abort(
+      c(
+        "Invalid url elements in {.arg url}",
+        i = "Found {.val {url_names[invalid_elements]}} but expected one of {.arg {valid_url_parts}}"
+      )
+    )
+  }
+
   if (!is.null(url$query)) {
     query <- query_build(url$query)
   } else {
