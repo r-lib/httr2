@@ -34,9 +34,7 @@ req_body_multipart(.req, ...)
 
 \item{body}{A literal string or raw vector to send as body.}
 
-\item{type}{MIME content type. You shouldn't generally need to specify this as
-the defaults are usually pretty good, e.g. \code{req_body_file()} will guess it
-from the extension of of \code{path}. Will be ignored if you have manually set
+\item{type}{MIME content type. Will be ignored if you have manually set
 a \code{Content-Type} header.}
 
 \item{path}{Path to file to upload.}

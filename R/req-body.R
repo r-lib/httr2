@@ -11,9 +11,7 @@
 #' Adding a body to a request will automatically switch the method to POST.
 #'
 #' @inheritParams req_perform
-#' @param type MIME content type. You shouldn't generally need to specify this as
-#'  the defaults are usually pretty good, e.g. `req_body_file()` will guess it
-#'  from the extension of of `path`. Will be ignored if you have manually set
+#' @param type MIME content type. Will be ignored if you have manually set
 #'  a `Content-Type` header.
 #' @returns A modified HTTP [request].
 #' @examples
