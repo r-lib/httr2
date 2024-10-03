@@ -48,7 +48,7 @@ test_that("can override error handling", {
 test_that("can buffer to lines", {
   lines <- character()
   accumulate_lines <- function(x) {
-    lines <<- c(lines, strsplit(rawToChar(x), "\n")[[1]])
+    lines <<- c(lines, strsplit(rawToChar(x), "\n", fixed = TRUE)[[1]])
     TRUE
   }
 

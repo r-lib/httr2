@@ -232,7 +232,7 @@ curl_args <- function(cmd, error_call = caller_env()) {
       call = error_call
     )
   }
-  if (grepl("'", cmd)) {
+  if (grepl("'", cmd, fixed = TRUE)) {
     args <- parse_delim(pieces$right, " ", quote = "'")
   } else {
     args <- parse_delim(pieces$right, " ", quote = '"')
