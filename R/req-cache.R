@@ -331,11 +331,11 @@ resp_cache_control <- function(resp) {
     return(NULL)
   }
 
-  pieces <- strsplit(x, ",")[[1]]
+  pieces <- strsplit(x, ",", fixed = TRUE)[[1]]
   pieces <- gsub("^\\s+|\\s+$", "", pieces)
   pieces <- tolower(pieces)
 
-  is_value <- grepl("=", pieces)
+  is_value <- grepl("=", pieces, fixed = TRUE)
   flags <- pieces[!is_value]
 
   keyvalues <- strsplit(pieces[is_value], "\\s*=\\s*")
