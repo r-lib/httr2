@@ -219,6 +219,18 @@ req_body_info <- function(req) {
   }
 }
 
+req_body_get <- function(req) {
+  if (is.null(req$body)) {
+    return("")
+  }
+  switch(
+    req$body$type,
+    raw = req$body$data,
+    json = exec(jsonlite::toJSON, req$body$data, !!!req$body$params),
+    cli::cli_abort("Unsupported request body type {.str {type}}.")
+  )
+}
+
 req_body_apply <- function(req) {
   if (is.null(req$body)) {
     return(req)
