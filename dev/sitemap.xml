@@ -26,6 +26,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/obfuscate.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/pipe.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/progress_bars.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/req_auth_aws_v4.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_auth_basic.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_auth_bearer_token.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_body.html</loc></url>
