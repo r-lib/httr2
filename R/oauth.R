@@ -20,27 +20,25 @@
 #' @export
 req_oauth <- function(req, flow, flow_params, cache) {
   # Want req object to contain meaningful objects, not just a closure
-  req_policies(req,
-    auth_oauth = list(
+  req <- req_auth_sign(req,
+    fun = auth_oauth_sign,
+    params = list(
       cache = cache,
       flow = flow,
       flow_params = flow_params
     )
   )
+  req <- req_policies(req, auth_oauth = TRUE)
+  req
 }
 
-auth_oauth_sign <- function(req, reauth = FALSE) {
-  if (!req_policy_exists(req, "auth_oauth")) {
-    return(req)
-  }
-
+auth_oauth_sign <- function(req, cache, flow, flow_params, reauth = FALSE) {
   token <- auth_oauth_token_get(
-    cache = req$policies$auth_oauth$cache,
-    flow = req$policies$auth_oauth$flow,
-    flow_params = req$policies$auth_oauth$flow_params,
+    cache = cache,
+    flow = flow,
+    flow_params = flow_params,
     reauth = reauth
   )
-
   req_auth_bearer_token(req, token$access_token)
 }
 

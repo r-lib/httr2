@@ -87,7 +87,7 @@ req_perform <- function(
   }
 
   req <- req_verbosity(req, verbosity)
-  req <- auth_oauth_sign(req)
+  req <- auth_sign(req)
 
   req <- cache_pre_fetch(req, path)
   if (is_response(req)) {
@@ -131,7 +131,7 @@ req_perform <- function(
       signal(class = "httr2_retry", tries = tries, delay = delay)
     } else if (!reauth && resp_is_invalid_oauth_token(req, resp)) {
       reauth <- TRUE
-      req <- auth_oauth_sign(req, TRUE)
+      req <- auth_sign(req, TRUE)
       req_prep <- req_prepare(req)
       handle <- req_handle(req_prep)
       delay <- 0

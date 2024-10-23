@@ -8,6 +8,7 @@
 #' @param aws_service,aws_region The AWS service and region to use for the
 #'   request. If not supplied, will be automatically parsed from the URL
 #'   hostname.
+#' @export
 #' @examplesIf httr2:::has_paws_credentials()
 #' creds <- paws.common::locate_credentials()
 #' model_id <- "anthropic.claude-3-5-sonnet-20240620-v1:0"
@@ -42,6 +43,26 @@ req_auth_aws_v4 <- function(req,
   check_string(aws_service, allow_null = TRUE)
   check_string(aws_region, allow_null = TRUE)
 
+  req_auth_sign(req,
+    fun = auth_aws_sign,
+    params = list(
+      aws_access_key_id = aws_access_key_id,
+      aws_secret_access_key = aws_secret_access_key,
+      aws_session_token = aws_session_token,
+      aws_service = aws_service,
+      aws_region = aws_region
+    )
+  )
+}
+
+auth_aws_sign <- function(req,
+                          aws_access_key_id,
+                          aws_secret_access_key,
+                          aws_session_token = NULL,
+                          aws_service = NULL,
+                          aws_region = NULL,
+                          reauth = FALSE) {
+
   current_time <- Sys.time()
 
   body_sha256 <- openssl::sha256(req_body_get(req))
@@ -68,13 +89,15 @@ req_auth_aws_v4 <- function(req,
   req_headers(req, Authorization = signature$Authorization)
 }
 
+
 req_aws_headers <- function(req, current_time, aws_session_token, body_sha256) {
   RequestDateTime <- format(current_time, "%Y%m%dT%H%M%SZ", tz = "UTC")
 
   req_headers(
     req,
     "x-amz-date" = RequestDateTime,
-    "x-amz-security-token" = aws_session_token
+    "x-amz-security-token" = aws_session_token,
+    .redact = "x-amz-security-token"
   )
 }
 

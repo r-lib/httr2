@@ -2,19 +2,18 @@ test_that("can correctly sign a request", {
   skip_if_not(has_paws_credentials())
   creds <- paws.common::locate_credentials()
 
-
   # https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html
   req <- request("https://sts.amazonaws.com/")
-  req <- req_body_form(
-    req,
-    Action = "GetCallerIdentity",
-    Version = "2011-06-15"
-  )
   req <- req_auth_aws_v4(req,
     aws_access_key_id = creds$access_key_id,
     aws_secret_access_key = creds$secret_access_key,
     aws_session_token = creds$session_token,
     aws_region = creds$region
+  )
+  req <- req_body_form(
+    req,
+    Action = "GetCallerIdentity",
+    Version = "2011-06-15"
   )
   expect_no_error(req_perform(req))
 })
