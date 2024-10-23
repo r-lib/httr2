@@ -14,7 +14,7 @@ test_that("signing agrees with glacier example", {
     aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
     aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
   )
-  signature_pieces <- strsplit(paste0("Authorization=", signature), ",")[[1]]
+  signature_pieces <- strsplit(paste0("Authorization=", signature$Authorization), ",")[[1]]
 
   known <- list(
     Authorization = "AWS4-HMAC-SHA256",

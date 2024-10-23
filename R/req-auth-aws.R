@@ -1,4 +1,3 @@
-#' Sign
 
 #' @param aws_service,aws_region The AWS service and region to use for the
 #'   request. If not supplied, will be automatically parsed from the URL
@@ -53,7 +52,7 @@ req_sign_aws_v4_auth <- function(req,
     body_sha256 = body_sha256
   )
 
-  authorization_header <- aws_v4_signature(
+  signature <- aws_v4_signature(
     method = req_method_get(req),
     url = url_parse(req$url),
     headers = req$headers,
@@ -64,7 +63,7 @@ req_sign_aws_v4_auth <- function(req,
     aws_access_key_id = aws_access_key_id,
     aws_secret_access_key = aws_secret_access_key
   )
-  req_headers(req, Authorization = authorization_header)
+  req_headers(req, Authorization = signature$Authorization)
 }
 
 req_aws_headers <- function(req, current_time, aws_session_token, body_sha256) {
@@ -161,11 +160,18 @@ aws_v4_signature <- function(method,
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html#calculate-signature
   credential <-  file.path(aws_access_key_id, CredentialScope)
 
-  paste0(
+  Authorization <- paste0(
     Algorithm, ",",
     "Credential=",    credential, ",",
     "SignedHeaders=", SignedHeaders, ",",
     "Signature=",     signature
+  )
+
+  list(
+    CanonicalRequest = CanonicalRequest,
+    string_to_sign = string_to_sign,
+    SigningKey = SigningKey,
+    Authorization = Authorization
   )
 }
 
