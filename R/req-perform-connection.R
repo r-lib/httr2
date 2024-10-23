@@ -37,6 +37,7 @@ req_perform_connection <- function(req, blocking = TRUE) {
   check_request(req)
   check_bool(blocking)
 
+  req <- auth_sign(req)
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   the$last_request <- req

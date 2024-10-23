@@ -38,6 +38,7 @@ Suggests:
     jsonlite,
     knitr,
     later,
+    paws.common,
     promises,
     rmarkdown,
     testthat (>= 3.1.8),
