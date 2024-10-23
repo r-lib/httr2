@@ -1,9 +1,15 @@
-
+#' Sign a request with the AWS SigV4 signing protocol
+#'
+#' This is a custom auth protocol implemented by AWS.
+#'
+#' @inheritParams req_perform
+#' @param aws_access_key_id,aws_secret_access_key AWS key and secret.
+#' @param aws_session_token AWS session token, if required.
 #' @param aws_service,aws_region The AWS service and region to use for the
 #'   request. If not supplied, will be automatically parsed from the URL
 #'   hostname.
-#' @examples
-#' creds <- paws.common::locate_credentials("bedrock")
+#' @examplesIf httr2:::has_paws_credentials()
+#' creds <- paws.common::locate_credentials()
 #' model_id <- "anthropic.claude-3-5-sonnet-20240620-v1:0"
 #' req <- request("https://bedrock-runtime.us-east-1.amazonaws.com")
 #' # https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html
@@ -22,15 +28,12 @@
 #' )
 #' resp <- req_perform_connection(req)
 #' str(resp_body_json(resp))
-#'
-# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html
 req_auth_aws_v4 <- function(req,
-                                 aws_access_key_id,
-                                 aws_secret_access_key,
-                                 aws_session_token = NULL,
-                                 aws_service = NULL,
-                                 aws_region = NULL,
-                                 current_time = Sys.time()) {
+                            aws_access_key_id,
+                            aws_secret_access_key,
+                            aws_session_token = NULL,
+                            aws_service = NULL,
+                            aws_region = NULL) {
 
   check_request(req)
   check_string(aws_access_key_id)
@@ -38,9 +41,8 @@ req_auth_aws_v4 <- function(req,
   check_string(aws_session_token, allow_null = TRUE)
   check_string(aws_service, allow_null = TRUE)
   check_string(aws_region, allow_null = TRUE)
-  if (length(current_time) != 1 || !inherits(current_time, "POSIXct")) {
-    stop_input_type(current_time, "a single POSIXct")
-  }
+
+  current_time <- Sys.time()
 
   body_sha256 <- openssl::sha256(req_body_get(req))
 
@@ -76,6 +78,7 @@ req_aws_headers <- function(req, current_time, aws_session_token, body_sha256) {
   )
 }
 
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html
 aws_v4_signature <- function(method,
                              url,
                              headers,
@@ -176,4 +179,16 @@ aws_v4_signature <- function(method,
 
 hmac_sha256 <- function(key, value) {
   openssl::sha256(charToRaw(value), key)
+}
+
+has_paws_credentials <- function() {
+  tryCatch(
+    {
+      paws.common::locate_credentials()
+      TRUE
+    },
+    error = function(e) {
+      FALSE
+    }
+  )
 }

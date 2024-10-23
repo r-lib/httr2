@@ -1,8 +1,7 @@
 test_that("can correctly sign a request", {
-  tryCatch(
-    creds <- paws.common::locate_credentials(),
-    error = function(cnd) skip("Can't locate AWS credentials")
-  )
+  skip_if_not(has_paws_credentials())
+  creds <- paws.common::locate_credentials()
+
 
   # https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html
   req <- request("https://sts.amazonaws.com/")
@@ -47,4 +46,15 @@ test_that("signing agrees with glacier example", {
   known_signature <- paste0(names(known), "=", known)
 
   expect_equal(signature_pieces, known_signature)
+})
+
+test_that("validates its inputs", {
+  req <- request("https://sts.amazonaws.com/")
+  expect_snapshot(error = TRUE, {
+    req_auth_aws_v4(1)
+    req_auth_aws_v4(req, 1)
+    req_auth_aws_v4(req, "", "", aws_session_token = 1)
+    req_auth_aws_v4(req, "", "", aws_service = 1)
+    req_auth_aws_v4(req, "", "", aws_region = 1)
+  })
 })
