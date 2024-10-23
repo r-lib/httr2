@@ -11,8 +11,6 @@ test_that("signing agrees with glacier example", {
     ),
     body_sha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     current_time = as.POSIXct("2012-05-25 00:24:53", tz = "UTC"),
-    aws_service = "glacier",
-    aws_region = "us-east-1",
     aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
     aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
   )

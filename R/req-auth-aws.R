@@ -1,3 +1,8 @@
+#' Sign
+
+#' @param aws_service,aws_region The AWS service and region to use for the
+#'   request. If not supplied, will be automatically parsed from the URL
+#'   hostname.
 #' @examples
 #' creds <- paws.common::locate_credentials("bedrock")
 #' model_id <- "anthropic.claude-3-5-sonnet-20240620-v1:0"
@@ -12,23 +17,31 @@
 #' ))
 #' req <- req_sign_aws_v4_auth(
 #'   req,
-#'   "bedrock",
 #'   aws_access_key_id = creds$access_key_id,
 #'   aws_secret_access_key = creds$secret_access_key,
-#'   aws_session_token = creds$session_token,
-#'   aws_region = creds$region
+#'   aws_session_token = creds$session_token
 #' )
 #' resp <- req_perform_connection(req)
 #' str(resp_body_json(resp))
 #'
 # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html
 req_sign_aws_v4_auth <- function(req,
-                                 aws_service,
-                                 aws_access_key_id     = Sys.getenv("AWS_ACCESS_KEY_ID"),
-                                 aws_secret_access_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-                                 aws_session_token     = Sys.getenv("AWS_SESSION_TOKEN"),
-                                 aws_region            = Sys.getenv("AWS_DEFAULT_REGION"),
-                                 current_time          = Sys.time()) {
+                                 aws_access_key_id,
+                                 aws_secret_access_key,
+                                 aws_session_token = NULL,
+                                 aws_service = NULL,
+                                 aws_region = NULL,
+                                 current_time = Sys.time()) {
+
+  check_request(req)
+  check_string(aws_access_key_id)
+  check_string(aws_secret_access_key)
+  check_string(aws_session_token, allow_null = TRUE)
+  check_string(aws_service, allow_null = TRUE)
+  check_string(aws_region, allow_null = TRUE)
+  if (length(current_time) != 1 || !inherits(current_time, "POSIXct")) {
+    stop_input_type(current_time, "a single POSIXct")
+  }
 
   body_sha256 <- openssl::sha256(req_body_get(req))
 
@@ -69,11 +82,18 @@ aws_v4_signature <- function(method,
                              url,
                              headers,
                              body_sha256,
-                             current_time = Sys.time(),
-                             aws_service,
-                             aws_region,
                              aws_access_key_id,
-                             aws_secret_access_key) {
+                             aws_secret_access_key,
+                             current_time = Sys.time(),
+                             aws_service = NULL,
+                             aws_region = NULL) {
+
+  if (is.null(aws_service) || is.null(aws_region)) {
+    host <- strsplit(url$hostname, ".", fixed = TRUE)[[1]]
+    aws_service <- aws_service %||% strsplit(host[[1]], "-", fixed = TRUE)[[1]][[1]]
+    aws_region <- aws_region %||% host[[2]]
+  }
+
   # 1. Create a canonical request
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html#create-canonical-request
   HTTPMethod <- method
