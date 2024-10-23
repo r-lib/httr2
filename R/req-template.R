@@ -37,7 +37,7 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
   check_request(req)
   check_string(template)
 
-  pieces <- strsplit(template, " ")[[1]]
+  pieces <- strsplit(template, " ", fixed = TRUE)[[1]]
   if (length(pieces) == 1) {
     template <- pieces[[1]]
   } else if (length(pieces) == 2) {
@@ -114,7 +114,7 @@ template_vars <- function(x, type) {
 template_type <- function(x) {
   if (grepl("\\{\\w+?\\}", x)) {
     "uri"
-  } else if (grepl(":", x)) {
+  } else if (grepl(":", x, fixed = TRUE)) {
     "colon"
   } else {
     "none"

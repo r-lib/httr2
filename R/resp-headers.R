@@ -140,7 +140,7 @@ resp_retry_after <- function(resp) {
   val <- resp_header(resp, "Retry-After")
   if (is.null(val)) {
     NA
-  } else if (grepl(" ", val)) {
+  } else if (grepl(" ", val, fixed = TRUE)) {
     diff <- difftime(parse_http_date(val), resp_date(resp), units = "secs")
     as.numeric(diff)
   } else {
