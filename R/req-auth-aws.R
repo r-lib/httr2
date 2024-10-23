@@ -14,7 +14,7 @@
 #'     content = list(list(text = "What's your name?"))
 #'   ))
 #' ))
-#' req <- req_sign_aws_v4_auth(
+#' req <- req_auth_aws_v4(
 #'   req,
 #'   aws_access_key_id = creds$access_key_id,
 #'   aws_secret_access_key = creds$secret_access_key,
@@ -24,7 +24,7 @@
 #' str(resp_body_json(resp))
 #'
 # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html
-req_sign_aws_v4_auth <- function(req,
+req_auth_aws_v4 <- function(req,
                                  aws_access_key_id,
                                  aws_secret_access_key,
                                  aws_session_token = NULL,
@@ -72,7 +72,6 @@ req_aws_headers <- function(req, current_time, aws_session_token, body_sha256) {
   req_headers(
     req,
     "x-amz-date" = RequestDateTime,
-    "x-amz-content-sha256" = body_sha256, # necessary for S3
     "x-amz-security-token" = aws_session_token
   )
 }

@@ -1,3 +1,25 @@
+test_that("can correctly sign a request", {
+  tryCatch(
+    creds <- paws.common::locate_credentials(),
+    error = function(cnd) skip("Can't locate AWS credentials")
+  )
+
+  # https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html
+  req <- request("https://sts.amazonaws.com/")
+  req <- req_body_form(
+    req,
+    Action = "GetCallerIdentity",
+    Version = "2011-06-15"
+  )
+  req <- req_auth_aws_v4(req,
+    aws_access_key_id = creds$access_key_id,
+    aws_secret_access_key = creds$secret_access_key,
+    aws_session_token = creds$session_token,
+    aws_region = creds$region
+  )
+  expect_no_error(req_perform(req))
+})
+
 test_that("signing agrees with glacier example", {
   # Example from
   # https://docs.aws.amazon.com/amazonglacier/latest/dev/amazon-glacier-signing-requests.html

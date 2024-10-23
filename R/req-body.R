@@ -226,8 +226,12 @@ req_body_get <- function(req) {
   switch(
     req$body$type,
     raw = req$body$data,
+    form = {
+      data <- unobfuscate(req$body$data)
+      query_build(data)
+    },
     json = exec(jsonlite::toJSON, req$body$data, !!!req$body$params),
-    cli::cli_abort("Unsupported request body type {.str {type}}.")
+    cli::cli_abort("Unsupported request body type {.str {req$body$type}}.")
   )
 }
 
@@ -257,14 +261,12 @@ req_body_apply <- function(req) {
   } else if (type == "raw") {
     req <- req_body_apply_raw(req, data)
   } else if (type == "json") {
-    json <- exec(jsonlite::toJSON, data, !!!req$body$params)
-    req <- req_body_apply_raw(req, json)
+    req <- req_body_apply_raw(req, req_body_get(req))
   } else if (type == "multipart") {
     data <- unobfuscate(data)
     req$fields <- data
   } else if (type == "form") {
-    data <- unobfuscate(data)
-    req <- req_body_apply_raw(req, query_build(data))
+    req <- req_body_apply_raw(req, req_body_get(req))
   } else {
     cli::cli_abort("Unsupported request body {.arg type}.", .internal = TRUE)
   }
