@@ -5,20 +5,26 @@
 #'
 #' * `resp_stream_raw()` retrieves bytes (`raw` vectors).
 #' * `resp_stream_lines()` retrieves lines of text (`character` vectors).
-#' * `resp_stream_sse()` retrieves [server-sent
-#'   events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
-#'   from the stream. It currently only works with text mode connections so when calling
-#'   `req_perform_connection()` you must use `mode = "text"`.
+#' * `resp_stream_sse()` retrieves a single [server-sent
+#'   event](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
+#' * `resp_stream_aws()` retrieves a single event from an AWS stream
+#'   (i.e. mime type `application/vnd.amazon.eventstream``).
 #'
 #' @returns
 #' * `resp_stream_raw()`: a raw vector.
 #' * `resp_stream_lines()`: a character vector.
-#' * `resp_stream_sse()`: a list with components `type`, `data`, and `id`; or
-#'   `NULL`, signifying that the end of the stream has been reached or--if in
-#'   nonblocking mode--that no event is currently available.
+#' * `resp_stream_sse()`: a list with components `type`, `data`, and `id`
+#' * `resp_stream_aws()`: a list with components `headers` and `body`.
+#'   `body` will be automatically parsed if the event contents a `:content-type`
+#'   header with `application/json`.
+#'
+#' `resp_stream_sse()` and `resp_stream_aws()` will return `NULL` to signal that
+#' the end of the stream has been reached or, if in nonblocking mode, that
+#' no event is currently available.
 #' @export
 #' @param resp,con A streaming [response] created by [req_perform_connection()].
 #' @param kb How many kilobytes (1024 bytes) of data to read.
+#' @order 1
 resp_stream_raw <- function(resp, kb = 32) {
   check_streaming_response(resp)
   conn <- resp$body
@@ -31,6 +37,7 @@ resp_stream_raw <- function(resp, kb = 32) {
 #' @param lines The maximum number of lines to return at once.
 #' @param warn Like [readLines()]: warn if the connection ends without a final
 #'   EOL.
+#' @order 1
 resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   check_streaming_response(resp)
   check_number_whole(lines, min = 0, allow_infinite = TRUE)
@@ -63,6 +70,7 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
 #'   bytes has been exceeded without a line/event boundary, an error is thrown.
 #' @export
 #' @rdname resp_stream_raw
+#' @order 1
 resp_stream_sse <- function(resp, max_size = Inf) {
   event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
   if (!is.null(event_bytes)) {
@@ -75,6 +83,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
 #' @export
 #' @param ... Not used; included for compatibility with generic.
 #' @rdname resp_stream_raw
+#' @order 3
 close.httr2_response <- function(con, ...) {
   check_response(con)
 
