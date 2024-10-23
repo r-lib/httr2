@@ -23,7 +23,7 @@ find_aws_event_boundary <- function(buffer) {
   }
 
   # Read first 4 bytes as a big endian number
-  event_size <- rawToInteger(buffer[1:4])
+  event_size <- parse_int(buffer[1:4])
   if (event_size > length(buffer)) {
     return(NULL)
   }
@@ -31,18 +31,57 @@ find_aws_event_boundary <- function(buffer) {
   event_size + 1
 }
 
+# Implementation from https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.js
+# This is technically buggy because it takes the header_length as a lower bound
+# but this shouldn't cause problems in practive
 parse_aws_event <- function(bytes) {
+  i <- 1
+  read_bytes <- function(n) {
+    if (n == 0) {
+      return(raw())
+    }
+    out <- bytes[i:(i + n - 1)]
+    i <<- i + n
+    out
+  }
+
   # prelude
-  total_length <- rawToInteger(bytes[1:4])
-  header_length <- rawToInteger(bytes[5:8])
-  prelude_crc <- rawToInteger(bytes[9:12])
+  total_length <- parse_int(read_bytes(4))
+  if (total_length != length(bytes)) {
+    cli::cli_abort("AWS event metadata doesn't match supplied bytes", .internal = TRUE)
+  }
 
-  # payload
-  headers_raw <- bytes[13:(13 + header_length - 1)]
-  body_raw <- bytes[(13 + header_length):(total_length - 4)]
-  crc_raw <- bytes[(total_length - 3):total_length]
+  header_length <- parse_int(read_bytes(4))
+  prelude_crc <- read_bytes(4)
+  # TODO: use this value to check prelude lengths
 
-  headers <- parse_headers(headers_raw)
+  # headers
+  headers <- list()
+  while(i <= 12 + header_length) {
+    name_length <- as.integer(read_bytes(1))
+    name <- rawToChar(read_bytes(name_length))
+    type <- as.integer(read_bytes(1))
+
+    delayedAssign("length", parse_int(read_bytes(2)))
+    value <- switch(type_enum(type),
+      'TRUE' = TRUE,
+      'FALSE' = FALSE,
+      BYTE = parse_int(read_bytes(1)),
+      SHORT = parse_int(read_bytes(2)),
+      INTEGER = parse_int(read_bytes(4)),
+      LONG = parse_int64(read_bytes(8)),
+      BYTE_ARRAY = read_bytes(length),
+      CHARACTER = rawToChar(read_bytes(length)),
+      TIMESTAMP = parse_int64(read_bytes(8)),
+      UUID = raw_to_hex(read_bytes(16)),
+    )
+    headers[[name]] <- value
+  }
+
+  # body
+  body_raw <- read_bytes(total_length - i - 4 + 1)
+  crc_raw <- read_bytes(4)
+  # TODO: use this value to check data
 
   body <- rawToChar(body_raw)
   if (identical(headers$`:content-type`, "application/json")) {
@@ -55,56 +94,42 @@ parse_aws_event <- function(bytes) {
 
 # Helpers ----------------------------------------------------------------
 
-rawToInteger <- function(x) {
-  readBin(x, "integer", n = 1, size = length(x), endian = "big")
+parse_int <- function(x) {
+  sum(as.integer(x) * 256 ^ rev(seq_along(x) - 1))
 }
 
-# Equivalent boto coee:
-# https://github.com/boto/botocore/blob/8e2e8fd7ab59f8c1337902acc32d2ee10cb184ad/botocore/eventstream.py
-# https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.js#L194
-
-unpack_value <- function(type, value) {
-  if (type == 0) {
-    TRUE
-  } else if (type == 1) {
-    FALSE
-  } else if (type %in% 2:5) {
-    # BYTE, SHORT, INTEGER, LONG
-    rawToInteger(value)
-  } else if (type == 6) {
-    # BYTE ARRAY
-    value
-  } else if (type == 7) {
-    # CHARACTER
-    rawToChar(value)
-  } else if (type == 8) {
-    # TIMESTAMP
-    .POSIXct(rawToInteger(value))
-  } else if (type == 9) {
-    # UUID
-  }
+parse_int64 <- function(x) {
+  y <- readBin(x, "double", n = 1, size = length(x), endian = "big")
+  class(y) <- "integer64"
+  y
 }
 
-parse_headers <- function(x) {
-  headers <- list()
-
-  i <- 1
-  read_bytes <- function(n) {
-    if (n == 0) {
-      raw()
-    }
-    out <- x[i:(i + n - 1)]
-    i <<- i + n
-    out
+type_enum <- function(value) {
+  if (value < 0 || value > 10) {
+    cli::cli_abort("Unsupported type {value}.", .internal = TRUE)
   }
 
-  while(i <= length(x)) {
-    name_length <- as.integer(read_bytes(1))
-    name <- rawToChar(read_bytes(name_length))
-    type <- as.integer(read_bytes(1))
-    length <- rawToInteger(read_bytes(2))
-    value_raw <- read_bytes(length)
-    headers[[name]] <- unpack_value(type, value_raw)
-  }
-  headers
+  switch(value + 1,
+    "TRUE",
+    "FALSE",
+    "BYTE",
+    "SHORT",
+    "INTEGER",
+    "LONG",
+    "BYTE_ARRAY",
+    "CHARACTER",
+    "TIMESTAMP",
+    "UUID",
+  )
+}
+
+hex_to_raw <- function(x) {
+  x <- gsub("(\\s|\n)+", "", x)
+
+  pairs <- substring(x, seq(1, nchar(x), by = 2), seq(2, nchar(x), by = 2))
+  as.raw(strtoi(pairs, 16L))
+}
+
+raw_to_hex <- function(x) {
+  paste(as.character(x), collapse = "")
 }
