@@ -6,6 +6,21 @@ test_that("nothing happens if cache not enabled", {
   expect_equal(cache_post_fetch(req, resp), resp)
 })
 
+test_that("never retrieves POST request from cache", {
+  req <- request("http://example.com") %>%
+    req_method("POST") %>%
+    req_cache(tempfile())
+
+  # Fake an equivalent GET request in the cache
+  resp <- response(200,
+    headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
+    body = charToRaw("abc")
+  )
+  cache_set(req, resp)
+
+  expect_equal(cache_pre_fetch(req), req)
+})
+
 test_that("immutable objects retrieved directly from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
   resp <- response(200,
