@@ -1,10 +1,11 @@
 # httr2 (development version)
 
-# httr2 1.0.5
-
 * `req_cache()` no longer retrieves anything but `GET` requests from the cache.
 * New `resp_stream_aws()` to retrieve AWS's special streaming format. With thanks to <https://github.com/lifion/lifion-aws-event-stream/> for a simple reference implementation.
 * New `req_auth_aws_v4()` signs request using AWS's special format (#562, #566).
+
+# httr2 1.0.5
+
 * `req_perform_parallel()` and `req_perform_promise()` now correctly set up the method and body (#549).
 
 # httr2 1.0.4
