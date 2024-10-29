@@ -4,4 +4,4 @@
 
 ## revdepcheck results
 
-This is a patch release to fix an accidental breakage in arcgislayers.
+This is a patch release that only adds new features and fixes a randomly failing test.
