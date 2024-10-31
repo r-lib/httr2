@@ -131,12 +131,20 @@ ensure_pool_poller <- function(pool, reject) {
   monitor <- pool_poller_monitor(pool)
   if (monitor$already_going()) return()
 
-  poll_pool <- function() {
+  poll_pool <- function(ready) {
     tryCatch(
       {
         status <- curl::multi_run(0, pool = pool)
         if (status$pending > 0) {
-          later::later(poll_pool, delay = 0.1, loop = later::global_loop())
+          fds <- curl::multi_fdset(pool = pool)
+          later::later_fd(
+            func = poll_pool,
+            readfds = fds$reads,
+            writefds = fds$writes,
+            exceptfds = fds$exceptions,
+            timeout = fds$timeout,
+            loop = later::global_loop()
+          )
         } else {
           monitor$ending()
         }
