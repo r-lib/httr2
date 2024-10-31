@@ -191,3 +191,16 @@ oauth_cache_path <- function() {
 
   rappdirs::user_cache_dir("httr2")
 }
+
+
+#' Clear OAuth cache
+#'
+#' Use this function to clear cached credentials.
+#'
+#' @export
+#' @inheritParams req_oauth_auth_code
+oauth_cache_clear <- function(client, cache_disk = FALSE, cache_key = NULL) {
+  cache <- cache_choose(client, cache_disk, cache_key)
+  cache$clear()
+  invisible()
+}

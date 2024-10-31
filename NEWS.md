@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * Fix stochastic test failure, particularly on CRAN (#572)
+* New `oauth_cache_clear()` is an exported end point to clear the OAuth cache.
 * New `req_auth_aws_v4()` signs request using AWS's special format (#562, #566).
 * `req_cache()` no longer retrieves anything but `GET` requests from the cache.
 * New `resp_stream_aws()` to retrieve AWS's special streaming format. With thanks to <https://github.com/lifion/lifion-aws-event-stream/> for a simple reference implementation.

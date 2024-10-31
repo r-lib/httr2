@@ -117,6 +117,19 @@ test_that("can store on disk", {
   expect_equal(cache$get(), NULL)
 })
 
+test_that("can explicitly clear cached value", {
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
+  cache <- cache_mem(client, NULL)
+  cache$set("abcdef")
+
+  oauth_cache_clear(client)
+  expect_equal(cache$get(), NULL)
+})
+
 test_that("can prune old files", {
   path <- withr::local_tempdir()
   touch(file.path(path, "a-token.rds"), Sys.time() - 86400 * 1)
