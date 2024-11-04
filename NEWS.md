@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.0.6
 
 * Fix stochastic test failure, particularly on CRAN (#572)
 * New `oauth_cache_clear()` is an exported end point to clear the OAuth cache.
