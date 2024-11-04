@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.0.6
 
 * Fix stochastic test failure, particularly on CRAN (#572)
