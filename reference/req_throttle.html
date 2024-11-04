@@ -9,7 +9,7 @@ exceed a specified rate."><meta property="og:image" content="https://httr2.r-lib
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ exceed a specified rate."><meta property="og:image" content="https://httr2.r-lib
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Rate limit a request by automatically adding a delay</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-throttle.R" class="external-link"><code>R/req-throttle.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.6/R/req-throttle.R" class="external-link"><code>R/req-throttle.R</code></a></small>
       <div class="d-none name"><code>req_throttle.Rd</code></div>
     </div>
 
@@ -95,13 +95,13 @@ to the hostname of the request.</p></dd>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="throttle_status.html">throttle_status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       realm        last_request</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-09-26 12:36:12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-11-04 18:05:15</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for throttling delay <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting 2s for throttling delay <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span></span>
 <span class="r-in"><span><span class="fu"><a href="throttle_status.html">throttle_status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       realm        last_request</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-09-26 12:36:14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 127.0.0.1 2024-11-04 18:05:17</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

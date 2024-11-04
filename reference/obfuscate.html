@@ -31,7 +31,7 @@ there's no way for an automated tool to grab your obfuscated secrets."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@ there's no way for an automated tool to grab your obfuscated secrets."><meta pro
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Obfuscate mildly secret information</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/secret.R" class="external-link"><code>R/secret.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.6/R/secret.R" class="external-link"><code>R/secret.R</code></a></small>
       <div class="d-none name"><code>obfuscate.Rd</code></div>
     </div>
 
@@ -106,13 +106,13 @@ so it can be unobfuscated when needed.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("XHLM5wdMmuzZXRvjKVDtH6FCiBDfrD5qgzIrcQ")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("4mkUoq2bOn9bx2ZN9uRwGyyXa4KbpUIL_C7Q8A")</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Every time you obfuscate you'll get a different value because it</span></span></span>
 <span class="r-in"><span><span class="co"># includes 16 bytes of random data which protects against certain types of</span></span></span>
 <span class="r-in"><span><span class="co"># brute force attack</span></span></span>
 <span class="r-in"><span><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("yIoWwAVouaq0T7NuCyV0RLBcKp6i03nN74Gdmg")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("Hhk1SkXjADMuEtsI9QR5kOfZp306AhSrzzGDag")</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

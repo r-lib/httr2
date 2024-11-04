@@ -17,6 +17,7 @@
 <url><loc>https://httr2.r-lib.org/reference/jwt_claim.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/last_response.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/multi_req_perform.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_cache_clear.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_cache_path.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_client.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_client_req_auth.html</loc></url>
@@ -27,6 +28,7 @@
 <url><loc>https://httr2.r-lib.org/reference/obfuscate.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/pipe.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/progress_bars.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/req_auth_aws_v4.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_auth_basic.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_auth_bearer_token.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/req_body.html</loc></url>
