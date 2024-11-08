@@ -142,8 +142,7 @@ ensure_pool_poller <- function(pool, reject) {
             readfds = fds$reads,
             writefds = fds$writes,
             exceptfds = fds$exceptions,
-            timeout = fds$timeout,
-            loop = later::global_loop()
+            timeout = fds$timeout
           )
         } else {
           monitor$ending()
