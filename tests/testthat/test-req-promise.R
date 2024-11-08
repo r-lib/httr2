@@ -2,21 +2,16 @@
 extract_promise <- function(promise, timeout = 30) {
   promise_value <- NULL
   error <- NULL
-  done <- FALSE
   promises::then(
     promise,
-    onFulfilled = function(value) {
-      promise_value <<- value
-      done <<- TRUE
-    },
+    onFulfilled = function(value) promise_value <<- value,
     onRejected = function(reason) {
       error <<- reason
-      done <<- TRUE
     }
   )
 
   start <- Sys.time()
-  while (!done) {
+  while (!later::loop_empty()) {
     if (difftime(Sys.time(), start, units = "secs") > timeout) {
       stop("Waited too long")
     }
@@ -93,6 +88,17 @@ test_that("both curl and HTTP errors in promises are rejected", {
     'inherits\\(pool, "curl_multi"\\) is not TRUE'
   )
 })
+
+test_that("req_perform_promise doesn't leave behind poller", {
+  skip_if_not(later::loop_empty(), "later::global_loop not empty when test started")
+  p <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
+  # Before promise is resolved, there should be an operation in our later loop
+  expect_false(later::loop_empty())
+  p_value <- extract_promise(p)
+  # But now that that our promise is resolved, we shouldn't still be polling the pool
+  expect_true(later::loop_empty())
+})
+
 
 test_that("req_perform_promise can use non-default pool", {
   custom_pool <- curl::new_pool()
