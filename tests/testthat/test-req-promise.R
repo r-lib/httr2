@@ -110,3 +110,28 @@ test_that("req_perform_promise can use non-default pool", {
   p2_value <- extract_promise(p2)
   expect_equal(resp_status(p2_value), 200)
 })
+
+test_that("req_perform_promise uses the default loop if", {
+  # The main reason for temp loops is to allow an asynchronous operation to be
+  # created, waited on, and resolved/rejected inside of a synchronous function,
+  # all without affecting any asynchronous operations that existed before the
+  # temp loop was created.
+
+  p1 <- req_perform_promise(request_test("/get"))
+  later::with_temp_loop({
+    p2 <- req_perform_promise(request_test("/get"))
+
+    # This should work, since req_perform_promise was called with the temp loop
+    p2_value <- extract_promise(p2)
+    expect_true(is_response(p2_value))
+    expect_equal(resp_status(p2_value), 200)
+
+    # This should fail, since req_perform_promise was called with the default loop
+    p1_value <- extract_promise(p1)
+    expect_null(p1_value)
+  })
+
+  # Now that we're back on the default loop, this should work
+  p1_value <- extract_promise(p1)
+  expect_equal(resp_status(p1_value), 200)
+})
