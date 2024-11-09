@@ -69,6 +69,12 @@ req_perform_promise <- function(req,
   check_installed(c("promises", "later"))
   check_string(path, allow_null = TRUE)
 
+  if (missing(pool)) {
+    if (!identical(later::current_loop(), later::global_loop())) {
+      cli::cli_abort("When using {.code req_perform_promise()} within {.code later::with_temp_loop()}, {.arg x} must be provided.")
+    }
+  }
+
   promises::promise(
     function(resolve, reject) {
       perf <- PerformancePromise$new(

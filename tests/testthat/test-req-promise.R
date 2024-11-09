@@ -111,27 +111,38 @@ test_that("req_perform_promise can use non-default pool", {
   expect_equal(resp_status(p2_value), 200)
 })
 
-test_that("req_perform_promise uses the default loop if", {
+test_that("req_perform_promise uses the default loop", {
   # The main reason for temp loops is to allow an asynchronous operation to be
   # created, waited on, and resolved/rejected inside of a synchronous function,
   # all without affecting any asynchronous operations that existed before the
   # temp loop was created.
 
+  # This can't proceed within the temp loop
   p1 <- req_perform_promise(request_test("/get"))
+
   later::with_temp_loop({
-    p2 <- req_perform_promise(request_test("/get"))
+    # You can create an async response with explicit pool=NULL, but it can't
+    # proceed until the temp loop is over
+    p2 <- req_perform_promise(request_test("/get"), pool = NULL)
 
-    # This should work, since req_perform_promise was called with the temp loop
-    p2_value <- extract_promise(p2)
-    expect_true(is_response(p2_value))
-    expect_equal(resp_status(p2_value), 200)
+    # You can create an async response with explicit pool=pool, and it can
+    # proceed as long as that pool was first used inside of the temp loop
+    p3 <- req_perform_promise(request_test("/get"), pool = curl::new_pool())
 
-    # This should fail, since req_perform_promise was called with the default loop
-    p1_value <- extract_promise(p1)
-    expect_null(p1_value)
+    # You can't create an async response in the temp loop without explicitly
+    # specifying a pool
+    expect_error(p4 <- req_perform_promise(request_test("/get")))
+
+    # Like I said, you can create this, but it won't work until we get back
+    # outside the temp loop
+    expect_null(extract_promise(p2, timeout = 1))
+
+    # This works fine inside the temp loop, because its pool was first used
+    # inside
+    expect_equal(resp_status(extract_promise(p3, timeout = 1)), 200)
   })
 
-  # Now that we're back on the default loop, this should work
-  p1_value <- extract_promise(p1)
-  expect_equal(resp_status(p1_value), 200)
+  # These work fine now that we're back outside the temp loop
+  expect_equal(resp_status(extract_promise(p1, timeout = 1)), 200)
+  expect_equal(resp_status(extract_promise(p2, timeout = 1)), 200)
 })
