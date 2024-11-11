@@ -9,6 +9,10 @@
 #' [promises package documentation](https://rstudio.github.io/promises/articles/promises_01_motivation.html)
 #' for more details on how to work with the resulting promise object.
 #'
+#' If using together with [later::with_temp_loop()] or other private event loops,
+#' a new curl pool made by [curl::new_pool()] should be created for requests made
+#' within the loop to ensure that only these requests are being polled by the loop.
+#'
 #' Like with [req_perform_parallel()], exercise caution when using this function;
 #' it's easy to pummel a server with many simultaneous requests. Also, not all servers
 #' can handle more than 1 request at a time, so the responses may still return
