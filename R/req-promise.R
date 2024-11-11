@@ -75,7 +75,10 @@ req_perform_promise <- function(req,
 
   if (missing(pool)) {
     if (!identical(later::current_loop(), later::global_loop())) {
-      cli::cli_abort("When using {.code req_perform_promise()} within {.code later::with_temp_loop()}, {.arg pool} must be provided.")
+      cli::cli_abort(c(
+        "Must supply {.arg pool} when calling {.code later::with_temp_loop()}",
+        i = "Do you need {.code pool = curl::new_pool()}?"
+      ))
     }
   }
 
