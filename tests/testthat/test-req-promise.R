@@ -131,7 +131,7 @@ test_that("req_perform_promise uses the default loop", {
 
     # You can't create an async response in the temp loop without explicitly
     # specifying a pool
-    expect_error(p4 <- req_perform_promise(request_test("/get")))
+    expect_snapshot(p4 <- req_perform_promise(request_test("/get")), error = TRUE)
 
     # Like I said, you can create this, but it won't work until we get back
     # outside the temp loop
