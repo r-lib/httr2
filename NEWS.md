@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_perform_promise()` upgraded to use event-driven async based on waiting efficiently on curl socket activity (#579).
+
 # httr2 1.0.6
 
 * Fix stochastic test failure, particularly on CRAN (#572)
