@@ -29,6 +29,10 @@ is finished. See the
 \href{https://rstudio.github.io/promises/articles/promises_01_motivation.html}{promises package documentation}
 for more details on how to work with the resulting promise object.
 
+If using together with \code{\link[later:create_loop]{later::with_temp_loop()}} or other private event loops,
+a new curl pool made by \code{\link[curl:multi]{curl::new_pool()}} should be created for requests made
+within the loop to ensure that only these requests are being polled by the loop.
+
 Like with \code{\link[=req_perform_parallel]{req_perform_parallel()}}, exercise caution when using this function;
 it's easy to pummel a server with many simultaneous requests. Also, not all servers
 can handle more than 1 request at a time, so the responses may still return

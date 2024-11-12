@@ -37,7 +37,7 @@ Suggests:
     jose,
     jsonlite,
     knitr,
-    later,
+    later (>= 1.3.2.9001),
     paws.common,
     promises,
     rmarkdown,
@@ -54,3 +54,4 @@ Config/testthat/start-first: resp-stream, req-perform
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Remotes: r-lib/later

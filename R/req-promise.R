@@ -9,6 +9,10 @@
 #' [promises package documentation](https://rstudio.github.io/promises/articles/promises_01_motivation.html)
 #' for more details on how to work with the resulting promise object.
 #'
+#' If using together with [later::with_temp_loop()] or other private event loops,
+#' a new curl pool made by [curl::new_pool()] should be created for requests made
+#' within the loop to ensure that only these requests are being polled by the loop.
+#'
 #' Like with [req_perform_parallel()], exercise caution when using this function;
 #' it's easy to pummel a server with many simultaneous requests. Also, not all servers
 #' can handle more than 1 request at a time, so the responses may still return
@@ -68,6 +72,15 @@ req_perform_promise <- function(req,
                                 pool = NULL) {
   check_installed(c("promises", "later"))
   check_string(path, allow_null = TRUE)
+
+  if (missing(pool)) {
+    if (!identical(later::current_loop(), later::global_loop())) {
+      cli::cli_abort(c(
+        "Must supply {.arg pool} when calling {.code later::with_temp_loop()}.",
+        i = "Do you need {.code pool = curl::new_pool()}?"
+      ))
+    }
+  }
 
   promises::promise(
     function(resolve, reject) {
@@ -131,12 +144,19 @@ ensure_pool_poller <- function(pool, reject) {
   monitor <- pool_poller_monitor(pool)
   if (monitor$already_going()) return()
 
-  poll_pool <- function() {
+  poll_pool <- function(ready) {
     tryCatch(
       {
         status <- curl::multi_run(0, pool = pool)
         if (status$pending > 0) {
-          later::later(poll_pool, delay = 0.1, loop = later::global_loop())
+          fds <- curl::multi_fdset(pool = pool)
+          later::later_fd(
+            func = poll_pool,
+            readfds = fds$reads,
+            writefds = fds$writes,
+            exceptfds = fds$exceptions,
+            timeout = fds$timeout
+          )
         } else {
           monitor$ending()
         }
