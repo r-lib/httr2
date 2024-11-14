@@ -44,6 +44,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/req_oauth_device.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_oauth_password.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_oauth_refresh.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/req_oauth_token_exchange.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_options.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_perform_connection.html</loc></url>
