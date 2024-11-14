@@ -99,7 +99,7 @@ print.httr2_url <- function(x, ...) {
     cli::cli_li("{.field query}: ")
     id <- cli::cli_ul()
     # escape curly brackets for cli by replacing single with double brackets
-    query_vals <- gsub("\\{", "{{", gsub("\\}", "}}", x$query))
+    query_vals <- gsub("{", "{{", gsub("}", "}}", x$query, fixed = TRUE), fixed = TRUE)
     cli::cli_li(paste0("  {.field ", names(x$query), "}: ", query_vals))
     cli::cli_end(id)
   }
