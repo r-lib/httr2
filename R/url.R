@@ -26,44 +26,20 @@
 url_parse <- function(url) {
   check_string(url)
 
-  # https://datatracker.ietf.org/doc/html/rfc3986#appendix-B
-  pieces <- parse_match(url, "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?")
+  curl <- curl::curl_parse_url(url)
 
-  scheme <- pieces[[2]]
-  authority <- pieces[[4]]
-  path <- pieces[[5]]
-  query <- pieces[[7]]
-  if (!is.null(query)) {
-    query <- query_parse(query)
-  }
-  fragment <- pieces[[9]]
-
-  # https://datatracker.ietf.org/doc/html/rfc3986#section-3.2
-  pieces <- parse_match(authority %||% "", "^(([^@]+)@)?([^:]+)?(:([^#]+))?")
-
-  userinfo <- pieces[[2]]
-  if (!is.null(userinfo)) {
-    userinfo <- parse_in_half(userinfo, ":")
-    if (userinfo$right == "") {
-      userinfo$right <- NULL
-    }
-  }
-  hostname <- pieces[[3]]
-  port <- pieces[[5]]
-
-  structure(
-    list(
-      scheme = scheme,
-      hostname = hostname,
-      username = userinfo$left,
-      password = userinfo$right,
-      port = port,
-      path = path,
-      query = query,
-      fragment = fragment
-    ),
-    class = "httr2_url"
+  parsed <- list(
+    scheme = curl$scheme,
+    hostname = curl$host,
+    username = curl$user,
+    password = curl$password,
+    port = curl$port,
+    path = curl$path,
+    query = if (length(curl$params)) as.list(curl$params),
+    fragment = curl$fragment
   )
+  class(parsed) <- "httr2_url"
+  parsed
 }
 
 url_modify <- function(url, ..., error_call = caller_env()) {
