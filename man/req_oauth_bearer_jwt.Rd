@@ -75,6 +75,7 @@ Other OAuth flows:
 \code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_client_credentials}()},
 \code{\link{req_oauth_password}()},
-\code{\link{req_oauth_refresh}()}
+\code{\link{req_oauth_refresh}()},
+\code{\link{req_oauth_token_exchange}()}
 }
 \concept{OAuth flows}
