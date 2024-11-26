@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
 * `req_perform_promise()` upgraded to use event-driven async based on waiting efficiently on curl socket activity (#579).
 * New `req_oauth_token_exchange()` and `oauth_flow_token_exchange()` functions implement the OAuth token exchange protocol from RFC 8693 (@atheriel, #460).
 

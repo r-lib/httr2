@@ -1,21 +1,11 @@
 test_that("can parse special cases", {
-  url <- url_parse("//google.com")
-  expect_equal(url$scheme, NULL)
-  expect_equal(url$hostname, "google.com")
-
   url <- url_parse("file:///tmp")
   expect_equal(url$scheme, "file")
   expect_equal(url$path, "/tmp")
-
-  url <- url_parse("/")
-  expect_equal(url$scheme, NULL)
-  expect_equal(url$path, "/")
 })
 
 test_that("can round trip urls", {
   urls <- list(
-    "/",
-    "//google.com",
     "file:///",
     "http://google.com/",
     "http://google.com/path",
