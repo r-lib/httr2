@@ -4,4 +4,4 @@
 
 ## revdepcheck results
 
-This is a patch release that only adds new features and fixes a randomly failing test. Compared to the last release I have provided a patch for osmapiR: https://github.com/ropensci/osmapiR/pull/58
+This is a patch release that only add a new feature and fixes a rarely used function.
