@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.0.7
 
 * `req_perform_promise()` upgraded to use event-driven async based on waiting efficiently on curl socket activity (#579).
 * New `req_oauth_token_exchange()` and `oauth_flow_token_exchange()` functions implement the OAuth token exchange protocol from RFC 8693 (@atheriel, #460).
