@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.0.7
 
 * `req_perform_promise()` upgraded to use event-driven async based on waiting efficiently on curl socket activity (#579).
