@@ -1,5 +1,9 @@
 # httr2 (development version)
 
+* Errors thrown during the parsing of an OAuth response now have a dedicated
+  `httr2_oauth_parse` error class that includes the original response object
+  (@atheriel, #596).
+
 # httr2 1.0.7
 
 * `req_perform_promise()` upgraded to use event-driven async based on waiting efficiently on curl socket activity (#579).

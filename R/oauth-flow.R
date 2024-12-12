@@ -12,6 +12,8 @@ oauth_flow_parse <- function(resp, source, error_call = caller_env()) {
       cli::cli_abort(
         "Failed to parse response from {.arg {source}} OAuth url.",
         parent = err,
+        resp = resp,
+        class = "httr2_oauth_parse",
         call = error_call
       )
     }
@@ -40,6 +42,8 @@ oauth_flow_parse <- function(resp, source, error_call = caller_env()) {
         "Failed to parse response from {.arg {source}} OAuth url.",
         "*" = "Did not contain {.code access_token}, {.code device_code}, or {.code error} field."
       ),
+      resp = resp,
+      class = "httr2_oauth_parse",
       call = error_call
     )
   }
