@@ -79,6 +79,7 @@
 #'   a glue string that uses `{i}` to distinguish different requests.
 #'   Useful for large responses because it avoids storing the response in
 #'   memory.
+#' @param ... Further options passed to [req_perform]
 #' @return
 #' A list, at most length `max_reqs`, containing [response]s and possibly one
 #' error object, if `on_error` is `"return"` and one of the requests errors.
@@ -141,7 +142,7 @@ req_perform_iterative <- function(req,
         return = function(cnd) cnd
       )
       resp <- try_fetch(
-        req_perform(req, path = get_path(i)),
+        req_perform(req, path = get_path(i), ...),
         httr2_error = httr2_error
       )
       resps[[i]] <- resp
