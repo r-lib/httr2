@@ -10,7 +10,8 @@ req_perform_iterative(
   path = NULL,
   max_reqs = 20,
   on_error = c("stop", "return"),
-  progress = TRUE
+  progress = TRUE,
+  ...
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ far, as well as an error object for the failed request.
 \item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
 progress bar, use a string to give it a name, or see \link{progress_bars} to
 customise it in other ways.}
+
+\item{...}{Further options passed to \link{req_perform}}
 }
 \value{
 A list, at most length \code{max_reqs}, containing \link{response}s and possibly one
