@@ -19,13 +19,13 @@ req_retry(
 
 \item{max_tries, max_seconds}{Cap the maximum number of attempts
 (\code{max_tries}), the total elapsed time from the first request
-(\code{max_seconds}) or both.
+(\code{max_seconds}), or both.
 
 \code{max_tries} is the total number of attempts made, so this should always
 be greater than one.}
 
 \item{retry_on_failure}{Treat low-level failures as if they are
-transient errors, and can be retried.}
+transient errors that can be retried.}
 
 \item{is_transient}{A predicate function that takes a single argument
 (the response) and returns \code{TRUE} or \code{FALSE} specifying whether or not
@@ -35,8 +35,8 @@ the response represents a transient error.}
 attempts so far) and returns the number of seconds to wait.}
 
 \item{after}{A function that takes a single argument (the response) and
-returns either a number of seconds to wait or \code{NA}, which indicates
-that a precise wait time is not available that the \code{backoff} strategy
+returns either a number of seconds to wait or \code{NA}. \code{NA} indicates
+that a precise wait time is not available and that the \code{backoff} strategy
 should be used instead.}
 }
 \value{
@@ -47,15 +47,15 @@ A modified HTTP \link{request}.
 requests. It's particularly important for APIs with rate limiting, but can
 also be useful when dealing with flaky servers.
 
-By default \code{req_perform()} will retry if the response is a 429
+By default, \code{req_perform()} will retry if the response is a 429
 ("too many requests", often used for rate limiting) or 503
 ("service unavailable"). If the API you are wrapping has other transient
-status codes (or conveys transient-ness with some other property of the
+status codes (or conveys transience with some other property of the
 response), you can override the default with \code{is_transient}. And
 if you set \code{retry_on_failure = TRUE}, the request will retry
-if either the HTTP request or HTTP response doesn't complete successfully
+if either the HTTP request or HTTP response doesn't complete successfully,
 leading to an error from curl, the lower-level library that httr2 uses to
-perform HTTP request. This occurs, for example, if your wifi is down.
+perform HTTP requests. This occurs, for example, if your Wi-Fi is down.
 \subsection{Delay}{
 
 It's a bad idea to immediately retry a request, so \code{req_perform()} will
@@ -63,11 +63,11 @@ wait a little before trying again:
 \itemize{
 \item If the response contains the \code{Retry-After} header, httr2 will wait the
 amount of time it specifies. If the API you are wrapping conveys this
-information with a different header (or other property of the response)
-you can override the default behaviour with \code{retry_after}.
+information with a different header (or other property of the response),
+you can override the default behavior with \code{retry_after}.
 \item Otherwise, httr2 will use "truncated exponential backoff with full
-jitter", i.e. it will wait a random amount of time between one second and
-\code{2 ^ tries} seconds, capped to at most 60 seconds. In other words, it
+jitter", i.e., it will wait a random amount of time between one second and
+\code{2 ^ tries} seconds, capped at a maximum of 60 seconds. In other words, it
 waits \code{runif(1, 1, 2)} seconds after the first failure, \code{runif(1, 1, 4)}
 after the second, \code{runif(1, 1, 8)} after the third, and so on. If you'd
 prefer a different strategy, you can override the default with \code{backoff}.
