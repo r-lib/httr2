@@ -277,10 +277,17 @@ create_progress_bar <- function(total,
 
   id <- exec(cli::cli_progress_bar, !!!args)
 
+  # These functions are called within multi_req_perform() from curl
+  # threads so the original progress may have gone away. If that has
+  # happened we'll just ignore the error.
   list(
-    update = function(...) cli::cli_progress_update(..., id = id),
-    done = function() cli::cli_progress_done(id = id)
+    update = function(...) try_quiet(cli::cli_progress_update(..., id = id)),
+    done = function() try_quiet(cli::cli_progress_done(id = id))
   )
+}
+
+try_quiet <- function(code) {
+  tryCatch(code, error = function(cnd) NULL)
 }
 
 imap <- function(.x, .f, ...) {
