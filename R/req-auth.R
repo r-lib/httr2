@@ -5,8 +5,8 @@
 #'
 #' @inheritParams req_perform
 #' @param username User name.
-#' @param password Password. You avoid entering the password directly when
-#'   calling this function as it will be captured by `.Rhistory`. Instead,
+#' @param password Password. You should avoid entering the password directly
+#'   when calling this function as it will be captured by `.Rhistory`. Instead,
 #'   leave it unset and the default behaviour will prompt you for it
 #'   interactively.
 #' @returns A modified HTTP [request].
