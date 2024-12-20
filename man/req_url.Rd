@@ -34,11 +34,12 @@ containing multiple values:
 \item \code{"error"}, the default, throws an error.
 \item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.
 \item \code{"pipe"}, separates values with a \code{|}, e.g. \code{?x=1|2}.
-\item \code{"explode"}, turns each element into its own parameter, e.g. \code{?x=1&x=2}.
+\item \code{"explode"}, turns each element into its own parameter, e.g. \code{?x=1&x=2}
 }
 
-If none of these functions work, you can alternatively supply a function
-that takes a character vector and returns a string.}
+If none of these options work for your needs, you can instead supply a
+function that takes a character vector of argument values and returns a
+a single string.}
 }
 \value{
 A modified HTTP \link{request}.

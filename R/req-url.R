@@ -55,10 +55,11 @@ req_url <- function(req, url) {
 #'   * `"error"`, the default, throws an error.
 #'   * `"comma"`, separates values with a `,`, e.g. `?x=1,2`.
 #'   * `"pipe"`, separates values with a `|`, e.g. `?x=1|2`.
-#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`.
+#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`
 #'
-#'   If none of these functions work, you can alternatively supply a function
-#'   that takes a character vector and returns a string.
+#'   If none of these options work for your needs, you can instead supply a
+#'   function that takes a character vector of argument values and returns a
+#'   a single string.
 req_url_query <- function(.req,
                           ...,
                           .multi = c("error", "comma", "pipe", "explode")) {
