@@ -229,6 +229,10 @@ last_request <- function() {
 #' works by sending the real HTTP request to a local webserver, thanks to
 #' the magic of [curl::curl_echo()].
 #'
+#' ## Limitations
+#'
+#' * The `Host` header is not respected.
+#'
 #' @inheritParams req_verbose
 #' @param quiet If `TRUE` doesn't print anything.
 #' @returns Invisibly, a list containing information about the request,
