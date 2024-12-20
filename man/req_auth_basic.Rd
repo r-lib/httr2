@@ -11,8 +11,8 @@ req_auth_basic(req, username, password = NULL)
 
 \item{username}{User name.}
 
-\item{password}{Password. You avoid entering the password directly when
-calling this function as it will be captured by \code{.Rhistory}. Instead,
+\item{password}{Password. You should avoid entering the password directly
+when calling this function as it will be captured by \code{.Rhistory}. Instead,
 leave it unset and the default behaviour will prompt you for it
 interactively.}
 }

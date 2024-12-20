@@ -6,16 +6,19 @@
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional character vector of paths, if you want to download
-#'   the request bodies to disk. If supplied, must be the same length as `reqs`.
+#'   the response bodies to disk. If supplied, must be the same length as
+#' `reqs`.
 #' @param on_error What should happen if one of the requests fails?
 #'
 #'   * `stop`, the default: stop iterating with an error.
 #'   * `return`: stop iterating, returning all the successful responses
 #'     received so far, as well as an error object for the failed request.
 #'   * `continue`: continue iterating, recording errors in the result.
-#' @param progress Display a progress bar? Use `TRUE` to turn on a basic
-#'   progress bar, use a string to give it a name, or see [progress_bars] to
-#'   customise it in other ways.
+#' @param progress Display a progress bar for the status of all requests? Use
+#'   `TRUE` to turn on a basic progress bar, use a string to give it a name,
+#'   or see [progress_bars] to customize it in other ways. Not compatible with
+#'   [req_progress()], as httr2 can only display a single progress bar at a
+#'   time.
 #' @return
 #' A list, the same length as `reqs`, containing [response]s and possibly
 #' error objects, if `on_error` is `"return"` or `"continue"` and one of the

@@ -1,6 +1,15 @@
 # httr2 (development version)
 
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
+* `req_retry()` now defaults to `max_tries = 2` with a message.
+  Set to `max_tries = 1` to disable retries.
+
+* Errors thrown during the parsing of an OAuth response now have a dedicated
+  `httr2_oauth_parse` error class that includes the original response object
+  (@atheriel, #596).
+
+# httr2 1.0.7
+
 * `req_perform_promise()` upgraded to use event-driven async based on waiting efficiently on curl socket activity (#579).
 * New `req_oauth_token_exchange()` and `oauth_flow_token_exchange()` functions implement the OAuth token exchange protocol from RFC 8693 (@atheriel, #460).
 

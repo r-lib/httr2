@@ -7,12 +7,14 @@
 #' This flow is the most commonly used OAuth flow where the user
 #' opens a page in their browser, approves the access, and then returns to R.
 #' When possible, it redirects the browser back to a temporary local webserver
-#' to capture the authorization code. When this is not possible (e.g. when
+#' to capture the authorization code. When this is not possible (e.g., when
 #' running on a hosted platform like RStudio Server), provide a custom
 #' `redirect_uri` and httr2 will prompt the user to enter the code manually.
 #'
 #' Learn more about the overall OAuth authentication flow in
-#' <https://httr2.r-lib.org/articles/oauth.html>.
+#' <https://httr2.r-lib.org/articles/oauth.html>, and more about the motivations
+#' behind this flow in
+#' <https://stack-auth.com/blog/oauth-from-first-principles>.
 #'
 #' # Security considerations
 #'
@@ -20,17 +22,18 @@
 #' applications (which are equivalent to R packages). `r rfc(8252)` spells out
 #' important considerations for native apps. Most importantly there's no way
 #' for native apps to keep secrets from their users. This means that the
-#' server should either not require a `client_secret` (i.e. a public client
-#' not an confidential client) or ensure that possession of the `client_secret`
-#' doesn't bestow any meaningful rights.
+#' server should either not require a `client_secret` (i.e. it should be a
+#' public client and not a confidential client) or ensure that possession of
+#' the `client_secret` doesn't grant any significant privileges.
 #'
-#' Only modern APIs from the bigger players (Azure, Google, etc) explicitly
-#' native apps. However, in most cases, even for older APIs, possessing the
-#' `client_secret` gives you no ability to do anything harmful, so our
-#' general principle is that it's fine to include it in an R package, as long
-#' as it's mildly obfuscated to protect it from credential scraping. There's
-#' no incentive to steal your client credentials if it takes less time to
-#' create a new client than find your client secret.
+#' Only modern APIs from major providers (like Azure and Google) explicitly
+#' support native apps. However, in most cases, even for older APIs, possessing
+#' the `client_secret` provides limited ability to perform harmful actions.
+#' Therefore, our general principle is that it's acceptable to include it in an
+#' R package, as long as it's mildly obfuscated to protect against credential
+#' scraping attacks (which aim to acquire large numbers of client secrets by
+#' scanning public sites like GitHub). The goal is to ensure that obtaining your
+#' client credentials is more work than just creating a new client.
 #'
 #' @export
 #' @family OAuth flows

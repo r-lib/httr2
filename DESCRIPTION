@@ -1,6 +1,6 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
-Version: 1.0.6.9000
+Version: 1.0.7.9000
 Authors@R: c(
     person("Hadley", "Wickham", , "hadley@posit.co", role = c("aut", "cre")),
     person("Posit Software, PBC", role = c("cph", "fnd")),
@@ -37,7 +37,7 @@ Suggests:
     jose,
     jsonlite,
     knitr,
-    later (>= 1.3.2.9001),
+    later (>= 1.4.0),
     paws.common,
     promises,
     rmarkdown,
@@ -54,4 +54,3 @@ Config/testthat/start-first: resp-stream, req-perform
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Remotes: r-lib/later

@@ -15,7 +15,8 @@ req_perform_sequential(
 \item{reqs}{A list of \link{request}s.}
 
 \item{paths}{An optional character vector of paths, if you want to download
-the request bodies to disk. If supplied, must be the same length as \code{reqs}.}
+the response bodies to disk. If supplied, must be the same length as
+\code{reqs}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{
@@ -25,9 +26,11 @@ received so far, as well as an error object for the failed request.
 \item \code{continue}: continue iterating, recording errors in the result.
 }}
 
-\item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
-progress bar, use a string to give it a name, or see \link{progress_bars} to
-customise it in other ways.}
+\item{progress}{Display a progress bar for the status of all requests? Use
+\code{TRUE} to turn on a basic progress bar, use a string to give it a name,
+or see \link{progress_bars} to customize it in other ways. Not compatible with
+\code{\link[=req_progress]{req_progress()}}, as httr2 can only display a single progress bar at a
+time.}
 }
 \value{
 A list, the same length as \code{reqs}, containing \link{response}s and possibly

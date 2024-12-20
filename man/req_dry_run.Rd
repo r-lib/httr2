@@ -25,6 +25,13 @@ actually sending anything. It requires the httpuv package because it
 works by sending the real HTTP request to a local webserver, thanks to
 the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 }
+\details{
+\subsection{Limitations}{
+\itemize{
+\item The \code{Host} header is not respected.
+}
+}
+}
 \examples{
 # httr2 adds default User-Agent, Accept, and Accept-Encoding headers
 request("http://example.com") |> req_dry_run()

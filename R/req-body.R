@@ -137,7 +137,8 @@ req_body_json_modify <- function(req, ...) {
 #'   data in the body.
 #'
 #'   * For `req_body_form()`, the values must be strings (or things easily
-#'     coerced to strings);
+#'     coerced to strings). Vectors are convertd to strings using the
+#'     value of `.multi`.
 #'   * For `req_body_multipart()` the values must be strings or objects
 #'     produced by [curl::form_file()]/[curl::form_data()].
 #'   * For `req_body_json_modify()`, any simple data made from atomic vectors
