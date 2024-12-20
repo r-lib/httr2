@@ -1,20 +1,21 @@
-#' Control when a request will retry, and how long it will wait between tries
+#' Automatically retry a request on failure
 #'
 #' @description
-#' `req_retry()` alters [req_perform()] so that it will automatically retry
-#' in the case of failure. To activate it, you must specify either the total
-#' number of requests to make with `max_tries` or the total amount of time
-#' to spend with `max_seconds`. Then `req_perform()` will retry if the error is
-#' "transient", i.e. it's an HTTP error that can be resolved by waiting. By
-#' default, 429 and 503 statuses are treated as transient, but if the API you
-#' are wrapping has other transient status codes (or conveys transient-ness
-#' with some other property of the response), you can override the default
-#' with `is_transient`.
+#' `req_retry()` allows [req_perform()] to automatically retry failing
+#' requests. It's particularly important for APIs with rate limiting, but can
+#' also be useful when dealing with flaky servers.
 #'
-#' Additionally, if you set `retry_on_failure = TRUE`, the request will retry
+#' By default `req_perform()` will retry if the response is a 429
+#' ("too many requests", often used for rate limiting) or 503
+#' ("service unavailable"). If the API you are wrapping has other transient
+#' status codes (or conveys transient-ness with some other property of the
+#' response), you can override the default with `is_transient`. And
+#' if you set `retry_on_failure = TRUE`, the request will retry
 #' if either the HTTP request or HTTP response doesn't complete successfully
 #' leading to an error from curl, the lower-level library that httr2 uses to
 #' perform HTTP request. This occurs, for example, if your wifi is down.
+#'
+#' ## Delay
 #'
 #' It's a bad idea to immediately retry a request, so `req_perform()` will
 #' wait a little before trying again:
@@ -32,13 +33,12 @@
 #'   prefer a different strategy, you can override the default with `backoff`.
 #'
 #' @inheritParams req_perform
-#' @param max_tries,max_seconds Cap the maximum number of attempts with
-#'   `max_tries` or the total elapsed time from the first request with
-#'   `max_seconds`. If neither option is supplied (the default), [req_perform()]
-#'   will not retry.
+#' @param max_tries,max_seconds Cap the maximum number of attempts
+#'   (`max_tries`), the total elapsed time from the first request
+#'   (`max_seconds`) or both.
 #'
-#'   `max_tries` is the total number of attempts make, so this should always
-#'   be greater than one.`
+#'   `max_tries` is the total number of attempts made, so this should always
+#'   be greater than one.
 #' @param is_transient A predicate function that takes a single argument
 #'   (the response) and returns `TRUE` or `FALSE` specifying whether or not
 #'   the response represents a transient error.
@@ -49,7 +49,7 @@
 #' @param after A function that takes a single argument (the response) and
 #'   returns either a number of seconds to wait or `NA`, which indicates
 #'   that a precise wait time is not available that the `backoff` strategy
-#'   should be used instead..
+#'   should be used instead.
 #' @returns A modified HTTP [request].
 #' @export
 #' @seealso [req_throttle()] if the API has a rate-limit but doesn't expose
@@ -61,7 +61,7 @@
 #'
 #' # use a constant 10s delay after every failure
 #' request("http://example.com") |>
-#'   req_retry(backoff = ~10)
+#'   req_retry(backoff = \(resp) 10)
 #'
 #' # When rate-limited, GitHub's API returns a 403 with
 #' # `X-RateLimit-Remaining: 0` and an Unix time stored in the
@@ -86,9 +86,16 @@ req_retry <- function(req,
                       is_transient = NULL,
                       backoff = NULL,
                       after = NULL) {
+
   check_request(req)
-  check_number_whole(max_tries, min = 2, allow_null = TRUE)
+  check_number_whole(max_tries, min = 1, allow_null = TRUE)
   check_number_whole(max_seconds, min = 0, allow_null = TRUE)
+
+  if (is.null(max_tries) && is.null(max_seconds)) {
+    max_tries <- 2
+    cli::cli_inform("Setting {.code max_tries = 2}.")
+  }
+
   check_bool(retry_on_failure)
 
   req_policies(req,
