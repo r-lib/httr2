@@ -30,9 +30,6 @@
 #'   By default the same as `format`.
 #' * `name`: progress bar name. This is by default the empty string and it
 #'   is displayed at the beginning of the progress bar.
-#' * `show_after`: numeric scalar. Only show the progress bar after this
-#'   number of seconds. It overrides the `cli.progress_show_after`
-#'   global option.
 #' * `type`: progress bar type. Currently supported types are:
 #'   * `iterator`: the default, a for loop or a mapping function,
 #'   * `tasks`: a (typically small) number of tasks,

@@ -33,9 +33,6 @@ the same as \code{format}.
 By default the same as \code{format}.
 \item \code{name}: progress bar name. This is by default the empty string and it
 is displayed at the beginning of the progress bar.
-\item \code{show_after}: numeric scalar. Only show the progress bar after this
-number of seconds. It overrides the \code{cli.progress_show_after}
-global option.
 \item \code{type}: progress bar type. Currently supported types are:
 \itemize{
 \item \code{iterator}: the default, a for loop or a mapping function,
