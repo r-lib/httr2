@@ -1,3 +1,10 @@
+test_that("has useful default (with message)", {
+  req <- request_test()
+  expect_snapshot(req <- req_retry(req))
+  expect_equal(retry_max_tries(req), 2)
+  expect_equal(retry_max_seconds(req), Inf)
+})
+
 test_that("can set define maximum retries", {
   req <- request_test()
   expect_equal(retry_max_tries(req), 1)
@@ -70,9 +77,9 @@ test_that("validates its inputs", {
   req <- new_request("http://example.com")
 
   expect_snapshot(error = TRUE, {
-    req_retry(req, max_tries = 1)
-    req_retry(req, max_seconds = "x")
-    req_retry(req, retry_on_failure = "x")
+    req_retry(req, max_tries = 0)
+    req_retry(req, max_tries = 2, max_seconds = "x")
+    req_retry(req, max_tries = 2, retry_on_failure = "x")
   })
 })
 
