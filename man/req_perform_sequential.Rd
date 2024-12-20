@@ -15,7 +15,8 @@ req_perform_sequential(
 \item{reqs}{A list of \link{request}s.}
 
 \item{paths}{An optional character vector of paths, if you want to download
-the request bodies to disk. If supplied, must be the same length as \code{reqs}.}
+the response bodies to disk. If supplied, must be the same length as
+\code{reqs}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{

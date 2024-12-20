@@ -6,7 +6,8 @@
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional character vector of paths, if you want to download
-#'   the request bodies to disk. If supplied, must be the same length as `reqs`.
+#'   the response bodies to disk. If supplied, must be the same length as
+#' `reqs`.
 #' @param on_error What should happen if one of the requests fails?
 #'
 #'   * `stop`, the default: stop iterating with an error.
