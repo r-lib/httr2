@@ -47,7 +47,7 @@
 #' @param backoff A function that takes a single argument (the number of failed
 #'   attempts so far) and returns the number of seconds to wait.
 #' @param after A function that takes a single argument (the response) and
-#'   returns either a number of seconds to wait or `NULL`, which indicates
+#'   returns either a number of seconds to wait or `NA`, which indicates
 #'   that a precise wait time is not available that the `backoff` strategy
 #'   should be used instead..
 #' @returns A modified HTTP [request].
