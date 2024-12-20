@@ -124,9 +124,11 @@ received so far, as well as an error object for the failed request.</p></li>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
-<dd><p>Display a progress bar? Use <code>TRUE</code> to turn on a basic
-progress bar, use a string to give it a name, or see <a href="progress_bars.html">progress_bars</a> to
-customise it in other ways.</p></dd>
+<dd><p>Display a progress bar for the status of all requests? Use
+<code>TRUE</code> to turn on a basic progress bar, use a string to give it a name,
+or see <a href="progress_bars.html">progress_bars</a> to customize it in other ways. Not compatible with
+<code><a href="req_progress.html">req_progress()</a></code>, as httr2 can only display a single progress bar at a
+time.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -153,7 +155,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="co"># But it's much faster if you request in parallel</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.381   0.651   1.032 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.405   0.625   1.029 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># req_perform_parallel() will fail on error</span></span></span>
 <span class="r-in"><span><span class="va">reqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -162,7 +164,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span>  <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"FAILURE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in req_perform_parallel(reqs) : Could not resolve host: FAILURE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error in req_perform_parallel(reqs) : HTTP 400 Bad Request.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># but can use on_error to capture all successful results</span></span></span>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span>, on_error <span class="op">=</span> <span class="st">"continue"</span><span class="op">)</span></span></span>
@@ -171,7 +173,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_successes</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:42353/status/200</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:46877/status/200</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -181,7 +183,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_failures</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_requests</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:42353/status/400</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:46877/status/400</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>

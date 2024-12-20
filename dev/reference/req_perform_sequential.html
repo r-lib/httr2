@@ -87,9 +87,11 @@ received so far, as well as an error object for the failed request.</p></li>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
-<dd><p>Display a progress bar? Use <code>TRUE</code> to turn on a basic
-progress bar, use a string to give it a name, or see <a href="progress_bars.html">progress_bars</a> to
-customise it in other ways.</p></dd>
+<dd><p>Display a progress bar for the status of all requests? Use
+<code>TRUE</code> to turn on a basic progress bar, use a string to give it a name,
+or see <a href="progress_bars.html">progress_bars</a> to customize it in other ways. Not compatible with
+<code><a href="req_progress.html">req_progress()</a></code>, as httr2 can only display a single progress bar at a
+time.</p></dd>
 
 </dl></div>
     <div class="section level2">
