@@ -35,9 +35,11 @@ perform all requests until \code{next_req()} returns \code{NULL}.}
 far, as well as an error object for the failed request.
 }}
 
-\item{progress}{Display a progress bar? Use \code{TRUE} to turn on a basic
-progress bar, use a string to give it a name, or see \link{progress_bars} to
-customise it in other ways.}
+\item{progress}{Display a progress bar for the status of all requests? Use
+\code{TRUE} to turn on a basic progress bar, use a string to give it a name,
+or see \link{progress_bars} to customize it in other ways. Not compatible with
+\code{\link[=req_progress]{req_progress()}}, as httr2 can only display a single progress bar at a
+time.}
 }
 \value{
 A list, at most length \code{max_reqs}, containing \link{response}s and possibly one

@@ -14,9 +14,11 @@
 #'   * `return`: stop iterating, returning all the successful responses
 #'     received so far, as well as an error object for the failed request.
 #'   * `continue`: continue iterating, recording errors in the result.
-#' @param progress Display a progress bar? Use `TRUE` to turn on a basic
-#'   progress bar, use a string to give it a name, or see [progress_bars] to
-#'   customise it in other ways.
+#' @param progress Display a progress bar for the status of all requests? Use
+#'   `TRUE` to turn on a basic progress bar, use a string to give it a name,
+#'   or see [progress_bars] to customize it in other ways. Not compatible with
+#'   [req_progress()], as httr2 can only display a single progress bar at a
+#'   time.
 #' @return
 #' A list, the same length as `reqs`, containing [response]s and possibly
 #' error objects, if `on_error` is `"return"` or `"continue"` and one of the
