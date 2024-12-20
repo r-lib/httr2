@@ -234,7 +234,7 @@ paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
 your client specification.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("iCvjCayDi09V562wHJg3w3oi-GrXdA")</span></span></code></pre></div>
+<span><span class="co">#&gt; obfuscated("StS4lXXRmC4iHjCwABjkq5jn6nzg3A")</span></span></code></pre></div>
 <p>Here’s what a complete client specification for GitHub looks like,
 using a real app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -359,6 +359,8 @@ error:</p>
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 401 Unauthorized.</span></span></code></pre></div>
 <p>We can authenticate this request with
