@@ -16,6 +16,24 @@ test_that("can stream bytes from a connection", {
   expect_length(out, 0)
 })
 
+test_that("can determine if a stream is complete (blocking)", {
+  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
+  withr::defer(close(resp))
+
+  expect_false(resp_stream_is_complete(resp))
+  resp_stream_raw(resp, kb = 2)
+  expect_true(resp_stream_is_complete(resp))
+})
+
+test_that("can determine if a stream is complete (non-blocking)", {
+  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection(blocking = FALSE)
+  withr::defer(close(resp))
+
+  expect_false(resp_stream_is_complete(resp))
+  resp_stream_raw(resp, kb = 2)
+  expect_true(resp_stream_is_complete(resp))
+})
+
 test_that("can't read from a closed connection", {
   resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
   close(resp)
