@@ -162,7 +162,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
 req_perform1 <- function(req, path = NULL, handle = NULL) {
   the$last_request <- req
   the$last_response <- NULL
-  signal(class = "httr2_peform")
+  signal(class = "httr2_perform")
 
   if (!is.null(path)) {
     res <- curl::curl_fetch_disk(req$url, path, handle)
