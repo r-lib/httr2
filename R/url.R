@@ -6,6 +6,7 @@
 #'
 #' @param url For `url_parse()` a string to parse into a URL;
 #'   for `url_build()` a URL to turn back into a string.
+#' @param base_url Use this as a parent, if `url` is a relative URL.
 #' @returns
 #' * `url_build()` returns a string.
 #' * `url_parse()` returns a URL: a S3 list with class `httr2_url`
@@ -18,15 +19,20 @@
 #' url_parse("http://google.com:80/?a=1&b=2")
 #' url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
 #'
+#' # You can parse a relative URL if you also provide a base url
+#' url_parse("foo", "http://google.com/bar/")
+#' url_parse("..", "http://google.com/bar/")
+#'
 #' url <- url_parse("http://google.com/")
 #' url$port <- 80
 #' url$hostname <- "example.com"
 #' url$query <- list(a = 1, b = 2, c = 3)
 #' url_build(url)
-url_parse <- function(url) {
+url_parse <- function(url, base_url = NULL) {
   check_string(url)
+  check_string(base_url, allow_null = TRUE)
 
-  curl <- curl::curl_parse_url(url)
+  curl <- curl::curl_parse_url(url, baseurl = base_url)
 
   parsed <- list(
     scheme = curl$scheme,
