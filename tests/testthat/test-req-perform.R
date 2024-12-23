@@ -55,11 +55,11 @@ test_that("persistent HTTP errors only get single attempt", {
 })
 
 test_that("don't retry curl errors by default", {
-  req <- request("") %>% req_retry(max_tries = 2)
+  req <- request("https://doesntexist") %>% req_retry(max_tries = 2)
   expect_error(req_perform(req), class = "httr2_failure")
 
   # But can opt-in to it
-  req <- request("") %>% req_retry(max_tries = 2, retry_on_failure = TRUE)
+  req <- request("https://doesntexist") %>% req_retry(max_tries = 2, retry_on_failure = TRUE)
   cnd <- catch_cnd(req_perform(req), "httr2_retry")
   expect_equal(cnd$tries, 1)
 })

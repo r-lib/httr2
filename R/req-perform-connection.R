@@ -58,6 +58,8 @@ req_perform_connection <- function(req, blocking = TRUE) {
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
+      retry_check_breaker(req, tries)
+      
       delay <- retry_after(req, resp, tries)
       signal(class = "httr2_retry", tries = tries, delay = delay)
     } else {

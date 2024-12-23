@@ -107,6 +107,7 @@ req_perform <- function(
 
   delay <- 0
   while (tries < max_tries && Sys.time() < deadline) {
+    retry_check_breaker(req, tries, error_call = error_call)
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
@@ -161,6 +162,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
 req_perform1 <- function(req, path = NULL, handle = NULL) {
   the$last_request <- req
   the$last_response <- NULL
+  signal(class = "httr2_peform")
 
   if (!is.null(path)) {
     res <- curl::curl_fetch_disk(req$url, path, handle)
