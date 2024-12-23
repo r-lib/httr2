@@ -2,12 +2,15 @@
 % Please edit documentation in R/req-url.R
 \name{req_url}
 \alias{req_url}
+\alias{req_url_relative}
 \alias{req_url_query}
 \alias{req_url_path}
 \alias{req_url_path_append}
 \title{Modify request URL}
 \usage{
 req_url(req, url)
+
+req_url_relative(req, url)
 
 req_url_query(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
 
@@ -65,6 +68,11 @@ req |>
 # Change complete url
 req |>
   req_url("http://google.com")
+
+# Use a relative url
+req <- request("http://example.com/a/b/c")
+req |> req_url_relative("..")
+req |> req_url_relative("/d/e/f")
 
 # Use .multi to control what happens with vector parameters:
 req |> req_url_query(id = 100:105, .multi = "comma")
