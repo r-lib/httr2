@@ -40,17 +40,4 @@ manual token management that still takes advantage of httr2's caching
 system. You should only need to use this function if you're passing
 the token
 }
-\examples{
-\dontrun{
-token <- oauth_token_cached(
-  client = example_github_client(),
-  flow = oauth_flow_auth_code,
-  flow_params = list(
-    auth_url = "https://github.com/login/oauth/authorize"
-  ),
-  cache_disk = TRUE
-)
-token
-}
-}
 \keyword{internal}
