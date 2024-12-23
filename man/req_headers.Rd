@@ -2,9 +2,12 @@
 % Please edit documentation in R/req-headers.R
 \name{req_headers}
 \alias{req_headers}
+\alias{req_headers_redacted}
 \title{Modify request headers}
 \usage{
 req_headers(.req, ..., .redact = NULL)
+
+req_headers_redacted(.req, ...)
 }
 \arguments{
 \item{.req}{A \link{request}.}
@@ -24,7 +27,10 @@ are not redacted.}
 A modified HTTP \link{request}.
 }
 \description{
-\code{req_headers()} allows you to set the value of any header.
+\code{req_headers()} allows you to set the value of any header. Use
+\code{req_headers_redacted()} to add "redacted" headers which httr2 strives
+to avoid printing to the console. This is good practice for headers used
+for authentication to avoid accidentally including them in log files.
 }
 \examples{
 req <- request("http://example.com")
@@ -64,6 +70,7 @@ req |>
 
 # Use `.redact` to hide a header in the output
 req |>
-  req_headers(Secret = "this-is-private", Public = "but-this-is-not", .redact = "Secret") |>
+  req_headers_redacted(Secret = "this-is-private") |>
+  req_headers(Public = "but-this-is-not") |>
   req_dry_run()
 }
