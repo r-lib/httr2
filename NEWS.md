@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* New `url_modify()` makes it easier to modify an existing url (#464).
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
 * `req_retry()` now defaults to `max_tries = 2` with a message.
   Set to `max_tries = 1` to disable retries.

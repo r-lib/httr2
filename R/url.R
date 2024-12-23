@@ -1,28 +1,20 @@
-#' Parse and build URLs
+#' Parse a URL
 #'
-#' `url_parse()` parses a URL into its component pieces; `url_build()` does
-#' the reverse, converting a list of pieces into a string URL. See `r rfc(3986)`
-#' for the details of the parsing algorithm.
+#' `url_parse()` parses a URL into its component pieces, powered by
+#' [curl::curl_parse_url()]. See `r rfc(3986)` for the details of the
+#' parsing algorithm.
 #'
-#' @param url For `url_parse()` a string to parse into a URL;
-#'   for `url_build()` a URL to turn back into a string.
-#' @returns
-#' * `url_build()` returns a string.
-#' * `url_parse()` returns a URL: a S3 list with class `httr2_url`
-#'   and elements `scheme`, `hostname`, `port`, `path`, `fragment`, `query`,
-#'   `username`, `password`.
+#' @param url A string to parse.
+#' @returns A URL, i.e. a S3 object with class `httr2_url` and elements
+#'   `scheme`, `hostname`, `username`, `password`, `port`, `path`, `query`, and
+#'   `fragment`.
 #' @export
+#' @family URL manipulation
 #' @examples
 #' url_parse("http://google.com/")
 #' url_parse("http://google.com:80/")
 #' url_parse("http://google.com:80/?a=1&b=2")
 #' url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
-#'
-#' url <- url_parse("http://google.com/")
-#' url$port <- 80
-#' url$hostname <- "example.com"
-#' url$query <- list(a = 1, b = 2, c = 3)
-#' url_build(url)
 url_parse <- function(url) {
   check_string(url)
 
@@ -42,10 +34,88 @@ url_parse <- function(url) {
   parsed
 }
 
-url_modify <- function(url, ..., error_call = caller_env()) {
-  url <- url_parse(url)
-  url <- modify_list(url, ..., error_call = error_call)
-  url_build(url)
+#' Modify a url
+#'
+#' Modify components of a URL. The default value of each argument, `NULL`,
+#' means leave the component as is. If you want to remove a component,
+#' set it to `""`. Note that setting `scheme` or `hostname` to `""` will
+#' create a relative url.
+#'
+#' @param url A string or [parsed URL](url_parse).
+#' @param scheme The scheme, typically either `http` or `https`.
+#' @param hostname The hostname, e.g. `www.google.com` or `posit.co`.
+#' @param username,password Username and password to embed in the URL.
+#'   Not generally recommended but needed for some legacy applications.
+#' @param port An integer port number.
+#' @param path The path, e.g. `/search`. Paths must start with `/`, so this
+#'   will be automatically added if ommitted.
+#' @param query Either a query string or a named list of query components.
+#' @param fragment The fragment, e.g. `#section-1`.
+#' @return An object the same type as `url``.
+#' @export
+#' @family URL manipulation
+#' @examples
+#' url_modify("http://hadley.nz", path = "about")
+#' url_modify("http://hadley.nz", scheme = "https")
+#' url_modify("http://hadley.nz/abc", path = "/cde")
+#' url_modify("http://hadley.nz/abc", path = "")
+#' url_modify("http://hadley.nz?a=1", query = "b=2")
+#' url_modify("http://hadley.nz?a=1", query = list(c = 3))
+url_modify <- function(url,
+                       scheme = NULL,
+                       hostname = NULL,
+                       username = NULL,
+                       password = NULL,
+                       port = NULL,
+                       path = NULL,
+                       query = NULL,
+                       fragment = NULL) {
+
+  if (!is_string(url) && !is_url(url)) {
+    stop_input_type(url, "a string or parsed URL")
+  }
+  string_url <- is_string(url)
+  if (string_url) {
+    url <- url_parse(url)
+  }
+
+  check_string(scheme, allow_null = TRUE)
+  check_string(hostname, allow_null = TRUE)
+  check_string(username, allow_null = TRUE)
+  check_string(password, allow_null = TRUE)
+  check_number_whole(port, min = 1, allow_null = TRUE)
+  check_string(path, allow_null = TRUE)
+  check_string(fragment, allow_null = TRUE)
+
+  if (is_string(query)) {
+    query <- query_parse(query)
+  } else if (is.list(query) && (is_named(query) || length(query) == 0)) {
+    for (nm in names(query)) {
+      check_query_param(query[[nm]], paste0("query$", nm))
+    }
+  } else if (!is.null(query)) {
+    stop_input_type(query, "a character vector, named list, or NULL")
+  }
+
+  new <- compact(list(
+    scheme = scheme,
+    hostname = hostname,
+    username = username,
+    password = password,
+    port = port,
+    path = path,
+    query = query,
+    fragment = fragment
+  ))
+  is_empty <- map_lgl(new, identical, "")
+  new[is_empty] <- list(NULL)
+  url[names(new)] <- new
+
+  if (string_url) {
+    url_build(url)
+  } else {
+    url
+  }
 }
 
 is_url <- function(x) inherits(x, "httr2_url")
@@ -85,9 +155,19 @@ print.httr2_url <- function(x, ...) {
   invisible(x)
 }
 
+#' Build a string from a URL object
+#'
+#' This is the converse of [url_parse], taking a parsed URL object and
+#' turning it back into a string.
+#'
+#' @param url An URL object created by [url_parse].
+#' @family URL manipulation
 #' @export
-#' @rdname url_parse
 url_build <- function(url) {
+  if (!is_url(url)) {
+    stop_input_type(url, "a parsed URL")
+  }
+
   if (!is.null(url$query)) {
     query <- query_build(url$query)
   } else {
@@ -113,7 +193,7 @@ url_build <- function(url) {
     authority <- NULL
   }
 
-  if (!is.null(url$path) && !startsWith(url$path, "/")) {
+  if (is.null(url$path) || !startsWith(url$path, "/")) {
     url$path <- paste0("/", url$path)
   }
 

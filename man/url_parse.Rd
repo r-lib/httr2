@@ -2,39 +2,32 @@
 % Please edit documentation in R/url.R
 \name{url_parse}
 \alias{url_parse}
-\alias{url_build}
-\title{Parse and build URLs}
+\title{Parse a URL}
 \usage{
 url_parse(url)
-
-url_build(url)
 }
 \arguments{
-\item{url}{For \code{url_parse()} a string to parse into a URL;
-for \code{url_build()} a URL to turn back into a string.}
+\item{url}{A string to parse.}
 }
 \value{
-\itemize{
-\item \code{url_build()} returns a string.
-\item \code{url_parse()} returns a URL: a S3 list with class \code{httr2_url}
-and elements \code{scheme}, \code{hostname}, \code{port}, \code{path}, \code{fragment}, \code{query},
-\code{username}, \code{password}.
-}
+A URL, i.e. a S3 object with class \code{httr2_url} and elements
+\code{scheme}, \code{hostname}, \code{username}, \code{password}, \code{port}, \code{path}, \code{query}, and
+\code{fragment}.
 }
 \description{
-\code{url_parse()} parses a URL into its component pieces; \code{url_build()} does
-the reverse, converting a list of pieces into a string URL. See \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986}
-for the details of the parsing algorithm.
+\code{url_parse()} parses a URL into its component pieces, powered by
+\code{\link[curl:curl_parse_url]{curl::curl_parse_url()}}. See \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986} for the details of the
+parsing algorithm.
 }
 \examples{
 url_parse("http://google.com/")
 url_parse("http://google.com:80/")
 url_parse("http://google.com:80/?a=1&b=2")
 url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
-
-url <- url_parse("http://google.com/")
-url$port <- 80
-url$hostname <- "example.com"
-url$query <- list(a = 1, b = 2, c = 3)
-url_build(url)
 }
+\seealso{
+Other URL manipulation: 
+\code{\link{url_build}()},
+\code{\link{url_modify}()}
+}
+\concept{URL manipulation}
