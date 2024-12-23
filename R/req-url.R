@@ -60,12 +60,17 @@ req_url <- function(req, url) {
 #'   If none of these options work for your needs, you can instead supply a
 #'   function that takes a character vector of argument values and returns a
 #'   a single string.
+#' @param .space How should spaces in query params be escaped? The default,
+#'   "percent", uses standard percent encoding (i.e. `%20%`), but you can opt-in
+#'   to "form" encoding, which uses `+` instead.
 req_url_query <- function(.req,
                           ...,
-                          .multi = c("error", "comma", "pipe", "explode")) {
+                          .multi = c("error", "comma", "pipe", "explode"),
+                          .space = c("percent", "form")
+                          ) {
   check_request(.req)
 
-  dots <- multi_dots(..., .multi = .multi)
+  dots <- multi_dots(..., .multi = .multi, .space = .space)
 
   url <- url_parse(.req$url)
   url$query <- modify_list(url$query, !!!dots)
