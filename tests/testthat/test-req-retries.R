@@ -99,7 +99,7 @@ test_that("is_number_or_na implemented correctly", {
 test_that("triggered after specified requests", {
   req <- request_test("/status/:status", status = 429) %>%
     req_retry(
-      after = \(resp) 0,
+      after = function(resp) 0,
       max_tries = 10,
       failure_threshold = 1
     )
