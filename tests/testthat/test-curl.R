@@ -138,6 +138,12 @@ test_that("can translate data", {
   })
 })
 
+test_that("can translate ocokies", {
+  expect_snapshot({
+    curl_translate("curl 'http://test' -H 'Cookie: x=1; y=2;z=3'")
+  })
+})
+
 test_that("can evaluate simple calls", {
   request_test() # hack to start server
 
