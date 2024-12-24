@@ -45,7 +45,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/url_parse.html">url_parse()</a></code> now uses <code><a href="https://rdrr.io/pkg/curl/man/curl_parse_url.html" class="external-link">curl::curl_parse_url()</a></code> which is much faster and more correct (<a href="https://github.com/r-lib/httr2/issues/577" class="external-link">#577</a>).</p></li>
+<ul><li><p>New <code><a href="../reference/req_url.html">req_url_relative()</a></code> for constructing relative urls (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</p></li>
+<li><p><code><a href="../reference/url_parse.html">url_parse()</a></code> gains <code>base_url</code> argument so you can also use it to parse relative URLs (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</p></li>
+<li><p><code><a href="../reference/url_parse.html">url_parse()</a></code> now uses <code><a href="https://rdrr.io/pkg/curl/man/curl_parse_url.html" class="external-link">curl::curl_parse_url()</a></code> which is much faster and more correct (<a href="https://github.com/r-lib/httr2/issues/577" class="external-link">#577</a>).</p></li>
 <li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> now defaults to <code>max_tries = 2</code> with a message. Set to <code>max_tries = 1</code> to disable retries.</p></li>
 <li><p>Errors thrown during the parsing of an OAuth response now have a dedicated <code>httr2_oauth_parse</code> error class that includes the original response object (<a href="https://github.com/atheriel" class="external-link">@atheriel</a>, <a href="https://github.com/r-lib/httr2/issues/596" class="external-link">#596</a>).</p></li>
 </ul></div>
