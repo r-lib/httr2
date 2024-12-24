@@ -96,6 +96,12 @@ test_that("can opt-out of query escaping", {
   expect_equal(req_url_query(req, a = I(","))$url, "http://example.com/?a=,")
 })
 
+test_that("can construct relative urls", {
+  req <- request("http://example.com/a/b/c.html")
+  expect_equal(req_url_relative(req, ".")$url, "http://example.com/a/b/")
+  expect_equal(req_url_relative(req, "..")$url, "http://example.com/a/")
+  expect_equal(req_url_relative(req, "/d/e/f")$url, "http://example.com/d/e/f")
+})
 # explode -----------------------------------------------------------------
 
 test_that("explode handles expected inputs", {

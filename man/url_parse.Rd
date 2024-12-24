@@ -4,10 +4,12 @@
 \alias{url_parse}
 \title{Parse a URL into its component pieces}
 \usage{
-url_parse(url)
+url_parse(url, base_url = NULL)
 }
 \arguments{
 \item{url}{A string containing the URL to parse.}
+
+\item{base_url}{Use this as a parent, if \code{url} is a relative URL.}
 }
 \value{
 An S3 object of class \code{httr2_url} with the following components:
@@ -24,6 +26,10 @@ url_parse("http://google.com/")
 url_parse("http://google.com:80/")
 url_parse("http://google.com:80/?a=1&b=2")
 url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
+
+# You can parse a relative URL if you also provide a base url
+url_parse("foo", "http://google.com/bar/")
+url_parse("..", "http://google.com/bar/")
 }
 \seealso{
 Other URL manipulation: 

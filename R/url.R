@@ -5,6 +5,7 @@
 #' detailed in `r rfc(3986)`.
 #'
 #' @param url A string containing the URL to parse.
+#' @param base_url Use this as a parent, if `url` is a relative URL.
 #' @returns An S3 object of class `httr2_url` with the following components:
 #'   `scheme`, `hostname`, `username`, `password`, `port`, `path`, `query`, and
 #'   `fragment`.
@@ -15,10 +16,15 @@
 #' url_parse("http://google.com:80/")
 #' url_parse("http://google.com:80/?a=1&b=2")
 #' url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
-url_parse <- function(url) {
+#'
+#' # You can parse a relative URL if you also provide a base url
+#' url_parse("foo", "http://google.com/bar/")
+#' url_parse("..", "http://google.com/bar/")
+url_parse <- function(url, base_url = NULL) {
   check_string(url)
+  check_string(base_url, allow_null = TRUE)
 
-  curl <- curl::curl_parse_url(url)
+  curl <- curl::curl_parse_url(url, baseurl = base_url)
 
   parsed <- list(
     scheme = curl$scheme,
