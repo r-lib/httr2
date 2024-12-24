@@ -42,10 +42,13 @@ url_parse <- function(url, base_url = NULL) {
 
 #' Modify a URL
 #'
-#' Modify components of a URL. The default value of each argument, `NULL`,
-#' means leave the component as is. If you want to remove a component,
-#' set it to `""`. Note that setting `scheme` or `hostname` to `""` will
-#' create a relative URL.
+#' @description
+#' Use `url_modify()` to modify the entire URL, or `url_modify_query()` to
+#' modify just the query parameters. Components that aren't specified in the
+#' function call will be left as is; components set to `NULL` will be removed,
+#' and all other values will be updated.
+#'
+#' Note that removing `scheme` or `hostname` will create a relative URL.
 #'
 #' @param url A string or [parsed URL](url_parse).
 #' @param scheme The scheme, typically either `http` or `https`.
@@ -68,14 +71,14 @@ url_parse <- function(url, base_url = NULL) {
 #' url_modify("http://hadley.nz?a=1", query = "b=2")
 #' url_modify("http://hadley.nz?a=1", query = list(c = 3))
 url_modify <- function(url,
-                       scheme = NULL,
-                       hostname = NULL,
-                       username = NULL,
-                       password = NULL,
-                       port = NULL,
-                       path = NULL,
-                       query = NULL,
-                       fragment = NULL) {
+                       scheme = unchanged,
+                       hostname = unchanged,
+                       username = unchanged,
+                       password = unchanged,
+                       port = unchanged,
+                       path = unchanged,
+                       query = unchanged,
+                       fragment = unchanged) {
 
   if (!is_string(url) && !is_url(url)) {
     stop_input_type(url, "a string or parsed URL")
@@ -85,25 +88,25 @@ url_modify <- function(url,
     url <- url_parse(url)
   }
 
-  check_string(scheme, allow_null = TRUE)
-  check_string(hostname, allow_null = TRUE)
-  check_string(username, allow_null = TRUE)
-  check_string(password, allow_null = TRUE)
-  check_number_whole(port, min = 1, allow_null = TRUE)
-  check_string(path, allow_null = TRUE)
-  check_string(fragment, allow_null = TRUE)
+  if (!is_unchanged(scheme)) check_string(scheme, allow_null = TRUE)
+  if (!is_unchanged(hostname)) check_string(hostname, allow_null = TRUE)
+  if (!is_unchanged(username)) check_string(username, allow_null = TRUE)
+  if (!is_unchanged(password)) check_string(password, allow_null = TRUE)
+  if (!is_unchanged(port)) check_number_whole(port, min = 1, allow_null = TRUE)
+  if (!is_unchanged(path)) check_string(path, allow_null = TRUE)
+  if (!is_unchanged(fragment)) check_string(fragment, allow_null = TRUE)
 
   if (is_string(query)) {
-    query <- query_parse(query)
-  } else if (is.list(query) && (is_named(query) || length(query) == 0)) {
+    query <- url_query_parse(query)
+  } else if (is_named_list(query)) {
     for (nm in names(query)) {
       check_query_param(query[[nm]], paste0("query$", nm))
     }
-  } else if (!is.null(query)) {
+  } else if (!is.null(query) && !is_unchanged(query)) {
     stop_input_type(query, "a character vector, named list, or NULL")
   }
 
-  new <- compact(list(
+  new <- list(
     scheme = scheme,
     hostname = hostname,
     username = username,
@@ -112,10 +115,54 @@ url_modify <- function(url,
     path = path,
     query = query,
     fragment = fragment
-  ))
-  is_empty <- map_lgl(new, identical, "")
-  new[is_empty] <- list(NULL)
+  )
+  new <- new[!map_lgl(new, is_unchanged)]
   url[names(new)] <- new
+
+  if (string_url) {
+    url_build(url)
+  } else {
+    url
+  }
+}
+
+unchanged <- quote(unchanged)
+is_unchanged <- function(x) identical(x, unchanged)
+
+#' @export
+#' @rdname url_modify
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
+#'   Name-value pairs that define query parameters. Each value must be either
+#'   an atomic vector or `NULL` (which removes the corresponding parameters).
+#'   If you want to opt out of escaping, wrap strings in `I()`.
+#' @param .multi Controls what happens when a value is a vector:
+#'
+#'   * `"error"`, the default, throws an error.
+#'   * `"comma"`, separates values with a `,`, e.g. `?x=1,2`.
+#'   * `"pipe"`, separates values with a `|`, e.g. `?x=1|2`.
+#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`
+#'
+#'   If none of these options work for your needs, you can instead supply a
+#'   function that takes a character vector of argument values and returns a
+#'   a single string.
+url_modify_query <- function(
+    url,
+    ...,
+    .multi = c("error", "comma", "pipe", "explode")
+) {
+
+  if (!is_string(url) && !is_url(url)) {
+    stop_input_type(url, "a string or parsed URL")
+  }
+  string_url <- is_string(url)
+  if (string_url) {
+    url <- url_parse(url)
+  }
+
+  new_query <- multi_dots(..., .multi = .multi)
+  if (length(new_query) > 0) {
+    url$query <- modify_list(url$query, !!!new_query)
+  }
 
   if (string_url) {
     url_build(url)
@@ -175,7 +222,7 @@ url_build <- function(url) {
   }
 
   if (!is.null(url$query)) {
-    query <- query_build(url$query)
+    query <- url_query_build(url$query)
   } else {
     query <- NULL
   }
@@ -213,9 +260,23 @@ url_build <- function(url) {
   )
 }
 
-query_parse <- function(x) {
-  x <- gsub("^\\?", "", x) # strip leading ?, if present
-  params <- parse_name_equals_value(parse_delim(x, "&"))
+#' Parse query parameters and/or build a string
+#'
+#' `url_query_parse()` parses a query string into a named list;
+#' `url_query_build()` builds a query string from a named list.
+#'
+#' @param query A string, when parsing; a named list when building.
+#' @export
+#' @examples
+#' str(url_query_parse("a=1&b=2"))
+#'
+#' url_query_build(list(x = 1, y = "z"))
+#' url_query_build(list(x = 1, y = 1:2), .multi = "explode")
+url_query_parse <- function(query) {
+  check_string(query)
+
+  query <- gsub("^\\?", "", query) # strip leading ?, if present
+  params <- parse_name_equals_value(parse_delim(query, "&"))
 
   if (length(params) == 0) {
     return(NULL)
@@ -226,12 +287,20 @@ query_parse <- function(x) {
   out
 }
 
-query_build <- function(x, error_call = caller_env()) {
-  elements_build(x, "Query", "&", error_call = error_call)
+#' @export
+#' @rdname url_query_parse
+#' @inheritParams url_modify_query
+url_query_build <- function(query, .multi = c("error", "comma", "pipe", "explode")) {
+  if (!is_named_list(query)) {
+    stop_input_type(query, "a named list")
+  }
+
+  query <- multi_dots(!!!query, .multi = .multi, error_arg = "query")
+  elements_build(query, "Query", "&")
 }
 
 elements_build <- function(x, name, collapse, error_call = caller_env()) {
-  if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
+  if (!is_named_list(x)) {
     cli::cli_abort("{name} must be a named list.", call = error_call)
   }
 

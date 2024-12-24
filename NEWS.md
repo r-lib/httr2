@@ -1,6 +1,7 @@
 # httr2 (development version)
 
-* New `url_modify()` makes it easier to modify an existing url (#464).
+* New `url_query_parse()` and `url_query_build()` allow you to parse and build a query string (#425).
+* New `url_modify()` and `url_modify_query()` make it easier to modify an existing url (#464).
 * New `req_url_relative()` for constructing relative urls (#449).
 * `url_parse()` gains `base_url` argument so you can also use it to parse relative URLs (#449).
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).

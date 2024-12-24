@@ -32,6 +32,8 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
     )
   }
 
+  
+
   out <- .x[!names(.x) %in% names(dots)]
   out <- c(out, compact(dots))
 
@@ -323,4 +325,8 @@ slice <- function(vector, start = 1, end = length(vector) + 1) {
   } else {
     vector[start:(end - 1)]
   }
+}
+
+is_named_list <- function(x) {
+  is_list(x) && (is_named(x) || length(x) == 0)
 }

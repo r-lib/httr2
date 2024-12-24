@@ -31,8 +31,7 @@ If you want to opt out of escaping, wrap strings in \code{I()}.
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}
 
-\item{.multi}{Controls what happens when an element of \code{...} is a vector
-containing multiple values:
+\item{.multi}{Controls what happens when a value is a vector:
 \itemize{
 \item \code{"error"}, the default, throws an error.
 \item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.

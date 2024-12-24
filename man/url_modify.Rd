@@ -2,19 +2,22 @@
 % Please edit documentation in R/url.R
 \name{url_modify}
 \alias{url_modify}
+\alias{url_modify_query}
 \title{Modify a URL}
 \usage{
 url_modify(
   url,
-  scheme = NULL,
-  hostname = NULL,
-  username = NULL,
-  password = NULL,
-  port = NULL,
-  path = NULL,
-  query = NULL,
-  fragment = NULL
+  scheme = unchanged,
+  hostname = unchanged,
+  username = unchanged,
+  password = unchanged,
+  port = unchanged,
+  path = unchanged,
+  query = unchanged,
+  fragment = unchanged
 )
+
+url_modify_query(url, ..., .multi = c("error", "comma", "pipe", "explode"))
 }
 \arguments{
 \item{url}{A string or \href{url_parse}{parsed URL}.}
@@ -34,15 +37,34 @@ will be automatically added if omitted.}
 \item{query}{Either a query string or a named list of query components.}
 
 \item{fragment}{The fragment, e.g., \verb{#section-1}.}
+
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
+Name-value pairs that define query parameters. Each value must be either
+an atomic vector or \code{NULL} (which removes the corresponding parameters).
+If you want to opt out of escaping, wrap strings in \code{I()}.}
+
+\item{.multi}{Controls what happens when a value is a vector:
+\itemize{
+\item \code{"error"}, the default, throws an error.
+\item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.
+\item \code{"pipe"}, separates values with a \code{|}, e.g. \code{?x=1|2}.
+\item \code{"explode"}, turns each element into its own parameter, e.g. \code{?x=1&x=2}
+}
+
+If none of these options work for your needs, you can instead supply a
+function that takes a character vector of argument values and returns a
+a single string.}
 }
 \value{
 An object of the same type as \code{url}.
 }
 \description{
-Modify components of a URL. The default value of each argument, \code{NULL},
-means leave the component as is. If you want to remove a component,
-set it to \code{""}. Note that setting \code{scheme} or \code{hostname} to \code{""} will
-create a relative URL.
+Use \code{url_modify()} to modify the entire URL, or \code{url_modify_query()} to
+modify just the query parameters. Components that aren't specified in the
+function call will be left as is; components set to \code{NULL} will be removed,
+and all other values will be updated.
+
+Note that removing \code{scheme} or \code{hostname} will create a relative URL.
 }
 \examples{
 url_modify("http://hadley.nz", path = "about")

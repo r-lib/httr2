@@ -365,7 +365,7 @@ oauth_flow_auth_code_listen <- function(redirect_uri = "http://localhost:1410") 
 # https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.1
 # Spaces are first replaced by +
 parse_form_urlencoded <- function(query) {
-  query <- query_parse(query)
+  query <- url_query_parse(query)
   query[] <- gsub("+", " ", query, fixed = TRUE)
   query
 }

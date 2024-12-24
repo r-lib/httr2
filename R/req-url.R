@@ -63,27 +63,13 @@ req_url_relative <- function(req, url) {
 
 #' @export
 #' @rdname req_url
-#' @param .multi Controls what happens when an element of `...` is a vector
-#'   containing multiple values:
-#'
-#'   * `"error"`, the default, throws an error.
-#'   * `"comma"`, separates values with a `,`, e.g. `?x=1,2`.
-#'   * `"pipe"`, separates values with a `|`, e.g. `?x=1|2`.
-#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`
-#'
-#'   If none of these options work for your needs, you can instead supply a
-#'   function that takes a character vector of argument values and returns a
-#'   a single string.
+#' @inheritParams url_modify_query
 req_url_query <- function(.req,
                           ...,
                           .multi = c("error", "comma", "pipe", "explode")) {
   check_request(.req)
-
-  dots <- multi_dots(..., .multi = .multi)
-
-  url <- url_parse(.req$url)
-  url$query <- modify_list(url$query, !!!dots)
-  req_url(.req, url_build(url))
+  url <- url_modify_query(.req$url, ..., .multi = .multi)
+  req_url(.req, url)
 }
 
 #' @export
