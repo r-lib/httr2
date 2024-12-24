@@ -10,7 +10,7 @@ url_build(url)
 \item{url}{An URL object created by \link{url_parse}.}
 }
 \description{
-This is the converse of \link{url_parse}, taking a parsed URL object and
+This is the inverse of \code{\link[=url_parse]{url_parse()}}, taking a parsed URL object and
 turning it back into a string.
 }
 \seealso{

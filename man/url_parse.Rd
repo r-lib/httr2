@@ -2,22 +2,22 @@
 % Please edit documentation in R/url.R
 \name{url_parse}
 \alias{url_parse}
-\title{Parse a URL}
+\title{Parse a URL into its component pieces}
 \usage{
 url_parse(url)
 }
 \arguments{
-\item{url}{A string to parse.}
+\item{url}{A string containing the URL to parse.}
 }
 \value{
-A URL, i.e. a S3 object with class \code{httr2_url} and elements
+An S3 object of class \code{httr2_url} with the following components:
 \code{scheme}, \code{hostname}, \code{username}, \code{password}, \code{port}, \code{path}, \code{query}, and
 \code{fragment}.
 }
 \description{
-\code{url_parse()} parses a URL into its component pieces, powered by
-\code{\link[curl:curl_parse_url]{curl::curl_parse_url()}}. See \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986} for the details of the
-parsing algorithm.
+\code{url_parse()} parses a URL into its component parts, powered by
+\code{\link[curl:curl_parse_url]{curl::curl_parse_url()}}. The parsing algorithm follows the specifications
+detailed in \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986}.
 }
 \examples{
 url_parse("http://google.com/")

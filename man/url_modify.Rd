@@ -2,7 +2,7 @@
 % Please edit documentation in R/url.R
 \name{url_modify}
 \alias{url_modify}
-\title{Modify a url}
+\title{Modify a URL}
 \usage{
 url_modify(
   url,
@@ -21,28 +21,28 @@ url_modify(
 
 \item{scheme}{The scheme, typically either \code{http} or \code{https}.}
 
-\item{hostname}{The hostname, e.g. \code{www.google.com} or \code{posit.co}.}
+\item{hostname}{The hostname, e.g., \code{www.google.com} or \code{posit.co}.}
 
 \item{username, password}{Username and password to embed in the URL.
 Not generally recommended but needed for some legacy applications.}
 
 \item{port}{An integer port number.}
 
-\item{path}{The path, e.g. \verb{/search}. Paths must start with \code{/}, so this
-will be automatically added if ommitted.}
+\item{path}{The path, e.g., \verb{/search}. Paths must start with \code{/}, so this
+will be automatically added if omitted.}
 
 \item{query}{Either a query string or a named list of query components.}
 
-\item{fragment}{The fragment, e.g. \verb{#section-1}.}
+\item{fragment}{The fragment, e.g., \verb{#section-1}.}
 }
 \value{
-An object the same type as `url``.
+An object of the same type as \code{url}.
 }
 \description{
 Modify components of a URL. The default value of each argument, \code{NULL},
 means leave the component as is. If you want to remove a component,
 set it to \code{""}. Note that setting \code{scheme} or \code{hostname} to \code{""} will
-create a relative url.
+create a relative URL.
 }
 \examples{
 url_modify("http://hadley.nz", path = "about")

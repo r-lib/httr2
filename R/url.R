@@ -1,11 +1,11 @@
-#' Parse a URL
+#' Parse a URL into its component pieces
 #'
-#' `url_parse()` parses a URL into its component pieces, powered by
-#' [curl::curl_parse_url()]. See `r rfc(3986)` for the details of the
-#' parsing algorithm.
+#' `url_parse()` parses a URL into its component parts, powered by
+#' [curl::curl_parse_url()]. The parsing algorithm follows the specifications
+#' detailed in `r rfc(3986)`.
 #'
-#' @param url A string to parse.
-#' @returns A URL, i.e. a S3 object with class `httr2_url` and elements
+#' @param url A string containing the URL to parse.
+#' @returns An S3 object of class `httr2_url` with the following components:
 #'   `scheme`, `hostname`, `username`, `password`, `port`, `path`, `query`, and
 #'   `fragment`.
 #' @export
@@ -34,24 +34,24 @@ url_parse <- function(url) {
   parsed
 }
 
-#' Modify a url
+#' Modify a URL
 #'
 #' Modify components of a URL. The default value of each argument, `NULL`,
 #' means leave the component as is. If you want to remove a component,
 #' set it to `""`. Note that setting `scheme` or `hostname` to `""` will
-#' create a relative url.
+#' create a relative URL.
 #'
 #' @param url A string or [parsed URL](url_parse).
 #' @param scheme The scheme, typically either `http` or `https`.
-#' @param hostname The hostname, e.g. `www.google.com` or `posit.co`.
+#' @param hostname The hostname, e.g., `www.google.com` or `posit.co`.
 #' @param username,password Username and password to embed in the URL.
 #'   Not generally recommended but needed for some legacy applications.
 #' @param port An integer port number.
-#' @param path The path, e.g. `/search`. Paths must start with `/`, so this
-#'   will be automatically added if ommitted.
+#' @param path The path, e.g., `/search`. Paths must start with `/`, so this
+#'   will be automatically added if omitted.
 #' @param query Either a query string or a named list of query components.
-#' @param fragment The fragment, e.g. `#section-1`.
-#' @return An object the same type as `url``.
+#' @param fragment The fragment, e.g., `#section-1`.
+#' @return An object of the same type as `url`.
 #' @export
 #' @family URL manipulation
 #' @examples
@@ -157,7 +157,7 @@ print.httr2_url <- function(x, ...) {
 
 #' Build a string from a URL object
 #'
-#' This is the converse of [url_parse], taking a parsed URL object and
+#' This is the inverse of [url_parse()], taking a parsed URL object and
 #' turning it back into a string.
 #'
 #' @param url An URL object created by [url_parse].
