@@ -143,6 +143,8 @@ test_that("can translate data", {
 })
 
 test_that("content type stays in header if no data", {
+  skip_if(getRversion() < "4.1")
+
   expect_snapshot(
     curl_translate("curl http://example.com -H Content-Type:text/plain")
   )
