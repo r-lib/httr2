@@ -51,7 +51,7 @@ test_that("can handle line breaks", {
 test_that("headers are parsed", {
   expect_equal(
     curl_normalize("curl http://x.com -H 'A: 1'")$headers,
-    new_headers(list(a = "1"))
+    new_headers(list(A = "1"))
   )
   expect_equal(
     curl_normalize("curl http://x.com -H 'B:'")$headers,
