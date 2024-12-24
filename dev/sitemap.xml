@@ -79,6 +79,8 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/secrets.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/signal_total_pages.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/throttle_status.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/url_build.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/url_modify.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/url_parse.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/with_mocked_responses.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/with_verbosity.html</loc></url>
