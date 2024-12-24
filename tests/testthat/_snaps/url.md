@@ -24,6 +24,14 @@
       Error in `url_build()`:
       ! Cannot set url `password` without `username`.
 
+# url_build validates its input
+
+    Code
+      url_build("abc")
+    Condition
+      Error in `url_build()`:
+      ! `url` must be a parsed URL, not the string "abc".
+
 # url_modify checks its inputs
 
     Code

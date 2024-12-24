@@ -32,6 +32,10 @@ test_that("password also requires username", {
   expect_snapshot(url_build(url), error = TRUE)
 })
 
+test_that("url_build validates its input", {
+  expect_snapshot(url_build("abc"), error = TRUE)
+})
+
 # modify url -------------------------------------------------------------
 
 test_that("url_modify checks its inputs", {
@@ -57,6 +61,15 @@ test_that("no arguments is idempotent", {
   expect_equal(url_modify(url), url)
 })
 
+test_that("can accept query as a string or list", {
+  url <- "http://test/"
+
+  expect_equal(url_modify(url, query = "a=1&b=2"), "http://test/?a=1&b=2")
+  expect_equal(url_modify(url, query = list(a = 1, b = 2)), "http://test/?a=1&b=2")
+
+  expect_equal(url_modify(url, query = ""), "http://test/")
+  expect_equal(url_modify(url, query = list()), "http://test/")
+})
 test_that("checks various query formats", {
   url <- "http://example.com"
 
