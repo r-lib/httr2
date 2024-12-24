@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `print.request()` now correctly escapes `{}` in headers (#586).
 * New `url_modify()` makes it easier to modify an existing url (#464).
 * New `req_url_relative()` for constructing relative urls (#449).
 * `url_parse()` gains `base_url` argument so you can also use it to parse relative URLs (#449).

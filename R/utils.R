@@ -18,7 +18,9 @@ bullets_with_header <- function(header, x) {
   }
   vals <- map_chr(x, as_simple)
 
-  cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
+  for (i in seq_along(x)) {
+    cli::cli_li("{.field {names(x)[[i]]}}: {.str {x[[i]]}}")
+  }
 }
 
 modify_list <- function(.x, ..., error_call = caller_env()) {
