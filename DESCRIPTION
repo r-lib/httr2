@@ -36,6 +36,7 @@ Suggests:
     httpuv,
     jose,
     jsonlite,
+    keyring,
     knitr,
     later (>= 1.4.0),
     paws.common,

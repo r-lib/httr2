@@ -160,6 +160,13 @@ secret_has_key <- function(key) {
 }
 
 secret_get_key <- function(envvar, call = caller_env()) {
+  if (is_installed("keyring")) {
+    key <- tryCatch(keyring::key_get(envvar), error = function(e) NULL)
+    if (!is.null(key)) {
+      return(key)
+    }
+  }
+
   key <- Sys.getenv(envvar)
 
   if (identical(key, "")) {

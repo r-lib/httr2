@@ -134,7 +134,7 @@ test_that("can translate data", {
 
   expect_snapshot({
     curl_translate("curl http://example.com --data abcdef")
-    curl_translate("curl http://example.com --data abcdef -H Content-Type:text/plain")
+    curl_translate("curl http://example.com --data abcdef -H Content-Type:text/plain") |>
   })
 })
 
