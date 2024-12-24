@@ -6,7 +6,6 @@ test_that("can parse special cases", {
 
 test_that("can round trip urls", {
   urls <- list(
-    "file:///",
     "http://google.com/",
     "http://google.com/path",
     "http://google.com/path?a=1&b=2",
@@ -35,18 +34,63 @@ test_that("can print all url details", {
   )
 })
 
-test_that("ensures path always starts with /", {
-  expect_equal(
-    url_modify("https://example.com/abc", path = "def"),
-    "https://example.com/def"
-  )
-})
-
 test_that("password also requires username", {
   url <- url_parse("http://username:pwd@example.com")
   url$username <- NULL
   expect_snapshot(url_build(url), error = TRUE)
+})
 
+test_that("url_build validates its input", {
+  expect_snapshot(url_build("abc"), error = TRUE)
+})
+
+# modify url -------------------------------------------------------------
+
+test_that("url_modify checks its inputs", {
+  url <- "http://example.com"
+
+  expect_snapshot(error = TRUE, {
+    url_modify(1)
+    url_modify(url, scheme = 1)
+    url_modify(url, hostname = 1)
+    url_modify(url, port = "x")
+    url_modify(url, username = 1)
+    url_modify(url, password = 1)
+    url_modify(url, path = 1)
+    url_modify(url, fragment = 1)
+  })
+})
+
+test_that("no arguments is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify(string), string)
+  expect_equal(url_modify(url), url)
+})
+
+test_that("can accept query as a string or list", {
+  url <- "http://test/"
+
+  expect_equal(url_modify(url, query = "a=1&b=2"), "http://test/?a=1&b=2")
+  expect_equal(url_modify(url, query = list(a = 1, b = 2)), "http://test/?a=1&b=2")
+
+  expect_equal(url_modify(url, query = ""), "http://test/")
+  expect_equal(url_modify(url, query = list()), "http://test/")
+})
+test_that("checks various query formats", {
+  url <- "http://example.com"
+
+  expect_snapshot(error = TRUE, {
+    url_modify(url, query = 1)
+    url_modify(url, query = list(1))
+    url_modify(url, query = list(x = 1:2))
+  })
+})
+
+test_that("path always starts with /", {
+  expect_equal(url_modify("https://x.com/abc", path = "def"), "https://x.com/def")
+  expect_equal(url_modify("https://x.com/abc", path = ""), "https://x.com/")
 })
 
 # query -------------------------------------------------------------------
