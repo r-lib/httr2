@@ -5,13 +5,15 @@
 \alias{url_build}
 \title{Parse and build URLs}
 \usage{
-url_parse(url)
+url_parse(url, base_url = NULL)
 
 url_build(url)
 }
 \arguments{
 \item{url}{For \code{url_parse()} a string to parse into a URL;
 for \code{url_build()} a URL to turn back into a string.}
+
+\item{base_url}{Use this as a parent, if \code{url} is a relative URL.}
 }
 \value{
 \itemize{
@@ -31,6 +33,10 @@ url_parse("http://google.com/")
 url_parse("http://google.com:80/")
 url_parse("http://google.com:80/?a=1&b=2")
 url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
+
+# You can parse a relative URL if you also provide a base url
+url_parse("foo", "http://google.com/bar/")
+url_parse("..", "http://google.com/bar/")
 
 url <- url_parse("http://google.com/")
 url$port <- 80

@@ -21,6 +21,14 @@ test_that("can round trip urls", {
   expect_equal(map(urls, ~ url_build(url_parse(.x))), urls)
 })
 
+test_that("can parse relative urls", {
+  base <- "http://example.com/a/b/c/"
+  expect_equal(url_parse("d", base)$path, "/a/b/c/d")
+  expect_equal(url_parse("..", base)$path, "/a/b/")
+
+  expect_equal(url_parse("//archive.org", base)$scheme, "http")
+})
+
 test_that("can print all url details", {
   expect_snapshot(
     url_parse("http://user:pass@example.com:80/path?a=1&b=2&c={1{2}3}#frag")
