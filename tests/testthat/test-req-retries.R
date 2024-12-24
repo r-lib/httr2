@@ -116,7 +116,7 @@ test_that("triggered after specified requests", {
     expect_error(class = "httr2_breaker")
 
   # Attempt on same realm errors without trying at all
-  req2 <- request_test("/status/:status", status = 200) |>
+  req2 <- request_test("/status/:status", status = 200) %>%
     req_retry()
   req_perform(req) %>%
     expect_no_condition(class = "httr2_perform") %>%
