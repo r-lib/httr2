@@ -104,6 +104,22 @@
         req_body_raw("abcdef", "text/plain") |> 
         req_perform()
 
+# can translate json
+
+    Code
+      curl_translate(
+        "curl http://example.com --data-raw '{\"a\": 1, \"b\": \"text\"}' -H Content-Type:application/json")
+    Output
+      request("http://example.com/") |> 
+        req_body_json_modify(a = 1L, b = "text") |> 
+        req_perform()
+    Code
+      curl_translate("curl http://example.com --json '{\"a\": 1, \"b\": \"text\"}'")
+    Output
+      request("http://example.com/") |> 
+        req_body_json_modify(a = 1L, b = "text") |> 
+        req_perform()
+
 # can read from clipboard
 
     Code
@@ -134,6 +150,6 @@
     Output
       request("http://example.com/") |> 
         req_method("PATCH") |> 
-        req_body_raw('{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}}', "application/json") |> 
+        req_body_json_modify(data = list(x = 1L, y = "a", nested = list(z = list(1L, 2L, 3L)))) |> 
         req_perform()
 

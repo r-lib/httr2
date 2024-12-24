@@ -138,6 +138,13 @@ test_that("can translate data", {
   })
 })
 
+test_that("can translate json", {
+  expect_snapshot({
+    curl_translate(r"--{curl http://example.com --data-raw '{"a": 1, "b": "text"}' -H Content-Type:application/json}--")
+    curl_translate(r"--{curl http://example.com --json '{"a": 1, "b": "text"}'}--")
+  })
+})
+
 test_that("can evaluate simple calls", {
   request_test() # hack to start server
 
