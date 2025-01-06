@@ -21,7 +21,7 @@ test_that("can determine if a stream is complete (blocking)", {
   withr::defer(close(resp))
 
   expect_false(resp_stream_is_complete(resp))
-  resp_stream_raw(resp, kb = 2)
+  resp_stream_raw(resp, kb = 3)
   expect_true(resp_stream_is_complete(resp))
 })
 
@@ -30,7 +30,7 @@ test_that("can determine if a stream is complete (non-blocking)", {
   withr::defer(close(resp))
 
   expect_false(resp_stream_is_complete(resp))
-  resp_stream_raw(resp, kb = 2)
+  resp_stream_raw(resp, kb = 3)
   expect_true(resp_stream_is_complete(resp))
 })
 
