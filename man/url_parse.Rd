@@ -2,29 +2,24 @@
 % Please edit documentation in R/url.R
 \name{url_parse}
 \alias{url_parse}
-\alias{url_build}
-\title{Parse and build URLs}
+\title{Parse a URL into its component pieces}
 \usage{
-url_parse(url)
-
-url_build(url)
+url_parse(url, base_url = NULL)
 }
 \arguments{
-\item{url}{For \code{url_parse()} a string to parse into a URL;
-for \code{url_build()} a URL to turn back into a string.}
+\item{url}{A string containing the URL to parse.}
+
+\item{base_url}{Use this as a parent, if \code{url} is a relative URL.}
 }
 \value{
-\itemize{
-\item \code{url_build()} returns a string.
-\item \code{url_parse()} returns a URL: a S3 list with class \code{httr2_url}
-and elements \code{scheme}, \code{hostname}, \code{port}, \code{path}, \code{fragment}, \code{query},
-\code{username}, \code{password}.
-}
+An S3 object of class \code{httr2_url} with the following components:
+\code{scheme}, \code{hostname}, \code{username}, \code{password}, \code{port}, \code{path}, \code{query}, and
+\code{fragment}.
 }
 \description{
-\code{url_parse()} parses a URL into its component pieces; \code{url_build()} does
-the reverse, converting a list of pieces into a string URL. See \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986}
-for the details of the parsing algorithm.
+\code{url_parse()} parses a URL into its component parts, powered by
+\code{\link[curl:curl_parse_url]{curl::curl_parse_url()}}. The parsing algorithm follows the specifications
+detailed in \href{https://datatracker.ietf.org/doc/html/rfc3986}{RFC 3986}.
 }
 \examples{
 url_parse("http://google.com/")
@@ -32,9 +27,13 @@ url_parse("http://google.com:80/")
 url_parse("http://google.com:80/?a=1&b=2")
 url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
 
-url <- url_parse("http://google.com/")
-url$port <- 80
-url$hostname <- "example.com"
-url$query <- list(a = 1, b = 2, c = 3)
-url_build(url)
+# You can parse a relative URL if you also provide a base url
+url_parse("foo", "http://google.com/bar/")
+url_parse("..", "http://google.com/bar/")
 }
+\seealso{
+Other URL manipulation: 
+\code{\link{url_build}()},
+\code{\link{url_modify}()}
+}
+\concept{URL manipulation}

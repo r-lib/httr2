@@ -58,3 +58,12 @@ test_that("can extract specified link url", {
   expect_equal(resp_link_url(resp, "first"), NULL)
   expect_equal(resp_link_url(response(), "first"), NULL)
 })
+
+test_that("can extract from multiple link headers", {
+  resp <- response(headers = c(
+    'Link: <https://example.com/1>; rel="next"',
+    'Link: <https://example.com/2>; rel="last"'
+  ))
+  expect_equal(resp_link_url(resp, "next"), "https://example.com/1")
+  expect_equal(resp_link_url(resp, "last"), "https://example.com/2")
+})
