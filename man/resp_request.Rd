@@ -14,7 +14,7 @@ To make debugging easier, httr2 includes the request that was used to
 generate every response. You can use this function to access it.
 }
 \examples{
-req <- request_test()
+req <- request(example_url())
 resp <- req_perform(req)
 resp_request(resp)
 }
