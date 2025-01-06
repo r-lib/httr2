@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_url_query()` gains the ability to control how spaces are encoded (#432).
 * New `resp_request()` aids debugging by returning the request associated with a response (#604).
 * `print.request()` now correctly escapes `{}` in headers (#586).
 * New `req_headers_redacted()` provides a user-friendlier way to set redacted headers (#561).

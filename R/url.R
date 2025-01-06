@@ -249,6 +249,7 @@ elements_build <- function(x, name, collapse, error_call = caller_env()) {
 format_query_param <- function(x,
                                name,
                                multi = FALSE,
+                               form = FALSE,
                                error_call = caller_env()) {
   check_query_param(x, name, multi = multi, error_call = error_call)
 
@@ -256,7 +257,11 @@ format_query_param <- function(x,
     unclass(x)
   } else {
     x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
-    curl::curl_escape(x)
+    x <- curl::curl_escape(x)
+    if (form) {
+      x <- gsub("%20", "+", x, fixed = TRUE)
+    }
+    x
   }
 }
 check_query_param <- function(x, name, multi = FALSE, error_call = caller_env()) {
