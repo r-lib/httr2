@@ -65,8 +65,14 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
 
   if (!identical(data$data, "")) {
     type <- type %||% "application/x-www-form-urlencoded"
-    body <- data$data
-    steps <- add_curl_step(steps, "req_body_raw", main_args = c(body, type))
+    if (type == "application/json" && idempotent_json(data$data)) {
+      json <- jsonlite::parse_json(data$data)
+      args <- list(data = I(deparse1(json)))
+      steps <- add_curl_step(steps, "req_body_json", dots = args)
+    } else {
+      body <- data$data
+      steps <- add_curl_step(steps, "req_body_raw", main_args = c(body, type))
+    }
   }
 
   steps <- add_curl_step(steps, "req_auth_basic", main_args = unname(data$auth))
@@ -148,6 +154,11 @@ curl_normalize <- function(cmd, error_call = caller_env()) {
     method <- NULL
   }
 
+  if (has_name(args, "--json")) {
+    args <- c(args, list(`--data-raw` = args[["--json"]]))
+    headers[["Content-Type"]] <- "application/json"
+  }
+
   # https://curl.se/docs/manpage.html#-d
   # --data-ascii, --data
   #   * if first element is @, treat as path to read from, stripping CRLF
@@ -208,6 +219,7 @@ curl_opts <- "Usage: curl [<url>] [-H <header> ...] [-d <data> ...] [options] [<
       --data-ascii <data>      HTTP POST ASCII data
       --data-binary <data>     HTTP POST binary data
       --data-urlencode <data>  HTTP POST data url encoded
+      --json <data>            HTTP POST JSON
   -G, --get                    Put the post data in the URL and use GET
   -I, --head                   Show document info only
   -H, --header <header>        Pass custom header(s) to server
@@ -264,11 +276,9 @@ quote_name <- function(x) {
 
 add_curl_step <- function(steps,
                           f,
-                          ...,
                           main_args = NULL,
                           dots = NULL,
                           keep_if_empty = FALSE) {
-  check_dots_empty0(...)
   args <- c(main_args, dots)
 
   if (is_empty(args) && !keep_if_empty) {
@@ -276,7 +286,7 @@ add_curl_step <- function(steps,
   }
 
   names <- quote_name(names2(args))
-  string <- vapply(args, is.character, logical(1L))
+  string <- map_lgl(args, function(x) is.character(x) && !inherits(x, "AsIs"))
   values <- unlist(args)
   values <- ifelse(string, encode_string2(values), values)
 
@@ -317,4 +327,10 @@ encode_string2 <- function(x) {
 
   names(out) <- names(x)
   out
+}
+
+idempotent_json <- function(old) {
+  args <- formals(req_body_json)[c("auto_unbox", "null", "digits")]
+  new <- exec(jsonlite::toJSON, jsonlite::parse_json(old), !!!args)
+  jsonlite::minify(old) == jsonlite::minify(new)
 }
