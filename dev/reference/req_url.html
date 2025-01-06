@@ -6,14 +6,18 @@ req_url_query() modifies the components of the query
 req_url_path() modifies the path
 req_url_path_append() adds to the path
 
-"><meta property="og:description" content="
+
+Alternatively, to modify only a URL without creating a request,
+you can instead use url_modify() and friends."><meta property="og:description" content="
 
 req_url() replaces the entire url
 req_url_query() modifies the components of the query
 req_url_path() modifies the path
 req_url_path_append() adds to the path
 
-"><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+
+Alternatively, to modify only a URL without creating a request,
+you can instead use url_modify() and friends."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -64,7 +68,9 @@ req_url_path_append() adds to the path
 <li><p><code>req_url_query()</code> modifies the components of the query</p></li>
 <li><p><code>req_url_path()</code> modifies the path</p></li>
 <li><p><code>req_url_path_append()</code> adds to the path</p></li>
-</ul></div>
+</ul><p>Alternatively, to modify only a URL without creating a request,
+you can instead use <code><a href="url_modify.html">url_modify()</a></code> and friends.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
@@ -106,8 +112,7 @@ components that will be combined with <code>/</code>.</p></dd>
 
 
 <dt id="arg--multi">.multi<a class="anchor" aria-label="anchor" href="#arg--multi"></a></dt>
-<dd><p>Controls what happens when an element of <code>...</code> is a vector
-containing multiple values:</p><ul><li><p><code>"error"</code>, the default, throws an error.</p></li>
+<dd><p>Controls what happens when a value is a vector:</p><ul><li><p><code>"error"</code>, the default, throws an error.</p></li>
 <li><p><code>"comma"</code>, separates values with a <code>,</code>, e.g. <code>?x=1,2</code>.</p></li>
 <li><p><code>"pipe"</code>, separates values with a <code>|</code>, e.g. <code>?x=1|2</code>.</p></li>
 <li><p><code>"explode"</code>, turns each element into its own parameter, e.g. <code>?x=1&amp;x=2</code></p></li>
