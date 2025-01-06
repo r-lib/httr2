@@ -6,6 +6,9 @@
 #' * `req_url_path()` modifies the path
 #' * `req_url_path_append()` adds to the path
 #'
+#' Alternatively, to modify only a URL without creating a request,
+#' you can instead use [url_modify()] and friends.
+#'
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
 #' @param ... For `req_url_query()`: <[`dynamic-dots`][rlang::dyn-dots]>
@@ -56,34 +59,19 @@ req_url <- function(req, url) {
 #' @rdname req_url
 req_url_relative <- function(req, url) {
   check_request(req)
-
-  new_url <- url_parse(url, base_url = req$url)
-  req_url(req, url_build(new_url))
+  req_url(req, url_modify_relative(req$url, url))
 }
 
 #' @export
 #' @rdname req_url
-#' @param .multi Controls what happens when an element of `...` is a vector
-#'   containing multiple values:
-#'
-#'   * `"error"`, the default, throws an error.
-#'   * `"comma"`, separates values with a `,`, e.g. `?x=1,2`.
-#'   * `"pipe"`, separates values with a `|`, e.g. `?x=1|2`.
-#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`
-#'
-#'   If none of these options work for your needs, you can instead supply a
-#'   function that takes a character vector of argument values and returns a
-#'   a single string.
+#' @inheritParams url_modify_query
 req_url_query <- function(.req,
                           ...,
-                          .multi = c("error", "comma", "pipe", "explode")) {
+                          .multi = c("error", "comma", "pipe", "explode"),
+                          .space = c("percent", "form")) {
   check_request(.req)
-
-  dots <- multi_dots(..., .multi = .multi)
-
-  url <- url_parse(.req$url)
-  url$query <- modify_list(url$query, !!!dots)
-  req_url(.req, url_build(url))
+  url <- url_modify_query(.req$url, ..., .multi = .multi, .space = .space)
+  req_url(.req, url)
 }
 
 #' @export

@@ -1,16 +1,18 @@
 # httr2 (development version)
 
 * `curl_transform()` will now use `req_body_json_modify()` for JSON data (#258).
-* New `url_modify()` makes it easier to modify an existing url (#464).
+* New `url_modify()`, `url_modify_query()`, and `url_modify_relative()` make it easier to modify an existing url (#464).
+* New `url_query_parse()` and `url_query_build()` allow you to parse and build a query string (#425).
+* `req_url_query()` gains the ability to control how spaces are encoded (#432).
+* New `resp_request()` aids debugging by returning the request associated with a response (#604).
+* `print.request()` now correctly escapes `{}` in headers (#586).
+* New `req_headers_redacted()` provides a user-friendlier way to set redacted headers (#561).
+* `resp_link_url()` now works if there are multiple `Link` headers (#587).
 * New `req_url_relative()` for constructing relative urls (#449).
 * `url_parse()` gains `base_url` argument so you can also use it to parse relative URLs (#449).
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
-* `req_retry()` now defaults to `max_tries = 2` with a message.
-  Set to `max_tries = 1` to disable retries.
-
-* Errors thrown during the parsing of an OAuth response now have a dedicated
-  `httr2_oauth_parse` error class that includes the original response object
-  (@atheriel, #596).
+* `req_retry()` now defaults to `max_tries = 2` with a message. Set to `max_tries = 1` to disable retries.
+* Errors thrown during the parsing of an OAuth response now have a dedicated `httr2_oauth_parse` error class that includes the original response object (@atheriel, #596).
 
 # httr2 1.0.7
 

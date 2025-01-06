@@ -91,29 +91,98 @@ test_that("checks various query formats", {
 test_that("path always starts with /", {
   expect_equal(url_modify("https://x.com/abc", path = "def"), "https://x.com/def")
   expect_equal(url_modify("https://x.com/abc", path = ""), "https://x.com/")
+  expect_equal(url_modify("https://x.com/abc", path = NULL), "https://x.com/")
 })
+
+# relative url ------------------------------------------------------------
+
+test_that("can set relative urls", {
+  base <- "http://example.com/a/b/c/"
+  expect_equal(url_modify_relative(base, "d"), "http://example.com/a/b/c/d")
+  expect_equal(url_modify_relative(base, ".."), "http://example.com/a/b/")
+  expect_equal(url_modify_relative(base, "//archive.org"), "http://archive.org/")
+})
+
+test_that("is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify_relative(string, "."), string)
+  expect_equal(url_modify_relative(url, "."), url)
+})
+
+# modify query -------------------------------------------------------------
+
+test_that("can add, modify, and delete query components", {
+  expect_equal(
+    url_modify_query("http://test/path", new = "value"),
+    "http://test/path?new=value"
+  )
+  expect_equal(
+    url_modify_query("http://test/path", new = "one", new = "two"),
+    "http://test/path?new=one&new=two"
+  )
+  expect_equal(
+    url_modify_query("http://test/path?a=old&b=old", a = "new"),
+    "http://test/path?b=old&a=new"
+  )
+  expect_equal(
+    url_modify_query("http://test/path?remove=me&keep=this", remove = NULL),
+    "http://test/path?keep=this"
+  )
+})
+
+test_that("can control space formatting", {
+  expect_equal(
+    url_modify_query("http://test/path", new = "a b"),
+    "http://test/path?new=a%20b"
+  )
+  expect_equal(
+    url_modify_query("http://test/path", new = "a b", .space = "form"),
+    "http://test/path?new=a+b"
+  )
+})
+
+test_that("is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify_query(string), string)
+  expect_equal(url_modify_query(url), url)
+})
+
+test_that("validates inputs", {
+  url <- "http://example.com/"
+
+  expect_snapshot(error = TRUE, {
+    url_modify_query(1)
+    url_modify_query(url, 1)
+    url_modify_query(url, x = 1:2)
+  })
+})
+
 
 # query -------------------------------------------------------------------
 
 test_that("missing query values become empty strings", {
-  expect_equal(query_parse("?q="), list(q = ""))
-  expect_equal(query_parse("?q"), list(q = ""))
-  expect_equal(query_parse("?a&q"), list(a = "", q = ""))
+  expect_equal(url_query_parse("?q="), list(q = ""))
+  expect_equal(url_query_parse("?q"), list(q = ""))
+  expect_equal(url_query_parse("?a&q"), list(a = "", q = ""))
 })
 
 test_that("handles equals in values", {
-  expect_equal(query_parse("?x==&y=="), list(x = "=", y = "="))
- })
+  expect_equal(url_query_parse("?x==&y=="), list(x = "=", y = "="))
+})
 
 test_that("empty queries become NULL", {
-  expect_equal(query_parse("?"), NULL)
-  expect_equal(query_parse(""), NULL)
+  expect_equal(url_query_parse("?"), NULL)
+  expect_equal(url_query_parse(""), NULL)
 })
 
 test_that("validates inputs", {
   expect_snapshot(error = TRUE, {
-    query_build(1:3)
-    query_build(list(x = 1:2, y = 1:3))
+    url_query_build(1:3)
+    url_query_build(list(x = 1:2, y = 1:3))
   })
 })
 

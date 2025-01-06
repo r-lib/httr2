@@ -120,6 +120,17 @@
         req_body_json_modify(a = 1L, b = "text") |> 
         req_perform()
 
+# content type stays in header if no data
+
+    Code
+      curl_translate("curl http://example.com -H Content-Type:text/plain")
+    Output
+      request("http://example.com/") |> 
+        req_headers(
+          `Content-Type` = "text/plain",
+        ) |> 
+        req_perform()
+
 # can read from clipboard
 
     Code
