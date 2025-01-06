@@ -1,9 +1,11 @@
 #' Modify request headers
 #'
-#' `req_headers()` allows you to set the value of any header. Use
-#' `req_headers_redacted()` to add "redacted" headers which httr2 strives
-#' to avoid printing to the console. This is good practice for headers used
-#' for authentication to avoid accidentally including them in log files.
+#' @description
+#' `req_headers()` allows you to set the value of any header.
+#'
+#' `req_headers_redacted()` is a variation that adds "redacted" headers, which
+#' httr2 avoids printing on the console. This is good practice for
+#' authentication headers to avoid accidentally leaking them in log files.
 #'
 #' @param .req A [request].
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-value pairs of headers
@@ -49,14 +51,16 @@
 #' # If you have headers in a list, use !!!
 #' headers <- list(HeaderOne = "one", HeaderTwo = "two")
 #' req |>
-#'    req_headers(!!!headers, HeaderThree = "three") |>
-#'    req_dry_run()
-#'
-#' # Use `.redact` to hide a header in the output
-#' req |>
-#'   req_headers_redacted(Secret = "this-is-private") |>
-#'   req_headers(Public = "but-this-is-not") |>
+#'   req_headers(!!!headers, HeaderThree = "three") |>
 #'   req_dry_run()
+#'
+#' # Use `req_headers_redacted()`` to hide a header in the output
+#' req_secret <- req |>
+#'   req_headers_redacted(Secret = "this-is-private") |>
+#'   req_headers(Public = "but-this-is-not")
+#'
+#' req_secret
+#' req_secret |> req_dry_run()
 req_headers <- function(.req, ..., .redact = NULL) {
   check_request(.req)
 

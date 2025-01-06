@@ -27,10 +27,11 @@ are not redacted.}
 A modified HTTP \link{request}.
 }
 \description{
-\code{req_headers()} allows you to set the value of any header. Use
-\code{req_headers_redacted()} to add "redacted" headers which httr2 strives
-to avoid printing to the console. This is good practice for headers used
-for authentication to avoid accidentally including them in log files.
+\code{req_headers()} allows you to set the value of any header.
+
+\code{req_headers_redacted()} is a variation that adds "redacted" headers, which
+httr2 avoids printing on the console. This is good practice for
+authentication headers to avoid accidentally leaking them in log files.
 }
 \examples{
 req <- request("http://example.com")
@@ -65,12 +66,14 @@ req |>
 # If you have headers in a list, use !!!
 headers <- list(HeaderOne = "one", HeaderTwo = "two")
 req |>
-   req_headers(!!!headers, HeaderThree = "three") |>
-   req_dry_run()
-
-# Use `.redact` to hide a header in the output
-req |>
-  req_headers_redacted(Secret = "this-is-private") |>
-  req_headers(Public = "but-this-is-not") |>
+  req_headers(!!!headers, HeaderThree = "three") |>
   req_dry_run()
+
+# Use `req_headers_redacted()`` to hide a header in the output
+req_secret <- req |>
+  req_headers_redacted(Secret = "this-is-private") |>
+  req_headers(Public = "but-this-is-not")
+
+req_secret
+req_secret |> req_dry_run()
 }
