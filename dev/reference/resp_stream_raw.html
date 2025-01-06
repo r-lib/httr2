@@ -6,14 +6,18 @@ resp_stream_sse() retrieves a single server-sent event.
 resp_stream_aws() retrieves a single event from an AWS stream
 (i.e. mime type `application/vnd.amazon.eventstream“).
 
-"><meta property="og:description" content="
+
+Use resp_stream_is_complete() to determine if there are further events
+waiting on the stream."><meta property="og:description" content="
 resp_stream_raw() retrieves bytes (raw vectors).
 resp_stream_lines() retrieves lines of text (character vectors).
 resp_stream_sse() retrieves a single server-sent event.
 resp_stream_aws() retrieves a single event from an AWS stream
 (i.e. mime type `application/vnd.amazon.eventstream“).
 
-"><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+
+Use resp_stream_is_complete() to determine if there are further events
+waiting on the stream."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -64,7 +68,9 @@ resp_stream_aws() retrieves a single event from an AWS stream
 <li><p><code>resp_stream_sse()</code> retrieves a single <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events" class="external-link">server-sent event</a>.</p></li>
 <li><p><code>resp_stream_aws()</code> retrieves a single event from an AWS stream
 (i.e. mime type `application/vnd.amazon.eventstream“).</p></li>
-</ul></div>
+</ul><p>Use <code>resp_stream_is_complete()</code> to determine if there are further events
+waiting on the stream.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
@@ -77,7 +83,9 @@ resp_stream_aws() retrieves a single event from an AWS stream
 <span><span class="fu">resp_stream_aws</span><span class="op">(</span><span class="va">resp</span>, max_size <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'httr2_response'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">con</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">con</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">resp_stream_is_complete</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
