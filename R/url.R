@@ -1,32 +1,30 @@
-#' Parse and build URLs
+#' Parse a URL into its component pieces
 #'
-#' `url_parse()` parses a URL into its component pieces; `url_build()` does
-#' the reverse, converting a list of pieces into a string URL. See `r rfc(3986)`
-#' for the details of the parsing algorithm.
+#' `url_parse()` parses a URL into its component parts, powered by
+#' [curl::curl_parse_url()]. The parsing algorithm follows the specifications
+#' detailed in `r rfc(3986)`.
 #'
-#' @param url For `url_parse()` a string to parse into a URL;
-#'   for `url_build()` a URL to turn back into a string.
-#' @returns
-#' * `url_build()` returns a string.
-#' * `url_parse()` returns a URL: a S3 list with class `httr2_url`
-#'   and elements `scheme`, `hostname`, `port`, `path`, `fragment`, `query`,
-#'   `username`, `password`.
+#' @param url A string containing the URL to parse.
+#' @param base_url Use this as a parent, if `url` is a relative URL.
+#' @returns An S3 object of class `httr2_url` with the following components:
+#'   `scheme`, `hostname`, `username`, `password`, `port`, `path`, `query`, and
+#'   `fragment`.
 #' @export
+#' @family URL manipulation
 #' @examples
 #' url_parse("http://google.com/")
 #' url_parse("http://google.com:80/")
 #' url_parse("http://google.com:80/?a=1&b=2")
 #' url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
 #'
-#' url <- url_parse("http://google.com/")
-#' url$port <- 80
-#' url$hostname <- "example.com"
-#' url$query <- list(a = 1, b = 2, c = 3)
-#' url_build(url)
-url_parse <- function(url) {
+#' # You can parse a relative URL if you also provide a base url
+#' url_parse("foo", "http://google.com/bar/")
+#' url_parse("..", "http://google.com/bar/")
+url_parse <- function(url, base_url = NULL) {
   check_string(url)
+  check_string(base_url, allow_null = TRUE)
 
-  curl <- curl::curl_parse_url(url)
+  curl <- curl::curl_parse_url(url, baseurl = base_url)
 
   parsed <- list(
     scheme = curl$scheme,
@@ -42,10 +40,164 @@ url_parse <- function(url) {
   parsed
 }
 
-url_modify <- function(url, ..., error_call = caller_env()) {
-  url <- url_parse(url)
-  url <- modify_list(url, ..., error_call = error_call)
-  url_build(url)
+#' Modify a URL
+#'
+#' @description
+#' Use `url_modify()` to modify any component of the URL,
+#' `url_modify_relative()` to modify with a relative URL,
+#' or `url_modify_query()` to modify individual query parameters.
+#'
+#' For `url_modify()`, components that aren't specified in the
+#' function call will be left as is; components set to `NULL` will be removed,
+#' and all other values will be updated. Note that removing `scheme` or
+#' `hostname` will create a relative URL.
+#'
+#' @param url A string or [parsed URL](url_parse).
+#' @param scheme The scheme, typically either `http` or `https`.
+#' @param hostname The hostname, e.g., `www.google.com` or `posit.co`.
+#' @param username,password Username and password to embed in the URL.
+#'   Not generally recommended but needed for some legacy applications.
+#' @param port An integer port number.
+#' @param path The path, e.g., `/search`. Paths must start with `/`, so this
+#'   will be automatically added if omitted.
+#' @param query Either a query string or a named list of query components.
+#' @param fragment The fragment, e.g., `#section-1`.
+#' @return An object of the same type as `url`.
+#' @export
+#' @family URL manipulation
+#' @examples
+#' url_modify("http://hadley.nz", path = "about")
+#' url_modify("http://hadley.nz", scheme = "https")
+#' url_modify("http://hadley.nz/abc", path = "/cde")
+#' url_modify("http://hadley.nz/abc", path = "")
+#' url_modify("http://hadley.nz?a=1", query = "b=2")
+#' url_modify("http://hadley.nz?a=1", query = list(c = 3))
+#'
+#' url_modify_query("http://hadley.nz?a=1&b=2", c = 3)
+#' url_modify_query("http://hadley.nz?a=1&b=2", b = NULL)
+#' url_modify_query("http://hadley.nz?a=1&b=2", a = 100)
+#'
+#' url_modify_relative("http://hadley.nz/a/b/c.html", "/d.html")
+#' url_modify_relative("http://hadley.nz/a/b/c.html", "d.html")
+#' url_modify_relative("http://hadley.nz/a/b/c.html", "../d.html")
+url_modify <- function(url,
+                       scheme = as_is,
+                       hostname = as_is,
+                       username = as_is,
+                       password = as_is,
+                       port = as_is,
+                       path = as_is,
+                       query = as_is,
+                       fragment = as_is) {
+  if (!is_string(url) && !is_url(url)) {
+    stop_input_type(url, "a string or parsed URL")
+  }
+  string_url <- is_string(url)
+  if (string_url) {
+    url <- url_parse(url)
+  }
+
+  if (!leave_as_is(scheme)) check_string(scheme, allow_null = TRUE)
+  if (!leave_as_is(hostname)) check_string(hostname, allow_null = TRUE)
+  if (!leave_as_is(username)) check_string(username, allow_null = TRUE)
+  if (!leave_as_is(password)) check_string(password, allow_null = TRUE)
+  if (!leave_as_is(port)) check_number_whole(port, min = 1, allow_null = TRUE)
+  if (!leave_as_is(path)) check_string(path, allow_null = TRUE)
+  if (!leave_as_is(fragment)) check_string(fragment, allow_null = TRUE)
+
+  if (is_string(query)) {
+    query <- url_query_parse(query)
+  } else if (is_named_list(query)) {
+    for (nm in names(query)) {
+      check_query_param(query[[nm]], paste0("query$", nm))
+    }
+  } else if (!is.null(query) && !leave_as_is(query)) {
+    stop_input_type(query, "a character vector, named list, or NULL")
+  }
+
+  new <- list(
+    scheme = scheme,
+    hostname = hostname,
+    username = username,
+    password = password,
+    port = port,
+    path = path,
+    query = query,
+    fragment = fragment
+  )
+  new <- new[!map_lgl(new, leave_as_is)]
+  url[names(new)] <- new
+
+  if (string_url) {
+    url_build(url)
+  } else {
+    url
+  }
+}
+
+as_is <- quote(as_is)
+leave_as_is <- function(x) identical(x, as_is)
+
+#' @export
+#' @rdname url_modify
+#' @param relative_url A relative URL to append to the base URL.
+url_modify_relative <- function(url, relative_url) {
+  string_url <- is_string(url)
+  if (!string_url) {
+    url <- url_build(url)
+  }
+
+  new_url <- url_parse(relative_url, base_url = url)
+
+  if (string_url) {
+    url_build(new_url)
+  } else {
+    new_url
+  }
+}
+
+#' @export
+#' @rdname url_modify
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]>
+#'   Name-value pairs that define query parameters. Each value must be either
+#'   an atomic vector or `NULL` (which removes the corresponding parameters).
+#'   If you want to opt out of escaping, wrap strings in `I()`.
+#' @param .multi Controls what happens when a value is a vector:
+#'
+#'   * `"error"`, the default, throws an error.
+#'   * `"comma"`, separates values with a `,`, e.g. `?x=1,2`.
+#'   * `"pipe"`, separates values with a `|`, e.g. `?x=1|2`.
+#'   * `"explode"`, turns each element into its own parameter, e.g. `?x=1&x=2`
+#'
+#'   If none of these options work for your needs, you can instead supply a
+#'   function that takes a character vector of argument values and returns a
+#'   a single string.
+#' @param .space How should spaces in query params be escaped? The default,
+#'   "percent", uses standard percent encoding (i.e. `%20`), but you can opt-in
+#'   to "form" encoding, which uses `+` instead.
+url_modify_query <- function(
+    url,
+    ...,
+    .multi = c("error", "comma", "pipe", "explode"),
+    .space = c("percent", "form")) {
+  if (!is_string(url) && !is_url(url)) {
+    stop_input_type(url, "a string or parsed URL")
+  }
+  string_url <- is_string(url)
+  if (string_url) {
+    url <- url_parse(url)
+  }
+
+  new_query <- multi_dots(..., .multi = .multi, .space = .space)
+  if (length(new_query) > 0) {
+    url$query <- modify_list(url$query, !!!new_query)
+  }
+
+  if (string_url) {
+    url_build(url)
+  } else {
+    url
+  }
 }
 
 is_url <- function(x) inherits(x, "httr2_url")
@@ -85,11 +237,21 @@ print.httr2_url <- function(x, ...) {
   invisible(x)
 }
 
+#' Build a string from a URL object
+#'
+#' This is the inverse of [url_parse()], taking a parsed URL object and
+#' turning it back into a string.
+#'
+#' @param url An URL object created by [url_parse].
+#' @family URL manipulation
 #' @export
-#' @rdname url_parse
 url_build <- function(url) {
+  if (!is_url(url)) {
+    stop_input_type(url, "a parsed URL")
+  }
+
   if (!is.null(url$query)) {
-    query <- query_build(url$query)
+    query <- url_query_build(url$query)
   } else {
     query <- NULL
   }
@@ -113,7 +275,7 @@ url_build <- function(url) {
     authority <- NULL
   }
 
-  if (!is.null(url$path) && !startsWith(url$path, "/")) {
+  if (is.null(url$path) || !startsWith(url$path, "/")) {
     url$path <- paste0("/", url$path)
   }
 
@@ -127,9 +289,23 @@ url_build <- function(url) {
   )
 }
 
-query_parse <- function(x) {
-  x <- gsub("^\\?", "", x) # strip leading ?, if present
-  params <- parse_name_equals_value(parse_delim(x, "&"))
+#' Parse query parameters and/or build a string
+#'
+#' `url_query_parse()` parses a query string into a named list;
+#' `url_query_build()` builds a query string from a named list.
+#'
+#' @param query A string, when parsing; a named list when building.
+#' @export
+#' @examples
+#' str(url_query_parse("a=1&b=2"))
+#'
+#' url_query_build(list(x = 1, y = "z"))
+#' url_query_build(list(x = 1, y = 1:2), .multi = "explode")
+url_query_parse <- function(query) {
+  check_string(query)
+
+  query <- gsub("^\\?", "", query) # strip leading ?, if present
+  params <- parse_name_equals_value(parse_delim(query, "&"))
 
   if (length(params) == 0) {
     return(NULL)
@@ -140,12 +316,20 @@ query_parse <- function(x) {
   out
 }
 
-query_build <- function(x, error_call = caller_env()) {
-  elements_build(x, "Query", "&", error_call = error_call)
+#' @export
+#' @rdname url_query_parse
+#' @inheritParams url_modify_query
+url_query_build <- function(query, .multi = c("error", "comma", "pipe", "explode")) {
+  if (!is_named_list(query)) {
+    stop_input_type(query, "a named list")
+  }
+
+  query <- multi_dots(!!!query, .multi = .multi, error_arg = "query")
+  elements_build(query, "Query", "&")
 }
 
 elements_build <- function(x, name, collapse, error_call = caller_env()) {
-  if (!is_list(x) || (!is_named(x) && length(x) > 0)) {
+  if (!is_named_list(x)) {
     cli::cli_abort("{name} must be a named list.", call = error_call)
   }
 
@@ -163,6 +347,7 @@ elements_build <- function(x, name, collapse, error_call = caller_env()) {
 format_query_param <- function(x,
                                name,
                                multi = FALSE,
+                               form = FALSE,
                                error_call = caller_env()) {
   check_query_param(x, name, multi = multi, error_call = error_call)
 
@@ -170,7 +355,11 @@ format_query_param <- function(x,
     unclass(x)
   } else {
     x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
-    curl::curl_escape(x)
+    x <- curl::curl_escape(x)
+    if (form) {
+      x <- gsub("%20", "+", x, fixed = TRUE)
+    }
+    x
   }
 }
 check_query_param <- function(x, name, multi = FALSE, error_call = caller_env()) {

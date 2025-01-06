@@ -70,12 +70,15 @@ reference:
   contents:
   - starts_with("resp_")
 
+- title: URL manipulation
+  contents:
+  - starts_with("url_")
+
 - title: Miscellaenous helpers
   contents:
   - curl_translate
   - secrets
   - obfuscate
-  - url_parse
 
 - title: OAuth
   desc: >

@@ -6,7 +6,6 @@ test_that("can parse special cases", {
 
 test_that("can round trip urls", {
   urls <- list(
-    "file:///",
     "http://google.com/",
     "http://google.com/path",
     "http://google.com/path?a=1&b=2",
@@ -21,16 +20,17 @@ test_that("can round trip urls", {
   expect_equal(map(urls, ~ url_build(url_parse(.x))), urls)
 })
 
+test_that("can parse relative urls", {
+  base <- "http://example.com/a/b/c/"
+  expect_equal(url_parse("d", base)$path, "/a/b/c/d")
+  expect_equal(url_parse("..", base)$path, "/a/b/")
+
+  expect_equal(url_parse("//archive.org", base)$scheme, "http")
+})
+
 test_that("can print all url details", {
   expect_snapshot(
     url_parse("http://user:pass@example.com:80/path?a=1&b=2&c={1{2}3}#frag")
-  )
-})
-
-test_that("ensures path always starts with /", {
-  expect_equal(
-    url_modify("https://example.com/abc", path = "def"),
-    "https://example.com/def"
   )
 })
 
@@ -38,30 +38,151 @@ test_that("password also requires username", {
   url <- url_parse("http://username:pwd@example.com")
   url$username <- NULL
   expect_snapshot(url_build(url), error = TRUE)
-
 })
+
+test_that("url_build validates its input", {
+  expect_snapshot(url_build("abc"), error = TRUE)
+})
+
+# modify url -------------------------------------------------------------
+
+test_that("url_modify checks its inputs", {
+  url <- "http://example.com"
+
+  expect_snapshot(error = TRUE, {
+    url_modify(1)
+    url_modify(url, scheme = 1)
+    url_modify(url, hostname = 1)
+    url_modify(url, port = "x")
+    url_modify(url, username = 1)
+    url_modify(url, password = 1)
+    url_modify(url, path = 1)
+    url_modify(url, fragment = 1)
+  })
+})
+
+test_that("no arguments is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify(string), string)
+  expect_equal(url_modify(url), url)
+})
+
+test_that("can accept query as a string or list", {
+  url <- "http://test/"
+
+  expect_equal(url_modify(url, query = "a=1&b=2"), "http://test/?a=1&b=2")
+  expect_equal(url_modify(url, query = list(a = 1, b = 2)), "http://test/?a=1&b=2")
+
+  expect_equal(url_modify(url, query = ""), "http://test/")
+  expect_equal(url_modify(url, query = list()), "http://test/")
+})
+test_that("checks various query formats", {
+  url <- "http://example.com"
+
+  expect_snapshot(error = TRUE, {
+    url_modify(url, query = 1)
+    url_modify(url, query = list(1))
+    url_modify(url, query = list(x = 1:2))
+  })
+})
+
+test_that("path always starts with /", {
+  expect_equal(url_modify("https://x.com/abc", path = "def"), "https://x.com/def")
+  expect_equal(url_modify("https://x.com/abc", path = ""), "https://x.com/")
+  expect_equal(url_modify("https://x.com/abc", path = NULL), "https://x.com/")
+})
+
+# relative url ------------------------------------------------------------
+
+test_that("can set relative urls", {
+  base <- "http://example.com/a/b/c/"
+  expect_equal(url_modify_relative(base, "d"), "http://example.com/a/b/c/d")
+  expect_equal(url_modify_relative(base, ".."), "http://example.com/a/b/")
+  expect_equal(url_modify_relative(base, "//archive.org"), "http://archive.org/")
+})
+
+test_that("is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify_relative(string, "."), string)
+  expect_equal(url_modify_relative(url, "."), url)
+})
+
+# modify query -------------------------------------------------------------
+
+test_that("can add, modify, and delete query components", {
+  expect_equal(
+    url_modify_query("http://test/path", new = "value"),
+    "http://test/path?new=value"
+  )
+  expect_equal(
+    url_modify_query("http://test/path", new = "one", new = "two"),
+    "http://test/path?new=one&new=two"
+  )
+  expect_equal(
+    url_modify_query("http://test/path?a=old&b=old", a = "new"),
+    "http://test/path?b=old&a=new"
+  )
+  expect_equal(
+    url_modify_query("http://test/path?remove=me&keep=this", remove = NULL),
+    "http://test/path?keep=this"
+  )
+})
+
+test_that("can control space formatting", {
+  expect_equal(
+    url_modify_query("http://test/path", new = "a b"),
+    "http://test/path?new=a%20b"
+  )
+  expect_equal(
+    url_modify_query("http://test/path", new = "a b", .space = "form"),
+    "http://test/path?new=a+b"
+  )
+})
+
+test_that("is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify_query(string), string)
+  expect_equal(url_modify_query(url), url)
+})
+
+test_that("validates inputs", {
+  url <- "http://example.com/"
+
+  expect_snapshot(error = TRUE, {
+    url_modify_query(1)
+    url_modify_query(url, 1)
+    url_modify_query(url, x = 1:2)
+  })
+})
+
 
 # query -------------------------------------------------------------------
 
 test_that("missing query values become empty strings", {
-  expect_equal(query_parse("?q="), list(q = ""))
-  expect_equal(query_parse("?q"), list(q = ""))
-  expect_equal(query_parse("?a&q"), list(a = "", q = ""))
+  expect_equal(url_query_parse("?q="), list(q = ""))
+  expect_equal(url_query_parse("?q"), list(q = ""))
+  expect_equal(url_query_parse("?a&q"), list(a = "", q = ""))
 })
 
 test_that("handles equals in values", {
-  expect_equal(query_parse("?x==&y=="), list(x = "=", y = "="))
- })
+  expect_equal(url_query_parse("?x==&y=="), list(x = "=", y = "="))
+})
 
 test_that("empty queries become NULL", {
-  expect_equal(query_parse("?"), NULL)
-  expect_equal(query_parse(""), NULL)
+  expect_equal(url_query_parse("?"), NULL)
+  expect_equal(url_query_parse(""), NULL)
 })
 
 test_that("validates inputs", {
   expect_snapshot(error = TRUE, {
-    query_build(1:3)
-    query_build(list(x = 1:2, y = 1:3))
+    url_query_build(1:3)
+    url_query_build(list(x = 1:2, y = 1:3))
   })
 })
 

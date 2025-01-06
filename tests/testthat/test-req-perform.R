@@ -225,3 +225,8 @@ test_that("authorization headers are redacted", {
       req_dry_run()
   })
 })
+
+test_that("doen't add space to urls (#567)", {
+  req <- request("https://example.com/test:1:2")
+  expect_output(req_dry_run(req), "test:1:2")
+})

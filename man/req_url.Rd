@@ -2,6 +2,7 @@
 % Please edit documentation in R/req-url.R
 \name{req_url}
 \alias{req_url}
+\alias{req_url_relative}
 \alias{req_url_query}
 \alias{req_url_path}
 \alias{req_url_path_append}
@@ -9,7 +10,14 @@
 \usage{
 req_url(req, url)
 
-req_url_query(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
+req_url_relative(req, url)
+
+req_url_query(
+  .req,
+  ...,
+  .multi = c("error", "comma", "pipe", "explode"),
+  .space = c("percent", "form")
+)
 
 req_url_path(req, ...)
 
@@ -28,8 +36,7 @@ If you want to opt out of escaping, wrap strings in \code{I()}.
 For \code{req_url_path()} and \code{req_url_path_append()}: A sequence of path
 components that will be combined with \code{/}.}
 
-\item{.multi}{Controls what happens when an element of \code{...} is a vector
-containing multiple values:
+\item{.multi}{Controls what happens when a value is a vector:
 \itemize{
 \item \code{"error"}, the default, throws an error.
 \item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.
@@ -40,6 +47,10 @@ containing multiple values:
 If none of these options work for your needs, you can instead supply a
 function that takes a character vector of argument values and returns a
 a single string.}
+
+\item{.space}{How should spaces in query params be escaped? The default,
+"percent", uses standard percent encoding (i.e. \verb{\%20}), but you can opt-in
+to "form" encoding, which uses \code{+} instead.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -51,6 +62,9 @@ A modified HTTP \link{request}.
 \item \code{req_url_path()} modifies the path
 \item \code{req_url_path_append()} adds to the path
 }
+
+Alternatively, to modify only a URL without creating a request,
+you can instead use \code{\link[=url_modify]{url_modify()}} and friends.
 }
 \examples{
 req <- request("http://example.com")
@@ -65,6 +79,11 @@ req |>
 # Change complete url
 req |>
   req_url("http://google.com")
+
+# Use a relative url
+req <- request("http://example.com/a/b/c")
+req |> req_url_relative("..")
+req |> req_url_relative("/d/e/f")
 
 # Use .multi to control what happens with vector parameters:
 req |> req_url_query(id = 100:105, .multi = "comma")
