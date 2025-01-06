@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* `req_retry()` now implements "circuit breaking" so that if a request fails many times (i.e. if the server is done), you can choose to immediately error (#370).
+* `req_retry()` now implements "circuit breaking" so that if requests to the same server fail many times (i.e. because the server is down), you can choose to immediately error rather than waiting (#370).
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
 * `req_retry()` now defaults to `max_tries = 2` with a message.
   Set to `max_tries = 1` to disable retries.

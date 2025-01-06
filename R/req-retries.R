@@ -153,7 +153,8 @@ retry_check_breaker <- function(req, i, error_call = caller_env()) {
   } else {
     cli::cli_abort(
       c(
-        "Too many request failures: circuit breaker triggered for realm {.str {realm}}.",
+         "Request failures have exceeded the threshold for realm {.str {realm}}.",
+        i = "The server behind {.str {realm}} is likely still overloaded or down.",
         i = "Wait {remaining} seconds before retrying."
 
       ),
