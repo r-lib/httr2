@@ -46,6 +46,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
 <ul><li>
+<code>curl_transform()</code> will now use <code><a href="../reference/req_body.html">req_body_json_modify()</a></code> for JSON data (<a href="https://github.com/r-lib/httr2/issues/258" class="external-link">#258</a>).</li>
+<li>
 <code><a href="../reference/resp_stream_raw.html">resp_stream_is_complete()</a></code> tells you if there is still data remaining to be streamed (<a href="https://github.com/r-lib/httr2/issues/559" class="external-link">#559</a>).</li>
 <li>New <code><a href="../reference/url_modify.html">url_modify()</a></code>, <code><a href="../reference/url_modify.html">url_modify_query()</a></code>, and <code><a href="../reference/url_modify.html">url_modify_relative()</a></code> make it easier to modify an existing url (<a href="https://github.com/r-lib/httr2/issues/464" class="external-link">#464</a>).</li>
 <li>New <code><a href="../reference/url_query_parse.html">url_query_parse()</a></code> and <code><a href="../reference/url_query_parse.html">url_query_build()</a></code> allow you to parse and build a query string (<a href="https://github.com/r-lib/httr2/issues/425" class="external-link">#425</a>).</li>
