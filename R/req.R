@@ -6,7 +6,7 @@
 #' 1. Create a request object with `request(url)` (this function).
 #' 2. Define its behaviour with `req_` functions, e.g.:
 #'    * [req_headers()] to set header values.
-#'    * [req_url_path()] and friends to modify the url.
+#'    * [req_url()] and friends to modify the url.
 #'    * [req_body_json()] and friends to add a body.
 #'    * [req_auth_basic()] to perform basic HTTP authentication.
 #'    * [req_oauth_auth_code()] to use the OAuth auth code flow.

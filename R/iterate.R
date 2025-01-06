@@ -88,7 +88,7 @@
 #' @export
 #' @examples
 #' req <- request(example_url()) |>
-#'   req_url_path("/iris") |>
+#'   req_url_relative("/iris") |>
 #'   req_throttle(10) |>
 #'   req_url_query(limit = 5)
 #'

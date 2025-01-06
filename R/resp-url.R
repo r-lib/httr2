@@ -9,7 +9,7 @@
 #' @export
 #' @examples
 #' resp <- request(example_url()) |>
-#'   req_url_path("/get?hello=world") |>
+#'   req_url_relative("/get?hello=world") |>
 #'   req_perform()
 #'
 #' resp |> resp_url()

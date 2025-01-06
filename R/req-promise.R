@@ -37,9 +37,11 @@
 #' @examples
 #' \dontrun{
 #' library(promises)
-#' request_base <- request(example_url()) |> req_url_path_append("delay")
+#' req <- request(example_url())
 #'
-#' p <- request_base |> req_url_path_append(2) |> req_perform_promise()
+#' p <- req |>
+#'   req_url_relative("delay/1") |>
+#'   req_perform_promise()
 #'
 #' # A promise object, not particularly useful on its own
 #' p
@@ -51,8 +53,12 @@
 #'
 #'
 #' # Can run two requests at the same time
-#' p1 <- request_base |> req_url_path_append(2) |> req_perform_promise()
-#' p2 <- request_base |> req_url_path_append(1) |> req_perform_promise()
+#' p1 <- req |>
+#'   req_url_relative("delay/1") |>
+#'   req_perform_promise()
+#' p2 <- req |>
+#'   req_url_relative("delay/1") |>
+#'   req_perform_promise()
 #'
 #' p1 %...>%
 #'   resp_url_path %...>%
@@ -97,11 +103,11 @@ req_perform_promise <- function(req,
   )
 }
 
-PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
+PerformancePromise <- R6Class("PerformancePromise",
+  inherit = Performance,
   public = list(
     resolve = NULL,
     reject = NULL,
-
     initialize = function(req, resolve, reject, path = NULL, error_call = NULL) {
       progress <- create_progress_bar(config = FALSE)
 
@@ -109,7 +115,6 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
       self$resolve <- resolve
       self$reject <- reject
     },
-
     submit = function(pool = NULL) {
       if (!is.null(self$resp)) {
         # cached
@@ -119,7 +124,6 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
       super$submit(pool)
       ensure_pool_poller(pool, self$reject)
     },
-
     succeed = function(res) {
       tryCatch(
         {
@@ -130,7 +134,6 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
         error = function(cnd) self$reject(cnd)
       )
     },
-
     fail = function(msg) {
       tryCatch(
         super$fail(msg),
@@ -138,11 +141,14 @@ PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
         error = function(cnd) self$reject(cnd)
       )
     }
-  ))
+  )
+)
 
 ensure_pool_poller <- function(pool, reject) {
   monitor <- pool_poller_monitor(pool)
-  if (monitor$already_going()) return()
+  if (monitor$already_going()) {
+    return()
+  }
 
   poll_pool <- function(ready) {
     tryCatch(
@@ -160,7 +166,8 @@ ensure_pool_poller <- function(pool, reject) {
         } else {
           monitor$ending()
         }
-      }, error = function(cnd) {
+      },
+      error = function(cnd) {
         monitor$ending()
         reject(cnd)
       }

@@ -16,7 +16,7 @@
 #' @returns A modified HTTP [request].
 #' @examples
 #' req <- request(example_url()) |>
-#'   req_url_path("/post")
+#'   req_url_relative("/post")
 #'
 #' # Most APIs expect small amounts of data in either form or json encoded:
 #' req |>

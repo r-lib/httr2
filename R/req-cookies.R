@@ -37,7 +37,7 @@
 #'
 #' # Add a client side cookie
 #' request(example_url()) |>
-#'   req_url_path("/cookies/set") |>
+#'   req_url_relative("/cookies/set") |>
 #'   req_cookie_preserve(path) |>
 #'   req_cookies_set(snicker = "doodle") |>
 #'   req_perform() |>

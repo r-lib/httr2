@@ -18,13 +18,12 @@ test_that("can read/write cookies", {
     resp_body_json() %>%
     .$cookies
   expect_mapequal(cookies, list(x = "a", y = "b", z = "c"))
-
 })
 
 test_that("can set cookies", {
   resp <- request(example_url()) %>%
     req_cookies_set(a = 1, b = 1) %>%
-    req_url_path("/cookies") %>%
+    req_url_relative("/cookies") %>%
     req_perform()
 
   expect_equal(resp_body_json(resp), list(cookies = list(a = "1", b = "1")))
@@ -33,7 +32,7 @@ test_that("can set cookies", {
 test_that("cookie values are usually escaped", {
   resp <- request(example_url()) %>%
     req_cookies_set(a = I("%20"), b = "%") %>%
-    req_url_path("/cookies") %>%
+    req_url_relative("/cookies") %>%
     req_perform()
 
   expect_equal(resp_body_json(resp), list(cookies = list(a = "%20", b = "%25")))

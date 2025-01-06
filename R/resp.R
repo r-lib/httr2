@@ -136,7 +136,7 @@ print.httr2_response <- function(x, ...) {
 #' @export
 #' @examples
 #' resp <- request(example_url()) |>
-#'   req_url_path("/json") |>
+#'   req_url_relative("/json") |>
 #'   req_perform()
 #' resp |> resp_raw()
 resp_raw <- function(resp) {

@@ -49,11 +49,13 @@ is created but before it is actually requested.
 }
 }
 \examples{
-\dontrun{
+\dontshow{if (requireNamespace("promises")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(promises)
-request_base <- request(example_url()) |> req_url_path_append("delay")
+req <- request(example_url())
 
-p <- request_base |> req_url_path_append(2) |> req_perform_promise()
+p <- req |>
+  req_url_relative("delay/2") |>
+  req_perform_promise()
 
 # A promise object, not particularly useful on its own
 p
@@ -65,8 +67,12 @@ p \%...>\%
 
 
 # Can run two requests at the same time
-p1 <- request_base |> req_url_path_append(2) |> req_perform_promise()
-p2 <- request_base |> req_url_path_append(1) |> req_perform_promise()
+p1 <- req |>
+  req_url_relative("delay/2") |>
+  req_perform_promise()
+p2 <- req |>
+  req_url_relative("delay/1") |>
+  req_perform_promise()
 
 p1 \%...>\%
   resp_url_path \%...>\%
@@ -80,5 +86,5 @@ p2 \%...>\%
 
 # See the [promises package documentation](https://rstudio.github.io/promises/)
 # for more information on working with promises
-}
+\dontshow{\}) # examplesIf}
 }

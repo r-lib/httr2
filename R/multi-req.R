@@ -26,18 +26,18 @@
 #' # Requesting these 4 pages one at a time would take 2 seconds:
 #' request_base <- request(example_url())
 #' reqs <- list(
-#'   request_base |> req_url_path("/delay/0.5"),
-#'   request_base |> req_url_path("/delay/0.5"),
-#'   request_base |> req_url_path("/delay/0.5"),
-#'   request_base |> req_url_path("/delay/0.5")
+#'   request_base |> req_url_relative("/delay/0.5"),
+#'   request_base |> req_url_relative("/delay/0.5"),
+#'   request_base |> req_url_relative("/delay/0.5"),
+#'   request_base |> req_url_relative("/delay/0.5")
 #' )
 #' # But it's much faster if you request in parallel
 #' system.time(resps <- req_perform_parallel(reqs))
 #'
 #' # req_perform_parallel() will fail on error
 #' reqs <- list(
-#'   request_base |> req_url_path("/status/200"),
-#'   request_base |> req_url_path("/status/400"),
+#'   request_base |> req_url_relative("/status/200"),
+#'   request_base |> req_url_relative("/status/400"),
 #'   request("FAILURE")
 #' )
 #' try(resps <- req_perform_parallel(reqs))
@@ -49,7 +49,9 @@
 #' resps |> resps_successes()
 #'
 #' # And the failed responses
-#' resps |> resps_failures() |> resps_requests()
+#' resps |>
+#'   resps_failures() |>
+#'   resps_requests()
 req_perform_parallel <- function(reqs,
                                  paths = NULL,
                                  pool = NULL,
@@ -125,9 +127,9 @@ pool_run <- function(pool, perfs, on_error = "continue") {
   # signal (not error) that wraps the error. Here we catch that error and
   # handle it based on the value of `on_error`
   httr2_fail <- switch(on_error,
-    stop =     function(cnd) cnd_signal(cnd$error),
+    stop = function(cnd) cnd_signal(cnd$error),
     continue = function(cnd) zap(),
-    return =   function(cnd) NULL
+    return = function(cnd) NULL
   )
 
   try_fetch(
@@ -149,13 +151,11 @@ Performance <- R6Class("Performance", public = list(
   req = NULL,
   req_prep = NULL,
   path = NULL,
-
   handle = NULL,
   resp = NULL,
   pool = NULL,
   error_call = NULL,
   progress = NULL,
-
   initialize = function(req, path = NULL, progress = NULL, error_call = NULL) {
     self$req <- req
     self$path <- path
@@ -172,7 +172,6 @@ Performance <- R6Class("Performance", public = list(
       curl::handle_setopt(self$handle, url = req$url)
     }
   },
-
   submit = function(pool = NULL) {
     if (!is.null(self$resp)) {
       # cached
@@ -189,7 +188,6 @@ Performance <- R6Class("Performance", public = list(
     )
     invisible(self)
   },
-
   succeed = function(res) {
     self$progress$update()
     req_completed(self$req_prep)
@@ -220,7 +218,6 @@ Performance <- R6Class("Performance", public = list(
       signal("", error = self$resp, class = "httr2_fail")
     }
   },
-
   fail = function(msg) {
     self$progress$update()
     req_completed(self$req_prep)
@@ -233,7 +230,6 @@ Performance <- R6Class("Performance", public = list(
     )
     signal("", error = self$resp, class = "httr2_fail")
   },
-
   cancel = function() {
     # No handle if response was cached
     if (!is.null(self$handle)) {

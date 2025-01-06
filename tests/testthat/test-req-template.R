@@ -3,6 +3,16 @@ test_that("can set path", {
   expect_equal(req$url, "http://test.com/x")
 })
 
+test_that("respects relative path", {
+  req <- request("http://test.com/x/")
+
+  req1 <- req %>% req_template("/y")
+  expect_equal(req1$url, "http://test.com/y")
+
+  req2 <- req %>% req_template("y")
+  expect_equal(req2$url, "http://test.com/x/y")
+})
+
 test_that("can set method and path", {
   req <- request("http://test.com") %>% req_template("PATCH /x")
   expect_equal(req$url, "http://test.com/x")
@@ -19,7 +29,7 @@ test_that("can use args or env", {
 })
 
 test_that("will append rather than replace path", {
-  req <- request("http://test.com/x") %>% req_template("PATCH /y")
+  req <- request("http://test.com/x/") %>% req_template("PATCH y")
   expect_equal(req$url, "http://test.com/x/y")
 })
 

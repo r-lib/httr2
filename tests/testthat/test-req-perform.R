@@ -115,7 +115,7 @@ test_that("can cache requests with etags", {
 
 test_that("can cache requests with paths (cache-control)", {
   req <- request(example_url()) %>%
-    req_url_path("/cache/2") %>%
+    req_url_relative("/cache/2") %>%
     req_cache(withr::local_tempfile())
 
   path1 <- withr::local_tempfile()
@@ -147,7 +147,7 @@ test_that("can cache requests with paths (cache-control)", {
 
 test_that("can cache requests with paths (if-modified-since)", {
   req <- request(example_url()) %>%
-    req_url_path("/cache") %>%
+    req_url_relative("/cache") %>%
     req_cache(tempfile())
 
   path1 <- tempfile()

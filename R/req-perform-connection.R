@@ -23,7 +23,7 @@
 #' @export
 #' @examples
 #' req <- request(example_url()) |>
-#'   req_url_path("/stream-bytes/32768")
+#'   req_url_relative("/stream-bytes/32768")
 #' resp <- req_perform_connection(req)
 #'
 #' length(resp_stream_raw(resp, kb = 16))

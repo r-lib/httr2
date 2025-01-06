@@ -29,7 +29,7 @@
 #' httpbin |> req_template("GET /bytes/{n}")
 #'
 #' # Existing path is preserved:
-#' httpbin_test <- request(example_url()) |> req_url_path("/test")
+#' httpbin_test <- request(example_url()) |> req_url_relative("/test")
 #' name <- "id"
 #' value <- "a3fWa"
 #' httpbin_test |> req_template("GET /set/{name}/{value}")
@@ -56,7 +56,7 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
   }
 
   path <- template_process(template, dots, .env)
-  req_url_path_append(req, path)
+  req_url_relative(req, path)
 }
 
 template_process <- function(template,
@@ -99,7 +99,9 @@ template_val <- function(name, dots, env, error_call = caller_env()) {
 }
 
 template_vars <- function(x, type) {
-  if (type == "none") return(character())
+  if (type == "none") {
+    return(character())
+  }
 
   pattern <- switch(type,
     colon = ":([a-zA-Z0-9_]+)",

@@ -60,6 +60,6 @@ no event is currently available.
 (i.e. mime type `application/vnd.amazon.eventstream``).
 }
 
-Use \code{resp_stream_is_complete()} to determine if there are further events
+Use \code{resp_stream_is_complete()} to determine if there is further data
 waiting on the stream.
 }

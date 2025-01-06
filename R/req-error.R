@@ -60,7 +60,7 @@
 #' # Performing this request usually generates an error because httr2
 #' # converts HTTP errors into R errors:
 #' req <- request(example_url()) |>
-#'   req_url_path("/status/404")
+#'   req_url_relative("/status/404")
 #' try(req |> req_perform())
 #' # You can still retrieve it with last_response()
 #' last_response()

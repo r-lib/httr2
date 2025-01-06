@@ -18,8 +18,8 @@
 #'   returns the data found inside that response as a vector or data frame.
 #' @examples
 #' reqs <- list(
-#'   request(example_url()) |> req_url_path("/ip"),
-#'   request(example_url()) |> req_url_path("/user-agent"),
+#'   request(example_url()) |> req_url_relative("/ip"),
+#'   request(example_url()) |> req_url_relative("/user-agent"),
 #'   request(example_url()) |> req_template("/status/:status", status = 404),
 #'   request("INVALID")
 #' )
@@ -29,10 +29,14 @@
 #' resps |> resps_successes()
 #'
 #' # collect all their data
-#' resps |> resps_successes() |> resps_data(\(resp) resp_body_json(resp))
+#' resps |>
+#'   resps_successes() |>
+#'   resps_data(\(resp) resp_body_json(resp))
 #'
 #' # find requests corresponding to failure responses
-#' resps |> resps_failures() |> resps_requests()
+#' resps |>
+#'   resps_failures() |>
+#'   resps_requests()
 resps_successes <- function(resps) {
   resps[resps_ok(resps)]
 }

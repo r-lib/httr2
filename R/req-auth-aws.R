@@ -14,7 +14,7 @@
 #' model_id <- "anthropic.claude-3-5-sonnet-20240620-v1:0"
 #' req <- request("https://bedrock-runtime.us-east-1.amazonaws.com")
 #' # https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html
-#' req <- req_url_path_append(req, "model", model_id, "converse")
+#' req <- req_template(req, "model/:model_id/converse")
 #' req <- req_body_json(req, list(
 #'   messages = list(list(
 #'     role = "user",
