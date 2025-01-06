@@ -227,7 +227,7 @@ req_body_get <- function(req) {
     raw = req$body$data,
     form = {
       data <- unobfuscate(req$body$data)
-      query_build(data)
+      url_query_build(data)
     },
     json = exec(jsonlite::toJSON, req$body$data, !!!req$body$params),
     cli::cli_abort("Unsupported request body type {.str {req$body$type}}.")

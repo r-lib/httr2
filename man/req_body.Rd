@@ -64,8 +64,7 @@ and lists.
 \code{req_body_json()} uses this argument differently; it takes additional
 arguments passed on to  \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
 
-\item{.multi}{Controls what happens when an element of \code{...} is a vector
-containing multiple values:
+\item{.multi}{Controls what happens when a value is a vector:
 \itemize{
 \item \code{"error"}, the default, throws an error.
 \item \code{"comma"}, separates values with a \verb{,}, e.g. \verb{?x=1,2}.
