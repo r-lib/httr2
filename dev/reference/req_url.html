@@ -72,7 +72,12 @@ req_url_path_append() adds to the path
 <span></span>
 <span><span class="fu">req_url_relative</span><span class="op">(</span><span class="va">req</span>, <span class="va">url</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">req_url_query</span><span class="op">(</span><span class="va">.req</span>, <span class="va">...</span>, .multi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"error"</span>, <span class="st">"comma"</span>, <span class="st">"pipe"</span>, <span class="st">"explode"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">req_url_query</span><span class="op">(</span></span>
+<span>  <span class="va">.req</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .multi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"error"</span>, <span class="st">"comma"</span>, <span class="st">"pipe"</span>, <span class="st">"explode"</span><span class="op">)</span>,</span>
+<span>  .space <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"percent"</span>, <span class="st">"form"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">req_url_path</span><span class="op">(</span><span class="va">req</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -109,6 +114,12 @@ containing multiple values:</p><ul><li><p><code>"error"</code>, the default, thr
 </ul><p>If none of these options work for your needs, you can instead supply a
 function that takes a character vector of argument values and returns a
 a single string.</p></dd>
+
+
+<dt id="arg--space">.space<a class="anchor" aria-label="anchor" href="#arg--space"></a></dt>
+<dd><p>How should spaces in query params be escaped? The default,
+"percent", uses standard percent encoding (i.e. <code>%20</code>), but you can opt-in
+to "form" encoding, which uses <code>+</code> instead.</p></dd>
 
 </dl></div>
     <div class="section level2">
