@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* New `req_headers_redacted()` provides a user-friendlier way to set redacted headers (#561).
 * `resp_link_url()` now works if there are multiple `Link` headers (#587).
 * New `url_modify()` makes it easier to modify an existing url (#464).
 * New `req_url_relative()` for constructing relative urls (#449).

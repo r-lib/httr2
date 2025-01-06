@@ -1,6 +1,11 @@
 #' Modify request headers
 #'
+#' @description
 #' `req_headers()` allows you to set the value of any header.
+#'
+#' `req_headers_redacted()` is a variation that adds "redacted" headers, which
+#' httr2 avoids printing on the console. This is good practice for
+#' authentication headers to avoid accidentally leaking them in log files.
 #'
 #' @param .req A [request].
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-value pairs of headers
@@ -46,13 +51,16 @@
 #' # If you have headers in a list, use !!!
 #' headers <- list(HeaderOne = "one", HeaderTwo = "two")
 #' req |>
-#'    req_headers(!!!headers, HeaderThree = "three") |>
-#'    req_dry_run()
-#'
-#' # Use `.redact` to hide a header in the output
-#' req |>
-#'   req_headers(Secret = "this-is-private", Public = "but-this-is-not", .redact = "Secret") |>
+#'   req_headers(!!!headers, HeaderThree = "three") |>
 #'   req_dry_run()
+#'
+#' # Use `req_headers_redacted()`` to hide a header in the output
+#' req_secret <- req |>
+#'   req_headers_redacted(Secret = "this-is-private") |>
+#'   req_headers(Public = "but-this-is-not")
+#'
+#' req_secret
+#' req_secret |> req_dry_run()
 req_headers <- function(.req, ..., .redact = NULL) {
   check_request(.req)
 
@@ -67,4 +75,13 @@ req_headers <- function(.req, ..., .redact = NULL) {
   attr(.req$headers, "redact") <- redact_out
 
   .req
+}
+
+#' @export
+#' @rdname req_headers
+req_headers_redacted <- function(.req, ...) {
+  check_request(.req)
+
+  dots <- list(...)
+  req_headers(.req, !!!dots, .redact = names(dots))
 }
