@@ -67,8 +67,8 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
     type <- type %||% "application/x-www-form-urlencoded"
     if (type == "application/json" && idempotent_json(data$data)) {
       json <- jsonlite::parse_json(data$data)
-      args <- lapply(json, function(x) I(deparse1(x)))
-      steps <- add_curl_step(steps, "req_body_json_modify", main_args = args)
+      args <- list(data = I(deparse1(json)))
+      steps <- add_curl_step(steps, "req_body_json", dots = args)
     } else {
       body <- data$data
       steps <- add_curl_step(steps, "req_body_raw", main_args = c(body, type))
