@@ -10,6 +10,9 @@
 #' * `resp_stream_aws()` retrieves a single event from an AWS stream
 #'   (i.e. mime type `application/vnd.amazon.eventstream``).
 #'
+#' Use `resp_stream_is_complete()` to determine if there is further data
+#' waiting on the stream.
+#'
 #' @returns
 #' * `resp_stream_raw()`: a raw vector.
 #' * `resp_stream_lines()`: a character vector.
@@ -78,6 +81,14 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   } else {
     return(NULL)
   }
+}
+
+#' @export
+#' @rdname resp_stream_raw
+resp_stream_is_complete <- function(resp) {
+  check_response(resp)
+
+  !isIncomplete(resp$body)
 }
 
 #' @export

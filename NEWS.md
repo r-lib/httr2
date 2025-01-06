@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `resp_stream_is_complete()` tells you if there is still data remaining to be streamed (#559).
 * New `url_modify()`, `url_modify_query()`, and `url_modify_relative()` make it easier to modify an existing url (#464).
 * New `url_query_parse()` and `url_query_build()` allow you to parse and build a query string (#425).
 * `req_url_query()` gains the ability to control how spaces are encoded (#432).
