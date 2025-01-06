@@ -31,6 +31,11 @@
 #' req |>
 #'   req_url("http://google.com")
 #'
+#' # Use a relative url
+#' req <- request("http://example.com/a/b/c")
+#' req |> req_url_relative("..")
+#' req |> req_url_relative("/d/e/f")
+#'
 #' # Use .multi to control what happens with vector parameters:
 #' req |> req_url_query(id = 100:105, .multi = "comma")
 #' req |> req_url_query(id = 100:105, .multi = "explode")
@@ -45,6 +50,15 @@ req_url <- function(req, url) {
 
   req$url <- url
   req
+}
+
+#' @export
+#' @rdname req_url
+req_url_relative <- function(req, url) {
+  check_request(req)
+
+  new_url <- url_parse(url, base_url = req$url)
+  req_url(req, url_build(new_url))
 }
 
 #' @export

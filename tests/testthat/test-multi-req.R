@@ -9,13 +9,9 @@ test_that("correctly prepares request", {
 })
 
 test_that("requests happen in parallel", {
-  # GHA MacOS builder seems to be very slow
-  skip_if(
-    isTRUE(as.logical(Sys.getenv("CI", "false"))) &&
-    Sys.info()[["sysname"]] == "Darwin"
-  )
-
+  # test works best if webfakes has ample threads and keepalive
   reqs <- list2(
+    request_test("/delay/:secs", secs = 0),
     request_test("/delay/:secs", secs = 0.25),
     request_test("/delay/:secs", secs = 0.25),
     request_test("/delay/:secs", secs = 0.25),

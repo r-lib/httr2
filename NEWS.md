@@ -1,6 +1,9 @@
 # httr2 (development version)
 
 * `resp_link_url()` now works if there are multiple `Link` headers (#587).
+* New `url_modify()` makes it easier to modify an existing url (#464).
+* New `req_url_relative()` for constructing relative urls (#449).
+* `url_parse()` gains `base_url` argument so you can also use it to parse relative URLs (#449).
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
 * `req_retry()` now defaults to `max_tries = 2` with a message.
   Set to `max_tries = 1` to disable retries.
