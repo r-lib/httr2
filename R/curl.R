@@ -63,7 +63,9 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
 
   # Content type set with data
   type <- data$headers$`Content-Type`
-  data$headers$`Content-Type` <- NULL
+  if (!identical(data$data, "")) {
+    data$headers$`Content-Type` <- NULL
+  }
 
   headers <- curl_simplify_headers(data$headers, simplify_headers)
   steps <- add_curl_step(steps, "req_headers", dots = headers)

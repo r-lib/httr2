@@ -96,15 +96,35 @@
 # validates inputs
 
     Code
-      query_build(1:3)
+      url_modify_query(1)
     Condition
-      Error:
-      ! Query must be a named list.
+      Error in `url_modify_query()`:
+      ! `url` must be a string or parsed URL, not the number 1.
     Code
-      query_build(list(x = 1:2, y = 1:3))
+      url_modify_query(url, 1)
     Condition
-      Error:
-      ! Query value `x` must be a length-1 atomic vector, not an integer vector.
+      Error in `url_modify_query()`:
+      ! All components of `...` must be named.
+    Code
+      url_modify_query(url, x = 1:2)
+    Condition
+      Error in `url_modify_query()`:
+      ! All vector elements of `...` must be length 1.
+      i Use `.multi` to choose a strategy for handling vectors.
+
+---
+
+    Code
+      url_query_build(1:3)
+    Condition
+      Error in `url_query_build()`:
+      ! `query` must be a named list, not an integer vector.
+    Code
+      url_query_build(list(x = 1:2, y = 1:3))
+    Condition
+      Error in `url_query_build()`:
+      ! All vector elements of `query` must be length 1.
+      i Use `.multi` to choose a strategy for handling vectors.
 
 # can't opt out of escaping non strings
 

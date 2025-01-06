@@ -51,7 +51,11 @@ test_that("can handle line breaks", {
 test_that("headers are parsed", {
   expect_equal(
     curl_normalize("curl http://x.com -H 'A: 1'")$headers,
-    as_headers("A: 1")
+    new_headers(list(A = "1"))
+  )
+  expect_equal(
+    curl_normalize("curl http://x.com -H 'B:'")$headers,
+    new_headers(list(B = ""))
   )
 })
 
@@ -144,6 +148,14 @@ test_that("can translate ocokies", {
   expect_snapshot({
     curl_translate("curl 'http://test' -H 'Cookie: x=1; y=2;z=3'")
   })
+})
+
+test_that("content type stays in header if no data", {
+  skip_if(getRversion() < "4.1")
+
+  expect_snapshot(
+    curl_translate("curl http://example.com -H Content-Type:text/plain")
+  )
 })
 
 test_that("can evaluate simple calls", {

@@ -52,6 +52,17 @@ test_that("can set query params", {
   expect_equal(req_url_query(req, !!!list(a = 1, a = 2))$url, "http://example.com/?a=1&a=2")
 })
 
+test_that("can control space handling", {
+  req <- request("http://example.com/")
+  expect_equal(req_url_query(req, a = " ")$url, "http://example.com/?a=%20")
+  expect_equal(req_url_query(req, a = " ", .space = "form")$url, "http://example.com/?a=+")
+
+  expect_snapshot(
+    req_url_query(req, a = " ", .space = "bar"),
+    error = TRUE
+  )
+})
+
 test_that("can handle multi query params", {
   req <- request("http://example.com/")
 

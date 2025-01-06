@@ -1,5 +1,6 @@
 multi_dots <- function(...,
                        .multi = c("error", "comma", "pipe", "explode"),
+                       .space = c("percent", "form"),
                        error_arg = "...",
                        error_call = caller_env()) {
   if (is.function(.multi)) {
@@ -7,6 +8,8 @@ multi_dots <- function(...,
   } else {
     .multi <- arg_match(.multi, error_arg = ".multi", error_call = error_call)
   }
+  .space <- arg_match(.space, call = error_call)
+  form <- .space == "form"
 
   dots <- list2(...)
   if (length(dots) == 0) {
@@ -31,20 +34,20 @@ multi_dots <- function(...,
   n <- lengths(dots)
   if (any(n > 1)) {
     if (is.function(.multi)) {
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
+    dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
       dots[n > 1] <- lapply(dots[n > 1], .multi)
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "comma") {
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
       dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = ",")
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "pipe") {
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
       dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = "|")
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "explode") {
       dots <- explode(dots)
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE)
+      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "error") {
       cli::cli_abort(
@@ -58,7 +61,12 @@ multi_dots <- function(...,
   }
 
   # Format other params
-  dots[n == 1] <- imap(dots[n == 1], format_query_param, error_call = error_call)
+  dots[n == 1] <- imap(
+    dots[n == 1],
+    format_query_param,
+    form = form,
+    error_call = error_call
+  )
   dots[n == 1] <- lapply(dots[n == 1], I)
 
   dots

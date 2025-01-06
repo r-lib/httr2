@@ -207,7 +207,7 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
   lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
 
   for (line in lines) {
-    if (grepl(":", line, fixed = TRUE)) {
+    if (grepl("^[-a-zA-z0-9]+:", line)) {
       header <- headers_redact(as_headers(line), redact, to_redact = to_redact)
       cli::cat_line(prefix, cli::style_bold(names(header)), ": ", header)
     } else {
