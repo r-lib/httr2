@@ -50,7 +50,7 @@ example_url <- function() {
   env_cache(the, "test_app",
     webfakes::new_app_process(
       app,
-      opts = webfakes::server_opts(num_threads = 2)
+      opts = webfakes::server_opts(num_threads = 6, enable_keep_alive = TRUE)
     )
   )
   the$test_app$url()

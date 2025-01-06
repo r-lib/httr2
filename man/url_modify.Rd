@@ -17,7 +17,12 @@ url_modify(
   fragment = unchanged
 )
 
-url_modify_query(url, ..., .multi = c("error", "comma", "pipe", "explode"))
+url_modify_query(
+  url,
+  ...,
+  .multi = c("error", "comma", "pipe", "explode"),
+  .space = c("percent", "form")
+)
 }
 \arguments{
 \item{url}{A string or \href{url_parse}{parsed URL}.}
@@ -54,6 +59,10 @@ If you want to opt out of escaping, wrap strings in \code{I()}.}
 If none of these options work for your needs, you can instead supply a
 function that takes a character vector of argument values and returns a
 a single string.}
+
+\item{.space}{How should spaces in query params be escaped? The default,
+"percent", uses standard percent encoding (i.e. \verb{\%20}), but you can opt-in
+to "form" encoding, which uses \code{+} instead.}
 }
 \value{
 An object of the same type as \code{url}.

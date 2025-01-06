@@ -114,6 +114,17 @@ test_that("can add, modify, and delete query components", {
   )
 })
 
+test_that("can control space formatting", {
+  expect_equal(
+    url_modify_query("http://test/path", new = "a b"),
+    "http://test/path?new=a%20b"
+  )
+  expect_equal(
+    url_modify_query("http://test/path", new = "a b", .space = "form"),
+    "http://test/path?new=a+b"
+  )
+})
+
 test_that("is idempotent", {
   string <- "http://example.com/"
   url <- url_parse(string)
@@ -143,7 +154,7 @@ test_that("missing query values become empty strings", {
 
 test_that("handles equals in values", {
   expect_equal(url_query_parse("?x==&y=="), list(x = "=", y = "="))
- })
+})
 
 test_that("empty queries become NULL", {
   expect_equal(url_query_parse("?"), NULL)

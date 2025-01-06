@@ -8,7 +8,7 @@ bullets_with_header <- function(header, x) {
   as_simple <- function(x) {
     if (is.atomic(x) && length(x) == 1) {
       if (is.character(x)) {
-        paste0("'", x, "'")
+        paste0('"', x, '"')
       } else {
         format(x)
       }
@@ -18,7 +18,9 @@ bullets_with_header <- function(header, x) {
   }
   vals <- map_chr(x, as_simple)
 
-  cli::cli_li(paste0("{.field ", names(x), "}: ", vals))
+  for (i in seq_along(x)) {
+    cli::cli_li("{.field {names(x)[[i]]}}: {vals[[i]]}")
+  }
 }
 
 modify_list <- function(.x, ..., error_call = caller_env()) {

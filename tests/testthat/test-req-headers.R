@@ -30,6 +30,8 @@ test_that("can control which headers to redact", {
   expect_redact(req_headers(req, a = 1L, b = 2L, .redact = c("a", "b")), c("a", "b"))
   expect_redact(req_headers(req, a = 1L, b = 2L, .redact = "a"), "a")
 
+  expect_redact(req_headers_redacted(req, a = 1L, b = 2L), c("a", "b"))
+
   expect_snapshot(error = TRUE, {
     req_headers(req, a = 1L, b = 2L, .redact = 1L)
   })

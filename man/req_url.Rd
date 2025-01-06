@@ -12,7 +12,12 @@ req_url(req, url)
 
 req_url_relative(req, url)
 
-req_url_query(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
+req_url_query(
+  .req,
+  ...,
+  .multi = c("error", "comma", "pipe", "explode"),
+  .space = c("percent", "form")
+)
 
 req_url_path(req, ...)
 
@@ -42,6 +47,10 @@ components that will be combined with \code{/}.}
 If none of these options work for your needs, you can instead supply a
 function that takes a character vector of argument values and returns a
 a single string.}
+
+\item{.space}{How should spaces in query params be escaped? The default,
+"percent", uses standard percent encoding (i.e. \verb{\%20}), but you can opt-in
+to "form" encoding, which uses \code{+} instead.}
 }
 \value{
 A modified HTTP \link{request}.

@@ -66,9 +66,11 @@ req_url_relative <- function(req, url) {
 #' @inheritParams url_modify_query
 req_url_query <- function(.req,
                           ...,
-                          .multi = c("error", "comma", "pipe", "explode")) {
+                          .multi = c("error", "comma", "pipe", "explode"),
+                          .space = c("percent", "form")
+                          ) {
   check_request(.req)
-  url <- url_modify_query(.req$url, ..., .multi = .multi)
+  url <- url_modify_query(.req$url, ..., .multi = .multi, .space = .space)
   req_url(.req, url)
 }
 

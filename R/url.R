@@ -79,7 +79,6 @@ url_modify <- function(url,
                        path = unchanged,
                        query = unchanged,
                        fragment = unchanged) {
-
   if (!is_string(url) && !is_url(url)) {
     stop_input_type(url, "a string or parsed URL")
   }
@@ -145,12 +144,14 @@ is_unchanged <- function(x) identical(x, unchanged)
 #'   If none of these options work for your needs, you can instead supply a
 #'   function that takes a character vector of argument values and returns a
 #'   a single string.
+#' @param .space How should spaces in query params be escaped? The default,
+#'   "percent", uses standard percent encoding (i.e. `%20`), but you can opt-in
+#'   to "form" encoding, which uses `+` instead.
 url_modify_query <- function(
     url,
     ...,
-    .multi = c("error", "comma", "pipe", "explode")
-) {
-
+    .multi = c("error", "comma", "pipe", "explode"),
+    .space = c("percent", "form")) {
   if (!is_string(url) && !is_url(url)) {
     stop_input_type(url, "a string or parsed URL")
   }
@@ -159,7 +160,7 @@ url_modify_query <- function(
     url <- url_parse(url)
   }
 
-  new_query <- multi_dots(..., .multi = .multi)
+  new_query <- multi_dots(..., .multi = .multi, .space = .space)
   if (length(new_query) > 0) {
     url$query <- modify_list(url$query, !!!new_query)
   }
@@ -318,6 +319,7 @@ elements_build <- function(x, name, collapse, error_call = caller_env()) {
 format_query_param <- function(x,
                                name,
                                multi = FALSE,
+                               form = FALSE,
                                error_call = caller_env()) {
   check_query_param(x, name, multi = multi, error_call = error_call)
 
@@ -325,7 +327,11 @@ format_query_param <- function(x,
     unclass(x)
   } else {
     x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
-    curl::curl_escape(x)
+    x <- curl::curl_escape(x)
+    if (form) {
+      x <- gsub("%20", "+", x, fixed = TRUE)
+    }
+    x
   }
 }
 check_query_param <- function(x, name, multi = FALSE, error_call = caller_env()) {
