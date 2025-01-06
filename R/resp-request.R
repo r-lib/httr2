@@ -6,7 +6,7 @@
 #' @inheritParams resp_header
 #' @export
 #' @examples
-#' req <- request_test()
+#' req <- request(example_url())
 #' resp <- req_perform(req)
 #' resp_request(resp)
 resp_request <- function(resp) {
