@@ -2,20 +2,23 @@
 % Please edit documentation in R/url.R
 \name{url_modify}
 \alias{url_modify}
+\alias{url_modify_relative}
 \alias{url_modify_query}
 \title{Modify a URL}
 \usage{
 url_modify(
   url,
-  scheme = unchanged,
-  hostname = unchanged,
-  username = unchanged,
-  password = unchanged,
-  port = unchanged,
-  path = unchanged,
-  query = unchanged,
-  fragment = unchanged
+  scheme = as_is,
+  hostname = as_is,
+  username = as_is,
+  password = as_is,
+  port = as_is,
+  path = as_is,
+  query = as_is,
+  fragment = as_is
 )
+
+url_modify_relative(url, relative_url)
 
 url_modify_query(
   url,
@@ -43,6 +46,8 @@ will be automatically added if omitted.}
 
 \item{fragment}{The fragment, e.g., \verb{#section-1}.}
 
+\item{relative_url}{A relative URL to append to the base URL.}
+
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
 Name-value pairs that define query parameters. Each value must be either
 an atomic vector or \code{NULL} (which removes the corresponding parameters).
@@ -68,12 +73,14 @@ to "form" encoding, which uses \code{+} instead.}
 An object of the same type as \code{url}.
 }
 \description{
-Use \code{url_modify()} to modify the entire URL, or \code{url_modify_query()} to
-modify just the query parameters. Components that aren't specified in the
-function call will be left as is; components set to \code{NULL} will be removed,
-and all other values will be updated.
+Use \code{url_modify()} to modify any component of the URL,
+\code{url_modify_relative()} to modify with a relative URL,
+or \code{url_modify_query()} to modify individual query parameters.
 
-Note that removing \code{scheme} or \code{hostname} will create a relative URL.
+For \code{url_modify()}, components that aren't specified in the
+function call will be left as is; components set to \code{NULL} will be removed,
+and all other values will be updated. Note that removing \code{scheme} or
+\code{hostname} will create a relative URL.
 }
 \examples{
 url_modify("http://hadley.nz", path = "about")
@@ -82,6 +89,14 @@ url_modify("http://hadley.nz/abc", path = "/cde")
 url_modify("http://hadley.nz/abc", path = "")
 url_modify("http://hadley.nz?a=1", query = "b=2")
 url_modify("http://hadley.nz?a=1", query = list(c = 3))
+
+url_modify_query("http://hadley.nz?a=1&b=2", c = 3)
+url_modify_query("http://hadley.nz?a=1&b=2", b = NULL)
+url_modify_query("http://hadley.nz?a=1&b=2", a = 100)
+
+url_modify_relative("http://hadley.nz/a/b/c.html", "/d.html")
+url_modify_relative("http://hadley.nz/a/b/c.html", "d.html")
+url_modify_relative("http://hadley.nz/a/b/c.html", "../d.html")
 }
 \seealso{
 Other URL manipulation: 

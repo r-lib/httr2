@@ -6,6 +6,9 @@
 #' * `req_url_path()` modifies the path
 #' * `req_url_path_append()` adds to the path
 #'
+#' Alternatively, to modify only a URL without creating a request,
+#' you can instead use [url_modify()] and friends.
+#'
 #' @inheritParams req_perform
 #' @param url New URL; completely replaces existing.
 #' @param ... For `req_url_query()`: <[`dynamic-dots`][rlang::dyn-dots]>
@@ -56,9 +59,7 @@ req_url <- function(req, url) {
 #' @rdname req_url
 req_url_relative <- function(req, url) {
   check_request(req)
-
-  new_url <- url_parse(url, base_url = req$url)
-  req_url(req, url_build(new_url))
+  req_url(req, url_modify_relative(req$url, url))
 }
 
 #' @export
@@ -67,8 +68,7 @@ req_url_relative <- function(req, url) {
 req_url_query <- function(.req,
                           ...,
                           .multi = c("error", "comma", "pipe", "explode"),
-                          .space = c("percent", "form")
-                          ) {
+                          .space = c("percent", "form")) {
   check_request(.req)
   url <- url_modify_query(.req$url, ..., .multi = .multi, .space = .space)
   req_url(.req, url)

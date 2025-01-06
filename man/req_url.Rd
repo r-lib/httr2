@@ -62,6 +62,9 @@ A modified HTTP \link{request}.
 \item \code{req_url_path()} modifies the path
 \item \code{req_url_path_append()} adds to the path
 }
+
+Alternatively, to modify only a URL without creating a request,
+you can instead use \code{\link[=url_modify]{url_modify()}} and friends.
 }
 \examples{
 req <- request("http://example.com")

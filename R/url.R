@@ -43,12 +43,14 @@ url_parse <- function(url, base_url = NULL) {
 #' Modify a URL
 #'
 #' @description
-#' Use `url_modify()` to modify the entire URL, or `url_modify_query()` to
-#' modify just the query parameters. Components that aren't specified in the
-#' function call will be left as is; components set to `NULL` will be removed,
-#' and all other values will be updated.
+#' Use `url_modify()` to modify any component of the URL,
+#' `url_modify_relative()` to modify with a relative URL,
+#' or `url_modify_query()` to modify individual query parameters.
 #'
-#' Note that removing `scheme` or `hostname` will create a relative URL.
+#' For `url_modify()`, components that aren't specified in the
+#' function call will be left as is; components set to `NULL` will be removed,
+#' and all other values will be updated. Note that removing `scheme` or
+#' `hostname` will create a relative URL.
 #'
 #' @param url A string or [parsed URL](url_parse).
 #' @param scheme The scheme, typically either `http` or `https`.
@@ -70,15 +72,23 @@ url_parse <- function(url, base_url = NULL) {
 #' url_modify("http://hadley.nz/abc", path = "")
 #' url_modify("http://hadley.nz?a=1", query = "b=2")
 #' url_modify("http://hadley.nz?a=1", query = list(c = 3))
+#'
+#' url_modify_query("http://hadley.nz?a=1&b=2", c = 3)
+#' url_modify_query("http://hadley.nz?a=1&b=2", b = NULL)
+#' url_modify_query("http://hadley.nz?a=1&b=2", a = 100)
+#'
+#' url_modify_relative("http://hadley.nz/a/b/c.html", "/d.html")
+#' url_modify_relative("http://hadley.nz/a/b/c.html", "d.html")
+#' url_modify_relative("http://hadley.nz/a/b/c.html", "../d.html")
 url_modify <- function(url,
-                       scheme = unchanged,
-                       hostname = unchanged,
-                       username = unchanged,
-                       password = unchanged,
-                       port = unchanged,
-                       path = unchanged,
-                       query = unchanged,
-                       fragment = unchanged) {
+                       scheme = as_is,
+                       hostname = as_is,
+                       username = as_is,
+                       password = as_is,
+                       port = as_is,
+                       path = as_is,
+                       query = as_is,
+                       fragment = as_is) {
   if (!is_string(url) && !is_url(url)) {
     stop_input_type(url, "a string or parsed URL")
   }
@@ -87,13 +97,13 @@ url_modify <- function(url,
     url <- url_parse(url)
   }
 
-  if (!is_unchanged(scheme)) check_string(scheme, allow_null = TRUE)
-  if (!is_unchanged(hostname)) check_string(hostname, allow_null = TRUE)
-  if (!is_unchanged(username)) check_string(username, allow_null = TRUE)
-  if (!is_unchanged(password)) check_string(password, allow_null = TRUE)
-  if (!is_unchanged(port)) check_number_whole(port, min = 1, allow_null = TRUE)
-  if (!is_unchanged(path)) check_string(path, allow_null = TRUE)
-  if (!is_unchanged(fragment)) check_string(fragment, allow_null = TRUE)
+  if (!leave_as_is(scheme)) check_string(scheme, allow_null = TRUE)
+  if (!leave_as_is(hostname)) check_string(hostname, allow_null = TRUE)
+  if (!leave_as_is(username)) check_string(username, allow_null = TRUE)
+  if (!leave_as_is(password)) check_string(password, allow_null = TRUE)
+  if (!leave_as_is(port)) check_number_whole(port, min = 1, allow_null = TRUE)
+  if (!leave_as_is(path)) check_string(path, allow_null = TRUE)
+  if (!leave_as_is(fragment)) check_string(fragment, allow_null = TRUE)
 
   if (is_string(query)) {
     query <- url_query_parse(query)
@@ -101,7 +111,7 @@ url_modify <- function(url,
     for (nm in names(query)) {
       check_query_param(query[[nm]], paste0("query$", nm))
     }
-  } else if (!is.null(query) && !is_unchanged(query)) {
+  } else if (!is.null(query) && !leave_as_is(query)) {
     stop_input_type(query, "a character vector, named list, or NULL")
   }
 
@@ -115,7 +125,7 @@ url_modify <- function(url,
     query = query,
     fragment = fragment
   )
-  new <- new[!map_lgl(new, is_unchanged)]
+  new <- new[!map_lgl(new, leave_as_is)]
   url[names(new)] <- new
 
   if (string_url) {
@@ -125,8 +135,26 @@ url_modify <- function(url,
   }
 }
 
-unchanged <- quote(unchanged)
-is_unchanged <- function(x) identical(x, unchanged)
+as_is <- quote(as_is)
+leave_as_is <- function(x) identical(x, as_is)
+
+#' @export
+#' @rdname url_modify
+#' @param relative_url A relative URL to append to the base URL.
+url_modify_relative <- function(url, relative_url) {
+  string_url <- is_string(url)
+  if (!string_url) {
+    url <- url_build(url)
+  }
+
+  new_url <- url_parse(relative_url, base_url = url)
+
+  if (string_url) {
+    url_build(new_url)
+  } else {
+    new_url
+  }
+}
 
 #' @export
 #' @rdname url_modify

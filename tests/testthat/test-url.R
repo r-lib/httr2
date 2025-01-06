@@ -91,6 +91,24 @@ test_that("checks various query formats", {
 test_that("path always starts with /", {
   expect_equal(url_modify("https://x.com/abc", path = "def"), "https://x.com/def")
   expect_equal(url_modify("https://x.com/abc", path = ""), "https://x.com/")
+  expect_equal(url_modify("https://x.com/abc", path = NULL), "https://x.com/")
+})
+
+# relative url ------------------------------------------------------------
+
+test_that("can set relative urls", {
+  base <- "http://example.com/a/b/c/"
+  expect_equal(url_modify_relative(base, "d"), "http://example.com/a/b/c/d")
+  expect_equal(url_modify_relative(base, ".."), "http://example.com/a/b/")
+  expect_equal(url_modify_relative(base, "//archive.org"), "http://archive.org/")
+})
+
+test_that("is idempotent", {
+  string <- "http://example.com/"
+  url <- url_parse(string)
+
+  expect_equal(url_modify_relative(string, "."), string)
+  expect_equal(url_modify_relative(url, "."), url)
 })
 
 # modify query -------------------------------------------------------------
