@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * `curl_translate()` now translates cookie headers to `req_cookies_set()` (#431).
+* `curl_transform()` will now use `req_body_json_modify()` for JSON data (#258).
 * `resp_stream_is_complete()` tells you if there is still data remaining to be streamed (#559).
 * New `url_modify()`, `url_modify_query()`, and `url_modify_relative()` make it easier to modify an existing url (#464).
 * New `url_query_parse()` and `url_query_build()` allow you to parse and build a query string (#425).
