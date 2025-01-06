@@ -17,7 +17,7 @@ Depends:
     R (>= 4.0)
 Imports:
     cli (>= 3.0.0),
-    curl (>= 6.0.1),
+    curl (>= 6.1.0),
     glue,
     lifecycle,
     magrittr,
