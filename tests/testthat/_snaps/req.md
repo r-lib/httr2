@@ -20,6 +20,18 @@
       POST https://example.com
       Body: multipart encoded data
 
+# printing headers works with {}
+
+    Code
+      req_headers(request("http://test"), x = "{z}", `{z}` = "x")
+    Message
+      <httr2_request>
+      GET http://test
+      Headers:
+      * x: "{z}"
+      * {z}: "x"
+      Body: empty
+
 # individually prints repeated headers
 
     Code
@@ -28,9 +40,9 @@
       <httr2_request>
       GET https://example.com
       Headers:
-      * A: '1'
-      * A: '2'
-      * A: '3'
+      * A: "1"
+      * A: "2"
+      * A: "3"
       Body: empty
 
 # check_request() gives useful error

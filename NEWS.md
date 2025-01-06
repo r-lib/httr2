@@ -2,6 +2,9 @@
 
 * `print.request()` now correctly escapes `{}` in headers (#586).
 * New `req_headers_redacted()` provides a user-friendlier way to set redacted headers (#561).
+* New `resp_request()` aids debugging by returning the request associated with a response (#604).
+* `print.request()` now correctly escapes `{}` in headers (#586).
+* New `req_headers_redacted()` provides a user-friendlier way to set redacted headers (#561).
 * `resp_link_url()` now works if there are multiple `Link` headers (#587).
 * New `url_modify()` makes it easier to modify an existing url (#464).
 * New `req_url_relative()` for constructing relative urls (#449).
