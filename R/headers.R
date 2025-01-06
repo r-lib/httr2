@@ -1,15 +1,11 @@
 as_headers <- function(x, error_call = caller_env()) {
   if (is.character(x) || is.raw(x)) {
-    headers <- curl::parse_headers(x)
-    headers <- headers[grepl(":", headers, fixed = TRUE)]
+    parsed <- curl::parse_headers(x)
+    valid <- parsed[grepl(":", parsed, fixed = TRUE)]
+    halves <- parse_in_half(valid, ":")
 
-    equals <- regexpr(":", headers, fixed = TRUE)
-    pieces <- regmatches(headers, equals, invert = TRUE)
-
-    names <- map_chr(pieces, "[[", 1)
-    values <- as.list(trimws(map_chr(pieces, "[[", 2)))
-
-    new_headers(set_names(values, names), error_call = error_call)
+    headers <- set_names(trimws(halves$right), halves$left)
+    new_headers(as.list(headers), error_call = error_call)
   } else if (is.list(x)) {
     new_headers(x, error_call = error_call)
   } else {

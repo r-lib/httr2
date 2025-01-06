@@ -1,3 +1,11 @@
+# can control space handling
+
+    Code
+      req_url_query(req, a = " ", .space = "bar")
+    Condition
+      Error in `multi_dots()`:
+      ! `.space` must be one of "percent" or "form", not "bar".
+
 # can handle multi query params
 
     Code

@@ -2,6 +2,7 @@
 % Please edit documentation in R/req-url.R
 \name{req_url}
 \alias{req_url}
+\alias{req_url_relative}
 \alias{req_url_query}
 \alias{req_url_path}
 \alias{req_url_path_append}
@@ -9,7 +10,14 @@
 \usage{
 req_url(req, url)
 
-req_url_query(.req, ..., .multi = c("error", "comma", "pipe", "explode"))
+req_url_relative(req, url)
+
+req_url_query(
+  .req,
+  ...,
+  .multi = c("error", "comma", "pipe", "explode"),
+  .space = c("percent", "form")
+)
 
 req_url_path(req, ...)
 
@@ -40,6 +48,10 @@ containing multiple values:
 If none of these options work for your needs, you can instead supply a
 function that takes a character vector of argument values and returns a
 a single string.}
+
+\item{.space}{How should spaces in query params be escaped? The default,
+"percent", uses standard percent encoding (i.e. \verb{\%20}), but you can opt-in
+to "form" encoding, which uses \code{+} instead.}
 }
 \value{
 A modified HTTP \link{request}.
@@ -65,6 +77,11 @@ req |>
 # Change complete url
 req |>
   req_url("http://google.com")
+
+# Use a relative url
+req <- request("http://example.com/a/b/c")
+req |> req_url_relative("..")
+req |> req_url_relative("/d/e/f")
 
 # Use .multi to control what happens with vector parameters:
 req |> req_url_query(id = 100:105, .multi = "comma")
