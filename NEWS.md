@@ -9,12 +9,8 @@
 * New `req_url_relative()` for constructing relative urls (#449).
 * `url_parse()` gains `base_url` argument so you can also use it to parse relative URLs (#449).
 * `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
-* `req_retry()` now defaults to `max_tries = 2` with a message.
-  Set to `max_tries = 1` to disable retries.
-
-* Errors thrown during the parsing of an OAuth response now have a dedicated
-  `httr2_oauth_parse` error class that includes the original response object
-  (@atheriel, #596).
+* `req_retry()` now defaults to `max_tries = 2` with a message. Set to `max_tries = 1` to disable retries.
+* Errors thrown during the parsing of an OAuth response now have a dedicated `httr2_oauth_parse` error class that includes the original response object (@atheriel, #596).
 
 # httr2 1.0.7
 
