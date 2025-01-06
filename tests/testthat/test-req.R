@@ -7,6 +7,10 @@ test_that("req has basic print method", {
   })
 })
 
+test_that("printing headers works with {}", {
+  expect_snapshot(req_headers(request("http://test"), x  = "{z}", `{z}` = "x"))
+})
+
 test_that("individually prints repeated headers", {
   expect_snapshot(request("https://example.com") %>% req_headers(A = 1:3))
 })
@@ -18,7 +22,7 @@ test_that("print method obfuscates Authorization header unless requested", {
   expect_false(any(grepl("SECRET", output, fixed = TRUE)))
 
   output <- testthat::capture_messages(print(req, redact_headers = FALSE))
-  expect_true(any(grepl("Authorization: 'Basic", output, fixed = TRUE)))
+  expect_true(any(grepl("Authorization: \"Basic", output, fixed = TRUE)))
   expect_false(any(grepl("REDACTED", output, fixed = TRUE)))
 })
 
