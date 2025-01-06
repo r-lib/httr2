@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_connection()` gains a `verbosity` argument, which is useful for understanding exactly how data is streamed back to you (#599).
 * `curl_transform()` will now use `req_body_json_modify()` for JSON data (#258).
 * `resp_stream_is_complete()` tells you if there is still data remaining to be streamed (#559).
 * New `url_modify()`, `url_modify_query()`, and `url_modify_relative()` make it easier to modify an existing url (#464).

@@ -274,6 +274,28 @@ test_that("streaming size limits enforced", {
   )
 })
 
+test_that("verbosity = 2 streams request bodies", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("line 1\n")
+    res$send_chunk("line 2\n")
+  })
+
+  stream_all <- function(req, fun, ...) {
+    con <- req_perform_connection(req, blocking = TRUE, verbosity = 2)
+    on.exit(close(con))
+    while (!resp_stream_is_complete(con)) {
+      fun(con, ...)
+    }
+  }
+  expect_snapshot(
+    {
+      stream_all(req, resp_stream_lines, 1)
+      stream_all(req, resp_stream_raw, 5 / 1024)
+    },
+    transform = function(lines) lines[!grepl("^(<-|->)", lines)]
+  )
+})
+
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {
     buffer <- charToRaw(x)
