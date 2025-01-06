@@ -24,6 +24,75 @@
       Error in `url_build()`:
       ! Cannot set url `password` without `username`.
 
+# url_build validates its input
+
+    Code
+      url_build("abc")
+    Condition
+      Error in `url_build()`:
+      ! `url` must be a parsed URL, not the string "abc".
+
+# url_modify checks its inputs
+
+    Code
+      url_modify(1)
+    Condition
+      Error in `url_modify()`:
+      ! `url` must be a string or parsed URL, not the number 1.
+    Code
+      url_modify(url, scheme = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `scheme` must be a single string or `NULL`, not the number 1.
+    Code
+      url_modify(url, hostname = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `hostname` must be a single string or `NULL`, not the number 1.
+    Code
+      url_modify(url, port = "x")
+    Condition
+      Error in `url_modify()`:
+      ! `port` must be a whole number or `NULL`, not the string "x".
+    Code
+      url_modify(url, username = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `username` must be a single string or `NULL`, not the number 1.
+    Code
+      url_modify(url, password = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `password` must be a single string or `NULL`, not the number 1.
+    Code
+      url_modify(url, path = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `path` must be a single string or `NULL`, not the number 1.
+    Code
+      url_modify(url, fragment = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `fragment` must be a single string or `NULL`, not the number 1.
+
+# checks various query formats
+
+    Code
+      url_modify(url, query = 1)
+    Condition
+      Error in `url_modify()`:
+      ! `query` must be a character vector, named list, or NULL, not the number 1.
+    Code
+      url_modify(url, query = list(1))
+    Condition
+      Error in `url_modify()`:
+      ! `query` must be a character vector, named list, or NULL, not a list.
+    Code
+      url_modify(url, query = list(x = 1:2))
+    Condition
+      Error in `url_modify()`:
+      ! Query value `query$x` must be a length-1 atomic vector, not an integer vector.
+
 # validates inputs
 
     Code
