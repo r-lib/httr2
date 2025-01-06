@@ -45,7 +45,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li><p>New <code><a href="../reference/url_modify.html">url_modify()</a></code> makes it easier to modify an existing url (<a href="https://github.com/r-lib/httr2/issues/464" class="external-link">#464</a>).</p></li>
+<ul><li><p><code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> now works if there are multiple <code>Link</code> headers (<a href="https://github.com/r-lib/httr2/issues/587" class="external-link">#587</a>).</p></li>
+<li><p>New <code><a href="../reference/url_modify.html">url_modify()</a></code> makes it easier to modify an existing url (<a href="https://github.com/r-lib/httr2/issues/464" class="external-link">#464</a>).</p></li>
 <li><p>New <code><a href="../reference/req_url.html">req_url_relative()</a></code> for constructing relative urls (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</p></li>
 <li><p><code><a href="../reference/url_parse.html">url_parse()</a></code> gains <code>base_url</code> argument so you can also use it to parse relative URLs (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</p></li>
 <li><p><code><a href="../reference/url_parse.html">url_parse()</a></code> now uses <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html" class="external-link">curl::curl_parse_url()</a></code> which is much faster and more correct (<a href="https://github.com/r-lib/httr2/issues/577" class="external-link">#577</a>).</p></li>
