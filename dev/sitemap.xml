@@ -70,6 +70,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/resp_headers.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/resp_link_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/resp_raw.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/resp_request.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/resp_retry_after.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/resp_status.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/resp_stream_raw.html</loc></url>
