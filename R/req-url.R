@@ -11,6 +11,7 @@
 #' * To modify a URL without creating a request, see [url_modify()] and
 #'   friends.
 #' * To use a template like `GET /user/{user}`, see [req_template()].
+#' @inheritParams req_perform
 #' @param url A new URL; either an absolute URL for `req_url()` or a
 #'   relative URL for `req_url_relative()`.
 #' @param ... For `req_url_query()`: <[`dynamic-dots`][rlang::dyn-dots]>

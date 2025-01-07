@@ -24,6 +24,8 @@ req_url_path(req, ...)
 req_url_path_append(req, ...)
 }
 \arguments{
+\item{req, .req}{A httr2 \link{request} object.}
+
 \item{url}{A new URL; either an absolute URL for \code{req_url()} or a
 relative URL for \code{req_url_relative()}.}
 
