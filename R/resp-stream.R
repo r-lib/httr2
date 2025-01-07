@@ -253,7 +253,7 @@ split_buffer <- function(buffer, split_at) {
 #   the vector
 # @param include_trailer If TRUE, at the end of the response, if there are
 #   bytes after the last boundary, then return those bytes; if FALSE, then those
-#   bytes are silently discarded.
+#   bytes are discarded with a warning.
 resp_boundary_pushback <- function(resp, max_size, boundary_func, include_trailer) {
   check_streaming_response(resp)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
@@ -297,24 +297,27 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
       # one extra byte so we know to error.
       n = min(chunk_size, max_size - length(buffer) + 1)
     )
-
     print_buffer(chunk, "Received chunk")
 
-    # If we've reached the end of input, store the buffer and return NULL
     if (length(chunk) == 0) {
       if (!isIncomplete(resp$body)) {
         # We've truly reached the end of the connection; no more data is coming
-        if (include_trailer && length(buffer) > 0) {
-          return(buffer)
-        } else {
+        if (length(buffer) == 0) {
           return(NULL)
+        } else {
+          if (include_trailer) {
+            return(buffer)
+          } else {
+            cli::cli_warn("Premature end of input; ignoring final partial chunk")
+            return(NULL)
+          }
         }
+      } else {
+        # More data might come later; store the buffer and return NULL
+        print_buffer(buffer, "Storing incomplete buffer")
+        resp$cache$push_back <- buffer
+        return(NULL)
       }
-
-      # More data might come later
-      print_buffer(buffer, "Storing incomplete buffer")
-      resp$cache$push_back <- buffer
-      return(NULL)
     }
 
     # More data was received; combine it with existing buffer and continue the

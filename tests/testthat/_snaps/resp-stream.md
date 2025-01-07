@@ -1,3 +1,11 @@
+# can determine if incomplete data is complete
+
+    Code
+      expect_equal(resp_stream_sse(con), NULL)
+    Condition
+      Warning:
+      Premature end of input; ignoring final partial chunk
+
 # can't read from a closed connection
 
     Code

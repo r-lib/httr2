@@ -35,6 +35,19 @@ test_that("can determine if a stream is complete (non-blocking)", {
   expect_true(resp_stream_is_complete(resp))
 })
 
+test_that("can determine if incomplete data is complete", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("data: 1\n\n")
+    res$send_chunk("data: ")
+  })
+
+  con <- req %>% req_perform_connection(blocking = TRUE)
+  expect_equal(resp_stream_sse(con, 10), list(type = "message", data = "1", id = character()))
+  expect_snapshot(expect_equal(resp_stream_sse(con), NULL))
+  expect_true(resp_stream_is_complete(con))
+  close(con)
+})
+
 test_that("can't read from a closed connection", {
   resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
   close(resp)
