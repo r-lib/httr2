@@ -107,8 +107,7 @@ req_perform <- function(
 
   delay <- 0
   while (tries < max_tries && Sys.time() < deadline) {
-
-    # retry_check_breaker(req, tries, error_call = error_call)
+    retry_check_breaker(req, tries, error_call = error_call)
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
