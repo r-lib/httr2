@@ -5,6 +5,7 @@
 #' exported from httr2 for convenience.
 #'
 #' @export
+#' @examples
 #' is_online()
 is_online <- function() {
   curl::has_internet()
