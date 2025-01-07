@@ -11,7 +11,10 @@ req_retry(
   retry_on_failure = FALSE,
   is_transient = NULL,
   backoff = NULL,
-  after = NULL
+  after = NULL,
+  failure_threshold = Inf,
+  failure_timeout = 30,
+  failure_realm = NULL
 )
 }
 \arguments{
@@ -38,6 +41,13 @@ attempts so far) and returns the number of seconds to wait.}
 returns either a number of seconds to wait or \code{NA}. \code{NA} indicates
 that a precise wait time is not available and that the \code{backoff} strategy
 should be used instead.}
+
+\item{failure_threshold, failure_timeout, failure_realm}{Set \code{failure_threshold} to activate "circuit breaking" where if a request
+continues to fail after \code{failure_threshold} times, cause the request to
+error until a timeout of \code{failure_timeout} seconds has elapsed. This
+timeout will persist across all requests with the same \code{failure_realm}
+(which defaults to the hostname of the request) and is intended to detect
+failing servers without needing to wait each time.}
 }
 \value{
 A modified HTTP \link{request}.
