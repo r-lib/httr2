@@ -12,90 +12,90 @@ development:
   mode: auto
 
 reference:
-- title: Requests
-  subtitle: Create and modify
-  contents:
-  - request
-  - req_body
-  - req_cookie_preserve
-  - req_headers
-  - req_method
-  - req_options
-  - req_progress
-  - req_proxy
-  - req_template
-  - req_timeout
-  - req_url
-  - req_user_agent
+  - title: Requests
+    subtitle: Create and modify
+    contents:
+      - request
+      - req_body
+      - req_cookie_preserve
+      - req_headers
+      - req_method
+      - req_options
+      - req_progress
+      - req_proxy
+      - req_template
+      - req_timeout
+      - req_url
+      - req_user_agent
 
-- subtitle: Debugging/testing
-  contents:
-  - last_request
-  - req_dry_run
-  - req_verbose
-  - with_mock
-  - with_verbosity
+  - subtitle: Debugging/testing
+    contents:
+      - last_request
+      - req_dry_run
+      - req_verbose
+      - with_mock
+      - with_verbosity
 
-- subtitle: Authentication
-  contents:
-  - starts_with("req_auth")
-  - starts_with("req_oauth")
+  - subtitle: Authentication
+    contents:
+      - starts_with("req_auth")
+      - starts_with("req_oauth")
 
-- title: Perform a request
-  contents:
-  - req_perform
-  - req_perform_stream
-  - req_perform_connection
-  - req_perform_promise
+  - title: Perform a request
+    contents:
+      - req_perform
+      - req_perform_stream
+      - req_perform_connection
+      - req_perform_promise
 
-- subtitle: Control the process
-  desc: >
-    These functions don't modify the HTTP request that is sent to the server,
-    but affect the overall process of `req_perform()`.
-  contents:
-  - req_cache
-  - req_error
-  - req_throttle
-  - req_retry
+  - subtitle: Control the process
+    desc: >
+      These functions don't modify the HTTP request that is sent to the server,
+      but affect the overall process of `req_perform()`.
+    contents:
+      - req_cache
+      - req_error
+      - req_throttle
+      - req_retry
 
-- title: Perform multiple requests
-  contents:
-  - req_perform_iterative
-  - req_perform_parallel
-  - req_perform_sequential
-  - starts_with("iterate_")
-  - starts_with("resps_")
+  - title: Perform multiple requests
+    contents:
+      - req_perform_iterative
+      - req_perform_parallel
+      - req_perform_sequential
+      - starts_with("iterate_")
+      - starts_with("resps_")
 
-- title: Handle the response
-  contents:
-  - starts_with("resp_")
+  - title: Handle the response
+    contents:
+      - starts_with("resp_")
 
-- title: URL manipulation
-  contents:
-  - starts_with("url_")
+  - title: URL manipulation
+    contents:
+      - starts_with("url_")
 
-- title: Miscellaenous helpers
-  contents:
-  - curl_translate
-  - secrets
-  - obfuscate
+  - title: Miscellaenous helpers
+    contents:
+      - curl_translate
+      - is_online
+      - secrets
+      - obfuscate
 
-- title: OAuth
-  desc: >
-    These functions implement the low-level components of OAuth.
-  contents:
-  - starts_with("oauth_")
-  - -starts_with("req_oauth")
+  - title: OAuth
+    desc: >
+      These functions implement the low-level components of OAuth.
+    contents:
+      - starts_with("oauth_")
+      - -starts_with("req_oauth")
 
 articles:
-- title: Using httr2
-  navbar: ~
-  contents:
-  - articles/wrapping-apis
-  - articles/oauth
-
+  - title: Using httr2
+    navbar: ~
+    contents:
+      - articles/wrapping-apis
+      - articles/oauth
 
 news:
- releases:
- - text: "httr2 1.0.0"
-   href: https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/
+  releases:
+    - text: "httr2 1.0.0"
+      href: https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/
