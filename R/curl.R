@@ -54,6 +54,13 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
 
   steps <- add_curl_step(steps, "req_url_query", dots = query)
 
+  # Cookies
+  cookies <- data$headers$`Cookie`
+  data$headers$`Cookie` <- NULL
+  if (!is.null(cookies)) {
+    steps <- add_curl_step(steps, "req_cookies_set", dots = cookies_parse(cookies))
+  }
+
   # Content type set with data
   type <- data$headers$`Content-Type`
   if (!identical(data$data, "")) {
@@ -326,6 +333,19 @@ encode_string2 <- function(x) {
   }
 
   names(out) <- names(x)
+  out
+}
+
+cookies_parse <- function(x) {
+  pairs <- strsplit(x, "; ?")[[1]]
+  cookies <- parse_name_equals_value(pairs)
+
+  if (length(cookies) == 0) {
+    return(NULL)
+  }
+
+  out <- as.list(curl::curl_unescape(cookies))
+  names(out) <- curl::curl_unescape(names(cookies))
   out
 }
 
