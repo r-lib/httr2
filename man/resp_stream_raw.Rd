@@ -6,6 +6,7 @@
 \alias{resp_stream_sse}
 \alias{resp_stream_aws}
 \alias{close.httr2_response}
+\alias{resp_stream_is_complete}
 \title{Read a streaming body a chunk at a time}
 \usage{
 resp_stream_raw(resp, kb = 32)
@@ -17,6 +18,8 @@ resp_stream_sse(resp, max_size = Inf)
 resp_stream_aws(resp, max_size = Inf)
 
 \method{close}{httr2_response}(con, ...)
+
+resp_stream_is_complete(resp)
 }
 \arguments{
 \item{resp, con}{A streaming \link{response} created by \code{\link[=req_perform_connection]{req_perform_connection()}}.}
@@ -56,4 +59,7 @@ no event is currently available.
 \item \code{resp_stream_aws()} retrieves a single event from an AWS stream
 (i.e. mime type `application/vnd.amazon.eventstream``).
 }
+
+Use \code{resp_stream_is_complete()} to determine if there is further data
+waiting on the stream.
 }

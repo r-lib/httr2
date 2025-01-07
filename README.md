@@ -148,9 +148,9 @@ resp |> resp_body_html()
 ## Acknowledgements
 
 httr2 wouldn’t be possible without
-[curl](https://jeroen.cran.dev/curl/),
-[openssl](https://github.com/jeroen/openssl/),
-[jsonlite](https://jeroen.cran.dev/jsonlite/), and
+[curl](https://cran.dev/curl/),
+[openssl](https://cran.dev/openssl/),
+[jsonlite](https://cran.dev/jsonlite/), and
 [jose](https://github.com/r-lib/jose/), which are all maintained by
 [Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
 Bryan](https://jennybryan.org) and [Craig

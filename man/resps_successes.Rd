@@ -19,7 +19,11 @@ resps_data(resps, resp_data)
 \item{resps}{A list of responses (possibly including errors).}
 
 \item{resp_data}{A function that takes a response (\code{resp}) and
-returns the data found inside that response as a vector or data frame.}
+returns the data found inside that response as a vector or data frame.
+
+NB: If you're using \code{\link[=resp_body_raw]{resp_body_raw()}}, you're likely to want to wrap its
+output in \code{list()} to avoid combining all the bodies into a single raw
+vector, e.g. \verb{resps |> resps_data(\\(resp) list(resp_body_raw(resp)))}.}
 }
 \description{
 These function provide a basic toolkit for operating with lists of
@@ -47,8 +51,12 @@ resps <- req_perform_parallel(reqs, on_error = "continue")
 resps |> resps_successes()
 
 # collect all their data
-resps |> resps_successes() |> resps_data(\(resp) resp_body_json(resp))
+resps |>
+  resps_successes() |>
+  resps_data(\(resp) resp_body_json(resp))
 
 # find requests corresponding to failure responses
-resps |> resps_failures() |> resps_requests()
+resps |>
+  resps_failures() |>
+  resps_requests()
 }

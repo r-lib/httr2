@@ -16,6 +16,11 @@
 #' @param resps A list of responses (possibly including errors).
 #' @param resp_data A function that takes a response (`resp`) and
 #'   returns the data found inside that response as a vector or data frame.
+#'
+#'   NB: If you're using [resp_body_raw()], you're likely to want to wrap its
+#'   output in `list()` to avoid combining all the bodies into a single raw
+#'   vector, e.g. `resps |> resps_data(\(resp) list(resp_body_raw(resp)))`.
+#'
 #' @examples
 #' reqs <- list(
 #'   request(example_url()) |> req_url_path("/ip"),
@@ -29,10 +34,14 @@
 #' resps |> resps_successes()
 #'
 #' # collect all their data
-#' resps |> resps_successes() |> resps_data(\(resp) resp_body_json(resp))
+#' resps |>
+#'   resps_successes() |>
+#'   resps_data(\(resp) resp_body_json(resp))
 #'
 #' # find requests corresponding to failure responses
-#' resps |> resps_failures() |> resps_requests()
+#' resps |>
+#'   resps_failures() |>
+#'   resps_requests()
 resps_successes <- function(resps) {
   resps[resps_ok(resps)]
 }

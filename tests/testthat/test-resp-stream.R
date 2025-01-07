@@ -1,4 +1,3 @@
-
 test_that("can stream bytes from a connection", {
   resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
   withr::defer(close(resp))
@@ -14,6 +13,26 @@ test_that("can stream bytes from a connection", {
 
   out <- resp_stream_raw(resp, 1)
   expect_length(out, 0)
+})
+
+test_that("can determine if a stream is complete (blocking)", {
+  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
+  withr::defer(close(resp))
+
+  expect_false(resp_stream_is_complete(resp))
+  expect_length(resp_stream_raw(resp, kb = 2), 2048)
+  expect_length(resp_stream_raw(resp, kb = 1), 0)
+  expect_true(resp_stream_is_complete(resp))
+})
+
+test_that("can determine if a stream is complete (non-blocking)", {
+  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection(blocking = FALSE)
+  withr::defer(close(resp))
+
+  expect_false(resp_stream_is_complete(resp))
+  expect_length(resp_stream_raw(resp, kb = 2), 2048)
+  expect_length(resp_stream_raw(resp, kb = 1), 0)
+  expect_true(resp_stream_is_complete(resp))
 })
 
 test_that("can't read from a closed connection", {
@@ -42,7 +61,7 @@ test_that("can join lines across multiple reads", {
   expect_equal(out, character())
   expect_equal(resp1$cache$push_back, charToRaw("This is a "))
 
-  while(length(out) == 0) {
+  while (length(out) == 0) {
     Sys.sleep(0.1)
     out <- resp_stream_lines(resp1)
   }
@@ -147,7 +166,7 @@ test_that("streams the specified number of lines", {
 
 test_that("can feed sse events one at a time", {
   req <- local_app_request(function(req, res) {
-    for(i in 1:3) {
+    for (i in 1:3) {
       res$send_chunk(sprintf("data: %s\n\n", i))
     }
   })
@@ -185,7 +204,7 @@ test_that("can join sse events across multiple reads", {
   expect_equal(out, NULL)
   expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
 
-  while(is.null(out)) {
+  while (is.null(out)) {
     Sys.sleep(0.1)
     out <- resp_stream_sse(resp1)
   }
@@ -213,7 +232,7 @@ test_that("sse always interprets data as UTF-8", {
     withr::defer(close(resp1))
 
     out <- NULL
-    while(is.null(out)) {
+    while (is.null(out)) {
       Sys.sleep(0.1)
       out <- resp_stream_sse(resp1)
     }
@@ -236,7 +255,7 @@ test_that("streaming size limits enforced", {
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
   expect_error(
-    while(is.null(out)) {
+    while (is.null(out)) {
       Sys.sleep(0.1)
       out <- resp_stream_sse(resp1, max_size = 999)
     }
@@ -266,7 +285,7 @@ test_that("has a working find_event_boundary", {
     }
     expect_identical(
       result,
-      list(matched=charToRaw(matched), remaining = charToRaw(remaining))
+      list(matched = charToRaw(matched), remaining = charToRaw(remaining))
     )
   }
 

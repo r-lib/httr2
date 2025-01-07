@@ -142,6 +142,23 @@ test_that("can translate data", {
   })
 })
 
+test_that("can translate ocokies", {
+  skip_if(getRversion() < "4.1")
+
+  expect_snapshot({
+    curl_translate("curl 'http://test' -H 'Cookie: x=1; y=2;z=3'")
+  })
+})
+
+test_that("can translate json", {
+  skip_if(getRversion() < "4.1")
+
+  expect_snapshot({
+    curl_translate(r"--{curl http://example.com --data-raw '{"a": 1, "b": "text"}' -H Content-Type:application/json}--")
+    curl_translate(r"--{curl http://example.com --json '{"a": 1, "b": "text"}'}--")
+  })
+})
+
 test_that("content type stays in header if no data", {
   skip_if(getRversion() < "4.1")
 
