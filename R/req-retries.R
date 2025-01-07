@@ -50,6 +50,13 @@
 #'   returns either a number of seconds to wait or `NA`. `NA` indicates
 #'   that a precise wait time is not available and that the `backoff` strategy
 #'   should be used instead.
+#' @param failure_threshold,failure_timeout,failure_realm
+#'   Set `failure_threshold` to activate "circuit breaking" where if a request
+#'   continues to fail after `failure_threshold` times, cause the request to
+#'   error until a timeout of `failure_timeout` seconds has elapsed. This
+#'   timeout will persist across all requests with the same `failure_realm`
+#'   (which defaults to the hostname of the request) and is intended to detect
+#'   failing servers without needing to wait each time.
 #' @returns A modified HTTP [request].
 #' @export
 #' @seealso [req_throttle()] if the API has a rate-limit but doesn't expose
@@ -85,11 +92,16 @@ req_retry <- function(req,
                       retry_on_failure = FALSE,
                       is_transient = NULL,
                       backoff = NULL,
-                      after = NULL) {
+                      after = NULL,
+                      failure_threshold = Inf,
+                      failure_timeout = 30,
+                      failure_realm = NULL) {
 
   check_request(req)
   check_number_whole(max_tries, min = 1, allow_null = TRUE)
   check_number_whole(max_seconds, min = 0, allow_null = TRUE)
+  check_number_whole(failure_threshold, min = 1, allow_infinite = TRUE)
+  check_number_whole(failure_timeout, min = 1)
 
   if (is.null(max_tries) && is.null(max_seconds)) {
     max_tries <- 2
@@ -104,7 +116,10 @@ req_retry <- function(req,
     retry_on_failure = retry_on_failure,
     retry_is_transient = as_callback(is_transient, 1, "is_transient"),
     retry_backoff = as_callback(backoff, 1, "backoff"),
-    retry_after = as_callback(after, 1, "after")
+    retry_after = as_callback(after, 1, "after"),
+    retry_failure_threshold = failure_threshold,
+    retry_failure_timeout = failure_timeout,
+    retry_realm = failure_realm %||% url_parse(req$url)$hostname
   )
 }
 
@@ -115,6 +130,38 @@ retry_max_tries <- function(req) {
 
 retry_max_seconds <- function(req) {
   req$policies$retry_max_wait %||% Inf
+}
+
+retry_check_breaker <- function(req, i, error_call = caller_env()) {
+  realm <- req$policies$retry_realm
+  if (is.null(realm)) {
+    return(invisible())
+  }
+
+  now <- unix_time()
+  if (env_has(the$breaker, realm)) {
+    triggered <- the$breaker[[realm]]
+  } else if (i > req$policies$retry_failure_threshold) {
+    the$breaker[[realm]] <- triggered <- now
+  } else {
+    return(invisible())
+  }
+
+  remaining <- req$policies$retry_failure_timeout - (now - triggered)
+  if (remaining <= 0) {
+    env_unbind(the$breaker, realm)
+  } else {
+    cli::cli_abort(
+      c(
+         "Request failures have exceeded the threshold for realm {.str {realm}}.",
+        i = "The server behind {.str {realm}} is likely still overloaded or down.",
+        i = "Wait {remaining} seconds before retrying."
+
+      ),
+      call = error_call,
+      class = "httr2_breaker"
+    )
+  }
 }
 
 retry_is_transient <- function(req, resp) {

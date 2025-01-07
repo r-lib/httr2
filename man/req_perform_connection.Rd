@@ -26,8 +26,6 @@ Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of 
 you can't affect directly.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Use \code{req_perform_connection()} to perform a request if you want to stream the
 response body. A response returned by \code{req_perform_connection()} includes a
 connection as the body. You can then use \code{\link[=resp_stream_raw]{resp_stream_raw()}},

@@ -1,8 +1,6 @@
 #' Perform a request and return a streaming connection
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
-#'
 #' Use `req_perform_connection()` to perform a request if you want to stream the
 #' response body. A response returned by `req_perform_connection()` includes a
 #' connection as the body. You can then use [resp_stream_raw()],
@@ -50,6 +48,7 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   deadline <- Sys.time() + retry_max_seconds(req)
   resp <- NULL
   while (tries < max_tries && Sys.time() < deadline) {
+    retry_check_breaker(req, tries)
     sys_sleep(delay, "for retry backoff")
 
     if (!is.null(resp)) {
@@ -59,6 +58,7 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
+
       delay <- retry_after(req, resp, tries)
       signal(class = "httr2_retry", tries = tries, delay = delay)
     } else {

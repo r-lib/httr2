@@ -35,6 +35,12 @@ successful (since the \code{callback} function will have handled it). The body
 will contain the HTTP response body if the request was unsuccessful.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+
+We now recommend \code{\link[=req_perform_connection]{req_perform_connection()}} since it has a considerably more
+flexible interface. Unless I hear compelling reasons otherwise, I'm likely
+to deprecate \code{req_perform_stream()} in a future release.
+
 After preparing a request, call \code{req_perform_stream()} to perform the request
 and handle the result with a streaming callback. This is useful for
 streaming HTTP APIs where potentially the stream never ends.
