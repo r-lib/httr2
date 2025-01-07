@@ -2,8 +2,6 @@
 #' Perform a request and return a streaming connection
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
-#'
 #' Use `req_perform_connection()` to perform a request if you want to stream the
 #' response body. A response returned by `req_perform_connection()` includes a
 #' connection as the body. You can then use [resp_stream_raw()],

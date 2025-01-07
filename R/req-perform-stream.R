@@ -1,6 +1,12 @@
 #' Perform a request and handle data as it streams back
 #'
 #' @description
+#' `r lifecycle::badge("superseded")`
+#'
+#' We now recommend [req_perform_connection()] since it has a considerably more
+#' flexible interface. Unless I hear compelling reasons otherwise, I'm likely
+#' to deprecate `req_perform_stream()` in a future release.
+#'
 #' After preparing a request, call `req_perform_stream()` to perform the request
 #' and handle the result with a streaming callback. This is useful for
 #' streaming HTTP APIs where potentially the stream never ends.
