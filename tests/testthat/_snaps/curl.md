@@ -104,6 +104,19 @@
         req_body_raw("abcdef", "text/plain") |> 
         req_perform()
 
+# can translate ocokies
+
+    Code
+      curl_translate("curl 'http://test' -H 'Cookie: x=1; y=2;z=3'")
+    Output
+      request("http://test/") |> 
+        req_cookies_set(
+          x = "1",
+          y = "2",
+          z = "3",
+        ) |> 
+        req_perform()
+
 # can translate json
 
     Code
