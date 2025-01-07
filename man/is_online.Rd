@@ -11,3 +11,6 @@ This function uses some cheap heuristics to determine if your computer is
 currently online. It's a simple wrapper around \code{\link[curl:nslookup]{curl::has_internet()}}
 exported from httr2 for convenience.
 }
+\examples{
+is_online()
+}
