@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_connection()` is superseded and likely on track for deprecation; `req_perform_stream()` is no longer experimental (#625)
 * Export `is_online()` as thin wrapper around `curl::has_internet()` (#512).
 * `curl_translate()` now translates cookie headers to `req_cookies_set()` (#431).
 * `curl_transform()` will now use `req_body_json_modify()` for JSON data (#258).
