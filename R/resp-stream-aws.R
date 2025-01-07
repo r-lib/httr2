@@ -17,10 +17,10 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   if (resp_stream_is_verbose(resp)) {
     # Emit header
     for (key in names(event$headers)) {
-      cli::cat_line("<< ", key, ": ", event$headers[[key]])
+      log_stream(cli::style_bold(key), ": ", event$headers[[key]])
     }
     # Emit body
-    cli::cat_line("<< ", event$body)
+    log_stream(jsonlite::toJSON(event$body, auto_unbox = TRUE, pretty = TRUE))
     cli::cat_line()
   }
   event

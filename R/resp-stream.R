@@ -51,7 +51,7 @@ resp_stream_raw <- function(resp, kb = 32) {
 
   out <- readBin(conn, raw(), kb * 1024)
   if (resp_stream_is_verbose(resp)) {
-    cli::cat_line("<< Streamed ", length(out), " bytes")
+    log_stream("Streamed ", length(out), " bytes")
     cli::cat_line()
   }
   out
@@ -89,7 +89,7 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   }
 
   if (resp_stream_is_verbose(resp)) {
-    cli::cat_line("<< ", lines_read)
+    log_stream(lines_read)
     cli::cat_line()
   }
 
@@ -111,7 +111,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   event <- parse_event(event_bytes)
   if (resp_stream_is_verbose(resp)) {
     for (key in names(event)) {
-      cli::cat_line("< ", key, ": ", event[[key]])
+      log_stream(cli::style_bold(key), ": ", pretty_json(event[[key]]))
     }
     cli::cat_line()
   }

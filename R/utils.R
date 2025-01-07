@@ -34,7 +34,7 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
     )
   }
 
-  
+
 
   out <- .x[!names(.x) %in% names(dots)]
   out <- c(out, compact(dots))
@@ -331,4 +331,21 @@ slice <- function(vector, start = 1, end = length(vector) + 1) {
 
 is_named_list <- function(x) {
   is_list(x) && (is_named(x) || length(x) == 0)
+}
+
+pretty_json <- function(x) {
+  parsed <- tryCatch(
+    jsonlite::parse_json(x),
+    error = function(e) NULL
+  )
+  if (is.null(parsed)) {
+    x
+  } else {
+    jsonlite::toJSON(parsed, auto_unbox = TRUE, pretty = TRUE)
+  }
+}
+
+log_stream <- function(..., prefix = "<< ") {
+  out <- gsub("\n", paste0("\n", prefix), paste0(prefix, ..., collapse = ""))
+  cli::cat_line(out)
 }
