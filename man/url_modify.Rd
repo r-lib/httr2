@@ -28,7 +28,7 @@ url_modify_query(
 )
 }
 \arguments{
-\item{url, .url}{A string or \href{url_parse}{parsed URL}.}
+\item{url, .url}{A string or \link[=url_parse]{parsed URL}.}
 
 \item{scheme}{The scheme, typically either \code{http} or \code{https}.}
 

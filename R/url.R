@@ -52,7 +52,7 @@ url_parse <- function(url, base_url = NULL) {
 #' and all other values will be updated. Note that removing `scheme` or
 #' `hostname` will create a relative URL.
 #'
-#' @param url,.url A string or [parsed URL](url_parse).
+#' @param url,.url A string or [parsed URL][url_parse()].
 #' @param scheme The scheme, typically either `http` or `https`.
 #' @param hostname The hostname, e.g., `www.google.com` or `posit.co`.
 #' @param username,password Username and password to embed in the URL.
