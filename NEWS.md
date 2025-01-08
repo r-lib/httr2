@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_auth_aws_v4()` correctly formats the Authorization header (#627).
 * `req_perform_stream()` is superseded and likely on track for deprecation; `req_perform_connection()` is no longer experimental (#625)
 * `req_retry()` now optionally implements "circuit breaking" so that if requests to the same server fail many times (i.e. because the server is down), you can choose to immediately error rather than waiting (#370).
 * Export `is_online()` as thin wrapper around `curl::has_internet()` (#512).

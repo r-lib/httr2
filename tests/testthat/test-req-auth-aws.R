@@ -34,17 +34,15 @@ test_that("signing agrees with glacier example", {
     aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
     aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
   )
-  signature_pieces <- strsplit(paste0("Authorization=", signature$Authorization), ",")[[1]]
 
-  known <- list(
-    Authorization = "AWS4-HMAC-SHA256",
-    Credential = "AKIAIOSFODNN7EXAMPLE/20120525/us-east-1/glacier/aws4_request",
-    SignedHeaders = "host;x-amz-date;x-amz-glacier-version",
-    Signature = "3ce5b2f2fffac9262b4da9256f8d086b4aaf42eba5f111c21681a65a127b7c2a"
+  expected <- paste0(
+    "AWS4-HMAC-SHA256 ",
+    "Credential=AKIAIOSFODNN7EXAMPLE/20120525/us-east-1/glacier/aws4_request,",
+    "SignedHeaders=host;x-amz-date;x-amz-glacier-version,",
+    "Signature=3ce5b2f2fffac9262b4da9256f8d086b4aaf42eba5f111c21681a65a127b7c2a"
   )
-  known_signature <- paste0(names(known), "=", known)
 
-  expect_equal(signature_pieces, known_signature)
+  expect_equal(signature$Authorization, expected)
 })
 
 test_that("validates its inputs", {

@@ -186,7 +186,7 @@ aws_v4_signature <- function(method,
   credential <-  file.path(aws_access_key_id, CredentialScope)
 
   Authorization <- paste0(
-    Algorithm, ",",
+    Algorithm, " ",
     "Credential=",    credential, ",",
     "SignedHeaders=", SignedHeaders, ",",
     "Signature=",     signature
