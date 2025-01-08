@@ -16,7 +16,7 @@ test_that("can generate errors with mocking", {
 })
 
 test_that("local_mock and with_mock are deprecated", {
-  expect_snapshot({
+  expect_snapshot(error = TRUE, {
     local_mock(~ response(404))
     . <- with_mock(NULL, ~ response(404))
   })

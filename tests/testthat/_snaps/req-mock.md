@@ -4,13 +4,13 @@
       local_mock(~ response(404))
     Condition
       Warning:
-      `local_mock()` was deprecated in httr2 1.0.0.
+      `local_mock()` was deprecated in httr2 1.1.0.
       i Please use `local_mocked_responses()` instead.
     Code
       . <- with_mock(NULL, ~ response(404))
     Condition
-      Warning:
-      `with_mock()` was deprecated in httr2 1.0.0.
+      Error:
+      ! `with_mock()` was deprecated in httr2 1.1.0 and is now defunct.
       i Please use `with_mocked_responses()` instead.
 
 # validates inputs
