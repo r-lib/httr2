@@ -45,40 +45,7 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>
-<code><a href="../reference/with_mocked_responses.html">with_mock()</a></code> and <code><a href="../reference/with_mocked_responses.html">local_mock()</a></code> are now defunct and will be removed in the next release.</li>
-<li>
-<code><a href="../reference/req_auth_aws_v4.html">req_auth_aws_v4()</a></code> correctly formats the Authorization header (<a href="https://github.com/r-lib/httr2/issues/627" class="external-link">#627</a>).</li>
-<li>
-<code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> is superseded and likely on track for deprecation; <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> is no longer experimental (<a href="https://github.com/r-lib/httr2/issues/625" class="external-link">#625</a>)</li>
-<li>
-<code><a href="../reference/req_retry.html">req_retry()</a></code> now optionally implements “circuit breaking” so that if requests to the same server fail many times (i.e. because the server is down), you can choose to immediately error rather than waiting (<a href="https://github.com/r-lib/httr2/issues/370" class="external-link">#370</a>).</li>
-<li>Export <code><a href="../reference/is_online.html">is_online()</a></code> as thin wrapper around <code><a href="https://jeroen.r-universe.dev/curl/reference/nslookup.html" class="external-link">curl::has_internet()</a></code> (<a href="https://github.com/r-lib/httr2/issues/512" class="external-link">#512</a>).</li>
-<li>
-<code><a href="../reference/curl_translate.html">curl_translate()</a></code> now translates cookie headers to <code><a href="../reference/req_cookie_preserve.html">req_cookies_set()</a></code> (<a href="https://github.com/r-lib/httr2/issues/431" class="external-link">#431</a>).</li>
-<li>
-<code><a href="../reference/curl_translate.html">curl_translate()</a></code> will now use <code><a href="../reference/req_body.html">req_body_json_modify()</a></code> for JSON data (<a href="https://github.com/r-lib/httr2/issues/258" class="external-link">#258</a>).</li>
-<li>
-<code><a href="../reference/resp_stream_raw.html">resp_stream_is_complete()</a></code> tells you if there is still data remaining to be streamed (<a href="https://github.com/r-lib/httr2/issues/559" class="external-link">#559</a>).</li>
-<li>New <code><a href="../reference/url_modify.html">url_modify()</a></code>, <code><a href="../reference/url_modify.html">url_modify_query()</a></code>, and <code><a href="../reference/url_modify.html">url_modify_relative()</a></code> make it easier to modify an existing url (<a href="https://github.com/r-lib/httr2/issues/464" class="external-link">#464</a>).</li>
-<li>New <code><a href="../reference/url_query_parse.html">url_query_parse()</a></code> and <code><a href="../reference/url_query_parse.html">url_query_build()</a></code> allow you to parse and build a query string (<a href="https://github.com/r-lib/httr2/issues/425" class="external-link">#425</a>).</li>
-<li>
-<code><a href="../reference/req_url.html">req_url_query()</a></code> gains the ability to control how spaces are encoded (<a href="https://github.com/r-lib/httr2/issues/432" class="external-link">#432</a>).</li>
-<li>New <code><a href="../reference/resp_request.html">resp_request()</a></code> aids debugging by returning the request associated with a response (<a href="https://github.com/r-lib/httr2/issues/604" class="external-link">#604</a>).</li>
-<li>
-<code>print.request()</code> now correctly escapes <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> in headers (<a href="https://github.com/r-lib/httr2/issues/586" class="external-link">#586</a>).</li>
-<li>New <code><a href="../reference/req_headers.html">req_headers_redacted()</a></code> provides a user-friendlier way to set redacted headers (<a href="https://github.com/r-lib/httr2/issues/561" class="external-link">#561</a>).</li>
-<li>
-<code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> now works if there are multiple <code>Link</code> headers (<a href="https://github.com/r-lib/httr2/issues/587" class="external-link">#587</a>).</li>
-<li>New <code><a href="../reference/req_url.html">req_url_relative()</a></code> for constructing relative urls (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</li>
-<li>
-<code><a href="../reference/url_parse.html">url_parse()</a></code> gains <code>base_url</code> argument so you can also use it to parse relative URLs (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</li>
-<li>
-<code><a href="../reference/url_parse.html">url_parse()</a></code> now uses <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html" class="external-link">curl::curl_parse_url()</a></code> which is much faster and more correct (<a href="https://github.com/r-lib/httr2/issues/577" class="external-link">#577</a>).</li>
-<li>
-<code><a href="../reference/req_retry.html">req_retry()</a></code> now defaults to <code>max_tries = 2</code> with a message. Set to <code>max_tries = 1</code> to disable retries.</li>
-<li>Errors thrown during the parsing of an OAuth response now have a dedicated <code>httr2_oauth_parse</code> error class that includes the original response object (<a href="https://github.com/atheriel" class="external-link">@atheriel</a>, <a href="https://github.com/r-lib/httr2/issues/596" class="external-link">#596</a>).</li>
-</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.7" id="httr2-107">httr2 1.0.7<a class="anchor" aria-label="anchor" href="#httr2-107"></a></h2><p class="text-muted">CRAN release: 2024-11-26</p>
 <ul><li>
