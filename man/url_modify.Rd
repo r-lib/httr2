@@ -21,14 +21,14 @@ url_modify(
 url_modify_relative(url, relative_url)
 
 url_modify_query(
-  url,
+  .url,
   ...,
   .multi = c("error", "comma", "pipe", "explode"),
   .space = c("percent", "form")
 )
 }
 \arguments{
-\item{url}{A string or \href{url_parse}{parsed URL}.}
+\item{url, .url}{A string or \href{url_parse}{parsed URL}.}
 
 \item{scheme}{The scheme, typically either \code{http} or \code{https}.}
 

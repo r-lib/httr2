@@ -52,7 +52,7 @@ url_parse <- function(url, base_url = NULL) {
 #' and all other values will be updated. Note that removing `scheme` or
 #' `hostname` will create a relative URL.
 #'
-#' @param url A string or [parsed URL](url_parse).
+#' @param url,.url A string or [parsed URL](url_parse).
 #' @param scheme The scheme, typically either `http` or `https`.
 #' @param hostname The hostname, e.g., `www.google.com` or `posit.co`.
 #' @param username,password Username and password to embed in the URL.
@@ -176,27 +176,27 @@ url_modify_relative <- function(url, relative_url) {
 #'   "percent", uses standard percent encoding (i.e. `%20`), but you can opt-in
 #'   to "form" encoding, which uses `+` instead.
 url_modify_query <- function(
-    url,
+    .url,
     ...,
     .multi = c("error", "comma", "pipe", "explode"),
     .space = c("percent", "form")) {
-  if (!is_string(url) && !is_url(url)) {
-    stop_input_type(url, "a string or parsed URL")
+  if (!is_string(.url) && !is_url(.url)) {
+    stop_input_type(.url, "a string or parsed URL")
   }
-  string_url <- is_string(url)
+  string_url <- is_string(.url)
   if (string_url) {
-    url <- url_parse(url)
+    .url <- url_parse(.url)
   }
 
   new_query <- multi_dots(..., .multi = .multi, .space = .space)
   if (length(new_query) > 0) {
-    url$query <- modify_list(url$query, !!!new_query)
+    .url$query <- modify_list(.url$query, !!!new_query)
   }
 
   if (string_url) {
-    url_build(url)
+    url_build(.url)
   } else {
-    url
+    .url
   }
 }
 
