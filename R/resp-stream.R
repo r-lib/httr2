@@ -1,8 +1,6 @@
 #' Read a streaming body a chunk at a time
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
-#'
 #' * `resp_stream_raw()` retrieves bytes (`raw` vectors).
 #' * `resp_stream_lines()` retrieves lines of text (`character` vectors).
 #' * `resp_stream_sse()` retrieves a single [server-sent
