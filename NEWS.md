@@ -45,9 +45,14 @@
 * `req_retry()` defaults to `max_tries = 2` when nethier `max_tries` nor
   `max_seconds` is set. If you want to disable retries, set `max_tries = 1`.
 
+* `req_perform_connection()` gains a `verbosity` argument, which is useful for
+  understanding exactly how data is streamed back to you (#599).
+
 * `req_url_query()` can control how spaces are encoded with `.space` (#432).
 
 * `resp_link_url()` handles multiple `Link` headers (#587).
+
+* `resp_stream_sse()` will warn if it recieves a partial event.
 
 * `url_parse()` parses relative URLs with new `base_url` argument (#449) and
   the uses faster and more correct `curl::curl_parse_url()` (#577).

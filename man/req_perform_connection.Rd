@@ -4,7 +4,7 @@
 \alias{req_perform_connection}
 \title{Perform a request and return a streaming connection}
 \usage{
-req_perform_connection(req, blocking = TRUE)
+req_perform_connection(req, blocking = TRUE, verbosity = NULL)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -12,6 +12,18 @@ req_perform_connection(req, blocking = TRUE)
 \item{blocking}{When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has (possibly
 nothing)?}
+
+\item{verbosity}{How much information to print? This is a wrapper
+around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control verbosity:
+\itemize{
+\item \code{0}: no output
+\item \code{1}: show headers
+\item \code{2}: show headers and bodies
+\item \code{3}: show headers, bodies, and curl status messages.
+}
+
+Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
+you can't affect directly.}
 }
 \description{
 Use \code{req_perform_connection()} to perform a request if you want to stream the

@@ -9,11 +9,21 @@ resp_stream_aws <- function(resp, max_size = Inf) {
     include_trailer = FALSE
   )
 
-  if (!is.null(event_bytes)) {
-    parse_aws_event(event_bytes)
-  } else {
-    return(NULL)
+  if (is.null(event_bytes)) {
+    return()
   }
+
+  event <- parse_aws_event(event_bytes)
+  if (resp_stream_show_body(resp)) {
+    # Emit header
+    for (key in names(event$headers)) {
+      log_stream(cli::style_bold(key), ": ", event$headers[[key]])
+    }
+    # Emit body
+    log_stream(jsonlite::toJSON(event$body, auto_unbox = TRUE, pretty = TRUE))
+    cli::cat_line()
+  }
+  event
 }
 
 find_aws_event_boundary <- function(buffer) {
@@ -57,15 +67,15 @@ parse_aws_event <- function(bytes) {
 
   # headers
   headers <- list()
-  while(i <= 12 + header_length) {
+  while (i <= 12 + header_length) {
     name_length <- as.integer(read_bytes(1))
     name <- rawToChar(read_bytes(name_length))
     type <- as.integer(read_bytes(1))
 
     delayedAssign("length", parse_int(read_bytes(2)))
     value <- switch(type_enum(type),
-      'TRUE' = TRUE,
-      'FALSE' = FALSE,
+      "TRUE" = TRUE,
+      "FALSE" = FALSE,
       BYTE = parse_int(read_bytes(1)),
       SHORT = parse_int(read_bytes(2)),
       INTEGER = parse_int(read_bytes(4)),
@@ -95,7 +105,7 @@ parse_aws_event <- function(bytes) {
 # Helpers ----------------------------------------------------------------
 
 parse_int <- function(x) {
-  sum(as.integer(x) * 256 ^ rev(seq_along(x) - 1))
+  sum(as.integer(x) * 256^rev(seq_along(x) - 1))
 }
 
 parse_int64 <- function(x) {

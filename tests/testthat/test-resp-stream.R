@@ -35,6 +35,19 @@ test_that("can determine if a stream is complete (non-blocking)", {
   expect_true(resp_stream_is_complete(resp))
 })
 
+test_that("can determine if incomplete data is complete", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("data: 1\n\n")
+    res$send_chunk("data: ")
+  })
+
+  con <- req %>% req_perform_connection(blocking = TRUE)
+  expect_equal(resp_stream_sse(con, 10), list(type = "message", data = "1", id = character()))
+  expect_snapshot(expect_equal(resp_stream_sse(con), NULL))
+  expect_true(resp_stream_is_complete(con))
+  close(con)
+})
+
 test_that("can't read from a closed connection", {
   resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
   close(resp)
@@ -273,6 +286,47 @@ test_that("streaming size limits enforced", {
     out <- resp_stream_lines(resp3, max_size = 999)
   )
 })
+
+test_that("verbosity = 2 streams request bodies", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("line 1\n")
+    res$send_chunk("line 2\n")
+  })
+
+  stream_all <- function(req, fun, ...) {
+    con <- req_perform_connection(req, blocking = TRUE, verbosity = 2)
+    on.exit(close(con))
+    while (!resp_stream_is_complete(con)) {
+      fun(con, ...)
+    }
+  }
+  expect_snapshot(
+    {
+      stream_all(req, resp_stream_lines, 1)
+      stream_all(req, resp_stream_raw, 5 / 1024)
+    },
+    transform = function(lines) lines[!grepl("^(<-|->)", lines)]
+  )
+})
+
+test_that("verbosity = 3 shows buffer info", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("line 1\n")
+    res$send_chunk("line 2\n")
+  })
+
+  con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
+  on.exit(close(con))
+  expect_snapshot(
+    {
+      while (!resp_stream_is_complete(con)) {
+        resp_stream_lines(con, 1)
+      }
+    },
+    transform = function(lines) lines[!grepl("^(<-|->)", lines)]
+  )
+})
+
 
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {

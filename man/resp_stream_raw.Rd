@@ -62,3 +62,21 @@ no event is currently available.
 Use \code{resp_stream_is_complete()} to determine if there is further data
 waiting on the stream.
 }
+\examples{
+req <- request(example_url()) |>
+  req_template("GET /stream/:n", n = 5)
+
+con <- req |> req_perform_connection()
+while (!resp_stream_is_complete(con)) {
+  lines <- con |> resp_stream_lines(2)
+  cat(length(lines), " lines received\n", sep = "")
+}
+close(con)
+
+# You can also see what's happening by setting verbosity
+con <- req |> req_perform_connection(verbosity = 2)
+while (!resp_stream_is_complete(con)) {
+  lines <- con |> resp_stream_lines(2)
+}
+close(con)
+}
