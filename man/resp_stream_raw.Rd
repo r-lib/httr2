@@ -51,7 +51,6 @@ the end of the stream has been reached or, if in nonblocking mode, that
 no event is currently available.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 \itemize{
 \item \code{resp_stream_raw()} retrieves bytes (\code{raw} vectors).
 \item \code{resp_stream_lines()} retrieves lines of text (\code{character} vectors).

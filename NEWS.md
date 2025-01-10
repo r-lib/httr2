@@ -1,25 +1,61 @@
 # httr2 (development version)
 
+# Lifecycle changes
+
+* `req_perform_stream()` is superseded in favor of `req_perform_connection()`,
+  which is no longer experimental (#625).
+
+* `with_mock()` and `local_mock()` are defunct and will be removed in the next
+  release.
+
+# New features
+
+* `is_online()` wraps `curl::has_internet()`, making it easy to tell if you're
+  currently online (#512).
+
+* `req_headers_redacted()` makes it easier to redact sensitive headers (#561).
+
+* `req_retry()` implements "circuit breaking", which immediatelys error after
+  multiple failures to the same server (e.g. because the server is down)
+  (#370).
+
+* `req_url_relative()` navigates to a relative URL (#449).
+
+* `resp_request()` returns the request associated with a response; this can
+   be useful when debugging (#604).
+
+* `resp_stream_is_complete()` checks if data remains in the stream (#559).
+
+* `url_modify()`, `url_modify_query()`, and `url_modify_relative()` modify
+  URLs (#464); `url_query_parse()` and `url_query_build()` parse and build
+  query strings (#425).
+
+# Bug fixes and minor improvements
+
+* OAuth response parsing errors now have a dedicated `httr2_oauth_parse` error
+  class that includes the original response object (@atheriel, #596).
+
+* `curl_translate()` converts cookie headers to `req_cookies_set()` (#431)
+  and JSON data to `req_body_json_modify()` calls (#258).
+
+* `print.request()` escapes `{}` in headers (#586).
+
+* `req_auth_aws_v4()` formats the AWS Authorization header correctly (#627).
+
+* `req_retry()` defaults to `max_tries = 2` when nethier `max_tries` nor
+  `max_seconds` is set. If you want to disable retries, set `max_tries = 1`.
+
+* `req_perform_connection()` gains a `verbosity` argument, which is useful for
+  understanding exactly how data is streamed back to you (#599).
+
+* `req_url_query()` can control how spaces are encoded with `.space` (#432).
+
+* `resp_link_url()` handles multiple `Link` headers (#587).
+
 * `resp_stream_sse()` will warn if it recieves a partial event.
-* `req_perform_connection()` gains a `verbosity` argument, which is useful for understanding exactly how data is streamed back to you (#599).
-* `req_perform_stream()` is superseded and likely on track for deprecation; `req_perform_connection()` is no longer experimental (#625)
-* `req_retry()` now optionally implements "circuit breaking" so that if requests to the same server fail many times (i.e. because the server is down), you can choose to immediately error rather than waiting (#370).
-* Export `is_online()` as thin wrapper around `curl::has_internet()` (#512).
-* `curl_translate()` now translates cookie headers to `req_cookies_set()` (#431).
-* `curl_transform()` will now use `req_body_json_modify()` for JSON data (#258).
-* `resp_stream_is_complete()` tells you if there is still data remaining to be streamed (#559).
-* New `url_modify()`, `url_modify_query()`, and `url_modify_relative()` make it easier to modify an existing url (#464).
-* New `url_query_parse()` and `url_query_build()` allow you to parse and build a query string (#425).
-* `req_url_query()` gains the ability to control how spaces are encoded (#432).
-* New `resp_request()` aids debugging by returning the request associated with a response (#604).
-* `print.request()` now correctly escapes `{}` in headers (#586).
-* New `req_headers_redacted()` provides a user-friendlier way to set redacted headers (#561).
-* `resp_link_url()` now works if there are multiple `Link` headers (#587).
-* New `req_url_relative()` for constructing relative urls (#449).
-* `url_parse()` gains `base_url` argument so you can also use it to parse relative URLs (#449).
-* `url_parse()` now uses `curl::curl_parse_url()` which is much faster and more correct (#577).
-* `req_retry()` now defaults to `max_tries = 2` with a message. Set to `max_tries = 1` to disable retries.
-* Errors thrown during the parsing of an OAuth response now have a dedicated `httr2_oauth_parse` error class that includes the original response object (@atheriel, #596).
+
+* `url_parse()` parses relative URLs with new `base_url` argument (#449) and
+  the uses faster and more correct `curl::curl_parse_url()` (#577).
 
 # httr2 1.0.7
 

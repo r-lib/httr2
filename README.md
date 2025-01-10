@@ -10,11 +10,12 @@
 coverage](https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/httr2?branch=main)
 <!-- badges: end -->
 
-httr2 (pronounced hitter2) is a ground-up rewrite of
-[httr](https://httr.r-lib.org) that provides a pipeable API with an
-explicit request object that solves more problems felt by packages that
-wrap APIs (e.g. built-in rate-limiting, retries, OAuth, secure secrets,
-and more).
+httr2 (pronounced “hitter2”) is a comprehensive HTTP client that
+provides a modern, pipeable API for working with web APIs. It builds on
+top of [{curl}](https://jeroen.r-universe.dev/curl) to provide features
+like explicit request objects, built-in rate limiting & retry tooling,
+comprehensive OAuth support, and secure handling of secrets and
+credentials.
 
 ## Installation
 
@@ -46,7 +47,7 @@ req |> req_headers("Accept" = "application/json")
 #> <httr2_request>
 #> GET https://r-project.org
 #> Headers:
-#> • Accept: 'application/json'
+#> • Accept: "application/json"
 #> Body: empty
 
 # Add a body, turning it into a POST
@@ -69,6 +70,9 @@ req |> req_retry(max_tries = 5)
 #> Policies:
 #> • retry_max_tries: 5
 #> • retry_on_failure: FALSE
+#> • retry_failure_threshold: Inf
+#> • retry_failure_timeout: 30
+#> • retry_realm: "r-project.org"
 
 # Change the HTTP method
 req |> req_method("PATCH")
@@ -83,9 +87,9 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> Host: r-project.org
-#> User-Agent: httr2/1.0.3.9000 r-curl/5.2.2 libcurl/8.6.0
+#> User-Agent: httr2/1.0.7.9000 r-curl/6.1.0 libcurl/8.7.1
 #> Accept: */*
-#> Accept-Encoding: deflate, gzip
+#> Accept-Encoding: gzip
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -97,7 +101,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6951 bytes)
+#> Body: In memory (6774 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
@@ -147,8 +151,7 @@ resp |> resp_body_html()
 
 ## Acknowledgements
 
-httr2 wouldn’t be possible without
-[curl](https://cran.dev/curl/),
+httr2 wouldn’t be possible without [curl](https://cran.dev/curl/),
 [openssl](https://cran.dev/openssl/),
 [jsonlite](https://cran.dev/jsonlite/), and
 [jose](https://github.com/r-lib/jose/), which are all maintained by

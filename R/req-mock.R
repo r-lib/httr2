@@ -40,7 +40,7 @@ with_mocked_responses <- function(mock, code) {
 #' @rdname with_mocked_responses
 #' @usage NULL
 with_mock <- function(mock, code) {
-  lifecycle::deprecate_warn("1.0.0", "with_mock()", "with_mocked_responses()")
+  lifecycle::deprecate_stop("1.1.0", "with_mock()", "with_mocked_responses()")
   with_mocked_responses(mock, code)
 }
 
@@ -55,7 +55,7 @@ local_mocked_responses <- function(mock, env = caller_env()) {
 #' @rdname with_mocked_responses
 #' @usage NULL
 local_mock <- function(mock, env = caller_env()) {
-  lifecycle::deprecate_warn("1.0.0", "local_mock()", "local_mocked_responses()")
+  lifecycle::deprecate_warn("1.1.0", "local_mock()", "local_mocked_responses()")
   local_mocked_responses(mock, env)
 }
 

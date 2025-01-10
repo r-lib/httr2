@@ -99,7 +99,7 @@
       url_modify_query(1)
     Condition
       Error in `url_modify_query()`:
-      ! `url` must be a string or parsed URL, not the number 1.
+      ! `.url` must be a string or parsed URL, not the number 1.
     Code
       url_modify_query(url, 1)
     Condition

@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/httr2?branch=main)
 <!-- badges: end -->
 
-httr2 (pronounced hitter2) is a ground-up rewrite of [httr](https://httr.r-lib.org) that provides a pipeable API with an explicit request object that solves more problems felt by packages that wrap APIs (e.g. built-in rate-limiting, retries, OAuth, secure secrets, and more).
+httr2 (pronounced "hitter2") is a comprehensive HTTP client that provides a modern, pipeable API for working with web APIs. It builds on top of [{curl}](https://jeroen.r-universe.dev/curl) to provide features like explicit request objects, built-in rate limiting & retry tooling, comprehensive OAuth support, and secure handling of secrets and credentials.
 
 ## Installation
 
