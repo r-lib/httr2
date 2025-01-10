@@ -92,9 +92,11 @@ req_verbosity_connection <- function(req, verbosity, error_call = caller_env()) 
     req_verbose(req, body_req = TRUE),
     req_verbose(req, body_req = TRUE, info = TRUE)
   )
-  if (verbosity > 1) {
-    req <- req_policies(req, show_streaming_body = TRUE)
-  }
+  req <- req_policies(
+    req,
+    show_streaming_body = verbosity >= 2,
+    show_streaming_buffer = verbosity >= 3
+  )
   req
 }
 

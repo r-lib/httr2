@@ -33,3 +33,24 @@
       << Streamed 4 bytes
       
 
+# verbosity = 3 shows buffer info
+
+    Code
+      while (!resp_stream_is_complete(con)) {
+        resp_stream_lines(con, 1)
+      }
+    Output
+       * Buffer to parse: 
+       * Received chunk: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
+       * Combined buffer: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
+       * Buffer to parse: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
+       * Matched data: 6c 69 6e 65 20 31 0a
+       * Remaining buffer: 6c 69 6e 65 20 32 0a
+      << line 1
+      
+       * Buffer to parse: 6c 69 6e 65 20 32 0a
+       * Matched data: 6c 69 6e 65 20 32 0a
+       * Remaining buffer: 
+      << line 2
+      
+

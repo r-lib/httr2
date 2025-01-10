@@ -309,6 +309,25 @@ test_that("verbosity = 2 streams request bodies", {
   )
 })
 
+test_that("verbosity = 3 shows buffer info", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("line 1\n")
+    res$send_chunk("line 2\n")
+  })
+
+  con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
+  on.exit(close(con))
+  expect_snapshot(
+    {
+      while (!resp_stream_is_complete(con)) {
+        resp_stream_lines(con, 1)
+      }
+    },
+    transform = function(lines) lines[!grepl("^(<-|->)", lines)]
+  )
+})
+
+
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {
     buffer <- charToRaw(x)

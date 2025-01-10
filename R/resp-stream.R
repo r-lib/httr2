@@ -50,7 +50,7 @@ resp_stream_raw <- function(resp, kb = 32) {
   conn <- resp$body
 
   out <- readBin(conn, raw(), kb * 1024)
-  if (resp_stream_is_verbose(resp)) {
+  if (resp_stream_show_body(resp)) {
     log_stream("Streamed ", length(out), " bytes")
     cli::cat_line()
   }
@@ -88,7 +88,7 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
     lines <- lines - 1
   }
 
-  if (resp_stream_is_verbose(resp)) {
+  if (resp_stream_show_body(resp)) {
     log_stream(lines_read)
     cli::cat_line()
   }
@@ -109,7 +109,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   }
 
   event <- parse_event(event_bytes)
-  if (resp_stream_is_verbose(resp)) {
+  if (resp_stream_show_body(resp)) {
     for (key in names(event)) {
       log_stream(cli::style_bold(key), ": ", pretty_json(event[[key]]))
     }
@@ -264,8 +264,12 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
   buffer <- resp$cache$push_back %||% raw()
   resp$cache$push_back <- raw()
 
-  print_buffer <- function(buf, label) {
-    # cat(label, ":", paste(sprintf("%02X", as.integer(buf)), collapse = " "), "\n", file = stderr())
+  if (resp_stream_show_buffer(resp)) {
+    print_buffer <- function(buf, label) {
+      cli::cat_line(" * ", label, ": ", paste(as.character(buf), collapse = " "))
+    }
+  } else {
+    print_buffer <- function(buf, label) {}
   }
 
   # Read chunks until we find an event or reach the end of input
@@ -392,6 +396,9 @@ isValid <- function(con) {
   )
 }
 
-resp_stream_is_verbose <- function(resp) {
+resp_stream_show_body <- function(resp) {
   resp$request$policies$show_streaming_body %||% FALSE
+}
+resp_stream_show_buffer <- function(resp) {
+  resp$request$policies$show_streaming_buffer %||% FALSE
 }
