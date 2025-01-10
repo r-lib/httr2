@@ -117,17 +117,17 @@ vector, e.g. <code>resps |&gt; resps_data(\(resp) list(resp_body_raw(resp)))</co
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu">resps_successes</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:37041/ip</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33333/ip</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: application/json</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (27 bytes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:37041/user-agent</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33333/user-agent</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: application/json</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (66 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (65 bytes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># collect all their data</span></span></span>
@@ -138,7 +138,7 @@ vector, e.g. <code>resps |&gt; resps_data(\(resp) list(resp_body_raw(resp)))</co
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "127.0.0.1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`user-agent`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "httr2/1.0.7.9000 r-curl/6.1.0 libcurl/7.81.0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "httr2/1.0.7.9000 r-curl/6.1.0 libcurl/8.5.0"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find requests corresponding to failure responses</span></span></span>
@@ -147,7 +147,7 @@ vector, e.g. <code>resps |&gt; resps_data(\(resp) list(resp_body_raw(resp)))</co
 <span class="r-in"><span>  <span class="fu">resps_requests</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:37041/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33333/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>

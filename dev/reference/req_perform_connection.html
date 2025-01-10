@@ -77,7 +77,7 @@ want to do other work in between handling inputs from the stream.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_perform_connection</span><span class="op">(</span><span class="va">req</span>, blocking <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_perform_connection</span><span class="op">(</span><span class="va">req</span>, blocking <span class="op">=</span> <span class="cn">TRUE</span>, verbosity <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,6 +92,16 @@ want to do other work in between handling inputs from the stream.</p>
 <dd><p>When retrieving data, should the connection block and wait
 for the desired information or immediately return what it has (possibly
 nothing)?</p></dd>
+
+
+<dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>
+<dd><p>How much information to print? This is a wrapper
+around <code><a href="req_verbose.html">req_verbose()</a></code> that uses an integer to control verbosity:</p><ul><li><p><code>0</code>: no output</p></li>
+<li><p><code>1</code>: show headers</p></li>
+<li><p><code>2</code>: show headers and bodies</p></li>
+<li><p><code>3</code>: show headers, bodies, and curl status messages.</p></li>
+</ul><p>Use <code><a href="with_verbosity.html">with_verbosity()</a></code> to control the verbosity of requests that
+you can't affect directly.</p></dd>
 
 </dl></div>
 
