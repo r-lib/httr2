@@ -14,7 +14,7 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   }
 
   event <- parse_aws_event(event_bytes)
-  if (resp_stream_is_verbose(resp)) {
+  if (resp_stream_show_body(resp)) {
     # Emit header
     for (key in names(event$headers)) {
       log_stream(cli::style_bold(key), ": ", event$headers[[key]])
