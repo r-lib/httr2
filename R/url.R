@@ -24,7 +24,7 @@ url_parse <- function(url, base_url = NULL) {
   check_string(url)
   check_string(base_url, allow_null = TRUE)
 
-  curl <- curl::curl_parse_url(url, baseurl = base_url)
+  curl <- curl::curl_parse_url(url, baseurl = base_url, decode = FALSE)
 
   parsed <- list(
     scheme = curl$scheme,

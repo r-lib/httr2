@@ -44,6 +44,12 @@ test_that("url_build validates its input", {
   expect_snapshot(url_build("abc"), error = TRUE)
 })
 
+test_that("decodes query params but not paths", {
+  url <- url_parse("http://example.com/a%20b?q=a%20b")
+  expect_equal(url$path, "/a%20b")
+  expect_equal(url$query$q, "a b")
+})
+
 # modify url -------------------------------------------------------------
 
 test_that("url_modify checks its inputs", {
@@ -69,6 +75,14 @@ test_that("no arguments is idempotent", {
   expect_equal(url_modify(url), url)
 })
 
+test_that("can round-trip escaped components", {
+  url <- "https://example.com/a%20b"
+  expect_equal(url_modify(url), url)
+
+  url <- "https://example.com/?q=a%20b"
+  expect_equal(url_modify(url), url)
+})
+
 test_that("can accept query as a string or list", {
   url <- "http://test/"
 
@@ -78,6 +92,14 @@ test_that("can accept query as a string or list", {
   expect_equal(url_modify(url, query = ""), "http://test/")
   expect_equal(url_modify(url, query = list()), "http://test/")
 })
+
+test_that("automatically escapes query components", {
+  expect_equal(
+    url_modify("https://example.com", query = list(q = "a b")),
+    "https://example.com/?q=a%20b"
+  )
+})
+
 test_that("checks various query formats", {
   url <- "http://example.com"
 
