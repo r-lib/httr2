@@ -4,7 +4,7 @@
 \alias{req_perform_promise}
 \title{Perform request asynchronously using the promises package}
 \usage{
-req_perform_promise(req, path = NULL, pool = NULL)
+req_perform_promise(req, path = NULL, pool = NULL, verbosity = NULL)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -15,6 +15,18 @@ for large responses since it avoids storing the response in memory.}
 \item{pool}{Optionally, a curl pool made by \code{\link[curl:multi]{curl::new_pool()}}. Supply
 this if you want to override the defaults for total concurrent connections
 (100) or concurrent connections per host (6).}
+
+\item{verbosity}{How much information to print? This is a wrapper
+around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control verbosity:
+\itemize{
+\item \code{0}: no output
+\item \code{1}: show headers
+\item \code{2}: show headers and bodies
+\item \code{3}: show headers, bodies, and curl status messages.
+}
+
+Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
+you can't affect directly.}
 }
 \value{
 a \code{\link[promises:promise]{promises::promise()}} object which resolves to a \link{response} if
