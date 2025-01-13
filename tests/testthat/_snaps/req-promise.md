@@ -30,12 +30,12 @@
       -> Host: <variable>
       -> User-Agent: <variable>
       -> Accept: */*
-      -> Accept-Encoding: gzip
+      -> Accept-Encoding: <variable>
       -> 
       <- HTTP/1.1 200 OK
       <- Date: <variable>
       <- Content-Type: application/json
-      <- Content-Length: 265
+      <- Content-Length: <variable>
       <- ETag: <variable>
       <- 
 

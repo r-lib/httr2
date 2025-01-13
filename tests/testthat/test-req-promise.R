@@ -30,7 +30,9 @@ test_that("correctly prepares request", {
   req <- request_test("/get")
   expect_snapshot(
     . <- extract_promise(req_perform_promise(req, verbosity = 1)),
-    transform = function(x) gsub("(Date|Host|User-Agent|ETag): .*", "\\1: <variable>", x)
+    transform = function(x) {
+      gsub("(Date|Host|User-Agent|ETag|Content-Length|Accept-Encoding): .*", "\\1: <variable>", x)
+    }
   )
 })
 
