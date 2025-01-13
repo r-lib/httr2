@@ -36,7 +36,7 @@
       <- Date: <variable>
       <- Content-Type: application/json
       <- Content-Length: 265
-      <- ETag: "943cb8d7"
+      <- ETag: <variable>
       <- 
 
 # req_perform_promise uses the default loop
