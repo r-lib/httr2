@@ -87,8 +87,8 @@ req_perform_promise <- function(req,
   } else {
     if (!is.null(pool) && !inherits(pool, "curl_multi")) {
       stop_input_type(pool, "a {curl} pool", allow_null = TRUE)
-      }
     }
+  }
   # verbosity checked by req_verbosity
 
   req <- req_verbosity(req, verbosity)
