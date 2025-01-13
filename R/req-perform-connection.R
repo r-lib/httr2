@@ -17,6 +17,17 @@
 #' @param blocking When retrieving data, should the connection block and wait
 #'   for the desired information or immediately return what it has (possibly
 #'   nothing)?
+#' @param verbosity How much information to print? This is a wrapper
+#'   around [req_verbose()] that uses an integer to control verbosity:
+#'
+#'   * `0`: no output
+#'   * `1`: show headers
+#'   * `2`: show headers and bodies as they're streamed
+#'   * `3`: show headers, bodies, curl status messages, and stream buffer
+#'     management
+#'
+#'   Use [with_verbosity()] to control the verbosity of requests that
+#'   you can't affect directly.
 #' @export
 #' @examples
 #' req <- request(example_url()) |>
@@ -29,6 +40,13 @@
 #' length(resp_stream_raw(resp, kb = 16))
 #'
 #' # Always close the response when you're done
+#' close(resp)
+#'
+#' # You can loop until complete with resp_stream_is_complete()
+#' resp <- req_perform_connection(req)
+#' while (!resp_stream_is_complete(resp)) {
+#'   print(length(resp_stream_raw(resp, kb = 12)))
+#' }
 #' close(resp)
 req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   check_request(req)
