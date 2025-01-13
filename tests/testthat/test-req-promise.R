@@ -1,29 +1,13 @@
-# promises package test helper
-extract_promise <- function(promise, timeout = 30) {
-  promise_value <- NULL
-  error <- NULL
-  promises::then(
-    promise,
-    onFulfilled = function(value) promise_value <<- value,
-    onRejected = function(reason) {
-      error <<- reason
-    }
-  )
+test_that("checks its inputs", {
+  req <- request_test("/status/:status", status = 200)
 
-  start <- Sys.time()
-  while (!later::loop_empty()) {
-    if (difftime(Sys.time(), start, units = "secs") > timeout) {
-      stop("Waited too long")
-    }
-    later::run_now()
-    Sys.sleep(0.01)
-  }
-
-  if (!is.null(error)) {
-    cnd_signal(error)
-  } else
-    promise_value
-}
+  expect_snapshot(error = TRUE, {
+    req_perform_promise(1)
+    req_perform_promise(req, path = 1)
+    req_perform_promise(req, pool = "INVALID")
+    req_perform_promise(req, verbosity = "INVALID")
+  })
+})
 
 test_that("returns a promise that resolves", {
   p1 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
@@ -40,6 +24,14 @@ test_that("correctly prepares request", {
   req <- request_test("/post") %>% req_method("POST")
   prom <- req_perform_promise(req)
   expect_no_error(extract_promise(prom))
+})
+
+test_that("correctly prepares request", {
+  req <- request_test("/get")
+  expect_snapshot(
+    . <- extract_promise(req_perform_promise(req, verbosity = 1)),
+    transform = function(x) gsub("(Date|Host|User-Agent): .*", "\\1: <variable>", x)
+  )
 })
 
 test_that("can promise to download files", {
@@ -80,12 +72,6 @@ test_that("both curl and HTTP errors in promises are rejected", {
       req_perform_promise(request("INVALID"))
     ),
     class = "httr2_failure"
-  )
-  expect_error(
-    extract_promise(
-      req_perform_promise(request_test("/status/:status", status = 200), pool = "INVALID")
-    ),
-    'inherits\\(pool, "curl_multi"\\) is not TRUE'
   )
 })
 

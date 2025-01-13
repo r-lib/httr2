@@ -69,9 +69,13 @@
 #' }
 req_perform_promise <- function(req,
                                 path = NULL,
-                                pool = NULL) {
+                                pool = NULL,
+                                verbosity = NULL) {
   check_installed(c("promises", "later"))
+
+  check_request(req)
   check_string(path, allow_null = TRUE)
+  verbosity <- verbosity %||% httr2_verbosity()
 
   if (missing(pool)) {
     if (!identical(later::current_loop(), later::global_loop())) {
@@ -80,7 +84,14 @@ req_perform_promise <- function(req,
         i = "Do you need {.code pool = curl::new_pool()}?"
       ))
     }
-  }
+  } else {
+    if (!is.null(pool) && !inherits(pool, "curl_multi")) {
+      stop_input_type(pool, "a {curl} pool", allow_null = TRUE)
+      }
+    }
+  # verbosity checked by req_verbosity
+
+  req <- req_verbosity(req, verbosity)
 
   promises::promise(
     function(resolve, reject) {

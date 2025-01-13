@@ -47,6 +47,7 @@
 
 * `req_perform_connection()` gains a `verbosity` argument, which is useful for
   understanding exactly how data is streamed back to you (#599).
+  `req_perform_promise()` also gains a `verbosity` argument.
 
 * `req_url_query()` can control how spaces are encoded with `.space` (#432).
 
