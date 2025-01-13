@@ -85,6 +85,7 @@ parse_content_type <- function(x) {
   list(
     type = match[[2]],
     subtype = match[[3]],
+    prefix = paste0(match[[2]], "/", match[[3]]),
     suffix = if (match[[4]] != "") match[[4]] else ""
   )
 }
@@ -95,9 +96,8 @@ check_content_type <- function(content_type,
                                inform_check_type = FALSE,
                                call = caller_env()) {
   parsed <- parse_content_type(content_type)
-  base_type <- paste0(parsed$type, "/", parsed$subtype)
 
-  if (is.null(valid_types) || base_type %in% valid_types) {
+  if (is.null(valid_types) || parsed$prefix %in% valid_types) {
     return()
   }
   if (!is.null(valid_suffix) && parsed$suffix == valid_suffix) {
@@ -114,4 +114,24 @@ check_content_type <- function(content_type,
     i = if (inform_check_type) "Override check with `check_type = FALSE`.",
     call = call
   )
+}
+
+is_text_type <- function(content_type) {
+  parsed <- parse_content_type(content_type)
+  if (parsed$type == "text") {
+    return(TRUE)
+  }
+
+  special_cases <- c(
+    "application/xml",
+    "application/x-www-form-urlencoded",
+    "application/json",
+    "application/ld+json",
+    "multipart/form-data"
+  )
+  if (parsed$prefix %in% special_cases) {
+    return(TRUE)
+  }
+
+  FALSE
 }
