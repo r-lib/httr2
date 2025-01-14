@@ -10,6 +10,7 @@ test_that("correctly prepares request", {
 
 test_that("requests happen in parallel", {
   # test works best if webfakes has ample threads and keepalive
+  skip_on_cran()
   reqs <- list2(
     request_test("/delay/:secs", secs = 0),
     request_test("/delay/:secs", secs = 0.25),
