@@ -75,6 +75,7 @@ req_perform_parallel <- function(reqs,
     perfs[[i]]$submit(pool)
   }
 
+  progress$update(set = 0)
   pool_run(pool, perfs, on_error = on_error)
   progress$done()
 
