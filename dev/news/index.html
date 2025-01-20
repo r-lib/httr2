@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.7.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -45,6 +46,37 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="httr2-110">httr2 1.1.0<a class="anchor" aria-label="anchor" href="#httr2-110"></a></h2><p class="text-muted">CRAN release: 2025-01-18</p>
+<div class="section level3">
+<h3 id="lifecycle-changes-1-1-0">Lifecycle changes<a class="anchor" aria-label="anchor" href="#lifecycle-changes-1-1-0"></a></h3>
+<ul><li><p><code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> is superseded in favor of <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code>, which is no longer experimental (<a href="https://github.com/r-lib/httr2/issues/625" class="external-link">#625</a>).</p></li>
+<li><p><code><a href="../reference/with_mocked_responses.html">with_mock()</a></code> and <code><a href="../reference/with_mocked_responses.html">local_mock()</a></code> are defunct and will be removed in the next release.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-1-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h3>
+<ul><li><p><code><a href="../reference/is_online.html">is_online()</a></code> wraps <code><a href="https://jeroen.r-universe.dev/curl/reference/nslookup.html" class="external-link">curl::has_internet()</a></code>, making it easy to tell if you’re currently online (<a href="https://github.com/r-lib/httr2/issues/512" class="external-link">#512</a>).</p></li>
+<li><p><code><a href="../reference/req_headers.html">req_headers_redacted()</a></code> makes it easier to redact sensitive headers (<a href="https://github.com/r-lib/httr2/issues/561" class="external-link">#561</a>).</p></li>
+<li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> implements “circuit breaking”, which immediatelys error after multiple failures to the same server (e.g. because the server is down) (<a href="https://github.com/r-lib/httr2/issues/370" class="external-link">#370</a>).</p></li>
+<li><p><code><a href="../reference/req_url.html">req_url_relative()</a></code> navigates to a relative URL (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>).</p></li>
+<li><p><code><a href="../reference/resp_request.html">resp_request()</a></code> returns the request associated with a response; this can be useful when debugging (<a href="https://github.com/r-lib/httr2/issues/604" class="external-link">#604</a>).</p></li>
+<li><p><code><a href="../reference/resp_stream_raw.html">resp_stream_is_complete()</a></code> checks if data remains in the stream (<a href="https://github.com/r-lib/httr2/issues/559" class="external-link">#559</a>).</p></li>
+<li><p><code><a href="../reference/url_modify.html">url_modify()</a></code>, <code><a href="../reference/url_modify.html">url_modify_query()</a></code>, and <code><a href="../reference/url_modify.html">url_modify_relative()</a></code> modify URLs (<a href="https://github.com/r-lib/httr2/issues/464" class="external-link">#464</a>); <code><a href="../reference/url_query_parse.html">url_query_parse()</a></code> and <code><a href="../reference/url_query_parse.html">url_query_build()</a></code> parse and build query strings (<a href="https://github.com/r-lib/httr2/issues/425" class="external-link">#425</a>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-and-minor-improvements-1-1-0">Bug fixes and minor improvements<a class="anchor" aria-label="anchor" href="#bug-fixes-and-minor-improvements-1-1-0"></a></h3>
+<ul><li><p>OAuth response parsing errors now have a dedicated <code>httr2_oauth_parse</code> error class that includes the original response object (<a href="https://github.com/atheriel" class="external-link">@atheriel</a>, <a href="https://github.com/r-lib/httr2/issues/596" class="external-link">#596</a>).</p></li>
+<li><p><code><a href="../reference/curl_translate.html">curl_translate()</a></code> converts cookie headers to <code><a href="../reference/req_cookie_preserve.html">req_cookies_set()</a></code> (<a href="https://github.com/r-lib/httr2/issues/431" class="external-link">#431</a>) and JSON data to <code><a href="../reference/req_body.html">req_body_json_modify()</a></code> calls (<a href="https://github.com/r-lib/httr2/issues/258" class="external-link">#258</a>).</p></li>
+<li><p><code>print.request()</code> escapes <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> in headers (<a href="https://github.com/r-lib/httr2/issues/586" class="external-link">#586</a>).</p></li>
+<li><p><code><a href="../reference/req_auth_aws_v4.html">req_auth_aws_v4()</a></code> formats the AWS Authorization header correctly (<a href="https://github.com/r-lib/httr2/issues/627" class="external-link">#627</a>).</p></li>
+<li><p><code><a href="../reference/req_retry.html">req_retry()</a></code> defaults to <code>max_tries = 2</code> when nethier <code>max_tries</code> nor <code>max_seconds</code> is set. If you want to disable retries, set <code>max_tries = 1</code>.</p></li>
+<li><p><code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> gains a <code>verbosity</code> argument, which is useful for understanding exactly how data is streamed back to you (<a href="https://github.com/r-lib/httr2/issues/599" class="external-link">#599</a>). <code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code> also gains a <code>verbosity</code> argument.</p></li>
+<li><p><code><a href="../reference/req_url.html">req_url_query()</a></code> can control how spaces are encoded with <code>.space</code> (<a href="https://github.com/r-lib/httr2/issues/432" class="external-link">#432</a>).</p></li>
+<li><p><code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> handles multiple <code>Link</code> headers (<a href="https://github.com/r-lib/httr2/issues/587" class="external-link">#587</a>).</p></li>
+<li><p><code><a href="../reference/resp_stream_raw.html">resp_stream_sse()</a></code> will warn if it recieves a partial event.</p></li>
+<li><p><code><a href="../reference/url_parse.html">url_parse()</a></code> parses relative URLs with new <code>base_url</code> argument (<a href="https://github.com/r-lib/httr2/issues/449" class="external-link">#449</a>) and the uses faster and more correct <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html" class="external-link">curl::curl_parse_url()</a></code> (<a href="https://github.com/r-lib/httr2/issues/577" class="external-link">#577</a>).</p></li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.7" id="httr2-107">httr2 1.0.7<a class="anchor" aria-label="anchor" href="#httr2-107"></a></h2><p class="text-muted">CRAN release: 2024-11-26</p>
