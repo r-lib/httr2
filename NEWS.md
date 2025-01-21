@@ -1,6 +1,8 @@
 # httr2 (development version)
 
-# Lifecycle changes
+# httr2 1.1.0
+
+## Lifecycle changes
 
 * `req_perform_stream()` is superseded in favor of `req_perform_connection()`,
   which is no longer experimental (#625).
@@ -8,7 +10,7 @@
 * `with_mock()` and `local_mock()` are defunct and will be removed in the next
   release.
 
-# New features
+## New features
 
 * `is_online()` wraps `curl::has_internet()`, making it easy to tell if you're
   currently online (#512).
@@ -30,7 +32,7 @@
   URLs (#464); `url_query_parse()` and `url_query_build()` parse and build
   query strings (#425).
 
-# Bug fixes and minor improvements
+## Bug fixes and minor improvements
 
 * OAuth response parsing errors now have a dedicated `httr2_oauth_parse` error
   class that includes the original response object (@atheriel, #596).
