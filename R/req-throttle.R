@@ -62,6 +62,7 @@ throttle_status <- function() {
   data.frame(
     realm = realms,
     last_request = .POSIXct(unlist(the$throttle[realms]) %||% double()),
+    row.names = NULL,
     check.names = FALSE
   )
 }
