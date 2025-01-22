@@ -11,7 +11,7 @@ and requested."><meta property="og:image" content="https://httr2.r-lib.org/logo.
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,6 +29,7 @@ and requested."><meta property="og:image" content="https://httr2.r-lib.org/logo.
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -44,7 +45,7 @@ and requested."><meta property="og:image" content="https://httr2.r-lib.org/logo.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Temporarily set verbosity for all requests</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
       <div class="d-none name"><code>with_verbosity.Rd</code></div>
     </div>
 
@@ -90,32 +91,32 @@ you can't affect directly.</p></dd>
 <span class="r-in"><span><span class="fu">with_verbosity</span><span class="op">(</span><span class="fu">fun</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; GET / HTTP/2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">Host</span>: httr2.r-lib.org</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">user-agent</span>: httr2/1.0.7 r-curl/6.0.1 libcurl/7.81.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">Accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- HTTP/2 200 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">server</span>: GitHub.com</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-type</span>: text/html; charset=utf-8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">last-modified</span>: Tue, 26 Nov 2024 13:47:46 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">last-modified</span>: Tue, 21 Jan 2025 18:09:41 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">access-control-allow-origin</span>: *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">etag</span>: W/"6745d182-4983"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">expires</span>: Wed, 27 Nov 2024 12:14:10 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">etag</span>: W/"678fe2e5-4983"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">expires</span>: Wed, 22 Jan 2025 16:21:49 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">cache-control</span>: max-age=600</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-encoding</span>: gzip</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-proxy-cache</span>: MISS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-github-request-id</span>: 741F:10316B:24D89D3:28C077E:67470AB8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-github-request-id</span>: 500D:3D2BDE:10B3E7:113A45:679118C1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">accept-ranges</span>: bytes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">date</span>: Wed, 27 Nov 2024 14:19:35 GMT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">date</span>: Wed, 22 Jan 2025 16:12:13 GMT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">via</span>: 1.1 varnish</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">age</span>: 24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-served-by</span>: cache-chi-kigq8000150-CHI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">age</span>: 25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-served-by</span>: cache-pao-kpao1770061-PAO</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache</span>: HIT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-cache-hits</span>: 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-timer</span>: S1732717176.688199,VS0,VE0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-timer</span>: S1737562333.405277,VS0,VE0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">vary</span>: Accept-Encoding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-fastly-request-id</span>: 29d091e39f29fb6f0394ee2cf2e26c852412855a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-length</span>: 4636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">x-fastly-request-id</span>: 7cd37c1f70ef2538adba0f4cae18e9262dc3c4c7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- <span style="font-weight: bold;">content-length</span>: 4638</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;- </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://httr2.r-lib.org/</span>

@@ -17,7 +17,7 @@ cancel_on_error = TRUE is now on_error = "return"
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,7 @@ cancel_on_error = TRUE is now on_error = "return"
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -50,7 +51,7 @@ cancel_on_error = TRUE is now on_error = "return"
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform a list of requests in parallel</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/multi-req.R" class="external-link"><code>R/multi-req.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/multi-req.R" class="external-link"><code>R/multi-req.R</code></a></small>
       <div class="d-none name"><code>multi_req_perform.Rd</code></div>
     </div>
 
@@ -75,11 +76,12 @@ cancel_on_error = TRUE is now on_error = "return"
 
 <dt id="arg-paths">paths<a class="anchor" aria-label="anchor" href="#arg-paths"></a></dt>
 <dd><p>An optional character vector of paths, if you want to download
-the request bodies to disk. If supplied, must be the same length as <code>reqs</code>.</p></dd>
+the response bodies to disk. If supplied, must be the same length as
+<code>reqs</code>.</p></dd>
 
 
 <dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
-<dd><p>Optionally, a curl pool made by <code><a href="https://rdrr.io/pkg/curl/man/multi.html" class="external-link">curl::new_pool()</a></code>. Supply
+<dd><p>Optionally, a curl pool made by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code>. Supply
 this if you want to override the defaults for total concurrent connections
 (100) or concurrent connections per host (6).</p></dd>
 

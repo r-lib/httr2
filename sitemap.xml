@@ -13,6 +13,7 @@
 <url><loc>https://httr2.r-lib.org/reference/example_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/httr2-package.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/index.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/is_online.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/iterate_with_offset.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/jwt_claim.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/last_response.html</loc></url>
@@ -71,6 +72,7 @@
 <url><loc>https://httr2.r-lib.org/reference/resp_headers.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_link_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_raw.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/resp_request.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_retry_after.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_status.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/resp_stream_raw.html</loc></url>
@@ -80,7 +82,10 @@
 <url><loc>https://httr2.r-lib.org/reference/secrets.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/signal_total_pages.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/throttle_status.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/url_build.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/url_modify.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/url_parse.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/url_query_parse.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/with_mocked_responses.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/with_verbosity.html</loc></url>
 </urlset>

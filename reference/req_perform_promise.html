@@ -49,7 +49,7 @@ Only consults the cache set by req_cache() when the request is promised.
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,6 +67,7 @@ Only consults the cache set by req_cache() when the request is promised.
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -82,7 +83,7 @@ Only consults the cache set by req_cache() when the request is promised.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform request asynchronously using the promises package</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/req-promise.R" class="external-link"><code>R/req-promise.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/req-promise.R" class="external-link"><code>R/req-promise.R</code></a></small>
       <div class="d-none name"><code>req_perform_promise.Rd</code></div>
     </div>
 
@@ -94,7 +95,7 @@ is finished. See the
 <a href="https://rstudio.github.io/promises/articles/promises_01_motivation.html" class="external-link">promises package documentation</a>
 for more details on how to work with the resulting promise object.</p>
 <p>If using together with <code><a href="https://r-lib.github.io/later/reference/create_loop.html" class="external-link">later::with_temp_loop()</a></code> or other private event loops,
-a new curl pool made by <code><a href="https://rdrr.io/pkg/curl/man/multi.html" class="external-link">curl::new_pool()</a></code> should be created for requests made
+a new curl pool made by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code> should be created for requests made
 within the loop to ensure that only these requests are being polled by the loop.</p>
 <p>Like with <code><a href="req_perform_parallel.html">req_perform_parallel()</a></code>, exercise caution when using this function;
 it's easy to pummel a server with many simultaneous requests. Also, not all servers
@@ -110,7 +111,7 @@ is created but before it is actually requested.</p></li>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_perform_promise</span><span class="op">(</span><span class="va">req</span>, path <span class="op">=</span> <span class="cn">NULL</span>, pool <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_perform_promise</span><span class="op">(</span><span class="va">req</span>, path <span class="op">=</span> <span class="cn">NULL</span>, pool <span class="op">=</span> <span class="cn">NULL</span>, verbosity <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -127,9 +128,19 @@ for large responses since it avoids storing the response in memory.</p></dd>
 
 
 <dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
-<dd><p>Optionally, a curl pool made by <code><a href="https://rdrr.io/pkg/curl/man/multi.html" class="external-link">curl::new_pool()</a></code>. Supply
+<dd><p>Optionally, a curl pool made by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code>. Supply
 this if you want to override the defaults for total concurrent connections
 (100) or concurrent connections per host (6).</p></dd>
+
+
+<dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>
+<dd><p>How much information to print? This is a wrapper
+around <code><a href="req_verbose.html">req_verbose()</a></code> that uses an integer to control verbosity:</p><ul><li><p><code>0</code>: no output</p></li>
+<li><p><code>1</code>: show headers</p></li>
+<li><p><code>2</code>: show headers and bodies</p></li>
+<li><p><code>3</code>: show headers, bodies, and curl status messages.</p></li>
+</ul><p>Use <code><a href="with_verbosity.html">with_verbosity()</a></code> to control the verbosity of requests that
+you can't affect directly.</p></dd>
 
 </dl></div>
     <div class="section level2">

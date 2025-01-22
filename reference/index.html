@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -79,7 +80,7 @@
         <dd>Set and preserve cookies</dd>
       </dl><dl><dt>
 
-          <code><a href="req_headers.html">req_headers()</a></code>
+          <code><a href="req_headers.html">req_headers()</a></code> <code><a href="req_headers.html">req_headers_redacted()</a></code>
 
         </dt>
         <dd>Modify request headers</dd>
@@ -121,7 +122,7 @@
         <dd>Set time limit for a request</dd>
       </dl><dl><dt>
 
-          <code><a href="req_url.html">req_url()</a></code> <code><a href="req_url.html">req_url_query()</a></code> <code><a href="req_url.html">req_url_path()</a></code> <code><a href="req_url.html">req_url_path_append()</a></code>
+          <code><a href="req_url.html">req_url()</a></code> <code><a href="req_url.html">req_url_relative()</a></code> <code><a href="req_url.html">req_url_query()</a></code> <code><a href="req_url.html">req_url_path()</a></code> <code><a href="req_url.html">req_url_path_append()</a></code>
 
         </dt>
         <dd>Modify request URL</dd>
@@ -263,13 +264,13 @@
       </dl><dl><dt>
 
           <code><a href="req_perform_stream.html">req_perform_stream()</a></code>
-
+          <span class="badge lifecycle lifecycle-superseded">superseded</span>
         </dt>
         <dd>Perform a request and handle data as it streams back</dd>
       </dl><dl><dt>
 
           <code><a href="req_perform_connection.html">req_perform_connection()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+
         </dt>
         <dd>Perform a request and return a streaming connection</dd>
       </dl><dl><dt>
@@ -312,7 +313,7 @@
           <code><a href="req_retry.html">req_retry()</a></code>
 
         </dt>
-        <dd>Control when a request will retry, and how long it will wait between tries</dd>
+        <dd>Automatically retry a request on failure</dd>
       </dl></div><div class="section level2">
       <h2 id="perform-multiple-requests">Perform multiple requests<a class="anchor" aria-label="anchor" href="#perform-multiple-requests"></a></h2>
 
@@ -409,6 +410,12 @@
         <dd>Show the raw response</dd>
       </dl><dl><dt>
 
+          <code><a href="resp_request.html">resp_request()</a></code>
+
+        </dt>
+        <dd>Find the request responsible for a response</dd>
+      </dl><dl><dt>
+
           <code><a href="resp_retry_after.html">resp_retry_after()</a></code>
 
         </dt>
@@ -421,8 +428,8 @@
         <dd>Extract HTTP status from response</dd>
       </dl><dl><dt>
 
-          <code><a href="resp_stream_raw.html">resp_stream_raw()</a></code> <code><a href="resp_stream_raw.html">resp_stream_lines()</a></code> <code><a href="resp_stream_raw.html">resp_stream_sse()</a></code> <code><a href="resp_stream_raw.html">resp_stream_aws()</a></code> <code><a href="resp_stream_raw.html">close(<i>&lt;httr2_response&gt;</i>)</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+          <code><a href="resp_stream_raw.html">resp_stream_raw()</a></code> <code><a href="resp_stream_raw.html">resp_stream_lines()</a></code> <code><a href="resp_stream_raw.html">resp_stream_sse()</a></code> <code><a href="resp_stream_raw.html">resp_stream_aws()</a></code> <code><a href="resp_stream_raw.html">close(<i>&lt;httr2_response&gt;</i>)</a></code> <code><a href="resp_stream_raw.html">resp_stream_is_complete()</a></code>
+
         </dt>
         <dd>Read a streaming body a chunk at a time</dd>
       </dl><dl><dt>
@@ -431,6 +438,41 @@
 
         </dt>
         <dd>Get URL/components from the response</dd>
+      </dl></div><div class="section level2">
+      <h2 id="url-manipulation">URL manipulation<a class="anchor" aria-label="anchor" href="#url-manipulation"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="url_build.html">url_build()</a></code>
+
+        </dt>
+        <dd>Build a string from a URL object</dd>
+      </dl><dl><dt>
+
+          <code><a href="url_modify.html">url_modify()</a></code> <code><a href="url_modify.html">url_modify_relative()</a></code> <code><a href="url_modify.html">url_modify_query()</a></code>
+
+        </dt>
+        <dd>Modify a URL</dd>
+      </dl><dl><dt>
+
+          <code><a href="url_parse.html">url_parse()</a></code>
+
+        </dt>
+        <dd>Parse a URL into its component pieces</dd>
+      </dl><dl><dt>
+
+          <code><a href="url_query_parse.html">url_query_parse()</a></code> <code><a href="url_query_parse.html">url_query_build()</a></code>
+
+        </dt>
+        <dd>Parse query parameters and/or build a string</dd>
       </dl></div><div class="section level2">
       <h2 id="miscellaenous-helpers">Miscellaenous helpers<a class="anchor" aria-label="anchor" href="#miscellaenous-helpers"></a></h2>
 
@@ -450,6 +492,12 @@
         <dd>Translate curl syntax to httr2</dd>
       </dl><dl><dt>
 
+          <code><a href="is_online.html">is_online()</a></code>
+
+        </dt>
+        <dd>Is your computer currently online?</dd>
+      </dl><dl><dt>
+
           <code><a href="secrets.html">secret_make_key()</a></code> <code><a href="secrets.html">secret_encrypt()</a></code> <code><a href="secrets.html">secret_decrypt()</a></code> <code><a href="secrets.html">secret_write_rds()</a></code> <code><a href="secrets.html">secret_read_rds()</a></code> <code><a href="secrets.html">secret_decrypt_file()</a></code> <code><a href="secrets.html">secret_encrypt_file()</a></code> <code><a href="secrets.html">secret_has_key()</a></code>
 
         </dt>
@@ -460,12 +508,6 @@
 
         </dt>
         <dd>Obfuscate mildly secret information</dd>
-      </dl><dl><dt>
-
-          <code><a href="url_parse.html">url_parse()</a></code> <code><a href="url_parse.html">url_build()</a></code>
-
-        </dt>
-        <dd>Parse and build URLs</dd>
       </dl></div><div class="section level2">
       <h2 id="oauth">OAuth<a class="anchor" aria-label="anchor" href="#oauth"></a></h2>
 

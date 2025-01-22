@@ -27,7 +27,7 @@ It requires the vctrs package to be installed.
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,7 @@ It requires the vctrs package to be installed.
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -60,7 +61,7 @@ It requires the vctrs package to be installed.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Tools for working with lists of responses</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/iterate-responses.R" class="external-link"><code>R/iterate-responses.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/iterate-responses.R" class="external-link"><code>R/iterate-responses.R</code></a></small>
       <div class="d-none name"><code>resps_successes.Rd</code></div>
     </div>
 
@@ -96,7 +97,10 @@ It requires the vctrs package to be installed.</p></li>
 
 <dt id="arg-resp-data">resp_data<a class="anchor" aria-label="anchor" href="#arg-resp-data"></a></dt>
 <dd><p>A function that takes a response (<code>resp</code>) and
-returns the data found inside that response as a vector or data frame.</p></dd>
+returns the data found inside that response as a vector or data frame.</p>
+<p>NB: If you're using <code><a href="resp_body_raw.html">resp_body_raw()</a></code>, you're likely to want to wrap its
+output in <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> to avoid combining all the bodies into a single raw
+vector, e.g. <code>resps |&gt; resps_data(\(resp) list(resp_body_raw(resp)))</code>.</p></dd>
 
 </dl></div>
 
@@ -114,33 +118,37 @@ returns the data found inside that response as a vector or data frame.</p></dd>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu">resps_successes</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:37541/ip</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41863/ip</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: application/json</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (27 bytes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:37541/user-agent</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41863/user-agent</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: application/json</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (61 bytes)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (60 bytes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># collect all their data</span></span></span>
-<span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu">resps_successes</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">resps_data</span><span class="op">(</span>\<span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">resps_successes</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">resps_data</span><span class="op">(</span>\<span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $origin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "127.0.0.1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`user-agent`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "httr2/1.0.7 r-curl/6.0.1 libcurl/7.81.0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find requests corresponding to failure responses</span></span></span>
-<span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu">resps_failures</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">resps_requests</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">resps_failures</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">resps_requests</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:37541/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41863/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>

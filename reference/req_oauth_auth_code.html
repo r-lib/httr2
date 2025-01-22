@@ -4,20 +4,24 @@ by Section 4.1 of RFC 6749.
 This flow is the most commonly used OAuth flow where the user
 opens a page in their browser, approves the access, and then returns to R.
 When possible, it redirects the browser back to a temporary local webserver
-to capture the authorization code. When this is not possible (e.g. when
+to capture the authorization code. When this is not possible (e.g., when
 running on a hosted platform like RStudio Server), provide a custom
 redirect_uri and httr2 will prompt the user to enter the code manually.
 Learn more about the overall OAuth authentication flow in
-https://httr2.r-lib.org/articles/oauth.html."><meta property="og:description" content="Authenticate using the OAuth authorization code flow, as defined
+https://httr2.r-lib.org/articles/oauth.html, and more about the motivations
+behind this flow in
+https://stack-auth.com/blog/oauth-from-first-principles."><meta property="og:description" content="Authenticate using the OAuth authorization code flow, as defined
 by Section 4.1 of RFC 6749.
 This flow is the most commonly used OAuth flow where the user
 opens a page in their browser, approves the access, and then returns to R.
 When possible, it redirects the browser back to a temporary local webserver
-to capture the authorization code. When this is not possible (e.g. when
+to capture the authorization code. When this is not possible (e.g., when
 running on a hosted platform like RStudio Server), provide a custom
 redirect_uri and httr2 will prompt the user to enter the code manually.
 Learn more about the overall OAuth authentication flow in
-https://httr2.r-lib.org/articles/oauth.html."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+https://httr2.r-lib.org/articles/oauth.html, and more about the motivations
+behind this flow in
+https://stack-auth.com/blog/oauth-from-first-principles."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -25,7 +29,7 @@ https://httr2.r-lib.org/articles/oauth.html."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +47,7 @@ https://httr2.r-lib.org/articles/oauth.html."><meta property="og:image" content=
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -58,7 +63,7 @@ https://httr2.r-lib.org/articles/oauth.html."><meta property="og:image" content=
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>OAuth with authorization code</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/oauth-flow-auth-code.R" class="external-link"><code>R/oauth-flow-auth-code.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/oauth-flow-auth-code.R" class="external-link"><code>R/oauth-flow-auth-code.R</code></a></small>
       <div class="d-none name"><code>req_oauth_auth_code.Rd</code></div>
     </div>
 
@@ -68,11 +73,13 @@ by <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.1" class="ex
 <p>This flow is the most commonly used OAuth flow where the user
 opens a page in their browser, approves the access, and then returns to R.
 When possible, it redirects the browser back to a temporary local webserver
-to capture the authorization code. When this is not possible (e.g. when
+to capture the authorization code. When this is not possible (e.g., when
 running on a hosted platform like RStudio Server), provide a custom
 <code>redirect_uri</code> and httr2 will prompt the user to enter the code manually.</p>
 <p>Learn more about the overall OAuth authentication flow in
-<a href="https://httr2.r-lib.org/articles/oauth.html">https://httr2.r-lib.org/articles/oauth.html</a>.</p>
+<a href="https://httr2.r-lib.org/articles/oauth.html">https://httr2.r-lib.org/articles/oauth.html</a>, and more about the motivations
+behind this flow in
+<a href="https://stack-auth.com/blog/oauth-from-first-principles" class="external-link">https://stack-auth.com/blog/oauth-from-first-principles</a>.</p>
     </div>
 
     <div class="section level2">
@@ -195,16 +202,17 @@ use OAuth; <code>oauth_flow_auth_code()</code> returns an <a href="oauth_token.h
 applications (which are equivalent to R packages). <a href="https://datatracker.ietf.org/doc/html/rfc8252" class="external-link">RFC 8252</a> spells out
 important considerations for native apps. Most importantly there's no way
 for native apps to keep secrets from their users. This means that the
-server should either not require a <code>client_secret</code> (i.e. a public client
-not an confidential client) or ensure that possession of the <code>client_secret</code>
-doesn't bestow any meaningful rights.</p>
-<p>Only modern APIs from the bigger players (Azure, Google, etc) explicitly
-native apps. However, in most cases, even for older APIs, possessing the
-<code>client_secret</code> gives you no ability to do anything harmful, so our
-general principle is that it's fine to include it in an R package, as long
-as it's mildly obfuscated to protect it from credential scraping. There's
-no incentive to steal your client credentials if it takes less time to
-create a new client than find your client secret.</p>
+server should either not require a <code>client_secret</code> (i.e. it should be a
+public client and not a confidential client) or ensure that possession of
+the <code>client_secret</code> doesn't grant any significant privileges.</p>
+<p>Only modern APIs from major providers (like Azure and Google) explicitly
+support native apps. However, in most cases, even for older APIs, possessing
+the <code>client_secret</code> provides limited ability to perform harmful actions.
+Therefore, our general principle is that it's acceptable to include it in an
+R package, as long as it's mildly obfuscated to protect against credential
+scraping attacks (which aim to acquire large numbers of client secrets by
+scanning public sites like GitHub). The goal is to ensure that obtaining your
+client credentials is more work than just creating a new client.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

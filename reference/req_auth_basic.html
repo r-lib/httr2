@@ -9,7 +9,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,6 +27,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization."><meta 
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -42,7 +43,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization."><meta 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Authenticate request with HTTP basic authentication</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/req-auth.R" class="external-link"><code>R/req-auth.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/req-auth.R" class="external-link"><code>R/req-auth.R</code></a></small>
       <div class="d-none name"><code>req_auth_basic.Rd</code></div>
     </div>
 
@@ -69,8 +70,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization."><meta 
 
 
 <dt id="arg-password">password<a class="anchor" aria-label="anchor" href="#arg-password"></a></dt>
-<dd><p>Password. You avoid entering the password directly when
-calling this function as it will be captured by <code>.Rhistory</code>. Instead,
+<dd><p>Password. You should avoid entering the password directly
+when calling this function as it will be captured by <code>.Rhistory</code>. Instead,
 leave it unset and the default behaviour will prompt you for it
 interactively.</p></dd>
 
@@ -87,12 +88,12 @@ interactively.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://example.com</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Headers:</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">Authorization</span>: '<span style="color: #555555;">&lt;REDACTED&gt;</span>'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">Authorization</span>: "<span style="color: #555555;">&lt;REDACTED&gt;</span>"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.7 r-curl/6.0.1 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
@@ -104,12 +105,12 @@ interactively.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://example.com</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Headers:</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">Authorization</span>: 'Basic aGFkbGV5OlNFQ1JFVA=='</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">Authorization</span>: "Basic aGFkbGV5OlNFQ1JFVA=="</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span>redact_headers <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.0.7 r-curl/6.0.1 libcurl/7.81.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Authorization</span>: Basic aGFkbGV5OlNFQ1JFVA==</span>
@@ -117,7 +118,7 @@ interactively.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># We do this because the authorization header is not encrypted and the</span></span></span>
 <span class="r-in"><span><span class="co"># so password can easily be discovered:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rawConversion.html" class="external-link">rawToChar</a></span><span class="op">(</span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/base64.html" class="external-link">base64_dec</a></span><span class="op">(</span><span class="st">"aGFkbGV5OlNFQ1JFVA=="</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rawConversion.html" class="external-link">rawToChar</a></span><span class="op">(</span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/base64.html" class="external-link">base64_dec</a></span><span class="op">(</span><span class="st">"aGFkbGV5OlNFQ1JFVA=="</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hadley:SECRET"</span>
 </code></pre></div>
     </div>

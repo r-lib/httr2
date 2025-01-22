@@ -15,7 +15,7 @@ in other functions a little simpler."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@ in other functions a little simpler."><meta property="og:image" content="https:/
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -48,15 +49,15 @@ in other functions a little simpler."><meta property="og:image" content="https:/
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Create and encode a JWT</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/jwt.R" class="external-link"><code>R/jwt.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/jwt.R" class="external-link"><code>R/jwt.R</code></a></small>
       <div class="d-none name"><code>jwt_claim.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p><code>jwt_claim()</code> is a wrapper around <code><a href="https://rdrr.io/pkg/jose/man/jwt_claim.html" class="external-link">jose::jwt_claim()</a></code> that creates a JWT
+    <p><code>jwt_claim()</code> is a wrapper around <code><a href="https://r-lib.r-universe.dev/jose/reference/jwt_claim.html" class="external-link">jose::jwt_claim()</a></code> that creates a JWT
 claim set with a few extra default values. <code>jwt_encode_sig()</code> and
-<code>jwt_encode_hmac()</code> are thin wrappers around <code><a href="https://rdrr.io/pkg/jose/man/jwt_encode.html" class="external-link">jose::jwt_encode_sig()</a></code> and
-<code><a href="https://rdrr.io/pkg/jose/man/jwt_encode.html" class="external-link">jose::jwt_encode_hmac()</a></code> that exist primarily to make specification
+<code>jwt_encode_hmac()</code> are thin wrappers around <code><a href="https://r-lib.r-universe.dev/jose/reference/jwt_encode.html" class="external-link">jose::jwt_encode_sig()</a></code> and
+<code><a href="https://r-lib.r-universe.dev/jose/reference/jwt_encode.html" class="external-link">jose::jwt_encode_hmac()</a></code> that exist primarily to make specification
 in other functions a little simpler.</p>
     </div>
 
@@ -154,10 +155,10 @@ JWT header.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">claim</span> <span class="op">&lt;-</span> <span class="fu">jwt_claim</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">claim</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ exp: num 1.73e+09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ nbf: num 1.73e+09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ iat: num 1.73e+09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ jti: chr "EssSlZ_FlT8j4A97OKO9FBUzfTReBq4W6_eYfJFGQrE"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ exp: num 1.74e+09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ nbf: num 1.74e+09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ iat: num 1.74e+09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ jti: chr "_4yReHMGOK8vVlPJbeMnWRilrNWZSaJBafWl53u8FSU"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:2] "jwt_claim" "list"</span>
 </code></pre></div>
     </div>

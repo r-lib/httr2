@@ -31,7 +31,7 @@ there's no way for an automated tool to grab your obfuscated secrets."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,6 +49,7 @@ there's no way for an automated tool to grab your obfuscated secrets."><meta pro
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -64,7 +65,7 @@ there's no way for an automated tool to grab your obfuscated secrets."><meta pro
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Obfuscate mildly secret information</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/secret.R" class="external-link"><code>R/secret.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/secret.R" class="external-link"><code>R/secret.R</code></a></small>
       <div class="d-none name"><code>obfuscate.Rd</code></div>
     </div>
 
@@ -106,13 +107,13 @@ so it can be unobfuscated when needed.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("LnfQ_dLXOT0tSSF7vJQpqVqfIPrjFog5rT6xSw")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("ImI_91qMXehDn_SpfWEY5yIahYAE2qkfQf5DHA")</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Every time you obfuscate you'll get a different value because it</span></span></span>
 <span class="r-in"><span><span class="co"># includes 16 bytes of random data which protects against certain types of</span></span></span>
 <span class="r-in"><span><span class="co"># brute force attack</span></span></span>
 <span class="r-in"><span><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("YNyTe8AvOcV8hjPuKB2zi6oYmOgWB9OAXvaqkA")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("yNsYtFCCDyTsIVSAdGh7o6dZD8RCkBvwrVEgJw")</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -11,7 +11,7 @@ has fewer limitations."><meta property="og:image" content="https://httr2.r-lib.o
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,6 +29,7 @@ has fewer limitations."><meta property="og:image" content="https://httr2.r-lib.o
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -44,7 +45,7 @@ has fewer limitations."><meta property="og:image" content="https://httr2.r-lib.o
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform multiple requests in sequence</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/sequential.R" class="external-link"><code>R/sequential.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/sequential.R" class="external-link"><code>R/sequential.R</code></a></small>
       <div class="d-none name"><code>req_perform_sequential.Rd</code></div>
     </div>
 
@@ -74,7 +75,8 @@ has fewer limitations.</p>
 
 <dt id="arg-paths">paths<a class="anchor" aria-label="anchor" href="#arg-paths"></a></dt>
 <dd><p>An optional character vector of paths, if you want to download
-the request bodies to disk. If supplied, must be the same length as <code>reqs</code>.</p></dd>
+the response bodies to disk. If supplied, must be the same length as
+<code>reqs</code>.</p></dd>
 
 
 <dt id="arg-on-error">on_error<a class="anchor" aria-label="anchor" href="#arg-on-error"></a></dt>
@@ -86,9 +88,11 @@ received so far, as well as an error object for the failed request.</p></li>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
-<dd><p>Display a progress bar? Use <code>TRUE</code> to turn on a basic
-progress bar, use a string to give it a name, or see <a href="progress_bars.html">progress_bars</a> to
-customise it in other ways.</p></dd>
+<dd><p>Display a progress bar for the status of all requests? Use
+<code>TRUE</code> to turn on a basic progress bar, use a string to give it a name,
+or see <a href="progress_bars.html">progress_bars</a> to customize it in other ways. Not compatible with
+<code><a href="req_progress.html">req_progress()</a></code>, as httr2 can only display a single progress bar at a
+time.</p></dd>
 
 </dl></div>
     <div class="section level2">

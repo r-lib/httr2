@@ -28,9 +28,6 @@ format_failed: format string for unsuccessful termination.
 By default the same as format.
 name: progress bar name. This is by default the empty string and it
 is displayed at the beginning of the progress bar.
-show_after: numeric scalar. Only show the progress bar after this
-number of seconds. It overrides the cli.progress_show_after
-global option.
 type: progress bar type. Currently supported types are:
 iterator: the default, a for loop or a mapping function,
 tasks: a (typically small) number of tasks,
@@ -80,9 +77,6 @@ format_failed: format string for unsuccessful termination.
 By default the same as format.
 name: progress bar name. This is by default the empty string and it
 is displayed at the beginning of the progress bar.
-show_after: numeric scalar. Only show the progress bar after this
-number of seconds. It overrides the cli.progress_show_after
-global option.
 type: progress bar type. Currently supported types are:
 iterator: the default, a for loop or a mapping function,
 tasks: a (typically small) number of tasks,
@@ -111,7 +105,7 @@ for more details.
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,6 +123,7 @@ for more details.
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
@@ -144,7 +139,7 @@ for more details.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Progress bars in httr2</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.0.7/R/progress-bars.R" class="external-link"><code>R/progress-bars.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/progress-bars.R" class="external-link"><code>R/progress-bars.R</code></a></small>
       <div class="d-none name"><code>progress_bars.Rd</code></div>
     </div>
 
@@ -174,9 +169,6 @@ the same as <code>format</code>.</p></li>
 By default the same as <code>format</code>.</p></li>
 <li><p><code>name</code>: progress bar name. This is by default the empty string and it
 is displayed at the beginning of the progress bar.</p></li>
-<li><p><code>show_after</code>: numeric scalar. Only show the progress bar after this
-number of seconds. It overrides the <code>cli.progress_show_after</code>
-global option.</p></li>
 <li><p><code>type</code>: progress bar type. Currently supported types are:</p><ul><li><p><code>iterator</code>: the default, a for loop or a mapping function,</p></li>
 <li><p><code>tasks</code>: a (typically small) number of tasks,</p></li>
 <li><p><code>download</code>: download of one file,</p></li>
