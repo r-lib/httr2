@@ -65,7 +65,7 @@ Run `revdepcheck::cloud_details(, "brickster")` for more info
       > library(withr)
       > 
       > test_check("brickster")
-      [ FAIL 26 | WARN 0 | SKIP 18 | PASS 241 ]
+      [ FAIL 26 | WARN 0 | SKIP 17 | PASS 255 ]
       
     ...
           ▆
@@ -73,9 +73,9 @@ Run `revdepcheck::cloud_details(, "brickster")` for more info
        2.   ├─brickster:::db_request(...)
        3.   └─brickster::db_host()
        4.     └─httr2::url_parse(host)
-       5.       └─curl::curl_parse_url(url, baseurl = base_url)
+       5.       └─curl::curl_parse_url(url, baseurl = base_url, decode = FALSE)
       
-      [ FAIL 26 | WARN 0 | SKIP 18 | PASS 241 ]
+      [ FAIL 26 | WARN 0 | SKIP 17 | PASS 255 ]
       Error: Test failures
       Execution halted
     ```
@@ -136,7 +136,7 @@ Run `revdepcheck::cloud_details(, "bskyr")` for more info
     > ### ** Examples
     > 
     > bs_uri_to_url('at://did:plc:ic6zqvuw5ulmfpjiwnhsr2ns/app.bsky.feed.post/3k7qmjev5lr2s')
-    Error in curl::curl_parse_url(url, baseurl = base_url) : 
+    Error in curl::curl_parse_url(url, baseurl = base_url, decode = FALSE) : 
       Failed to parse URL: Port number was not a decimal number between 0 and 65535
     Calls: bs_uri_to_url -> <Anonymous> -> <Anonymous>
     Execution halted
@@ -160,7 +160,7 @@ Run `revdepcheck::cloud_details(, "bskyr")` for more info
        3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
        4. └─bskyr::bs_uri_to_url("at://did:plc:ic6zqvuw5ulmfpjiwnhsr2ns/app.bsky.feed.post/3k7qmjev5lr2s")
        5.   └─httr2::url_parse(uri)
-       6.     └─curl::curl_parse_url(url, baseurl = base_url)
+       6.     └─curl::curl_parse_url(url, baseurl = base_url, decode = FALSE)
       
       [ FAIL 1 | WARN 0 | SKIP 0 | PASS 53 ]
       Error: Test failures
@@ -196,7 +196,7 @@ Run `revdepcheck::cloud_details(, "chattr")` for more info
       > # * https://r-pkgs.org/tests.html
       > # * https://testthat.r-lib.org/reference/test_package.html#special-files
     ...
-       8.     └─curl::curl_parse_url(url, baseurl = base_url)
+       8.     └─curl::curl_parse_url(url, baseurl = base_url, decode = FALSE)
       
       [ FAIL 1 | WARN 0 | SKIP 33 | PASS 41 ]
       Deleting unused snapshots:
@@ -206,46 +206,5 @@ Run `revdepcheck::cloud_details(, "chattr")` for more info
       • app-server/004.json
       Error: Test failures
       Execution halted
-    ```
-
-# healthyR.data
-
-<details>
-
-* Version: 1.1.1
-* GitHub: https://github.com/spsanderson/healthyR.data
-* Source code: https://github.com/cran/healthyR.data
-* Date/Publication: 2024-07-04 11:50:02 UTC
-* Number of recursive dependencies: 32
-
-Run `revdepcheck::cloud_details(, "healthyR.data")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking examples ... ERROR
-    ```
-    Running examples in ‘healthyR.data-Ex.R’ failed
-    The error most likely occurred in:
-    
-    > ### Name: fetch_provider_data
-    > ### Title: Fetch Provider Data as Tibble or Download CSV
-    > ### Aliases: fetch_provider_data
-    > 
-    > ### ** Examples
-    > 
-    > library(dplyr)
-    ...
-    
-    > 
-    > # Example usage:
-    > data_url <- "069d-826b"
-    > 
-    > df_tbl <- fetch_provider_data(data_url, .limit = 1)
-    Error in curl::curl_parse_url(url, baseurl = base_url) : 
-      Failed to parse URL: Bad scheme
-    Calls: fetch_provider_data -> is_valid_url -> <Anonymous> -> <Anonymous>
-    Execution halted
     ```
 
