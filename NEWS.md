@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `resp_stream_sse()` now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (#650).
+
 # httr2 1.1.0
 
 ## Lifecycle changes

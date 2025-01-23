@@ -42,7 +42,7 @@ test_that("can determine if incomplete data is complete", {
   })
 
   con <- req %>% req_perform_connection(blocking = TRUE)
-  expect_equal(resp_stream_sse(con, 10), list(type = "message", data = "1", id = character()))
+  expect_equal(resp_stream_sse(con, 10), list(type = "message", data = "1", id = ""))
   expect_snapshot(expect_equal(resp_stream_sse(con), NULL))
   expect_true(resp_stream_is_complete(con))
   close(con)
@@ -188,15 +188,29 @@ test_that("can feed sse events one at a time", {
 
   expect_equal(
     resp_stream_sse(resp),
-    list(type = "message", data = "1", id = character())
+    list(type = "message", data = "1", id = "")
   )
   expect_equal(
     resp_stream_sse(resp),
-    list(type = "message", data = "2", id = character())
+    list(type = "message", data = "2", id = "")
   )
   resp_stream_sse(resp)
 
   expect_equal(resp_stream_sse(resp), NULL)
+})
+
+test_that("ignores events with no data", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(": comment\n\n")
+    res$send_chunk("data: 1\n\n")
+  })
+  resp <- req_perform_connection(req)
+  withr::defer(close(resp))
+
+  expect_equal(
+    resp_stream_sse(resp),
+    list(type = "message", data = "1", id = "")
+  )
 })
 
 test_that("can join sse events across multiple reads", {
@@ -221,17 +235,17 @@ test_that("can join sse events across multiple reads", {
     Sys.sleep(0.1)
     out <- resp_stream_sse(resp1)
   }
-  expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
+  expect_equal(out, list(type = "message", data = "1\n2", id = ""))
   expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
   out <- resp_stream_sse(resp1)
-  expect_equal(out, list(type = "message", data = "3", id = character()))
+  expect_equal(out, list(type = "message", data = "3", id = ""))
 
   # Blocking waits for a complete event
   resp2 <- req_perform_connection(req)
   withr::defer(close(resp2))
 
   out <- resp_stream_sse(resp2)
-  expect_equal(out, list(type = "message", data = c("1", "2"), id = character()))
+  expect_equal(out, list(type = "message", data = "1\n2", id = ""))
 })
 
 test_that("sse always interprets data as UTF-8", {
@@ -252,7 +266,7 @@ test_that("sse always interprets data as UTF-8", {
 
     s <- "\xE3\x81\x82"
     Encoding(s) <- "UTF-8"
-    expect_equal(out, list(type = "message", data = s, id = character()))
+    expect_equal(out, list(type = "message", data = s, id = ""))
     expect_equal(Encoding(out$data), "UTF-8")
     expect_equal(resp1$cache$push_back, raw())
   })
@@ -367,4 +381,21 @@ test_that("has a working find_event_boundary", {
   expect_null(find_event_boundary(charToRaw("1")))
   expect_null(find_event_boundary(charToRaw("12")))
   expect_null(find_event_boundary(charToRaw("\r\n\r")))
+})
+
+# parse_event ----------------------------------------------------------------
+
+test_that("event with no data returns NULL", {
+  expect_null(parse_event(""))
+  expect_null(parse_event(":comment"))
+  expect_null(parse_event("id: 1"))
+
+  expect_equal(parse_event("data: ")$data, "")
+  expect_equal(parse_event("data")$data, "")
+})
+
+test_that("examples from spec work", {
+  event <- parse_event("data: YHOO\ndata: +2\ndata: 10")
+  expect_equal(event$type, "message")
+  expect_equal(event$data, "YHOO\n+2\n10")
 })

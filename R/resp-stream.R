@@ -14,7 +14,9 @@
 #' @returns
 #' * `resp_stream_raw()`: a raw vector.
 #' * `resp_stream_lines()`: a character vector.
-#' * `resp_stream_sse()`: a list with components `type`, `data`, and `id`
+#' * `resp_stream_sse()`: a list with components `type`, `data`, and `id`.
+#'   `type`, `data`, and `id` are always strings; `data` and `id` may be empty
+#'   strings.
 #' * `resp_stream_aws()`: a list with components `headers` and `body`.
 #'   `body` will be automatically parsed if the event contents a `:content-type`
 #'   header with `application/json`.
@@ -101,12 +103,26 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
 #' @rdname resp_stream_raw
 #' @order 1
 resp_stream_sse <- function(resp, max_size = Inf) {
-  event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
-  if (is.null(event_bytes)) {
-    return()
+
+  repeat {
+    event_bytes <- resp_boundary_pushback(resp, max_size, find_event_boundary, include_trailer = FALSE)
+    if (is.null(event_bytes)) {
+      return()
+    }
+
+    if (resp_stream_show_buffer(resp)) {
+      log_stream(
+        "Raw server sent event: ----------------------\n",
+        charToRaw(event_bytes),
+        "-----------------------------\n",
+      )
+    }
+
+    event <- parse_event(event_bytes)
+    if (!is.null(event))
+      break
   }
 
-  event <- parse_event(event_bytes)
   if (resp_stream_show_body(resp)) {
     for (key in names(event)) {
       log_stream(cli::style_bold(key), ": ", pretty_json(event[[key]]))
@@ -329,31 +345,84 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
   }
 }
 
+# https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation
 parse_event <- function(event_data) {
-  # always treat event_data as UTF-8, it's in the spec
-  str_data <- rawToChar(event_data)
-  Encoding(str_data) <- "UTF-8"
 
-  # The spec says \r\n, \r, and \n are all valid separators
+  if (is.raw(event_data)) {
+    # Streams must be decoded using the UTF-8 decode algorithm.
+    str_data <- rawToChar(event_data)
+    Encoding(str_data) <- "UTF-8"
+  } else {
+    # for testing
+    str_data <- event_data
+  }
+
+  # The stream must then be parsed by reading everything line by line, with a
+  # U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair, a single
+  # U+000A LINE FEED (LF) character not preceded by a U+000D CARRIAGE RETURN
+  # (CR) character, and a single U+000D CARRIAGE RETURN (CR) character not
+  # followed by a U+000A LINE FEED (LF) character being the ways in
+  # which a line can end.
   lines <- strsplit(str_data, "\r\n|\r|\n")[[1]]
 
+  # When a stream is parsed, a data buffer, an event type buffer, and a
+  # last event ID buffer must be associated with it. They must be initialized
+  # to the empty string.
+  data <- ""
+  type <- ""
+  last_id <- ""
+
+  # If the line starts with a U+003A COLON character (:) - Ignore the line.
+  lines <- lines[!grepl("^:", lines)]
+
+  # If the line contains a U+003A COLON character (:)
+  # * Collect the characters on the line before the first U+003A COLON
+  #  character (:), and let field be that string.
+  # * Collect the characters on the line after the first U+003A COLON character
+  #  (:), and let value be that string. If value starts with a U+0020 SPACE
+  #  character, remove it from value.
   m <- regexec("([^:]*)(: ?)?(.*)", lines)
   matches <- regmatches(lines, m)
   keys <- c("event", vapply(matches, function(x) x[2], character(1)))
   values <- c("message", vapply(matches, function(x) x[4], character(1)))
 
-  remove_dupes <- duplicated(keys, fromLast = TRUE) & keys != "data"
-  keys <- keys[!remove_dupes]
-  values <- values[!remove_dupes]
+  for (i in seq_along(matches)) {
+    key <- matches[[i]][2]
+    value <- matches[[i]][4]
 
-  event_type <- values[keys == "event"]
-  data <- values[keys == "data"]
-  id <- values[keys == "id"]
+    if (key == "event") {
+      # Set the event type buffer to field value.
+      type <- value
+    } else if (key == "data") {
+      # Append the field value to the data buffer, then append a single
+      # U+000A LINE FEED (LF) character to the data buffer.
+      data <- paste0(data, value, "\n")
+    } else if (key == "id") {
+      # If the field value does not contain U+0000 NULL, then set the last
+      # event ID buffer to the field value. Otherwise, ignore the field.
+      last_id <- value
+    }
+  }
+
+  # If the data buffer is an empty string, set the data buffer and the event
+  # type buffer to the empty string and return.
+  if (data == "") {
+    return()
+  }
+
+  # If the data buffer's last character is a U+000A LINE FEED (LF) character,
+  # then remove the last character from the data buffer.
+  if (grepl("\n$", data)) {
+    data <- substr(data, 1, nchar(data) - 1)
+  }
+  if (type == "") {
+    type <- "message"
+  }
 
   list(
-    type = event_type,
+    type = type,
     data = data,
-    id = id
+    id = last_id
   )
 }
 

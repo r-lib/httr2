@@ -40,7 +40,9 @@ EOL.}
 \itemize{
 \item \code{resp_stream_raw()}: a raw vector.
 \item \code{resp_stream_lines()}: a character vector.
-\item \code{resp_stream_sse()}: a list with components \code{type}, \code{data}, and \code{id}
+\item \code{resp_stream_sse()}: a list with components \code{type}, \code{data}, and \code{id}.
+\code{type}, \code{data}, and \code{id} are always strings; \code{data} and \code{id} may be empty
+strings.
 \item \code{resp_stream_aws()}: a list with components \code{headers} and \code{body}.
 \code{body} will be automatically parsed if the event contents a \verb{:content-type}
 header with \code{application/json}.
