@@ -3,7 +3,7 @@ test_that('aws_v4_signature calculates correct signature', {
     req_method('POST')
   
   body_sha256 <- openssl::sha256(httr2:::req_body_get(req))
-  current_time <- as.POSIXct(1737483742)
+  current_time <- as.POSIXct(1737483742, origin = "1970-01-01", tz = "EST")
   
   signature <- httr2:::aws_v4_signature(
     method = httr2:::req_method_get(req),
