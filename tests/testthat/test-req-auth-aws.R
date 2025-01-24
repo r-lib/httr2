@@ -36,11 +36,7 @@ test_that('aws_v4_signature calculates correct signature', {
     aws_access_key_id = 'AKIAIOSFODNN7EXAMPLE',
     aws_secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
   )
-
-  expect_snapshot(rawToChar(signature$SigningKey))
-  expect_snapshot(signature$CanonicalRequest)
-  expect_snapshot(signature$string_to_sign)
-  expect_snapshot(signature$Authorization)
+  expect_snapshot(signature)
 })
 
 test_that("signing agrees with glacier example", {
