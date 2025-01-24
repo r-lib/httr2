@@ -129,7 +129,7 @@ aws_v4_signature <- function(method,
     CanonicalQueryString <- ""
   } else {
     sorted_query <- url$query[order(names(url$query))]
-    CanonicalQueryString <- url_query_build(CanonicalQueryString)
+    CanonicalQueryString <- url_query_build(sorted_query)
   }
 
   headers$host <- url$hostname
