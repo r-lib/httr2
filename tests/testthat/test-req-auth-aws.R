@@ -18,6 +18,27 @@ test_that("can correctly sign a request", {
   expect_no_error(req_perform(req))
 })
 
+test_that('aws_v4_signature calculates correct signature', {
+  req <- request("https://example.execute-api.us-east-1.amazonaws.com/v0/") %>%
+    req_method('POST')
+
+  body_sha256 <- openssl::sha256(req_body_get(req))
+  current_time <- as.POSIXct(1737483742, origin = "1970-01-01", tz = "EST")
+
+  signature <- aws_v4_signature(
+    method = req_method_get(req),
+    url = url_parse(req$url),
+    headers = req$headers,
+    body_sha256 = body_sha256,
+    current_time = current_time,
+    aws_service = 'execute-api',
+    aws_region = 'us-east-1',
+    aws_access_key_id = 'AKIAIOSFODNN7EXAMPLE',
+    aws_secret_access_key = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
+  )
+  expect_snapshot(signature)
+})
+
 test_that("signing agrees with glacier example", {
   # Example from
   # https://docs.aws.amazon.com/amazonglacier/latest/dev/amazon-glacier-signing-requests.html

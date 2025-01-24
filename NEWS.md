@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `aws_v4_signature()` now works if url contains query parameters (@
+jeffreyzuber, #645).
+
 # httr2 1.1.0
 
 ## Lifecycle changes
