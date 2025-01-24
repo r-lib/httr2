@@ -46,7 +46,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-</div>
+<ul><li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_sse()</a></code> now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (<a href="https://github.com/r-lib/httr2/issues/650" class="external-link">#650</a>).</li>
+<li>
+<code>aws_v4_signature()</code> now works if url contains query parameters (<a href="https://github.com/jeffreyzuber" class="external-link">@jeffreyzuber</a>, <a href="https://github.com/r-lib/httr2/issues/645" class="external-link">#645</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="httr2-110">httr2 1.1.0<a class="anchor" aria-label="anchor" href="#httr2-110"></a></h2><p class="text-muted">CRAN release: 2025-01-18</p>
 <div class="section level3">
