@@ -23,8 +23,8 @@
 #'   * `0`: no output
 #'   * `1`: show headers
 #'   * `2`: show headers and bodies as they're streamed
-#'   * `3`: show headers, bodies, curl status messages, and stream buffer
-#'     management
+#'   * `3`: show headers, bodies, curl status messages, raw SSEs, and stream
+#'     buffer management
 #'
 #'   Use [with_verbosity()] to control the verbosity of requests that
 #'   you can't affect directly.

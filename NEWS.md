@@ -1,7 +1,7 @@
 # httr2 (development version)
 
-* `aws_v4_signature()` now works if url contains query parameters (@
-jeffreyzuber, #645).
+* `resp_stream_sse()` now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (#650).
+* `aws_v4_signature()` now works if url contains query parameters (@jeffreyzuber, #645).
 
 # httr2 1.1.0
 
