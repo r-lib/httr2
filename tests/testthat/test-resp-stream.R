@@ -341,6 +341,16 @@ test_that("verbosity = 3 shows buffer info", {
   )
 })
 
+test_that("verbosity = 3 shows raw sse events", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(": comment\n\n")
+    res$send_chunk("data: 1\n\n")
+  })
+
+  resp <- req_perform_connection(req, verbosity = 3)
+  withr::defer(close(resp))
+  expect_snapshot(. <- resp_stream_sse(resp))
+})
 
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {

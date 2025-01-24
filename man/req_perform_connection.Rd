@@ -19,8 +19,8 @@ around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control
 \item \code{0}: no output
 \item \code{1}: show headers
 \item \code{2}: show headers and bodies as they're streamed
-\item \code{3}: show headers, bodies, curl status messages, and stream buffer
-management
+\item \code{3}: show headers, bodies, curl status messages, raw SSEs, and stream
+buffer management
 }
 
 Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
