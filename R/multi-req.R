@@ -64,21 +64,36 @@ req_perform_parallel <- function(reqs,
     config = progress
   )
 
-  perfs <- vector("list", length(reqs))
-  for (i in seq_along(reqs)) {
-    perfs[[i]] <- Performance$new(
-      req = reqs[[i]],
-      path = paths[[i]],
-      progress = progress,
-      error_call = environment()
-    )
-    perfs[[i]]$submit(pool)
+  error_call <- environment()
+  resps <- rep_along(reqs, list())
+
+  handle_success <- function(i, resp, tries) {
+    progress$update()
+    resps[[i]] <<- resp
+  }
+  handle_problem <- function(i, error, tries) {
+    progress$update()
+    error$call <- error_call
+    resps[[i]] <<- error
+    signal("", error = error, class = "httr2_fail")
   }
 
-  pool_run(pool, perfs, on_error = on_error)
+  pooled_requests <- map(seq_along(reqs), function(i) {
+    pooled_request(
+      req = reqs[[i]],
+      path = paths[[i]],
+      error_call = error_call,
+      on_success = function(resp, tries) handle_success(i, resp, tries),
+      on_failure = function(error, tries) handle_problem(i, error, tries),
+      on_error = function(error, tries) handle_problem(i, error, tries)
+    )
+  })
+
+  walk(pooled_requests, function(req) req$submit(pool))
+  pool_run(pool, pooled_requests, on_error = on_error)
   progress$done()
 
-  map(perfs, ~ .$resp)
+  resps
 }
 
 
@@ -131,115 +146,13 @@ pool_run <- function(pool, perfs, on_error = "continue") {
   )
 
   try_fetch(
-    repeat({
-      run <- curl::multi_run(0.1, pool = pool, poll = TRUE)
-      if (run$pending == 0) {
-        break
-      }
-    }),
+    curl::multi_run(pool = pool),
     interrupt = function(cnd) NULL,
     httr2_fail = httr2_fail
   )
 
   invisible()
 }
-
-# Wrap up all components of request -> response in a single object
-Performance <- R6Class("Performance", public = list(
-  req = NULL,
-  req_prep = NULL,
-  path = NULL,
-
-  handle = NULL,
-  resp = NULL,
-  pool = NULL,
-  error_call = NULL,
-  progress = NULL,
-
-  initialize = function(req, path = NULL, progress = NULL, error_call = NULL) {
-    self$req <- req
-    self$path <- path
-    self$progress <- progress
-    self$error_call <- error_call
-
-    req <- auth_sign(req)
-    req <- cache_pre_fetch(req, path)
-    if (is_response(req)) {
-      self$resp <- req
-    } else {
-      self$req_prep <- req_prepare(req)
-      self$handle <- req_handle(self$req_prep)
-    }
-  },
-
-  submit = function(pool = NULL) {
-    if (!is.null(self$resp)) {
-      # cached
-      return()
-    }
-
-    self$pool <- pool
-    curl::multi_add(
-      handle = self$handle,
-      pool = self$pool,
-      data = self$path,
-      done = self$succeed,
-      fail = self$fail
-    )
-    invisible(self)
-  },
-
-  succeed = function(res) {
-    self$progress$update()
-    req_completed(self$req_prep)
-
-    if (is.null(self$path)) {
-      body <- res$content
-    } else {
-      # Only needed with curl::multi_run()
-      if (!file.exists(self$path)) {
-        file.create(self$path)
-      }
-      body <- new_path(self$path)
-    }
-    resp <- new_response(
-      method = req_method_get(self$req),
-      url = res$url,
-      status_code = res$status_code,
-      headers = as_headers(res$headers),
-      body = body,
-      request = self$req
-    )
-    resp <- cache_post_fetch(self$req, resp, path = self$path)
-    self$resp <- tryCatch(
-      handle_resp(self$req, resp, error_call = self$error_call),
-      error = identity
-    )
-    if (is_error(self$resp)) {
-      signal("", error = self$resp, class = "httr2_fail")
-    }
-  },
-
-  fail = function(msg) {
-    self$progress$update()
-    req_completed(self$req_prep)
-
-    self$resp <- error_cnd(
-      "httr2_failure",
-      message = msg,
-      request = self$req,
-      call = self$error_call
-    )
-    signal("", error = self$resp, class = "httr2_fail")
-  },
-
-  cancel = function() {
-    # No handle if response was cached
-    if (!is.null(self$handle)) {
-      curl::multi_cancel(self$handle)
-    }
-  }
-))
 
 pool_cancel <- function(pool, perfs) {
   walk(perfs, ~ .x$cancel())

@@ -152,11 +152,28 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
-    body <- error_body(req, resp, error_call)
-    resp_abort(resp, req, body, call = error_call)
+    cnd <- resp_failure_cnd(req, resp, error_call = error_call)
+    cnd_signal(cnd)
   } else {
     resp
   }
+}
+
+resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
+  status <- resp_status(resp)
+  desc <- resp_status_desc(resp)
+  message <- glue("HTTP {status} {desc}.")
+
+  info <- error_body(req, resp, error_call)
+
+  catch_cnd(abort(
+    c(message, resp_auth_message(resp), info),
+    status = status,
+    resp = resp,
+    class = c(glue("httr2_http_{status}"), "httr2_http", "httr2_error", "rlang_error"),
+    request = req,
+    call = error_call
+  ))
 }
 
 req_perform1 <- function(req, path = NULL, handle = NULL) {

@@ -66,23 +66,9 @@ resp_check_status <- function(resp, info = NULL, error_call = caller_env()) {
   if (!resp_is_error(resp)) {
     invisible(resp)
   } else {
-    resp_abort(resp, resp$request, info, call = error_call)
+    cnd <- resp_failure_cnd(resp$request, resp, error_call = error_call)
+    cnd_signal(cnd)
   }
-}
-
-resp_abort <- function(resp, req, info = NULL, call = caller_env()) {
-  status <- resp_status(resp)
-  desc <- resp_status_desc(resp)
-  message <- glue("HTTP {status} {desc}.")
-
-  abort(
-    c(message, resp_auth_message(resp), info),
-    status = status,
-    resp = resp,
-    class = c(glue("httr2_http_{status}"), "httr2_http", "httr2_error"),
-    request = req,
-    call = call
-  )
 }
 
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
