@@ -266,7 +266,6 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 
   req <- req_prepare(req)
   handle <- req_handle(req)
-  curl::handle_setopt(handle, url = req$url)
   resp <- curl::curl_echo(handle, progress = FALSE)
 
   invisible(list(
@@ -290,6 +289,7 @@ req_prepare <- function(req) {
 }
 req_handle <- function(req) {
   handle <- curl::new_handle()
+  curl::handle_setopt(handle, url = req$url)
   curl::handle_setheaders(handle, .list = headers_flatten(req$headers))
   curl::handle_setopt(handle, .list = req$options)
   if (length(req$fields) > 0) {
