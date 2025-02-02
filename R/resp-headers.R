@@ -152,6 +152,9 @@ resp_retry_after <- function(resp) {
 #'
 #' Parses URLs out of the the `Link` header as defined by `r rfc(8288)`.
 #'
+#' Note: [header names are case-insensitive](https://datatracker.ietf.org/doc/html/rfc9110#section-5.1-3),
+#' so this will parse out `Link`, `link`, `lINK`, etc...
+#'
 #' @export
 #' @inheritParams resp_headers
 #' @returns Either a string providing a URL, if the specified `rel` exists, or
@@ -174,7 +177,7 @@ resp_link_url <- function(resp, rel) {
   }
 
   headers <- resp_headers(resp)
-  link_headers <- headers[names(headers) == "Link"]
+  link_headers <- headers[tolower(names(headers)) == "link"] 
   links <- unlist(lapply(link_headers, parse_link), recursive = FALSE)
   sel <- map_lgl(links, ~ .$rel == rel)
   if (sum(sel) != 1L) {
