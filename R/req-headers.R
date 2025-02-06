@@ -82,6 +82,6 @@ req_headers <- function(.req, ..., .redact = NULL) {
 req_headers_redacted <- function(.req, ...) {
   check_request(.req)
 
-  dots <- list(...)
+  dots <- list2(...)
   req_headers(.req, !!!dots, .redact = names(dots))
 }
