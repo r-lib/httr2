@@ -17,9 +17,12 @@ test_that("checks auth types have needed args", {
 })
 
 test_that("client has useful print method", {
+  url <-"http://example.com"
+
   expect_snapshot({
-    oauth_client("x", token_url = "http://example.com")
-    oauth_client("x", secret = "SECRET", token_url = "http://example.com")
+    oauth_client("x", url)
+    oauth_client("x", url, secret = "SECRET")
+    oauth_client("x", url, auth = function(...) {xxx})
   })
 })
 

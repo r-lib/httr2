@@ -4,7 +4,10 @@ bullets_with_header <- function(header, x) {
   }
 
   cli::cli_text("{.strong {header}}")
+  bullets(x)
+}
 
+bullets <- function(x) {
   as_simple <- function(x) {
     if (is.atomic(x) && length(x) == 1) {
       if (is.character(x)) {
