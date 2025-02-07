@@ -6,7 +6,7 @@
       <httr2_request>
       GET http://example.com
       Headers:
-      * a: "<REDACTED>"
+      * a: <REDACTED>
       Body: empty
 
 # checks input types
