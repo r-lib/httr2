@@ -14,6 +14,19 @@
 ---
 
     Code
+      req %>% req_body_raw("Cenário", type = "text/plain") %>% req_dry_run()
+    Output
+      POST / HTTP/1.1
+      accept: */*
+      content-length: 8
+      content-type: text/plain
+      host: example.com
+      
+      Cenário
+
+---
+
+    Code
       req %>% req_body_raw("Cenário") %>% req_dry_run()
     Output
       POST / HTTP/1.1
@@ -21,7 +34,7 @@
       content-length: 8
       host: example.com
       
-      Cenário
+      <8 bytes>
 
 # authorization headers are redacted
 

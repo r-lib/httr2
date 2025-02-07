@@ -18,9 +18,17 @@ test_that("body is shown", {
   # even if it contains unicode
   expect_snapshot({
     req %>%
+      req_body_raw("Cenário", type = "text/plain") %>%
+      req_dry_run()
+  })
+
+  # But doesn't show binary data
+  expect_snapshot({
+    req %>%
       req_body_raw("Cenário") %>%
       req_dry_run()
   })
+
 })
 
 test_that("authorization headers are redacted", {

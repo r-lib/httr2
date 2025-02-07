@@ -46,7 +46,11 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 
     if (!is.null(resp$body)) {
       cli::cat_line()
-      cli::cat_line(rawToChar(resp$body))
+      if (is_text_type(headers$`content-type`)) {
+        cli::cat_line(rawToChar(resp$body))
+      } else {
+        cli::cat_line("<", length(resp$body), " bytes>")
+      }
     }
   }
 
