@@ -46,6 +46,8 @@ test_that("can parse both forms of retry-after header", {
   expect_equal(resp_retry_after(resp_rel), NA)
 })
 
+# resp_link_url() --------------------------------------------------------------
+
 test_that("can extract specified link url", {
   resp <- response(headers = paste0(
     'Link: <https://example.com/1>; rel="next",',
@@ -66,4 +68,9 @@ test_that("can extract from multiple link headers", {
   ))
   expect_equal(resp_link_url(resp, "next"), "https://example.com/1")
   expect_equal(resp_link_url(resp, "last"), "https://example.com/2")
+})
+
+test_that("is case insensitive", {
+  resp <- response(headers = 'LINK: <https://example.com/1>; rel="next"')
+  expect_equal(resp_link_url(resp, "next"), "https://example.com/1")
 })
