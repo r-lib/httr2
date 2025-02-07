@@ -97,7 +97,7 @@ req_perform_promise <- function(req,
       req = req,
       path = path,
       on_success = function(resp, tries) resolve(resp),
-      on_failure = function(error, tries)reject(error),
+      on_failure = function(error, tries) reject(error),
       on_error = function(error, tries) reject(error)
     )
     pooled_req$submit(pool)
