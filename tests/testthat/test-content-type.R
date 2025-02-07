@@ -70,3 +70,9 @@ test_that("check_content_type() can consult suffixes", {
     error = TRUE
   )
 })
+
+test_that("can detect text types", {
+  expect_true(is_text_type("text/html"))
+  expect_true(is_text_type("application/json"))
+  expect_false(is_text_type("image/png"))
+})

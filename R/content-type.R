@@ -115,3 +115,29 @@ check_content_type <- function(content_type,
     call = call
   )
 }
+
+
+is_text_type <- function(content_type) {
+  if (is.null(content_type)) {
+    return(FALSE)
+  }
+
+  parsed <- parse_content_type(content_type)
+  if (parsed$type == "text") {
+    return(TRUE)
+  }
+
+  special_cases <- c(
+    "application/xml",
+    "application/x-www-form-urlencoded",
+    "application/json",
+    "application/ld+json",
+    "multipart/form-data"
+  )
+  base_type <- paste0(parsed$type, "/", parsed$subtype)
+  if (base_type %in% special_cases) {
+    return(TRUE)
+  }
+
+  FALSE
+}

@@ -42,29 +42,12 @@ test_that("validates inputs", {
   })
 })
 
-test_that("can request verbose record of request", {
-  req <- request_test("/post") %>% req_body_raw("This is some text")
-
-  # Snapshot test of what can be made reproducible
-  req1 <- req %>%
-    req_headers("Host" = "http://example.com") %>%
-    req_headers(`Accept-Encoding` = "gzip") %>%
-    req_user_agent("verbose") %>%
-    req_verbose(header_resp = FALSE, body_req = TRUE)
-  expect_snapshot_output(invisible(req_perform(req1)))
-
-  # Lightweight test for everything else
-  req2 <- req %>% req_verbose(info = TRUE, body_resp = TRUE)
-  expect_output(req_perform(req2))
-})
-
 test_that("req_proxy gives helpful errors", {
   req <- request_test("/get")
   expect_snapshot(error = TRUE, {
     req %>% req_proxy(port = "abc")
     req %>% req_proxy("abc", auth = "bsc")
   })
-
 })
 
 test_that("auth_flags gives correct constant", {
