@@ -5,7 +5,7 @@
 \alias{example_github_client}
 \title{Code for examples}
 \usage{
-example_url()
+example_url(path = "/")
 
 example_github_client()
 }
