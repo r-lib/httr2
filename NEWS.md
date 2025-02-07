@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* `oauth_client()` gains a better method that doesn't error with custom auth functions (#648)
+* `oauth_client()` and `oauth_token()` gain refreshed print methods that use bulleted lists, like other httr2 objects. Additionally, print a `oauth_client()` with a custom `auth` function no longer errors (#648).
 * `resp_stream_sse()` now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (#650).
 * `aws_v4_signature()` now works if url contains query parameters (@jeffreyzuber, #645).
 
