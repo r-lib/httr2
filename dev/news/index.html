@@ -47,6 +47,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> and <code><a href="../reference/req_verbose.html">req_verbose()</a></code> now do a better job of displaying compressed bodies (<a href="https://github.com/r-lib/httr2/issues/91" class="external-link">#91</a>, <a href="https://github.com/r-lib/httr2/issues/656" class="external-link">#656</a>).</li>
+<li>
 <code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> once again ignores the case of headers (<a href="https://github.com/DavidRLovell" class="external-link">@DavidRLovell</a>, <a href="https://github.com/r-lib/httr2/issues/655" class="external-link">#655</a>)</li>
 <li>
 <code><a href="../reference/oauth_client.html">oauth_client()</a></code> and <code><a href="../reference/oauth_token.html">oauth_token()</a></code> gain refreshed print methods that use bulleted lists, like other httr2 objects. Additionally, print a <code><a href="../reference/oauth_client.html">oauth_client()</a></code> with a custom <code>auth</code> function no longer errors (<a href="https://github.com/r-lib/httr2/issues/648" class="external-link">#648</a>).</li>

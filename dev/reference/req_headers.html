@@ -100,11 +100,11 @@ header is always redacted.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>MyHeader <span class="op">=</span> <span class="st">"MyValue"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">MyHeader</span>: MyValue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">myheader</span>: MyValue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Repeated use overrides the previous value:</span></span></span>
@@ -113,11 +113,11 @@ header is always redacted.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>MyHeader <span class="op">=</span> <span class="st">"New value"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">MyHeader</span>: New value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">myheader</span>: New value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Setting Accept to NULL uses curl's default:</span></span></span>
@@ -125,10 +125,10 @@ header is always redacted.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>Accept <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Setting it to "" removes it:</span></span></span>
@@ -136,9 +136,9 @@ header is always redacted.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>Accept <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If you need to repeat a header, provide a vector of values</span></span></span>
@@ -147,13 +147,11 @@ header is always redacted.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>HeaderName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Value 1"</span>, <span class="st">"Value 2"</span>, <span class="st">"Value 3"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderName</span>: Value 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderName</span>: Value 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderName</span>: Value 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">headername</span>: Value 1,Value 2,Value 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If you have headers in a list, use !!!</span></span></span>
@@ -162,13 +160,13 @@ header is always redacted.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">headers</span>, HeaderThree <span class="op">=</span> <span class="st">"three"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderOne</span>: one</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderTwo</span>: two</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">HeaderThree</span>: three</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">headerone</span>: one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">headerthree</span>: three</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">headertwo</span>: two</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use `req_headers_redacted()`` to hide a header in the output</span></span></span>
@@ -185,12 +183,12 @@ header is always redacted.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-in"><span><span class="va">req_secret</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Secret</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Public</span>: but-this-is-not</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">public</span>: but-this-is-not</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">secret</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.0.9000 r-curl/6.2.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
