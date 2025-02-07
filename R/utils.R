@@ -18,13 +18,15 @@ bullets <- function(x) {
         format(x)
       }
     } else {
-      obj_type_friendly(x)
+      paste0("<", class(x)[[1L]], ">")
     }
   }
   vals <- map_chr(x, as_simple)
+  names <- format(names(x))
+  names <- gsub(" ", "\u00a0", names, fixed = TRUE)
 
   for (i in seq_along(x)) {
-    cli::cli_li("{.field {names(x)[[i]]}}: {vals[[i]]}")
+    cli::cli_li("{.field {names[[i]]}}: {vals[[i]]}")
   }
 }
 

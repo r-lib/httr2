@@ -46,27 +46,27 @@
       oauth_client("x", url)
     Message
       <httr2_oauth_client>
-      * name: "bf27508f7925b06bf28a10f3805351ab"
-      * id: "x"
+      * name     : "bf27508f7925b06bf28a10f3805351ab"
+      * id       : "x"
       * token_url: "http://example.com"
-      * auth: "oauth_client_req_auth_body"
+      * auth     : "oauth_client_req_auth_body"
     Code
       oauth_client("x", url, secret = "SECRET")
     Message
       <httr2_oauth_client>
-      * name: "bf27508f7925b06bf28a10f3805351ab"
-      * id: "x"
-      * secret: <REDACTED>
+      * name     : "bf27508f7925b06bf28a10f3805351ab"
+      * id       : "x"
+      * secret   : <REDACTED>
       * token_url: "http://example.com"
-      * auth: "oauth_client_req_auth_body"
+      * auth     : "oauth_client_req_auth_body"
     Code
       oauth_client("x", url, auth = function(...) {
         xxx
       })
     Message
       <httr2_oauth_client>
-      * name: "bf27508f7925b06bf28a10f3805351ab"
-      * id: "x"
+      * name     : "bf27508f7925b06bf28a10f3805351ab"
+      * id       : "x"
       * token_url: "http://example.com"
-      * auth: a function
+      * auth     : <function>
 
