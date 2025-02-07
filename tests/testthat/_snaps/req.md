@@ -28,7 +28,7 @@
       <httr2_request>
       GET http://test
       Headers:
-      * x: "{z}"
+      * x  : "{z}"
       * {z}: "x"
       Body: empty
 
