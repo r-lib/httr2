@@ -88,6 +88,15 @@ test_that("old args are deprecated", {
 
 })
 
+test_that("valid urls aren't changed", {
+  # Allow tests to run when is_hosted_session() is TRUE.
+  local_mocked_bindings(is_hosted_session = function() FALSE)
+
+  original_uri <- "http://localhost:8080"
+  normalized_uri <- normalize_redirect_uri(original_uri)
+  expect_identical(normalized_uri$uri, original_uri)
+})
+
 # ouath_flow_auth_code_parse ----------------------------------------------
 
 test_that("forwards oauth error", {
