@@ -211,7 +211,7 @@ test_that("can read from clipboard", {
       clipr::read_clip()
     },
     transform = function(x) {
-      grep("\\\\r", x, value = TRUE, invert = TRUE)
+      grep('"\\\\r"\\s*$', x, value = TRUE, invert = TRUE)
     }
   )
 })
