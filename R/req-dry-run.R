@@ -62,6 +62,7 @@ show_body <- function(body, content_type, prefix = "") {
   if (is_text_type(content_type)) {
     body <- rawToChar(body)
     body <- gsub("\n", paste0("\n", prefix), body)
+    Encoding(body) <- "UTF-8"
     cli::cat_line(prefix, body)
   } else {
     cli::cat_line(prefix, "<", length(body), " bytes>")
