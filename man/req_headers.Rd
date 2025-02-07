@@ -20,8 +20,8 @@ and their values.
 \item Use a character vector to repeat a header.
 }}
 
-\item{.redact}{Headers to redact. If \code{NULL}, the default, the added headers
-are not redacted.}
+\item{.redact}{A character vector of headers to redact. The Authorization
+header is always redacted.}
 }
 \value{
 A modified HTTP \link{request}.
