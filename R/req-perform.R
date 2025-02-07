@@ -149,6 +149,10 @@ req_perform <- function(
 }
 
 handle_resp <- function(req, resp, error_call = caller_env()) {
+  if (resp_show_body(resp)) {
+    show_body(resp$body, resp$headers$`content-type`, prefix = "<< ")
+  }
+
   if (is_error(resp)) {
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
@@ -252,3 +256,7 @@ req_completed <- function(req) {
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
+
+resp_show_body <- function(resp) {
+  resp$request$policies$show_body %||% FALSE
+}

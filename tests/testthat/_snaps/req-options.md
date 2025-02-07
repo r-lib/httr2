@@ -13,14 +13,60 @@
 
 # can request verbose record of request
 
-    -> POST /post HTTP/1.1
-    -> Host: http://example.com
-    -> User-Agent: verbose
-    -> Accept: */*
-    -> Accept-Encoding: gzip
-    -> Content-Length: 17
-    -> 
-    >> This is some text
+    Code
+      . <- req_perform(req1)
+    Output
+      -> POST /post HTTP/1.1
+      -> Host: http://example.com
+      -> Accept: */*
+      -> Content-Length: 17
+      -> 
+      >> This is some text
+      <- HTTP/1.1 200 OK
+      <- Content-Type: application/json
+      <- 
+      << {
+      <<   "args": {},
+      <<   "data": {},
+      <<   "files": {},
+      <<   "form": {},
+      <<   "headers": {
+      <<     "Host": "http://example.com",
+      <<     "Accept": "*/*",
+      <<     "Content-Length": "17"
+      <<   },
+      <<   "json": {},
+      <<   "method": "post",
+      <<   "path": "/post",
+      <<   "origin": "127.0.0.1",
+      <<   "url": "<webfakes>post"
+      << }
+
+# can display compressed bodies
+
+    Code
+      . <- req_perform(req)
+    Output
+      <- HTTP/1.1 200 OK
+      <- Content-Type: application/json
+      <- Content-Encoding: gzip
+      <- 
+      << {
+      <<   "args": {},
+      <<   "data": {},
+      <<   "files": {},
+      <<   "form": {},
+      <<   "headers": {
+      <<     "Host": "http://example.com",
+      <<     "Accept": "*/*"
+      <<   },
+      <<   "json": {},
+      <<   "method": "get",
+      <<   "path": "/gzip",
+      <<   "origin": "127.0.0.1",
+      <<   "url": "<webfakes>gzip",
+      <<   "gzipped": true
+      << }
 
 # req_proxy gives helpful errors
 

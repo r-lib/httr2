@@ -47,15 +47,22 @@ test_that("can request verbose record of request", {
 
   # Snapshot test of what can be made reproducible
   req1 <- req %>%
-    req_headers("Host" = "http://example.com") %>%
-    req_headers(`Accept-Encoding` = "gzip") %>%
-    req_user_agent("verbose") %>%
-    req_verbose(header_resp = FALSE, body_req = TRUE)
-  expect_snapshot_output(invisible(req_perform(req1)))
+    req_headers_reset() %>%
+    req_verbose(header_resp = TRUE, body_req = TRUE, body_resp = TRUE)
+  expect_snapshot(. <- req_perform(req1), transform = transform_resp_headers)
 
   # Lightweight test for everything else
-  req2 <- req %>% req_verbose(info = TRUE, body_resp = TRUE)
+  req2 <- req %>% req_verbose(info = TRUE)
   expect_output(req_perform(req2))
+})
+
+test_that("can display compressed bodies", {
+  req <- request(example_url()) |>
+    req_url_path("gzip") |>
+    req_headers_reset() |>
+    req_verbose(header_req = FALSE, header_resp = TRUE, body_resp = TRUE)
+
+  expect_snapshot(. <- req_perform(req), transform = transform_resp_headers)
 })
 
 test_that("req_proxy gives helpful errors", {
@@ -64,7 +71,6 @@ test_that("req_proxy gives helpful errors", {
     req %>% req_proxy(port = "abc")
     req %>% req_proxy("abc", auth = "bsc")
   })
-
 })
 
 test_that("auth_flags gives correct constant", {

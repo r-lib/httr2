@@ -43,15 +43,8 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
       to_redact = attr(req$headers, "redact")
     )
     cli::cat_line(cli::style_bold(names(headers)), ": ", headers)
-
-    if (!is.null(resp$body)) {
-      cli::cat_line()
-      if (is_text_type(headers$`content-type`)) {
-        cli::cat_line(rawToChar(resp$body))
-      } else {
-        cli::cat_line("<", length(resp$body), " bytes>")
-      }
-    }
+    cli::cat_line()
+    show_body(resp$body, headers$`content-type`)
   }
 
   invisible(list(
@@ -59,4 +52,20 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
     path = resp$path,
     headers = as.list(resp$headers)
   ))
+}
+
+show_body <- function(body, content_type, prefix = "") {
+  if (is.null(body)) {
+    return(invisible())
+  }
+
+  if (is_text_type(content_type)) {
+    body <- rawToChar(body)
+    body <- gsub("\n", paste0("\n", prefix), body)
+    cli::cat_line(prefix, body)
+  } else {
+    cli::cat_line(prefix, "<", length(body), " bytes>")
+  }
+
+  invisible()
 }

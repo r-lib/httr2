@@ -179,11 +179,13 @@ req_verbose <- function(req,
       text =       if (info)        verbose_message("*  ", msg),
       headerOut =  if (header_resp) verbose_header("<- ", msg),
       headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
-      dataOut =    if (body_resp)   verbose_message("<< ", msg),
+      dataOut =    NULL, # displayed in handle_resp()
       dataIn =     if (body_req)    verbose_message(">> ", msg)
     )
   }
-  req_options(req, debugfunction = debug, verbose = TRUE)
+  req <- req_policies(req, show_body = body_resp)
+  req <- req_options(req, debugfunction = debug, verbose = TRUE)
+  req
 }
 
 
@@ -215,6 +217,18 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
     }
   }
 }
+
+# Reset all headers that otherwise might vary
+req_headers_reset <- function(req) {
+  req_headers(req, `Accept-Encoding` = "", Host = "http://example.com", `User-Agent` = "")
+}
+
+transform_resp_headers <- function(lines) {
+  lines <- gsub(example_url(), "<webfakes>", lines, fixed = TRUE)
+  lines <- lines[!grepl("^<- (Date|ETag|Content-Length):", lines)]
+  lines
+}
+
 
 auth_flags <- function(x = "basic") {
   constants <- c(
