@@ -4,22 +4,29 @@ bullets_with_header <- function(header, x) {
   }
 
   cli::cli_text("{.strong {header}}")
+  bullets(x)
+}
 
+bullets <- function(x) {
   as_simple <- function(x) {
     if (is.atomic(x) && length(x) == 1) {
-      if (is.character(x)) {
+      if (is_redacted(x)) {
+        x
+      } else if (is.character(x)) {
         paste0('"', x, '"')
       } else {
         format(x)
       }
     } else {
-      obj_type_friendly(x)
+      paste0("<", class(x)[[1L]], ">")
     }
   }
   vals <- map_chr(x, as_simple)
+  names <- format(names(x))
+  names <- gsub(" ", "\u00a0", names, fixed = TRUE)
 
   for (i in seq_along(x)) {
-    cli::cli_li("{.field {names(x)[[i]]}}: {vals[[i]]}")
+    cli::cli_li("{.field {names[[i]]}}: {vals[[i]]}")
   }
 }
 
