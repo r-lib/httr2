@@ -14,9 +14,9 @@ test_that("can request verbose record of request", {
 })
 
 test_that("can display compressed bodies", {
-  req <- request(example_url()) |>
-    req_url_path("gzip") |>
-    req_headers_reset() |>
+  req <- request(example_url()) %>%
+    req_url_path("gzip") %>%
+    req_headers_reset() %>%
     req_verbose(header_req = FALSE, header_resp = TRUE, body_resp = TRUE)
 
   expect_snapshot(. <- req_perform(req), transform = transform_resp_headers)
