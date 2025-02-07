@@ -349,7 +349,10 @@ test_that("verbosity = 3 shows raw sse events", {
 
   resp <- req_perform_connection(req, verbosity = 3)
   withr::defer(close(resp))
-  expect_snapshot(. <- resp_stream_sse(resp))
+  expect_snapshot(
+    . <- resp_stream_sse(resp),
+    transform = function(lines) lines[!grepl("^\\* ", lines)]
+  )
 })
 
 test_that("has a working find_event_boundary", {
