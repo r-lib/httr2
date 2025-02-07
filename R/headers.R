@@ -57,8 +57,15 @@ list_redact <- function(x, names, case_sensitive = TRUE) {
   } else {
     i <- match(tolower(names), tolower(names(x)))
   }
-  x[i] <- cli::col_grey("<REDACTED>")
+  x[i] <- redacted()
   x
+}
+
+redacted <- function() {
+  cli::col_grey("<REDACTED>")
+}
+is_redacted <- function(x) {
+  is.character(x) && length(x) == 1 && x == redacted()
 }
 
 

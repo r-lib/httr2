@@ -56,7 +56,7 @@
       <httr2_oauth_client>
       * name: "bf27508f7925b06bf28a10f3805351ab"
       * id: "x"
-      * secret: "<REDACTED>"
+      * secret: <REDACTED>
       * token_url: "http://example.com"
       * auth: "oauth_client_req_auth_body"
     Code

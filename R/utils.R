@@ -10,7 +10,9 @@ bullets_with_header <- function(header, x) {
 bullets <- function(x) {
   as_simple <- function(x) {
     if (is.atomic(x) && length(x) == 1) {
-      if (is.character(x)) {
+      if (is_redacted(x)) {
+        x
+      } else if (is.character(x)) {
         paste0('"', x, '"')
       } else {
         format(x)
