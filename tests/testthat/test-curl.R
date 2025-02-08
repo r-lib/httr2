@@ -188,20 +188,18 @@ test_that("can evaluate simple calls", {
 })
 
 test_that("can read from clipboard", {
-  # need to skip on remote environment (CI or Workbench) and CRAN as can't read from clipboard there
-  skip_on_ci()
   skip_on_cran()
   skip_if_not_installed("clipr")
+  skip_if_not(clipr::clipr_available())
   skip_if(getRversion() < "4.1")
-  skip_if(is_hosted_session())
 
-  # need to set env var so that `read/write_clip()` works in non-interactive mode
+  # pretend we're interactive and can use the clipboard
   withr::local_envvar(CLIPR_ALLOW = TRUE)
+  rlang::local_interactive()
 
-  # suppress warning because the clipboard might contain no readable text
+  # restore the existing clipboard to be nice to the tester
   old_clip <- suppressWarnings(clipr::read_clip())
   withr::defer(clipr::write_clip(old_clip))
-  rlang::local_interactive()
 
   clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
   expect_snapshot({
