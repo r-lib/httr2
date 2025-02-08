@@ -88,6 +88,15 @@ test_that("old args are deprecated", {
 
 })
 
+test_that("urls left as is if not changes needed", {
+  # Allow tests to run when is_hosted_session() is TRUE.
+  local_mocked_bindings(is_hosted_session = function() FALSE)
+
+  original_uri <- "http://localhost:8080"
+  normalized_uri <- normalize_redirect_uri(original_uri)
+  expect_equal(normalized_uri$uri, original_uri)
+})
+
 # ouath_flow_auth_code_parse ----------------------------------------------
 
 test_that("forwards oauth error", {
@@ -125,6 +134,7 @@ test_that("external auth code sources are detected correctly", {
 
 test_that("auth codes can be retrieved from an external source", {
   skip_on_cran()
+  local_mocked_bindings(sys_sleep = function(...) {})
 
   req <- local_app_request(function(req, res) {
     # Error on first, and then respond on second

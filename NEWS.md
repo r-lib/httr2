@@ -7,6 +7,7 @@
 * `req_headers_redacted()` supports dynamic dots (#647)
 * `resp_stream_sse()` now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (#650).
 * `aws_v4_signature()` now works if url contains query parameters (@jeffreyzuber, #645).
+* `req_oauth_auth_code()` no longer adds trailing "/" characters to well-formed `redirect_uri` values (@jonthegeek, #646).
 
 # httr2 1.1.0
 

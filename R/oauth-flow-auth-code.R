@@ -209,7 +209,7 @@ normalize_redirect_uri <- function(redirect_uri,
                                    port = deprecated(),
                                    error_call = caller_env()) {
 
-  parsed <- url_parse(redirect_uri)
+  old <- parsed <- url_parse(redirect_uri)
 
   if (lifecycle::is_present(host_name)) {
     lifecycle::deprecate_warn(
@@ -250,7 +250,7 @@ normalize_redirect_uri <- function(redirect_uri,
   }
 
   list(
-    uri = url_build(parsed),
+    uri = if (identical(old, parsed)) redirect_uri else url_build(parsed),
     localhost = localhost,
     can_fetch_code = can_fetch_oauth_code(redirect_uri)
   )
