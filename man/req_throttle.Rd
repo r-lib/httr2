@@ -4,15 +4,20 @@
 \alias{req_throttle}
 \title{Rate limit a request by automatically adding a delay}
 \usage{
-req_throttle(req, rate, realm = NULL)
+req_throttle(req, rate, capacity, fill_time_s = 60, realm = NULL)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
-\item{rate}{Maximum rate, i.e. maximum number of requests per second.
-Usually easiest expressed as a fraction,
-\code{number_of_requests / number_of_seconds}, e.g. 15 requests per minute
-is \code{15 / 60}.}
+\item{rate}{For backwards compatibility, you can still specify the \code{rate},
+which is converted to \code{capacity} by multiplying by \code{fill_time_s}.
+However, we recommend using \code{capacity} and \code{fill_time_s} as it gives more
+control.}
+
+\item{capacity}{The size of the bucket, i.e. the maximum number of
+tokens that can accumulate.}
+
+\item{fill_time_s}{Time in seconds to fill the capacity. Defaults to 60s.}
 
 \item{realm}{A string that uniquely identifies the throttle pool to use
 (throttling limits always apply \emph{per pool}). If not supplied, defaults
@@ -24,16 +29,29 @@ A modified HTTP \link{request}.
 \description{
 Use \code{req_throttle()} to ensure that repeated calls to \code{\link[=req_perform]{req_perform()}} never
 exceed a specified rate.
+
+Throttling is implemented using a "token bucket", which steadily fills up to
+a maximum of \code{capacity} tokens over \code{fill_time_s}. Each time you make a
+request, it takes a token out of the bucket, and if the bucket is empty,
+the request will wait until the bucket refills. This ensures that you never
+make more than \code{capacity} requests in \code{fill_time_s}, but you can make
+requests more quickly if the bucket is full. For example, if you have
+\code{capacity = 10} and \code{fill_time_s = 60}, you can make 10 requests
+without waiting, but the next request will wait 60 seconds. This gives the
+same average throttling rate as the previous approach, but gives you much
+better performance if you're only making a small number of requests.
 }
 \examples{
 # Ensure we never send more than 30 requests a minute
 req <- request(example_url()) |>
-  req_throttle(rate = 30 / 60)
+  req_throttle(capacity = 30, fill_time_s = 60)
 
 resp <- req_perform(req)
 throttle_status()
 resp <- req_perform(req)
 throttle_status()
+
+\dontshow{httr2:::throttle_reset()}
 }
 \seealso{
 \code{\link[=req_retry]{req_retry()}} for another way of handling rate-limited APIs.

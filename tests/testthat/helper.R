@@ -1,5 +1,8 @@
 testthat::set_state_inspector(function() {
-  list(connections = getAllConnections())
+  list(
+    connections = getAllConnections(),
+    the_throttle = as.list(the$throttle)
+  )
 })
 
 expect_redacted <- function(req, expected) {
