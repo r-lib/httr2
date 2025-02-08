@@ -204,16 +204,11 @@ test_that("can read from clipboard", {
   rlang::local_interactive()
 
   clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
-  expect_snapshot(
-    {
-      curl_translate()
-      # also writes to clip
-      clipr::read_clip()
-    },
-    transform = function(x) {
-      grep('"\\\\r"\\s*$', x, value = TRUE, invert = TRUE)
-    }
-  )
+  expect_snapshot({
+    curl_translate()
+    # also writes to clip
+    clipr::read_clip()
+  })
 })
 
 test_that("encode_string2() produces simple strings", {
