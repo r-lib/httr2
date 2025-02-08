@@ -63,7 +63,6 @@ req_verbose <- function(req,
 # helpers -----------------------------------------------------------------
 
 verbose_message <- function(prefix, x) {
-  cat("--start verbose_message--\n")
   if (any(x > 128)) {
     # This doesn't handle unicode, but it seems like most output
     # will be compressed in some way, so displaying bodies is unlikely
@@ -74,7 +73,6 @@ verbose_message <- function(prefix, x) {
     lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
   }
   cli::cat_line(prefix, lines)
-  cat("--end verbose_message--\n")
 }
 
 verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {

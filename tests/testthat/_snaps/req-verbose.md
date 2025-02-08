@@ -7,9 +7,7 @@
       -> Host: http://example.com
       -> Content-Length: 17
       -> 
-      --start verbose_message--
       >> This is some text
-      --end verbose_message--
       <- HTTP/1.1 200 OK
       <- Content-Type: application/json
       <- 
