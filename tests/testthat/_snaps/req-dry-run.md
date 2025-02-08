@@ -9,7 +9,9 @@
       content-type: application/json
       host: example.com
       
+      --start show_body--
       {"x":1,"y":true,"z":"c"}
+      --end show_body--
 
 ---
 
@@ -22,7 +24,9 @@
       content-type: text/plain
       host: example.com
       
+      --start show_body--
       Cenário
+      --end show_body--
 
 ---
 
@@ -34,7 +38,9 @@
       content-length: 8
       host: example.com
       
+      --start show_body--
       <8 bytes>
+      --end show_body--
 
 # authorization headers are redacted
 
