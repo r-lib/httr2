@@ -63,7 +63,6 @@ req_verbose <- function(req,
 # helpers -----------------------------------------------------------------
 
 verbose_message <- function(prefix, x) {
-  # cat("--start verbose_message--\n")
   if (any(x > 128)) {
     # This doesn't handle unicode, but it seems like most output
     # will be compressed in some way, so displaying bodies is unlikely
@@ -92,8 +91,8 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
 
 # Testing helpers -------------------------------------------------------------
 
-# Reset all headers that otherwise might vary
-req_headers_reset <- function(req) {
+req_verbose_test <- function(req) {
+  # Reset all headers that otherwise might vary
   req <- req_headers(
     req,
     `Accept-Encoding` = "",
@@ -105,7 +104,7 @@ req_headers_reset <- function(req) {
   req
 }
 
-transform_resp_headers <- function(lines) {
+transform_verbose_response <- function(lines) {
   lines <- gsub(example_url(), "<webfakes>/", lines, fixed = TRUE)
   lines <- lines[!grepl("^<- (Date|ETag|Content-Length):", lines)]
   lines <- lines[!grepl("\\*  Closing connection", lines)]

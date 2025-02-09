@@ -4,9 +4,9 @@ test_that("can request verbose record of request", {
 
   # Snapshot test of what can be made reproducible
   req1 <- req %>%
-    req_headers_reset() %>%
+    req_verbose_test() %>%
     req_verbose(header_resp = TRUE, body_req = TRUE, body_resp = TRUE)
-  expect_snapshot(. <- req_perform(req1), transform = transform_resp_headers)
+  expect_snapshot(. <- req_perform(req1), transform = transform_verbose_response)
 
   # Lightweight test for everything else
   req2 <- req %>% req_verbose(info = TRUE)
@@ -16,8 +16,8 @@ test_that("can request verbose record of request", {
 test_that("can display compressed bodies", {
   req <- request(example_url()) %>%
     req_url_path("gzip") %>%
-    req_headers_reset() %>%
+      req_verbose_test() %>%
     req_verbose(header_req = FALSE, header_resp = TRUE, body_resp = TRUE)
 
-  expect_snapshot(. <- req_perform(req), transform = transform_resp_headers)
+  expect_snapshot(. <- req_perform(req), transform = transform_verbose_response)
 })

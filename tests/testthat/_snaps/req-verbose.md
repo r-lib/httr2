@@ -11,7 +11,6 @@
       <- HTTP/1.1 200 OK
       <- Content-Type: application/json
       <- 
-      --start show_body--
       << {
       <<   "args": {},
       <<   "data": {},
@@ -27,7 +26,6 @@
       <<   "origin": "127.0.0.1",
       <<   "url": "<webfakes>/post"
       << }
-      --end show_body--
 
 # can display compressed bodies
 
@@ -38,7 +36,6 @@
       <- Content-Type: application/json
       <- Content-Encoding: gzip
       <- 
-      --start show_body--
       << {
       <<   "args": {},
       <<   "data": {},
@@ -54,5 +51,4 @@
       <<   "url": "<webfakes>/gzip",
       <<   "gzipped": true
       << }
-      --end show_body--
 
