@@ -91,12 +91,12 @@ PooledRequest <- R6Class(
     on_failure = NULL,
     on_error = NULL,
 
-    succeed = function(res) {
+    succeed = function(curl_data) {
       private$handle <- NULL
       req_completed(private$req_prep)
 
       if (is.null(private$path)) {
-        body <- res$content
+        body <- curl_data$content
       } else {
         # Only needed with curl::multi_run()
         if (!file.exists(private$path)) {
@@ -105,14 +105,7 @@ PooledRequest <- R6Class(
         body <- new_path(private$path)
       }
 
-      resp <- new_response(
-        method = req_method_get(self$req),
-        url = res$url,
-        status_code = res$status_code,
-        headers = as_headers(res$headers),
-        body = body,
-        request = self$req
-      )
+      resp <- create_response(self$req, curl_data, body)
       resp <- cache_post_fetch(self$req, resp, path = private$path)
 
       if (is_error(resp)) {

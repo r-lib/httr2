@@ -186,25 +186,18 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   signal(class = "httr2_perform")
 
   if (!is.null(path)) {
-    res <- curl::curl_fetch_disk(req$url, path, handle)
+    curl_data <- curl::curl_fetch_disk(req$url, path, handle)
     body <- new_path(path)
   } else {
-    res <- curl::curl_fetch_memory(req$url, handle)
-    body <- res$content
+    curl_data <- curl::curl_fetch_memory(req$url, handle)
+    body <- curl_data$content
   }
 
   # Ensure cookies are saved to disk now, not when request is finalised
   curl::handle_setopt(handle, cookielist = "FLUSH")
   curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
-  resp <- new_response(
-    method = req_method_get(req),
-    url = res$url,
-    status_code = res$status_code,
-    headers = as_headers(res$headers),
-    body = body,
-    request = req
-  )
+  resp <- create_response(req, curl_data, body)
   the$last_response <- resp
   resp
 }

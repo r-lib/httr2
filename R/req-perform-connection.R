@@ -122,18 +122,11 @@ req_verbosity_connection <- function(req, verbosity, error_call = caller_env()) 
 
 
 req_perform_connection1 <- function(req, handle, blocking = TRUE) {
-  stream <- curl::curl(req$url, handle = handle)
 
+  body <- curl::curl(req$url, handle = handle)
   # Must open the stream in order to initiate the connection
-  open(stream, "rbf", blocking = blocking)
+  open(body, "rbf", blocking = blocking)
   curl_data <- curl::handle_data(handle)
 
-  new_response(
-    method = req_method_get(req),
-    url = curl_data$url,
-    status_code = curl_data$status_code,
-    headers = as_headers(curl_data$headers),
-    body = stream,
-    request = req
-  )
+  create_response(req, curl_data, body)
 }
