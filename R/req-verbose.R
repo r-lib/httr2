@@ -45,19 +45,38 @@ req_verbose <- function(req,
                         redact_headers = TRUE) {
   check_request(req)
 
+  # force all arguments
+  list(header_req, header_resp, body_req, body_resp, info, redact_headers)
+
   to_redact <- attr(req$headers, "redact")
   debug <- function(type, msg) {
-    switch(type + 1,
+    switch(verbose_enum(type),
       text =       if (info)        verbose_message("*  ", msg),
-      headerOut =  if (header_resp) verbose_header("<- ", msg),
-      headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
-      dataOut =    NULL, # displayed in handle_resp()
-      dataIn =     if (body_req)    verbose_message(">> ", msg)
+      header_in =  if (header_resp) verbose_header("<- ", msg),
+      header_out = if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
+      data_in =    NULL, # displayed in handle_resp()
+      data_out =   if (body_req)    verbose_message(">> ", msg)
     )
   }
-  req <- req_policies(req, show_body = body_resp)
   req <- req_options(req, debugfunction = debug, verbose = TRUE)
+  req <- req_policies(req, show_body = body_resp)
   req
+}
+
+verbose_enum <- function(i) {
+  if (i < 0 || i > 6) {
+    cli::cli_warn("Unknown verbosity level {i}")
+  }
+
+  switch(i + 1,
+    "text",
+    "header_in",
+    "header_out",
+    "data_in",
+    "data_out",
+    "ssl_data_in",
+    "ssl_data_out"
+  )
 }
 
 # helpers -----------------------------------------------------------------
@@ -91,13 +110,22 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
 
 # Testing helpers -------------------------------------------------------------
 
-# Reset all headers that otherwise might vary
-req_headers_reset <- function(req) {
-  req_headers(req, `Accept-Encoding` = "", Host = "http://example.com", `User-Agent` = "")
+req_verbose_test <- function(req) {
+  # Reset all headers that otherwise might vary
+  req <- req_headers(
+    req,
+    `Accept-Encoding` = "",
+    Accept = "",
+    Host = "http://example.com",
+    `User-Agent` = ""
+  )
+  req <- req_options(req, forbid_reuse = TRUE)
+  req
 }
 
-transform_resp_headers <- function(lines) {
-  lines <- gsub(example_url(), "<webfakes>", lines, fixed = TRUE)
+transform_verbose_response <- function(lines) {
+  lines <- gsub(example_url(), "<webfakes>/", lines, fixed = TRUE)
   lines <- lines[!grepl("^<- (Date|ETag|Content-Length):", lines)]
+  lines <- lines[!grepl("\\*  Closing connection", lines)]
   lines
 }

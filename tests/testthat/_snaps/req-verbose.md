@@ -1,14 +1,8 @@
 # can request verbose record of request
 
     Code
-      . <- req_perform(req1)
+      . <- req_perform(verbose_resp)
     Output
-      -> POST /post HTTP/1.1
-      -> Host: http://example.com
-      -> Accept: */*
-      -> Content-Length: 17
-      -> 
-      >> This is some text
       <- HTTP/1.1 200 OK
       <- Content-Type: application/json
       <- 
@@ -19,15 +13,25 @@
       <<   "form": {},
       <<   "headers": {
       <<     "Host": "http://example.com",
-      <<     "Accept": "*/*",
       <<     "Content-Length": "17"
       <<   },
       <<   "json": {},
       <<   "method": "post",
       <<   "path": "/post",
       <<   "origin": "127.0.0.1",
-      <<   "url": "<webfakes>post"
+      <<   "url": "<webfakes>/post"
       << }
+
+---
+
+    Code
+      . <- req_perform(verbose_req)
+    Output
+      -> POST /post HTTP/1.1
+      -> Host: http://example.com
+      -> Content-Length: 17
+      -> 
+      >> This is some text
 
 # can display compressed bodies
 
@@ -44,14 +48,21 @@
       <<   "files": {},
       <<   "form": {},
       <<   "headers": {
-      <<     "Host": "http://example.com",
-      <<     "Accept": "*/*"
+      <<     "Host": "http://example.com"
       <<   },
       <<   "json": {},
       <<   "method": "get",
       <<   "path": "/gzip",
       <<   "origin": "127.0.0.1",
-      <<   "url": "<webfakes>gzip",
+      <<   "url": "<webfakes>/gzip",
       <<   "gzipped": true
       << }
+
+# verbose_enum checks range
+
+    Code
+      verbose_enum(7)
+    Condition
+      Warning:
+      Unknown verbosity level 7
 

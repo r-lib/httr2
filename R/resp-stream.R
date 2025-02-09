@@ -113,7 +113,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
       log_stream(
         cli::rule("Raw server sent event"), "\n",
         rawToChar(event_bytes),
-        prefix = " * "
+        prefix = "*  "
       )
     }
 
@@ -278,9 +278,9 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
   resp$cache$push_back <- raw()
 
   if (resp_stream_show_buffer(resp)) {
-    log_stream(cli::rule("Buffer"), prefix = " * ")
+    log_stream(cli::rule("Buffer"), prefix = "*  ")
     print_buffer <- function(buf, label) {
-      log_stream(label, ": ", paste(as.character(buf), collapse = " "), prefix = " * ")
+      log_stream(label, ": ", paste(as.character(buf), collapse = " "), prefix = "*  ")
     }
   } else {
     print_buffer <- function(buf, label) {}
