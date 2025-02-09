@@ -190,22 +190,24 @@ test_that("can evaluate simple calls", {
 test_that("can read from clipboard", {
   skip_on_cran()
   skip_if_not_installed("clipr")
-  skip_if_not(clipr::clipr_available())
   skip_if(getRversion() < "4.1")
 
   # pretend we're interactive and can use the clipboard
   withr::local_envvar(CLIPR_ALLOW = TRUE)
   rlang::local_interactive()
+  skip_if_not(clipr::clipr_available())
 
   # restore the existing clipboard to be nice to the tester
   old_clip <- suppressWarnings(clipr::read_clip())
-  withr::defer(clipr::write_clip(old_clip))
+  if (!is.null(old_clip)) {
+    withr::defer(clipr::write_clip(old_clip))
+  }
 
   clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
   expect_snapshot({
     curl_translate()
     # also writes to clip
-    clipr::read_clip()
+    writeLines(clipr::read_clip())
   })
 })
 
