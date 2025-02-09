@@ -337,7 +337,7 @@ test_that("verbosity = 3 shows buffer info", {
         resp_stream_lines(con, 1)
       }
     },
-    transform = function(lines) lines[!grepl("^(<-|->)", lines)]
+    transform = transform_verbose_response
   )
 })
 
