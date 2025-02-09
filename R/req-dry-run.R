@@ -59,7 +59,6 @@ show_body <- function(body, content_type, prefix = "") {
     return(invisible())
   }
 
-  cat("--start show_body--\n")
   if (is_text_type(content_type)) {
     body <- rawToChar(body)
     body <- gsub("\n", paste0("\n", prefix), body)
@@ -68,7 +67,6 @@ show_body <- function(body, content_type, prefix = "") {
   } else {
     cli::cat_line(prefix, "<", length(body), " bytes>")
   }
-  cat("--end show_body--\n")
 
   invisible()
 }
