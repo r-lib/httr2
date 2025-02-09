@@ -199,13 +199,15 @@ test_that("can read from clipboard", {
 
   # restore the existing clipboard to be nice to the tester
   old_clip <- suppressWarnings(clipr::read_clip())
-  withr::defer(clipr::write_clip(old_clip))
+  if (is.null(old_clip)) {
+    withr::defer(clipr::write_clip(old_clip))
+  }
 
   clipr::write_clip("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")
   expect_snapshot({
     curl_translate()
     # also writes to clip
-    clipr::read_clip()
+    writeLines(clipr::read_clip())
   })
 })
 
