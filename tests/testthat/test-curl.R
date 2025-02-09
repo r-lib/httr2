@@ -199,7 +199,7 @@ test_that("can read from clipboard", {
 
   # restore the existing clipboard to be nice to the tester
   old_clip <- suppressWarnings(clipr::read_clip())
-  if (is.null(old_clip)) {
+  if (!is.null(old_clip)) {
     withr::defer(clipr::write_clip(old_clip))
   }
 
