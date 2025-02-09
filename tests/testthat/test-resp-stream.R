@@ -329,7 +329,7 @@ test_that("verbosity = 3 shows buffer info", {
     res$send_chunk("line 2\n")
   })
 
-  con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
+  expect_output(con <- req_perform_connection(req, blocking = TRUE, verbosity = 3))
   on.exit(close(con))
   expect_snapshot(
     {
@@ -347,11 +347,11 @@ test_that("verbosity = 3 shows raw sse events", {
     res$send_chunk("data: 1\n\n")
   })
 
-  resp <- req_perform_connection(req, verbosity = 3)
+  expect_output(resp <- req_perform_connection(req, verbosity = 3))
   withr::defer(close(resp))
   expect_snapshot(
     . <- resp_stream_sse(resp),
-    transform = function(lines) lines[!grepl("^\\* ", lines)]
+    transform = transform_verbose_response
   )
 })
 
