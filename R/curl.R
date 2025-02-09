@@ -31,7 +31,7 @@
 #' curl_translate("curl http://example.com --verbose")
 curl_translate <- function(cmd, simplify_headers = TRUE) {
   if (missing(cmd)) {
-    if (is_interactive() && is_installed("clipr")) {
+    if (is_interactive() && is_installed("clipr") && clipr::clipr_available()) {
       clip <- TRUE
       cmd <- clipr::read_clip()
       cmd <- paste0(cmd, collapse = "\n")
