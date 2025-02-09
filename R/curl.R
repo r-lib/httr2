@@ -89,15 +89,14 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
     perform_args$verbosity <- 1
   }
   steps <- add_curl_step(steps, "req_perform", main_args = perform_args, keep_if_empty = TRUE)
-
   out <- paste0(steps, collapse = paste0(pipe(), "\n  "))
-  out <- paste0(out, "\n")
 
   if (clip) {
     cli::cli_alert_success("Copying to clipboard:")
     clipr::write_clip(out)
   }
 
+  out <- paste0(out, "\n")
   structure(out, class = "httr2_cmd")
 }
 
