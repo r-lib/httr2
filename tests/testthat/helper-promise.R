@@ -5,9 +5,7 @@ extract_promise <- function(promise, timeout = 30) {
   promises::then(
     promise,
     onFulfilled = function(value) promise_value <<- value,
-    onRejected = function(reason) {
-      error <<- reason
-    }
+    onRejected = function(reason) error <<- reason
   )
 
   start <- Sys.time()
@@ -15,12 +13,12 @@ extract_promise <- function(promise, timeout = 30) {
     if (difftime(Sys.time(), start, units = "secs") > timeout) {
       stop("Waited too long")
     }
-    later::run_now()
-    Sys.sleep(0.01)
+    later::run_now(0.01)
   }
 
   if (!is.null(error)) {
     cnd_signal(error)
-  } else
+  } else if (is_response(promise_value) && resp_status(promise_value) == 200L) {
     promise_value
+  }
 }

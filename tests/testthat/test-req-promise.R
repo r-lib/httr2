@@ -111,7 +111,7 @@ test_that("req_perform_promise uses the default loop", {
   later::with_temp_loop({
     # You can create an async response with explicit pool=NULL, but it can't
     # proceed until the temp loop is over
-    p2 <- req_perform_promise(request_test("/get"), pool = NULL)
+    p2 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25), pool = NULL)
 
     # You can create an async response with explicit pool=pool, and it can
     # proceed as long as that pool was first used inside of the temp loop

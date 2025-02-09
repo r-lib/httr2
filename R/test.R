@@ -18,12 +18,16 @@ request_test <- function(template = "/get", ...) {
 #'
 #' @keywords internal
 #' @export
-example_url <- function() {
+example_url <- function(path = "/") {
   check_installed("webfakes")
   if (is_testing() && !is_interactive()) {
     testthat::skip_on_covr()
   }
+  env_cache(the, "test_app", example_app())
+  the$test_app$url(path)
+}
 
+example_app <- function() {
   app <- webfakes::httpbin_app()
   # paginated iris endpoint
   app$get("/iris", function(req, res) {
@@ -47,13 +51,10 @@ example_url <- function() {
     )
   })
 
-  env_cache(the, "test_app",
-    webfakes::new_app_process(
-      app,
-      opts = webfakes::server_opts(num_threads = 6, enable_keep_alive = TRUE)
-    )
+  webfakes::new_app_process(
+    app,
+    opts = webfakes::server_opts(num_threads = 6, enable_keep_alive = TRUE)
   )
-  the$test_app$url()
 }
 
 #' @export

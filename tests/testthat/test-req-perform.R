@@ -114,8 +114,7 @@ test_that("can cache requests with etags", {
 })
 
 test_that("can cache requests with paths (cache-control)", {
-  req <- request(example_url()) %>%
-    req_url_path("/cache/2") %>%
+  req <- request(example_url("/cache/2")) %>%
     req_cache(withr::local_tempfile())
 
   path1 <- withr::local_tempfile()
@@ -146,8 +145,7 @@ test_that("can cache requests with paths (cache-control)", {
 })
 
 test_that("can cache requests with paths (if-modified-since)", {
-  req <- request(example_url()) %>%
-    req_url_path("/cache") %>%
+  req <- request(example_url("/cache")) %>%
     req_cache(tempfile())
 
   path1 <- tempfile()
@@ -191,42 +189,4 @@ test_that("checks input types", {
     req_perform(req, verbosity = 1.5)
     req_perform(req, mock = 7)
   })
-})
-
-
-# dry run -----------------------------------------------------------------
-
-test_that("req_dry_run() returns useful data", {
-  resp <- request("http://example.com") %>% req_dry_run(quiet = TRUE)
-  expect_equal(resp$method, "GET")
-  expect_equal(resp$path, "/")
-  expect_match(resp$headers$`user-agent`, "libcurl")
-})
-
-test_that("req_dry_run() shows body", {
-  # For reasons I don't understand, returns binary data in R 3.4
-  skip_if_not(getRversion() >= "3.5")
-
-  expect_snapshot({
-    request("http://example.com") %>%
-      req_headers(`Accept-Encoding` = "gzip") %>%
-      req_body_json(list(x = 1, y = TRUE, z = "c")) %>%
-      req_user_agent("test") %>%
-      req_dry_run()
-  })
-})
-
-test_that("authorization headers are redacted", {
-  expect_snapshot({
-    request("http://example.com") %>%
-      req_headers(`Accept-Encoding` = "gzip") %>%
-      req_auth_basic("user", "password") %>%
-      req_user_agent("test") %>%
-      req_dry_run()
-  })
-})
-
-test_that("doen't add space to urls (#567)", {
-  req <- request("https://example.com/test:1:2")
-  expect_output(req_dry_run(req), "test:1:2")
 })

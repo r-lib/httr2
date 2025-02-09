@@ -1,11 +1,13 @@
 # httr2 (development version)
 
+* `req_dry_run()` and `req_verbose()` now do a better job of displaying compressed bodies (#91, #656).
 * `resp_link_url()` once again ignores the case of headers (@DavidRLovell, #655)
 * `oauth_client()` and `oauth_token()` gain refreshed print methods that use bulleted lists, like other httr2 objects. Additionally, print a `oauth_client()` with a custom `auth` function no longer errors (#648).
 * `req_headers()` always redacts `Authorization` (#649).
 * `req_headers_redacted()` supports dynamic dots (#647)
 * `resp_stream_sse()` now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (#650).
 * `aws_v4_signature()` now works if url contains query parameters (@jeffreyzuber, #645).
+* `req_oauth_auth_code()` no longer adds trailing "/" characters to well-formed `redirect_uri` values (@jonthegeek, #646).
 
 # httr2 1.1.0
 
