@@ -190,12 +190,12 @@ test_that("can evaluate simple calls", {
 test_that("can read from clipboard", {
   skip_on_cran()
   skip_if_not_installed("clipr")
-  skip_if_not(clipr::clipr_available())
   skip_if(getRversion() < "4.1")
 
   # pretend we're interactive and can use the clipboard
   withr::local_envvar(CLIPR_ALLOW = TRUE)
   rlang::local_interactive()
+  skip_if_not(clipr::clipr_available())
 
   # restore the existing clipboard to be nice to the tester
   old_clip <- suppressWarnings(clipr::read_clip())
