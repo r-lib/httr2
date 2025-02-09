@@ -47,17 +47,29 @@ req_verbose <- function(req,
 
   to_redact <- attr(req$headers, "redact")
   debug <- function(type, msg) {
-    switch(type + 1,
+    switch(verbose_enum(type),
       text =       if (info)        verbose_message("*  ", msg),
-      headerOut =  if (header_resp) verbose_header("<- ", msg),
-      headerIn =   if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
-      dataOut =    NULL, # displayed in handle_resp()
-      dataIn =     if (body_req)    verbose_message(">> ", msg)
+      header_in =  if (header_resp) verbose_header("<- ", msg),
+      header_out = if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
+      data_in =    NULL, # displayed in handle_resp()
+      data_out =   if (body_req)    verbose_message(">> ", msg)
     )
   }
   req <- req_policies(req, show_body = body_resp)
   req <- req_options(req, debugfunction = debug, verbose = TRUE)
   req
+}
+
+verbose_enum <- function(i) {
+  switch(i + 1,
+    "text",
+    "header_in",
+    "header_out",
+    "data_in",
+    "data_out",
+    "ssl_data_in",
+    "ssl_data_out"
+  )
 }
 
 # helpers -----------------------------------------------------------------
