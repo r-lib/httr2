@@ -58,3 +58,11 @@
       <<   "gzipped": true
       << }
 
+# verbose_enum checks range
+
+    Code
+      verbose_enum(7)
+    Condition
+      Warning:
+      Unknown verbosity level 7
+

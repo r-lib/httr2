@@ -25,3 +25,9 @@ test_that("can display compressed bodies", {
 
   expect_snapshot(. <- req_perform(req), transform = transform_verbose_response)
 })
+
+test_that("verbose_enum checks range", {
+  expect_snapshot({
+    verbose_enum(7)
+  })
+})

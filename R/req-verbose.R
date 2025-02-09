@@ -45,6 +45,9 @@ req_verbose <- function(req,
                         redact_headers = TRUE) {
   check_request(req)
 
+  # force all arguments
+  list(header_req, header_resp, body_req, body_resp, info, redact_headers)
+
   to_redact <- attr(req$headers, "redact")
   debug <- function(type, msg) {
     switch(verbose_enum(type),
@@ -55,12 +58,16 @@ req_verbose <- function(req,
       data_out =   if (body_req)    verbose_message(">> ", msg)
     )
   }
-  req <- req_policies(req, show_body = body_resp)
   req <- req_options(req, debugfunction = debug, verbose = TRUE)
+  req <- req_policies(req, show_body = body_resp)
   req
 }
 
 verbose_enum <- function(i) {
+  if (i < 0 || i > 6) {
+    cli::cli_warn("Unknown verbosity level {i}")
+  }
+
   switch(i + 1,
     "text",
     "header_in",
