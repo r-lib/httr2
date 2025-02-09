@@ -94,13 +94,15 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
 
 # Reset all headers that otherwise might vary
 req_headers_reset <- function(req) {
-  req_headers(
+  req <- req_headers(
     req,
     `Accept-Encoding` = "",
     Accept = "",
     Host = "http://example.com",
     `User-Agent` = ""
   )
+  req <- req_options(req, forbid_reuse = TRUE)
+  req
 }
 
 transform_resp_headers <- function(lines) {
