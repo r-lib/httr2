@@ -18,7 +18,7 @@ extract_promise <- function(promise, timeout = 30) {
 
   if (!is.null(error)) {
     cnd_signal(error)
-  } else if (is_response(promise_value) && resp_status(promise_value) == 200L) {
+  } else {
     promise_value
   }
 }
