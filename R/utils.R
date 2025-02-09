@@ -66,7 +66,7 @@ sys_sleep <- function(seconds, task, fps = 10, progress = NULL) {
   }
 
   if (!progress) {
-    cli::cli_alert("Waiting {ceiling(seconds)}s {task}")
+    cli::cli_alert("Waiting {round(seconds, 2)}s {task}")
     Sys.sleep(seconds)
     return(invisible())
   }

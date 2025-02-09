@@ -11,5 +11,5 @@
     Code
       sys_sleep(0.1, "in test")
     Message
-      > Waiting 1s in test
+      > Waiting 0.1s in test
 
