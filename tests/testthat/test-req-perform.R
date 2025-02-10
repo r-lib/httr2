@@ -6,6 +6,8 @@ test_that("success request returns response", {
 })
 
 test_that("curl errors become errors", {
+  local_mocked_bindings(curl_fetch = function(...) abort("Failed to connect"))
+
   req <- request("http://127.0.0.1")
   expect_snapshot(req_perform(req), error = TRUE)
   expect_error(req_perform(req), class = "httr2_failure")

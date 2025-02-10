@@ -5,8 +5,8 @@
     Condition
       Error in `req_perform()`:
       ! Failed to perform HTTP request.
-      Caused by error in `curl::curl_fetch_memory()`:
-      ! Could not connect to server [127.0.0.1]: Failed to connect to 127.0.0.1 port 80 after 0 ms: Could not connect to server
+      Caused by error in `curl_fetch()`:
+      ! Failed to connect
 
 # http errors become errors
 

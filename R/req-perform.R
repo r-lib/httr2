@@ -174,13 +174,7 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   signal(class = "httr2_perform")
 
   err <- capture_curl_error({
-    if (!is.null(path)) {
-      curl_data <- curl::curl_fetch_disk(req$url, path, handle)
-      body <- new_path(path)
-    } else {
-      curl_data <- curl::curl_fetch_memory(req$url, handle)
-      body <- curl_data$content
-    }
+    fetch <- curl_fetch(handle, req$url, path)
   })
   if (is_error(err)) {
     return(err)
@@ -190,8 +184,20 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   curl::handle_setopt(handle, cookielist = "FLUSH")
   curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
-  the$last_response <- create_response(req, curl_data, body)
+  the$last_response <- create_response(req, fetch$curl_data, fetch$body)
   the$last_response
+}
+
+curl_fetch <- function(handle, url, path) {
+  if (!is.null(path)) {
+    curl_data <- curl::curl_fetch_disk(url, path, handle)
+    body <- new_path(path)
+  } else {
+    curl_data <- curl::curl_fetch_memory(url, handle)
+    body <- curl_data$content
+  }
+
+  list(curl_data = curl_data, body = body)
 }
 
 req_verbosity <- function(req, verbosity, error_call = caller_env()) {
