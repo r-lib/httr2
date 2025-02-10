@@ -154,7 +154,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
 resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
   status <- resp_status(resp)
   desc <- resp_status_desc(resp)
-  message <- glue("HTTP {status} {desc}.")
+  message <- paste0("HTTP ", status, if (!is.na(desc)) paste0(" ", desc), ".")
 
   info <- error_body(req, resp, error_call)
 

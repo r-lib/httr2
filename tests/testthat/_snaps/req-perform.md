@@ -24,6 +24,14 @@
       Error in `req_perform()`:
       ! HTTP 429 Too Many Requests.
 
+---
+
+    Code
+      req_perform(req)
+    Condition
+      Error in `req_perform()`:
+      ! HTTP 599.
+
 # checks input types
 
     Code

@@ -36,6 +36,10 @@ test_that("http errors become errors", {
   req_perform(req) %>%
     expect_error(class = "httr2_http_429") %>%
     expect_no_condition(class = "httr2_sleep")
+
+  # non-standard status codes don't get descriptions
+  req <- request_test("/status/:status", status = 599)
+  expect_snapshot(req_perform(req), error = TRUE)
 })
 
 test_that("can force successful HTTP statuses to error", {
