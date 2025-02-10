@@ -22,29 +22,25 @@ req_oauth <- function(req, flow, flow_params, cache) {
   # Want req object to contain meaningful objects, not just a closure
   req <- req_auth_sign(req,
     fun = auth_oauth_sign,
-    params = list(
-      cache = cache,
-      flow = flow,
-      flow_params = flow_params
-    )
+    params = list(flow = flow, flow_params = flow_params),
+    cache = cache
   )
   req <- req_policies(req, auth_oauth = TRUE)
   req
 }
 
-auth_oauth_sign <- function(req, cache, flow, flow_params, reauth = FALSE) {
+auth_oauth_sign <- function(req, cache, flow, flow_params) {
   token <- auth_oauth_token_get(
     cache = cache,
     flow = flow,
-    flow_params = flow_params,
-    reauth = reauth
+    flow_params = flow_params
   )
   req_auth_bearer_token(req, token$access_token)
 }
 
-auth_oauth_token_get <- function(cache, flow, flow_params = list(), reauth = FALSE) {
+auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
   token <- cache$get()
-  if (reauth || is.null(token)) {
+  if (is.null(token)) {
     token <- exec(flow, !!!flow_params)
     cache$set(token)
   } else if (token_has_expired(token)) {
@@ -100,13 +96,15 @@ oauth_token_cached <- function(client,
                                reauth = FALSE) {
   check_bool(reauth)
   cache <- cache_choose(client, cache_disk, cache_key)
+  if (reauth) {
+    cache$clear()
+  }
 
   flow_params$client <- client
   auth_oauth_token_get(
     cache = cache,
     flow = flow,
-    flow_params = flow_params,
-    reauth = reauth
+    flow_params = flow_params
   )
 }
 

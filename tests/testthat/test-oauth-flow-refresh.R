@@ -9,8 +9,8 @@ test_that("cache considers refresh_token", {
     req_oauth_refresh(client, refresh_token = "rt2")
 
   # cache must be empty
-  expect_equal(req1$policies$auth_sign$params$cache$get(), NULL)
-  expect_equal(req2$policies$auth_sign$params$cache$get(), NULL)
+  expect_equal(req1$policies$auth_sign$cache$get(), NULL)
+  expect_equal(req2$policies$auth_sign$cache$get(), NULL)
 
   # simulate that we made a request and got back a token
   token <- oauth_token(
@@ -21,11 +21,11 @@ test_that("cache considers refresh_token", {
     .date = Sys.time()
   )
   # ... that is now cached
-  req1$policies$auth_sign$params$cache$set(token)
+  req1$policies$auth_sign$cache$set(token)
 
   # req1 cache must be filled, but req2 cache still be empty
-  expect_equal(req1$policies$auth_sign$params$cache$get(), token)
-  expect_equal(req2$policies$auth_sign$params$cache$get(), NULL)
+  expect_equal(req1$policies$auth_sign$cache$get(), token)
+  expect_equal(req2$policies$auth_sign$cache$get(), NULL)
 })
 
 test_that("warns if refresh token changes", {
