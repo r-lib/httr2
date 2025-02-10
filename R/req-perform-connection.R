@@ -54,7 +54,6 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   # verbosity checked in req_verbosity_connection
 
   req <- req_verbosity_connection(req, verbosity %||% httr2_verbosity())
-  req <- auth_sign(req)
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   the$last_request <- req

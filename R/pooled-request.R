@@ -50,8 +50,7 @@ PooledRequest <- R6Class(
     submit = function(pool) {
       self$tries <- self$tries + 1
 
-      req <- auth_sign(self$req)
-      req <- cache_pre_fetch(req, private$path)
+      req <- cache_pre_fetch(self$req, private$path)
       if (is_response(req)) {
         private$on_success(req, self$tries)
         return()
