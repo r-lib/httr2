@@ -47,6 +47,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> gives a better error if request fails at networking level.</li>
+<li>
 <code><a href="../reference/req_throttle.html">req_throttle()</a></code> now uses a “token bucket” which preserves the average rate limit, but allows bursts of higher requests.</li>
 <li>
 <code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> and <code><a href="../reference/req_verbose.html">req_verbose()</a></code> now do a better job of displaying compressed bodies (<a href="https://github.com/r-lib/httr2/issues/91" class="external-link">#91</a>, <a href="https://github.com/r-lib/httr2/issues/656" class="external-link">#656</a>).</li>
