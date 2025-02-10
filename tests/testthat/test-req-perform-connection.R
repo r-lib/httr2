@@ -56,3 +56,16 @@ test_that("can retry a transient error", {
   expect_equal(last_response(), resp)
   expect_equal(resp_body_json(resp), list(status = "done"))
 })
+
+test_that("curl errors become errors", {
+  req <- request("http://127.0.0.1")
+  expect_snapshot(req_perform_connection(req), error = TRUE)
+  expect_error(req_perform_connection(req), class = "httr2_failure")
+
+  # and captures request
+  cnd <- catch_cnd(req_perform_connection(req), classes = "error")
+  expect_equal(cnd$request, req)
+
+  # But last_response() is NULL
+  expect_null(last_response())
+})

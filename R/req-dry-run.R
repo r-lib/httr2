@@ -55,7 +55,7 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
 }
 
 show_body <- function(body, content_type, prefix = "") {
-  if (is.null(body)) {
+  if (!is.raw(body)) {
     return(invisible())
   }
 

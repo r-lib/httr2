@@ -84,13 +84,13 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   }
   req_completed(req)
 
-  if (error_is_error(req, resp)) {
+  if (!is_error(resp) && error_is_error(req, resp)) {
     # Read full body if there's an error
     conn <- resp$body
     resp$body <- read_con(conn)
+    the$last_response <- resp
     close(conn)
   }
-  the$last_response <- resp
   handle_resp(req, resp)
 
   resp
@@ -120,10 +120,22 @@ req_verbosity_connection <- function(req, verbosity, error_call = caller_env()) 
 }
 
 req_perform_connection1 <- function(req, handle, blocking = TRUE) {
-  body <- curl::curl(req$url, handle = handle)
-  # Must open the stream in order to initiate the connection
-  open(body, "rbf", blocking = blocking)
+  the$last_request <- req
+  the$last_response <- NULL
+  signal(class = "httr2_perform_connection")
+
+  err <- capture_curl_error({
+    body <- curl::curl(req$url, handle = handle)
+    # Must open the stream in order to initiate the connection
+    suppressWarnings(open(body, "rbf", blocking = blocking))
+  })
+  if (is_error(err)) {
+    close(body)
+    return(err)
+  }
+
   curl_data <- curl::handle_data(handle)
 
-  create_response(req, curl_data, body)
+  the$last_response <- create_response(req, curl_data, body)
+  the$last_response
 }

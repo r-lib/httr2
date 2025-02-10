@@ -112,3 +112,16 @@ error_body <- function(req, resp, call = caller_env()) {
     }
   )
 }
+
+capture_curl_error <- function(code) {
+  resp <- tryCatch(
+    code,
+    error = function(err) {
+      error_cnd(
+        message = "Failed to perform HTTP request.",
+        class = c("httr2_failure", "httr2_error"),
+        parent = err
+      )
+    }
+  )
+}

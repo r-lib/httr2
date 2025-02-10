@@ -110,19 +110,7 @@ req_perform <- function(
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
-    resp <- tryCatch(
-      req_perform1(req, path = path, handle = handle),
-      error = function(err) {
-        error_cnd(
-          message = "Failed to perform HTTP request.",
-          class = c("httr2_failure", "httr2_error"),
-          parent = err,
-          request = req,
-          call = error_call,
-          trace = trace_back()
-        )
-      }
-    )
+    resp <- req_perform1(req, path = path, handle = handle)
     req_completed(req_prep)
 
     if (retry_is_transient(req, resp)) {
@@ -152,6 +140,8 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
   }
 
   if (is_error(resp)) {
+    resp$request <- req
+    resp$call <- error_call
     cnd_signal(resp)
   } else if (error_is_error(req, resp)) {
     cnd <- resp_failure_cnd(req, resp, error_call = error_call)
@@ -183,12 +173,17 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   the$last_response <- NULL
   signal(class = "httr2_perform")
 
-  if (!is.null(path)) {
-    curl_data <- curl::curl_fetch_disk(req$url, path, handle)
-    body <- new_path(path)
-  } else {
-    curl_data <- curl::curl_fetch_memory(req$url, handle)
-    body <- curl_data$content
+  err <- capture_curl_error({
+    if (!is.null(path)) {
+      curl_data <- curl::curl_fetch_disk(req$url, path, handle)
+      body <- new_path(path)
+    } else {
+      curl_data <- curl::curl_fetch_memory(req$url, handle)
+      body <- curl_data$content
+    }
+  })
+  if (is_error(err)) {
+    return(err)
   }
 
   # Ensure cookies are saved to disk now, not when request is finalised
@@ -236,19 +231,18 @@ last_request <- function() {
 }
 
 # Must call req_prepare(), then req_handle(), then after the request has been
-# performed, req_completed()
+# performed, req_completed() (on the prepared requests)
 req_prepare <- function(req, reauth = FALSE) {
   req <- auth_sign(req, reauth = reauth)
   req <- req_method_apply(req)
   req <- req_body_apply(req)
-
+  req
+}
+req_handle <- function(req) {
   if (!has_name(req$options, "useragent")) {
     req <- req_user_agent(req)
   }
 
-  req
-}
-req_handle <- function(req) {
   handle <- curl::new_handle()
   curl::handle_setopt(handle, url = req$url)
   curl::handle_setheaders(handle, .list = headers_flatten(req$headers))

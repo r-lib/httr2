@@ -11,3 +11,13 @@
       Error in `req_perform_connection()`:
       ! `blocking` must be `TRUE` or `FALSE`, not the number 1.
 
+# curl errors become errors
+
+    Code
+      req_perform_connection(req)
+    Condition
+      Error in `req_perform_connection()`:
+      ! Failed to perform HTTP request.
+      Caused by error in `open.connection()`:
+      ! cannot open the connection
+
