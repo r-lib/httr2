@@ -195,9 +195,8 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   curl::handle_setopt(handle, cookielist = "FLUSH")
   curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
-  resp <- create_response(req, curl_data, body)
-  the$last_response <- resp
-  resp
+  the$last_response <- create_response(req, curl_data, body)
+  the$last_response
 }
 
 req_verbosity <- function(req, verbosity, error_call = caller_env()) {
