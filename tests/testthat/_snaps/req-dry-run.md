@@ -1,23 +1,9 @@
 # body is shown
 
     Code
-      req %>% req_body_json(list(x = 1, y = TRUE, z = "c")) %>% req_dry_run()
+      req_dry_run(req_utf8)
     Output
       POST / HTTP/1.1
-      accept: */*
-      content-length: 24
-      content-type: application/json
-      host: example.com
-      
-      {"x":1,"y":true,"z":"c"}
-
----
-
-    Code
-      req %>% req_body_raw("Cenário", type = "text/plain") %>% req_dry_run()
-    Output
-      POST / HTTP/1.1
-      accept: */*
       content-length: 8
       content-type: text/plain
       host: example.com
@@ -27,10 +13,21 @@
 ---
 
     Code
-      req %>% req_body_raw("Cenário") %>% req_dry_run()
+      req_dry_run(req_json)
     Output
       POST / HTTP/1.1
-      accept: */*
+      content-length: 16
+      content-type: application/json
+      host: example.com
+      
+      {"x":1,"y":true}
+
+---
+
+    Code
+      req_dry_run(req_binary)
+    Output
+      POST / HTTP/1.1
       content-length: 8
       host: example.com
       

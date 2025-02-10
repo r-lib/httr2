@@ -26,6 +26,19 @@ test_that("can display compressed bodies", {
   expect_snapshot(. <- req_perform(req), transform = transform_verbose_response)
 })
 
+test_that("json is automatically prettified", {
+  req <- local_app_request(function(req, res) {
+    res$set_header("Content-Type", "application/json")
+    res$send('{"foo":"bar","baz":[1,2,3]}')
+  })
+
+  req <- req %>%
+    req_verbose_test() %>%
+    req_verbose(body_resp = TRUE, header_resp = FALSE, header_req = FALSE)
+
+  expect_snapshot(. <- req_perform(req))
+})
+
 test_that("verbose_enum checks range", {
   expect_snapshot({
     verbose_enum(7)

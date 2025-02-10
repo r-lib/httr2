@@ -6,29 +6,19 @@ test_that("req_dry_run() returns useful data", {
 })
 
 test_that("body is shown", {
-  req <- request("http://example.com") %>%
-    req_headers(`Accept-Encoding` = "", `User-Agent` = "")
+  req <- request("http://example.com") %>% req_verbose_test()
 
-  expect_snapshot({
-    req %>%
-      req_body_json(list(x = 1, y = TRUE, z = "c")) %>%
-      req_dry_run()
-  })
+  # can display UTF-8 characters
+  req_utf8 <- req_body_raw(req, "Cenário", type = "text/plain")
+  expect_snapshot(req_dry_run(req_utf8))
 
-  # even if it contains unicode
-  expect_snapshot({
-    req %>%
-      req_body_raw("Cenário", type = "text/plain") %>%
-      req_dry_run()
-  })
+  # json is not prettified
+  req_json <- req_body_raw(req, '{"x":1,"y":true}', type = "application/json")
+  expect_snapshot(req_dry_run(req_json))
 
-  # But doesn't show binary data
-  expect_snapshot({
-    req %>%
-      req_body_raw("Cenário") %>%
-      req_dry_run()
-  })
-
+  # doesn't show binary data
+  req_binary <- req_body_raw(req, "Cenário")
+  expect_snapshot(req_dry_run(req_binary))
 })
 
 test_that("authorization headers are redacted", {

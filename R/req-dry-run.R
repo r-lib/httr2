@@ -54,15 +54,20 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   ))
 }
 
-show_body <- function(body, content_type, prefix = "") {
+show_body <- function(body, content_type, prefix = "", prettify = FALSE) {
   if (!is.raw(body)) {
     return(invisible())
   }
 
   if (is_text_type(content_type)) {
     body <- rawToChar(body)
-    body <- gsub("\n", paste0("\n", prefix), body)
     Encoding(body) <- "UTF-8"
+
+    if (prettify && content_type == "application/json") {
+      body <- pretty_json(body)
+    }
+
+    body <- gsub("\n", paste0("\n", prefix), body)
     cli::cat_line(prefix, body)
   } else {
     cli::cat_line(prefix, "<", length(body), " bytes>")

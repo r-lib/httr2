@@ -136,7 +136,12 @@ req_perform <- function(
 
 handle_resp <- function(req, resp, error_call = caller_env()) {
   if (resp_show_body(resp)) {
-    show_body(resp$body, resp$headers$`content-type`, prefix = "<< ")
+    show_body(
+      resp$body,
+      resp$headers$`content-type`,
+      prefix = "<< ",
+      prettify = TRUE
+    )
   }
 
   if (is_error(resp)) {
