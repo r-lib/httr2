@@ -7,8 +7,12 @@
 throttle_status()
 }
 \value{
-A data frame with two columns: the \code{realm} and time the
-\code{last_request} was made.
+A data frame with three columns:
+\itemize{
+\item The \code{realm}.
+\item Number of \code{tokens} remaining in the bucket.
+\item Time \code{to_wait} in seconds for next token.
+}
 }
 \description{
 Sometimes useful for debugging.
