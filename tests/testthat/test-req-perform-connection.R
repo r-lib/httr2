@@ -58,6 +58,8 @@ test_that("can retry a transient error", {
 })
 
 test_that("curl errors become errors", {
+  local_mocked_bindings(open = function(...) abort("Failed to connect"))
+
   req <- request("http://127.0.0.1")
   expect_snapshot(req_perform_connection(req), error = TRUE)
   expect_error(req_perform_connection(req), class = "httr2_failure")

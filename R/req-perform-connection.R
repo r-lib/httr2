@@ -139,3 +139,6 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
   the$last_response <- create_response(req, curl_data, body)
   the$last_response
 }
+
+# Make open mockable
+open <- NULL

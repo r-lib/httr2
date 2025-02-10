@@ -18,6 +18,6 @@
     Condition
       Error in `req_perform_connection()`:
       ! Failed to perform HTTP request.
-      Caused by error in `open.connection()`:
-      ! cannot open the connection
+      Caused by error in `open()`:
+      ! Failed to connect
 
