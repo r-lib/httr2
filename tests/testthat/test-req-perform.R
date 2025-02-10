@@ -6,9 +6,7 @@ test_that("success request returns response", {
 })
 
 test_that("curl errors become errors", {
-  local_mocked_bindings(
-    req_perform1 = function(...) abort("Failed to connect")
-  )
+  local_mocked_bindings(curl_fetch = function(...) abort("Failed to connect"))
 
   req <- request("http://127.0.0.1")
   expect_snapshot(req_perform(req), error = TRUE)
@@ -17,6 +15,9 @@ test_that("curl errors become errors", {
   # and captures request
   cnd <- catch_cnd(req_perform(req), classes = "error")
   expect_equal(cnd$request, req)
+
+  # But last_response() is NULL
+  expect_null(last_response())
 })
 
 test_that("http errors become errors", {
@@ -174,7 +175,7 @@ test_that("can retrieve last request and response", {
   expect_equal(last_response(), resp)
 })
 
-test_that("can last response is NULL if it fails", {
+test_that("last response is NULL if it fails", {
   req <- request("")
   try(req_perform(req), silent = TRUE)
 

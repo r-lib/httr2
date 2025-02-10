@@ -100,6 +100,19 @@ new_response <- function(method,
   )
 }
 
+create_response <- function(req, curl_data, body) {
+  the$last_response <- new_response(
+    method = req_method_get(req),
+    url = curl_data$url,
+    status_code = curl_data$status_code,
+    headers = as_headers(curl_data$headers),
+    body = body,
+    request = req
+  )
+
+  the$last_response
+}
+
 
 #' @export
 print.httr2_response <- function(x, ...) {

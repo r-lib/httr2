@@ -54,7 +54,6 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   # verbosity checked in req_verbosity_connection
 
   req <- req_verbosity_connection(req, verbosity %||% httr2_verbosity())
-  req <- auth_sign(req)
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   the$last_request <- req
@@ -85,13 +84,13 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   }
   req_completed(req)
 
-  if (error_is_error(req, resp)) {
+  if (!is_error(resp) && error_is_error(req, resp)) {
     # Read full body if there's an error
     conn <- resp$body
     resp$body <- read_con(conn)
+    the$last_response <- resp
     close(conn)
   }
-  the$last_response <- resp
   handle_resp(req, resp)
 
   resp
@@ -120,20 +119,26 @@ req_verbosity_connection <- function(req, verbosity, error_call = caller_env()) 
   req
 }
 
-
 req_perform_connection1 <- function(req, handle, blocking = TRUE) {
-  stream <- curl::curl(req$url, handle = handle)
+  the$last_request <- req
+  the$last_response <- NULL
+  signal(class = "httr2_perform_connection")
 
-  # Must open the stream in order to initiate the connection
-  open(stream, "rbf", blocking = blocking)
+  err <- capture_curl_error({
+    body <- curl::curl(req$url, handle = handle)
+    # Must open the stream in order to initiate the connection
+    suppressWarnings(open(body, "rbf", blocking = blocking))
+  })
+  if (is_error(err)) {
+    close(body)
+    return(err)
+  }
+
   curl_data <- curl::handle_data(handle)
 
-  new_response(
-    method = req_method_get(req),
-    url = curl_data$url,
-    status_code = curl_data$status_code,
-    headers = as_headers(curl_data$headers),
-    body = stream,
-    request = req
-  )
+  the$last_response <- create_response(req, curl_data, body)
+  the$last_response
 }
+
+# Make open mockable
+open <- NULL

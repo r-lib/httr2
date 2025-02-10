@@ -115,7 +115,7 @@ resp_is_invalid_oauth_token <- function(req, resp) {
     return(FALSE)
   }
 
-  if (resp_status(resp) != 401) {
+  if (is_error(resp) || resp_status(resp) != 401) {
     return(FALSE)
   }
 

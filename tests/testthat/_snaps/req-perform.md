@@ -5,7 +5,7 @@
     Condition
       Error in `req_perform()`:
       ! Failed to perform HTTP request.
-      Caused by error in `req_perform1()`:
+      Caused by error in `curl_fetch()`:
       ! Failed to connect
 
 # http errors become errors

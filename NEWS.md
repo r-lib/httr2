@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_connection()` gives a better error if request fails at networking level.
 * `req_throttle()` now uses a "token bucket" which preserves the average rate limit, but allows bursts of higher requests.
 * `req_dry_run()` and `req_verbose()` now do a better job of displaying compressed bodies (#91, #656).
 * `resp_link_url()` once again ignores the case of headers (@DavidRLovell, #655)

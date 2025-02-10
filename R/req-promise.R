@@ -90,66 +90,20 @@ req_perform_promise <- function(req,
     }
   }
   # verbosity checked by req_verbosity
-
   req <- req_verbosity(req, verbosity)
 
-  promises::promise(
-    function(resolve, reject) {
-      perf <- PerformancePromise$new(
-        req = req,
-        resolve = resolve,
-        reject = reject,
-        path = path,
-        error_call = environment()
-      )
-
-      perf$submit(pool)
-    }
-  )
+  promises::promise(function(resolve, reject) {
+    pooled_req <- PooledRequest$new(
+      req = req,
+      path = path,
+      on_success = function(resp, tries) resolve(resp),
+      on_failure = function(error, tries) reject(error),
+      on_error = function(error, tries) reject(error)
+    )
+    pooled_req$submit(pool)
+    ensure_pool_poller(pool, reject)
+  })
 }
-
-PerformancePromise <- R6Class("PerformancePromise", inherit = Performance,
-  public = list(
-    resolve = NULL,
-    reject = NULL,
-
-    initialize = function(req, resolve, reject, path = NULL, error_call = NULL) {
-      progress <- create_progress_bar(config = FALSE)
-
-      super$initialize(req = req, path = path, progress = progress, error_call = error_call)
-      self$resolve <- resolve
-      self$reject <- reject
-    },
-
-    submit = function(pool = NULL) {
-      if (!is.null(self$resp)) {
-        # cached
-        self$resolve(self$resp)
-        return()
-      }
-      super$submit(pool)
-      ensure_pool_poller(pool, self$reject)
-    },
-
-    succeed = function(res) {
-      tryCatch(
-        {
-          super$succeed(res)
-          self$resolve(self$resp)
-        },
-        httr2_fail = function(cnd) self$reject(cnd$error),
-        error = function(cnd) self$reject(cnd)
-      )
-    },
-
-    fail = function(msg) {
-      tryCatch(
-        super$fail(msg),
-        httr2_fail = function(cnd) self$reject(cnd$error),
-        error = function(cnd) self$reject(cnd)
-      )
-    }
-  ))
 
 ensure_pool_poller <- function(pool, reject) {
   monitor <- pool_poller_monitor(pool)
