@@ -88,6 +88,9 @@ sys_sleep <- function(seconds, task, fps = 10, progress = NULL) {
   invisible()
 }
 
+# allow mocking
+Sys.sleep <- NULL
+
 cur_time <- function() proc.time()[[3]]
 
 is_error <- function(x) inherits(x, "error")
