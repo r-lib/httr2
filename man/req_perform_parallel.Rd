@@ -7,9 +7,12 @@
 req_perform_parallel(
   reqs,
   paths = NULL,
-  pool = NULL,
+  pool = deprecated(),
   on_error = c("stop", "return", "continue"),
-  progress = TRUE
+  progress = TRUE,
+  max_active = 10,
+  throttle_capacity = 100,
+  throttle_fill_time_s = 60
 )
 }
 \arguments{
@@ -19,9 +22,8 @@ req_perform_parallel(
 the response bodies to disk. If supplied, must be the same length as
 \code{reqs}.}
 
-\item{pool}{Optionally, a curl pool made by \code{\link[curl:multi]{curl::new_pool()}}. Supply
-this if you want to override the defaults for total concurrent connections
-(100) or concurrent connections per host (6).}
+\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
+to control the maximum number of concurrent requests, set \code{max_active}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{
@@ -36,6 +38,8 @@ received so far, as well as an error object for the failed request.
 or see \link{progress_bars} to customize it in other ways. Not compatible with
 \code{\link[=req_progress]{req_progress()}}, as httr2 can only display a single progress bar at a
 time.}
+
+\item{max_active}{Maximum number of concurrent requests.}
 }
 \value{
 A list, the same length as \code{reqs}, containing \link{response}s and possibly
@@ -52,18 +56,18 @@ This variation on \code{\link[=req_perform_sequential]{req_perform_sequential()}
 parallel. Exercise caution when using this function; it's easy to pummel a
 server with many simultaneous requests. Only use it with hosts designed to
 serve many files at once, which are typically web servers, not API servers.
+\subsection{Limitations}{
 
-\code{req_perform_parallel()} has a few limitations:
+There are two remaining limitations to \code{req_perform_parallel()}:
 \itemize{
-\item Will not retrieve a new OAuth token if it expires part way through
-the requests.
-\item Does not perform throttling with \code{\link[=req_throttle]{req_throttle()}}.
-\item Does not attempt retries as described by \code{\link[=req_retry]{req_retry()}}.
-\item Only consults the cache set by \code{\link[=req_cache]{req_cache()}} before/after all requests.
+\item \code{req_throttle()} is ignored in of favour of its own throttling defined
+by \code{throttle_capacity} and \code{throttle_fill_time_s}.
+\item The rate-limits applied \code{req_retry()} are applied across all requests.
 }
 
-If any of these limitations are problematic for your use case, we recommend
-\code{\link[=req_perform_sequential]{req_perform_sequential()}} instead.
+It is probably possible to remove these limits in the future with sufficient
+work, so please let me know if this would be useful to you.
+}
 }
 \examples{
 # Requesting these 4 pages one at a time would take 2 seconds:
