@@ -4,22 +4,11 @@
       . <- req_perform(verbose_resp)
     Output
       <- HTTP/1.1 200 OK
+      <- Connection: close
       <- Content-Type: application/json
       <- 
       << {
-      <<   "args": {},
-      <<   "data": {},
-      <<   "files": {},
-      <<   "form": {},
-      <<   "headers": {
-      <<     "Host": "http://example.com",
-      <<     "Content-Length": "17"
-      <<   },
-      <<   "json": {},
-      <<   "method": "post",
-      <<   "path": "/post",
-      <<   "origin": "127.0.0.1",
-      <<   "url": "<webfakes>/post"
+      <<   "x": 1
       << }
 
 ---
@@ -27,7 +16,7 @@
     Code
       . <- req_perform(verbose_req)
     Output
-      -> POST /post HTTP/1.1
+      -> POST /test HTTP/1.1
       -> Host: http://example.com
       -> Content-Length: 17
       -> 
@@ -43,20 +32,51 @@
       <- Content-Encoding: gzip
       <- 
       << {
-      <<   "args": {},
-      <<   "data": {},
-      <<   "files": {},
-      <<   "form": {},
+      <<   "args": {
+      << 
+      <<   },
+      <<   "data": {
+      << 
+      <<   },
+      <<   "files": {
+      << 
+      <<   },
+      <<   "form": {
+      << 
+      <<   },
       <<   "headers": {
       <<     "Host": "http://example.com"
       <<   },
-      <<   "json": {},
+      <<   "json": {
+      << 
+      <<   },
       <<   "method": "get",
       <<   "path": "/gzip",
       <<   "origin": "127.0.0.1",
       <<   "url": "<webfakes>/gzip",
       <<   "gzipped": true
       << }
+
+# json is automatically prettified
+
+    Code
+      . <- req_perform(req)
+    Output
+      << {
+      <<   "foo": "bar",
+      <<   "baz": [
+      <<     1,
+      <<     2,
+      <<     3
+      <<   ]
+      << }
+
+---
+
+    Code
+      . <- req_perform(req)
+    Output
+      << {"foo":"bar","baz":[1,2,3]}
 
 # verbose_enum checks range
 

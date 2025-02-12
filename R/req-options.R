@@ -62,6 +62,10 @@ req_user_agent <- function(req, string = NULL) {
   req_options(req, useragent = string)
 }
 
+req_has_user_agent <- function(req) {
+  has_name(req$options, "useragent")
+}
+
 curl_system_version <- function() curl::curl_version()$version
 
 #' Set time limit for a request
