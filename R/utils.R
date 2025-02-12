@@ -344,15 +344,10 @@ is_named_list <- function(x) {
 }
 
 pretty_json <- function(x) {
-  parsed <- tryCatch(
-    jsonlite::parse_json(x),
-    error = function(e) NULL
+  tryCatch(
+    gsub("\n$", "", jsonlite::prettify(x, indent = 2)),
+    error = function(e) x
   )
-  if (is.null(parsed)) {
-    x
-  } else {
-    jsonlite::toJSON(parsed, auto_unbox = TRUE, pretty = TRUE)
-  }
 }
 
 log_stream <- function(..., prefix = "<< ") {

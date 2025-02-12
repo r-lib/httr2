@@ -137,7 +137,12 @@ req_perform <- function(
 
 handle_resp <- function(req, resp, error_call = caller_env()) {
   if (resp_show_body(resp)) {
-    show_body(resp$body, resp$headers$`content-type`, prefix = "<< ")
+    show_body(
+      resp$body,
+      resp$headers$`content-type`,
+      prefix = "<< ",
+      pretty_json = getOption("httr2_pretty_json", TRUE)
+    )
   }
 
   if (is_error(resp)) {
@@ -246,7 +251,7 @@ req_prepare <- function(req) {
   req
 }
 req_handle <- function(req) {
-  if (!has_name(req$options, "useragent")) {
+  if (!req_has_user_agent(req)) {
     req <- req_user_agent(req)
   }
 

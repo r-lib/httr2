@@ -4,7 +4,13 @@
 \alias{req_dry_run}
 \title{Perform a dry run}
 \usage{
-req_dry_run(req, quiet = FALSE, redact_headers = TRUE)
+req_dry_run(
+  req,
+  quiet = FALSE,
+  redact_headers = TRUE,
+  testing_headers = is_testing(),
+  pretty_json = getOption("httr2_pretty_json", TRUE)
+)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -14,6 +20,22 @@ req_dry_run(req, quiet = FALSE, redact_headers = TRUE)
 \item{redact_headers}{Redact confidential data in the headers? Currently
 redacts the contents of the Authorization header to prevent you from
 accidentally leaking credentials when debugging/reprexing.}
+
+\item{testing_headers}{If \code{TRUE}, removes headers that httr2 would otherwise
+be automatically added, which are likely to change across test runs. This
+currently includes:
+\itemize{
+\item The default \code{User-Agent}, which varies based on libcurl, curl, and
+httr2 versions.
+\item The `Host`` header, which is often set to a testing server.
+\item The \code{Content-Length} header, which will often vary by platform because
+of varying newline encodings. (And is also not correct if you have
+\code{pretty_json = TRUE}.)
+\item The \code{Accept-Encoding} header, which varies based on how libcurl was
+built.
+}}
+
+\item{pretty_json}{If \code{TRUE}, automatically prettify JSON bodies.}
 }
 \value{
 Invisibly, a list containing information about the request,
@@ -29,6 +51,8 @@ the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 \subsection{Limitations}{
 \itemize{
 \item The \code{Host} header is not respected.
+\item The HTTP version is always \code{HTTP/1.1} (since you can't determine what it
+will actually be without connecting to the real server).
 }
 }
 }

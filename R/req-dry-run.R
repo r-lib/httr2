@@ -8,9 +8,24 @@
 #' ## Limitations
 #'
 #' * The `Host` header is not respected.
+#' * The HTTP version is always `HTTP/1.1` (since you can't determine what it
+#'   will actually be without connecting to the real server).
 #'
 #' @inheritParams req_verbose
 #' @param quiet If `TRUE` doesn't print anything.
+#' @param testing_headers If `TRUE`, removes headers that httr2 would otherwise
+#'   be automatically added, which are likely to change across test runs. This
+#'   currently includes:
+#'
+#'   * The default `User-Agent`, which varies based on libcurl, curl, and
+#'     httr2 versions.
+#'   * The `Host`` header, which is often set to a testing server.
+#'   * The `Content-Length` header, which will often vary by platform because
+#'     of varying newline encodings. (And is also not correct if you have
+#'     `pretty_json = TRUE`.)
+#'   * The `Accept-Encoding` header, which varies based on how libcurl was
+#'     built.
+#' @param pretty_json If `TRUE`, automatically prettify JSON bodies.
 #' @returns Invisibly, a list containing information about the request,
 #'   including `method`, `path`, and `headers`.
 #' @export
@@ -25,9 +40,23 @@
 #'
 #' # if you need to see it, use redact_headers = FALSE
 #' req |> req_dry_run(redact_headers = FALSE)
-req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
+req_dry_run <- function(req,
+                        quiet = FALSE,
+                        redact_headers = TRUE,
+                        testing_headers = is_testing(),
+                        pretty_json = getOption("httr2_pretty_json", TRUE)) {
   check_request(req)
+  check_bool(quiet)
+  check_bool(redact_headers)
+  check_bool(testing_headers)
   check_installed("httpuv")
+
+  if (testing_headers) {
+    if (!req_has_user_agent(req)) {
+      req <- req_headers(req, `user-agent` = "")
+    }
+    req <- req_headers(req, `accept-encoding` = "")
+  }
 
   req <- req_prepare(req)
   handle <- req_handle(req)
@@ -42,9 +71,15 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
       redact = redact_headers,
       to_redact = attr(req$headers, "redact")
     )
+    if (testing_headers) {
+      # curl::curl_echo() overrides
+      headers$host <- NULL
+      headers$`content-length` <- NULL
+    }
+
     cli::cat_line(cli::style_bold(names(headers)), ": ", headers)
     cli::cat_line()
-    show_body(resp$body, headers$`content-type`)
+    show_body(resp$body, headers$`content-type`, pretty_json = pretty_json)
   }
 
   invisible(list(
@@ -54,15 +89,20 @@ req_dry_run <- function(req, quiet = FALSE, redact_headers = TRUE) {
   ))
 }
 
-show_body <- function(body, content_type, prefix = "") {
+show_body <- function(body, content_type, prefix = "", pretty_json = FALSE) {
   if (!is.raw(body)) {
     return(invisible())
   }
 
   if (is_text_type(content_type)) {
     body <- rawToChar(body)
-    body <- gsub("\n", paste0("\n", prefix), body)
     Encoding(body) <- "UTF-8"
+
+    if (pretty_json && content_type == "application/json") {
+      body <- pretty_json(body)
+    }
+
+    body <- gsub("\n", paste0("\n", prefix), body)
     cli::cat_line(prefix, body)
   } else {
     cli::cat_line(prefix, "<", length(body), " bytes>")
