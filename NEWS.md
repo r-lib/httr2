@@ -1,6 +1,7 @@
 # httr2 (development version)
 
-* `req_verbose()` automatically prettifies JSON responses (#668)
+* `req_dry_run()` drops headers that otherwise will vary in tests, and gains the ability to prettify JSON output.
+* `req_verbose()` automatically prettifies JSON responses (#668). You can disable this by setting `httr2_pretty_json`.
 * `req_perform_connection()` gives a better error if request fails at networking level.
 * `req_throttle()` now uses a "token bucket" which preserves the average rate limit, but allows bursts of higher requests.
 * `req_dry_run()` and `req_verbose()` now do a better job of displaying compressed bodies (#91, #656).

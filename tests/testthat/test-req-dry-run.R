@@ -1,20 +1,22 @@
 test_that("req_dry_run() returns useful data", {
-  resp <- request("http://example.com") %>% req_dry_run(quiet = TRUE)
+  resp <- request("http://example.com") %>%
+    req_dry_run(quiet = TRUE, testing_headers = FALSE)
   expect_equal(resp$method, "GET")
   expect_equal(resp$path, "/")
   expect_match(resp$headers$`user-agent`, "libcurl")
 })
 
 test_that("body is shown", {
-  req <- request("http://example.com") %>% req_verbose_test()
+  req <- request("http://example.com")
 
   # can display UTF-8 characters
   req_utf8 <- req_body_raw(req, "Cenário", type = "text/plain")
   expect_snapshot(req_dry_run(req_utf8))
 
-  # json is not prettified
+  # json is prettified by default
   req_json <- req_body_raw(req, '{"x":1,"y":true}', type = "application/json")
   expect_snapshot(req_dry_run(req_json))
+  expect_snapshot(req_dry_run(req_json, pretty_json = FALSE))
 
   # doesn't show binary data
   req_binary <- req_body_raw(req, "Cenário")
@@ -22,13 +24,8 @@ test_that("body is shown", {
 })
 
 test_that("authorization headers are redacted", {
-  expect_snapshot({
-    request("http://example.com") %>%
-      req_headers(`Accept-Encoding` = "gzip") %>%
-      req_auth_basic("user", "password") %>%
-      req_user_agent("test") %>%
-      req_dry_run()
-  })
+  req <- request("http://example.com") %>%  req_auth_basic("user", "password")
+  expect_snapshot(req_dry_run(req))
 })
 
 test_that("doen't add space to urls (#567)", {

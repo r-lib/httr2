@@ -1,4 +1,4 @@
-local_app_request <- function(get, frame = parent.frame()) {
+local_app_request <- function(fun, method = "get", frame = parent.frame()) {
   # Works interactively (useful for manaul coverage checking)
   # but not in separate process
   if (!is_interactive()) {
@@ -6,7 +6,7 @@ local_app_request <- function(get, frame = parent.frame()) {
   }
 
   app <- webfakes::new_app()
-  app$get("/test", get)
+  app[[method]]("/test", fun)
   server <- webfakes::local_app_process(app, .local_envir = frame)
 
   req <- request(server$url("/test"))

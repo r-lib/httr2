@@ -4,7 +4,13 @@
 \alias{req_dry_run}
 \title{Perform a dry run}
 \usage{
-req_dry_run(req, quiet = FALSE, redact_headers = TRUE)
+req_dry_run(
+  req,
+  quiet = FALSE,
+  redact_headers = TRUE,
+  testing_headers = is_testing(),
+  pretty_json = FALSE
+)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -14,6 +20,11 @@ req_dry_run(req, quiet = FALSE, redact_headers = TRUE)
 \item{redact_headers}{Redact confidential data in the headers? Currently
 redacts the contents of the Authorization header to prevent you from
 accidentally leaking credentials when debugging/reprexing.}
+
+\item{testing_headers}{If \code{TRUE}, removes headers that httr2 would otherwise
+automatically that are likely to change across test runs.}
+
+\item{pretty_json}{If \code{TRUE}, automatically prettify JSON bodies.}
 }
 \value{
 Invisibly, a list containing information about the request,
@@ -29,6 +40,8 @@ the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 \subsection{Limitations}{
 \itemize{
 \item The \code{Host} header is not respected.
+\item The HTTP version is always \code{HTTP/1.1} (since you can't determine what it
+will actually be without connecting to the real server).
 }
 }
 }

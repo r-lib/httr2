@@ -141,7 +141,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
       resp$body,
       resp$headers$`content-type`,
       prefix = "<< ",
-      prettify = TRUE
+      pretty_json = getOption("httr2_pretty_json", TRUE)
     )
   }
 
@@ -251,7 +251,7 @@ req_prepare <- function(req) {
   req
 }
 req_handle <- function(req) {
-  if (!has_name(req$options, "useragent")) {
+  if (!req_has_user_agent(req)) {
     req <- req_user_agent(req)
   }
 
