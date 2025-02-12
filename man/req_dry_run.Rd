@@ -22,7 +22,18 @@ redacts the contents of the Authorization header to prevent you from
 accidentally leaking credentials when debugging/reprexing.}
 
 \item{testing_headers}{If \code{TRUE}, removes headers that httr2 would otherwise
-automatically that are likely to change across test runs.}
+be automatically added, which are likely to change across test runs. This
+currently includes:
+\itemize{
+\item The default \code{User-Agent}, which varies based on libcurl, curl, and
+httr2 versions.
+\item The `Host`` header, which is often set to a testing server.
+\item The \code{Content-Length} header, which will often vary by platform because
+of varying newline encodings. (And is also not correct if you have
+\code{pretty_json = TRUE}.)
+\item The \code{Accept-Encoding} header, which varies based on how libcurl was
+built.
+}}
 
 \item{pretty_json}{If \code{TRUE}, automatically prettify JSON bodies.}
 }

@@ -5,9 +5,7 @@
     Output
       POST / HTTP/1.1
       accept: */*
-      content-length: 8
       content-type: text/plain
-      user-agent: <httr2 user agent>
       
       Cenário
 
@@ -18,9 +16,7 @@
     Output
       POST / HTTP/1.1
       accept: */*
-      content-length: 16
       content-type: application/json
-      user-agent: <httr2 user agent>
       
       {
         "x": 1,
@@ -34,9 +30,7 @@
     Output
       POST / HTTP/1.1
       accept: */*
-      content-length: 16
       content-type: application/json
-      user-agent: <httr2 user agent>
       
       {"x":1,"y":true}
 
@@ -47,8 +41,6 @@
     Output
       POST / HTTP/1.1
       accept: */*
-      content-length: 8
-      user-agent: <httr2 user agent>
       
       <8 bytes>
 
@@ -60,6 +52,5 @@
       GET / HTTP/1.1
       accept: */*
       authorization: <REDACTED>
-      user-agent: <httr2 user agent>
       
 

@@ -14,7 +14,17 @@
 #' @inheritParams req_verbose
 #' @param quiet If `TRUE` doesn't print anything.
 #' @param testing_headers If `TRUE`, removes headers that httr2 would otherwise
-#'   automatically that are likely to change across test runs.
+#'   be automatically added, which are likely to change across test runs. This
+#'   currently includes:
+#'
+#'   * The default `User-Agent`, which varies based on libcurl, curl, and
+#'     httr2 versions.
+#'   * The `Host`` header, which is often set to a testing server.
+#'   * The `Content-Length` header, which will often vary by platform because
+#'     of varying newline encodings. (And is also not correct if you have
+#'     `pretty_json = TRUE`.)
+#'   * The `Accept-Encoding` header, which varies based on how libcurl was
+#'     built.
 #' @param pretty_json If `TRUE`, automatically prettify JSON bodies.
 #' @returns Invisibly, a list containing information about the request,
 #'   including `method`, `path`, and `headers`.
@@ -43,7 +53,7 @@ req_dry_run <- function(req,
 
   if (testing_headers) {
     if (!req_has_user_agent(req)) {
-      req <- req_user_agent(req, "<httr2 user agent>")
+      req <- req_headers(req, `user-agent` = "")
     }
     req <- req_headers(req, `accept-encoding` = "")
   }
@@ -64,6 +74,7 @@ req_dry_run <- function(req,
     if (testing_headers) {
       # curl::curl_echo() overrides
       headers$host <- NULL
+      headers$`content-length` <- NULL
     }
 
     cli::cat_line(cli::style_bold(names(headers)), ": ", headers)
