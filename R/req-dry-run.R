@@ -34,7 +34,7 @@ req_dry_run <- function(req,
                         quiet = FALSE,
                         redact_headers = TRUE,
                         testing_headers = is_testing(),
-                        pretty_json = FALSE) {
+                        pretty_json = getOption("httr2_pretty_json", TRUE)) {
   check_request(req)
   check_bool(quiet)
   check_bool(redact_headers)
@@ -68,7 +68,6 @@ req_dry_run <- function(req,
 
     cli::cat_line(cli::style_bold(names(headers)), ": ", headers)
     cli::cat_line()
-
     show_body(resp$body, headers$`content-type`, pretty_json = pretty_json)
   }
 

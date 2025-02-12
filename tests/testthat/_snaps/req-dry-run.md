@@ -22,7 +22,10 @@
       content-type: application/json
       user-agent: <httr2 user agent>
       
-      {"x":1,"y":true}
+      {
+        "x": 1,
+        "y": true
+      }
 
 ---
 

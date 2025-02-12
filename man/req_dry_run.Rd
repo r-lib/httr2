@@ -9,7 +9,7 @@ req_dry_run(
   quiet = FALSE,
   redact_headers = TRUE,
   testing_headers = is_testing(),
-  pretty_json = FALSE
+  pretty_json = getOption("httr2_pretty_json", TRUE)
 )
 }
 \arguments{
