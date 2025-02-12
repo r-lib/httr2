@@ -100,7 +100,7 @@ req_perform <- function(
 
   n <- 0
   tries <- 0
-  reauth <- FALSE # only ever re-authenticate once
+  reauthed <- FALSE # only ever re-authenticate once
 
   throttle_delay(req)
 
@@ -117,9 +117,10 @@ req_perform <- function(
       tries <- tries + 1
       delay <- retry_after(req, resp, tries)
       signal(class = "httr2_retry", tries = tries, delay = delay)
-    } else if (!reauth && resp_is_invalid_oauth_token(req, resp)) {
-      reauth <- TRUE
-      req_prep <- req_prepare(req, reauth = TRUE)
+    } else if (!reauthed && resp_is_invalid_oauth_token(req, resp)) {
+      reauthed <- TRUE
+      req_auth_clear_cache(req)
+      req_prep <- req_prepare(req)
       handle <- req_handle(req_prep)
       delay <- 0
     } else {
@@ -128,7 +129,7 @@ req_perform <- function(
     }
   }
   # Used for testing
-  signal(class = "httr2_fetch", n = n, tries = tries, reauth = reauth)
+  signal(class = "httr2_fetch", n = n, tries = tries, reauth = reauthed)
 
   resp <- cache_post_fetch(req, resp, path = path)
   handle_resp(req, resp, error_call = error_call)
@@ -243,8 +244,8 @@ last_request <- function() {
 
 # Must call req_prepare(), then req_handle(), then after the request has been
 # performed, req_completed() (on the prepared requests)
-req_prepare <- function(req, reauth = FALSE) {
-  req <- auth_sign(req, reauth = reauth)
+req_prepare <- function(req) {
+  req <- auth_sign(req)
   req <- req_method_apply(req)
   req <- req_body_apply(req)
   req
