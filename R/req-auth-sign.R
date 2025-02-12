@@ -21,5 +21,11 @@ auth_sign <- function(req) {
 }
 
 req_auth_clear_cache <- function(req) {
-  req$policies$auth_sign$cache$clear()
+  cache <- req$policies$auth_sign$cache
+  if (!is.null(cache)) {
+    cache$clear()
+    TRUE
+  } else {
+    FALSE
+  }
 }

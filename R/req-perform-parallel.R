@@ -288,7 +288,7 @@ RequestQueue <- R6::R6Class(
         self$set_status(i, "pending")
       } else if (resp_is_invalid_oauth_token(req, resp) && self$can_reauth(i)) {
         self$oauth_failed <- c(self$oauth_failed, i)
-        req_auth_reset(self$reqs[[i]])
+        req_auth_clear_cache(self$reqs[[i]])
         self$set_status(i, "pending")
       } else {
         self$set_status(i, "complete")
