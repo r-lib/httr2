@@ -10,10 +10,10 @@
 #'
 #' There are two remaining limitations to `req_perform_parallel()`:
 #'
-#' * `req_throttle()` is ignored in of favour of its own throttling defined
+#' * [req_throttle()] is ignored in of favour of its own throttling defined
 #'   by `throttle_capacity` and `throttle_fill_time_s`.
 #'
-#' * The rate-limits applied `req_retry()` are applied across all requests.
+#' * Any rate-limits extract from [req_retry()] are applied across all requests.
 #'
 #' It is probably possible to remove these limits in the future with sufficient
 #' work, so please let me know if this would be useful to you.

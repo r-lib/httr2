@@ -60,9 +60,9 @@ serve many files at once, which are typically web servers, not API servers.
 
 There are two remaining limitations to \code{req_perform_parallel()}:
 \itemize{
-\item \code{req_throttle()} is ignored in of favour of its own throttling defined
+\item \code{\link[=req_throttle]{req_throttle()}} is ignored in of favour of its own throttling defined
 by \code{throttle_capacity} and \code{throttle_fill_time_s}.
-\item The rate-limits applied \code{req_retry()} are applied across all requests.
+\item Any rate-limits extract from \code{\link[=req_retry]{req_retry()}} are applied across all requests.
 }
 
 It is probably possible to remove these limits in the future with sufficient
