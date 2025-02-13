@@ -78,12 +78,12 @@ req_throttle <- function(req,
 throttle_status <- function() {
 
   # Trigger refill before displaying status
-  to_wait <- map_dbl(the$throttle, function(x) x$token_delay())
+  walk(the$throttle, function(x) x$refill())
 
   df <- data.frame(
     realm = env_names(the$throttle),
-    tokens = map_dbl(the$throttle, function(x) x$tokens),
-    to_wait = to_wait,
+    tokens = floor(map_dbl(the$throttle, function(x) x$tokens)),
+    to_wait = map_dbl(the$throttle, function(x) x$token_wait_time()),
     row.names = NULL,
     check.names = FALSE
   )
