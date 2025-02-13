@@ -93,12 +93,12 @@ req_perform_promise <- function(req,
   req <- req_verbosity(req, verbosity)
 
   promises::promise(function(resolve, reject) {
-    pooled_req <- PooledRequest$new(
+    pooled_req <- pooled_request(
       req = req,
       path = path,
-      on_success = function(resp, tries) resolve(resp),
-      on_failure = function(error, tries) reject(error),
-      on_error = function(error, tries) reject(error)
+      on_success = function(resp) resolve(resp),
+      on_failure = function(error) reject(error),
+      on_error = function(error) reject(error)
     )
     pooled_req$submit(pool)
     ensure_pool_poller(pool, reject)
