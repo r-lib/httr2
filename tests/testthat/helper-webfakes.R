@@ -1,7 +1,7 @@
 local_app_request <- function(fun, method = "get", frame = parent.frame()) {
   # Works interactively (useful for manaul coverage checking)
   # but not in separate process
-  if (!is_interactive()) {
+  if (!interactive()) {
     skip_on_covr()
   }
 
