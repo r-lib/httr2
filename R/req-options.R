@@ -49,17 +49,21 @@ req_user_agent <- function(req, string = NULL) {
   check_request(req)
 
   if (is.null(string)) {
-    versions <- c(
-      httr2 = as.character(utils::packageVersion("httr2")),
-      `r-curl` = as.character(utils::packageVersion("curl")),
-      libcurl = curl_system_version()
-    )
-    string <- paste0(names(versions), "/", versions, collapse = " ")
+    string <- env_cache(the, "user_agent", default_user_agent())
   } else {
     check_string(string)
   }
 
   req_options(req, useragent = string)
+}
+
+default_user_agent <- function() {
+  versions <- c(
+    httr2 = as.character(utils::packageVersion("httr2")),
+    `r-curl` = as.character(utils::packageVersion("curl")),
+    libcurl = curl_system_version()
+  )
+  paste0(names(versions), "/", versions, collapse = " ")
 }
 
 req_has_user_agent <- function(req) {
@@ -129,7 +133,6 @@ req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, a
     proxyauth = auth_flags(auth)
   )
 }
-
 
 auth_flags <- function(x = "basic") {
   constants <- c(
