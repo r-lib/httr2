@@ -89,6 +89,7 @@ PooledRequest <- R6Class(
     on_failure = NULL,
     on_error = NULL,
 
+    # curl success could be httr2 success or httr2 failure
     succeed = function(curl_data) {
       private$handle <- NULL
       req_completed(private$req_prep)
@@ -114,6 +115,7 @@ PooledRequest <- R6Class(
       }
     },
 
+    # curl failure = httr2 error
     fail = function(msg) {
       private$handle <- NULL
       req_completed(private$req_prep)
@@ -123,6 +125,5 @@ PooledRequest <- R6Class(
       error$request <- self$req
       private$on_error(error)
     }
-
   )
 )
