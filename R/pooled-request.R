@@ -38,8 +38,6 @@ PooledRequest <- R6Class(
       on_failure = NULL,
       on_error = NULL
     ) {
-      check_request(req)
-
       self$req <- req
       private$path <- path
       private$error_call <- error_call
