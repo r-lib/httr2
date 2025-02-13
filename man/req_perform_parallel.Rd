@@ -10,9 +10,7 @@ req_perform_parallel(
   pool = deprecated(),
   on_error = c("stop", "return", "continue"),
   progress = TRUE,
-  max_active = 10,
-  throttle_capacity = 100,
-  throttle_fill_time_s = 60
+  max_active = 10
 )
 }
 \arguments{
@@ -53,25 +51,24 @@ Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for mo
 }
 \description{
 This variation on \code{\link[=req_perform_sequential]{req_perform_sequential()}} performs multiple requests in
-parallel. Exercise caution when using this function; it's easy to pummel a
-server with many simultaneous requests. Only use it with hosts designed to
-serve many files at once, which are typically web servers, not API servers.
+parallel. Never use it without \code{\link[=req_throttle]{req_throttle()}}; otherwise it's too easy to
+pummel a server with a very large number of simultaneous requests.
 \subsection{Limitations}{
 
-There are two remaining limitations to \code{req_perform_parallel()}:
-\itemize{
-\item \code{\link[=req_throttle]{req_throttle()}} is ignored in of favour of its own throttling defined
-by \code{throttle_capacity} and \code{throttle_fill_time_s}.
-\item Any rate-limits extract from \code{\link[=req_retry]{req_retry()}} are applied across all requests.
-}
-
-It is probably possible to remove these limits in the future with sufficient
-work, so please let me know if this would be useful to you.
+The main limitation of \code{req_perform_parallel()} is that it assumes applies
+\code{\link[=req_throttle]{req_throttle()}} and \code{\link[=req_retry]{req_retry()}} are across all requests. This means,
+for example, that if request 1 is throttled, but request 2 is not,
+\code{req_perform_parallel()} will wait for request 1 before performing request 2.
+This makes it most suitable for performing many parallel requests to the same
+host, rather than a mix of different hosts. It's probably possible to remove
+these limitation, but it's enough work that I'm unlikely to do it unless
+I know that people would fine it useful: so please let me know!
 }
 }
 \examples{
 # Requesting these 4 pages one at a time would take 2 seconds:
-request_base <- request(example_url())
+request_base <- request(example_url()) |>
+  req_throttle(capacity = 100, fill_time_s = 60)
 reqs <- list(
   request_base |> req_url_path("/delay/0.5"),
   request_base |> req_url_path("/delay/0.5"),

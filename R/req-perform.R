@@ -102,7 +102,7 @@ req_perform <- function(
   tries <- 0
   reauthed <- FALSE # only ever re-authenticate once
 
-  throttle_delay(req)
+  sys_sleep(throttle_delay(req), "for throttling delay")
 
   delay <- 0
   while (tries < max_tries && Sys.time() < deadline) {

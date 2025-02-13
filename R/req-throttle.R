@@ -56,16 +56,13 @@ req_throttle <- function(req,
   check_number_decimal(fill_time_s, min = 0)
   check_string(realm, allow_null = TRUE)
 
-  throttle_delay <- function(req) {
-    realm <- realm %||% url_parse(req$url)$hostname
-    bucket <- env_cache(the$throttle, realm, TokenBucket$new(capacity, fill_time_s))
+  realm <- realm %||% url_parse(req$url)$hostname
+  the$throttle[[realm]] <- TokenBucket$new(capacity, fill_time_s)
 
-    to_wait <- bucket$wait_for_token()
-    sys_sleep(to_wait, "for throttling delay")
-    to_wait
-  }
-
-  req_policies(req, throttle_delay = throttle_delay)
+  req_policies(
+    req,
+    throttle_delay = function(req) the$throttle[[realm]]$take_token()
+  )
 }
 
 #' Display internal throttle status
@@ -81,7 +78,7 @@ req_throttle <- function(req,
 throttle_status <- function() {
 
   # Trigger refill before displaying status
-  to_wait <- map_dbl(the$throttle, function(x) x$wait_for_token(dry_run = TRUE))
+  to_wait <- map_dbl(the$throttle, function(x) x$token_delay())
 
   df <- data.frame(
     realm = env_names(the$throttle),
@@ -120,23 +117,32 @@ TokenBucket <- R6::R6Class(
 
     refill = function() {
       now <- unix_time()
+      # Ensure if we call rapidly we don't accumulate FP errors
+      if (now - self$last_fill < 1e-6) {
+        return(self$tokens)
+      }
       new_tokens <- (now - self$last_fill) * self$fill_rate
-      # print(new_tokens)
 
       self$tokens <- min(self$capacity, self$tokens + new_tokens)
       self$last_fill <- now
+
+      self$tokens
     },
 
-    wait_for_token = function(dry_run = FALSE) {
-      self$refill()
+    token_wait_time = function() {
       if (self$tokens >= 1) {
-        if (!dry_run) {
-          self$tokens <- self$tokens - 1
-        }
         0
       } else {
+        self$refill()
         (1 - self$tokens) / self$fill_rate
       }
+    },
+
+    # Returns the number of seconds that you need to wait to get it
+    take_token = function() {
+      wait <- self$token_wait_time()
+      self$tokens <- self$tokens - 1
+      wait
     }
   )
 )

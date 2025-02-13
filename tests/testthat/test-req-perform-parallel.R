@@ -33,9 +33,7 @@ test_that("can perform >128 file uploads in parallel", {
   req <- request(example_url()) %>% req_body_file(temp)
   reqs <- rep(list(req), 130)
 
-  expect_no_error(
-    req_perform_parallel(reqs, on_error = "continue", throttle_capacity = 150)
-  )
+  expect_no_error(req_perform_parallel(reqs, on_error = "continue"))
 })
 
 test_that("can download files", {
@@ -157,6 +155,25 @@ test_that("respects max retries", {
   expect_s3_class(queue$resps[[1]], "httr2_http_429")
   expect_equal(queue$tries[1], 3)
 })
+
+test_that("requests are throttled", {
+  withr::defer(throttle_reset())
+
+  mock_time <- 0
+  local_mocked_bindings(
+    unix_time = function() mock_time,
+    Sys.sleep = function(seconds) mock_time <<- mock_time + seconds
+  )
+
+  req <- request_test("/status/:status", status = 200)
+  req <- req %>% req_throttle(capacity = 1, fill_time_s = 1)
+  reqs <- rep(list(req), 5)
+
+  queue <- RequestQueue$new(reqs, progress = FALSE)
+  queue$process()
+  expect_equal(mock_time, 4)
+})
+
 
 # Tests of lower-level operation -----------------------------------------------
 

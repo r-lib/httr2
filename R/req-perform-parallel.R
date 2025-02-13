@@ -2,21 +2,19 @@
 #'
 #' @description
 #' This variation on [req_perform_sequential()] performs multiple requests in
-#' parallel. Exercise caution when using this function; it's easy to pummel a
-#' server with many simultaneous requests. Only use it with hosts designed to
-#' serve many files at once, which are typically web servers, not API servers.
+#' parallel. Never use it without [req_throttle()]; otherwise it's too easy to
+#' pummel a server with a very large number of simultaneous requests.
 #'
 #' ## Limitations
 #'
-#' There are two remaining limitations to `req_perform_parallel()`:
-#'
-#' * [req_throttle()] is ignored in of favour of its own throttling defined
-#'   by `throttle_capacity` and `throttle_fill_time_s`.
-#'
-#' * Any rate-limits extract from [req_retry()] are applied across all requests.
-#'
-#' It is probably possible to remove these limits in the future with sufficient
-#' work, so please let me know if this would be useful to you.
+#' The main limitation of `req_perform_parallel()` is that it assumes applies
+#' [req_throttle()] and [req_retry()] are across all requests. This means,
+#' for example, that if request 1 is throttled, but request 2 is not,
+#' `req_perform_parallel()` will wait for request 1 before performing request 2.
+#' This makes it most suitable for performing many parallel requests to the same
+#' host, rather than a mix of different hosts. It's probably possible to remove
+#' these limitation, but it's enough work that I'm unlikely to do it unless
+#' I know that people would fine it useful: so please let me know!
 #'
 #' @inherit req_perform_sequential params return
 #' @param pool `r lifecycle::badge("deprecated")`. No longer supported;
@@ -25,7 +23,8 @@
 #' @export
 #' @examples
 #' # Requesting these 4 pages one at a time would take 2 seconds:
-#' request_base <- request(example_url())
+#' request_base <- request(example_url()) |>
+#'   req_throttle(capacity = 100, fill_time_s = 60)
 #' reqs <- list(
 #'   request_base |> req_url_path("/delay/0.5"),
 #'   request_base |> req_url_path("/delay/0.5"),
@@ -57,9 +56,7 @@ req_perform_parallel <- function(
   pool = deprecated(),
   on_error = c("stop", "return", "continue"),
   progress = TRUE,
-  max_active = 10,
-  throttle_capacity = 100,
-  throttle_fill_time_s = 60
+  max_active = 10
 ) {
   check_paths(paths, reqs)
   if (lifecycle::is_present(pool)) {
@@ -70,18 +67,10 @@ req_perform_parallel <- function(
   }
   on_error <- arg_match(on_error)
   check_number_whole(max_active, min = 1)
-  check_number_whole(throttle_capacity, min = 1)
-  check_number_whole(throttle_fill_time_s, min = 1)
-
-  bucket <- TokenBucket$new(
-    capacity = throttle_capacity,
-    fill_time_s = throttle_fill_time_s
-  )
 
   queue <- RequestQueue$new(
     reqs = reqs,
     paths = paths,
-    token_bucket = bucket,
     max_active = max_active,
     on_error = on_error,
     progress = progress,
@@ -105,7 +94,6 @@ RequestQueue <- R6::R6Class(
   "RequestQueue",
   public = list(
     pool = NULL,
-    token_bucket = NULL,
     rate_limit_deadline = 0,
     max_active = NULL,
 
@@ -131,7 +119,6 @@ RequestQueue <- R6::R6Class(
     initialize = function(
       reqs,
       paths = NULL,
-      token_bucket = NULL,
       max_active = 10,
       on_error = "stop",
       progress = FALSE,
@@ -150,7 +137,9 @@ RequestQueue <- R6::R6Class(
         )
       }
 
-      # goal is for pool to not do any queueing; i.e. never fill the pool
+      # goal is for pool to not do any queueing; i.e. the curl pool will
+      # only ever contain requests that we actually want to process. Any
+      # throttling is done by `req_throttle()`
       self$max_active <- max_active
       self$pool <- curl::new_pool(
         total_con = 100,
@@ -163,10 +152,6 @@ RequestQueue <- R6::R6Class(
       self$n_pending <- n
       self$n_active <- 0
       self$n_complete <- 0
-
-      # Rate limiting is done by with the token bucket; the curl pool will
-      # only ever be filled with requests that we actually want to process
-      self$token_bucket <- token_bucket %||% TokenBucket$new(100, 1)
 
       self$reqs <- reqs
       self$pooled_reqs <- map(seq_along(reqs), function(i) {
@@ -197,21 +182,19 @@ RequestQueue <- R6::R6Class(
           if (self$n_pending == 0) {
             self$queue_status <- "finishing"
           } else if (self$n_active < self$max_active) {
-            # Requests can complete while waiting, and that can
-            # modify rate_limit_deadline
-            token_deadline <- min(self$next_token_deadline(), deadline)
-            if (!pool_wait_for_deadline(self$pool, token_deadline)) {
-              return(TRUE)
-            }
+            next_i <- which(self$status == "pending")[[1]]
+
+            # Wait for both a token from the bucket and for any rate limits.
+            # The ordering is important here because requests will complete
+            # while we wait, and than might change the rate_limit_deadline
+            token_deadline <- self$next_token_deadline(next_i)
+            pool_wait_for_deadline(self$pool, token_deadline)
 
             while (unix_time() < self$rate_limit_deadline) {
               rate_limit_deadline <- min(self$rate_limit_deadline, deadline)
-              if (!pool_wait_for_deadline(self$pool, rate_limit_deadline)) {
-                return(TRUE)
-              }
+              pool_wait_for_deadline(self$pool, rate_limit_deadline)
             }
 
-            next_i <- which(self$status == "pending")[[1]]
             self$submit(next_i)
           } else {
             # wait for a request to finish
@@ -245,12 +228,12 @@ RequestQueue <- R6::R6Class(
       TRUE
     },
 
-    next_token_deadline = function() {
-      unix_time() + self$token_bucket$wait_for_token()
+    next_token_deadline = function(i) {
+      unix_time() + throttle_delay(self$reqs[[i]])
     },
 
     submit = function(i) {
-      # retry_check_breaker(req, tries, error_call = error_call)
+      retry_check_breaker(self$reqs[[i]], self$tries, error_call = error_call)
 
       self$set_status(i, "active")
       self$resps[i] <- list(NULL)
@@ -326,7 +309,6 @@ RequestQueue <- R6::R6Class(
     }
   )
 )
-
 
 pool_wait_for_one <- function(pool, deadline) {
   timeout <- deadline - unix_time()
