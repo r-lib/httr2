@@ -17,6 +17,8 @@
       req_perform_parallel(reqs[2])
     Condition
       Error in `req_perform_parallel()`:
+      ! Failed to perform HTTP request.
+      Caused by error:
       ! Could not resolve host: INVALID
 
 # req_perform_parallel respects http_error() body message

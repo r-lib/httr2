@@ -9,9 +9,9 @@ pooled_request <- function(
 
   check_request(req)
   check_string(path, allow_null = TRUE)
-  check_function2(on_success, args = c("resp", "tries"), allow_null = TRUE)
-  check_function2(on_failure, args = c("error", "tries"), allow_null = TRUE)
-  check_function2(on_error, args = c("error", "tries"), allow_null = TRUE)
+  check_function2(on_success, args = "resp", allow_null = TRUE)
+  check_function2(on_failure, args = "error", allow_null = TRUE)
+  check_function2(on_error, args = "error", allow_null = TRUE)
 
   PooledRequest$new(
     req = req,
@@ -29,7 +29,6 @@ PooledRequest <- R6Class(
   public = list(
     req = NULL,
     resp = NULL,
-    tries = 0,
 
     initialize = function(
       req,
@@ -48,11 +47,9 @@ PooledRequest <- R6Class(
     },
 
     submit = function(pool) {
-      self$tries <- self$tries + 1
-
       req <- cache_pre_fetch(self$req, private$path)
       if (is_response(req)) {
-        private$on_success(req, self$tries)
+        private$on_success(req)
         return()
       }
 
@@ -107,11 +104,9 @@ PooledRequest <- R6Class(
       resp <- create_response(self$req, curl_data, body)
       resp <- cache_post_fetch(self$req, resp, path = private$path)
 
-      if (is_error(resp)) {
-        private$on_error(resp, tries = self$tries)
-      } else if (error_is_error(self$req, resp)) {
-        cnd <- resp_failure_cnd(self$req, resp)
-        private$on_failure(cnd, tries = self$tries)
+      if (error_is_error(self$req, resp)) {
+        cnd <- resp_failure_cnd(self$req, resp, error_call = private$error_call)
+        private$on_failure(cnd)
       } else {
         private$on_success(resp)
       }
@@ -121,13 +116,10 @@ PooledRequest <- R6Class(
       private$handle <- NULL
       req_completed(private$req_prep)
 
-      error <- error_cnd(
-        "httr2_failure",
-        message = msg,
-        request = self$req
-      )
-      private$on_error(error, tries = self$tries)
+      curl_error <- error_cnd(message = msg, class = "curl_error", call = NULL)
+      error <- curl_cnd(curl_error, call = private$error_call)
+      error$request <- self$req
+      private$on_error(error)
     }
-
   )
 )
