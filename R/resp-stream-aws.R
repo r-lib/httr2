@@ -129,7 +129,7 @@ type_enum <- function(value) {
     "BYTE_ARRAY",
     "CHARACTER",
     "TIMESTAMP",
-    "UUID",
+    "UUID"
   )
 }
 
