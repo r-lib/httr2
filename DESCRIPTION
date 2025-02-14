@@ -38,6 +38,7 @@ Suggests:
     jsonlite,
     knitr,
     later (>= 1.4.0),
+    nanonext,
     paws.common,
     promises,
     rmarkdown,

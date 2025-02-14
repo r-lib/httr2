@@ -60,10 +60,12 @@ test_that("can't read from a closed connection", {
 })
 
 test_that("can join lines across multiple reads", {
+  sync <- sync_req()
   req <- local_app_request(function(req, res) {
+    sync <- req$app$locals$sync_rep()
+
     res$send_chunk("This is a ")
-    Sys.sleep(0.2)
-    res$send_chunk("complete sentence.\n")
+    sync(res$send_chunk("complete sentence.\n"))
   })
 
   # Non-blocking returns NULL until data is ready
@@ -74,70 +76,53 @@ test_that("can join lines across multiple reads", {
   expect_equal(out, character())
   expect_equal(resp1$cache$push_back, charToRaw("This is a "))
 
-  while (length(out) == 0) {
-    Sys.sleep(0.1)
-    out <- resp_stream_lines(resp1)
-  }
+  sync()
+  out <- resp_stream_lines(resp1)
   expect_equal(out, "This is a complete sentence.")
 })
 
 test_that("handles line endings of multiple kinds", {
+  sync <- sync_req()
   req <- local_app_request(function(req, res) {
+    sync <- req$app$locals$sync_rep()
+
     res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
-    Sys.sleep(0.1)
-    res$send_chunk("crlf\r\n")
-    Sys.sleep(0.1)
-    res$send_chunk("lf\n")
-    Sys.sleep(0.1)
-    res$send_chunk("cr\r")
-    Sys.sleep(0.1)
-    res$send_chunk("half line/")
-    Sys.sleep(0.1)
-    res$send_chunk("other half\n")
-    Sys.sleep(0.1)
-    res$send_chunk("broken crlf\r")
-    Sys.sleep(0.1)
-    res$send_chunk("\nanother line\n")
-    Sys.sleep(0.1)
-    res$send_chunk("eof without line ending")
+    sync(res$send_chunk("crlf\r\n"))
+    sync(res$send_chunk("lf\n"))
+    sync(res$send_chunk("cr\r"))
+    sync(res$send_chunk("half line/"))
+    sync(res$send_chunk("other half\n"))
+    sync(res$send_chunk("broken crlf\r"))
+    sync(res$send_chunk("\nanother line\n"))
+    sync(res$send_chunk("eof without line ending"))
   })
+
+  expected_values <- c(
+    "\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line"
+  )
 
   resp1 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp1))
 
-  for (expected in c("\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
+  for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
+    sync()
   }
-  expect_warning(
-    expect_equal(resp_stream_lines(resp1), "eof without line ending"),
-    "incomplete final line"
-  )
-  expect_identical(resp_stream_lines(resp1), character(0))
+  expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
+  expect_equal(out, "eof without line ending")
+  expect_equal(resp_stream_lines(resp1), character(0))
 
   # Same test, but now, non-blocking
   resp2 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp2))
 
-  for (expected in c("\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line")) {
-    repeat {
-      out <- resp_stream_lines(resp2)
-      if (length(out) > 0) {
-        rlang::inject(expect_equal(out, !!expected))
-        break
-      }
-    }
+  for (expected in expected_values) {
+    rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
+    sync()
   }
-  expect_warning(
-    repeat {
-      out <- resp_stream_lines(resp2)
-      if (length(out) > 0) {
-        expect_equal(out, "eof without line ending")
-        break
-      }
-    },
-    "incomplete final line"
-  )
+  expect_warning(out <- resp_stream_lines(resp2), "incomplete final line")
+  expect_equal(out, "eof without line ending")
 })
 
 test_that("streams the specified number of lines", {
