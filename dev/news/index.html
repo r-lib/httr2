@@ -47,6 +47,9 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
 <ul><li>
+<code>req_perform_parallel(pool)</code> has been deprecated in favour of a new <code>max_active</code> argument (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
+<li>Most of the limitations of <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> have been lifted. It can now refresh OAuth tokens and look at the cache for each individual requests. It also supports a simple version of <code><a href="../reference/req_throttle.html">req_throttle()</a></code> and <code><a href="../reference/req_retry.html">req_retry()</a></code>, where it assumes that all requests have the same throttling and rate limits (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
+<li>
 <code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> now memoises the default user agent, since it’s relatively slow (300 µs) to compute because it requires looking up version numbers.</li>
 <li>
 <code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> drops headers that otherwise will vary in tests, and gains the ability to prettify JSON output.</li>

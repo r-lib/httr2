@@ -128,9 +128,8 @@ for large responses since it avoids storing the response in memory.</p></dd>
 
 
 <dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
-<dd><p>Optionally, a curl pool made by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code>. Supply
-this if you want to override the defaults for total concurrent connections
-(100) or concurrent connections per host (6).</p></dd>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a>. No longer supported;
+to control the maximum number of concurrent requests, set <code>max_active</code>.</p></dd>
 
 
 <dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>

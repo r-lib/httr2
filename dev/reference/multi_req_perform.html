@@ -63,7 +63,12 @@ cancel_on_error = TRUE is now on_error = "return"
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">multi_req_perform</span><span class="op">(</span><span class="va">reqs</span>, paths <span class="op">=</span> <span class="cn">NULL</span>, pool <span class="op">=</span> <span class="cn">NULL</span>, cancel_on_error <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">multi_req_perform</span><span class="op">(</span></span>
+<span>  <span class="va">reqs</span>,</span>
+<span>  paths <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pool <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  cancel_on_error <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,9 +86,8 @@ the response bodies to disk. If supplied, must be the same length as
 
 
 <dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
-<dd><p>Optionally, a curl pool made by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code>. Supply
-this if you want to override the defaults for total concurrent connections
-(100) or concurrent connections per host (6).</p></dd>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a>. No longer supported;
+to control the maximum number of concurrent requests, set <code>max_active</code>.</p></dd>
 
 
 <dt id="arg-cancel-on-error">cancel_on_error<a class="anchor" aria-label="anchor" href="#arg-cancel-on-error"></a></dt>
