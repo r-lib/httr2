@@ -42,9 +42,10 @@ show_headers <- function(x, redact = TRUE) {
 }
 
 #' @export
-str.httr2_headers <- function(object, ...) {
+str.httr2_headers <- function(object, ..., no.list = FALSE) {
   object <- unclass(headers_redact(object))
-  utils::str(object, ...)
+  cat(" <httr2_headers>\n")
+  utils::str(object, ..., no.list = TRUE)
 }
 
 headers_redact <- function(x, redact = TRUE) {
@@ -58,14 +59,14 @@ headers_redact <- function(x, redact = TRUE) {
   }
 }
 
+# https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2
 headers_flatten <- function(x) {
   n <- lengths(x)
   x[n > 1] <- lapply(x[n > 1], paste, collapse = ",")
   x
 }
 
-list_redact <- function(x, names, sentinel = redacted(), case_sensitive = TRUE) {
-  x <- as.list(x)
+list_redact <- function(x, names, case_sensitive = TRUE) {
   if (case_sensitive) {
     i <- match(names, names(x))
   } else {

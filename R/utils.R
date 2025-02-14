@@ -9,16 +9,18 @@ bullets_with_header <- function(header, x) {
 
 bullets <- function(x) {
   as_simple <- function(x) {
-    if (is_redacted(x)) {
-      format(x)
-    } else if (is.atomic(x) && length(x) == 1) {
+    if (is.atomic(x) && length(x) == 1) {
       if (is.character(x)) {
         paste0('"', x, '"')
       } else {
         format(x)
       }
     } else {
-      paste0("<", class(x)[[1L]], ">")
+      if (is_redacted(x)) {
+        format(x)
+      } else {
+        paste0("<", class(x)[[1L]], ">")
+      }
     }
   }
   vals <- map_chr(x, as_simple)

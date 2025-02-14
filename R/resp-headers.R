@@ -169,12 +169,13 @@ resp_retry_after <- function(resp) {
 #' resp_link_url(resp, "last")
 #' resp_link_url(resp, "prev")
 resp_link_url <- function(resp, rel) {
-  if (!resp_header_exists(resp, "Link")) {
+if (!resp_header_exists(resp, "Link")) {
     return()
   }
 
   headers <- resp_headers(resp)
   link_headers <- headers[tolower(names(headers)) == "link"]
+
   links <- unlist(lapply(link_headers, parse_link), recursive = FALSE)
   sel <- map_lgl(links, ~ .$rel == rel)
   if (sum(sel) != 1L) {

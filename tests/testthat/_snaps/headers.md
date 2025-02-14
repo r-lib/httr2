@@ -31,7 +31,7 @@
     Code
       str(x)
     Output
-      List of 2
+       <httr2_headers>
        $ x: <REDACTED>
        $ y: num 2
 
