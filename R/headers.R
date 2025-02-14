@@ -42,9 +42,9 @@ show_headers <- function(x, redact = TRUE) {
 }
 
 #' @export
-str.httr2_headers <- function(x, ...) {
-  x <- unclass(headers_redact(x))
-  utils::str(x, ...)
+str.httr2_headers <- function(object, ...) {
+  object <- unclass(headers_redact(object))
+  utils::str(object, ...)
 }
 
 headers_redact <- function(x, redact = TRUE) {
@@ -84,7 +84,7 @@ format.httr2_redacted <- function(x, ...) {
   cli::col_grey("<REDACTED>")
 }
 #' @export
-str.httr2_redacted <- function(x, ...) {
+str.httr2_redacted <- function(object, ...) {
   cat(" ", cli::col_grey("<REDACTED>"), "\n", sep = "")
 }
 
