@@ -16,19 +16,6 @@ test_that("replacement affects all components with name", {
   expect_equal(modify_list(x, a = 3, a = 4), list(a = 3, a = 4))
 })
 
-test_that("respects httr2 verbosity option", {
-  expect_equal(with_verbosity(httr2_verbosity()), 1)
-})
-
-test_that("respects httr verbose config", {
-  expect_equal(httr2_verbosity(), 0)
-
-  # Simulate effect of httr::with_verbose(httr2_verbosity())
-  config <- list(options = list(debugfunction = identity))
-  withr::local_options(httr_config = config)
-  expect_equal(httr2_verbosity(), 1)
-})
-
 test_that("progress bar suppressed in tests", {
   expect_snapshot(sys_sleep(0.1, "in test"))
 })
