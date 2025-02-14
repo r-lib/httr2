@@ -1,15 +1,14 @@
-
 #' Temporarily set verbosity for all requests
 #'
 #' @description
 #' `with_verbosity()` and `local_verbosity()` are useful for debugging httr2
 #' code buried deep inside another package, because they allow you to change
-#' the verbosity when you don't have access to the [req_perform()] call.
+#' the verbosity even when you don't have access to the request.
 #'
-#' Both functions work by setting the `httr2_verbosity` option. You can also
-#' control verbosity by setting the `HTTR2_VERBOSITY` environment variable,
-#' which has lower precedence than the option, but can be more easily changed
-#' outside of R.
+#' Both functions work by temporarily setting the `httr2_verbosity` option. You
+#' can also control verbosity by setting the `HTTR2_VERBOSITY` environment
+#' variable. This has lower precedence than the option, but can be more easily
+#' changed outside of R.
 #'
 #' @inheritParams req_perform
 #' @param code Code to execture

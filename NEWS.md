@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* New `local_verbosity()` (#687).
+* Can now use `HTTR2_VERBOSITY` env var to control default verbosity (#687).
 * `req_perform_parallel(pool)` has been deprecated in favour of a new `max_active` argument (#681).
 * Most of the limitations of `req_perform_parallel()` have been lifted. It can now refresh OAuth tokens and look at the cache for each individual requests. It also supports a simple version of `req_throttle()` and `req_retry()`, where it assumes that all requests have the same throttling and rate limits (#681).
 * `req_user_agent()` now memoises the default user agent, since it's relatively slow (300 µs) to compute because it requires looking up version numbers.
