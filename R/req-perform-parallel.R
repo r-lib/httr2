@@ -77,8 +77,16 @@ req_perform_parallel <- function(
     error_call = environment()
   )
 
-  while (queue$process()) {
-  }
+  tryCatch(
+    queue$process(),
+    interrupt = function(cnd) {
+      queue$queue_status <- "errored"
+      queue$process()
+
+      n <- sum(!map_lgl(queue$resps, is.null))
+      cli::cli_alert_warning("Terminating iteration; returning {n} response{?s}.")
+    }
+  )
 
   if (on_error == "stop") {
     errors <- keep(queue$resps, is_error)
@@ -99,6 +107,7 @@ RequestQueue <- R6::R6Class(
 
     # Overall status for the queue
     queue_status = NULL,
+    deadline = Inf,
     n_pending = 0,
     n_active = 0,
     n_complete = 0,
@@ -169,67 +178,74 @@ RequestQueue <- R6::R6Class(
       self$tries <- rep(0L, n)
     },
 
-    process = function(timeout = Inf, max_steps = Inf) {
-      step <- 0
+    process = function(timeout = Inf) {
       deadline <- unix_time() + timeout
 
-      while (unix_time() <= deadline && step < max_steps) {
-        step <- step + 1
-        if (self$queue_status == "done") {
-          # nice to keep as a separate state so $process() is idempotent
-          return(FALSE)
-        } else if (self$queue_status == "working") {
-          if (self$n_pending == 0) {
-            self$queue_status <- "finishing"
-          } else if (self$n_active < self$max_active) {
-            next_i <- which(self$status == "pending")[[1]]
-
-            # Wait for both a token from the bucket and for any rate limits.
-            # The ordering is important here because requests will complete
-            # while we wait, and than might change the rate_limit_deadline
-            token_deadline <- self$next_token_deadline(next_i)
-            pool_wait_for_deadline(self$pool, token_deadline)
-
-            while (unix_time() < self$rate_limit_deadline) {
-              rate_limit_deadline <- min(self$rate_limit_deadline, deadline)
-              pool_wait_for_deadline(self$pool, rate_limit_deadline)
-            }
-
-            self$submit(next_i)
-          } else {
-            # wait for a request to finish
-            if (!pool_wait_for_one(self$pool, deadline)) {
-              return(TRUE)
-            }
-          }
-        } else if (self$queue_status == "finishing") {
-          if (!pool_wait_for_one(self$pool, deadline)) {
-            return(TRUE)
-          }
-
-          if (self$n_pending > 0) {
-            # we had to retry
-            self$queue_status <- "working"
-          } else if (self$n_active > 0) {
-            # keep going
-            self$queue_status <- "finishing"
-          } else {
-            self$queue_status <- "done"
-          }
-        } else if (self$queue_status == "errored") {
-          # Finish out any active request but don't add any more
-          if (!pool_wait_for_one(self$pool, deadline)) {
-            return(TRUE)
-          }
-          self$queue_status <- if (self$n_active > 0) "errored" else "done"
+      while (unix_time() <= deadline) {
+        out <- self$process1(deadline)
+        if (!is.null(out)) {
+          return(out)
         }
       }
 
       TRUE
     },
 
-    next_token_deadline = function(i) {
-      unix_time() + throttle_delay(self$reqs[[i]])
+    # Exposed for testing, so we can manaully work through one step at a time
+    process1 = function(deadline = Inf) {
+      if (self$queue_status == "done") {
+        FALSE
+      } else if (self$queue_status == "working") {
+        if (self$n_pending == 0) {
+          self$queue_status <- "finishing"
+        } else if (self$n_active < self$max_active) {
+          self$submit_next(deadline)
+        } else {
+          pool_wait_for_one(self$pool, deadline)
+        }
+        NULL
+      } else if (self$queue_status == "finishing") {
+        pool_wait_for_one(self$pool, deadline)
+
+        if (self$n_pending > 0) {
+          # we had to retry
+          self$queue_status <- "working"
+        } else if (self$n_active > 0) {
+          # keep going
+          self$queue_status <- "finishing"
+        } else {
+          self$queue_status <- "done"
+        }
+        NULL
+      } else if (self$queue_status == "errored") {
+        # Finish out any active request but don't add any more
+        pool_wait_for_one(self$pool, deadline)
+        self$queue_status <- if (self$n_active > 0) "errored" else "done"
+        NULL
+      }
+    },
+
+    submit_next = function(deadline) {
+      next_i <- which(self$status == "pending")[[1]]
+
+      # Need to wait for a token from the bucket AND for any rate limits.
+      # The ordering is important here because requests will complete
+      # while we wait and that might change the rate_limit_deadline
+      token_deadline <- throttle_deadline(self$reqs[[next_i]])
+      pool_wait_for_deadline(self$pool, min(token_deadline, deadline))
+      if (token_deadline >= deadline) {
+        throttle_return_token(self$reqs[[next_i]])
+        return()
+      }
+
+      while (unix_time() < self$rate_limit_deadline) {
+        pool_wait_for_deadline(self$pool, min(self$rate_limit_deadline, deadline))
+        if (self$rate_limit_deadline >= deadline) {
+          throttle_return_token(self$reqs[[next_i]])
+          return()
+        }
+      }
+      self$submit(next_i)
     },
 
     submit = function(i) {
@@ -270,6 +286,10 @@ RequestQueue <- R6::R6Class(
         self$rate_limit_deadline <- unix_time() + delay
         self$set_status(i, "pending")
       } else if (resp_is_invalid_oauth_token(req, resp) && self$can_reauth(i)) {
+        # This isn't quite right, because if there are (e.g.) four requests in
+        # the queue and the first one fails, we'll clear the cache for all four,
+        # causing a token refresh more often than necessary. This shouldn't
+        # affect correctness, but it does make it slower than necessary.
         self$oauth_failed <- c(self$oauth_failed, i)
         req_auth_clear_cache(self$reqs[[i]])
         self$set_status(i, "pending")

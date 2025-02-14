@@ -59,10 +59,7 @@ req_throttle <- function(req,
   realm <- realm %||% url_parse(req$url)$hostname
   the$throttle[[realm]] <- TokenBucket$new(capacity, fill_time_s)
 
-  req_policies(
-    req,
-    throttle_delay = function(req) the$throttle[[realm]]$take_token()
-  )
+  req_policies(req, throttle_realm = realm)
 }
 
 #' Display internal throttle status
@@ -76,7 +73,6 @@ req_throttle <- function(req,
 #' @export
 #' @keywords internal
 throttle_status <- function() {
-
   # Trigger refill before displaying status
   walk(the$throttle, function(x) x$refill())
 
@@ -90,13 +86,28 @@ throttle_status <- function() {
   df[order(df$realm), , drop = FALSE]
 }
 
-throttle_reset <- function() {
-  the$throttle <- new_environment()
+throttle_reset <- function(realm = NULL) {
+  if (is.null(realm)) {
+    the$throttle <- new_environment()
+  } else {
+    env_unbind(the$throttle, realm)
+  }
+
   invisible()
 }
 
 throttle_delay <- function(req) {
-  req_policy_call(req, "throttle_delay", list(req), default = 0)
+  if (!req_policy_exists(req, "throttle_realm")) {
+    0
+  } else {
+    the$throttle[[req$policies$throttle_realm]]$take_token()
+  }
+}
+throttle_deadline <- function(req) {
+  unix_time() + throttle_delay(req)
+}
+throttle_return_token <- function(req) {
+  the$throttle[[req$policies$throttle_realm]]$return_token()
 }
 
 TokenBucket <- R6::R6Class(
@@ -139,10 +150,16 @@ TokenBucket <- R6::R6Class(
     },
 
     # Returns the number of seconds that you need to wait to get it
+    # Might cause tokens to drop below 0 temporarily so if you don't end up
+    # waiting this long, you need to return the token
     take_token = function() {
       wait <- self$token_wait_time()
       self$tokens <- self$tokens - 1
       wait
+    },
+
+    return_token = function() {
+      self$tokens <- min(self$tokens + 1, self$capacity)
     }
   )
 )

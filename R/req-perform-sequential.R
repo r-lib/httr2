@@ -1,8 +1,7 @@
 #' Perform multiple requests in sequence
 #'
 #' Given a list of requests, this function performs each in turn, returning
-#' a list of responses. It's slower than [req_perform_parallel()] but
-#' has fewer limitations.
+#' a list of responses. It's the serial equivalent of [req_perform_parallel()].
 #'
 #' @param reqs A list of [request]s.
 #' @param paths An optional character vector of paths, if you want to download

@@ -216,7 +216,6 @@ test_that("but multiple failures causes an error", {
   expect_s3_class(queue$resps[[1]], "httr2_http_401")
 })
 
-
 test_that("can retry a transient error", {
   req <- local_app_request(function(req, res) {
     i <- res$app$locals$i %||% 1
@@ -241,17 +240,17 @@ test_that("can retry a transient error", {
   queue <- RequestQueue$new(list(req), progress = FALSE)
 
   # Start processing
-  expect_true(queue$process(max_steps = 1))
+  expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(queue$n_active, 1)
   expect_equal(queue$n_pending, 0)
 
   # No pending, so switch to finishing
-  expect_true(queue$process(max_steps = 1))
+  expect_null(queue$process1())
   expect_equal(queue$queue_status, "finishing")
 
   # Now we process the request and capture the retry
-  expect_true(queue$process(max_steps = 1))
+  expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(queue$rate_limit_deadline, mock_time + 2)
   expect_equal(queue$n_pending, 1)
@@ -259,20 +258,45 @@ test_that("can retry a transient error", {
   expect_equal(resp_body_json(queue$resps[[1]]$resp), list(status = "waiting"))
 
   # Now we "wait" 2 seconds
-  expect_true(queue$process(max_steps = 1))
+  expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(mock_time, 3)
 
   # Then resume finishing again
-  expect_true(queue$process(max_steps = 1))
+  expect_null(queue$process1())
   expect_equal(queue$queue_status, "finishing")
 
   # And we're finally done
-  expect_true(queue$process(max_steps = 1))
+  expect_null(queue$process1())
   expect_equal(queue$queue_status, "done")
-  expect_false(queue$process(max_steps = 1))
+  expect_false(queue$process1())
 
   expect_equal(resp_body_json(queue$resps[[1]]), list(status = "done"))
+})
+
+test_that("throttling is limited by deadline", {
+  withr::defer(throttle_reset("test"))
+
+  mock_time <- 0
+  local_mocked_bindings(
+    unix_time = function() mock_time,
+    Sys.sleep = function(seconds) mock_time <<- mock_time + seconds
+  )
+
+  req <- request_test("/status/:status", status = 200)
+  req <- req_throttle(req, capacity = 1, fill_time_s = 1, realm = "test")
+  queue <- RequestQueue$new(list(req), progress = FALSE)
+
+  # Check time only advances by one second, and token is returned to bucket
+  local_mocked_bindings(throttle_deadline = function(...) mock_time + 2)
+  queue$submit_next(1)
+  expect_equal(mock_time, 1)
+  expect_equal(the$throttle[["test"]]$tokens, 1)
+
+  local_mocked_bindings(throttle_deadline = function(...) mock_time)
+  queue$rate_limit_deadline <- mock_time + 2
+  expect_equal(mock_time, 1)
+  expect_equal(the$throttle[["test"]]$tokens, 1)
 })
 
 # Pool helpers ----------------------------------------------------------------

@@ -44,8 +44,7 @@ Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for mo
 }
 \description{
 Given a list of requests, this function performs each in turn, returning
-a list of responses. It's slower than \code{\link[=req_perform_parallel]{req_perform_parallel()}} but
-has fewer limitations.
+a list of responses. It's the serial equivalent of \code{\link[=req_perform_parallel]{req_perform_parallel()}}.
 }
 \examples{
 # One use of req_perform_sequential() is if the API allows you to request
