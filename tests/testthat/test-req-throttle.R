@@ -12,14 +12,10 @@ test_that("throttling affects request performance", {
 })
 
 test_that("first request isn't throttled", {
-  skip_on_cran()
   on.exit(throttle_reset())
 
   mock_time <- 0
-  local_mocked_bindings(
-    unix_time = function() mock_time,
-    sys_sleep = function(...) {}
-  )
+  local_mocked_bindings(unix_time = function() mock_time)
 
   req <- request_test() %>% req_throttle(rate = 1, fill_time_s = 1)
   expect_equal(throttle_delay(req), 0)
@@ -28,7 +24,7 @@ test_that("first request isn't throttled", {
   expect_equal(throttle_delay(req), 0.9)
 
   mock_time <- 1.5
-  expect_equal(throttle_delay(req), 0)
+  expect_equal(throttle_delay(req), 0.5)
 })
 
 test_that("realm defaults to hostname but can be overridden", {
@@ -36,11 +32,11 @@ test_that("realm defaults to hostname but can be overridden", {
 
   expect_named(the$throttle, character())
 
-  request_test() %>% req_throttle(100 / 1) %>% throttle_delay()
+  request_test() %>% req_throttle(100 / 1)
   expect_named(the$throttle, "127.0.0.1")
 
   throttle_reset()
-  request_test() %>% req_throttle(100 / 1, realm = "custom") %>% throttle_delay()
+  request_test() %>% req_throttle(100 / 1, realm = "custom")
   expect_named(the$throttle, "custom")
 })
 
@@ -51,15 +47,14 @@ test_that("token bucket respects capacity limits", {
   local_mocked_bindings(unix_time = function() mock_time)
 
   bucket <- TokenBucket$new(capacity = 2, fill_time_s = 1)
-  expect_equal(bucket$wait_for_token(), 0)
+  expect_equal(bucket$take_token(), 0)
   expect_equal(bucket$tokens, 1)
-  expect_equal(bucket$wait_for_token(), 0)
+  expect_equal(bucket$take_token(), 0)
   expect_equal(bucket$tokens, 0)
 
-  expect_equal(bucket$wait_for_token(), 0.5)
-
+  expect_equal(bucket$take_token(), 0.5)
   mock_time <- 0.5
-  expect_equal(bucket$wait_for_token(), 0)
+  expect_equal(bucket$take_token(), 0.5)
 })
 
 test_that("token bucket handles fractions correctly", {
@@ -67,17 +62,17 @@ test_that("token bucket handles fractions correctly", {
   local_mocked_bindings(unix_time = function() mock_time)
 
   bucket <- TokenBucket$new(capacity = 2, fill_time_s = 1)
-  bucket$wait_for_token(); bucket$wait_for_token()
-  expect_equal(bucket$tokens, 0)
-
-  expect_equal(bucket$wait_for_token(), 0.5)
-  mock_time <- 0.1
-  expect_equal(bucket$wait_for_token(), 0.4)
-  expect_equal(bucket$tokens, 0.2)
-  mock_time <- 0.2
-  expect_equal(bucket$wait_for_token(), 0.3)
-  expect_equal(bucket$tokens, 0.4)
+  bucket$tokens <- 0
+  expect_equal(bucket$take_token(), 0.5)
+  expect_equal(bucket$tokens, -1)
   mock_time <- 0.5
-  expect_equal(bucket$wait_for_token(), 0)
-  expect_equal(bucket$tokens, 0)
+  expect_equal(bucket$refill(), 0)
+
+  bucket$last_fill <- 0
+  bucket$tokens <- 0
+  mock_time <- 0.4
+  expect_equal(bucket$refill(), 0.80)
+  expect_equal(bucket$take_token(), 0.1)
+  mock_time <- mock_time + 0.1
+  expect_equal(bucket$refill(), 0)
 })

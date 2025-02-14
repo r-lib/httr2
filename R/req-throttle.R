@@ -56,16 +56,10 @@ req_throttle <- function(req,
   check_number_decimal(fill_time_s, min = 0)
   check_string(realm, allow_null = TRUE)
 
-  throttle_delay <- function(req) {
-    realm <- realm %||% url_parse(req$url)$hostname
-    bucket <- env_cache(the$throttle, realm, TokenBucket$new(capacity, fill_time_s))
+  realm <- realm %||% url_parse(req$url)$hostname
+  the$throttle[[realm]] <- TokenBucket$new(capacity, fill_time_s)
 
-    to_wait <- bucket$wait_for_token()
-    sys_sleep(to_wait, "for throttling delay")
-    to_wait
-  }
-
-  req_policies(req, throttle_delay = throttle_delay)
+  req_policies(req, throttle_realm = realm)
 }
 
 #' Display internal throttle status
@@ -79,27 +73,41 @@ req_throttle <- function(req,
 #' @export
 #' @keywords internal
 throttle_status <- function() {
-
   # Trigger refill before displaying status
-  to_wait <- map_dbl(the$throttle, function(x) x$wait_for_token(dry_run = TRUE))
+  walk(the$throttle, function(x) x$refill())
 
   df <- data.frame(
     realm = env_names(the$throttle),
-    tokens = map_dbl(the$throttle, function(x) x$tokens),
-    to_wait = to_wait,
+    tokens = floor(map_dbl(the$throttle, function(x) x$tokens)),
+    to_wait = map_dbl(the$throttle, function(x) x$token_wait_time()),
     row.names = NULL,
     check.names = FALSE
   )
   df[order(df$realm), , drop = FALSE]
 }
 
-throttle_reset <- function() {
-  the$throttle <- new_environment()
+throttle_reset <- function(realm = NULL) {
+  if (is.null(realm)) {
+    the$throttle <- new_environment()
+  } else {
+    env_unbind(the$throttle, realm)
+  }
+
   invisible()
 }
 
 throttle_delay <- function(req) {
-  req_policy_call(req, "throttle_delay", list(req), default = 0)
+  if (!req_policy_exists(req, "throttle_realm")) {
+    0
+  } else {
+    the$throttle[[req$policies$throttle_realm]]$take_token()
+  }
+}
+throttle_deadline <- function(req) {
+  unix_time() + throttle_delay(req)
+}
+throttle_return_token <- function(req) {
+  the$throttle[[req$policies$throttle_realm]]$return_token()
 }
 
 TokenBucket <- R6::R6Class(
@@ -120,23 +128,38 @@ TokenBucket <- R6::R6Class(
 
     refill = function() {
       now <- unix_time()
+      # Ensure if we call rapidly we don't accumulate FP errors
+      if (now - self$last_fill < 1e-6) {
+        return(self$tokens)
+      }
       new_tokens <- (now - self$last_fill) * self$fill_rate
-      # print(new_tokens)
 
       self$tokens <- min(self$capacity, self$tokens + new_tokens)
       self$last_fill <- now
+
+      self$tokens
     },
 
-    wait_for_token = function(dry_run = FALSE) {
-      self$refill()
+    token_wait_time = function() {
       if (self$tokens >= 1) {
-        if (!dry_run) {
-          self$tokens <- self$tokens - 1
-        }
         0
       } else {
+        self$refill()
         (1 - self$tokens) / self$fill_rate
       }
+    },
+
+    # Returns the number of seconds that you need to wait to get it
+    # Might cause tokens to drop below 0 temporarily so if you don't end up
+    # waiting this long, you need to return the token
+    take_token = function() {
+      wait <- self$token_wait_time()
+      self$tokens <- self$tokens - 1
+      wait
+    },
+
+    return_token = function() {
+      self$tokens <- min(self$tokens + 1, self$capacity)
     }
   )
 )

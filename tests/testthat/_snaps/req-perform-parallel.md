@@ -41,3 +41,11 @@
     Output
       list()
 
+# pool argument is deprecated
+
+    Code
+      . <- req_perform_parallel(list(), pool = curl::new_pool())
+    Condition
+      Warning:
+      The `pool` argument of `req_perform_parallel()` is deprecated as of httr2 1.1.0.
+

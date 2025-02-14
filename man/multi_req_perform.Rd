@@ -4,7 +4,12 @@
 \alias{multi_req_perform}
 \title{Perform a list of requests in parallel}
 \usage{
-multi_req_perform(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE)
+multi_req_perform(
+  reqs,
+  paths = NULL,
+  pool = deprecated(),
+  cancel_on_error = FALSE
+)
 }
 \arguments{
 \item{reqs}{A list of \link{request}s.}
@@ -13,9 +18,8 @@ multi_req_perform(reqs, paths = NULL, pool = NULL, cancel_on_error = FALSE)
 the response bodies to disk. If supplied, must be the same length as
 \code{reqs}.}
 
-\item{pool}{Optionally, a curl pool made by \code{\link[curl:multi]{curl::new_pool()}}. Supply
-this if you want to override the defaults for total concurrent connections
-(100) or concurrent connections per host (6).}
+\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
+to control the maximum number of concurrent requests, set \code{max_active}.}
 
 \item{cancel_on_error}{Should all pending requests be cancelled when you
 hit an error? Set this to \code{TRUE} to stop all requests as soon as you

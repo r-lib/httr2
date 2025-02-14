@@ -7,9 +7,10 @@
 req_perform_parallel(
   reqs,
   paths = NULL,
-  pool = NULL,
+  pool = deprecated(),
   on_error = c("stop", "return", "continue"),
-  progress = TRUE
+  progress = TRUE,
+  max_active = 10
 )
 }
 \arguments{
@@ -19,9 +20,8 @@ req_perform_parallel(
 the response bodies to disk. If supplied, must be the same length as
 \code{reqs}.}
 
-\item{pool}{Optionally, a curl pool made by \code{\link[curl:multi]{curl::new_pool()}}. Supply
-this if you want to override the defaults for total concurrent connections
-(100) or concurrent connections per host (6).}
+\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
+to control the maximum number of concurrent requests, set \code{max_active}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{
@@ -36,6 +36,8 @@ received so far, as well as an error object for the failed request.
 or see \link{progress_bars} to customize it in other ways. Not compatible with
 \code{\link[=req_progress]{req_progress()}}, as httr2 can only display a single progress bar at a
 time.}
+
+\item{max_active}{Maximum number of concurrent requests.}
 }
 \value{
 A list, the same length as \code{reqs}, containing \link{response}s and possibly
@@ -49,25 +51,24 @@ Only httr2 errors are captured; see \code{\link[=req_error]{req_error()}} for mo
 }
 \description{
 This variation on \code{\link[=req_perform_sequential]{req_perform_sequential()}} performs multiple requests in
-parallel. Exercise caution when using this function; it's easy to pummel a
-server with many simultaneous requests. Only use it with hosts designed to
-serve many files at once, which are typically web servers, not API servers.
+parallel. Never use it without \code{\link[=req_throttle]{req_throttle()}}; otherwise it's too easy to
+pummel a server with a very large number of simultaneous requests.
+\subsection{Limitations}{
 
-\code{req_perform_parallel()} has a few limitations:
-\itemize{
-\item Will not retrieve a new OAuth token if it expires part way through
-the requests.
-\item Does not perform throttling with \code{\link[=req_throttle]{req_throttle()}}.
-\item Does not attempt retries as described by \code{\link[=req_retry]{req_retry()}}.
-\item Only consults the cache set by \code{\link[=req_cache]{req_cache()}} before/after all requests.
+The main limitation of \code{req_perform_parallel()} is that it assumes applies
+\code{\link[=req_throttle]{req_throttle()}} and \code{\link[=req_retry]{req_retry()}} are across all requests. This means,
+for example, that if request 1 is throttled, but request 2 is not,
+\code{req_perform_parallel()} will wait for request 1 before performing request 2.
+This makes it most suitable for performing many parallel requests to the same
+host, rather than a mix of different hosts. It's probably possible to remove
+these limitation, but it's enough work that I'm unlikely to do it unless
+I know that people would fine it useful: so please let me know!
 }
-
-If any of these limitations are problematic for your use case, we recommend
-\code{\link[=req_perform_sequential]{req_perform_sequential()}} instead.
 }
 \examples{
 # Requesting these 4 pages one at a time would take 2 seconds:
-request_base <- request(example_url())
+request_base <- request(example_url()) |>
+  req_throttle(capacity = 100, fill_time_s = 60)
 reqs <- list(
   request_base |> req_url_path("/delay/0.5"),
   request_base |> req_url_path("/delay/0.5"),

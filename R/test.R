@@ -53,7 +53,7 @@ example_app <- function() {
 
   webfakes::new_app_process(
     app,
-    opts = webfakes::server_opts(num_threads = 6, enable_keep_alive = TRUE)
+    opts = webfakes::server_opts(num_threads = 20, enable_keep_alive = TRUE)
   )
 }
 

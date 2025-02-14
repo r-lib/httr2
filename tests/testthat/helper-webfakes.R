@@ -10,6 +10,8 @@ local_app_request <- function(fun, method = "get", frame = parent.frame()) {
   server <- webfakes::local_app_process(app, .local_envir = frame)
 
   req <- request(server$url("/test"))
-  req <- req_error(req, body = function(resp) resp_body_string(resp))
+  req <- req_error(req, body = function(resp) {
+    if (resp_has_body(resp)) resp_body_string(resp)
+  })
   req
 }
