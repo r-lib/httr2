@@ -59,7 +59,7 @@ port <- if (run_code) paste0("`", url_parse(example_url())$port, "`") else "e.g.
 The first line of the request contains three important pieces of information:
 
 -   The HTTP **method**, which is a verb that tells the server what you want to do.
-    Here's its GET, the most common verb, indicating that we want to *get* a resource.
+    Here it's GET, the most common verb, indicating that we want to *get* a resource.
     Other verbs include POST, to create a new resource, PUT, to replace an existing resource, and DELETE, to delete a resource.
 
 -   The **path**, which is the URL stripped of details that the server already knows, i.e. the protocol (`http` or `https`), the host (`localhost`), and the port (`r port`).
@@ -97,7 +97,7 @@ What's changed?
 
 -   The method has changed from GET to POST.
     POST is the standard method for sending data to a website, and is automatically used whenever you add a body.
-    Use `req_method()` to for a different method.
+    Use `req_method()` to use a different method.
 
 -   There are two new headers: `Content-Type` and `Content-Length`.
     They tell the server how to interpret the body --- it's encoded as JSON and is 15 bytes long.
