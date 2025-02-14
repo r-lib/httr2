@@ -2,7 +2,7 @@ sync_req <- function(name = "default", .env = parent.frame()) {
   skip_on_cran()
   skip_if_not_installed("nanonext")
 
-  sock <- nanonext::socket("req", listen = sprintf("ipc:///tmp/%s", name))
+  sock <- nanonext::socket("req", listen = sprintf("ipc:///tmp/nanonext%s", name))
   withr::defer(nanonext::reap(sock), envir = .env)
 
   function(expr = {}, timeout = 1000L) {
@@ -14,7 +14,7 @@ sync_req <- function(name = "default", .env = parent.frame()) {
 }
 
 sync_rep <- function(name = "default", .env = parent.frame()) {
-  sock <- nanonext::socket("rep", dial = sprintf("ipc:///tmp/%s", name))
+  sock <- nanonext::socket("rep", dial = sprintf("ipc:///tmp/nanonext%s", name))
   withr::defer(nanonext::reap(sock), envir = .env)
 
   function(expr = {}, timeout = 1000L) {
