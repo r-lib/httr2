@@ -87,12 +87,14 @@ test_that("handles line endings of multiple kinds", {
     sync <- req$app$locals$sync_rep()
 
     res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
-    res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
+    sync(res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A))))
     sync(res$send_chunk("crlf\r\n"))
     sync(res$send_chunk("lf\n"))
     sync(res$send_chunk("cr\r"))
-    sync(res$send_chunk("half line/"))
-    sync(res$send_chunk("other half\n"))
+    sync({
+      res$send_chunk("half line/")
+      res$send_chunk("other half\n")
+    })
     sync(res$send_chunk("broken crlf\r"))
     sync(res$send_chunk("\nanother line\n"))
     sync(res$send_chunk("eof without line ending"))
@@ -106,9 +108,10 @@ test_that("handles line endings of multiple kinds", {
   withr::defer(close(resp1))
 
   for (expected in expected_values) {
-    rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
     sync()
+    rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
   }
+  sync()
   expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
   expect_equal(out, "eof without line ending")
   expect_equal(resp_stream_lines(resp1), character(0))
@@ -118,9 +121,10 @@ test_that("handles line endings of multiple kinds", {
   withr::defer(close(resp2))
 
   for (expected in expected_values) {
-    rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
     sync()
+    rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
   }
+  sync()
   expect_warning(out <- resp_stream_lines(resp2), "incomplete final line")
   expect_equal(out, "eof without line ending")
 })
