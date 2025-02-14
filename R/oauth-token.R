@@ -60,8 +60,7 @@ print.httr2_token <- function(x, ...) {
     redacted$expires_at <- format(.POSIXct(x$expires_at))
   }
 
-  bullets(compact(redacted))
-
+  bullets(redacted)
   invisible(x)
 }
 

@@ -24,7 +24,7 @@ test_that("body is shown", {
 })
 
 test_that("authorization headers are redacted", {
-  req <- request("http://example.com") %>%  req_auth_basic("user", "password")
+  req <- request("http://example.com") %>% req_auth_basic("user", "password")
   expect_snapshot(req_dry_run(req))
 })
 

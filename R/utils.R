@@ -9,10 +9,10 @@ bullets_with_header <- function(header, x) {
 
 bullets <- function(x) {
   as_simple <- function(x) {
-    if (is.atomic(x) && length(x) == 1) {
-      if (is_redacted(x)) {
-        x
-      } else if (is.character(x)) {
+    if (is_redacted(x)) {
+      format(x)
+    } else if (is.atomic(x) && length(x) == 1) {
+      if (is.character(x)) {
         paste0('"', x, '"')
       } else {
         format(x)
@@ -30,7 +30,7 @@ bullets <- function(x) {
   }
 }
 
-modify_list <- function(.x, ..., error_call = caller_env()) {
+modify_list <- function(.x, ..., .ignore_case = FALSE, error_call = caller_env()) {
   dots <- list2(...)
   if (length(dots) == 0) return(.x)
 
@@ -41,9 +41,12 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
     )
   }
 
+  if (.ignore_case) {
+    out <- .x[!tolower(names(.x)) %in% tolower(names(dots))]
+  } else {
+    out <- .x[!names(.x) %in% names(dots)]
+  }
 
-
-  out <- .x[!names(.x) %in% names(dots)]
   out <- c(out, compact(dots))
 
   if (length(out) == 0) {
