@@ -1,13 +1,13 @@
-as_headers <- function(x, error_call = caller_env()) {
+as_headers <- function(x, redact = character(), error_call = caller_env()) {
   if (is.character(x) || is.raw(x)) {
     parsed <- curl::parse_headers(x)
     valid <- parsed[grepl(":", parsed, fixed = TRUE)]
     halves <- parse_in_half(valid, ":")
 
     headers <- set_names(trimws(halves$right), halves$left)
-    new_headers(as.list(headers), error_call = error_call)
+    new_headers(as.list(headers), redact = redact, error_call = error_call)
   } else if (is.list(x)) {
-    new_headers(x, error_call = error_call)
+    new_headers(x, redact = redact, error_call = error_call)
   } else {
     cli::cli_abort(
       "{.arg headers} must be a list, character vector, or raw.",
@@ -16,7 +16,7 @@ as_headers <- function(x, error_call = caller_env()) {
   }
 }
 
-new_headers <- function(x, error_call = caller_env()) {
+new_headers <- function(x, redact = character(), error_call = caller_env()) {
   if (!is_list(x)) {
     cli::cli_abort("{.arg x} must be a list.", call = error_call)
   }
@@ -24,31 +24,46 @@ new_headers <- function(x, error_call = caller_env()) {
     cli::cli_abort("All elements of {.arg x} must be named.", call = error_call)
   }
 
-  structure(x, class = "httr2_headers")
+  structure(x, redact = redact, class = "httr2_headers")
 }
 
 #' @export
 print.httr2_headers <- function(x, ..., redact = TRUE) {
-  cli::cli_text("{.cls {class(x)}}")
-  if (length(x) > 0) {
-    cli::cat_line(cli::style_bold(names(x)), ": ", headers_redact(x, redact))
-  }
+  cli::cat_line(cli::format_inline("{.cls {class(x)}}"))
+  show_headers(x, redact = redact)
   invisible(x)
 }
 
-headers_redact <- function(x, redact = TRUE, to_redact = NULL) {
+show_headers <- function(x, redact = TRUE) {
+  if (length(x) > 0) {
+    vals <- lapply(headers_redact(x, redact), format)
+    cli::cat_line(cli::style_bold(names(x)), ": ", vals)
+  }
+}
+
+#' @export
+str.httr2_headers <- function(object, ..., no.list = FALSE) {
+  object <- unclass(headers_redact(object))
+  cat(" <httr2_headers>\n")
+  utils::str(object, ..., no.list = TRUE)
+}
+
+headers_redact <- function(x, redact = TRUE) {
   if (!redact) {
     x
   } else {
-    to_redact <- union(attr(x, "redact"), to_redact)
+    to_redact <- attr(x, "redact")
     attr(x, "redact") <- NULL
 
     list_redact(x, to_redact, case_sensitive = FALSE)
   }
 }
 
+# https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2
 headers_flatten <- function(x) {
-  set_names(as.character(unlist(x, use.names = FALSE)), rep(names(x), lengths(x)))
+  n <- lengths(x)
+  x[n > 1] <- lapply(x[n > 1], paste, collapse = ",")
+  x
 }
 
 list_redact <- function(x, names, case_sensitive = TRUE) {
@@ -57,15 +72,25 @@ list_redact <- function(x, names, case_sensitive = TRUE) {
   } else {
     i <- match(tolower(names), tolower(names(x)))
   }
-  x[i] <- redacted()
+  x[i] <- list(redacted())
   x
 }
 
 redacted <- function() {
+  structure(list(NULL), class = "httr2_redacted")
+}
+
+#' @export
+format.httr2_redacted <- function(x, ...) {
   cli::col_grey("<REDACTED>")
 }
+#' @export
+str.httr2_redacted <- function(object, ...) {
+  cat(" ", cli::col_grey("<REDACTED>"), "\n", sep = "")
+}
+
 is_redacted <- function(x) {
-  is.character(x) && length(x) == 1 && x == redacted()
+  inherits(x, "httr2_redacted")
 }
 
 

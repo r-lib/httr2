@@ -10,16 +10,30 @@
 
     Code
       as_headers(c("X:1", "Y: 2", "Z:"))
-    Message
-      <httr2_headers>
     Output
+      <httr2_headers>
       X: 1
       Y: 2
       Z: 
     Code
       as_headers(list())
-    Message
+    Output
       <httr2_headers>
+
+# print and str redact headers
+
+    Code
+      print(x)
+    Output
+      <httr2_headers>
+      x: <REDACTED>
+      y: 2
+    Code
+      str(x)
+    Output
+       <httr2_headers>
+       $ x: <REDACTED>
+       $ y: num 2
 
 # new_headers checks inputs
 

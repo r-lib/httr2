@@ -18,6 +18,14 @@ test_that("has nice print method", {
   })
 })
 
+test_that("print and str redact headers", {
+  x <- new_headers(list(x = 1, y = 2), redact = "x")
+  expect_snapshot({
+    print(x)
+    str(x)
+  })
+})
+
 test_that("subsetting is case insensitive", {
   x <- new_headers(list(x = 1))
   expect_equal(x$X, 1)
@@ -30,7 +38,7 @@ test_that("redaction is case-insensitive", {
   attr(headers, "redact") <- "Authorization"
   redacted <- headers_redact(headers)
   expect_named(redacted, "AUTHORIZATION")
-  expect_match(as.character(redacted$AUTHORIZATION), "<REDACTED>")
+  expect_true(is_redacted(redacted$AUTHORIZATION))
 })
 
 test_that("new_headers checks inputs", {
@@ -41,7 +49,7 @@ test_that("new_headers checks inputs", {
 })
 
 test_that("can flatten repeated inputs", {
-  expect_equal(headers_flatten(list()), character())
-  expect_equal(headers_flatten(list(x = 1)), c(x = "1"))
-  expect_equal(headers_flatten(list(x = 1:2)), c(x = "1", x = "2"))
+  expect_equal(headers_flatten(list()), list())
+  expect_equal(headers_flatten(list(x = 1)), list(x = 1))
+  expect_equal(headers_flatten(list(x = 1:2)), list(x = "1,2"))
 })

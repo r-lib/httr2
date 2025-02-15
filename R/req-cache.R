@@ -276,7 +276,9 @@ cache_body <- function(cached_resp, path = NULL) {
 # https://www.rfc-editor.org/rfc/rfc7232#section-4.1
 cache_headers <- function(cached_resp, resp) {
   check_response(cached_resp)
-  as_headers(modify_list(cached_resp$headers, !!!resp$headers))
+
+  headers <- modify_list(cached_resp$headers, !!!resp$headers, .ignore_case = TRUE)
+  as_headers(headers)
 }
 
 # Caching headers ---------------------------------------------------------

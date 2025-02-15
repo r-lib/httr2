@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `str()` correctly redacts redacted headers (#682).
+* `req_headers()` replaces existing headers with different case (#682).
 * New `local_verbosity()` (#687).
 * Can now use `HTTR2_VERBOSITY` env var to control default verbosity (#687).
 * `req_perform_parallel(pool)` has been deprecated in favour of a new `max_active` argument (#681).

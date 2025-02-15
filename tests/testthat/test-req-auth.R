@@ -11,6 +11,8 @@ test_that("can send username/password", {
 
 test_that("can send bearer token", {
   req <- req_auth_bearer_token(request_test(), "abc")
-  expect_redacted(req, "Authorization")
-  expect_equal(req$headers, structure(list(Authorization = "Bearer abc"), redact = "Authorization"))
+  expect_equal(
+    req$headers,
+    new_headers(list(Authorization = "Bearer abc"), "Authorization")
+  )
 })
