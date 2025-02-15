@@ -46,7 +46,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>New <code><a href="../reference/with_verbosity.html">local_verbosity()</a></code> (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
+<ul><li>
+<code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> correctly redacts redacted headers (<a href="https://github.com/r-lib/httr2/issues/682" class="external-link">#682</a>).</li>
+<li>
+<code><a href="../reference/req_headers.html">req_headers()</a></code> replaces existing headers with different case (<a href="https://github.com/r-lib/httr2/issues/682" class="external-link">#682</a>).</li>
+<li>New <code><a href="../reference/with_verbosity.html">local_verbosity()</a></code> (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
 <li>Can now use <code>HTTR2_VERBOSITY</code> env var to control default verbosity (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
 <li>
 <code>req_perform_parallel(pool)</code> has been deprecated in favour of a new <code>max_active</code> argument (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
