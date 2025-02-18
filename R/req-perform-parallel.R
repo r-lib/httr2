@@ -249,7 +249,7 @@ RequestQueue <- R6::R6Class(
     },
 
     submit = function(i) {
-      retry_check_breaker(self$reqs[[i]], self$tries, error_call = error_call)
+      retry_check_breaker(self$reqs[[i]], self$tries[[i]], error_call = error_call)
 
       self$set_status(i, "active")
       self$resps[i] <- list(NULL)
