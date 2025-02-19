@@ -63,6 +63,10 @@ This makes it most suitable for performing many parallel requests to the same
 host, rather than a mix of different hosts. It's probably possible to remove
 these limitation, but it's enough work that I'm unlikely to do it unless
 I know that people would fine it useful: so please let me know!
+
+Additionally, it does not respect the \code{max_tries} argument to \code{req_retry()}
+because if you have five requests in flight and the first one gets rate
+limited, it's likely that all the others do too.
 }
 }
 \examples{
