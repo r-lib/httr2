@@ -116,7 +116,7 @@ RequestQueue <- R6::R6Class(
   public = list(
     pool = NULL,
     rate_limit_deadline = 0,
-    token_deadline = Inf,
+    token_deadline = 0,
     max_active = NULL,
 
     # Overall status for the queue
@@ -124,7 +124,7 @@ RequestQueue <- R6::R6Class(
     n_pending = 0,
     n_active = 0,
     n_complete = 0,
-    n_retried = 0,
+    n_retries = 0,
     on_error = "stop",
     progress = NULL,
 
@@ -235,7 +235,9 @@ RequestQueue <- R6::R6Class(
       } else if (self$queue_status == "finishing") {
         pool_wait_for_one(self$pool, deadline)
 
-        if (self$n_pending > 0) {
+        if (self$rate_limit_deadline > unix_time()) {
+          self$queue_status <- "waiting"
+        } else if (self$n_pending > 0) {
           # we had to retry
           self$queue_status <- "working"
         } else if (self$n_active > 0) {
@@ -257,7 +259,7 @@ RequestQueue <- R6::R6Class(
       next_i <- which(self$status == "pending")[[1]]
 
       self$token_deadline <- throttle_deadline(self$reqs[[next_i]])
-      if (self$token_deadline < unix_time()) {
+      if (self$token_deadline > unix_time()) {
         throttle_return_token(self$reqs[[next_i]])
         return(FALSE)
       }
@@ -300,9 +302,7 @@ RequestQueue <- R6::R6Class(
       if (retry_is_transient(req, resp) && self$can_retry(i)) {
         delay <- retry_after(req, resp, tries)
         self$rate_limit_deadline <- unix_time() + delay
-        if (self$queue_status == "working") {
-          self$queue_status <- "waiting"
-        }
+
         self$set_status(i, "pending")
         self$n_retries <- self$n_retries + 1
       } else if (resp_is_invalid_oauth_token(req, resp) && self$can_reauth(i)) {
