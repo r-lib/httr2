@@ -80,6 +80,6 @@ token_refresh <- function(client, refresh_token, scope = NULL, token_params = li
     scope = scope,
     !!!token_params
   )
-  out$refresh_token <- out$refresh_token %||% refresh_token
+  out$refresh_token <- out[["refresh_token"]] %||% refresh_token
   out
 }
