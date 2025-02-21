@@ -89,14 +89,14 @@ test_that("immutable objects retrieved from cache", {
 
 test_that("errors by default", {
   req <- request_test("/status/:status", status = 404)
-  cnd <- expect_error(req_perform_parallel(list(req)))
-  expect_s3_class(cnd, "httr2_http_404")
+  err <- expect_error(req_perform_parallel(list(req)))
+  expect_s3_class(err, "httr2_http_404")
 
   # Wraps and forwards curl errors
   req <- request("INVALID")
-  cnd <- expect_error(req_perform_parallel(list(req)))
+  err <- expect_error(req_perform_parallel(list(req)))
   expect_s3_class(err, "httr2_failure")
-  expect_s3_class(err$parent, "curl_error_unsupported_protocol")
+  expect_s3_class(err$parent, "curl_error_couldnt_resolve_host")
 })
 
 test_that("both curl and HTTP errors become errors on continue", {
