@@ -141,22 +141,6 @@ test_that("req_perform_parallel respects http_error() body message", {
   expect_snapshot(req_perform_parallel(reqs), error = TRUE)
 })
 
-test_that("respects max retries", {
-  req <- local_app_request(function(req, res) {
-    i <- res$app$locals$i %||% 1
-    res$
-      set_status(429)$
-      set_header("retry-after", 0)$
-      send_json(list(status = "waiting"), auto_unbox = TRUE)
-  })
-  req <- req_retry(req, max_tries = 3)
-  queue <- RequestQueue$new(list(req), progress = FALSE)
-
-  queue$process()
-  expect_s3_class(queue$resps[[1]], "httr2_http_429")
-  expect_equal(queue$tries[1], 3)
-})
-
 test_that("requests are throttled", {
   withr::defer(throttle_reset())
 
@@ -252,7 +236,7 @@ test_that("can retry a transient error", {
 
   # Now we process the request and capture the retry
   expect_null(queue$process1())
-  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$queue_status, "waiting")
   expect_equal(queue$rate_limit_deadline, mock_time + 2)
   expect_equal(queue$n_pending, 1)
   expect_s3_class(queue$resps[[1]], "httr2_http_429")
@@ -262,6 +246,10 @@ test_that("can retry a transient error", {
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(mock_time, 3)
+
+  # Now we go back to working
+  expect_null(queue$process1())
+  expect_equal(queue$queue_status, "working")
 
   # Then resume finishing again
   expect_null(queue$process1())
@@ -290,7 +278,9 @@ test_that("throttling is limited by deadline", {
 
   # Check time only advances by one second, and token is returned to bucket
   local_mocked_bindings(throttle_deadline = function(...) mock_time + 2)
-  queue$submit_next(1)
+  queue$process1(1)
+  expect_equal(queue$queue_status, "waiting")
+  queue$process1(1)
   expect_equal(mock_time, 1)
   expect_equal(the$throttle[["test"]]$tokens, 1)
 
