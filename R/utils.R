@@ -251,7 +251,7 @@ create_progress_bar <- function(total,
     )
   }
 
-  args$name <- args$name %||% name
+  args$name <- args[["name"]] %||% name
   # Can be removed if https://github.com/r-lib/cli/issues/630 is fixed
   if (is.infinite(total)) {
     total <- NA
