@@ -6,21 +6,6 @@
       Error in `req_perform_parallel()`:
       ! If supplied, `paths` must be the same length as `req`.
 
-# errors by default
-
-    Code
-      req_perform_parallel(reqs[1])
-    Condition
-      Error in `req_perform_parallel()`:
-      ! HTTP 404 Not Found.
-    Code
-      req_perform_parallel(reqs[2])
-    Condition
-      Error in `req_perform_parallel()`:
-      ! Failed to perform HTTP request.
-      Caused by error:
-      ! Could not resolve host: INVALID
-
 # req_perform_parallel respects http_error() body message
 
     Code
