@@ -7,7 +7,6 @@
 #'
 #' ## Limitations
 #'
-#' * The `Host` header is not respected.
 #' * The HTTP version is always `HTTP/1.1` (since you can't determine what it
 #'   will actually be without connecting to the real server).
 #'

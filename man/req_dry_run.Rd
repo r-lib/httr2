@@ -50,7 +50,6 @@ the magic of \code{\link[curl:curl_echo]{curl::curl_echo()}}.
 \details{
 \subsection{Limitations}{
 \itemize{
-\item The \code{Host} header is not respected.
 \item The HTTP version is always \code{HTTP/1.1} (since you can't determine what it
 will actually be without connecting to the real server).
 }
