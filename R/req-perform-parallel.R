@@ -5,6 +5,12 @@
 #' parallel. Never use it without [req_throttle()]; otherwise it's too easy to
 #' pummel a server with a very large number of simultaneous requests.
 #'
+#' While running, you'll get a progress bar that looks like:
+#' `[working] (1 + 4) -> 5 -> 5`. The string tells you the current status of
+#' the queue (e.g. working, waiting, errored, finishing) followed by (the
+#' number of pending requests + pending retried requests) -> the number of
+#' active requests -> the number of complete requests.
+#'
 #' ## Limitations
 #'
 #' The main limitation of `req_perform_parallel()` is that it assumes applies
@@ -118,6 +124,7 @@ RequestQueue <- R6::R6Class(
     n_pending = 0,
     n_active = 0,
     n_complete = 0,
+    n_retried = 0,
     on_error = "stop",
     progress = NULL,
 
@@ -129,7 +136,7 @@ RequestQueue <- R6::R6Class(
     tries = integer(),
 
     # Requests that have failed due to OAuth expiration; used to ensure that we
-    # don't retry repeatedly, but still allow all active requests to retry one
+    # don't retry repeatedly, but still allow all active requests to retry once
     oauth_failed = integer(),
 
     initialize = function(
@@ -147,7 +154,7 @@ RequestQueue <- R6::R6Class(
           total = n,
           format = paste0(
             "[{self$queue_status}] ",
-            "{self$n_pending} -> {self$n_active} -> {self$n_complete} | ",
+            "({self$n_pending} + {self$n_retried}) -> {self$n_active} -> {self$n_complete} | ",
             "{cli::pb_bar} {cli::pb_percent}"
           ),
           .envir = error_call
@@ -297,6 +304,7 @@ RequestQueue <- R6::R6Class(
           self$queue_status <- "waiting"
         }
         self$set_status(i, "pending")
+        self$n_retries <- self$n_retries + 1
       } else if (resp_is_invalid_oauth_token(req, resp) && self$can_reauth(i)) {
         # This isn't quite right, because if there are (e.g.) four requests in
         # the queue and the first one fails, we'll clear the cache for all four,
@@ -305,6 +313,7 @@ RequestQueue <- R6::R6Class(
         self$oauth_failed <- c(self$oauth_failed, i)
         req_auth_clear_cache(self$reqs[[i]])
         self$set_status(i, "pending")
+        self$n_retries <- self$n_retries + 1
       } else {
         self$set_status(i, "complete")
         if (self$on_error != "continue") {
