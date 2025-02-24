@@ -227,15 +227,14 @@ test_that("can retry a transient error", {
 
   queue <- RequestQueue$new(list(req), progress = FALSE)
 
-  # Start processing
+  # submit the request
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(queue$n_active, 1)
   expect_equal(queue$n_pending, 0)
+  expect_equal(queue$status[[1]], "active")
 
-  expect_null(queue$process1())
-
-  # Now we process the request and capture the retry
+  # process the response and capture the retry
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "waiting")
   expect_equal(queue$rate_limit_deadline, mock_time + 2)
@@ -243,21 +242,35 @@ test_that("can retry a transient error", {
   expect_s3_class(queue$resps[[1]], "httr2_http_429")
   expect_equal(resp_body_json(queue$resps[[1]]$resp), list(status = "waiting"))
 
-  # Now we "wait" 2 seconds
+  # Starting waiting
   expect_null(queue$process1())
-  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$queue_status, "waiting")
   expect_equal(mock_time, 3)
 
-  # Now we go back to working
+  # Finishing waiting
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
+  expect_equal(queue$n_active, 0)
+  expect_equal(queue$n_pending, 1)
 
-  # And we're finally done
+  # Resubmit
+  expect_null(queue$process1())
+  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$n_active, 1)
+  expect_equal(queue$n_pending, 0)
+
+  # Process the response
+  expect_null(queue$process1())
+  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$n_active, 0)
+  expect_equal(queue$n_pending, 0)
+  expect_s3_class(queue$resps[[1]], "httr2_response")
+  expect_equal(resp_body_json(queue$resps[[1]]), list(status = "done"))
+
+  # So we're finally done
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "done")
   expect_false(queue$process1())
-
-  expect_equal(resp_body_json(queue$resps[[1]]), list(status = "done"))
 })
 
 test_that("throttling is limited by deadline", {

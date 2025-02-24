@@ -72,7 +72,8 @@ I know that people would fine it useful: so please let me know!
 
 Additionally, it does not respect the \code{max_tries} argument to \code{req_retry()}
 because if you have five requests in flight and the first one gets rate
-limited, it's likely that all the others do too.
+limited, it's likely that all the others do too. This also means that
+the circuit breaker is never triggered.
 }
 }
 \examples{

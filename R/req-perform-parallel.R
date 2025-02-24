@@ -24,7 +24,8 @@
 #'
 #' Additionally, it does not respect the `max_tries` argument to `req_retry()`
 #' because if you have five requests in flight and the first one gets rate
-#' limited, it's likely that all the others do too.
+#' limited, it's likely that all the others do too. This also means that
+#' the circuit breaker is never triggered.
 #'
 #' @inherit req_perform_sequential params return
 #' @param pool `r lifecycle::badge("deprecated")`. No longer supported;
@@ -253,19 +254,13 @@ RequestQueue <- R6::R6Class(
     },
 
     submit_next = function(deadline) {
-      next_i <- which(self$status == "pending")[[1]]
+      i <- which(self$status == "pending")[[1]]
 
-      self$token_deadline <- throttle_deadline(self$reqs[[next_i]])
+      self$token_deadline <- throttle_deadline(self$reqs[[i]])
       if (self$token_deadline > unix_time()) {
-        throttle_return_token(self$reqs[[next_i]])
+        throttle_return_token(self$reqs[[i]])
         return(FALSE)
       }
-
-      self$submit(next_i)
-    },
-
-    submit = function(i) {
-      retry_check_breaker(self$reqs[[i]], self$tries[[i]], error_call = error_call)
 
       self$set_status(i, "active")
       self$resps[i] <- list(NULL)
