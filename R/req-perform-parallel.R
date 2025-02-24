@@ -7,7 +7,7 @@
 #'
 #' While running, you'll get a progress bar that looks like:
 #' `[working] (1 + 4) -> 5 -> 5`. The string tells you the current status of
-#' the queue (e.g. working, waiting, errored, finishing) followed by (the
+#' the queue (e.g. working, waiting, errored) followed by (the
 #' number of pending requests + pending retried requests) -> the number of
 #' active requests -> the number of complete requests.
 #'
@@ -24,7 +24,8 @@
 #'
 #' Additionally, it does not respect the `max_tries` argument to `req_retry()`
 #' because if you have five requests in flight and the first one gets rate
-#' limited, it's likely that all the others do too.
+#' limited, it's likely that all the others do too. This also means that
+#' the circuit breaker is never triggered.
 #'
 #' @inherit req_perform_sequential params return
 #' @param pool `r lifecycle::badge("deprecated")`. No longer supported;
@@ -154,7 +155,7 @@ RequestQueue <- R6::R6Class(
           total = n,
           format = paste0(
             "[{self$queue_status}] ",
-            "({self$n_pending} + {self$n_retried}) -> {self$n_active} -> {self$n_complete} | ",
+            "({self$n_pending} + {self$n_retries}) -> {self$n_active} -> {self$n_complete} | ",
             "{cli::pb_bar} {cli::pb_percent}"
           ),
           .envir = error_call
@@ -209,22 +210,31 @@ RequestQueue <- R6::R6Class(
     # Exposed for testing, so we can manaully work through one step at a time
     process1 = function(deadline = Inf) {
       if (self$queue_status == "done") {
-        FALSE
-      } else if (self$queue_status == "waiting") {
+        return(FALSE)
+      }
+
+      if (!is.null(self$progress)) {
+        cli::cli_progress_update(id = self$progress, set = self$n_complete)
+      }
+
+      if (self$queue_status == "waiting") {
         request_deadline <- max(self$token_deadline, self$rate_limit_deadline)
-        if (request_deadline <= deadline) {
-          # Assume we're done waiting; done_failure() will reset if needed
+        if (request_deadline <= unix_time()) {
           self$queue_status <- "working"
-          pool_wait_for_deadline(self$pool, request_deadline)
-          NULL
-        } else {
-          pool_wait_for_deadline(self$pool, deadline)
-          TRUE
+          return()
         }
+
+        if (self$rate_limit_deadline > self$token_deadline) {
+          waiting <- "for rate limit"
+        } else {
+          waiting <- "for throttling"
+        }
+        pool_wait_for_deadline(self$pool, min(request_deadline, deadline), waiting)
+        NULL
       } else if (self$queue_status == "working") {
-        if (self$n_pending == 0) {
-          self$queue_status <- "finishing"
-        } else if (self$n_active < self$max_active) {
+        if (self$n_pending == 0 && self$n_active == 0) {
+          self$queue_status <- "done"
+        } else if (self$n_pending > 0 && self$n_active <= self$max_active) {
           if (!self$submit_next(deadline)) {
             self$queue_status <- "waiting"
           }
@@ -232,43 +242,25 @@ RequestQueue <- R6::R6Class(
           pool_wait_for_one(self$pool, deadline)
         }
         NULL
-      } else if (self$queue_status == "finishing") {
-        pool_wait_for_one(self$pool, deadline)
-
-        if (self$rate_limit_deadline > unix_time()) {
-          self$queue_status <- "waiting"
-        } else if (self$n_pending > 0) {
-          # we had to retry
-          self$queue_status <- "working"
-        } else if (self$n_active > 0) {
-          # keep going
-          self$queue_status <- "finishing"
+      } else if (self$queue_status == "errored") {
+        # Finish out any active requests but don't add any more
+        if (self$n_active > 0) {
+          pool_wait_for_one(self$pool, deadline)
         } else {
           self$queue_status <- "done"
         }
-        NULL
-      } else if (self$queue_status == "errored") {
-        # Finish out any active request but don't add any more
-        pool_wait_for_one(self$pool, deadline)
-        self$queue_status <- if (self$n_active > 0) "errored" else "done"
         NULL
       }
     },
 
     submit_next = function(deadline) {
-      next_i <- which(self$status == "pending")[[1]]
+      i <- which(self$status == "pending")[[1]]
 
-      self$token_deadline <- throttle_deadline(self$reqs[[next_i]])
+      self$token_deadline <- throttle_deadline(self$reqs[[i]])
       if (self$token_deadline > unix_time()) {
-        throttle_return_token(self$reqs[[next_i]])
+        throttle_return_token(self$reqs[[i]])
         return(FALSE)
       }
-
-      self$submit(next_i)
-    },
-
-    submit = function(i) {
-      retry_check_breaker(self$reqs[[i]], self$tries[[i]], error_call = error_call)
 
       self$set_status(i, "active")
       self$resps[i] <- list(NULL)
@@ -305,6 +297,7 @@ RequestQueue <- R6::R6Class(
 
         self$set_status(i, "pending")
         self$n_retries <- self$n_retries + 1
+        self$queue_status <- "waiting"
       } else if (resp_is_invalid_oauth_token(req, resp) && self$can_reauth(i)) {
         # This isn't quite right, because if there are (e.g.) four requests in
         # the queue and the first one fails, we'll clear the cache for all four,
@@ -336,10 +329,6 @@ RequestQueue <- R6::R6Class(
       )
 
       self$status[[i]] <- status
-
-      if (!is.null(self$progress)) {
-        cli::cli_progress_update(id = self$progress, set = self$n_complete)
-      }
     },
 
     can_retry = function(i) {
@@ -357,7 +346,7 @@ pool_wait_for_one <- function(pool, deadline) {
   pool_wait(pool, poll = TRUE, timeout = timeout)
 }
 
-pool_wait_for_deadline <- function(pool, deadline) {
+pool_wait_for_deadline <- function(pool, deadline, waiting_for) {
   now <- unix_time()
   timeout <- deadline - now
   if (timeout <= 0) {
@@ -368,8 +357,10 @@ pool_wait_for_deadline <- function(pool, deadline) {
 
   # pool might finish early; we still want to wait out the full time
   remaining <- timeout - (unix_time() - now)
-  if (remaining > 0) {
-    # cat("Sleeping for ", remaining, " seconds\n", sep = "")
+  if (remaining > 2) {
+    # Use a progress bar
+    sys_sleep(remaining, waiting_for)
+  } else if (remaining > 0) {
     Sys.sleep(remaining)
   }
 
