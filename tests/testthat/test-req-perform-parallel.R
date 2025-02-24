@@ -230,9 +230,7 @@ test_that("can retry a transient error", {
   expect_equal(queue$n_active, 1)
   expect_equal(queue$n_pending, 0)
 
-  # No pending, so switch to finishing
   expect_null(queue$process1())
-  expect_equal(queue$queue_status, "finishing")
 
   # Now we process the request and capture the retry
   expect_null(queue$process1())
@@ -250,10 +248,6 @@ test_that("can retry a transient error", {
   # Now we go back to working
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
-
-  # Then resume finishing again
-  expect_null(queue$process1())
-  expect_equal(queue$queue_status, "finishing")
 
   # And we're finally done
   expect_null(queue$process1())

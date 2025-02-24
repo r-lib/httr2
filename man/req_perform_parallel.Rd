@@ -56,7 +56,7 @@ pummel a server with a very large number of simultaneous requests.
 
 While running, you'll get a progress bar that looks like:
 \verb{[working] (1 + 4) -> 5 -> 5}. The string tells you the current status of
-the queue (e.g. working, waiting, errored, finishing) followed by (the
+the queue (e.g. working, waiting, errored) followed by (the
 number of pending requests + pending retried requests) -> the number of
 active requests -> the number of complete requests.
 \subsection{Limitations}{
