@@ -4,7 +4,7 @@ parallel. Never use it without req_throttle(); otherwise it's too easy to
 pummel a server with a very large number of simultaneous requests.
 While running, you'll get a progress bar that looks like:
 [working] (1 + 4) -&amp;gt; 5 -&amp;gt; 5. The string tells you the current status of
-the queue (e.g. working, waiting, errored, finishing) followed by (the
+the queue (e.g. working, waiting, errored) followed by (the
 number of pending requests + pending retried requests) -&amp;gt; the number of
 active requests -&amp;gt; the number of complete requests.
 Limitations
@@ -20,14 +20,15 @@ these limitation, but it's enough work that I'm unlikely to do it unless
 I know that people would fine it useful: so please let me know!
 Additionally, it does not respect the max_tries argument to req_retry()
 because if you have five requests in flight and the first one gets rate
-limited, it's likely that all the others do too.
+limited, it's likely that all the others do too. This also means that
+the circuit breaker is never triggered.
 
 "><meta property="og:description" content="This variation on req_perform_sequential() performs multiple requests in
 parallel. Never use it without req_throttle(); otherwise it's too easy to
 pummel a server with a very large number of simultaneous requests.
 While running, you'll get a progress bar that looks like:
 [working] (1 + 4) -&amp;gt; 5 -&amp;gt; 5. The string tells you the current status of
-the queue (e.g. working, waiting, errored, finishing) followed by (the
+the queue (e.g. working, waiting, errored) followed by (the
 number of pending requests + pending retried requests) -&amp;gt; the number of
 active requests -&amp;gt; the number of complete requests.
 Limitations
@@ -43,7 +44,8 @@ these limitation, but it's enough work that I'm unlikely to do it unless
 I know that people would fine it useful: so please let me know!
 Additionally, it does not respect the max_tries argument to req_retry()
 because if you have five requests in flight and the first one gets rate
-limited, it's likely that all the others do too.
+limited, it's likely that all the others do too. This also means that
+the circuit breaker is never triggered.
 
 "><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
@@ -97,7 +99,7 @@ parallel. Never use it without <code><a href="req_throttle.html">req_throttle()<
 pummel a server with a very large number of simultaneous requests.</p>
 <p>While running, you'll get a progress bar that looks like:
 <code>[working] (1 + 4) -&gt; 5 -&gt; 5</code>. The string tells you the current status of
-the queue (e.g. working, waiting, errored, finishing) followed by (the
+the queue (e.g. working, waiting, errored) followed by (the
 number of pending requests + pending retried requests) -&gt; the number of
 active requests -&gt; the number of complete requests.</p><div class="section">
 <h3 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a></h3>
@@ -113,7 +115,8 @@ these limitation, but it's enough work that I'm unlikely to do it unless
 I know that people would fine it useful: so please let me know!</p>
 <p>Additionally, it does not respect the <code>max_tries</code> argument to <code><a href="req_retry.html">req_retry()</a></code>
 because if you have five requests in flight and the first one gets rate
-limited, it's likely that all the others do too.</p>
+limited, it's likely that all the others do too. This also means that
+the circuit breaker is never triggered.</p>
 </div>
 
     </div>
@@ -193,10 +196,10 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># But it's much faster if you request in parallel</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_parallel</span><span class="op">(</span><span class="va">reqs</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [finishing] (0 + ) -&gt; 2 -&gt; 2 | <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [finishing] (0 + ) -&gt; 0 -&gt; 4 | <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [working] (0 + 0) -&gt; 2 -&gt; 2 | <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [working] (0 + 0) -&gt; 0 -&gt; 4 | <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.044   0.001   1.085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.051   0.002   1.092 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># req_perform_parallel() will fail on error</span></span></span>
 <span class="r-in"><span><span class="va">reqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -214,7 +217,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_successes</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33733/status/200</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:44709/status/200</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -224,7 +227,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_failures</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_requests</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:33733/status/400</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:44709/status/400</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">throttle_realm</span>: "127.0.0.1"</span>
