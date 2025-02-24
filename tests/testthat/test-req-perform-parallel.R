@@ -116,11 +116,14 @@ test_that("both curl and HTTP errors become errors on continue", {
 test_that("errors can cancel outstanding requests", {
   reqs <- list2(
     request_test("/status/:status", status = 404),
-    request_test("/delay/:secs", secs = 2),
+    request_test("/delay/:secs", secs = 1),
+    request_test("/delay/:secs", secs = 1),
   )
   out <- req_perform_parallel(reqs, on_error = "return", max_active = 1)
   expect_s3_class(out[[1]], "httr2_http_404")
-  expect_null(out[[2]])
+  # second request might succeed or fail depend on the timing, but the
+  # third request should definitely fail
+  expect_null(out[[3]])
 })
 
 test_that("req_perform_parallel resspects http_error() error override", {
