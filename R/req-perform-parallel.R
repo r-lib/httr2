@@ -208,13 +208,15 @@ RequestQueue <- R6::R6Class(
 
     # Exposed for testing, so we can manaully work through one step at a time
     process1 = function(deadline = Inf) {
+      if (self$queue_status == "done") {
+        return(FALSE)
+      }
+
       if (!is.null(self$progress)) {
         cli::cli_progress_update(id = self$progress, set = self$n_complete)
       }
 
-      if (self$queue_status == "done") {
-        FALSE
-      } else if (self$queue_status == "waiting") {
+      if (self$queue_status == "waiting") {
         request_deadline <- max(self$token_deadline, self$rate_limit_deadline)
         if (request_deadline <= unix_time()) {
           self$queue_status <- "working"
