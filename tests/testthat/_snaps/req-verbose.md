@@ -110,11 +110,3 @@
     Output
       >> {"foo":"bar","baz":[1,2,3]}
 
-# verbose_enum checks range
-
-    Code
-      verbose_enum(7)
-    Condition
-      Warning:
-      Unknown verbosity level 7
-

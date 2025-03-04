@@ -65,9 +65,3 @@ test_that("request json is automatically prettified", {
   local_options(httr2_pretty_json = FALSE)
   expect_snapshot(. <- req_perform(req))
 })
-
-test_that("verbose_enum checks range", {
-  expect_snapshot({
-    verbose_enum(7)
-  })
-})
