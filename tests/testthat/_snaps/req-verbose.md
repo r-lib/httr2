@@ -18,9 +18,20 @@
     Output
       -> POST /test HTTP/1.1
       -> Host: http://example.com
+      -> Content-Type: text/plain
       -> Content-Length: 17
       -> 
       >> This is some text
+
+# redacts headers as needed
+
+    Code
+      . <- req_perform(req)
+    Output
+      -> GET / HTTP/1.1
+      -> Host: http://example.com
+      -> Authorization: <REDACTED>
+      -> 
 
 # can display compressed bodies
 
@@ -57,7 +68,7 @@
       <<   "gzipped": true
       << }
 
-# json is automatically prettified
+# response json is automatically prettified
 
     Code
       . <- req_perform(req)
@@ -78,11 +89,24 @@
     Output
       << {"foo":"bar","baz":[1,2,3]}
 
-# verbose_enum checks range
+# request json is automatically prettified
 
     Code
-      verbose_enum(7)
-    Condition
-      Warning:
-      Unknown verbosity level 7
+      . <- req_perform(req)
+    Output
+      >> {
+      >>   "foo": "bar",
+      >>   "baz": [
+      >>     1,
+      >>     2,
+      >>     3
+      >>   ]
+      >> }
+
+---
+
+    Code
+      . <- req_perform(req)
+    Output
+      >> {"foo":"bar","baz":[1,2,3]}
 

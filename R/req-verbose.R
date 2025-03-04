@@ -1,4 +1,3 @@
-
 #' Show extra output when request is performed
 #'
 #' @description
@@ -48,49 +47,34 @@ req_verbose <- function(req,
   # force all arguments
   list(header_req, header_resp, body_req, body_resp, info, redact_headers)
 
-  to_redact <- attr(req$headers, "redact")
   debug <- function(type, msg) {
-    switch(verbose_enum(type),
-      text =       if (info)        verbose_message("*  ", msg),
-      header_in =  if (header_resp) verbose_header("<- ", msg),
-      header_out = if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
-      data_in =    NULL, # displayed in handle_resp()
-      data_out =   if (body_req)    verbose_message(">> ", msg)
-    )
+    # Set in req_prepare()
+    headers <- req$state$headers
+
+    if (info && type == 0) {
+      verbose_info("*  ", msg)
+    } else if (header_resp && type == 1) {
+      verbose_header("<- ", msg)
+    } else if (header_req && type == 2) {
+      to_redact <- attr(headers, "redact")
+      verbose_header("-> ", msg, redact_headers, to_redact = to_redact)
+    } else if (body_resp && type == 3) {
+      # handled in handle_resp()
+    } else if (body_req && type == 4) {
+      verbose_body(">> ", msg, headers$`content-type`)
+    }
   }
   req <- req_options(req, debugfunction = debug, verbose = TRUE)
   req <- req_policies(req, show_body = body_resp)
   req
 }
 
-verbose_enum <- function(i) {
-  if (i < 0 || i > 6) {
-    cli::cli_warn("Unknown verbosity level {i}")
-  }
-
-  switch(i + 1,
-    "text",
-    "header_in",
-    "header_out",
-    "data_in",
-    "data_out",
-    "ssl_data_in",
-    "ssl_data_out"
-  )
-}
-
 # helpers -----------------------------------------------------------------
 
-verbose_message <- function(prefix, x) {
-  if (any(x > 128)) {
-    # This doesn't handle unicode, but it seems like most output
-    # will be compressed in some way, so displaying bodies is unlikely
-    # to be useful anyway.
-    lines <- paste0(length(x), " bytes of binary data")
-  } else {
-    x <- readBin(x, character())
-    lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
-  }
+verbose_info <- function(prefix, x) {
+  x <- readBin(x, character())
+  lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
+
   cli::cat_line(prefix, lines)
 }
 
@@ -101,11 +85,20 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
   for (line in lines) {
     if (grepl("^[-a-zA-z0-9]+:", line)) {
       header <- headers_redact(as_headers(line, to_redact), redact)
-      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", header)
+      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", format(header[[1]]))
     } else {
       cli::cat_line(prefix, line)
     }
   }
+}
+
+verbose_body <- function(prefix, x, content_type) {
+  show_body(
+    x,
+    content_type,
+    prefix = prefix,
+    pretty_json = getOption("httr2_pretty_json", TRUE)
+  )
 }
 
 # Testing helpers -------------------------------------------------------------

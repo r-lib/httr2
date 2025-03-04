@@ -137,12 +137,7 @@ req_perform <- function(
 
 handle_resp <- function(req, resp, error_call = caller_env()) {
   if (resp_show_body(resp)) {
-    show_body(
-      resp$body,
-      resp$headers$`content-type`,
-      prefix = "<< ",
-      pretty_json = getOption("httr2_pretty_json", TRUE)
-    )
+    verbose_body("<< ", resp$body, resp$headers$`content-type`)
   }
 
   if (is_error(resp)) {
@@ -248,6 +243,10 @@ req_prepare <- function(req) {
   req <- auth_sign(req)
   req <- req_method_apply(req)
   req <- req_body_apply(req)
+
+  # Save actually request headers so that req_verbose() can use them
+  req$state$headers <- req$headers
+
   req
 }
 req_handle <- function(req) {
