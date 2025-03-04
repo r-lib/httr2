@@ -55,13 +55,12 @@ oauth_token <- function(
 #' @export
 print.httr2_token <- function(x, ...) {
   cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
-  redacted <- list_redact(x, c("access_token", "refresh_token", "id_token"))
-  if (has_name(redacted, "expires_at")) {
-    redacted$expires_at <- format(.POSIXct(x$expires_at))
+  if (has_name(x, "expires_at")) {
+    x$expires_at <- format(.POSIXct(x$expires_at))
   }
 
-  bullets(compact(redacted))
-
+  redacted <- list_redact(compact(x), c("access_token", "refresh_token", "id_token"))
+  bullets(redacted)
   invisible(x)
 }
 
@@ -81,6 +80,6 @@ token_refresh <- function(client, refresh_token, scope = NULL, token_params = li
     scope = scope,
     !!!token_params
   )
-  out$refresh_token <- out$refresh_token %||% refresh_token
+  out$refresh_token <- out[["refresh_token"]] %||% refresh_token
   out
 }

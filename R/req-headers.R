@@ -65,13 +65,13 @@ req_headers <- function(.req, ..., .redact = NULL) {
   check_request(.req)
   check_character(.redact, allow_null = TRUE)
 
-  redact_prev <- attr(.req$headers, "redact")
-  header_names <- names(list2(...))
-  .req$headers <- modify_list(.req$headers, ...)
+  headers  <- modify_list(.req$headers, ..., .ignore_case = TRUE)
 
-  .redact <- union(.redact, "Authorization")
-  .redact <- .redact[tolower(.redact) %in% tolower(header_names)]
-  attr(.req$headers, "redact") <- sort(union(.redact, redact_prev))
+  redact <- union(.redact, "Authorization")
+  redact <- redact[tolower(redact) %in% tolower(names(headers))]
+  redact <- sort(union(redact, attr(.req$headers, "redact")))
+
+  .req$headers <- new_headers(headers, redact)
 
   .req
 }

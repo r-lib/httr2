@@ -7,7 +7,6 @@
 #'
 #' ## Limitations
 #'
-#' * The `Host` header is not respected.
 #' * The HTTP version is always `HTTP/1.1` (since you can't determine what it
 #'   will actually be without connecting to the real server).
 #'
@@ -66,18 +65,14 @@ req_dry_run <- function(req,
   if (!quiet) {
     cli::cat_line(resp$method, " ", resp$path, " HTTP/1.1")
 
-    headers <- headers_redact(
-      as_headers(as.list(resp$headers)),
-      redact = redact_headers,
-      to_redact = attr(req$headers, "redact")
-    )
+    headers <- new_headers(as.list(resp$headers), attr(req$headers, "redact"))
     if (testing_headers) {
       # curl::curl_echo() overrides
       headers$host <- NULL
       headers$`content-length` <- NULL
     }
 
-    cli::cat_line(cli::style_bold(names(headers)), ": ", headers)
+    show_headers(headers)
     cli::cat_line()
     show_body(resp$body, headers$`content-type`, pretty_json = pretty_json)
   }

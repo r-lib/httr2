@@ -118,7 +118,8 @@ PooledRequest <- R6Class(
       private$handle <- NULL
       req_completed(private$req_prep)
 
-      curl_error <- error_cnd(message = msg, class = "curl_error", call = NULL)
+      error_class <- setdiff(class(msg), "character")
+      curl_error <- error_cnd(message = msg, class = error_class, call = NULL)
       error <- curl_cnd(curl_error, call = private$error_call)
       error$request <- self$req
       private$on_error(error)

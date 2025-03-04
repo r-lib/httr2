@@ -1,15 +1,15 @@
 test_that("can add and remove headers", {
   req <- request("http://example.com")
   req <- req %>% req_headers(x = 1)
-  expect_equal(req$headers, structure(list(x = 1), redact = character()))
+  expect_equal(req$headers, new_headers(list(x = 1)))
   req <- req %>% req_headers(x = NULL)
-  expect_equal(req$headers, structure(list(), redact = character()))
+  expect_equal(req$headers, new_headers(list()))
 })
 
 test_that("can add header called req", {
   req <- request("http://example.com")
   req <- req %>% req_headers(req = 1)
-  expect_equal(req$headers, structure(list(req = 1), redact = character()))
+  expect_equal(req$headers, new_headers(list(req = 1)))
 })
 
 test_that("can add repeated headers", {
@@ -18,6 +18,13 @@ test_that("can add repeated headers", {
     req_dry_run(quiet = TRUE)
   # https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2
   expect_equal(resp$headers$a, c("a,b"))
+})
+
+test_that("replacing headers is case-insensitive", {
+  req <- request("http://example.com")
+  req <- req %>% req_headers(A = 1)
+  req <- req %>% req_headers(a = 2)
+  expect_equal(req$headers, new_headers(list(a = 2)))
 })
 
 # redaction ---------------------------------------------------------------
@@ -51,6 +58,11 @@ test_that("is case insensitive", {
   req <- req_headers(req, a = 1L, .redact = "A")
   expect_redacted(req, "A")
   expect_snapshot(req)
+
+  # Test the other direction too, just to be safe
+  req <- request("http://example.com")
+  req <- req_headers(req, A = 1L, .redact = "a")
+  expect_redacted(req, "a")
 })
 
 test_that("authorization is always redacted", {

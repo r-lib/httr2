@@ -40,9 +40,7 @@
       <httr2_request>
       GET https://example.com
       Headers:
-      * A: "1"
-      * A: "2"
-      * A: "3"
+      * A: "1,2,3"
       Body: empty
 
 # check_request() gives useful error

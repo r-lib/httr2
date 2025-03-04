@@ -10,15 +10,17 @@ bullets_with_header <- function(header, x) {
 bullets <- function(x) {
   as_simple <- function(x) {
     if (is.atomic(x) && length(x) == 1) {
-      if (is_redacted(x)) {
-        x
-      } else if (is.character(x)) {
+      if (is.character(x)) {
         paste0('"', x, '"')
       } else {
         format(x)
       }
     } else {
-      paste0("<", class(x)[[1L]], ">")
+      if (is_redacted(x)) {
+        format(x)
+      } else {
+        paste0("<", class(x)[[1L]], ">")
+      }
     }
   }
   vals <- map_chr(x, as_simple)
@@ -30,7 +32,7 @@ bullets <- function(x) {
   }
 }
 
-modify_list <- function(.x, ..., error_call = caller_env()) {
+modify_list <- function(.x, ..., .ignore_case = FALSE, error_call = caller_env()) {
   dots <- list2(...)
   if (length(dots) == 0) return(.x)
 
@@ -41,9 +43,12 @@ modify_list <- function(.x, ..., error_call = caller_env()) {
     )
   }
 
+  if (.ignore_case) {
+    out <- .x[!tolower(names(.x)) %in% tolower(names(dots))]
+  } else {
+    out <- .x[!names(.x) %in% names(dots)]
+  }
 
-
-  out <- .x[!names(.x) %in% names(dots)]
   out <- c(out, compact(dots))
 
   if (length(out) == 0) {
@@ -124,41 +129,6 @@ base64_url_decode <- function(x) {
 
 base64_url_rand <- function(bytes = 32) {
   base64_url_encode(openssl::rand_bytes(bytes))
-}
-
-#' Temporarily set verbosity for all requests
-#'
-#' `with_verbosity()` is useful for debugging httr2 code buried deep inside
-#' another package because it allows you to see exactly what's been sent
-#' and requested.
-#'
-#' @inheritParams req_perform
-#' @param code Code to execture
-#' @returns The result of evaluating `code`.
-#' @export
-#' @examples
-#' fun <- function() {
-#'   request("https://httr2.r-lib.org") |> req_perform()
-#' }
-#' with_verbosity(fun())
-with_verbosity <- function(code, verbosity = 1) {
-  withr::local_options(httr2_verbosity = verbosity)
-  code
-}
-
-httr2_verbosity <- function() {
-  x <- getOption("httr2_verbosity")
-  if (!is.null(x)) {
-    return(x)
-  }
-
-  # Hackish fallback for httr::with_verbose
-  old <- getOption("httr_config")
-  if (!is.null(old$options$debugfunction)) {
-    1
-  } else {
-    0
-  }
 }
 
 local_time <- function(x, tz = "UTC") {
@@ -281,7 +251,7 @@ create_progress_bar <- function(total,
     )
   }
 
-  args$name <- args$name %||% name
+  args$name <- args[["name"]] %||% name
   # Can be removed if https://github.com/r-lib/cli/issues/630 is fixed
   if (is.infinite(total)) {
     total <- NA

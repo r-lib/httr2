@@ -1,8 +1,11 @@
 test_that("new token computes expires_at", {
-  time <- Sys.time()
+  withr::local_envvar(TZ = "UTC")
+
+  time <- .POSIXct(1740000000)
   token <- oauth_token("xyz", expires_in = 10, .date = time)
   expect_s3_class(token, "httr2_token")
   expect_equal(token$expires_at, as.numeric(time + 10))
+  expect_snapshot(token)
 })
 
 test_that("printing token redacts access, id and refresh token", {

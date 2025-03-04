@@ -88,14 +88,15 @@ test_that("immutable objects retrieved from cache", {
 })
 
 test_that("errors by default", {
-  reqs <- list2(
-    request_test("/status/:status", status = 404),
-    request("INVALID")
-  )
-  expect_snapshot(error = TRUE, {
-    req_perform_parallel(reqs[1])
-    req_perform_parallel(reqs[2])
-  })
+  req <- request_test("/status/:status", status = 404)
+  err <- expect_error(req_perform_parallel(list(req)))
+  expect_s3_class(err, "httr2_http_404")
+
+  # Wraps and forwards curl errors
+  req <- request("INVALID")
+  err <- expect_error(req_perform_parallel(list(req)))
+  expect_s3_class(err, "httr2_failure")
+  expect_s3_class(err$parent, "curl_error_couldnt_resolve_host")
 })
 
 test_that("both curl and HTTP errors become errors on continue", {
@@ -115,11 +116,14 @@ test_that("both curl and HTTP errors become errors on continue", {
 test_that("errors can cancel outstanding requests", {
   reqs <- list2(
     request_test("/status/:status", status = 404),
-    request_test("/delay/:secs", secs = 2),
+    request_test("/delay/:secs", secs = 1),
+    request_test("/delay/:secs", secs = 1),
   )
   out <- req_perform_parallel(reqs, on_error = "return", max_active = 1)
   expect_s3_class(out[[1]], "httr2_http_404")
-  expect_null(out[[2]])
+  # second request might succeed or fail depend on the timing, but the
+  # third request should definitely fail
+  expect_null(out[[3]])
 })
 
 test_that("req_perform_parallel resspects http_error() error override", {
@@ -138,22 +142,6 @@ test_that("req_perform_parallel respects http_error() body message", {
     req_error(request_test("/status/:status", status = 404), body = ~"hello")
   )
   expect_snapshot(req_perform_parallel(reqs), error = TRUE)
-})
-
-test_that("respects max retries", {
-  req <- local_app_request(function(req, res) {
-    i <- res$app$locals$i %||% 1
-    res$
-      set_status(429)$
-      set_header("retry-after", 0)$
-      send_json(list(status = "waiting"), auto_unbox = TRUE)
-  })
-  req <- req_retry(req, max_tries = 3)
-  queue <- RequestQueue$new(list(req), progress = FALSE)
-
-  queue$process()
-  expect_s3_class(queue$resps[[1]], "httr2_http_429")
-  expect_equal(queue$tries[1], 3)
 })
 
 test_that("requests are throttled", {
@@ -239,39 +227,50 @@ test_that("can retry a transient error", {
 
   queue <- RequestQueue$new(list(req), progress = FALSE)
 
-  # Start processing
+  # submit the request
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(queue$n_active, 1)
   expect_equal(queue$n_pending, 0)
+  expect_equal(queue$status[[1]], "active")
 
-  # No pending, so switch to finishing
+  # process the response and capture the retry
   expect_null(queue$process1())
-  expect_equal(queue$queue_status, "finishing")
-
-  # Now we process the request and capture the retry
-  expect_null(queue$process1())
-  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$queue_status, "waiting")
   expect_equal(queue$rate_limit_deadline, mock_time + 2)
   expect_equal(queue$n_pending, 1)
   expect_s3_class(queue$resps[[1]], "httr2_http_429")
   expect_equal(resp_body_json(queue$resps[[1]]$resp), list(status = "waiting"))
 
-  # Now we "wait" 2 seconds
+  # Starting waiting
   expect_null(queue$process1())
-  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$queue_status, "waiting")
   expect_equal(mock_time, 3)
 
-  # Then resume finishing again
+  # Finishing waiting
   expect_null(queue$process1())
-  expect_equal(queue$queue_status, "finishing")
+  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$n_active, 0)
+  expect_equal(queue$n_pending, 1)
 
-  # And we're finally done
+  # Resubmit
+  expect_null(queue$process1())
+  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$n_active, 1)
+  expect_equal(queue$n_pending, 0)
+
+  # Process the response
+  expect_null(queue$process1())
+  expect_equal(queue$queue_status, "working")
+  expect_equal(queue$n_active, 0)
+  expect_equal(queue$n_pending, 0)
+  expect_s3_class(queue$resps[[1]], "httr2_response")
+  expect_equal(resp_body_json(queue$resps[[1]]), list(status = "done"))
+
+  # So we're finally done
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "done")
   expect_false(queue$process1())
-
-  expect_equal(resp_body_json(queue$resps[[1]]), list(status = "done"))
 })
 
 test_that("throttling is limited by deadline", {
@@ -289,7 +288,9 @@ test_that("throttling is limited by deadline", {
 
   # Check time only advances by one second, and token is returned to bucket
   local_mocked_bindings(throttle_deadline = function(...) mock_time + 2)
-  queue$submit_next(1)
+  queue$process1(1)
+  expect_equal(queue$queue_status, "waiting")
+  queue$process1(1)
   expect_equal(mock_time, 1)
   expect_equal(the$throttle[["test"]]$tokens, 1)
 

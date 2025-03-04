@@ -49,7 +49,10 @@ test_that("can authenticate using header or body", {
 
   req <- request("http://example.com")
   req_h <- oauth_client_req_auth(req, client("header"))
-  expect_equal(req_h$headers, structure(list(Authorization = "Basic aWQ6c2VjcmV0"), redact = "Authorization"))
+  expect_equal(
+    req_h$headers,
+    new_headers(list(Authorization = "Basic aWQ6c2VjcmV0"), "Authorization")
+  )
 
   req_b <- oauth_client_req_auth(req, client("body"))
   expect_equal(req_b$body$data, list(client_id = I("id"), client_secret = I("secret")))

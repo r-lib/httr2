@@ -18,16 +18,14 @@
 
     Code
       print(curl_simplify_headers(headers, simplify_headers = TRUE))
-    Message
-      <httr2_headers>
     Output
+      <httr2_headers>
       Accept: application/vnd.api+json
       user-agent: agent
     Code
       print(curl_simplify_headers(headers, simplify_headers = FALSE))
-    Message
-      <httr2_headers>
     Output
+      <httr2_headers>
       Sec-Fetch-Dest: empty
       Sec-Fetch-Mode: cors
       sec-ch-ua-mobile: ?0
