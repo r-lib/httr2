@@ -42,10 +42,11 @@ test_that("can determine if incomplete data is complete", {
   })
 
   con <- req %>% req_perform_connection(blocking = TRUE)
+  withr::defer(close(con))
+
   expect_equal(resp_stream_sse(con, 10), list(type = "message", data = "1", id = ""))
   expect_snapshot(expect_equal(resp_stream_sse(con), NULL))
   expect_true(resp_stream_is_complete(con))
-  close(con)
 })
 
 test_that("can't read from a closed connection", {
@@ -68,13 +69,15 @@ test_that("can join lines across multiple reads", {
     sync(res$send_chunk("complete sentence.\n"))
   })
 
-  # Non-blocking returns NULL until data is ready
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
 
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
   expect_equal(resp1$cache$push_back, charToRaw("This is a "))
+
+  out <- resp_stream_lines(resp1)
+  expect_equal(out, character())
 
   sync()
   out <- resp_stream_lines(resp1)
@@ -136,35 +139,16 @@ test_that("streams the specified number of lines", {
 
   resp1 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp1))
-  expect_equal(
-    resp_stream_lines(resp1, 3),
-    c("a", "b", "c")
-  )
-  expect_equal(
-    resp_stream_lines(resp1, 3),
-    c("d", "e")
-  )
-  expect_equal(
-    resp_stream_lines(resp1, 3),
-    character()
-  )
+  expect_equal(resp_stream_lines(resp1, 3), c("a", "b", "c"))
+  expect_equal(resp_stream_lines(resp1, 3), c("d", "e"))
+  expect_equal(resp_stream_lines(resp1, 3), character())
 
   resp2 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp2))
-  Sys.sleep(0.2)
-  expect_equal(
-    resp_stream_lines(resp2, 3),
-    c("a", "b", "c")
-  )
-  expect_equal(
-    resp_stream_lines(resp2, 3),
-    c("d", "e")
-  )
-  expect_equal(
-    resp_stream_lines(resp2, 3),
-    character()
-  )
-})
+  expect_equal(resp_stream_lines(resp2, 3), c("a", "b", "c"))
+  expect_equal(resp_stream_lines(resp2, 3), c("d", "e"))
+  expect_equal(resp_stream_lines(resp2, 3), character())
+ })
 
 test_that("can feed sse events one at a time", {
   req <- local_app_request(function(req, res) {
@@ -203,13 +187,14 @@ test_that("ignores events with no data", {
 })
 
 test_that("can join sse events across multiple reads", {
+  sync <- sync_req()
   req <- local_app_request(function(req, res) {
+    sync <- req$app$locals$sync_rep()
+
     res$send_chunk("data: 1\n")
-    Sys.sleep(0.2)
-    res$send_chunk("data")
-    Sys.sleep(0.2)
+    sync(res$send_chunk("data"), timeout = 100L)
     res$send_chunk(": 2\n")
-    res$send_chunk("\ndata: 3\n\n")
+    sync(res$send_chunk("\ndata: 3\n\n"), timeout = 100L)
   })
 
   # Non-blocking returns NULL until data is ready
@@ -220,16 +205,19 @@ test_that("can join sse events across multiple reads", {
   expect_equal(out, NULL)
   expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
 
-  while (is.null(out)) {
-    Sys.sleep(0.1)
-    out <- resp_stream_sse(resp1)
-  }
+  sync()
+  out <- resp_stream_sse(resp1)
+  expect_equal(out, NULL)
+
+  sync()
+  out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "1\n2", id = ""))
   expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
+
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "3", id = ""))
 
-  # Blocking waits for a complete event
+  # # Blocking waits for a complete event
   resp2 <- req_perform_connection(req)
   withr::defer(close(resp2))
 
@@ -242,23 +230,18 @@ test_that("sse always interprets data as UTF-8", {
     res$send_chunk("data: \xE3\x81\x82\r\n\r\n")
   })
 
-  withr::with_locale(c(LC_CTYPE = "C"), {
-    # Non-blocking returns NULL until data is ready
-    resp1 <- req_perform_connection(req, blocking = FALSE)
-    withr::defer(close(resp1))
+  withr::local_locale(LC_CTYPE = "C")
+  # Non-blocking returns NULL until data is ready
+  resp1 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp1))
 
-    out <- NULL
-    while (is.null(out)) {
-      Sys.sleep(0.1)
-      out <- resp_stream_sse(resp1)
-    }
+  out <- resp_stream_sse(resp1)
 
-    s <- "\xE3\x81\x82"
-    Encoding(s) <- "UTF-8"
-    expect_equal(out, list(type = "message", data = s, id = ""))
-    expect_equal(Encoding(out$data), "UTF-8")
-    expect_equal(resp1$cache$push_back, raw())
-  })
+  s <- "\xE3\x81\x82"
+  Encoding(s) <- "UTF-8"
+  expect_equal(out, list(type = "message", data = s, id = ""))
+  expect_equal(Encoding(out$data), "UTF-8")
+  expect_equal(resp1$cache$push_back, raw())
 })
 
 test_that("streaming size limits enforced", {
@@ -271,22 +254,15 @@ test_that("streaming size limits enforced", {
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
   expect_error(
-    while (is.null(out)) {
-      Sys.sleep(0.1)
-      out <- resp_stream_sse(resp1, max_size = 999)
-    }
+    out <- resp_stream_sse(resp1, max_size = 999),
+    class = "httr2_streaming_error"
   )
 
   resp2 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp2))
   expect_error(
-    out <- resp_stream_sse(resp2, max_size = 999)
-  )
-
-  resp3 <- req_perform_connection(req, blocking = TRUE)
-  withr::defer(close(resp3))
-  expect_error(
-    out <- resp_stream_lines(resp3, max_size = 999)
+    out <- resp_stream_sse(resp2, max_size = 999),
+    class = "httr2_streaming_error"
   )
 })
 
@@ -298,7 +274,7 @@ test_that("verbosity = 2 streams request bodies", {
 
   stream_all <- function(req, fun, ...) {
     con <- req_perform_connection(req, blocking = TRUE, verbosity = 2)
-    on.exit(close(con))
+    withr::defer(close(con))
     while (!resp_stream_is_complete(con)) {
       fun(con, ...)
     }

@@ -167,9 +167,7 @@ test_that("requests are throttled", {
 
 test_that("can retry an OAuth failure", {
   req <- local_app_request(function(req, res) {
-    i <- res$app$locals$i %||% 1
-    if (i == 1) {
-      res$app$locals$i <- 2
+    if (res$app$locals$i == 1) {
       res$
         set_status(401)$
         set_header("WWW-Authenticate", 'Bearer realm="example", error="invalid_token"')$
@@ -206,9 +204,7 @@ test_that("but multiple failures causes an error", {
 
 test_that("can retry a transient error", {
   req <- local_app_request(function(req, res) {
-    i <- res$app$locals$i %||% 1
-    if (i == 1) {
-      res$app$locals$i <- 2
+    if (res$app$locals$i == 1) {
       res$
         set_status(429)$
         set_header("retry-after", 2)$
