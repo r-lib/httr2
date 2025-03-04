@@ -6,7 +6,7 @@
       <- HTTP/1.1 200 OK
       <- Connection: close
       <- Content-Type: application/json
-      <-
+      <- 
       << {
       <<   "x": 1
       << }
@@ -20,7 +20,7 @@
       -> Host: http://example.com
       -> Content-Type: text/plain
       -> Content-Length: 17
-      ->
+      -> 
       >> This is some text
 
 # redacts headers as needed
@@ -31,7 +31,7 @@
       -> GET / HTTP/1.1
       -> Host: http://example.com
       -> Authorization: <REDACTED>
-      ->
+      -> 
 
 # can display compressed bodies
 
@@ -41,25 +41,25 @@
       <- HTTP/1.1 200 OK
       <- Content-Type: application/json
       <- Content-Encoding: gzip
-      <-
+      <- 
       << {
       <<   "args": {
-      <<
+      << 
       <<   },
       <<   "data": {
-      <<
+      << 
       <<   },
       <<   "files": {
-      <<
+      << 
       <<   },
       <<   "form": {
-      <<
+      << 
       <<   },
       <<   "headers": {
       <<     "Host": "http://example.com"
       <<   },
       <<   "json": {
-      <<
+      << 
       <<   },
       <<   "method": "get",
       <<   "path": "/gzip",
@@ -117,3 +117,4 @@
     Condition
       Warning:
       Unknown verbosity level 7
+
