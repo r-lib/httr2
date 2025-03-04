@@ -53,7 +53,8 @@ new_request <- function(url,
       body = body,
       fields = fields,
       options = options,
-      policies = policies
+      policies = policies,
+      state = new_environment()
     ),
     class = "httr2_request"
   )

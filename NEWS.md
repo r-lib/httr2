@@ -8,7 +8,7 @@
 * Most of the limitations of `req_perform_parallel()` have been lifted. It can now refresh OAuth tokens and look at the cache for each individual requests. It also supports a simple version of `req_throttle()` and `req_retry()`, where it assumes that all requests have the same throttling and rate limits (#681).
 * `req_user_agent()` now memoises the default user agent, since it's relatively slow (300 µs) to compute because it requires looking up version numbers.
 * `req_dry_run()` drops headers that otherwise will vary in tests, and gains the ability to prettify JSON output.
-* `req_verbose()` automatically prettifies JSON responses (#668). You can disable this by setting `httr2_pretty_json`.
+* `req_verbose()` automatically prettifies JSON requests and responses (#668). You can disable this by setting `httr2_pretty_json`.
 * `req_perform_connection()` gives a better error if request fails at networking level.
 * `req_throttle()` now uses a "token bucket" which preserves the average rate limit, but allows bursts of higher requests.
 * `req_dry_run()` and `req_verbose()` now do a better job of displaying compressed bodies (#91, #656).

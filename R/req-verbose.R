@@ -48,14 +48,17 @@ req_verbose <- function(req,
   # force all arguments
   list(header_req, header_resp, body_req, body_resp, info, redact_headers)
 
-  to_redact <- attr(req$headers, "redact")
   debug <- function(type, msg) {
+    # Set in req_prepare()
+    headers <- req$state$headers
+    to_redact <- attr(headers, "redact")
+
     switch(verbose_enum(type),
       text =       if (info)        verbose_message("*  ", msg),
       header_in =  if (header_resp) verbose_header("<- ", msg),
       header_out = if (header_req)  verbose_header("-> ", msg, redact_headers, to_redact = to_redact),
       data_in =    NULL, # displayed in handle_resp()
-      data_out =   if (body_req)    verbose_message(">> ", msg)
+      data_out =   if (body_req)    verbose_body(">> ", msg, headers$`content-type`)
     )
   }
   req <- req_options(req, debugfunction = debug, verbose = TRUE)
@@ -94,6 +97,15 @@ verbose_message <- function(prefix, x) {
   cli::cat_line(prefix, lines)
 }
 
+verbose_body <- function(prefix, x, content_type) {
+  show_body(
+    x,
+    content_type,
+    prefix = prefix,
+    pretty_json = getOption("httr2_pretty_json", TRUE)
+  )
+}
+
 verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
   x <- readBin(x, character())
   lines <- unlist(strsplit(x, "\r?\n", useBytes = TRUE))
@@ -101,7 +113,7 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
   for (line in lines) {
     if (grepl("^[-a-zA-z0-9]+:", line)) {
       header <- headers_redact(as_headers(line, to_redact), redact)
-      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", header)
+      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", format(header[[1]]))
     } else {
       cli::cat_line(prefix, line)
     }

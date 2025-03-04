@@ -6,7 +6,7 @@
       <- HTTP/1.1 200 OK
       <- Connection: close
       <- Content-Type: application/json
-      <- 
+      <-
       << {
       <<   "x": 1
       << }
@@ -18,9 +18,20 @@
     Output
       -> POST /test HTTP/1.1
       -> Host: http://example.com
+      -> Content-Type: text/plain
       -> Content-Length: 17
-      -> 
+      ->
       >> This is some text
+
+# redacts headers as needed
+
+    Code
+      . <- req_perform(req)
+    Output
+      -> GET / HTTP/1.1
+      -> Host: http://example.com
+      -> Authorization: <REDACTED>
+      ->
 
 # can display compressed bodies
 
@@ -30,25 +41,25 @@
       <- HTTP/1.1 200 OK
       <- Content-Type: application/json
       <- Content-Encoding: gzip
-      <- 
+      <-
       << {
       <<   "args": {
-      << 
+      <<
       <<   },
       <<   "data": {
-      << 
+      <<
       <<   },
       <<   "files": {
-      << 
+      <<
       <<   },
       <<   "form": {
-      << 
+      <<
       <<   },
       <<   "headers": {
       <<     "Host": "http://example.com"
       <<   },
       <<   "json": {
-      << 
+      <<
       <<   },
       <<   "method": "get",
       <<   "path": "/gzip",
@@ -57,7 +68,7 @@
       <<   "gzipped": true
       << }
 
-# json is automatically prettified
+# response json is automatically prettified
 
     Code
       . <- req_perform(req)
@@ -78,6 +89,27 @@
     Output
       << {"foo":"bar","baz":[1,2,3]}
 
+# request json is automatically prettified
+
+    Code
+      . <- req_perform(req)
+    Output
+      >> {
+      >>   "foo": "bar",
+      >>   "baz": [
+      >>     1,
+      >>     2,
+      >>     3
+      >>   ]
+      >> }
+
+---
+
+    Code
+      . <- req_perform(req)
+    Output
+      >> {"foo":"bar","baz":[1,2,3]}
+
 # verbose_enum checks range
 
     Code
@@ -85,4 +117,3 @@
     Condition
       Warning:
       Unknown verbosity level 7
-
