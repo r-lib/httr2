@@ -1,6 +1,6 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
-Version: 1.1.0.9000
+Version: 1.1.1
 Authors@R: c(
     person("Hadley", "Wickham", , "hadley@posit.co", role = c("aut", "cre")),
     person("Posit Software, PBC", role = c("cph", "fnd")),
