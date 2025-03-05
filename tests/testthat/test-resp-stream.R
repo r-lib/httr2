@@ -107,7 +107,7 @@ test_that("handles line endings of multiple kinds", {
     "\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line"
   )
 
-  resp1 <- req_perform_connection(req, blocking = TRUE)
+  resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
 
   for (expected in expected_values) {
@@ -118,13 +118,24 @@ test_that("handles line endings of multiple kinds", {
   expect_equal(out, "eof without line ending")
   expect_equal(resp_stream_lines(resp1), character(0))
 
-  # Same test, but now, non-blocking
-  resp2 <- req_perform_connection(req, blocking = FALSE)
+  # Same test, but now, blocking
+  req <- local_app_request(function(req, res) {
+    res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
+    res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
+    res$send_chunk("crlf\r\n")
+    res$send_chunk("lf\n")
+    res$send_chunk("cr\r")
+    res$send_chunk("half line/")
+    res$send_chunk("other half\n")
+    res$send_chunk("broken crlf\r")
+    res$send_chunk("\nanother line\n")
+    res$send_chunk("eof without line ending")
+  })
+  resp2 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp2))
 
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
-    sync()
   }
   expect_warning(out <- resp_stream_lines(resp2), "incomplete final line")
   expect_equal(out, "eof without line ending")
@@ -216,6 +227,12 @@ test_that("can join sse events across multiple reads", {
   expect_equal(out, list(type = "message", data = "3", id = ""))
 
   # # Blocking waits for a complete event
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("data: 1\n")
+    res$send_chunk("data")
+    res$send_chunk(": 2\n")
+    res$send_chunk("\ndata: 3\n\n")
+  })
   resp2 <- req_perform_connection(req)
   withr::defer(close(resp2))
 
