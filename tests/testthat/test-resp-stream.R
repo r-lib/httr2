@@ -61,9 +61,9 @@ test_that("can't read from a closed connection", {
 })
 
 test_that("can join lines across multiple reads", {
-  sync <- sync_req()
+  sync <- sync_req("join")
   req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep()
+    sync <- req$app$locals$sync_rep("join")
 
     res$send_chunk("This is a ")
     sync(res$send_chunk("complete sentence.\n"))
@@ -85,9 +85,9 @@ test_that("can join lines across multiple reads", {
 })
 
 test_that("handles line endings of multiple kinds", {
-  sync <- sync_req()
+  sync <- sync_req("endings")
   req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep()
+    sync <- req$app$locals$sync_rep("endings")
 
     res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
@@ -214,14 +214,14 @@ test_that("ignores events with no data", {
 })
 
 test_that("can join sse events across multiple reads", {
-  sync <- sync_req()
+  sync <- sync_req("sse")
   req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep()
+    sync <- req$app$locals$sync_rep("sse")
 
     res$send_chunk("data: 1\n")
-    sync(res$send_chunk("data"), timeout = 100L)
+    sync(res$send_chunk("data"))
     res$send_chunk(": 2\n")
-    sync(res$send_chunk("\ndata: 3\n\n"), timeout = 100L)
+    sync(res$send_chunk("\ndata: 3\n\n"))
   })
 
   # Non-blocking returns NULL until data is ready
