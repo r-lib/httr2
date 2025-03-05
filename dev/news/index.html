@@ -46,42 +46,46 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>
-<code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> correctly redacts redacted headers (<a href="https://github.com/r-lib/httr2/issues/682" class="external-link">#682</a>).</li>
+<code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> lifts many of the previous restrictions. It supports simplified versions of <code><a href="../reference/req_throttle.html">req_throttle()</a></code> and <code><a href="../reference/req_retry.html">req_retry()</a></code>, can refresh OAuth tokens, and checks the cache before/after each request. (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
+<li>Default verbosity can be controlled by the <code>HTTR2_VERBOSITY</code> environment variable (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
 <li>
-<code><a href="../reference/req_headers.html">req_headers()</a></code> replaces existing headers with different case (<a href="https://github.com/r-lib/httr2/issues/682" class="external-link">#682</a>).</li>
-<li>New <code><a href="../reference/with_verbosity.html">local_verbosity()</a></code> (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
-<li>Can now use <code>HTTR2_VERBOSITY</code> env var to control default verbosity (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
+<code><a href="../reference/with_verbosity.html">local_verbosity()</a></code> matches the existing <code><a href="../reference/with_verbosity.html">with_verbosity()</a></code> and allows for local control of verbosity (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
 <li>
-<code>req_perform_parallel(pool)</code> has been deprecated in favour of a new <code>max_active</code> argument (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
-<li>Most of the limitations of <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> have been lifted. It can now refresh OAuth tokens and look at the cache for each individual requests. It also supports a simple version of <code><a href="../reference/req_throttle.html">req_throttle()</a></code> and <code><a href="../reference/req_retry.html">req_retry()</a></code>, where it assumes that all requests have the same throttling and rate limits (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
+<code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> and <code><a href="../reference/req_verbose.html">req_verbose()</a></code> display compressed correctly (<a href="https://github.com/r-lib/httr2/issues/91" class="external-link">#91</a>, <a href="https://github.com/r-lib/httr2/issues/656" class="external-link">#656</a>) and automatically prettify JSON bodies (<a href="https://github.com/r-lib/httr2/issues/668" class="external-link">#668</a>). You can suppress prettification with <code>options(httr2_pretty_json = FALSE)</code> (<a href="https://github.com/r-lib/httr2/issues/668" class="external-link">#668</a>).</li>
 <li>
-<code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> now memoises the default user agent, since it’s relatively slow (300 µs) to compute because it requires looking up version numbers.</li>
-<li>
-<code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> drops headers that otherwise will vary in tests, and gains the ability to prettify JSON output.</li>
-<li>
-<code><a href="../reference/req_verbose.html">req_verbose()</a></code> automatically prettifies JSON requests and responses (<a href="https://github.com/r-lib/httr2/issues/668" class="external-link">#668</a>). You can disable this by setting <code>httr2_pretty_json</code>.</li>
-<li>
-<code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> gives a better error if request fails at networking level.</li>
-<li>
-<code><a href="../reference/req_throttle.html">req_throttle()</a></code> now uses a “token bucket” which preserves the average rate limit, but allows bursts of higher requests.</li>
-<li>
-<code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> and <code><a href="../reference/req_verbose.html">req_verbose()</a></code> now do a better job of displaying compressed bodies (<a href="https://github.com/r-lib/httr2/issues/91" class="external-link">#91</a>, <a href="https://github.com/r-lib/httr2/issues/656" class="external-link">#656</a>).</li>
-<li>
-<code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> once again ignores the case of headers (<a href="https://github.com/DavidRLovell" class="external-link">@DavidRLovell</a>, <a href="https://github.com/r-lib/httr2/issues/655" class="external-link">#655</a>)</li>
-<li>
-<code><a href="../reference/oauth_client.html">oauth_client()</a></code> and <code><a href="../reference/oauth_token.html">oauth_token()</a></code> gain refreshed print methods that use bulleted lists, like other httr2 objects. Additionally, print a <code><a href="../reference/oauth_client.html">oauth_client()</a></code> with a custom <code>auth</code> function no longer errors (<a href="https://github.com/r-lib/httr2/issues/648" class="external-link">#648</a>).</li>
-<li>
-<code><a href="../reference/req_headers.html">req_headers()</a></code> always redacts <code>Authorization</code> (<a href="https://github.com/r-lib/httr2/issues/649" class="external-link">#649</a>).</li>
-<li>
-<code><a href="../reference/req_headers.html">req_headers_redacted()</a></code> supports dynamic dots (<a href="https://github.com/r-lib/httr2/issues/647" class="external-link">#647</a>)</li>
-<li>
-<code><a href="../reference/resp_stream_raw.html">resp_stream_sse()</a></code> now automatically retrieves the next event if the current event contains no data. The data is now returned as a single string (<a href="https://github.com/r-lib/httr2/issues/650" class="external-link">#650</a>).</li>
-<li>
-<code>aws_v4_signature()</code> now works if url contains query parameters (<a href="https://github.com/jeffreyzuber" class="external-link">@jeffreyzuber</a>, <a href="https://github.com/r-lib/httr2/issues/645" class="external-link">#645</a>).</li>
-<li>
-<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> no longer adds trailing “/” characters to well-formed <code>redirect_uri</code> values (<a href="https://github.com/jonthegeek" class="external-link">@jonthegeek</a>, <a href="https://github.com/r-lib/httr2/issues/646" class="external-link">#646</a>).</li>
+<code><a href="../reference/req_throttle.html">req_throttle()</a></code> implements a new “token bucket” algorithm that maintains average rate limits while allowing bursts of higher request rates.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="minor-improvements-and-bug-fixes-development-version">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-development-version"></a></h3>
+<ul><li>
+<code>aws_v4_signature()</code> correctly processes URLs containing query parameters (<a href="https://github.com/jeffreyzuber" class="external-link">@jeffreyzuber</a>, <a href="https://github.com/r-lib/httr2/issues/645" class="external-link">#645</a>).</li>
+<li>
+<code><a href="../reference/oauth_client.html">oauth_client()</a></code> and <code><a href="../reference/oauth_token.html">oauth_token()</a></code> implement improved print methods with bulleted lists, similar to other httr2 objects, and <code><a href="../reference/oauth_client.html">oauth_client()</a></code> with custom <code>auth</code> functions no longer produces errors (<a href="https://github.com/r-lib/httr2/issues/648" class="external-link">#648</a>).</li>
+<li>
+<code><a href="../reference/req_dry_run.html">req_dry_run()</a></code> omits headers that would vary in tests and can prettify JSON output.</li>
+<li>
+<code><a href="../reference/req_headers.html">req_headers()</a></code> automatically redacts <code>Authorization</code> headers (<a href="https://github.com/r-lib/httr2/issues/649" class="external-link">#649</a>) and correctly implements case-insensitive modification of existing headers (<a href="https://github.com/r-lib/httr2/issues/682" class="external-link">#682</a>).</li>
+<li>
+<code><a href="../reference/req_headers.html">req_headers_redacted()</a></code> now supports dynamic dots (<a href="https://github.com/r-lib/httr2/issues/647" class="external-link">#647</a>).</li>
+<li>
+<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code> no longer adds trailing “/” characters to properly formed <code>redirect_uri</code> values (<a href="https://github.com/jonthegeek" class="external-link">@jonthegeek</a>, <a href="https://github.com/r-lib/httr2/issues/646" class="external-link">#646</a>).</li>
+<li>
+<code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> produces more helpful error messages when requests fail at the networking level.</li>
+<li>
+<code>req_perform_parallel(pool)</code> now is deprecated in favour of a new <code>max_active</code> argument (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
+<li>
+<code><a href="../reference/req_user_agent.html">req_user_agent()</a></code> memoizes the default user agent to improve performance, as computing version numbers is relatively slow (300 µs).</li>
+<li>
+<code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> once again respects the case insensitivity for header names (<a href="https://github.com/DavidRLovell" class="external-link">@DavidRLovell</a>, <a href="https://github.com/r-lib/httr2/issues/655" class="external-link">#655</a>).</li>
+<li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_sse()</a></code> automatically retrieves the next event when the current event contains no data, and returns data as a single string (<a href="https://github.com/r-lib/httr2/issues/650" class="external-link">#650</a>).</li>
+<li>
+<code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> correctly redacts redacted headers (<a href="https://github.com/r-lib/httr2/issues/682" class="external-link">#682</a>).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="httr2-110">httr2 1.1.0<a class="anchor" aria-label="anchor" href="#httr2-110"></a></h2><p class="text-muted">CRAN release: 2025-01-18</p>
 <div class="section level3">
