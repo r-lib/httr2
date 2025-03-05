@@ -98,22 +98,36 @@ test_that("handles line endings of multiple kinds", {
       res$send_chunk("half line/")
       res$send_chunk("other half\n")
     })
-    sync(res$send_chunk("broken crlf\r"))
-    sync(res$send_chunk("\nanother line\n"))
-    sync(res$send_chunk("eof without line ending"))
+    sync({
+      res$send_chunk("broken crlf\r")
+      res$send_chunk("\nanother line\n")
+      res$send_chunk("eof without line ending")
+    })
   })
-
-  expected_values <- c(
-    "\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line"
-  )
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
 
-  for (expected in expected_values) {
-    rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
-    sync()
+  expect_equal(resp_stream_lines(resp1), "\u3042")
+  sync()
+  expect_equal(resp_stream_lines(resp1), "crlf")
+  sync()
+  expect_equal(resp_stream_lines(resp1), "lf")
+  sync()
+  expect_equal(resp_stream_lines(resp1), "cr")
+  sync()
+  out <- resp_stream_lines(resp1)
+  if (!length(out)) { # MacOS can return character(0) here
+    out <- resp_stream_lines(resp1)
   }
+  expect_equal(out, "half line/other half")
+  sync()
+  out <- resp_stream_lines(resp1)
+  if (!length(out)) { # MacOS can return character(0) here
+    out <- resp_stream_lines(resp1)
+  }
+  expect_equal(out, "broken crlf")
+  expect_equal(resp_stream_lines(resp1), "another line")
   expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
   expect_equal(out, "eof without line ending")
   expect_equal(resp_stream_lines(resp1), character(0))
@@ -133,6 +147,10 @@ test_that("handles line endings of multiple kinds", {
   })
   resp2 <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp2))
+
+  expected_values <- c(
+    "\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line"
+  )
 
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
