@@ -68,11 +68,11 @@ req |> req_retry(max_tries = 5)
 #> GET https://r-project.org
 #> Body: empty
 #> Policies:
-#> • retry_max_tries: 5
-#> • retry_on_failure: FALSE
+#> • retry_max_tries        : 5
+#> • retry_on_failure       : FALSE
 #> • retry_failure_threshold: Inf
-#> • retry_failure_timeout: 30
-#> • retry_realm: "r-project.org"
+#> • retry_failure_timeout  : 30
+#> • retry_realm            : "r-project.org"
 
 # Change the HTTP method
 req |> req_method("PATCH")
@@ -86,10 +86,10 @@ And see exactly what httr2 will send to the server with `req_dry_run()`:
 ``` r
 req |> req_dry_run()
 #> GET / HTTP/1.1
-#> Host: r-project.org
-#> User-Agent: httr2/1.0.7.9000 r-curl/6.1.0 libcurl/8.7.1
-#> Accept: */*
-#> Accept-Encoding: gzip
+#> accept: */*
+#> accept-encoding: deflate, gzip
+#> host: r-project.org
+#> user-agent: httr2/1.1.0.9000 r-curl/6.2.1 libcurl/8.11.1
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -101,7 +101,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6774 bytes)
+#> Body: In memory (6963 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
