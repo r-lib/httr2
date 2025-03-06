@@ -1,7 +1,10 @@
-sync_req <- function(name = "default", .env = parent.frame()) {
+sync_req <- function(name, .env = parent.frame()) {
   skip_on_cran()
   skip_if_not_installed("nanonext")
 
+  if (missing(name) || !is.character(name)) {
+    cli::cli_abort("Use unique (character) name for each sync_req() / sync_rep() pair")
+  }
   connected <- FALSE
   cv <- nanonext::cv()
   sock <- nanonext::socket("req")
@@ -18,10 +21,15 @@ sync_req <- function(name = "default", .env = parent.frame()) {
     saio <- nanonext::send_aio(ctx, 0L, mode = 2L)
     expr
     nanonext::call_aio(nanonext::recv_aio(ctx, mode = 8L, timeout = timeout))
+    nanonext::msleep(50L) # wait, as nanonext messages can return faster than side effects (e.g. stream)
   }
 }
 
-sync_rep <- function(name = "default", .env = parent.frame()) {
+sync_rep <- function(name, .env = parent.frame()) {
+  if (missing(name) || !is.character(name)) {
+    cli::cli_abort("Use unique (character) name for each sync_req() / sync_rep() pair")
+  }
+
   connected <- FALSE
   cv <- nanonext::cv()
   sock <- nanonext::socket("rep")

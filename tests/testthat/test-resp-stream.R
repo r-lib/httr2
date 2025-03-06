@@ -94,45 +94,29 @@ test_that("handles line endings of multiple kinds", {
     sync(res$send_chunk("crlf\r\n"))
     sync(res$send_chunk("lf\n"))
     sync(res$send_chunk("cr\r"))
-    sync({
-      res$send_chunk("half line/")
-      res$send_chunk("other half\n")
-    })
-    sync({
-      res$send_chunk("broken crlf\r")
-      res$send_chunk("\nanother line\n")
-      res$send_chunk("eof without line ending")
-    })
+    sync(res$send_chunk("half line/"))
+    sync(res$send_chunk("other half\n"))
+    sync(res$send_chunk("broken crlf\r"))
+    sync(res$send_chunk("\nanother line\n"))
+    sync(res$send_chunk("eof without line ending"))
   })
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
 
-  expect_equal(resp_stream_lines(resp1), "\u3042")
-  sync()
-  expect_equal(resp_stream_lines(resp1), "crlf")
-  sync()
-  expect_equal(resp_stream_lines(resp1), "lf")
-  sync()
-  expect_equal(resp_stream_lines(resp1), "cr")
-  sync()
-  out <- resp_stream_lines(resp1)
-  if (!length(out)) { # MacOS can return character(0) here
-    out <- resp_stream_lines(resp1)
+  expected_values <- list(
+    "\u3042", "crlf", "lf", "cr", character(0), "half line/other half", "broken crlf", "another line"
+  )
+
+  for (expected in expected_values) {
+    rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
+    sync()
   }
-  expect_equal(out, "half line/other half")
-  sync()
-  out <- resp_stream_lines(resp1)
-  if (!length(out)) { # MacOS can return character(0) here
-    out <- resp_stream_lines(resp1)
-  }
-  expect_equal(out, "broken crlf")
-  expect_equal(resp_stream_lines(resp1), "another line")
   expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
   expect_equal(out, "eof without line ending")
   expect_equal(resp_stream_lines(resp1), character(0))
 
-  # Same test, but now, blocking
+  # Same test, but now, blocking (and without sync)
   req <- local_app_request(function(req, res) {
     res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
