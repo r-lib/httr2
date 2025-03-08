@@ -13,7 +13,7 @@ be useful to expose to the user."><meta property="og:image" content="https://htt
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@ be useful to expose to the user."><meta property="og:image" content="https://htt
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Control handling of HTTP errors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/req-error.R" class="external-link"><code>R/req-error.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-error.R" class="external-link"><code>R/req-error.R</code></a></small>
       <div class="d-none name"><code>req_error.Rd</code></div>
     </div>
 
@@ -132,7 +132,7 @@ a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="externa
 <span class="r-in"><span><span class="co"># You can still retrieve it with last_response()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41863/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41919/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -143,7 +143,7 @@ a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="externa
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">resp</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41863/status/404</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:41919/status/404</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 404 Not Found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -156,7 +156,7 @@ a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="externa
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://example.com</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">error_is_error</span>: a function</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">error_is_error</span>: &lt;function&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Most typically you'll use req_error() to add additional information</span></span></span>
 <span class="r-in"><span><span class="co"># extracted from the response body (or sometimes header):</span></span></span>
@@ -169,7 +169,7 @@ a 404, use <code><a href="https://rdrr.io/r/base/conditions.html" class="externa
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://example.com</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">error_body</span>: a function</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">error_body</span>: &lt;function&gt;</span>
 <span class="r-in"><span><span class="co"># Learn more in https://httr2.r-lib.org/articles/wrapping-apis.html</span></span></span>
 </code></pre></div>
     </div>

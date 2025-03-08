@@ -27,7 +27,7 @@ Adding a body to a request will automatically switch the method to POST."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@ Adding a body to a request will automatically switch the method to POST."><meta 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Send data in request body</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/req-body.R" class="external-link"><code>R/req-body.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-body.R" class="external-link"><code>R/req-body.R</code></a></small>
       <div class="d-none name"><code>req_body.Rd</code></div>
     </div>
 
@@ -176,12 +176,12 @@ a single string.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_body_form</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"A simple text string"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:41863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/x-www-form-urlencoded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-type</span>: application/x-www-form-urlencoded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: 127.0.0.1:41919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x=A%20simple%20text%20string</span>
 <span class="r-in"><span></span></span>
@@ -189,27 +189,29 @@ a single string.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_body_json</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"A simple text string"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:41863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: application/json</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-type</span>: application/json</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: 127.0.0.1:41919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"x":"A simple text string"}</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "x": "A simple text string"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># For total control over the body, send a string or raw vector</span></span></span>
 <span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">req_body_raw</span><span class="op">(</span><span class="st">"A simple text string"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:41863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: 127.0.0.1:41919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A simple text string</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;20 bytes&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># There are two main ways that APIs expect entire files</span></span></span>
 <span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -220,18 +222,13 @@ a single string.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_body_file</span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:41863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: 127.0.0.1:41919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> c</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> e</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> f</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;12 bytes&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># You can send multiple files, or a mix of files and data</span></span></span>
 <span class="r-in"><span><span class="co"># with multipart encoding</span></span></span>
@@ -239,29 +236,30 @@ a single string.</p></dd>
 <span class="r-in"><span>  <span class="fu">req_body_multipart</span><span class="op">(</span>a <span class="op">=</span> <span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/curl/reference/multipart.html" class="external-link">form_file</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>, b <span class="op">=</span> <span class="st">"some data"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> POST /post HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: 127.0.0.1:41863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Length</span>: 334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Content-Type</span>: multipart/form-data; boundary=------------------------rmlyjXjh3oIWX9K0m3HaUJ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-type</span>: multipart/form-data; boundary=------------------------AlCRy2vvxTBqIsDa6ZXbfO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: 127.0.0.1:41919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------rmlyjXjh3oIWX9K0m3HaUJ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file1cfb583ee241"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Type: application/octet-stream</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------AlCRy2vvxTBqIsDa6ZXbfO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="a"; filename="file1f8924cbe173"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Type: application/octet-stream</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> c</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> d</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> e</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> f</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------AlCRy2vvxTBqIsDa6ZXbfO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="b"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> some data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------AlCRy2vvxTBqIsDa6ZXbfO--</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------rmlyjXjh3oIWX9K0m3HaUJ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-Disposition: form-data; name="b"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> some data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------rmlyjXjh3oIWX9K0m3HaUJ--</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

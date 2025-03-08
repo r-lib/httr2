@@ -15,7 +15,7 @@ multi-response handler to process the result."><meta property="og:image" content
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ multi-response handler to process the result."><meta property="og:image" content
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform requests iteratively, generating new requests from previous responses</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/iterate.R" class="external-link"><code>R/iterate.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-perform-iterative.R" class="external-link"><code>R/req-perform-iterative.R</code></a></small>
       <div class="d-none name"><code>req_perform_iterative.Rd</code></div>
     </div>
 
@@ -173,9 +173,6 @@ like this:</p>
 <span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">&lt;-</span> <span class="fu">req_perform_iterative</span><span class="op">(</span><span class="va">req</span>, <span class="fu"><a href="iterate_with_offset.html">iterate_with_offset</a></span><span class="op">(</span><span class="st">"page_index"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Iterating <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA:  1s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Iterating <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  95% | ETA:  0s</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Iterating <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_data</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></span>

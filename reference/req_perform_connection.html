@@ -25,7 +25,7 @@ want to do other work in between handling inputs from the stream."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ want to do other work in between handling inputs from the stream."><meta propert
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform a request and return a streaming connection</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/req-perform-connection.R" class="external-link"><code>R/req-perform-connection.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-perform-connection.R" class="external-link"><code>R/req-perform-connection.R</code></a></small>
       <div class="d-none name"><code>req_perform_connection.Rd</code></div>
     </div>
 
@@ -100,8 +100,8 @@ nothing)?</p></dd>
 around <code><a href="req_verbose.html">req_verbose()</a></code> that uses an integer to control verbosity:</p><ul><li><p><code>0</code>: no output</p></li>
 <li><p><code>1</code>: show headers</p></li>
 <li><p><code>2</code>: show headers and bodies as they're streamed</p></li>
-<li><p><code>3</code>: show headers, bodies, curl status messages, and stream buffer
-management</p></li>
+<li><p><code>3</code>: show headers, bodies, curl status messages, raw SSEs, and stream
+buffer management</p></li>
 </ul><p>Use <code><a href="with_verbosity.html">with_verbosity()</a></code> to control the verbosity of requests that
 you can't affect directly.</p></dd>
 

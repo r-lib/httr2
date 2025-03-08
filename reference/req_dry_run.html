@@ -13,7 +13,7 @@ the magic of curl::curl_echo()."><meta property="og:image" content="https://httr
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@ the magic of curl::curl_echo()."><meta property="og:image" content="https://httr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Perform a dry run</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/pkgdown-v1.1.0/R/req-perform.R" class="external-link"><code>R/req-perform.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/R/req-dry-run.R" class="external-link"><code>R/req-dry-run.R</code></a></small>
       <div class="d-none name"><code>req_dry_run.Rd</code></div>
     </div>
 
@@ -60,7 +60,13 @@ the magic of <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_ec
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_dry_run</span><span class="op">(</span><span class="va">req</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span>, redact_headers <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_dry_run</span><span class="op">(</span></span>
+<span>  <span class="va">req</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  redact_headers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  testing_headers <span class="op">=</span> <span class="fu">is_testing</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  pretty_json <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"httr2_pretty_json"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,6 +86,24 @@ the magic of <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_ec
 redacts the contents of the Authorization header to prevent you from
 accidentally leaking credentials when debugging/reprexing.</p></dd>
 
+
+<dt id="arg-testing-headers">testing_headers<a class="anchor" aria-label="anchor" href="#arg-testing-headers"></a></dt>
+<dd><p>If <code>TRUE</code>, removes headers that httr2 would otherwise
+be automatically added, which are likely to change across test runs. This
+currently includes:</p><ul><li><p>The default <code>User-Agent</code>, which varies based on libcurl, curl, and
+httr2 versions.</p></li>
+<li><p>The `Host“ header, which is often set to a testing server.</p></li>
+<li><p>The <code>Content-Length</code> header, which will often vary by platform because
+of varying newline encodings. (And is also not correct if you have
+<code>pretty_json = TRUE</code>.)</p></li>
+<li><p>The <code>Accept-Encoding</code> header, which varies based on how libcurl was
+built.</p></li>
+</ul></dd>
+
+
+<dt id="arg-pretty-json">pretty_json<a class="anchor" aria-label="anchor" href="#arg-pretty-json"></a></dt>
+<dd><p>If <code>TRUE</code>, automatically prettify JSON bodies.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -92,7 +116,8 @@ including <code>method</code>, <code>path</code>, and <code>headers</code>.</p>
 <div class="section">
 <h3 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a></h3>
 
-<ul><li><p>The <code>Host</code> header is not respected.</p></li>
+<ul><li><p>The HTTP version is always <code>HTTP/1.1</code> (since you can't determine what it
+will actually be without connecting to the real server).</p></li>
 </ul></div>
 
     </div>
@@ -102,10 +127,10 @@ including <code>method</code>, <code>path</code>, and <code>headers</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># httr2 adds default User-Agent, Accept, and Accept-Encoding headers</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"http://example.com"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">req_dry_run</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the Authorization header is automatically redacted to avoid leaking</span></span></span>
@@ -113,21 +138,21 @@ including <code>method</code>, <code>path</code>, and <code>headers</code>.</p>
 <span class="r-in"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="st">"http://example.com"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="req_auth_basic.html">req_auth_basic</a></span><span class="op">(</span><span class="st">"user"</span>, <span class="st">"password"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu">req_dry_run</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if you need to see it, use redact_headers = FALSE</span></span></span>
 <span class="r-in"><span><span class="va">req</span> <span class="op">|&gt;</span> <span class="fu">req_dry_run</span><span class="op">(</span>redact_headers <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GET / HTTP/1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">User-Agent</span>: httr2/1.1.0 r-curl/6.1.0 libcurl/8.5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept</span>: */*</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Accept-Encoding</span>: deflate, gzip, br, zstd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Authorization</span>: Basic dXNlcjpwYXNzd29yZA==</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept</span>: */*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.1 r-curl/6.2.1 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
