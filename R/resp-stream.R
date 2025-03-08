@@ -306,7 +306,10 @@ resp_boundary_pushback <- function(resp, max_size, boundary_func, include_traile
       # again, they'll get the same error rather than reading the stream
       # having missed a bunch of bytes.
       resp$cache$push_back <- buffer
-      cli::cli_abort("Streaming read exceeded size limit of {max_size}")
+      cli::cli_abort(
+        "Streaming read exceeded size limit of {max_size}",
+        class = "httr2_streaming_error"
+      )
     }
 
     # We didn't have enough data. Attempt to read more
