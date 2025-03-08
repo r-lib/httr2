@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,8 +46,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="httr2-111">httr2 1.1.1<a class="anchor" aria-label="anchor" href="#httr2-111"></a></h2><p class="text-muted">CRAN release: 2025-03-08</p>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-1-1-1">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-1"></a></h3>
 <ul><li>
 <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> lifts many of the previous restrictions. It supports simplified versions of <code><a href="../reference/req_throttle.html">req_throttle()</a></code> and <code><a href="../reference/req_retry.html">req_retry()</a></code>, can refresh OAuth tokens, and checks the cache before/after each request. (<a href="https://github.com/r-lib/httr2/issues/681" class="external-link">#681</a>).</li>
 <li>Default verbosity can be controlled by the <code>HTTR2_VERBOSITY</code> environment variable (<a href="https://github.com/r-lib/httr2/issues/687" class="external-link">#687</a>).</li>
@@ -59,7 +62,7 @@
 <code><a href="../reference/req_throttle.html">req_throttle()</a></code> implements a new “token bucket” algorithm that maintains average rate limits while allowing bursts of higher request rates.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-improvements-and-bug-fixes-development-version">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-development-version"></a></h3>
+<h3 id="minor-improvements-and-bug-fixes-1-1-1">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-1-1-1"></a></h3>
 <ul><li>
 <code>aws_v4_signature()</code> correctly processes URLs containing query parameters (<a href="https://github.com/jeffreyzuber" class="external-link">@jeffreyzuber</a>, <a href="https://github.com/r-lib/httr2/issues/645" class="external-link">#645</a>).</li>
 <li>
