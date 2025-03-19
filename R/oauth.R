@@ -142,6 +142,20 @@ cache_choose <- function(client, cache_disk = FALSE, cache_key = NULL) {
   }
 }
 
+cache_noop <- function() {
+  # Does nothing.
+  list(
+    get = function() {
+      warn("get() was called on cache_noop")
+      invisible()
+    },
+    set = function(token) {
+      warn("set() was called on cache_noop")
+      invisible()
+    },
+    clear = function() {}
+  )
+}
 cache_mem <- function(client, key = NULL) {
   key <- hash(c(client$name, key))
   list(

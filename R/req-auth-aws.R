@@ -51,7 +51,10 @@ req_auth_aws_v4 <- function(req,
       aws_session_token = aws_session_token,
       aws_service = aws_service,
       aws_region = aws_region
-    )
+    ),
+    # auth_aws_sign doesn't have anything to cache, but still need to provide
+    # a cache argument because the req_auth_sign machinery expects it
+    cache = cache_noop()
   )
 }
 
@@ -60,7 +63,8 @@ auth_aws_sign <- function(req,
                           aws_secret_access_key,
                           aws_session_token = NULL,
                           aws_service = NULL,
-                          aws_region = NULL) {
+                          aws_region = NULL,
+                          cache) {
 
   current_time <- Sys.time()
 
