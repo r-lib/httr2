@@ -32,9 +32,7 @@ test_that("reads body on error", {
 
 test_that("can retry a transient error", {
   req <- local_app_request(function(req, res) {
-    i <- res$app$locals$i %||% 1
-    if (i == 1) {
-      res$app$locals$i <- 2
+    if (res$app$locals$i == 1) {
       res$
         set_status(429)$
         set_header("retry-after", 0)$
