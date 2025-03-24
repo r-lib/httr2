@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* Fix AWS request signing due to `argument 'cache' is missing` error (#706, @jcheng5).
+
 # httr2 1.1.1
 
 ## New features
