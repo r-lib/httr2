@@ -50,6 +50,11 @@ test_that("new_headers checks inputs", {
 
 test_that("can flatten repeated inputs", {
   expect_equal(headers_flatten(list()), list())
-  expect_equal(headers_flatten(list(x = 1)), list(x = 1))
+  expect_equal(headers_flatten(list(x = 1)), list(x = "1"))
   expect_equal(headers_flatten(list(x = 1:2)), list(x = "1,2"))
+})
+
+test_that("redacted inputs are preserved", {
+  x <- new_headers(list(x = "x"), redact = "x")
+  expect_equal(headers_flatten(x), x) 
 })

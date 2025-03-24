@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_headers()` more carefully checks its input types (#707).
 * Fix AWS request signing due to `argument 'cache' is missing` error (#706, @jcheng5).
 
 # httr2 1.1.1
