@@ -142,15 +142,15 @@ cache_choose <- function(client, cache_disk = FALSE, cache_key = NULL) {
   }
 }
 
+# Used for auth endoints that don't have a cache
 cache_noop <- function() {
-  # Does nothing.
   list(
     get = function() {
-      warn("get() was called on cache_noop")
+      abort("get() was called on cache_noop")
       invisible()
     },
     set = function(token) {
-      warn("set() was called on cache_noop")
+      abort("set() was called on cache_noop")
       invisible()
     },
     clear = function() {}

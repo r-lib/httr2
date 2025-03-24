@@ -1,4 +1,17 @@
-test_that("can correctly sign a request", {
+test_that("can correctly sign a request with dummy credentials", {
+  req <- request("https://sts.amazonaws.com/")
+  req <- req_auth_aws_v4(req,
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+  req <- req_body_form(req, Action = "GetCallerIdentity", Version = "2011-06-15")
+  expect_error(req_perform(req), class = "httr2_http_403")
+
+  # And can clear non-existant cache
+  expect_no_error(req_auth_clear_cache(req))
+})
+
+test_that("can correctly sign a request with live credentials", {
   skip_if_not(has_paws_credentials())
   creds <- paws.common::locate_credentials()
 
