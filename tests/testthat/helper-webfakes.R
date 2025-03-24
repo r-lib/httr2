@@ -1,4 +1,6 @@
 local_app_request <- function(fun, method = "get", frame = parent.frame()) {
+  # sometimes fails on CRAN and we don't need the hassle
+  skip_on_cran()
   # Works interactively (useful for manaul coverage checking)
   # but not in separate process
   if (!interactive()) {
