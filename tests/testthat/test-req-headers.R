@@ -6,6 +6,25 @@ test_that("can add and remove headers", {
   expect_equal(req$headers, new_headers(list()))
 })
 
+test_that("simple vectors automatically converted to strings", {
+  req <- request("http://example.com")
+  req <- req %>% req_headers(lgl = TRUE, int = 1L, dbl = 1.1, chr = "a")
+  resp <- req_dry_run(req, quiet = TRUE)
+
+  expect_equal(resp$headers$lgl, "TRUE")
+  expect_equal(resp$headers$int, "1")
+  expect_equal(resp$headers$dbl, "1.1")
+  expect_equal(resp$headers$chr, "a")
+})
+
+test_that("bad inputs get clear error", {
+  req <- request("http://example.com")
+  expect_snapshot(error = TRUE, {
+    req_headers(req, fun = mean)
+    req_headers(req, 1)
+  })
+})
+
 test_that("can add header called req", {
   req <- request("http://example.com")
   req <- req %>% req_headers(req = 1)
@@ -17,7 +36,7 @@ test_that("can add repeated headers", {
     req_headers(a = c("a", "b")) %>%
     req_dry_run(quiet = TRUE)
   # https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2
-  expect_equal(resp$headers$a, c("a,b"))
+  expect_equal(resp$headers$a, "a,b")
 })
 
 test_that("replacing headers is case-insensitive", {

@@ -61,8 +61,8 @@ headers_redact <- function(x, redact = TRUE) {
 
 # https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2
 headers_flatten <- function(x) {
-  n <- lengths(x)
-  x[n > 1] <- lapply(x[n > 1], paste, collapse = ",")
+  is_redacted <- map_lgl(x, is_redacted)
+  x[!is_redacted] <- lapply(x[!is_redacted], paste, collapse = ",")
   x
 }
 

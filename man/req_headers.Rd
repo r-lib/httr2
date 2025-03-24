@@ -15,8 +15,8 @@ req_headers_redacted(.req, ...)
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Name-value pairs of headers
 and their values.
 \itemize{
-\item Use \code{NULL} to reset a value to httr2's default
-\item Use \code{""} to remove a header
+\item Use \code{NULL} to reset a value to httr2's default.
+\item Use \code{""} to remove a header.
 \item Use a character vector to repeat a header.
 }}
 

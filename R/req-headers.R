@@ -11,8 +11,8 @@
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Name-value pairs of headers
 #'   and their values.
 #'
-#'   * Use `NULL` to reset a value to httr2's default
-#'   * Use `""` to remove a header
+#'   * Use `NULL` to reset a value to httr2's default.
+#'   * Use `""` to remove a header.
 #'   * Use a character vector to repeat a header.
 #' @param .redact A character vector of headers to redact. The Authorization
 #'   header is always redacted.
@@ -64,6 +64,7 @@
 req_headers <- function(.req, ..., .redact = NULL) {
   check_request(.req)
   check_character(.redact, allow_null = TRUE)
+  check_header_values(...)
 
   headers  <- modify_list(.req$headers, ..., .ignore_case = TRUE)
 
@@ -83,4 +84,18 @@ req_headers_redacted <- function(.req, ...) {
 
   headers <- list2(...)
   req_headers(.req, !!!headers, .redact = names(headers))
+}
+
+check_header_values <- function(..., error_call = caller_env()) {
+  dots <- list2(...)
+  
+  type_ok <- map_lgl(dots, function(x) is_atomic(x) || is.null(x))
+  if (any(!type_ok)) {
+    cli::cli_abort(
+      "All elements of {.arg ...} must be either an atomic vector or NULL.",
+      call = error_call
+    )
+  }
+
+  invisible()
 }

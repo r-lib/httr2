@@ -1,3 +1,16 @@
+# bad inputs get clear error
+
+    Code
+      req_headers(req, fun = mean)
+    Condition
+      Error in `req_headers()`:
+      ! All elements of `...` must be either an atomic vector or NULL.
+    Code
+      req_headers(req, 1)
+    Condition
+      Error in `req_headers()`:
+      ! All components of `...` must be named.
+
 # is case insensitive
 
     Code
