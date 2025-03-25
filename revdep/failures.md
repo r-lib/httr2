@@ -41,7 +41,7 @@ Run `revdepcheck::cloud_details(, "GeoTox")` for more info
 * GitHub: https://github.com/easystats/insight
 * Source code: https://github.com/cran/insight
 * Date/Publication: 2025-03-01 23:10:06 UTC
-* Number of recursive dependencies: 424
+* Number of recursive dependencies: 425
 
 Run `revdepcheck::cloud_details(, "insight")` for more info
 
@@ -117,7 +117,7 @@ Status: 3 ERRORs, 1 NOTE
 * GitHub: https://github.com/easystats/parameters
 * Source code: https://github.com/cran/parameters
 * Date/Publication: 2025-03-04 14:50:06 UTC
-* Number of recursive dependencies: 472
+* Number of recursive dependencies: 474
 
 Run `revdepcheck::cloud_details(, "parameters")` for more info
 
