@@ -89,7 +89,7 @@ req |> req_dry_run()
 #> accept: */*
 #> accept-encoding: deflate, gzip
 #> host: r-project.org
-#> user-agent: httr2/1.1.0.9000 r-curl/6.2.1 libcurl/8.11.1
+#> user-agent: httr2/1.1.1.9000 r-curl/6.2.2 libcurl/8.11.1
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -101,7 +101,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6963 bytes)
+#> Body: In memory (7055 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
