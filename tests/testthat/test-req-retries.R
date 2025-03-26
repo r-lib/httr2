@@ -28,7 +28,7 @@ test_that("can override default is_transient", {
   expect_equal(retry_is_transient(req, response(404)), FALSE)
   expect_equal(retry_is_transient(req, response(429)), TRUE)
 
-  req <- req_retry(req, is_transient = ~ resp_status(.x) == 404)
+  req <- req_retry(req, max_tries = 2, is_transient = ~ resp_status(.x) == 404)
   expect_equal(retry_is_transient(req, response(404)), TRUE)
   expect_equal(retry_is_transient(req, response(429)), FALSE)
 })
@@ -41,7 +41,7 @@ test_that("can override default backoff", {
   expect_equal(retry_backoff(req, 5), 26.9)
   expect_equal(retry_backoff(req, 10), 60)
 
-  req <- req_retry(req, backoff = ~10)
+  req <- req_retry(req, max_tries = 2, backoff = ~10)
   expect_equal(retry_backoff(req, 1), 10)
   expect_equal(retry_backoff(req, 5), 10)
   expect_equal(retry_backoff(req, 10), 10)
@@ -52,13 +52,17 @@ test_that("can override default retry wait", {
   req <- request_test()
   expect_equal(retry_after(req, resp, 1), 10)
 
-  req <- req_retry(req, after = ~ as.numeric(resp_header(.x, "Wait-For")))
+  req <- req_retry(
+    req,
+    max_tries = 2,
+    after = ~ as.numeric(resp_header(.x, "Wait-For"))
+  )
   expect_equal(retry_after(req, resp, 1), 20)
 })
 
 test_that("missing retry-after uses backoff", {
   req <- request_test()
-  req <- req_retry(req, backoff = ~10)
+  req <- req_retry(req, max_tries = 2, backoff = ~10)
 
   expect_equal(retry_after(req, response(429), 1), 10)
 })
@@ -67,7 +71,8 @@ test_that("useful message if `after` wrong", {
   req <- request_test() %>%
     req_retry(
       is_transient = function(resp) TRUE,
-      after = function(resp) resp
+      after = function(resp) resp, 
+      max_tries = 2
     )
 
   expect_snapshot(req_perform(req), error = TRUE)
@@ -117,7 +122,7 @@ test_that("triggered after specified requests", {
 
   # Attempt on same realm errors without trying at all
   req2 <- request_test("/status/:status", status = 200) %>%
-    req_retry()
+    req_retry(max_tries = 2)
   req_perform(req) %>%
     expect_no_condition(class = "httr2_perform") %>%
     expect_error(class = "httr2_breaker")
