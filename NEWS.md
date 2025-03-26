@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.1.2
 
 * `req_headers()` more carefully checks its input types (#707).
