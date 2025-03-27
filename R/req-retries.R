@@ -86,17 +86,18 @@
 #'     is_transient = github_is_transient,
 #'     after = github_after
 #'   )
-req_retry <- function(req,
-                      max_tries = NULL,
-                      max_seconds = NULL,
-                      retry_on_failure = FALSE,
-                      is_transient = NULL,
-                      backoff = NULL,
-                      after = NULL,
-                      failure_threshold = Inf,
-                      failure_timeout = 30,
-                      failure_realm = NULL) {
-
+req_retry <- function(
+  req,
+  max_tries = NULL,
+  max_seconds = NULL,
+  retry_on_failure = FALSE,
+  is_transient = NULL,
+  backoff = NULL,
+  after = NULL,
+  failure_threshold = Inf,
+  failure_timeout = 30,
+  failure_realm = NULL
+) {
   check_request(req)
   check_number_whole(max_tries, min = 1, allow_null = TRUE)
   check_number_whole(max_seconds, min = 0, allow_null = TRUE)
@@ -110,7 +111,8 @@ req_retry <- function(req,
 
   check_bool(retry_on_failure)
 
-  req_policies(req,
+  req_policies(
+    req,
     retry_max_tries = max_tries,
     retry_max_wait = max_seconds,
     retry_on_failure = retry_on_failure,
@@ -153,10 +155,9 @@ retry_check_breaker <- function(req, i, error_call = caller_env()) {
   } else {
     cli::cli_abort(
       c(
-         "Request failures have exceeded the threshold for realm {.str {realm}}.",
+        "Request failures have exceeded the threshold for realm {.str {realm}}.",
         i = "The server behind {.str {realm}} is likely still overloaded or down.",
         i = "Wait {remaining} seconds before retrying."
-
       ),
       call = error_call,
       class = "httr2_breaker"
@@ -169,7 +170,10 @@ retry_is_transient <- function(req, resp) {
     return(req$policies$retry_on_failure %||% FALSE)
   }
 
-  req_policy_call(req, "retry_is_transient", list(resp),
+  req_policy_call(
+    req,
+    "retry_is_transient",
+    list(resp),
     default = function(resp) resp_status(resp) %in% c(429, 503)
   )
 }
@@ -183,7 +187,12 @@ retry_after <- function(req, resp, i, error_call = caller_env()) {
     return(retry_backoff(req, i))
   }
 
-  after <- req_policy_call(req, "retry_after", list(resp), default = resp_retry_after)
+  after <- req_policy_call(
+    req,
+    "retry_after",
+    list(resp),
+    default = resp_retry_after
+  )
 
   # TODO: apply this idea to all callbacks
   if (!is_number_or_na(after)) {

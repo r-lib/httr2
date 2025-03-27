@@ -56,20 +56,22 @@
 #'
 #' # Second request retrieves it from the cache
 #' resp <- req |> req_perform()
-req_cache <- function(req,
-                      path,
-                      use_on_error = FALSE,
-                      debug = getOption("httr2_cache_debug", FALSE),
-                      max_age = Inf,
-                      max_n = Inf,
-                      max_size = 1024^3) {
-
+req_cache <- function(
+  req,
+  path,
+  use_on_error = FALSE,
+  debug = getOption("httr2_cache_debug", FALSE),
+  max_age = Inf,
+  max_n = Inf,
+  max_size = 1024^3
+) {
   check_number_whole(max_age, min = 0, allow_infinite = TRUE)
   check_number_whole(max_n, min = 0, allow_infinite = TRUE)
   check_number_decimal(max_size, min = 1, allow_infinite = TRUE)
 
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
-  req_policies(req,
+  req_policies(
+    req,
     cache_path = path,
     cache_use_on_error = use_on_error,
     cache_debug = debug,
@@ -151,9 +153,24 @@ cache_prune_if_needed <- function(req, threshold = 60, debug = FALSE) {
 cache_prune <- function(path, max, debug = TRUE) {
   info <- cache_info(path)
 
-  info <- cache_prune_files(info, info$mtime + max$age < Sys.time(), "too old", debug)
-  info <- cache_prune_files(info, seq_len(nrow(info)) > max$n, "too numerous", debug)
-  info <- cache_prune_files(info, cumsum(info$size) > max$size, "too big", debug)
+  info <- cache_prune_files(
+    info,
+    info$mtime + max$age < Sys.time(),
+    "too old",
+    debug
+  )
+  info <- cache_prune_files(
+    info,
+    seq_len(nrow(info)) > max$n,
+    "too numerous",
+    debug
+  )
+  info <- cache_prune_files(
+    info,
+    cumsum(info$size) > max$size,
+    "too big",
+    debug
+  )
 
   invisible()
 }
@@ -169,7 +186,8 @@ cache_info <- function(path, pattern = "\\.rds$") {
 
 cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
   if (any(to_remove)) {
-    if (debug) cli::cli_text("Deleted {sum(to_remove)} file{?s} that {?is/are} {why}")
+    if (debug)
+      cli::cli_text("Deleted {sum(to_remove)} file{?s} that {?is/are} {why}")
 
     file.remove(info$name[to_remove])
     info[!to_remove, ]
@@ -211,7 +229,8 @@ cache_pre_fetch <- function(req, path = NULL) {
     resp
   } else {
     if (debug) cli::cli_text("Cached value is stale; checking for updates")
-    req_headers(req,
+    req_headers(
+      req,
       `If-Modified-Since` = info$last_modified,
       `If-None-Match` = info$etag
     )
@@ -229,14 +248,16 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
   if (is_error(resp)) {
     if (cache_use_on_error(req) && !is.null(cached_resp)) {
-      if (debug) cli::cli_text("Request errored; retrieving response from cache")
+      if (debug)
+        cli::cli_text("Request errored; retrieving response from cache")
       cached_resp
     } else {
       resp
     }
   } else if (resp_status(resp) == 304 && !is.null(cached_resp)) {
     signal("", "httr2_cache_not_modified")
-    if (debug) cli::cli_text("Cached value still ok; retrieving body from cache")
+    if (debug)
+      cli::cli_text("Cached value still ok; retrieving body from cache")
 
     # Combine headers
     resp$headers <- cache_headers(cached_resp, resp)
@@ -264,7 +285,8 @@ cache_body <- function(cached_resp, path = NULL) {
     return(body)
   }
 
-  switch(resp_body_type(cached_resp),
+  switch(
+    resp_body_type(cached_resp),
     disk = file.copy(body, path, overwrite = TRUE),
     memory = writeBin(body, path),
     stream = cli::cli_abort("Invalid body type", .internal = TRUE)
@@ -277,7 +299,11 @@ cache_body <- function(cached_resp, path = NULL) {
 cache_headers <- function(cached_resp, resp) {
   check_response(cached_resp)
 
-  headers <- modify_list(cached_resp$headers, !!!resp$headers, .ignore_case = TRUE)
+  headers <- modify_list(
+    cached_resp$headers,
+    !!!resp$headers,
+    .ignore_case = TRUE
+  )
   as_headers(headers)
 }
 

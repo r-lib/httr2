@@ -25,12 +25,13 @@
 #' response()
 #' response(404, method = "POST")
 #' response(headers = c("Content-Type: text/html", "Content-Length: 300"))
-response <- function(status_code = 200,
-                     url = "https://example.com",
-                     method = "GET",
-                     headers = list(),
-                     body = raw()) {
-
+response <- function(
+  status_code = 200,
+  url = "https://example.com",
+  method = "GET",
+  headers = list(),
+  body = raw()
+) {
   check_number_whole(status_code, min = 100, max = 700)
   check_string(url)
   check_string(method)
@@ -48,12 +49,13 @@ response <- function(status_code = 200,
 
 #' @export
 #' @rdname response
-response_json <- function(status_code = 200,
-                     url = "https://example.com",
-                     method = "GET",
-                     headers = list(),
-                     body = list()) {
-
+response_json <- function(
+  status_code = 200,
+  url = "https://example.com",
+  method = "GET",
+  headers = list(),
+  body = list()
+) {
   headers <- as_headers(headers)
   headers$`Content-Type` <- "application/json"
 
@@ -68,13 +70,15 @@ response_json <- function(status_code = 200,
   )
 }
 
-new_response <- function(method,
-                         url,
-                         status_code,
-                         headers,
-                         body,
-                         request = NULL,
-                         error_call = caller_env()) {
+new_response <- function(
+  method,
+  url,
+  status_code,
+  headers,
+  body,
+  request = NULL,
+  error_call = caller_env()
+) {
   check_string(method, call = error_call)
   check_string(url, call = error_call)
   check_number_whole(status_code, call = error_call)
@@ -127,8 +131,11 @@ print.httr2_response <- function(x, ...) {
   if (!resp_has_body(x)) {
     cli::cli_text("{.field Body}: None")
   } else {
-    switch(resp_body_type(x),
-      disk = cli::cli_text("{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)"),
+    switch(
+      resp_body_type(x),
+      disk = cli::cli_text(
+        "{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)"
+      ),
       memory = cli::cli_text("{.field Body}: In memory ({length(body)} bytes)"),
       stream = cli::cli_text("{.field Body}: Streaming connection")
     )

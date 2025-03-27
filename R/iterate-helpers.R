@@ -55,11 +55,13 @@
 #'   max_reqs = Inf
 #' )
 #' }
-iterate_with_offset <- function(param_name,
-                                start = 1,
-                                offset = 1,
-                                resp_pages = NULL,
-                                resp_complete = NULL) {
+iterate_with_offset <- function(
+  param_name,
+  start = 1,
+  offset = 1,
+  resp_pages = NULL,
+  resp_complete = NULL
+) {
   check_string(param_name)
   check_number_whole(start)
   check_number_whole(offset, min = 1)

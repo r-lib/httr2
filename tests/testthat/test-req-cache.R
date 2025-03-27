@@ -12,7 +12,8 @@ test_that("never retrieves POST request from cache", {
     req_cache(tempfile())
 
   # Fake an equivalent GET request in the cache
-  resp <- response(200,
+  resp <- response(
+    200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
     body = charToRaw("abc")
   )
@@ -23,7 +24,8 @@ test_that("never retrieves POST request from cache", {
 
 test_that("immutable objects retrieved directly from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
-  resp <- response(200,
+  resp <- response(
+    200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
     body = charToRaw("abc")
   )
@@ -38,7 +40,8 @@ test_that("cached cache header added to request", {
   req2 <- cache_pre_fetch(req)
   expect_equal(req2, req)
 
-  resp <- response(200,
+  resp <- response(
+    200,
     headers = c('Etag: "abc"', "Last-Modified: Wed, 01 Jan 2020 00:00:00 GMT"),
     body = charToRaw("abc")
   )
@@ -46,7 +49,10 @@ test_that("cached cache header added to request", {
 
   # After caching adds caching headers
   req3 <- cache_pre_fetch(req)
-  expect_equal(req3$headers$`If-Modified-Since`, "Wed, 01 Jan 2020 00:00:00 GMT")
+  expect_equal(
+    req3$headers$`If-Modified-Since`,
+    "Wed, 01 Jan 2020 00:00:00 GMT"
+  )
   expect_equal(req3$headers$`If-None-Match`, '"abc"')
 })
 
@@ -87,7 +93,8 @@ test_that("automatically adds to cache", {
 
 test_that("cache emits useful debugging info", {
   req <- request("http://example.com") %>% req_cache(tempfile(), debug = TRUE)
-  resp <- response(200,
+  resp <- response(
+    200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
     body = charToRaw("abc")
   )
@@ -261,18 +268,23 @@ test_that("correctly determines if response is cacheable", {
   expect_equal(is_cacheable(200, headers = "Expires: ABC"), TRUE)
   expect_equal(is_cacheable(200, headers = "Cache-Control: max-age=10"), TRUE)
   expect_equal(is_cacheable(200, headers = "Etag: ABC"), TRUE)
-  expect_equal(is_cacheable(200, headers = c("Etag: ABC", "Cache-Control: no-store")), FALSE)
+  expect_equal(
+    is_cacheable(200, headers = c("Etag: ABC", "Cache-Control: no-store")),
+    FALSE
+  )
   expect_equal(is_cacheable(200), FALSE)
   expect_equal(is_cacheable(404), FALSE)
   expect_equal(is_cacheable(method = "POST"), FALSE)
 })
 
 test_that("can extract cache info with correct types", {
-  resp <- response(headers = c(
-    "Expires: Wed, 01 Jan 2020 00:00:00 GMT",
-    "Last-Modified: Wed, 01 Jan 2010 00:00:00 GMT",
-    "Etag: \"abc\""
-  ))
+  resp <- response(
+    headers = c(
+      "Expires: Wed, 01 Jan 2020 00:00:00 GMT",
+      "Last-Modified: Wed, 01 Jan 2010 00:00:00 GMT",
+      "Etag: \"abc\""
+    )
+  )
   info <- resp_cache_info(resp)
 
   expect_equal(info$expires, local_time("2020-01-01"))
@@ -284,17 +296,21 @@ test_that("can extract cache info with correct types", {
 
 test_that("can extract various expiry values", {
   # Prefer Date + max-age
-  resp1 <- response(headers = c(
-    "Date: Wed, 01 Jan 2020 00:00:00 GMT",
-    "Cache-Control: max-age=3600",
-    "Expiry: Wed, 01 Jan 2020 00:00:00 GMT"
-  ))
+  resp1 <- response(
+    headers = c(
+      "Date: Wed, 01 Jan 2020 00:00:00 GMT",
+      "Cache-Control: max-age=3600",
+      "Expiry: Wed, 01 Jan 2020 00:00:00 GMT"
+    )
+  )
   expect_equal(resp_cache_expires(resp1), local_time("2020-01-01 01:00"))
 
   # Fall back to Expires
-  resp2 <- response(headers = c(
-    "Expires: Wed, 01 Jan 2020 00:00:00 GMT"
-  ))
+  resp2 <- response(
+    headers = c(
+      "Expires: Wed, 01 Jan 2020 00:00:00 GMT"
+    )
+  )
   expect_equal(resp_cache_expires(resp2), local_time("2020-01-01 00:00"))
 
   # Returns NA if no expiry

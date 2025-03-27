@@ -49,10 +49,12 @@
 #' resps <- reqs |> req_perform_sequential()
 #' resps_data(resps, \(resp) resp_body_json(resp))
 #' }
-req_perform_sequential <- function(reqs,
-                                   paths = NULL,
-                                   on_error = c("stop", "return", "continue"),
-                                   progress = TRUE) {
+req_perform_sequential <- function(
+  reqs,
+  paths = NULL,
+  on_error = c("stop", "return", "continue"),
+  progress = TRUE
+) {
   if (!is_bare_list(reqs)) {
     stop_input_type(reqs, "a list")
   }
@@ -70,27 +72,32 @@ req_perform_sequential <- function(reqs,
 
   resps <- rep_along(reqs, list())
 
-  tryCatch({
-    for (i in seq_along(reqs)) {
-      check_request(reqs[[i]], arg = glue::glue("req[[{i}]]"))
+  tryCatch(
+    {
+      for (i in seq_along(reqs)) {
+        check_request(reqs[[i]], arg = glue::glue("req[[{i}]]"))
 
-      if (err_catch) {
-        resps[[i]] <- tryCatch(
-          req_perform(reqs[[i]], path = paths[[i]]),
-          httr2_error = function(err) err
-        )
-      } else {
-        resps[[i]] <- req_perform(reqs[[i]], path = paths[[i]])
+        if (err_catch) {
+          resps[[i]] <- tryCatch(
+            req_perform(reqs[[i]], path = paths[[i]]),
+            httr2_error = function(err) err
+          )
+        } else {
+          resps[[i]] <- req_perform(reqs[[i]], path = paths[[i]])
+        }
+        if (err_return && is_error(resps[[i]])) {
+          break
+        }
+        progress$update()
       }
-      if (err_return && is_error(resps[[i]])) {
-        break
-      }
-      progress$update()
+    },
+    interrupt = function(cnd) {
+      resps <- resps[seq_len(i)]
+      cli::cli_alert_warning(
+        "Terminating iteration; returning {i} response{?s}."
+      )
     }
-  }, interrupt = function(cnd) {
-    resps <- resps[seq_len(i)]
-    cli::cli_alert_warning("Terminating iteration; returning {i} response{?s}.")
-  })
+  )
   progress$done()
 
   resps

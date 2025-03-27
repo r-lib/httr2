@@ -3,7 +3,9 @@ sync_req <- function(name, .env = parent.frame()) {
   skip_if_not_installed("nanonext")
 
   if (missing(name) || !is.character(name)) {
-    cli::cli_abort("Use unique (character) name for each sync_req() / sync_rep() pair")
+    cli::cli_abort(
+      "Use unique (character) name for each sync_req() / sync_rep() pair"
+    )
   }
   connected <- FALSE
   cv <- nanonext::cv()
@@ -12,7 +14,11 @@ sync_req <- function(name, .env = parent.frame()) {
   nanonext::pipe_notify(sock, cv, add = TRUE)
   nanonext::listen(sock, url = sprintf("ipc:///tmp/nanonext%s", name))
 
-  function(expr = {}, timeout = 1000L) {
+  function(
+    expr = {
+    },
+    timeout = 1000L
+  ) {
     if (!connected) {
       nanonext::until(cv, timeout)
       connected <<- TRUE
@@ -27,7 +33,9 @@ sync_req <- function(name, .env = parent.frame()) {
 
 sync_rep <- function(name, .env = parent.frame()) {
   if (missing(name) || !is.character(name)) {
-    cli::cli_abort("Use unique (character) name for each sync_req() / sync_rep() pair")
+    cli::cli_abort(
+      "Use unique (character) name for each sync_req() / sync_rep() pair"
+    )
   }
 
   connected <- FALSE
@@ -37,7 +45,11 @@ sync_rep <- function(name, .env = parent.frame()) {
   nanonext::pipe_notify(sock, cv, add = TRUE)
   nanonext::dial(sock, url = sprintf("ipc:///tmp/nanonext%s", name))
 
-  function(expr = {}, timeout = 1000L) {
+  function(
+    expr = {
+    },
+    timeout = 1000L
+  ) {
     if (!connected) {
       nanonext::until(cv, timeout)
       connected <<- TRUE

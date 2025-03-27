@@ -59,16 +59,25 @@ req_template <- function(req, template, ..., .env = parent.frame()) {
   req_url_path_append(req, path)
 }
 
-template_process <- function(template,
-                             dots = list(),
-                             env = parent.frame(),
-                             error_call = caller_env()) {
+template_process <- function(
+  template,
+  dots = list(),
+  env = parent.frame(),
+  error_call = caller_env()
+) {
   type <- template_type(template)
   vars <- template_vars(template, type)
-  vals <- map_chr(vars, template_val, dots = dots, env = env, error_call = error_call)
+  vals <- map_chr(
+    vars,
+    template_val,
+    dots = dots,
+    env = env,
+    error_call = error_call
+  )
 
   for (i in seq_along(vars)) {
-    pattern <- switch(type,
+    pattern <- switch(
+      type,
       colon = paste0(":", vars[[i]]),
       uri = paste0("{", vars[[i]], "}")
     )
@@ -101,7 +110,8 @@ template_val <- function(name, dots, env, error_call = caller_env()) {
 template_vars <- function(x, type) {
   if (type == "none") return(character())
 
-  pattern <- switch(type,
+  pattern <- switch(
+    type,
     colon = ":([a-zA-Z0-9_]+)",
     uri = "\\{(\\w+?)\\}"
   )

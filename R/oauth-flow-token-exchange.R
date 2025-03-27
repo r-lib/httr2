@@ -54,17 +54,19 @@
 #'       options = '{"userProject":"123456"}'
 #'     )
 #'   )
-req_oauth_token_exchange <- function(req,
-                                     client,
-                                     subject_token,
-                                     subject_token_type,
-                                     resource = NULL,
-                                     audience = NULL,
-                                     scope = NULL,
-                                     requested_token_type = NULL,
-                                     actor_token = NULL,
-                                     actor_token_type = NULL,
-                                     token_params = list()) {
+req_oauth_token_exchange <- function(
+  req,
+  client,
+  subject_token,
+  subject_token_type,
+  resource = NULL,
+  audience = NULL,
+  scope = NULL,
+  requested_token_type = NULL,
+  actor_token = NULL,
+  actor_token_type = NULL,
+  token_params = list()
+) {
   params <- list(
     client = client,
     subject_token = subject_token,
@@ -83,16 +85,18 @@ req_oauth_token_exchange <- function(req,
 
 #' @export
 #' @rdname req_oauth_token_exchange
-oauth_flow_token_exchange <- function(client,
-                                      subject_token,
-                                      subject_token_type,
-                                      resource = NULL,
-                                      audience = NULL,
-                                      scope = NULL,
-                                      requested_token_type = NULL,
-                                      actor_token = NULL,
-                                      actor_token_type = NULL,
-                                      token_params = list()) {
+oauth_flow_token_exchange <- function(
+  client,
+  subject_token,
+  subject_token_type,
+  resource = NULL,
+  audience = NULL,
+  scope = NULL,
+  requested_token_type = NULL,
+  actor_token = NULL,
+  actor_token_type = NULL,
+  token_params = list()
+) {
   oauth_client_get_token(
     client,
     grant_type = "urn:ietf:params:oauth:grant-type:token-exchange",

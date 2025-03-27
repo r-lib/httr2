@@ -31,7 +31,12 @@ resp_headers <- function(resp, filter = NULL) {
   if (is.null(filter)) {
     resp$headers
   } else {
-    resp$headers[grepl(filter, names(resp$headers), perl = TRUE, ignore.case = TRUE)]
+    resp$headers[grepl(
+      filter,
+      names(resp$headers),
+      perl = TRUE,
+      ignore.case = TRUE
+    )]
   }
 }
 
@@ -169,7 +174,7 @@ resp_retry_after <- function(resp) {
 #' resp_link_url(resp, "last")
 #' resp_link_url(resp, "prev")
 resp_link_url <- function(resp, rel) {
-if (!resp_header_exists(resp, "Link")) {
+  if (!resp_header_exists(resp, "Link")) {
     return()
   }
 

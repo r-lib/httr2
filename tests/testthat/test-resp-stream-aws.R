@@ -30,12 +30,16 @@ test_that("can return various types of header", {
   expect_equal(parse_aws_event(bytes)$headers, list(foo = 4294967295))
 
   # long
-  bytes <- hex_to_raw("0000001d000000018a55bccc03666f6f050000ffffffffffff6b03c255")
+  bytes <- hex_to_raw(
+    "0000001d000000018a55bccc03666f6f050000ffffffffffff6b03c255"
+  )
   expected <- structure(1.390671161567e-309, class = "integer64")
   expect_equal(parse_aws_event(bytes)$headers, list(foo = expected))
 
   # byte array
-  bytes <- hex_to_raw("0000001c00000001b735957c03666f6f0600050102030405cdda4038")
+  bytes <- hex_to_raw(
+    "0000001c00000001b735957c03666f6f0600050102030405cdda4038"
+  )
   expect_equal(parse_aws_event(bytes)$headers, list(foo = as.raw(1:5)))
 
   # character
@@ -43,11 +47,15 @@ test_that("can return various types of header", {
   expect_equal(parse_aws_event(bytes)$headers, list(foo = "bar"))
 
   # UUID
-  bytes <- hex_to_raw("00000025000000011b044f8b03666f6f093bfdac5cfe6c402983bfc1de7819f5316056148a")
-  expect_equal(parse_aws_event(
-    bytes
-  )$headers, list(foo = "3bfdac5cfe6c402983bfc1de7819f531"))
-
+  bytes <- hex_to_raw(
+    "00000025000000011b044f8b03666f6f093bfdac5cfe6c402983bfc1de7819f5316056148a"
+  )
+  expect_equal(
+    parse_aws_event(
+      bytes
+    )$headers,
+    list(foo = "3bfdac5cfe6c402983bfc1de7819f531")
+  )
 })
 
 test_that("unknown header triggers error", {
@@ -56,7 +64,8 @@ test_that("unknown header triggers error", {
 })
 
 test_that("json content type automatically parsed", {
-  bytes <- hex_to_raw("
+  bytes <- hex_to_raw(
+    "
     000001c20000005bc1123f0b0b3a6576656e742d74797065070015537562736372696265546f
     53686172644576656e740d3a636f6e74656e742d747970650700106170706c69636174696f6e
     2f6a736f6e0d3a6d6573736167652d747970650700056576656e747b22436f6e74696e756174
@@ -69,7 +78,8 @@ test_that("json content type automatically parsed", {
     632d343036372d623433362d303566383863306662356566222c2253657175656e63654e756d
     626572223a223439353838363330373936343234353132353936363136333437353239313133
     373435393934373336323937343734373039373832353330227d5d7dd84c02f3
-  ")
+  "
+  )
   parsed <- parse_aws_event(bytes)
   expect_type(parsed$body, "list")
 })

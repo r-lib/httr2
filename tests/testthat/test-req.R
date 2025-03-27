@@ -8,7 +8,7 @@ test_that("req has basic print method", {
 })
 
 test_that("printing headers works with {}", {
-  expect_snapshot(req_headers(request("http://test"), x  = "{z}", `{z}` = "x"))
+  expect_snapshot(req_headers(request("http://test"), x = "{z}", `{z}` = "x"))
 })
 
 test_that("individually prints repeated headers", {

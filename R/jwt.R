@@ -27,14 +27,16 @@
 #' @examples
 #' claim <- jwt_claim()
 #' str(claim)
-jwt_claim <- function(iss = NULL,
-                      sub = NULL,
-                      aud = NULL,
-                      exp = unix_time() + 5L * 60L,
-                      nbf = unix_time(),
-                      iat = unix_time(),
-                      jti = NULL,
-                      ...) {
+jwt_claim <- function(
+  iss = NULL,
+  sub = NULL,
+  aud = NULL,
+  exp = unix_time() + 5L * 60L,
+  nbf = unix_time(),
+  iat = unix_time(),
+  jti = NULL,
+  ...
+) {
   # https://datatracker.ietf.org/doc/html/rfc7519
   jose::jwt_claim(
     iss = iss,

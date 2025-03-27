@@ -93,12 +93,15 @@ req_body_file <- function(req, path, type = NULL) {
 #' @param digits How many digits of precision should numbers use in JSON?
 #' @param null Should `NULL` be translated to JSON's null (`"null"`)
 #'   or an empty list (`"list"`).
-req_body_json <- function(req, data,
-                          auto_unbox = TRUE,
-                          digits = 22,
-                          null = "null",
-                          type = "application/json",
-                          ...) {
+req_body_json <- function(
+  req,
+  data,
+  auto_unbox = TRUE,
+  digits = 22,
+  null = "null",
+  type = "application/json",
+  ...
+) {
   check_request(req)
   check_installed("jsonlite")
   check_string(type)
@@ -147,9 +150,11 @@ req_body_json_modify <- function(req, ...) {
 #'   `req_body_json()` uses this argument differently; it takes additional
 #'   arguments passed on to  [jsonlite::toJSON()].
 #' @inheritParams req_url_query
-req_body_form <- function(.req,
-                          ...,
-                          .multi = c("error", "comma", "pipe", "explode")) {
+req_body_form <- function(
+  .req,
+  ...,
+  .multi = c("error", "comma", "pipe", "explode")
+) {
   check_request(.req)
 
   dots <- multi_dots(..., .multi = .multi)
@@ -179,7 +184,14 @@ req_body_multipart <- function(.req, ...) {
 
 # General structure -------------------------------------------------------
 
-req_body <- function(req, data, type, content_type, params = list(), error_call = parent.frame()) {
+req_body <- function(
+  req,
+  data,
+  type,
+  content_type,
+  params = list(),
+  error_call = parent.frame()
+) {
   if (!is.null(req$body) && req$body$type != type) {
     cli::cli_abort(
       c(
@@ -251,7 +263,8 @@ req_body_apply <- function(req) {
       req,
       done = function() close(con)
     )
-    req <- req_options(req,
+    req <- req_options(
+      req,
       post = TRUE,
       readfunction = function(nbytes, ...) readBin(con, "raw", nbytes),
       seekfunction = function(offset, ...) seek(con, where = offset),
@@ -287,9 +300,5 @@ req_body_apply_raw <- function(req, body) {
   if (is_string(body)) {
     body <- charToRaw(enc2utf8(body))
   }
-  req_options(req,
-    post = TRUE,
-    postfieldsize = length(body),
-    postfields = body
-  )
+  req_options(req, post = TRUE, postfieldsize = length(body), postfields = body)
 }

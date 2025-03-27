@@ -66,7 +66,7 @@ req_headers <- function(.req, ..., .redact = NULL) {
   check_character(.redact, allow_null = TRUE)
   check_header_values(...)
 
-  headers  <- modify_list(.req$headers, ..., .ignore_case = TRUE)
+  headers <- modify_list(.req$headers, ..., .ignore_case = TRUE)
 
   redact <- union(.redact, "Authorization")
   redact <- redact[tolower(redact) %in% tolower(names(headers))]
@@ -88,7 +88,7 @@ req_headers_redacted <- function(.req, ...) {
 
 check_header_values <- function(..., error_call = caller_env()) {
   dots <- list2(...)
-  
+
   type_ok <- map_lgl(dots, function(x) is_atomic(x) || is.null(x))
   if (any(!type_ok)) {
     cli::cli_abort(

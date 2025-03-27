@@ -26,7 +26,8 @@ req_method_apply <- function(req) {
     return(req)
   }
 
-  switch(req$method,
+  switch(
+    req$method,
     HEAD = req_options(req, nobody = TRUE),
     req_options(req, customrequest = req$method)
   )

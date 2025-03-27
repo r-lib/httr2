@@ -1,8 +1,10 @@
-multi_dots <- function(...,
-                       .multi = c("error", "comma", "pipe", "explode"),
-                       .space = c("percent", "form"),
-                       error_arg = "...",
-                       error_call = caller_env()) {
+multi_dots <- function(
+  ...,
+  .multi = c("error", "comma", "pipe", "explode"),
+  .space = c("percent", "form"),
+  error_arg = "...",
+  error_call = caller_env()
+) {
   if (is.function(.multi)) {
     check_function2(.multi, call = error_call, arg = ".multi")
   } else {
@@ -34,20 +36,40 @@ multi_dots <- function(...,
   n <- lengths(dots)
   if (any(n > 1)) {
     if (is.function(.multi)) {
-    dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
+      dots[n > 1] <- imap(
+        dots[n > 1],
+        format_query_param,
+        multi = TRUE,
+        form = form
+      )
       dots[n > 1] <- lapply(dots[n > 1], .multi)
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "comma") {
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
+      dots[n > 1] <- imap(
+        dots[n > 1],
+        format_query_param,
+        multi = TRUE,
+        form = form
+      )
       dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = ",")
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "pipe") {
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
+      dots[n > 1] <- imap(
+        dots[n > 1],
+        format_query_param,
+        multi = TRUE,
+        form = form
+      )
       dots[n > 1] <- lapply(dots[n > 1], paste0, collapse = "|")
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "explode") {
       dots <- explode(dots)
-      dots[n > 1] <- imap(dots[n > 1], format_query_param, multi = TRUE, form = form)
+      dots[n > 1] <- imap(
+        dots[n > 1],
+        format_query_param,
+        multi = TRUE,
+        form = form
+      )
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "error") {
       cli::cli_abort(

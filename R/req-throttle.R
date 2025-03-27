@@ -40,11 +40,7 @@
 #' throttle_status()
 #'
 #' \dontshow{httr2:::throttle_reset()}
-req_throttle <- function(req,
-                         rate,
-                         capacity,
-                         fill_time_s = 60,
-                         realm = NULL) {
+req_throttle <- function(req, rate, capacity, fill_time_s = 60, realm = NULL) {
   check_request(req)
   check_exclusive(rate, capacity)
   if (missing(capacity)) {

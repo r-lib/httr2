@@ -33,10 +33,10 @@ test_that("reads body on error", {
 test_that("can retry a transient error", {
   req <- local_app_request(function(req, res) {
     if (res$app$locals$i == 1) {
-      res$
-        set_status(429)$
-        set_header("retry-after", 0)$
-        send_json(list(status = "waiting"), auto_unbox = TRUE)
+      res$set_status(429)$set_header("retry-after", 0)$send_json(
+        list(status = "waiting"),
+        auto_unbox = TRUE
+      )
     } else {
       res$send_json(list(status = "done"), auto_unbox = TRUE)
     }

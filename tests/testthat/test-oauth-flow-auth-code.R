@@ -85,7 +85,6 @@ test_that("old args are deprecated", {
   expect_snapshot(
     redirect <- normalize_redirect_uri("http://x.com", host_ip = "y.com")
   )
-
 })
 
 test_that("urls left as is if not changes needed", {
@@ -134,21 +133,17 @@ test_that("external auth code sources are detected correctly", {
 
 test_that("auth codes can be retrieved from an external source", {
   skip_on_cran()
-  local_mocked_bindings(sys_sleep = function(...) {})
+  local_mocked_bindings(sys_sleep = function(...) {
+  })
 
   req <- local_app_request(function(req, res) {
     # Error on first, and then respond on second
     authorized <- res$app$locals$authorized %||% FALSE
     if (!authorized) {
       res$app$locals$authorized <- TRUE
-      res$
-        set_status(404L)$
-        set_type("text/plain")$
-        send("Not found")
+      res$set_status(404L)$set_type("text/plain")$send("Not found")
     } else {
-      res$
-        set_status(200L)$
-        send_json(text = '{"code":"abc123"}')
+      res$set_status(200L)$send_json(text = '{"code":"abc123"}')
     }
   })
 

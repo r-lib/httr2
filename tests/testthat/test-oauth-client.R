@@ -17,21 +17,29 @@ test_that("checks auth types have needed args", {
 })
 
 test_that("client has useful print method", {
-  url <-"http://example.com"
+  url <- "http://example.com"
 
   expect_snapshot({
     oauth_client("x", url)
     oauth_client("x", url, secret = "SECRET")
-    oauth_client("x", url, auth = function(...) {xxx})
+    oauth_client("x", url, auth = function(...) {
+      xxx
+    })
   })
 })
 
 test_that("picks default auth", {
   expect_equal(
     oauth_client("x", "url", key = NULL)$auth,
-    "oauth_client_req_auth_body")
+    "oauth_client_req_auth_body"
+  )
   expect_equal(
-    oauth_client("x", "url", key = "key", auth_params = list(claim = list()))$auth,
+    oauth_client(
+      "x",
+      "url",
+      key = "key",
+      auth_params = list(claim = list())
+    )$auth,
     "oauth_client_req_auth_jwt_sig"
   )
 })
@@ -55,5 +63,8 @@ test_that("can authenticate using header or body", {
   )
 
   req_b <- oauth_client_req_auth(req, client("body"))
-  expect_equal(req_b$body$data, list(client_id = I("id"), client_secret = I("secret")))
+  expect_equal(
+    req_b$body$data,
+    list(client_id = I("id"), client_secret = I("secret"))
+  )
 })

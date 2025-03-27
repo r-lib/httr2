@@ -21,7 +21,10 @@ test_that("can check type of response", {
 
 test_that("useful error even if no content type", {
   resp <- response()
-  expect_snapshot(resp_check_content_type(resp, "application/xml"), error = TRUE)
+  expect_snapshot(
+    resp_check_content_type(resp, "application/xml"),
+    error = TRUE
+  )
 })
 
 test_that("can parse content type", {
@@ -52,10 +55,17 @@ test_that("invalid type returns empty strings", {
 
 test_that("check_content_type() can consult suffixes", {
   expect_no_error(check_content_type("application/json", "application/json"))
-  expect_snapshot(check_content_type("application/json", "application/xml"), error = TRUE)
+  expect_snapshot(
+    check_content_type("application/json", "application/xml"),
+    error = TRUE
+  )
 
   # works with suffixes
-  expect_no_error(check_content_type("application/test+json", "application/json", "json"))
+  expect_no_error(check_content_type(
+    "application/test+json",
+    "application/json",
+    "json"
+  ))
   expect_snapshot(
     check_content_type("application/test+json", "application/xml", "xml"),
     error = TRUE
@@ -63,7 +73,11 @@ test_that("check_content_type() can consult suffixes", {
 
   # can use multiple valid types
   expect_no_error(
-    check_content_type("application/test+json", c("text/html", "application/json"), "json")
+    check_content_type(
+      "application/test+json",
+      c("text/html", "application/json"),
+      "json"
+    )
   )
   expect_snapshot(
     check_content_type("application/xml", c("text/html", "application/json")),

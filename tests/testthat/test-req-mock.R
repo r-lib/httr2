@@ -36,7 +36,8 @@ test_that("mocked_response_sequence returns responses then errors", {
 
 test_that("validates inputs", {
   expect_snapshot(error = TRUE, {
-    local_mocked_responses(function(foo) {})
+    local_mocked_responses(function(foo) {
+    })
     local_mocked_responses(10)
   })
 })

@@ -31,15 +31,17 @@ test_that("can parse date header", {
 })
 
 test_that("can parse both forms of retry-after header", {
-  resp_abs <- response(headers = c(
-    "Retry-After: Mon, 18 Jul 2016 16:06:10 GMT",
-    "Date: Mon, 18 Jul 2016 16:06:00 GMT"
-  ))
+  resp_abs <- response(
+    headers = c(
+      "Retry-After: Mon, 18 Jul 2016 16:06:10 GMT",
+      "Date: Mon, 18 Jul 2016 16:06:00 GMT"
+    )
+  )
   expect_equal(resp_retry_after(resp_abs), 10)
 
-  resp_rel <- response(headers = c(
-    "Retry-After: 20"
-  ))
+  resp_rel <- response(
+    headers = "Retry-After: 20"
+  )
   expect_equal(resp_retry_after(resp_rel), 20)
 
   resp_rel <- response()
@@ -49,10 +51,12 @@ test_that("can parse both forms of retry-after header", {
 # resp_link_url() --------------------------------------------------------------
 
 test_that("can extract specified link url", {
-  resp <- response(headers = paste0(
-    'Link: <https://example.com/1>; rel="next",',
-    '<https://example.com/2>; rel="last"'
-  ))
+  resp <- response(
+    headers = paste0(
+      'Link: <https://example.com/1>; rel="next",',
+      '<https://example.com/2>; rel="last"'
+    )
+  )
   expect_equal(resp_link_url(resp, "next"), "https://example.com/1")
   expect_equal(resp_link_url(resp, "last"), "https://example.com/2")
 
@@ -62,10 +66,12 @@ test_that("can extract specified link url", {
 })
 
 test_that("can extract from multiple link headers", {
-  resp <- response(headers = c(
-    'Link: <https://example.com/1>; rel="next"',
-    'Link: <https://example.com/2>; rel="last"'
-  ))
+  resp <- response(
+    headers = c(
+      'Link: <https://example.com/1>; rel="next"',
+      'Link: <https://example.com/2>; rel="last"'
+    )
+  )
   expect_equal(resp_link_url(resp, "next"), "https://example.com/1")
   expect_equal(resp_link_url(resp, "last"), "https://example.com/2")
 })

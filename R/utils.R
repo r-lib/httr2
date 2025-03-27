@@ -32,7 +32,12 @@ bullets <- function(x) {
   }
 }
 
-modify_list <- function(.x, ..., .ignore_case = FALSE, error_call = caller_env()) {
+modify_list <- function(
+  .x,
+  ...,
+  .ignore_case = FALSE,
+  error_call = caller_env()
+) {
   dots <- list2(...)
   if (length(dots) == 0) return(.x)
 
@@ -84,7 +89,12 @@ sys_sleep <- function(seconds, task, fps = 10, progress = NULL) {
     total = seconds * fps
   )
 
-  while ({left <- start + seconds - cur_time(); left > 0}) {
+  while (
+    {
+      left <- start + seconds - cur_time()
+      left > 0
+    }
+  ) {
     Sys.sleep(min(1 / fps, left))
     cli::cli_progress_update(set = (seconds - left) * fps)
   }
@@ -166,12 +176,14 @@ local_write_lines <- function(..., .env = caller_env()) {
   path
 }
 
-check_function2 <- function(x,
-                            ...,
-                            args = NULL,
-                            allow_null = FALSE,
-                            arg = caller_arg(x),
-                            call = caller_env()) {
+check_function2 <- function(
+  x,
+  ...,
+  args = NULL,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
   check_function(
     x = x,
     allow_null = allow_null,
@@ -191,10 +203,7 @@ check_function2 <- function(x,
 
 # Basically copied from rlang. Can be removed when https://github.com/r-lib/rlang/pull/1652
 # is merged
-.check_function_args <- function(f,
-                                 expected_args,
-                                 arg,
-                                 call) {
+.check_function_args <- function(f, expected_args, arg, call) {
   if (is_null(expected_args)) {
     return(invisible(NULL))
   }
@@ -215,7 +224,11 @@ check_function2 <- function(x,
   }
 
   cli::cli_abort(
-    paste0("{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}; ", arg_info, "."),
+    paste0(
+      "{.arg {arg}} must have the {cli::qty(n_expected_args)}argument{?s} {.arg {expected_args}}; ",
+      arg_info,
+      "."
+    ),
     call = call,
     arg = arg
   )
@@ -223,16 +236,20 @@ check_function2 <- function(x,
 
 # This is inspired by the C interface of `cli_progress_bar()` which has just
 # 2 arguments: `total` and `config`
-create_progress_bar <- function(total,
-                                name,
-                                config,
-                                env = caller_env(),
-                                config_arg = caller_arg(config),
-                                error_call = caller_env()) {
+create_progress_bar <- function(
+  total,
+  name,
+  config,
+  env = caller_env(),
+  config_arg = caller_arg(config),
+  error_call = caller_env()
+) {
   if (is_false(config)) {
     return(list(
-      update = function(...) {},
-      done = function() {}
+      update = function(...) {
+      },
+      done = function() {
+      }
     ))
   }
 
@@ -323,4 +340,8 @@ pretty_json <- function(x) {
 log_stream <- function(..., prefix = "<< ") {
   out <- gsub("\n", paste0("\n", prefix), paste0(prefix, ..., collapse = ""))
   cli::cat_line(out)
+}
+
+paste_c <- function(..., collapse = "") {
+  paste0(c(...), collapse = collapse)
 }

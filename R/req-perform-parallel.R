@@ -95,7 +95,9 @@ req_perform_parallel <- function(
       queue$process()
 
       n <- sum(!map_lgl(queue$resps, is.null))
-      cli::cli_alert_warning("Terminating iteration; returning {n} response{?s}.")
+      cli::cli_alert_warning(
+        "Terminating iteration; returning {n} response{?s}."
+      )
     }
   )
 
@@ -229,7 +231,11 @@ RequestQueue <- R6::R6Class(
         } else {
           waiting <- "for throttling"
         }
-        pool_wait_for_deadline(self$pool, min(request_deadline, deadline), waiting)
+        pool_wait_for_deadline(
+          self$pool,
+          min(request_deadline, deadline),
+          waiting
+        )
         NULL
       } else if (self$queue_status == "working") {
         if (self$n_pending == 0 && self$n_active == 0) {
@@ -316,13 +322,13 @@ RequestQueue <- R6::R6Class(
     },
 
     set_status = function(i, status) {
-      switch( # old status
-        self$status[[i]],
+      switch(
+        self$status[[i]], # old status
         pending = self$n_pending <- self$n_pending - 1,
         active = self$n_active <- self$n_active - 1
       )
-      switch( # new status
-        status,
+      switch(
+        status, # new status
         pending = self$n_pending <- self$n_pending + 1,
         active = self$n_active <- self$n_active + 1,
         complete = self$n_complete <- self$n_complete + 1

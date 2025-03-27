@@ -6,7 +6,6 @@ pooled_request <- function(
   on_error = NULL,
   error_call = caller_env()
 ) {
-
   check_request(req)
   check_string(path, allow_null = TRUE)
   check_function2(on_success, args = "resp", allow_null = TRUE)
@@ -73,7 +72,6 @@ PooledRequest <- R6Class(
         curl::multi_cancel(private$handle)
       }
     }
-
   ),
   private = list(
     path = NULL,

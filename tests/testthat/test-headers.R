@@ -56,5 +56,5 @@ test_that("can flatten repeated inputs", {
 
 test_that("redacted inputs are preserved", {
   x <- new_headers(list(x = "x"), redact = "x")
-  expect_equal(headers_flatten(x), x) 
+  expect_equal(headers_flatten(x), x)
 })

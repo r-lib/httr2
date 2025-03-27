@@ -64,7 +64,8 @@ test_that("don't retry curl errors by default", {
   expect_error(req_perform(req), class = "httr2_failure")
 
   # But can opt-in to it
-  req <- request("") %>% req_retry(max_tries = 2, retry_on_failure = TRUE, failure_realm = "x")
+  req <- request("") %>%
+    req_retry(max_tries = 2, retry_on_failure = TRUE, failure_realm = "x")
   cnd <- catch_cnd(req_perform(req), "httr2_retry")
   expect_equal(cnd$tries, 1)
 })
@@ -72,10 +73,9 @@ test_that("don't retry curl errors by default", {
 test_that("can retry a transient error", {
   req <- local_app_request(function(req, res) {
     if (res$app$locals$i == 1) {
-      res$
-        set_status(429)$
-        set_header("retry-after", 0)$
-        send_json(list(status = "waiting"))
+      res$set_status(429)$set_header("retry-after", 0)$send_json(list(
+        status = "waiting"
+      ))
     } else {
       res$send_json(list(status = "done"))
     }
@@ -111,7 +111,10 @@ test_that("can cache requests with etags", {
 
   resp1 <- req_perform(req)
   expect_condition(
-    expect_condition(resp2 <- req_perform(req), class = "httr2_cache_not_modified"),
+    expect_condition(
+      resp2 <- req_perform(req),
+      class = "httr2_cache_not_modified"
+    ),
     class = "httr2_cache_save"
   )
 })

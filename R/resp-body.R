@@ -38,7 +38,8 @@ resp_body_raw <- function(resp) {
     cli::cli_abort("Can't retrieve empty body.")
   }
 
-  switch(resp_body_type(resp),
+  switch(
+    resp_body_type(resp),
     disk = readBin(resp$body, "raw", file.size(resp$body)),
     memory = resp$body,
     stream = {
@@ -54,7 +55,8 @@ resp_body_raw <- function(resp) {
 resp_has_body <- function(resp) {
   check_response(resp)
 
-  switch(resp_body_type(resp),
+  switch(
+    resp_body_type(resp),
     disk = file.size(resp$body) > 0,
     memory = length(resp$body) > 0,
     stream = isValid(resp$body)
@@ -93,7 +95,12 @@ resp_body_string <- function(resp, encoding = NULL) {
 #'   [xml2::read_xml()] respectively.
 #' @rdname resp_body_raw
 #' @export
-resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...) {
+resp_body_json <- function(
+  resp,
+  check_type = TRUE,
+  simplifyVector = FALSE,
+  ...
+) {
   check_response(resp)
   check_installed("jsonlite")
 
@@ -110,7 +117,11 @@ resp_body_json <- function(resp, check_type = TRUE, simplifyVector = FALSE, ...)
   )
 
   text <- resp_body_string(resp, "UTF-8")
-  resp$cache[[key]] <- jsonlite::fromJSON(text, simplifyVector = simplifyVector, ...)
+  resp$cache[[key]] <- jsonlite::fromJSON(
+    text,
+    simplifyVector = simplifyVector,
+    ...
+  )
   resp$cache[[key]]
 }
 

@@ -31,12 +31,13 @@
 #' client <- oauth_client("example", "https://example.com/get_token")
 #' req <- request("https://example.com")
 #' req |> req_oauth_refresh(client)
-req_oauth_refresh <- function(req,
-                              client,
-                              refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
-                              scope = NULL,
-                              token_params = list()) {
-
+req_oauth_refresh <- function(
+  req,
+  client,
+  refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
+  scope = NULL,
+  token_params = list()
+) {
   params <- list(
     client = client,
     refresh_token = refresh_token,
@@ -50,12 +51,15 @@ req_oauth_refresh <- function(req,
 
 #' @export
 #' @rdname req_oauth_refresh
-oauth_flow_refresh <- function(client,
-                               refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
-                               scope = NULL,
-                               token_params = list()) {
+oauth_flow_refresh <- function(
+  client,
+  refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
+  scope = NULL,
+  token_params = list()
+) {
   oauth_flow_check("refresh", client)
-  token <- token_refresh(client,
+  token <- token_refresh(
+    client,
     refresh_token = refresh_token,
     scope = scope,
     token_params = token_params

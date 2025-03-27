@@ -87,7 +87,10 @@ test_that("can accept query as a string or list", {
   url <- "http://test/"
 
   expect_equal(url_modify(url, query = "a=1&b=2"), "http://test/?a=1&b=2")
-  expect_equal(url_modify(url, query = list(a = 1, b = 2)), "http://test/?a=1&b=2")
+  expect_equal(
+    url_modify(url, query = list(a = 1, b = 2)),
+    "http://test/?a=1&b=2"
+  )
 
   expect_equal(url_modify(url, query = ""), "http://test/")
   expect_equal(url_modify(url, query = list()), "http://test/")
@@ -111,7 +114,10 @@ test_that("checks various query formats", {
 })
 
 test_that("path always starts with /", {
-  expect_equal(url_modify("https://x.com/abc", path = "def"), "https://x.com/def")
+  expect_equal(
+    url_modify("https://x.com/abc", path = "def"),
+    "https://x.com/def"
+  )
   expect_equal(url_modify("https://x.com/abc", path = ""), "https://x.com/")
   expect_equal(url_modify("https://x.com/abc", path = NULL), "https://x.com/")
 })
@@ -122,7 +128,10 @@ test_that("can set relative urls", {
   base <- "http://example.com/a/b/c/"
   expect_equal(url_modify_relative(base, "d"), "http://example.com/a/b/c/d")
   expect_equal(url_modify_relative(base, ".."), "http://example.com/a/b/")
-  expect_equal(url_modify_relative(base, "//archive.org"), "http://archive.org/")
+  expect_equal(
+    url_modify_relative(base, "//archive.org"),
+    "http://archive.org/"
+  )
 })
 
 test_that("is idempotent", {

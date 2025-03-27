@@ -39,11 +39,13 @@
 #'
 #' # if you need to see it, use redact_headers = FALSE
 #' req |> req_dry_run(redact_headers = FALSE)
-req_dry_run <- function(req,
-                        quiet = FALSE,
-                        redact_headers = TRUE,
-                        testing_headers = is_testing(),
-                        pretty_json = getOption("httr2_pretty_json", TRUE)) {
+req_dry_run <- function(
+  req,
+  quiet = FALSE,
+  redact_headers = TRUE,
+  testing_headers = is_testing(),
+  pretty_json = getOption("httr2_pretty_json", TRUE)
+) {
   check_request(req)
   check_bool(quiet)
   check_bool(redact_headers)
