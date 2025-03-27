@@ -18,7 +18,6 @@ test_that("can read/write cookies", {
     resp_body_json() %>%
     .$cookies
   expect_mapequal(cookies, list(x = "a", y = "b", z = "c"))
-
 })
 
 test_that("can set cookies", {

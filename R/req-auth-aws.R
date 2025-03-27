@@ -29,13 +29,14 @@
 #' )
 #' resp <- req_perform_connection(req)
 #' str(resp_body_json(resp))
-req_auth_aws_v4 <- function(req,
-                            aws_access_key_id,
-                            aws_secret_access_key,
-                            aws_session_token = NULL,
-                            aws_service = NULL,
-                            aws_region = NULL) {
-
+req_auth_aws_v4 <- function(
+  req,
+  aws_access_key_id,
+  aws_secret_access_key,
+  aws_session_token = NULL,
+  aws_service = NULL,
+  aws_region = NULL
+) {
   check_request(req)
   check_string(aws_access_key_id)
   check_string(aws_secret_access_key)
@@ -43,7 +44,8 @@ req_auth_aws_v4 <- function(req,
   check_string(aws_service, allow_null = TRUE)
   check_string(aws_region, allow_null = TRUE)
 
-  req_auth_sign(req,
+  req_auth_sign(
+    req,
     fun = auth_aws_sign,
     params = list(
       aws_access_key_id = aws_access_key_id,
@@ -58,21 +60,23 @@ req_auth_aws_v4 <- function(req,
   )
 }
 
-auth_aws_sign <- function(req,
-                          aws_access_key_id,
-                          aws_secret_access_key,
-                          aws_session_token = NULL,
-                          aws_service = NULL,
-                          aws_region = NULL,
-                          cache) {
-
+auth_aws_sign <- function(
+  req,
+  aws_access_key_id,
+  aws_secret_access_key,
+  aws_session_token = NULL,
+  aws_service = NULL,
+  aws_region = NULL,
+  cache
+) {
   current_time <- Sys.time()
 
   body_sha256 <- openssl::sha256(req_body_get(req))
 
   # We begin by adding some necessary headers that must be added before
   # canoncalization even thought they aren't documented until later
-  req <- req_aws_headers(req,
+  req <- req_aws_headers(
+    req,
     current_time = current_time,
     aws_session_token = aws_session_token,
     body_sha256 = body_sha256
@@ -105,19 +109,21 @@ req_aws_headers <- function(req, current_time, aws_session_token, body_sha256) {
 }
 
 # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html
-aws_v4_signature <- function(method,
-                             url,
-                             headers,
-                             body_sha256,
-                             aws_access_key_id,
-                             aws_secret_access_key,
-                             current_time = Sys.time(),
-                             aws_service = NULL,
-                             aws_region = NULL) {
-
+aws_v4_signature <- function(
+  method,
+  url,
+  headers,
+  body_sha256,
+  aws_access_key_id,
+  aws_secret_access_key,
+  current_time = Sys.time(),
+  aws_service = NULL,
+  aws_region = NULL
+) {
   if (is.null(aws_service) || is.null(aws_region)) {
     host <- strsplit(url$hostname, ".", fixed = TRUE)[[1]]
-    aws_service <- aws_service %||% strsplit(host[[1]], "-", fixed = TRUE)[[1]][[1]]
+    aws_service <- aws_service %||%
+      strsplit(host[[1]], "-", fixed = TRUE)[[1]][[1]]
     aws_region <- aws_region %||% host[[2]]
   }
 
@@ -143,12 +149,12 @@ aws_v4_signature <- function(method,
   CanonicalHeaders <- paste0(names(headers), ":", headers, "\n", collapse = "")
   SignedHeaders <- paste0(names(headers), collapse = ";")
 
-  CanonicalRequest <- paste0(
-    HTTPMethod, "\n",
-    CanonicalURI, "\n",
-    CanonicalQueryString, "\n",
-    CanonicalHeaders, "\n",
-    SignedHeaders, "\n",
+  CanonicalRequest <- paste_c(
+    c(HTTPMethod, "\n"),
+    c(CanonicalURI, "\n"),
+    c(CanonicalQueryString, "\n"),
+    c(CanonicalHeaders, "\n"),
+    c(SignedHeaders, "\n"),
     body_sha256
   )
   # 2. Create the hash of the canonical request
@@ -163,10 +169,10 @@ aws_v4_signature <- function(method,
   Date <- format(current_time, "%Y%m%d", tz = "UTC")
   CredentialScope <- file.path(Date, aws_region, aws_service, "aws4_request")
 
-  string_to_sign <- paste0(
-    Algorithm, "\n",
-    RequestDateTime, "\n",
-    CredentialScope, "\n",
+  string_to_sign <- paste_c(
+    c(Algorithm, "\n"),
+    c(RequestDateTime, "\n"),
+    c(CredentialScope, "\n"),
     HashedCanonicalRequest
   )
 
@@ -186,13 +192,13 @@ aws_v4_signature <- function(method,
 
   # 6. Add the signature to the request
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html#calculate-signature
-  credential <-  file.path(aws_access_key_id, CredentialScope)
+  credential <- file.path(aws_access_key_id, CredentialScope)
 
-  Authorization <- paste0(
-    Algorithm, " ",
-    "Credential=",    credential, ",",
-    "SignedHeaders=", SignedHeaders, ",",
-    "Signature=",     signature
+  Authorization <- paste_c(
+    c(Algorithm, " "),
+    c("Credential=", credential, ","),
+    c("SignedHeaders=", SignedHeaders, ","),
+    c("Signature=", signature)
   )
 
   list(

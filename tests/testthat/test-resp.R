@@ -1,5 +1,4 @@
 test_that("response has basic print method", {
-
   file.create("path-empty")
   writeBin("sample content", "path-content")
 

@@ -21,12 +21,13 @@
 #'
 #' # `types` can also specify multiple valid types
 #' resp_check_content_type(resp, c("application/xml", "application/json"))
-resp_check_content_type <- function(resp,
-                                    valid_types = NULL,
-                                    valid_suffix = NULL,
-                                    check_type = TRUE,
-                                    call = caller_env()) {
-
+resp_check_content_type <- function(
+  resp,
+  valid_types = NULL,
+  valid_suffix = NULL,
+  check_type = TRUE,
+  call = caller_env()
+) {
   check_response(resp)
   check_character(valid_types, allow_null = TRUE)
   check_string(valid_suffix, allow_null = TRUE)
@@ -89,11 +90,13 @@ parse_content_type <- function(x) {
   )
 }
 
-check_content_type <- function(content_type,
-                               valid_types = NULL,
-                               valid_suffix = NULL,
-                               inform_check_type = FALSE,
-                               call = caller_env()) {
+check_content_type <- function(
+  content_type,
+  valid_types = NULL,
+  valid_suffix = NULL,
+  inform_check_type = FALSE,
+  call = caller_env()
+) {
   parsed <- parse_content_type(content_type)
   base_type <- paste0(parsed$type, "/", parsed$subtype)
 

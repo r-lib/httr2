@@ -35,13 +35,15 @@
 #' # Or use one of the convenient shortcuts:
 #' resp <- request("https://httr2.r-lib.org") |>
 #'   req_perform(verbosity = 1)
-req_verbose <- function(req,
-                        header_req = TRUE,
-                        header_resp = TRUE,
-                        body_req = FALSE,
-                        body_resp = FALSE,
-                        info = FALSE,
-                        redact_headers = TRUE) {
+req_verbose <- function(
+  req,
+  header_req = TRUE,
+  header_resp = TRUE,
+  body_req = FALSE,
+  body_resp = FALSE,
+  info = FALSE,
+  redact_headers = TRUE
+) {
   check_request(req)
 
   # force all arguments
@@ -85,7 +87,12 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
   for (line in lines) {
     if (grepl("^[-a-zA-z0-9]+:", line)) {
       header <- headers_redact(as_headers(line, to_redact), redact)
-      cli::cat_line(prefix, cli::style_bold(names(header)), ": ", format(header[[1]]))
+      cli::cat_line(
+        prefix,
+        cli::style_bold(names(header)),
+        ": ",
+        format(header[[1]])
+      )
     } else {
       cli::cat_line(prefix, line)
     }

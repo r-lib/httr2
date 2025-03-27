@@ -80,15 +80,17 @@ url_parse <- function(url, base_url = NULL) {
 #' url_modify_relative("http://hadley.nz/a/b/c.html", "/d.html")
 #' url_modify_relative("http://hadley.nz/a/b/c.html", "d.html")
 #' url_modify_relative("http://hadley.nz/a/b/c.html", "../d.html")
-url_modify <- function(url,
-                       scheme = as_is,
-                       hostname = as_is,
-                       username = as_is,
-                       password = as_is,
-                       port = as_is,
-                       path = as_is,
-                       query = as_is,
-                       fragment = as_is) {
+url_modify <- function(
+  url,
+  scheme = as_is,
+  hostname = as_is,
+  username = as_is,
+  password = as_is,
+  port = as_is,
+  path = as_is,
+  query = as_is,
+  fragment = as_is
+) {
   if (!is_string(url) && !is_url(url)) {
     stop_input_type(url, "a string or parsed URL")
   }
@@ -176,10 +178,11 @@ url_modify_relative <- function(url, relative_url) {
 #'   "percent", uses standard percent encoding (i.e. `%20`), but you can opt-in
 #'   to "form" encoding, which uses `+` instead.
 url_modify_query <- function(
-    .url,
-    ...,
-    .multi = c("error", "comma", "pipe", "explode"),
-    .space = c("percent", "form")) {
+  .url,
+  ...,
+  .multi = c("error", "comma", "pipe", "explode"),
+  .space = c("percent", "form")
+) {
   if (!is_string(.url) && !is_url(.url)) {
     stop_input_type(.url, "a string or parsed URL")
   }
@@ -227,7 +230,12 @@ print.httr2_url <- function(x, ...) {
     cli::cli_li("{.field query}: ")
     id <- cli::cli_ul()
     # escape curly brackets for cli by replacing single with double brackets
-    query_vals <- gsub("{", "{{", gsub("}", "}}", x$query, fixed = TRUE), fixed = TRUE)
+    query_vals <- gsub(
+      "{",
+      "{{",
+      gsub("}", "}}", x$query, fixed = TRUE),
+      fixed = TRUE
+    )
     cli::cli_li(paste0("  {.field ", names(x$query), "}: ", query_vals))
     cli::cli_end(id)
   }
@@ -281,9 +289,11 @@ url_build <- function(url) {
 
   prefix <- function(prefix, x) if (!is.null(x)) paste0(prefix, x)
   paste0(
-    url$scheme, if (!is.null(url$scheme)) ":",
+    url$scheme,
+    if (!is.null(url$scheme)) ":",
     if (!is.null(url$scheme) || !is.null(authority)) "//",
-    authority, url$path,
+    authority,
+    url$path,
     prefix("?", query),
     prefix("#", url$fragment)
   )
@@ -319,7 +329,10 @@ url_query_parse <- function(query) {
 #' @export
 #' @rdname url_query_parse
 #' @inheritParams url_modify_query
-url_query_build <- function(query, .multi = c("error", "comma", "pipe", "explode")) {
+url_query_build <- function(
+  query,
+  .multi = c("error", "comma", "pipe", "explode")
+) {
   if (!is_named_list(query)) {
     stop_input_type(query, "a named list")
   }
@@ -344,11 +357,13 @@ elements_build <- function(x, name, collapse, error_call = caller_env()) {
   paste0(names, "=", values, collapse = collapse)
 }
 
-format_query_param <- function(x,
-                               name,
-                               multi = FALSE,
-                               form = FALSE,
-                               error_call = caller_env()) {
+format_query_param <- function(
+  x,
+  name,
+  multi = FALSE,
+  form = FALSE,
+  error_call = caller_env()
+) {
   check_query_param(x, name, multi = multi, error_call = error_call)
 
   if (inherits(x, "AsIs")) {
@@ -362,7 +377,12 @@ format_query_param <- function(x,
     x
   }
 }
-check_query_param <- function(x, name, multi = FALSE, error_call = caller_env()) {
+check_query_param <- function(
+  x,
+  name,
+  multi = FALSE,
+  error_call = caller_env()
+) {
   if (inherits(x, "AsIs")) {
     if (multi) {
       ok <- is.character(x)

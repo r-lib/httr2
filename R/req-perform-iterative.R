@@ -105,12 +105,14 @@
 #'   )
 #' })
 #' str(data)
-req_perform_iterative <- function(req,
-                                  next_req,
-                                  path = NULL,
-                                  max_reqs = 20,
-                                  on_error = c("stop", "return"),
-                                  progress = TRUE) {
+req_perform_iterative <- function(
+  req,
+  next_req,
+  path = NULL,
+  max_reqs = 20,
+  on_error = c("stop", "return"),
+  progress = TRUE
+) {
   check_request(req)
   check_function2(next_req, args = c("resp", "req"))
   check_number_whole(max_reqs, allow_infinite = TRUE, min = 1)
@@ -134,9 +136,10 @@ req_perform_iterative <- function(req,
   resps <- vector("list", length = if (is.finite(max_reqs)) max_reqs else 100)
   i <- 1L
 
-  tryCatch({
+  tryCatch(
     repeat {
-      httr2_error <- switch(on_error,
+      httr2_error <- switch(
+        on_error,
         stop = function(cnd) zap(),
         return = function(cnd) cnd
       )
@@ -176,16 +179,17 @@ req_perform_iterative <- function(req,
         signal("", class = "httr2:::doubled")
         length(resps) <- length(resps) * 2
       }
+    },
+    interrupt = function(cnd) {
+      # interrupt might occur after i was incremented
+      if (is.null(resps[[i]])) {
+        i <<- i - 1
+      }
+      cli::cli_alert_warning(
+        "Terminating iteration; returning {i} response{?s}."
+      )
     }
-  }, interrupt = function(cnd) {
-    # interrupt might occur after i was incremented
-    if (is.null(resps[[i]])) {
-      i <<- i - 1
-    }
-    cli::cli_alert_warning(
-      "Terminating iteration; returning {i} response{?s}."
-    )
-  })
+  )
   progress$done()
 
   if (i < length(resps)) {

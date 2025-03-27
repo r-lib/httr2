@@ -51,7 +51,10 @@ test_that("returns body if known good structure", {
 })
 
 test_that("converts expires_in to numeric", {
-  resp <- response_json(200L, body = list(access_token = "10", expires_in = "20"))
+  resp <- response_json(
+    200L,
+    body = list(access_token = "10", expires_in = "20")
+  )
   body <- oauth_flow_parse(resp, "test")
   expect_equal(body$expires_in, 20)
 })

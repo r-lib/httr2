@@ -20,7 +20,8 @@
 #' @export
 req_oauth <- function(req, flow, flow_params, cache) {
   # Want req object to contain meaningful objects, not just a closure
-  req <- req_auth_sign(req,
+  req <- req_auth_sign(
+    req,
     fun = auth_oauth_sign,
     params = list(flow = flow, flow_params = flow_params),
     cache = cache
@@ -88,12 +89,14 @@ auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
 #' )
 #' token
 #' }
-oauth_token_cached <- function(client,
-                               flow,
-                               flow_params = list(),
-                               cache_disk = FALSE,
-                               cache_key = NULL,
-                               reauth = FALSE) {
+oauth_token_cached <- function(
+  client,
+  flow,
+  flow_params = list(),
+  cache_disk = FALSE,
+  cache_key = NULL,
+  reauth = FALSE
+) {
   check_bool(reauth)
   cache <- cache_choose(client, cache_disk, cache_key)
   if (reauth) {
@@ -153,7 +156,8 @@ cache_noop <- function() {
       abort("set() was called on cache_noop")
       invisible()
     },
-    clear = function() {}
+    clear = function() {
+    }
   )
 }
 cache_mem <- function(client, key = NULL) {
@@ -170,7 +174,9 @@ cache_disk <- function(client, key = NULL) {
 
   path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
   list(
-    get = function() if (file.exists(path)) secret_read_rds(path, obfuscate_key()) else NULL,
+    get = function() {
+      if (file.exists(path)) secret_read_rds(path, obfuscate_key()) else NULL
+    },
     set = function(token) {
       cli::cli_inform("Caching httr2 token in {.path {path}}.")
       secret_write_rds(token, path, obfuscate_key())
@@ -181,7 +187,12 @@ cache_disk <- function(client, key = NULL) {
 
 # Update req_oauth_auth_code() docs if change default from 30
 cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
-  files <- dir(path, recursive = TRUE, full.names = TRUE, pattern = "-token\\.rds$")
+  files <- dir(
+    path,
+    recursive = TRUE,
+    full.names = TRUE,
+    pattern = "-token\\.rds$"
+  )
   mtime <- file.mtime(files)
 
   old <- mtime < (Sys.time() - days * 86400)

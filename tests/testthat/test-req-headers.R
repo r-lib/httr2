@@ -52,7 +52,10 @@ test_that("can control which headers to redact", {
   req <- request("http://example.com")
   expect_redacted(req_headers(req, a = 1L, b = 2L), character())
   expect_redacted(req_headers(req, a = 1L, b = 2L, .redact = "a"), "a")
-  expect_redacted(req_headers(req, a = 1L, b = 2L, .redact = c("a", "b")), c("a", "b"))
+  expect_redacted(
+    req_headers(req, a = 1L, b = 2L, .redact = c("a", "b")),
+    c("a", "b")
+  )
 })
 
 test_that("only redacts supplied headers", {

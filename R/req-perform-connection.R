@@ -98,12 +98,17 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
 
 # Like req_verbosity() but we want to print the streaming body when it's
 # requested not when curl actually receives it
-req_verbosity_connection <- function(req, verbosity, error_call = caller_env()) {
+req_verbosity_connection <- function(
+  req,
+  verbosity,
+  error_call = caller_env()
+) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
     cli::cli_abort("{.arg verbosity} must 0, 1, 2, or 3.", call = error_call)
   }
 
-  req <- switch(verbosity + 1,
+  req <- switch(
+    verbosity + 1,
     req,
     req_verbose(req),
     req_verbose(req, body_req = TRUE),

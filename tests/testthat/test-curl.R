@@ -31,7 +31,10 @@ test_that("captures key components of call", {
   )
 
   # Captures flags
-  expect_equal(curl_args("curl 'http://example.com' --verbose")$`--verbose`, TRUE)
+  expect_equal(
+    curl_args("curl 'http://example.com' --verbose")$`--verbose`,
+    TRUE
+  )
 })
 
 test_that("can accept multiple data arguments", {
@@ -43,7 +46,9 @@ test_that("can accept multiple data arguments", {
 
 test_that("can handle line breaks", {
   expect_equal(
-    curl_args("curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'")$`--header`,
+    curl_args(
+      "curl 'http://example.com' \\\n -H 'A: 1' \\\n -H 'B: 2'"
+    )$`--header`,
     c("A: 1", "B: 2")
   )
 })
@@ -75,7 +80,12 @@ test_that("common headers can be removed", {
   sec_fetch_headers <- "-H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors'"
   sec_ch_ua_headers <- "-H 'sec-ch-ua-mobile: ?0'"
   other_headers <- "-H 'Accept: application/vnd.api+json'"
-  cmd <- paste("curl http://x.com -A agent -e ref", sec_fetch_headers, sec_ch_ua_headers, other_headers)
+  cmd <- paste(
+    "curl http://x.com -A agent -e ref",
+    sec_fetch_headers,
+    sec_ch_ua_headers,
+    other_headers
+  )
   headers <- curl_normalize(cmd)$headers
   expect_snapshot({
     print(curl_simplify_headers(headers, simplify_headers = TRUE))
@@ -138,7 +148,9 @@ test_that("can translate data", {
 
   expect_snapshot({
     curl_translate("curl http://example.com --data abcdef")
-    curl_translate("curl http://example.com --data abcdef -H Content-Type:text/plain")
+    curl_translate(
+      "curl http://example.com --data abcdef -H Content-Type:text/plain"
+    )
   })
 })
 
@@ -154,8 +166,12 @@ test_that("can translate json", {
   skip_if(getRversion() < "4.1")
 
   expect_snapshot({
-    curl_translate(r"--{curl http://example.com --data-raw '{"a": 1, "b": "text"}' -H Content-Type:application/json}--")
-    curl_translate(r"--{curl http://example.com --json '{"a": 1, "b": "text"}'}--")
+    curl_translate(
+      r"--{curl http://example.com --data-raw '{"a": 1, "b": "text"}' -H Content-Type:application/json}--"
+    )
+    curl_translate(
+      r"--{curl http://example.com --json '{"a": 1, "b": "text"}'}--"
+    )
   })
 })
 
@@ -178,11 +194,15 @@ test_that("can evaluate simple calls", {
   body <- resp_body_json(resp)
   expect_equal(body$form$A, "1")
 
-  resp <- curl_translate_eval(glue("curl {the$test_app$url()}/delete -X delete"))
+  resp <- curl_translate_eval(glue(
+    "curl {the$test_app$url()}/delete -X delete"
+  ))
   body <- resp_body_json(resp)
   expect_equal(body$method, "delete")
 
-  resp <- curl_translate_eval(glue("curl {the$test_app$url()}//basic-auth/u/p -u u:p"))
+  resp <- curl_translate_eval(glue(
+    "curl {the$test_app$url()}//basic-auth/u/p -u u:p"
+  ))
   body <- resp_body_json(resp)
   expect_true(body$authenticated)
 })
@@ -222,10 +242,14 @@ test_that("encode_string2() produces simple strings", {
   expect_equal(encode_string2('x"\'x'), 'r"---{x"\'x}---"')
 
   skip_if(getRversion() < "4.1")
-  cmd <- paste0("curl 'http://example.com' \
+  cmd <- paste0(
+    "curl 'http://example.com' \
   -X 'PATCH' \
   -H 'Content-Type: application/json' \
-  --data-raw ", '{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}}', "\
-  --compressed")
+  --data-raw ",
+    '{"data":{"x":1,"y":"a","nested":{"z":[1,2,3]}}}',
+    "\
+  --compressed"
+  )
   expect_snapshot(curl_translate(cmd))
 })

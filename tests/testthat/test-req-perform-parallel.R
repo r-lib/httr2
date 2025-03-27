@@ -74,7 +74,8 @@ test_that("objects are cached", {
 
 test_that("immutable objects retrieved from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
-  resp <- response(200,
+  resp <- response(
+    200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
     body = charToRaw("abc")
   )
@@ -168,10 +169,10 @@ test_that("requests are throttled", {
 test_that("can retry an OAuth failure", {
   req <- local_app_request(function(req, res) {
     if (res$app$locals$i == 1) {
-      res$
-        set_status(401)$
-        set_header("WWW-Authenticate", 'Bearer realm="example", error="invalid_token"')$
-        send_json(list(status = "failed"), auto_unbox = TRUE)
+      res$set_status(401)$set_header(
+        "WWW-Authenticate",
+        'Bearer realm="example", error="invalid_token"'
+      )$send_json(list(status = "failed"), auto_unbox = TRUE)
     } else {
       res$send_json(list(status = "done"), auto_unbox = TRUE)
     }
@@ -179,7 +180,9 @@ test_that("can retry an OAuth failure", {
   req <- req_policies(req, auth_oauth = TRUE)
 
   reset <- 0
-  local_mocked_bindings(req_auth_clear_cache = function(...) reset <<- reset + 1)
+  local_mocked_bindings(
+    req_auth_clear_cache = function(...) reset <<- reset + 1
+  )
 
   queue <- RequestQueue$new(list(req), progress = FALSE)
   queue$process()
@@ -190,10 +193,10 @@ test_that("can retry an OAuth failure", {
 
 test_that("but multiple failures causes an error", {
   req <- local_app_request(function(req, res) {
-    res$
-      set_status(401)$
-      set_header("WWW-Authenticate", 'Bearer realm="example", error="invalid_token"')$
-      send_json(list(status = "failed"), auto_unbox = TRUE)
+    res$set_status(401)$set_header(
+      "WWW-Authenticate",
+      'Bearer realm="example", error="invalid_token"'
+    )$send_json(list(status = "failed"), auto_unbox = TRUE)
   })
   req <- req_policies(req, auth_oauth = TRUE)
 
@@ -205,10 +208,10 @@ test_that("but multiple failures causes an error", {
 test_that("can retry a transient error", {
   req <- local_app_request(function(req, res) {
     if (res$app$locals$i == 1) {
-      res$
-        set_status(429)$
-        set_header("retry-after", 2)$
-        send_json(list(status = "waiting"), auto_unbox = TRUE)
+      res$set_status(429)$set_header("retry-after", 2)$send_json(
+        list(status = "waiting"),
+        auto_unbox = TRUE
+      )
     } else {
       res$send_json(list(status = "done"), auto_unbox = TRUE)
     }

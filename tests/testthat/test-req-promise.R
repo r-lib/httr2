@@ -31,7 +31,11 @@ test_that("correctly prepares request", {
   expect_snapshot(
     . <- extract_promise(req_perform_promise(req, verbosity = 1)),
     transform = function(x) {
-      gsub("(Date|Host|User-Agent|ETag|Content-Length|Accept-Encoding): .*", "\\1: <variable>", x)
+      gsub(
+        "(Date|Host|User-Agent|ETag|Content-Length|Accept-Encoding): .*",
+        "\\1: <variable>",
+        x
+      )
     }
   )
 })
@@ -50,9 +54,10 @@ test_that("can promise to download files", {
 
 test_that("promises can retrieve from cache", {
   req <- request("http://example.com") %>% req_cache(tempfile())
-  resp <- response(200,
-                   headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
-                   body = charToRaw("abc")
+  resp <- response(
+    200,
+    headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
+    body = charToRaw("abc")
   )
   cache_set(req, resp)
 
@@ -78,7 +83,10 @@ test_that("both curl and HTTP errors in promises are rejected", {
 })
 
 test_that("req_perform_promise doesn't leave behind poller", {
-  skip_if_not(later::loop_empty(), "later::global_loop not empty when test started")
+  skip_if_not(
+    later::loop_empty(),
+    "later::global_loop not empty when test started"
+  )
   p <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
   # Before promise is resolved, there should be an operation in our later loop
   expect_false(later::loop_empty())
@@ -91,7 +99,10 @@ test_that("req_perform_promise doesn't leave behind poller", {
 test_that("req_perform_promise can use non-default pool", {
   custom_pool <- curl::new_pool()
   p1 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
-  p2 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25), pool = custom_pool)
+  p2 <- req_perform_promise(
+    request_test("/delay/:secs", secs = 0.25),
+    pool = custom_pool
+  )
   expect_equal(length(curl::multi_list(custom_pool)), 1)
   p1_value <- extract_promise(p1)
   expect_equal(resp_status(p1_value), 200)
@@ -119,7 +130,10 @@ test_that("req_perform_promise uses the default loop", {
 
     # You can't create an async response in the temp loop without explicitly
     # specifying a pool
-    expect_snapshot(p4 <- req_perform_promise(request_test("/get")), error = TRUE)
+    expect_snapshot(
+      p4 <- req_perform_promise(request_test("/get")),
+      error = TRUE
+    )
 
     # Like I said, you can create this, but it won't work until we get back
     # outside the temp loop

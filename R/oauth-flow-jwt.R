@@ -34,14 +34,15 @@
 #'
 #' request("https://example.com") |>
 #'  req_auth()
-req_oauth_bearer_jwt <- function(req,
-                                 client,
-                                 claim,
-                                 signature = "jwt_encode_sig",
-                                 signature_params = list(),
-                                 scope = NULL,
-                                 token_params = list()) {
-
+req_oauth_bearer_jwt <- function(
+  req,
+  client,
+  claim,
+  signature = "jwt_encode_sig",
+  signature_params = list(),
+  scope = NULL,
+  token_params = list()
+) {
   params <- list(
     client = client,
     claim = claim,
@@ -57,12 +58,14 @@ req_oauth_bearer_jwt <- function(req,
 
 #' @export
 #' @rdname req_oauth_bearer_jwt
-oauth_flow_bearer_jwt <- function(client,
-                                  claim,
-                                  signature = "jwt_encode_sig",
-                                  signature_params = list(),
-                                  scope = NULL,
-                                  token_params = list()) {
+oauth_flow_bearer_jwt <- function(
+  client,
+  claim,
+  signature = "jwt_encode_sig",
+  signature_params = list(),
+  scope = NULL,
+  token_params = list()
+) {
   check_installed("jose")
   if (is.null(client$key)) {
     cli::cli_abort("JWT flow requires {.arg client} with a key.")
@@ -79,7 +82,8 @@ oauth_flow_bearer_jwt <- function(client,
   jwt <- exec(signature, claim = claim, key = client$key, !!!signature_params)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1
-  oauth_client_get_token(client,
+  oauth_client_get_token(
+    client,
     grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer",
     assertion = jwt,
     scope = scope,

@@ -4,7 +4,8 @@ test_that("read body from disk/memory", {
   expect_equal(resp_body_raw(resp1), charToRaw("Hi"))
   expect_equal(resp_body_string(resp1), "Hi")
 
-  resp2 <- request_test("base64/:value", value = "SGk=") %>% req_perform(tempfile())
+  resp2 <- request_test("base64/:value", value = "SGk=") %>%
+    req_perform(tempfile())
   expect_true(resp_has_body(resp2))
   expect_equal(resp_body_string(resp2), "Hi")
 })

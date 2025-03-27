@@ -40,15 +40,14 @@
 #' @examples
 #' oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")
 oauth_client <- function(
-                         id,
-                         token_url,
-                         secret = NULL,
-                         key = NULL,
-                         auth = c("body", "header", "jwt_sig"),
-                         auth_params = list(),
-                         name = hash(id)
-                         ) {
-
+  id,
+  token_url,
+  secret = NULL,
+  key = NULL,
+  auth = c("body", "header", "jwt_sig"),
+  auth_params = list(),
+  name = hash(id)
+) {
   check_string(id)
   check_string(token_url)
   check_string(secret, allow_null = TRUE)
@@ -66,7 +65,9 @@ oauth_client <- function(
         cli::cli_abort("{.code auth = 'jwt_sig'} requires a {.arg key}.")
       }
       if (!has_name(auth_params, "claim")) {
-        cli::cli_abort("{.code auth = 'jwt_sig'} requires a claim specification in {.arg auth_params}.")
+        cli::cli_abort(
+          "{.code auth = 'jwt_sig'} requires a claim specification in {.arg auth_params}."
+        )
       }
     }
 
@@ -167,7 +168,8 @@ oauth_client_req_auth <- function(req, client) {
 #' @export
 #' @rdname oauth_client_req_auth
 oauth_client_req_auth_header <- function(req, client) {
-  req_auth_basic(req,
+  req_auth_basic(
+    req,
     username = client$id,
     password = unobfuscate(client$secret)
   )
@@ -176,7 +178,8 @@ oauth_client_req_auth_header <- function(req, client) {
 #' @export
 #' @rdname oauth_client_req_auth
 oauth_client_req_auth_body <- function(req, client) {
-  req_body_form(req,
+  req_body_form(
+    req,
     client_id = client$id,
     client_secret = unobfuscate(client$secret) # might be NULL
   )
@@ -185,12 +188,19 @@ oauth_client_req_auth_body <- function(req, client) {
 #' @inheritParams jwt_claim
 #' @export
 #' @rdname oauth_client_req_auth
-oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header = list()) {
+oauth_client_req_auth_jwt_sig <- function(
+  req,
+  client,
+  claim,
+  size = 256,
+  header = list()
+) {
   claim <- exec("jwt_claim", !!!claim)
   jwt <- jwt_encode_sig(claim, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
-  req_body_form(req,
+  req_body_form(
+    req,
     client_assertion = jwt,
     client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
   )
@@ -198,11 +208,13 @@ oauth_client_req_auth_jwt_sig <- function(req, client, claim, size = 256, header
 
 # Helpers -----------------------------------------------------------------
 
-oauth_flow_check <- function(flow, client,
-                             is_confidential = FALSE,
-                             interactive = FALSE,
-                             error_call = caller_env()) {
-
+oauth_flow_check <- function(
+  flow,
+  client,
+  is_confidential = FALSE,
+  interactive = FALSE,
+  error_call = caller_env()
+) {
   if (!inherits(client, "httr2_oauth_client")) {
     cli::cli_abort(
       "{.arg client} must be an OAuth client created with {.fn oauth_client}.",
@@ -228,10 +240,12 @@ oauth_flow_check <- function(flow, client,
   }
 }
 
-oauth_client_get_token <- function(client,
-                                   grant_type,
-                                   ...,
-                                   error_call = caller_env()) {
+oauth_client_get_token <- function(
+  client,
+  grant_type,
+  ...,
+  error_call = caller_env()
+) {
   req <- request(client$token_url)
   req <- req_body_form(req, grant_type = grant_type, ...)
   req <- oauth_client_req_auth(req, client)

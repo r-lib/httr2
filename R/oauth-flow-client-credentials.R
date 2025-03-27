@@ -24,11 +24,12 @@
 #'
 #' request("https://example.com") |>
 #'   req_auth()
-req_oauth_client_credentials <- function(req,
-                                         client,
-                                         scope = NULL,
-                                         token_params = list()) {
-
+req_oauth_client_credentials <- function(
+  req,
+  client,
+  scope = NULL,
+  token_params = list()
+) {
   params <- list(
     client = client,
     scope = scope,
@@ -41,12 +42,15 @@ req_oauth_client_credentials <- function(req,
 
 #' @export
 #' @rdname req_oauth_client_credentials
-oauth_flow_client_credentials <- function(client,
-                                          scope = NULL,
-                                          token_params = list()) {
+oauth_flow_client_credentials <- function(
+  client,
+  scope = NULL,
+  token_params = list()
+) {
   oauth_flow_check("client credentials", client, is_confidential = TRUE)
 
-  oauth_client_get_token(client,
+  oauth_client_get_token(
+    client,
     grant_type = "client_credentials",
     scope = scope,
     !!!token_params

@@ -58,7 +58,10 @@ parse_aws_event <- function(bytes) {
   # prelude
   total_length <- parse_int(read_bytes(4))
   if (total_length != length(bytes)) {
-    cli::cli_abort("AWS event metadata doesn't match supplied bytes", .internal = TRUE)
+    cli::cli_abort(
+      "AWS event metadata doesn't match supplied bytes",
+      .internal = TRUE
+    )
   }
 
   header_length <- parse_int(read_bytes(4))
@@ -73,7 +76,8 @@ parse_aws_event <- function(bytes) {
     type <- as.integer(read_bytes(1))
 
     delayedAssign("length", parse_int(read_bytes(2)))
-    value <- switch(type_enum(type),
+    value <- switch(
+      type_enum(type),
       "TRUE" = TRUE,
       "FALSE" = FALSE,
       BYTE = parse_int(read_bytes(1)),
@@ -119,7 +123,8 @@ type_enum <- function(value) {
     cli::cli_abort("Unsupported type {value}.", .internal = TRUE)
   }
 
-  switch(value + 1,
+  switch(
+    value + 1,
     "TRUE",
     "FALSE",
     "BYTE",

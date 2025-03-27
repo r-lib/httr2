@@ -1,10 +1,15 @@
 test_that("can correctly sign a request with dummy credentials", {
   req <- request("https://sts.amazonaws.com/")
-  req <- req_auth_aws_v4(req,
+  req <- req_auth_aws_v4(
+    req,
     aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
     aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
   )
-  req <- req_body_form(req, Action = "GetCallerIdentity", Version = "2011-06-15")
+  req <- req_body_form(
+    req,
+    Action = "GetCallerIdentity",
+    Version = "2011-06-15"
+  )
   expect_error(req_perform(req), class = "httr2_http_403")
 
   # And can clear non-existant cache
@@ -17,7 +22,8 @@ test_that("can correctly sign a request with live credentials", {
 
   # https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html
   req <- request("https://sts.amazonaws.com/")
-  req <- req_auth_aws_v4(req,
+  req <- req_auth_aws_v4(
+    req,
     aws_access_key_id = creds$access_key_id,
     aws_secret_access_key = creds$secret_access_key,
     aws_session_token = creds$session_token,
@@ -58,7 +64,9 @@ test_that("signing agrees with glacier example", {
 
   signature <- aws_v4_signature(
     method = "PUT",
-    url = url_parse("https://glacier.us-east-1.amazonaws.com/-/vaults/examplevault"),
+    url = url_parse(
+      "https://glacier.us-east-1.amazonaws.com/-/vaults/examplevault"
+    ),
     headers = list(
       "x-amz-date" = "20120525T002453Z",
       "x-amz-glacier-version" = "2012-06-01"

@@ -85,6 +85,6 @@ test_that("parse_name_equals_value handles empty values", {
 test_that("parse_match converts missing matches to NULL", {
   expect_equal(
     parse_match("abbbd", "(a)(b+)(c*)(d)"),
-    list("a", "bbb", NULL, "d"
-  ))
+    list("a", "bbb", NULL, "d")
+  )
 })

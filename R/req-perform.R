@@ -65,12 +65,12 @@
 #' request("https://google.com") |>
 #'   req_perform()
 req_perform <- function(
-      req,
-      path = NULL,
-      verbosity = NULL,
-      mock = getOption("httr2_mock", NULL),
-      error_call = current_env()
-  ) {
+  req,
+  path = NULL,
+  verbosity = NULL,
+  mock = getOption("httr2_mock", NULL),
+  error_call = current_env()
+) {
   check_request(req)
   check_string(path, allow_null = TRUE)
   # verbosity checked by req_verbosity
@@ -163,7 +163,12 @@ resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
     c(message, resp_auth_message(resp), info),
     status = status,
     resp = resp,
-    class = c(glue("httr2_http_{status}"), "httr2_http", "httr2_error", "rlang_error"),
+    class = c(
+      glue("httr2_http_{status}"),
+      "httr2_http",
+      "httr2_error",
+      "rlang_error"
+    ),
     request = req,
     call = error_call
   ))
@@ -206,7 +211,8 @@ req_verbosity <- function(req, verbosity, error_call = caller_env()) {
     cli::cli_abort("{.arg verbosity} must 0, 1, 2, or 3.", call = error_call)
   }
 
-  switch(verbosity + 1,
+  switch(
+    verbosity + 1,
     req,
     req_verbose(req),
     req_verbose(req, body_req = TRUE, body_resp = TRUE),

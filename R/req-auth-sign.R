@@ -1,6 +1,6 @@
-
 req_auth_sign <- function(req, fun, params, cache) {
-  req_policies(req,
+  req_policies(
+    req,
     auth_sign = list(
       fun = fun,
       params = params,
@@ -13,7 +13,8 @@ auth_sign <- function(req) {
     return(req)
   }
 
-  exec(req$policies$auth_sign$fun,
+  exec(
+    req$policies$auth_sign$fun,
     req = req,
     cache = req$policies$auth_sign$cache,
     !!!req$policies$auth_sign$params

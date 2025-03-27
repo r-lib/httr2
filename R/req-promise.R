@@ -67,10 +67,12 @@
 #' # See the [promises package documentation](https://rstudio.github.io/promises/)
 #' # for more information on working with promises
 #' }
-req_perform_promise <- function(req,
-                                path = NULL,
-                                pool = NULL,
-                                verbosity = NULL) {
+req_perform_promise <- function(
+  req,
+  path = NULL,
+  pool = NULL,
+  verbosity = NULL
+) {
   check_installed(c("promises", "later"))
 
   check_request(req)
@@ -125,7 +127,8 @@ ensure_pool_poller <- function(pool, reject) {
         } else {
           monitor$ending()
         }
-      }, error = function(cnd) {
+      },
+      error = function(cnd) {
         monitor$ending()
         reject(cnd)
       }
@@ -139,7 +142,8 @@ ensure_pool_poller <- function(pool, reject) {
 pool_poller_monitor <- function(pool) {
   pool_address <- obj_address(pool)
   list(
-    already_going = function() env_get(the$pool_pollers, pool_address, default = FALSE),
+    already_going = function()
+      env_get(the$pool_pollers, pool_address, default = FALSE),
     starting = function() env_poke(the$pool_pollers, pool_address, TRUE),
     ending = function() env_unbind(the$pool_pollers, pool_address)
   )

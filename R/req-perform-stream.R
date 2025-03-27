@@ -38,11 +38,13 @@
 #'   req_url_path("/stream-bytes/100000") |>
 #'   req_perform_stream(show_bytes, buffer_kb = 32)
 #' resp
-req_perform_stream <- function(req,
-                               callback,
-                               timeout_sec = Inf,
-                               buffer_kb = 64,
-                               round = c("byte", "line")) {
+req_perform_stream <- function(
+  req,
+  callback,
+  timeout_sec = Inf,
+  buffer_kb = 64,
+  round = c("byte", "line")
+) {
   check_request(req)
 
   check_function(callback)
@@ -87,14 +89,17 @@ req_perform_stream <- function(req,
 
 # Helpers ----------------------------------------------------------------------
 
-as_round_function <- function(round = c("byte", "line"),
-                              error_call = caller_env()) {
+as_round_function <- function(
+  round = c("byte", "line"),
+  error_call = caller_env()
+) {
   if (is.function(round)) {
     check_function2(round, args = "bytes")
     round
   } else if (is.character(round)) {
     round <- arg_match(round, error_call = error_call)
-    switch(round,
+    switch(
+      round,
       byte = function(bytes) length(bytes),
       line = function(bytes) which(bytes == charToRaw("\n"))
     )

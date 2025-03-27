@@ -26,7 +26,8 @@ test_that("can determine if a stream is complete (blocking)", {
 })
 
 test_that("can determine if a stream is complete (non-blocking)", {
-  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection(blocking = FALSE)
+  resp <- request_test("/stream-bytes/2048") %>%
+    req_perform_connection(blocking = FALSE)
   withr::defer(close(resp))
 
   expect_false(resp_stream_is_complete(resp))
@@ -44,7 +45,10 @@ test_that("can determine if incomplete data is complete", {
   con <- req %>% req_perform_connection(blocking = TRUE)
   withr::defer(close(con))
 
-  expect_equal(resp_stream_sse(con, 10), list(type = "message", data = "1", id = ""))
+  expect_equal(
+    resp_stream_sse(con, 10),
+    list(type = "message", data = "1", id = "")
+  )
   expect_snapshot(expect_equal(resp_stream_sse(con), NULL))
   expect_true(resp_stream_is_complete(con))
 })
@@ -105,7 +109,14 @@ test_that("handles line endings of multiple kinds", {
   withr::defer(close(resp1))
 
   expected_values <- list(
-    "\u3042", "crlf", "lf", "cr", character(0), "half line/other half", "broken crlf", "another line"
+    "\u3042",
+    "crlf",
+    "lf",
+    "cr",
+    character(0),
+    "half line/other half",
+    "broken crlf",
+    "another line"
   )
 
   for (expected in expected_values) {
@@ -133,7 +144,13 @@ test_that("handles line endings of multiple kinds", {
   withr::defer(close(resp2))
 
   expected_values <- c(
-    "\u3042", "crlf", "lf", "cr", "half line/other half", "broken crlf", "another line"
+    "\u3042",
+    "crlf",
+    "lf",
+    "cr",
+    "half line/other half",
+    "broken crlf",
+    "another line"
   )
 
   for (expected in expected_values) {
@@ -159,7 +176,7 @@ test_that("streams the specified number of lines", {
   expect_equal(resp_stream_lines(resp2, 3), c("a", "b", "c"))
   expect_equal(resp_stream_lines(resp2, 3), c("d", "e"))
   expect_equal(resp_stream_lines(resp2, 3), character())
- })
+})
 
 test_that("can feed sse events one at a time", {
   req <- local_app_request(function(req, res) {
@@ -311,7 +328,9 @@ test_that("verbosity = 3 shows buffer info", {
     res$send_chunk("line 2\n")
   })
 
-  expect_output(con <- req_perform_connection(req, blocking = TRUE, verbosity = 3))
+  expect_output(
+    con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
+  )
   on.exit(close(con))
   expect_snapshot(
     {

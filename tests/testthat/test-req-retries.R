@@ -71,7 +71,7 @@ test_that("useful message if `after` wrong", {
   req <- request_test() %>%
     req_retry(
       is_transient = function(resp) TRUE,
-      after = function(resp) resp, 
+      after = function(resp) resp,
       max_tries = 2
     )
 

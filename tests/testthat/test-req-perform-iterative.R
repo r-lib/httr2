@@ -9,7 +9,10 @@ test_that("can perform multiple requests", {
   )
 
   expect_length(resps, 4)
-  expect_equal(resp_url(resps[[4]]), paste0(example_url(), "iris?limit=5&page_index=4"))
+  expect_equal(
+    resp_url(resps[[4]]),
+    paste0(example_url(), "iris?limit=5&page_index=4")
+  )
 })
 
 test_that("can save results to disk", {
@@ -79,8 +82,23 @@ test_that("checks its inputs", {
   expect_snapshot(error = TRUE, {
     req_perform_iterative(1)
     req_perform_iterative(req, function(x, y) x + y)
-    req_perform_iterative(req, function(resp, req) {}, path = 1)
-    req_perform_iterative(req, function(resp, req) {}, max_reqs = -1)
-    req_perform_iterative(req, function(resp, req) {}, progress = -1)
+    req_perform_iterative(
+      req,
+      function(resp, req) {
+      },
+      path = 1
+    )
+    req_perform_iterative(
+      req,
+      function(resp, req) {
+      },
+      max_reqs = -1
+    )
+    req_perform_iterative(
+      req,
+      function(resp, req) {
+      },
+      progress = -1
+    )
   })
 })

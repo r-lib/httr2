@@ -97,20 +97,21 @@
 #'
 #' request("https://api.github.com/user") |>
 #'   req_auth_github()
-req_oauth_auth_code <- function(req,
-                                client,
-                                auth_url,
-                                scope = NULL,
-                                pkce = TRUE,
-                                auth_params = list(),
-                                token_params = list(),
-                                redirect_uri = oauth_redirect_uri(),
-                                cache_disk = FALSE,
-                                cache_key = NULL,
-                                host_name = deprecated(),
-                                host_ip = deprecated(),
-                                port = deprecated()) {
-
+req_oauth_auth_code <- function(
+  req,
+  client,
+  auth_url,
+  scope = NULL,
+  pkce = TRUE,
+  auth_params = list(),
+  token_params = list(),
+  redirect_uri = oauth_redirect_uri(),
+  cache_disk = FALSE,
+  cache_key = NULL,
+  host_name = deprecated(),
+  host_ip = deprecated(),
+  port = deprecated()
+) {
   redirect <- normalize_redirect_uri(
     redirect_uri = redirect_uri,
     host_name = host_name,
@@ -134,18 +135,18 @@ req_oauth_auth_code <- function(req,
 
 #' @export
 #' @rdname req_oauth_auth_code
-oauth_flow_auth_code <- function(client,
-                                 auth_url,
-                                 scope = NULL,
-                                 pkce = TRUE,
-                                 auth_params = list(),
-                                 token_params = list(),
-                                 redirect_uri = oauth_redirect_uri(),
-                                 host_name = deprecated(),
-                                 host_ip = deprecated(),
-                                 port = deprecated()
+oauth_flow_auth_code <- function(
+  client,
+  auth_url,
+  scope = NULL,
+  pkce = TRUE,
+  auth_params = list(),
+  token_params = list(),
+  redirect_uri = oauth_redirect_uri(),
+  host_name = deprecated(),
+  host_ip = deprecated(),
+  port = deprecated()
 ) {
-
   oauth_flow_check("authorization code", client, interactive = TRUE)
 
   redirect <- normalize_redirect_uri(
@@ -165,7 +166,8 @@ oauth_flow_auth_code <- function(client,
   state <- base64_url_rand(32)
 
   # Redirect user to authorisation url.
-  user_url <- oauth_flow_auth_code_url(client,
+  user_url <- oauth_flow_auth_code_url(
+    client,
     auth_url = auth_url,
     redirect_uri = redirect$uri,
     scope = scope,
@@ -195,7 +197,8 @@ oauth_flow_auth_code <- function(client,
 
   # Get access/refresh token from authorisation code
   # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
-  oauth_client_get_token(client,
+  oauth_client_get_token(
+    client,
     grant_type = "authorization_code",
     code = code,
     redirect_uri = redirect_uri,
@@ -203,12 +206,13 @@ oauth_flow_auth_code <- function(client,
   )
 }
 
-normalize_redirect_uri <- function(redirect_uri,
-                                   host_name = deprecated(),
-                                   host_ip = deprecated(),
-                                   port = deprecated(),
-                                   error_call = caller_env()) {
-
+normalize_redirect_uri <- function(
+  redirect_uri,
+  host_name = deprecated(),
+  host_ip = deprecated(),
+  port = deprecated(),
+  error_call = caller_env()
+) {
   old <- parsed <- url_parse(redirect_uri)
 
   if (lifecycle::is_present(host_name)) {
@@ -254,7 +258,6 @@ normalize_redirect_uri <- function(redirect_uri,
     localhost = localhost,
     can_fetch_code = can_fetch_oauth_code(redirect_uri)
   )
-
 }
 
 
@@ -293,14 +296,17 @@ oauth_redirect_uri <- function() {
 #'   verify that we're working with an authentication request that we created.
 #'   (This is an unlikely threat for R packages since the webserver that
 #'   listens for authorization responses is transient.)
-oauth_flow_auth_code_url <- function(client,
-                                     auth_url,
-                                     redirect_uri = NULL,
-                                     scope = NULL,
-                                     state = NULL,
-                                     auth_params = list()) {
+oauth_flow_auth_code_url <- function(
+  client,
+  auth_url,
+  redirect_uri = NULL,
+  scope = NULL,
+  state = NULL,
+  auth_params = list()
+) {
   url <- url_parse(auth_url)
-  url$query <- modify_list(url$query,
+  url$query <- modify_list(
+    url$query,
     response_type = "code",
     client_id = client$id,
     redirect_uri = redirect_uri,
@@ -313,7 +319,9 @@ oauth_flow_auth_code_url <- function(client,
 
 #' @export
 #' @rdname oauth_flow_auth_code_url
-oauth_flow_auth_code_listen <- function(redirect_uri = "http://localhost:1410") {
+oauth_flow_auth_code_listen <- function(
+  redirect_uri = "http://localhost:1410"
+) {
   parsed <- url_parse(redirect_uri)
   port <- as.integer(parsed$port)
   path <- parsed$path %||% "/"

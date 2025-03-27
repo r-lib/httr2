@@ -115,8 +115,14 @@ req_timeout <- function(req, seconds) {
 #'   req_perform()
 #' }
 #' @export
-req_proxy <- function(req, url, port = NULL, username = NULL, password = NULL, auth = "basic") {
-
+req_proxy <- function(
+  req,
+  url,
+  port = NULL,
+  username = NULL,
+  password = NULL,
+  auth = "basic"
+) {
   if (!is.null(username) || !is.null(password)) {
     proxyuserpwd <- paste0(username, ":", password)
   } else {
@@ -143,6 +149,11 @@ auth_flags <- function(x = "basic") {
     digest_ie = 16,
     any = -17
   )
-  idx <- arg_match0(x, names(constants), arg_nm = "auth", error_call = caller_env())
+  idx <- arg_match0(
+    x,
+    names(constants),
+    arg_nm = "auth",
+    error_call = caller_env()
+  )
   constants[[idx]]
 }

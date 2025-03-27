@@ -4,7 +4,10 @@
 # 4. secret_write_rds(json, "tests/testthat/test-oauth-flow-jwt-google.rds", "HTTR2_KEY")
 
 test_that("can generate token and use it automatically", {
-  secrets <- secret_read_rds(test_path("test-oauth-flow-jwt-google.rds"), "HTTR2_KEY")
+  secrets <- secret_read_rds(
+    test_path("test-oauth-flow-jwt-google.rds"),
+    "HTTR2_KEY"
+  )
 
   client <- oauth_client(
     id = secrets$client_id,
@@ -36,6 +39,11 @@ test_that("validates inputs", {
   client1 <- oauth_client("test", "http://example.com")
   expect_snapshot(oauth_flow_bearer_jwt(client1), error = TRUE)
 
-  client2 <- oauth_client("test", "http://example.com", key = "abc", auth_params = list(claim = "123"))
+  client2 <- oauth_client(
+    "test",
+    "http://example.com",
+    key = "abc",
+    auth_params = list(claim = "123")
+  )
   expect_snapshot(oauth_flow_bearer_jwt(client2, claim = NULL), error = TRUE)
 })
