@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -148,7 +148,7 @@
 <span><span class="co">#&gt; accept: */*</span></span>
 <span><span class="co">#&gt; accept-encoding: deflate, gzip</span></span>
 <span><span class="co">#&gt; host: r-project.org</span></span>
-<span><span class="co">#&gt; user-agent: httr2/1.1.0.9000 r-curl/6.2.1 libcurl/8.11.1</span></span></code></pre></div>
+<span><span class="co">#&gt; user-agent: httr2/1.1.1.9000 r-curl/6.2.2 libcurl/8.11.1</span></span></code></pre></div>
 <p>Use <code><a href="reference/req_perform.html">req_perform()</a></code> to perform the request, retrieving a <strong>response</strong>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
@@ -157,7 +157,7 @@
 <span><span class="co">#&gt; GET https://www.r-project.org/</span></span>
 <span><span class="co">#&gt; Status: 200 OK</span></span>
 <span><span class="co">#&gt; Content-Type: text/html</span></span>
-<span><span class="co">#&gt; Body: In memory (6963 bytes)</span></span></code></pre></div>
+<span><span class="co">#&gt; Body: In memory (7055 bytes)</span></span></code></pre></div>
 <p>The <code>resp_</code> functions help you extract various useful components of the response:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span></span>
