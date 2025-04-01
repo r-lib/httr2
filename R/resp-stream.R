@@ -273,7 +273,7 @@ resp_boundary_pushback <- function(
   check_streaming_response(resp)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
-  chunk_size <- if (is.infinite(max_size)) 32 * 1024 else max_size + 1
+  chunk_size <- if (is.infinite(max_size)) 1024 else max_size + 1
   buffer <- env_cache(resp$cache, "buffer", RingBuffer$new(chunk_size))
 
   if (resp_stream_show_buffer(resp)) {

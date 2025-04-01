@@ -26,21 +26,6 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   event
 }
 
-# find_aws_event_boundary <- function(buffer) {
-#   # No valid AWS event message is less than 16 bytes
-#   if (length(buffer) < 16) {
-#     return(NULL)
-#   }
-
-#   # Read first 4 bytes as a big endian number
-#   event_size <- parse_int(buffer[1:4])
-#   if (event_size > length(buffer)) {
-#     return(NULL)
-#   }
-
-#   event_size + 1
-# }
-
 find_aws_event_boundary <- function(rb) {
   # No valid AWS event message is less than 16 bytes
   if (rb$size() < 16) {
