@@ -27,7 +27,7 @@ handle the request) or a \link{response} (if it does).
 \item{env}{Environment to use for scoping changes.}
 }
 \value{
-\code{with_mock()} returns the result of evaluating \code{code}.
+\code{with_mocked_responses()} returns the result of evaluating \code{code}.
 }
 \description{
 Mocking allows you to selectively and temporarily replace the response
@@ -45,5 +45,5 @@ google <- function() {
 my_mock <- function(req) {
   response(status_code = 403)
 }
-try(with_mock(my_mock, google()))
+try(with_mocked_responses(my_mock, google()))
 }
