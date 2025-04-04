@@ -17,7 +17,7 @@
 #'
 #' @param code Code to execute in the temporary environment.
 #' @param env Environment to use for scoping changes.
-#' @returns `with_mock()` returns the result of evaluating `code`.
+#' @returns `with_mocked_responses()` returns the result of evaluating `code`.
 #' @export
 #' @examples
 #' # This function should perform a response against google.com:
@@ -30,7 +30,7 @@
 #' my_mock <- function(req) {
 #'   response(status_code = 403)
 #' }
-#' try(with_mock(my_mock, google()))
+#' try(with_mocked_responses(my_mock, google()))
 with_mocked_responses <- function(mock, code) {
   mock <- as_mock_function(mock)
   withr::with_options(list(httr2_mock = mock), code)
