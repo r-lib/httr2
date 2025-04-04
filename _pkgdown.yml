@@ -74,7 +74,7 @@ reference:
     contents:
       - starts_with("url_")
 
-  - title: Miscellaenous helpers
+  - title: Miscellaneous helpers
     contents:
       - curl_translate
       - is_online
