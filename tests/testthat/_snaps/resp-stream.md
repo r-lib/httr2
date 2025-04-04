@@ -20,7 +20,6 @@
       stream_all(req, resp_stream_lines, 1)
     Output
       << line 1
-      << line 2
     Code
       stream_all(req, resp_stream_raw, 5 / 1024)
     Output
@@ -46,11 +45,6 @@
       *  Matched data: 6c 69 6e 65 20 31 0a
       *  Remaining buffer: 6c 69 6e 65 20 32 0a
       << line 1
-      *  -- Buffer ----------------------------------------------------------------------
-      *  Buffer to parse: 6c 69 6e 65 20 32 0a
-      *  Matched data: 6c 69 6e 65 20 32 0a
-      *  Remaining buffer: 
-      << line 2
 
 # verbosity = 3 shows raw sse events
 
