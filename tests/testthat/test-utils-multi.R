@@ -17,6 +17,25 @@ test_that("can handle multi query params", {
   )
 })
 
+test_that("can handle mixed length multi query params", {
+  expect_equal(
+    multi_dots(a = 1:2, b = 1, c = NULL, .multi = "explode"),
+    list(a = I("1"), a = I("2"), b = I("1"), c = NULL)
+  )
+  expect_equal(
+    multi_dots(a = 1:2, b = 1, c = NULL, .multi = "comma"),
+    list(a = I("1,2"), b = I("1"), c = NULL)
+  )
+  expect_equal(
+    multi_dots(a = 1:2, b = 1, c = NULL, .multi = "pipe"),
+    list(a = I("1|2"), b = I("1"), c = NULL)
+  )
+  expect_equal(
+    multi_dots(a = 1:2, b = 1, c = NULL, .multi = function(x) "X"),
+    list(a = I("X"), b = I("1"), c = NULL)
+  )
+})
+
 test_that("can opt-out of escaping for' vectors", {
   expect_equal(
     multi_dots(a = I(c(" ", " ")), .multi = "comma"),

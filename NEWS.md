@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
+
 # httr2 1.1.2
 
 * `req_headers()` more carefully checks its input types (#707).

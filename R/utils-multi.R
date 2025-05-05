@@ -64,13 +64,7 @@ multi_dots <- function(
       dots[n > 1] <- lapply(dots[n > 1], I)
     } else if (.multi == "explode") {
       dots <- explode(dots)
-      dots[n > 1] <- imap(
-        dots[n > 1],
-        format_query_param,
-        multi = TRUE,
-        form = form
-      )
-      dots[n > 1] <- lapply(dots[n > 1], I)
+      n <- lengths(dots)
     } else if (.multi == "error") {
       cli::cli_abort(
         c(
