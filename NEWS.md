@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* `multi_dots()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
+* `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
 
 # httr2 1.1.2
 
