@@ -54,6 +54,7 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
   # verbosity checked in req_verbosity_connection
 
   req <- req_verbosity_connection(req, verbosity %||% httr2_verbosity())
+  req <- req_with_span(req)
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   the$last_request <- req
@@ -71,7 +72,14 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
     if (!is.null(resp)) {
       close(resp)
     }
+
+    if (tries != 0) {
+      # Start a new span for retried requests.
+      req_prep <- req_reset_span(req_prep, handle, resend_count = tries)
+    }
+
     resp <- req_perform_connection1(req, handle, blocking = blocking)
+    req_completed(req_prep, resp)
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -82,7 +90,6 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
       break
     }
   }
-  req_completed(req)
 
   if (!is_error(resp) && error_is_error(req, resp)) {
     # Read full body if there's an error

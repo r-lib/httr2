@@ -79,6 +79,8 @@ req_perform <- function(
   verbosity <- verbosity %||% httr2_verbosity()
 
   if (!is.null(mock)) {
+    # Allow us to use with_mock() to confirm context propagation.
+    req <- req_with_span(req)
     mock <- as_function(mock)
     mock_resp <- mock(req)
     if (!is.null(mock_resp)) {
@@ -93,6 +95,9 @@ req_perform <- function(
     return(req)
   }
 
+  sys_sleep(throttle_delay(req), "for throttling delay")
+
+  req <- req_with_span(req)
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   max_tries <- retry_max_tries(req)
@@ -101,17 +106,19 @@ req_perform <- function(
   n <- 0
   tries <- 0
   reauthed <- FALSE # only ever re-authenticate once
-
-  sys_sleep(throttle_delay(req), "for throttling delay")
-
   delay <- 0
   while (tries < max_tries && Sys.time() < deadline) {
     retry_check_breaker(req, tries, error_call = error_call)
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
+    if (n != 1) {
+      # Start a new span for retried requests.
+      req_prep <- req_reset_span(req_prep, handle, resend_count = n)
+    }
+
     resp <- req_perform1(req, path = path, handle = handle)
-    req_completed(req_prep)
+    req_completed(req_prep, resp)
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -270,7 +277,8 @@ req_handle <- function(req) {
 
   handle
 }
-req_completed <- function(req) {
+req_completed <- function(req, resp = NULL) {
+  req_end_span(req, resp)
   req_policy_call(req, "done", list(), NULL)
 }
 
