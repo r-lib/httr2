@@ -39,6 +39,7 @@ Suggests:
     knitr,
     later (>= 1.4.0),
     nanonext,
+    otel (>= 0.0.0.9000),
     paws.common,
     promises,
     rmarkdown,
@@ -56,4 +57,5 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Remotes:  
-    r-lib/webfakes
+    r-lib/webfakes,
+    r-lib/otel
