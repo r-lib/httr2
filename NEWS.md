@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
+* httr2 will now emit OpenTelemetry traces for all requests when tracing is enabled. Requires the `otelsdk` package (@atheriel, #729).
 
 # httr2 1.1.2
 
