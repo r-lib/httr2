@@ -7,7 +7,8 @@ req_with_span <- function(
   req,
   resend_count = 0,
   tracer = default_tracer(),
-  scope = parent.frame()
+  scope = parent.frame(),
+  session = NULL
 ) {
   if (is.null(tracer) || !tracer$is_enabled()) {
     return(req)
@@ -45,7 +46,8 @@ req_with_span <- function(
       "http.request.resend_count" = if (resend_count > 1) resend_count,
       "user_agent.original" = req$options$useragent
     )),
-    scope = scope
+    scope = scope,
+    session = session
   )
   ctx <- span$get_context()
   req <- req_headers(req, !!!ctx$to_http_headers())
