@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `resp_timing()` exposes timing information about the request measured by libcurl (@arcresu, #725).
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
 
 # httr2 1.1.2

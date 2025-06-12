@@ -76,6 +76,7 @@ new_response <- function(
   status_code,
   headers,
   body,
+  timing = NULL,
   request = NULL,
   error_call = caller_env()
 ) {
@@ -83,6 +84,9 @@ new_response <- function(
   check_string(url, call = error_call)
   check_number_whole(status_code, call = error_call)
   check_request(request, allow_null = TRUE)
+  if (!is.null(timing) && !is_bare_numeric(timing)) {
+    stop_input_type(timing, "a numeric vector", allow_null = TRUE)
+  }
 
   headers <- as_headers(headers, error_call = error_call)
   # ensure we always have a date field
@@ -97,6 +101,7 @@ new_response <- function(
       status_code = status_code,
       headers = headers,
       body = body,
+      timing = timing,
       request = request,
       cache = new_environment()
     ),
@@ -111,6 +116,7 @@ create_response <- function(req, curl_data, body) {
     status_code = curl_data$status_code,
     headers = as_headers(curl_data$headers),
     body = body,
+    timing = curl_data$times,
     request = req
   )
 
