@@ -3,13 +3,14 @@
 #' The underlying curl library measures how long different components of the
 #' request take to complete. This function retrieves that information.
 #'
-#' The names of the elements in this vector correspond to the enum used
+#' The names of the elements in this vector correspond to the names used
 #' in libcurl's `curl_easy_getinfo()` API. For example, `"namelookup"` is the
 #' time returned by requesting `CURLINFO_NAMELOOKUP_TIME`. Refer to [curl
 #' documentation] for explanations of what these measure. The most useful
-#' component is likely `"total"`, the overall time to complete the request.
+#' component is likely `"total"`, the overall time in seconds to complete the
+#' request including any redirects followed.
 #'
-#' [curl documentation]: https://everything.curl.dev/transfers/getinfo.html#available-information
+#' [curl documentation]: https://curl.se/libcurl/c/curl_easy_getinfo.html
 #'
 #' @inheritParams resp_header
 #' @returns named numeric vector of timing information

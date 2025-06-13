@@ -17,10 +17,11 @@ The underlying curl library measures how long different components of the
 request take to complete. This function retrieves that information.
 }
 \details{
-The names of the elements in this vector correspond to the enum used
+The names of the elements in this vector correspond to the names used
 in libcurl's \code{curl_easy_getinfo()} API. For example, \code{"namelookup"} is the
-time returned by requesting \code{CURLINFO_NAMELOOKUP_TIME}. Refer to \href{https://everything.curl.dev/transfers/getinfo.html#available-information}{curl documentation} for explanations of what these measure. The most useful
-component is likely \code{"total"}, the overall time to complete the request.
+time returned by requesting \code{CURLINFO_NAMELOOKUP_TIME}. Refer to \href{https://curl.se/libcurl/c/curl_easy_getinfo.html}{curl documentation} for explanations of what these measure. The most useful
+component is likely \code{"total"}, the overall time in seconds to complete the
+request including any redirects followed.
 }
 \examples{
 req <- request(example_url())
