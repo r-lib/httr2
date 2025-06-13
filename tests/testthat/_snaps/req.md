@@ -18,7 +18,7 @@
     Message
       <httr2_request>
       POST https://example.com
-      Body: multipart encoded data
+      Body: multipart data
 
 # printing headers works with {}
 
