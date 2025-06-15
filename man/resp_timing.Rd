@@ -2,7 +2,7 @@
 % Please edit documentation in R/resp-timing.R
 \name{resp_timing}
 \alias{resp_timing}
-\title{Extract information about the timing of the response}
+\title{Extract timing data}
 \usage{
 resp_timing(resp)
 }
@@ -10,18 +10,16 @@ resp_timing(resp)
 \item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 }
 \value{
-named numeric vector of timing information
+Named numeric vector of timing information.
+The names of the elements in this vector correspond to the names used
+in \href{https://curl.se/libcurl/c/curl_easy_getinfo.html}{libcurl's \code{curl_easy_getinfo()} API}.
+The most useful component is likely \code{"total"} (corresponding to
+\code{CURLINFO_TOTAL_TIME}), the overall time in seconds to complete the
+request including any redirects followed.
 }
 \description{
 The underlying curl library measures how long different components of the
 request take to complete. This function retrieves that information.
-}
-\details{
-The names of the elements in this vector correspond to the names used
-in libcurl's \code{curl_easy_getinfo()} API. For example, \code{"namelookup"} is the
-time returned by requesting \code{CURLINFO_NAMELOOKUP_TIME}. Refer to \href{https://curl.se/libcurl/c/curl_easy_getinfo.html}{curl documentation} for explanations of what these measure. The most useful
-component is likely \code{"total"}, the overall time in seconds to complete the
-request including any redirects followed.
 }
 \examples{
 req <- request(example_url())
