@@ -19,6 +19,8 @@
 #'   which will be parsed using the standard rules, or a named list.
 #' @param body Response, if any, contained in the response body.
 #'   For `response_json()`, a R data structure to serialize to JSON.
+#' @param timing A named numeric vector giving the time taken by various
+#'   components.
 #' @returns An HTTP response: an S3 list with class `httr2_response`.
 #' @export
 #' @examples
