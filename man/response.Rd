@@ -10,7 +10,8 @@ response(
   url = "https://example.com",
   method = "GET",
   headers = list(),
-  body = raw()
+  body = raw(),
+  timing = NULL
 )
 
 response_json(
@@ -34,6 +35,9 @@ which will be parsed using the standard rules, or a named list.}
 
 \item{body}{Response, if any, contained in the response body.
 For \code{response_json()}, a R data structure to serialize to JSON.}
+
+\item{timing}{A named numeric vector giving the time taken by various
+components.}
 }
 \value{
 An HTTP response: an S3 list with class \code{httr2_response}.
