@@ -133,8 +133,7 @@ test_that("external auth code sources are detected correctly", {
 
 test_that("auth codes can be retrieved from an external source", {
   skip_on_cran()
-  local_mocked_bindings(sys_sleep = function(...) {
-  })
+  local_mocked_bindings(sys_sleep = function(...) {})
 
   req <- local_app_request(function(req, res) {
     # Error on first, and then respond on second

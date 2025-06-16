@@ -156,8 +156,7 @@ cache_noop <- function() {
       abort("set() was called on cache_noop")
       invisible()
     },
-    clear = function() {
-    }
+    clear = function() {}
   )
 }
 cache_mem <- function(client, key = NULL) {

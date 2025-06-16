@@ -109,7 +109,9 @@ req_perform_promise <- function(
 
 ensure_pool_poller <- function(pool, reject) {
   monitor <- pool_poller_monitor(pool)
-  if (monitor$already_going()) return()
+  if (monitor$already_going()) {
+    return()
+  }
 
   poll_pool <- function(ready) {
     tryCatch(
@@ -142,8 +144,9 @@ ensure_pool_poller <- function(pool, reject) {
 pool_poller_monitor <- function(pool) {
   pool_address <- obj_address(pool)
   list(
-    already_going = function()
-      env_get(the$pool_pollers, pool_address, default = FALSE),
+    already_going = function() {
+      env_get(the$pool_pollers, pool_address, default = FALSE)
+    },
     starting = function() env_poke(the$pool_pollers, pool_address, TRUE),
     ending = function() env_unbind(the$pool_pollers, pool_address)
   )

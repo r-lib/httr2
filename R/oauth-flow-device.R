@@ -144,8 +144,7 @@ oauth_flow_device_poll <- function(
         )
         break
       },
-      httr2_oauth_authorization_pending = function(err) {
-      },
+      httr2_oauth_authorization_pending = function(err) {},
       httr2_oauth_slow_down = function(err) {
         delay <<- delay + 5
       }

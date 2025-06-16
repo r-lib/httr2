@@ -99,13 +99,27 @@ url_modify <- function(
     url <- url_parse(url)
   }
 
-  if (!leave_as_is(scheme)) check_string(scheme, allow_null = TRUE)
-  if (!leave_as_is(hostname)) check_string(hostname, allow_null = TRUE)
-  if (!leave_as_is(username)) check_string(username, allow_null = TRUE)
-  if (!leave_as_is(password)) check_string(password, allow_null = TRUE)
-  if (!leave_as_is(port)) check_number_whole(port, min = 1, allow_null = TRUE)
-  if (!leave_as_is(path)) check_string(path, allow_null = TRUE)
-  if (!leave_as_is(fragment)) check_string(fragment, allow_null = TRUE)
+  if (!leave_as_is(scheme)) {
+    check_string(scheme, allow_null = TRUE)
+  }
+  if (!leave_as_is(hostname)) {
+    check_string(hostname, allow_null = TRUE)
+  }
+  if (!leave_as_is(username)) {
+    check_string(username, allow_null = TRUE)
+  }
+  if (!leave_as_is(password)) {
+    check_string(password, allow_null = TRUE)
+  }
+  if (!leave_as_is(port)) {
+    check_number_whole(port, min = 1, allow_null = TRUE)
+  }
+  if (!leave_as_is(path)) {
+    check_string(path, allow_null = TRUE)
+  }
+  if (!leave_as_is(fragment)) {
+    check_string(fragment, allow_null = TRUE)
+  }
 
   if (is_string(query)) {
     query <- url_query_parse(query)

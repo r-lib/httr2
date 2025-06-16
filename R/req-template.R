@@ -108,7 +108,9 @@ template_val <- function(name, dots, env, error_call = caller_env()) {
 }
 
 template_vars <- function(x, type) {
-  if (type == "none") return(character())
+  if (type == "none") {
+    return(character())
+  }
 
   pattern <- switch(
     type,

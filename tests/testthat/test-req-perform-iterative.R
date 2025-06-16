@@ -84,20 +84,17 @@ test_that("checks its inputs", {
     req_perform_iterative(req, function(x, y) x + y)
     req_perform_iterative(
       req,
-      function(resp, req) {
-      },
+      function(resp, req) {},
       path = 1
     )
     req_perform_iterative(
       req,
-      function(resp, req) {
-      },
+      function(resp, req) {},
       max_reqs = -1
     )
     req_perform_iterative(
       req,
-      function(resp, req) {
-      },
+      function(resp, req) {},
       progress = -1
     )
   })
