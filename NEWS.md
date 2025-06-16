@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* URL construction is now powered by `curl::curl_modify_url()`, and hence now (correctly) escapes the `path` component (#732). This also means that `req_url_path()` now can only affect the path component of the URL, not the query params or fragment.
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
 
 # httr2 1.1.2
