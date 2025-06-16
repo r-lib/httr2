@@ -11,8 +11,8 @@
 #' Adding a body to a request will automatically switch the method to POST.
 #'
 #' @inheritParams req_perform
-#' @param type MIME content type. Will be ignored if you have manually set
-#'  a `Content-Type` header.
+#' @param type MIME content type. `""` means not to emit a content-type header.
+#'   Ignored if you have manually set a `Content-Type` header.
 #' @returns A modified HTTP [request].
 #' @examples
 #' req <- request(example_url()) |>
@@ -53,12 +53,14 @@ NULL
 #' @export
 #' @rdname req_body
 #' @param body A literal string or raw vector to send as body.
-req_body_raw <- function(req, body, type = NULL) {
+req_body_raw <- function(req, body, type = "") {
   check_request(req)
+  check_string(type)
+
   if (is.raw(body)) {
-    req_body(req, data = body, type = "raw", content_type = type %||% "")
+    req_body(req, data = body, type = "raw", content_type = type)
   } else if (is_string(body)) {
-    req_body(req, data = body, type = "string", content_type = type %||% "")
+    req_body(req, data = body, type = "string", content_type = type)
   } else {
     cli::cli_abort("{.arg body} must be a raw vector or string.")
   }
@@ -67,15 +69,16 @@ req_body_raw <- function(req, body, type = NULL) {
 #' @export
 #' @rdname req_body
 #' @param path Path to file to upload.
-req_body_file <- function(req, path, type = NULL) {
+req_body_file <- function(req, path, type = "") {
   check_request(req)
   if (!file.exists(path)) {
     cli::cli_abort("Can't find file {.path {path}}.")
   } else if (dir.exists(path)) {
     cli::cli_abort("{.arg path} must be a file, not a directory.")
   }
+  check_string(type)
 
-  req_body(req, data = path, type = "file", content_type = type %||% "")
+  req_body(req, data = path, type = "file", content_type = type)
 }
 
 #' @export
@@ -176,7 +179,6 @@ req_body <- function(
   error_call = parent.frame()
 ) {
   arg_match(type, c("raw", "string", "file", "json", "form", "multipart"))
-  check_string(content_type, allow_null = TRUE, call = error_call)
 
   if (!is.null(req$body) && req$body$type != type) {
     cli::cli_abort(
