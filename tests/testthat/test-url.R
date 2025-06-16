@@ -60,6 +60,7 @@ test_that("url_modify checks its inputs", {
     url_modify(url, scheme = 1)
     url_modify(url, hostname = 1)
     url_modify(url, port = "x")
+    url_modify(url, port = -1)
     url_modify(url, username = 1)
     url_modify(url, password = 1)
     url_modify(url, path = 1)

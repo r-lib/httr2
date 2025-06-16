@@ -99,27 +99,15 @@ url_modify <- function(
     url <- url_parse(url)
   }
 
-  if (!leave_as_is(scheme)) {
-    check_string(scheme, allow_null = TRUE)
-  }
-  if (!leave_as_is(hostname)) {
-    check_string(hostname, allow_null = TRUE)
-  }
-  if (!leave_as_is(username)) {
-    check_string(username, allow_null = TRUE)
-  }
-  if (!leave_as_is(password)) {
-    check_string(password, allow_null = TRUE)
-  }
+  check_url_component(scheme)
+  check_url_component(hostname)
+  check_url_component(username)
+  check_url_component(password)
   if (!leave_as_is(port)) {
-    check_number_whole(port, min = 1, allow_null = TRUE)
+    check_number_whole(port, min = 1, max = 65535, allow_null = TRUE)
   }
-  if (!leave_as_is(path)) {
-    check_string(path, allow_null = TRUE)
-  }
-  if (!leave_as_is(fragment)) {
-    check_string(fragment, allow_null = TRUE)
-  }
+  check_url_component(path)
+  check_url_component(fragment)
 
   if (is_string(query)) {
     query <- url_query_parse(query)
@@ -153,6 +141,13 @@ url_modify <- function(
 
 as_is <- quote(as_is)
 leave_as_is <- function(x) identical(x, as_is)
+check_url_component <- function(x, arg = caller_arg(x), call = caller_env()) {
+  if (leave_as_is(x)) {
+    return(invisible(NULL))
+  }
+
+  check_string(x, allow_null = TRUE, arg = arg, call = call)
+}
 
 #' @export
 #' @rdname url_modify
