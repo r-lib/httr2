@@ -39,7 +39,9 @@ modify_list <- function(
   error_call = caller_env()
 ) {
   dots <- list2(...)
-  if (length(dots) == 0) return(.x)
+  if (length(dots) == 0) {
+    return(.x)
+  }
 
   if (!is_named(dots)) {
     cli::cli_abort(
@@ -246,10 +248,8 @@ create_progress_bar <- function(
 ) {
   if (is_false(config)) {
     return(list(
-      update = function(...) {
-      },
-      done = function() {
-      }
+      update = function(...) {},
+      done = function() {}
     ))
   }
 
@@ -292,7 +292,9 @@ read_con <- function(con, buffer = 32 * 1024) {
   bytes <- raw()
   repeat {
     new <- readBin(con, "raw", n = buffer)
-    if (length(new) == 0) break
+    if (length(new) == 0) {
+      break
+    }
     bytes <- c(bytes, new)
   }
   if (length(bytes) == 0) {

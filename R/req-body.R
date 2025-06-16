@@ -11,8 +11,9 @@
 #' Adding a body to a request will automatically switch the method to POST.
 #'
 #' @inheritParams req_perform
-#' @param type MIME content type. `""` means not to emit a content-type header.
-#'   Ignored if you have manually set a `Content-Type` header.
+#' @param type MIME content type. The default, `""`, will not emit a
+#'   `Content-Type` header.  Ignored if you have set a `Content-Type` header
+#'   with [req_headers()].
 #' @returns A modified HTTP [request].
 #' @examples
 #' req <- request(example_url()) |>

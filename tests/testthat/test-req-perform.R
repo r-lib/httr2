@@ -1,8 +1,28 @@
-test_that("success request returns response", {
+test_that("successful request returns expected response", {
   req <- request_test()
   resp <- req_perform(req)
+
   expect_s3_class(resp, "httr2_response")
+  expect_equal(resp$method, "GET")
+  expect_equal(resp$url, example_url("/get"))
+  expect_equal(resp$status_code, 200)
+  expect_s3_class(resp$headers, "httr2_headers")
+  expect_type(resp$body, "raw")
   expect_equal(resp$request, req)
+})
+
+test_that("request updates last_response()", {
+  req200 <- request_test()
+  req404 <- request_test("/404")
+
+  resp <- req_perform(req200)
+  expect_equal(last_response(), resp)
+  expect_equal(last_request(), req200)
+
+  # even if it errors
+  try(req_perform(req404), silent = TRUE)
+  expect_equal(last_response()$status_code, 404)
+  expect_equal(last_request(), req404)
 })
 
 test_that("curl errors become errors", {
