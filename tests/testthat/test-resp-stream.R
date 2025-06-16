@@ -15,6 +15,20 @@ test_that("can stream bytes from a connection", {
   expect_length(out, 0)
 })
 
+test_that("can stream lines from a connection", {
+  resp <- request_test("/stream/10") %>% req_perform_connection()
+  withr::defer(close(resp))
+
+  out <- resp_stream_lines(resp, 1)
+  expect_length(out, 1)
+
+  out <- resp_stream_lines(resp, 10)
+  expect_length(out, 9)
+
+  out <- resp_stream_lines(resp, 1)
+  expect_length(out, 0)
+})
+
 test_that("can determine if a stream is complete (blocking)", {
   resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
   withr::defer(close(resp))
@@ -78,7 +92,7 @@ test_that("can join lines across multiple reads", {
 
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
-  expect_equal(resp1$cache$push_back, charToRaw("This is a "))
+  expect_equal(resp1$cache$buffer$peek_all(), charToRaw("This is a "))
 
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
@@ -231,7 +245,7 @@ test_that("can join sse events across multiple reads", {
 
   out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
-  expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
+  expect_equal(resp1$cache$buffer$peek_all(), charToRaw("data: 1\n"))
 
   sync()
   out <- resp_stream_sse(resp1)
@@ -240,7 +254,7 @@ test_that("can join sse events across multiple reads", {
   sync()
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "1\n2", id = ""))
-  expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
+  expect_equal(resp1$cache$buffer$peek_all(), charToRaw("data: 3\n\n"))
 
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "3", id = ""))
@@ -275,7 +289,7 @@ test_that("sse always interprets data as UTF-8", {
   Encoding(s) <- "UTF-8"
   expect_equal(out, list(type = "message", data = s, id = ""))
   expect_equal(Encoding(out$data), "UTF-8")
-  expect_equal(resp1$cache$push_back, raw())
+  expect_equal(resp1$cache$buffer$peek_all(), raw())
 })
 
 test_that("streaming size limits enforced", {
@@ -358,17 +372,26 @@ test_that("verbosity = 3 shows raw sse events", {
 
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {
-    buffer <- charToRaw(x)
-    split_at <- find_event_boundary(buffer)
-    result <- if (is.null(split_at)) {
-      NULL
+    if (is.null(matched)) {
+      exp <- list(matched = NULL, remaining = NULL)
     } else {
-      split_buffer(buffer, split_at)
+      exp <- list(
+        matched = charToRaw(matched),
+        remaining = charToRaw(remaining)
+      )
     }
-    expect_identical(
-      result,
-      list(matched = charToRaw(matched), remaining = charToRaw(remaining))
-    )
+
+    buffer <- RingBuffer$new()
+    buffer$push(charToRaw(x))
+
+    loc <- find_event_boundary(buffer)
+    if (is.null(loc)) {
+      act <- list(matched = NULL, remaining = NULL)
+    } else {
+      act <- list(matched = buffer$pop(loc), remaining = buffer$pop())
+    }
+
+    expect_equal(act, exp)
   }
 
   # Basic matches
@@ -389,12 +412,12 @@ test_that("has a working find_event_boundary", {
   boundary_test("\r\r\n\n", matched = "\r\r", remaining = "\n\n")
 
   # Non-matches
-  expect_null(find_event_boundary(charToRaw("\n\r\n\r")))
-  expect_null(find_event_boundary(charToRaw("hello\ngoodbye\n")))
-  expect_null(find_event_boundary(charToRaw("")))
-  expect_null(find_event_boundary(charToRaw("1")))
-  expect_null(find_event_boundary(charToRaw("12")))
-  expect_null(find_event_boundary(charToRaw("\r\n\r")))
+  boundary_test("\n\r\n\r", matched = NULL)
+  boundary_test("hello\ngoodbye\n", matched = NULL)
+  boundary_test("", matched = NULL)
+  boundary_test("1", matched = NULL)
+  boundary_test("12", matched = NULL)
+  boundary_test("\r\n\r", matched = NULL)
 })
 
 # parse_event ----------------------------------------------------------------

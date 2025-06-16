@@ -26,19 +26,24 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   event
 }
 
-find_aws_event_boundary <- function(buffer) {
+find_aws_event_boundary <- function(rb) {
   # No valid AWS event message is less than 16 bytes
-  if (length(buffer) < 16) {
+  if (rb$size() < 16) {
     return(NULL)
   }
 
-  # Read first 4 bytes as a big endian number
-  event_size <- parse_int(buffer[1:4])
-  if (event_size > length(buffer)) {
+  # Read first 4 bytes
+  event_size_raw <- raw(4)
+  for (i in 1:4) {
+    event_size_raw[i] <- rb$peek(i)
+  }
+
+  event_size <- parse_int(event_size_raw)
+  if (event_size > rb$size()) {
     return(NULL)
   }
 
-  event_size + 1
+  event_size
 }
 
 # Implementation from https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.js

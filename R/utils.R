@@ -347,3 +347,7 @@ log_stream <- function(..., prefix = "<< ") {
 paste_c <- function(..., collapse = "") {
   paste0(c(...), collapse = collapse)
 }
+
+is_cr <- function(byte) byte == 0x0D
+is_lf <- function(byte) byte == 0x0A
+is_crlf <- function(byte1, byte2) is_cr(byte1) && is_lf(byte2)
