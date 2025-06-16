@@ -15,8 +15,7 @@ sync_req <- function(name, .env = parent.frame()) {
   nanonext::listen(sock, url = sprintf("ipc:///tmp/nanonext%s", name))
 
   function(
-    expr = {
-    },
+    expr = {},
     timeout = 1000L
   ) {
     if (!connected) {
@@ -46,8 +45,7 @@ sync_rep <- function(name, .env = parent.frame()) {
   nanonext::dial(sock, url = sprintf("ipc:///tmp/nanonext%s", name))
 
   function(
-    expr = {
-    },
+    expr = {},
     timeout = 1000L
   ) {
     if (!connected) {

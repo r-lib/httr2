@@ -31,11 +31,10 @@ example_app <- function() {
   app <- webfakes::httpbin_app()
   # paginated iris endpoint
   app$get("/iris", function(req, res) {
-    page <- req$query$page
-    if (is.null(page)) page <- 1L
+    page <- req$query$page %||% 1L
     page <- as.integer(page)
-    page_size <- req$query$limit
-    if (is.null(page_size)) page_size <- 20L
+
+    page_size <- req$query$limit %||% 20L
     page_size <- as.integer(page_size)
 
     n <- nrow(datasets::iris)

@@ -138,7 +138,9 @@ cache_prune_if_needed <- function(req, threshold = 60, debug = FALSE) {
 
   last_prune <- the$cache_throttle[[path]]
   if (is.null(last_prune) || last_prune + threshold <= Sys.time()) {
-    if (debug) cli::cli_text("Pruning cache")
+    if (debug) {
+      cli::cli_text("Pruning cache")
+    }
     cache_prune(path, max = req$policies$cache_max, debug = debug)
     the$cache_throttle[[path]] <- Sys.time()
 
@@ -186,8 +188,9 @@ cache_info <- function(path, pattern = "\\.rds$") {
 
 cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
   if (any(to_remove)) {
-    if (debug)
+    if (debug) {
       cli::cli_text("Deleted {sum(to_remove)} file{?s} that {?is/are} {why}")
+    }
 
     file.remove(info$name[to_remove])
     info[!to_remove, ]
@@ -217,18 +220,24 @@ cache_pre_fetch <- function(req, path = NULL) {
   if (is.null(cached_resp)) {
     return(req)
   }
-  if (debug) cli::cli_text("Found url in cache {.val {hash(req$url)}}")
+  if (debug) {
+    cli::cli_text("Found url in cache {.val {hash(req$url)}}")
+  }
 
   info <- resp_cache_info(cached_resp)
   if (!is.na(info$expires) && info$expires >= Sys.time()) {
     signal("", "httr2_cache_cached")
-    if (debug) cli::cli_text("Cached value is fresh; using response from cache")
+    if (debug) {
+      cli::cli_text("Cached value is fresh; using response from cache")
+    }
 
     resp <- cached_resp
     resp$body <- cache_body(cached_resp, path)
     resp
   } else {
-    if (debug) cli::cli_text("Cached value is stale; checking for updates")
+    if (debug) {
+      cli::cli_text("Cached value is stale; checking for updates")
+    }
     req_headers(
       req,
       `If-Modified-Since` = info$last_modified,
@@ -248,16 +257,18 @@ cache_post_fetch <- function(req, resp, path = NULL) {
 
   if (is_error(resp)) {
     if (cache_use_on_error(req) && !is.null(cached_resp)) {
-      if (debug)
+      if (debug) {
         cli::cli_text("Request errored; retrieving response from cache")
+      }
       cached_resp
     } else {
       resp
     }
   } else if (resp_status(resp) == 304 && !is.null(cached_resp)) {
     signal("", "httr2_cache_not_modified")
-    if (debug)
+    if (debug) {
       cli::cli_text("Cached value still ok; retrieving body from cache")
+    }
 
     # Combine headers
     resp$headers <- cache_headers(cached_resp, resp)
@@ -268,7 +279,9 @@ cache_post_fetch <- function(req, resp, path = NULL) {
     cache_set(req, resp)
     resp
   } else if (resp_is_cacheable(resp)) {
-    if (debug) cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
+    if (debug) {
+      cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
+    }
 
     cache_set(req, resp)
     resp

@@ -55,6 +55,11 @@
       Error in `url_modify()`:
       ! `port` must be a whole number or `NULL`, not the string "x".
     Code
+      url_modify(url, port = -1)
+    Condition
+      Error in `url_modify()`:
+      ! `port` must be a whole number between 1 and 65535 or `NULL`, not the number -1.
+    Code
       url_modify(url, username = 1)
     Condition
       Error in `url_modify()`:
