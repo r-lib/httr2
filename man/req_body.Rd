@@ -9,9 +9,9 @@
 \alias{req_body_multipart}
 \title{Send data in request body}
 \usage{
-req_body_raw(req, body, type = NULL)
+req_body_raw(req, body, type = "")
 
-req_body_file(req, path, type = NULL)
+req_body_file(req, path, type = "")
 
 req_body_json(
   req,
@@ -34,8 +34,9 @@ req_body_multipart(.req, ...)
 
 \item{body}{A literal string or raw vector to send as body.}
 
-\item{type}{MIME content type. Will be ignored if you have manually set
-a \code{Content-Type} header.}
+\item{type}{MIME content type. The default, \code{""}, will not emit a
+\code{Content-Type} header.  Ignored if you have set a \code{Content-Type} header
+with \code{\link[=req_headers]{req_headers()}}.}
 
 \item{path}{Path to file to upload.}
 

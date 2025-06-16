@@ -82,6 +82,7 @@ req_dry_run <- function(
   invisible(list(
     method = resp$method,
     path = resp$path,
+    body = resp$body,
     headers = as.list(resp$headers)
   ))
 }

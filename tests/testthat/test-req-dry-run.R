@@ -19,7 +19,7 @@ test_that("body is shown", {
   expect_snapshot(req_dry_run(req_json, pretty_json = FALSE))
 
   # doesn't show binary data
-  req_binary <- req_body_raw(req, "Cenário")
+  req_binary <- req_body_raw(req, charToRaw("Cenário"))
   expect_snapshot(req_dry_run(req_binary))
 })
 
