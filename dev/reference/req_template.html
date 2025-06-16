@@ -106,14 +106,14 @@ in <code>...</code>. Expert use only.</p></dd>
 <span class="r-in"><span><span class="co"># You can supply template parameters in `...`</span></span></span>
 <span class="r-in"><span><span class="va">httpbin</span> <span class="op">|&gt;</span> <span class="fu">req_template</span><span class="op">(</span><span class="st">"GET /bytes/{n}"</span>, n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38853/bytes/100</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38775/bytes/100</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or you retrieve from the current environment</span></span></span>
 <span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200</span></span></span>
 <span class="r-in"><span><span class="va">httpbin</span> <span class="op">|&gt;</span> <span class="fu">req_template</span><span class="op">(</span><span class="st">"GET /bytes/{n}"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38853/bytes/200</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38775/bytes/200</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Existing path is preserved:</span></span></span>
@@ -122,7 +122,7 @@ in <code>...</code>. Expert use only.</p></dd>
 <span class="r-in"><span><span class="va">value</span> <span class="op">&lt;-</span> <span class="st">"a3fWa"</span></span></span>
 <span class="r-in"><span><span class="va">httpbin_test</span> <span class="op">|&gt;</span> <span class="fu">req_template</span><span class="op">(</span><span class="st">"GET /set/{name}/{value}"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38853/test/set/id/a3fWa</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:38775/test/set/id/a3fWa</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 </code></pre></div>
     </div>
