@@ -227,9 +227,9 @@ req_body_get <- function(req) {
     json = unclass(exec(jsonlite::toJSON, req$body$data, !!!req$body$params)),
     form = url_query_build(unobfuscate(req$body$data)),
     multipart = {
-      # This is a bit clumsy because it requires performing a real request,
-      # which is currently a bit slow and requires httpuv
-      # https://github.com/jeroen/curl/issues/388
+      # This is a bit clumsy because it requires a real request, which is
+      # currently a bit slow and requires httpuv. But better than nothing.
+      # Details at https://github.com/jeroen/curl/issues/388
       handle <- req_handle(req_body_apply(req))
       echo <- curl::curl_echo(handle, progress = FALSE)
       rawToChar(echo$body)
@@ -256,21 +256,18 @@ req_body_apply <- function(req) {
 
   req
 }
-req_body_apply_string <- function(req, data) {
-  req_body_apply_raw(req, charToRaw(enc2utf8(data)))
-}
 req_body_apply_raw <- function(req, data) {
   req_options(req, post = TRUE, postfieldsize = length(data), postfields = data)
+}
+req_body_apply_string <- function(req, data) {
+  req_body_apply_raw(req, charToRaw(enc2utf8(data)))
 }
 req_body_apply_connection <- function(req, data) {
   size <- file.info(data)$size
   # Only open connection if needed
   delayedAssign("con", file(data, "rb"))
 
-  req <- req_policies(
-    req,
-    done = function() close(con)
-  )
+  req <- req_policies(req, done = function() close(con))
   req <- req_options(
     req,
     post = TRUE,
