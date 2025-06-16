@@ -190,8 +190,7 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   curl::handle_setopt(handle, cookielist = "FLUSH")
   curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
-  the$last_response <- create_response(req, fetch$curl_data, fetch$body)
-  the$last_response
+  create_response(req, fetch$curl_data, fetch$body)
 }
 
 curl_fetch <- function(handle, url, path) {

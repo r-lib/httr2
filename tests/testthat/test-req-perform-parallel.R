@@ -12,6 +12,15 @@ test_that("can perform a single request", {
   resps <- req_perform_parallel(reqs)
   expect_type(resps, "list")
   expect_length(resps, 1)
+
+  resp <- resps[[1]]
+  expect_s3_class(resp, "httr2_response")
+  expect_equal(resp$method, "GET")
+  expect_equal(resp$url, example_url("/get"))
+  expect_equal(resp$status_code, 200)
+  expect_s3_class(resp$headers, "httr2_headers")
+  expect_type(resp$body, "raw")
+  expect_equal(resp$request, reqs[[1]])
 })
 
 test_that("requests happen in parallel", {

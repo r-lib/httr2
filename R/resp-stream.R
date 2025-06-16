@@ -302,8 +302,7 @@ resp_boundary_pushback <- function(
       )
     }
   } else {
-    print_buffer <- function(buf, label) {
-    }
+    print_buffer <- function(buf, label) {}
   }
 
   # Read chunks until we find an event or reach the end of input

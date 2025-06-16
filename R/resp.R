@@ -111,7 +111,7 @@ new_response <- function(
 
 create_response <- function(req, curl_data, body) {
   the$last_response <- new_response(
-    method = req_method_get(req),
+    method = curl_data$method,
     url = curl_data$url,
     status_code = curl_data$status_code,
     headers = as_headers(curl_data$headers),
