@@ -86,8 +86,9 @@ test_that("can send file with redirect", {
   expect_equal(resp_body_json(resp)$data, str)
 })
 
-test_that("errors if file doesn't exist", {
+test_that("errors on invalid input", {
   expect_snapshot(error = TRUE, {
+    req_body_file(request_test(), 1)
     req_body_file(request_test(), "doesntexist")
     req_body_file(request_test(), ".")
   })

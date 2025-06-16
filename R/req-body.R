@@ -72,6 +72,7 @@ req_body_raw <- function(req, body, type = "") {
 #' @param path Path to file to upload.
 req_body_file <- function(req, path, type = "") {
   check_request(req)
+  check_string(path)
   if (!file.exists(path)) {
     cli::cli_abort("Can't find file {.path {path}}.")
   } else if (dir.exists(path)) {

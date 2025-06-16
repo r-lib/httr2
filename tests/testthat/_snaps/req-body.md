@@ -15,8 +15,13 @@
       Error in `req_body_raw()`:
       ! `body` must be a raw vector or string.
 
-# errors if file doesn't exist
+# errors on invalid input
 
+    Code
+      req_body_file(request_test(), 1)
+    Condition
+      Error in `req_body_file()`:
+      ! `path` must be a single string, not the number 1.
     Code
       req_body_file(request_test(), "doesntexist")
     Condition
