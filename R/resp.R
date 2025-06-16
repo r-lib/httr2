@@ -30,7 +30,8 @@ response <- function(
   url = "https://example.com",
   method = "GET",
   headers = list(),
-  body = raw()
+  body = raw(),
+  timing = NULL
 ) {
   check_number_whole(status_code, min = 100, max = 700)
   check_string(url)
@@ -43,7 +44,8 @@ response <- function(
     url = url,
     status_code = as.integer(status_code),
     headers = headers,
-    body = body
+    body = body,
+    timing = timing
   )
 }
 

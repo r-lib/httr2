@@ -9,6 +9,9 @@ test_that("successful request returns expected response", {
   expect_s3_class(resp$headers, "httr2_headers")
   expect_type(resp$body, "raw")
   expect_equal(resp$request, req)
+
+  expect_type(resp$timing, "double")
+  expect_true(all(resp$timing >= 0))
 })
 
 test_that("request updates last_response()", {
