@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can longer perform such requests that have been saved and reloaded (#721).
 * `req_body_json_modify()` can now be used on a request with an empty body.
 * `resp_timing()` exposes timing information about the request measured by libcurl (@arcresu, #725).
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).

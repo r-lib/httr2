@@ -67,11 +67,7 @@ req_headers <- function(.req, ..., .redact = NULL) {
   check_header_values(...)
 
   headers <- modify_list(.req$headers, ..., .ignore_case = TRUE)
-
-  redact <- union(.redact, "Authorization")
-  redact <- redact[tolower(redact) %in% tolower(names(headers))]
-  redact <- sort(union(redact, attr(.req$headers, "redact")))
-
+  redact <- c("Authorization", .redact, which_redacted(.req$headers))
   .req$headers <- new_headers(headers, redact)
 
   .req
