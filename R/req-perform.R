@@ -261,7 +261,10 @@ req_handle <- function(req) {
 
   handle <- curl::new_handle()
   curl::handle_setopt(handle, url = req$url)
-  curl::handle_setheaders(handle, .list = headers_flatten(req$headers))
+  curl::handle_setheaders(
+    handle,
+    .list = headers_flatten(req$headers, redact = FALSE)
+  )
   curl::handle_setopt(handle, .list = req$options)
   if (length(req$fields) > 0) {
     curl::handle_setform(handle, .list = req$fields)

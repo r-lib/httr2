@@ -6,5 +6,5 @@ testthat::set_state_inspector(function() {
 })
 
 expect_redacted <- function(req, expected) {
-  expect_equal(attr(req$headers, "redact"), expected)
+  expect_equal(which_redacted(req$headers), expected)
 }

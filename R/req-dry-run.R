@@ -67,14 +67,14 @@ req_dry_run <- function(
   if (!quiet) {
     cli::cat_line(resp$method, " ", resp$path, " HTTP/1.1")
 
-    headers <- new_headers(as.list(resp$headers), attr(req$headers, "redact"))
+    headers <- new_headers(as.list(resp$headers), which_redacted(req$headers))
     if (testing_headers) {
       # curl::curl_echo() overrides
       headers$host <- NULL
       headers$`content-length` <- NULL
     }
 
-    show_headers(headers)
+    show_headers(headers, redact = redact_headers)
     cli::cat_line()
     show_body(resp$body, headers$`content-type`, pretty_json = pretty_json)
   }
