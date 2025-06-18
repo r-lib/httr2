@@ -16,7 +16,7 @@ have deliberately suppressed redirects with
 req |&amp;gt; req_options(followlocation = FALSE).
 4xx client and 5xx server errors are automatically turned into R errors.
 You can stop them from being turned into R errors with req_error(),
-e.g. req |&amp;gt; req_error(is_error = ~ FALSE).
+e.g. req |&amp;gt; req_error(is_error = \(resp) FALSE).
 
 "><meta property="og:description" content="
 
@@ -35,7 +35,7 @@ have deliberately suppressed redirects with
 req |&amp;gt; req_options(followlocation = FALSE).
 4xx client and 5xx server errors are automatically turned into R errors.
 You can stop them from being turned into R errors with req_error(),
-e.g. req |&amp;gt; req_error(is_error = ~ FALSE).
+e.g. req |&amp;gt; req_error(is_error = \(resp) FALSE).
 
 "><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
@@ -97,7 +97,7 @@ have deliberately suppressed redirects with
 <code>req |&gt; req_options(followlocation = FALSE)</code>.</p></li>
 <li><p>4xx client and 5xx server errors are automatically turned into R errors.
 You can stop them from being turned into R errors with <code><a href="req_error.html">req_error()</a></code>,
-e.g. <code>req |&gt; req_error(is_error = ~ FALSE)</code>.</p></li>
+e.g. <code>req |&gt; req_error(is_error = \(resp) FALSE)</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
