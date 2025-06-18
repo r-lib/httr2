@@ -195,22 +195,6 @@ test_that("can cache requests with paths (if-modified-since)", {
   expect_equal(resp2$body[[1]], path2)
 })
 
-test_that("can retrieve last request and response", {
-  req <- request_test()
-  resp <- req_perform(req)
-
-  expect_equal(last_request(), req)
-  expect_equal(last_response(), resp)
-})
-
-test_that("last response is NULL if it fails", {
-  req <- request("")
-  try(req_perform(req), silent = TRUE)
-
-  expect_equal(last_request(), req)
-  expect_equal(last_response(), NULL)
-})
-
 test_that("checks input types", {
   req <- request_test()
   expect_snapshot(error = TRUE, {

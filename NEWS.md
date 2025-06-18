@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* New `last_request_json()` and `last_response_json()` to conveniently see JSON bodies (#734).
 * `req_body_json_modify()` can now be used on a request with an empty body.
 * `resp_timing()` exposes timing information about the request measured by libcurl (@arcresu, #725).
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
