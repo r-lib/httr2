@@ -24,7 +24,7 @@ url_parse <- function(url, base_url = NULL) {
   check_string(url)
   check_string(base_url, allow_null = TRUE)
 
-  curl <- curl::curl_parse_url(url, baseurl = base_url, decode = FALSE)
+  curl <- curl::curl_parse_url(url, baseurl = base_url)
 
   parsed <- list(
     scheme = curl$scheme,
@@ -267,44 +267,21 @@ url_build <- function(url) {
     stop_input_type(url, "a parsed URL")
   }
 
-  if (!is.null(url$query)) {
-    query <- url_query_build(url$query)
+  if (length(url$query) == 0) {
+    query <- ""
   } else {
-    query <- NULL
+    query <- I(url_query_build(url$query))
   }
 
-  if (is.null(url$username) && is.null(url$password)) {
-    user_pass <- NULL
-  } else if (is.null(url$username) && !is.null(url$password)) {
-    cli::cli_abort("Cannot set url {.arg password} without {.arg username}.")
-  } else if (!is.null(url$username) && is.null(url$password)) {
-    user_pass <- paste0(url$username, "@")
-  } else {
-    user_pass <- paste0(url$username, ":", url$password, "@")
-  }
-
-  if (!is.null(user_pass) || !is.null(url$hostname) || !is.null(url$port)) {
-    authority <- paste0(user_pass, url$hostname)
-    if (!is.null(url$port)) {
-      authority <- paste0(authority, ":", url$port)
-    }
-  } else {
-    authority <- NULL
-  }
-
-  if (is.null(url$path) || !startsWith(url$path, "/")) {
-    url$path <- paste0("/", url$path)
-  }
-
-  prefix <- function(prefix, x) if (!is.null(x)) paste0(prefix, x)
-  paste0(
-    url$scheme,
-    if (!is.null(url$scheme)) ":",
-    if (!is.null(url$scheme) || !is.null(authority)) "//",
-    authority,
-    url$path,
-    prefix("?", query),
-    prefix("#", url$fragment)
+  curl::curl_modify_url(
+    scheme = url$scheme,
+    host = url$hostname,
+    user = url$username,
+    password = url$password,
+    port = url$port,
+    path = url$path,
+    query = query,
+    fragment = url$fragment
   )
 }
 
