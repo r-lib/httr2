@@ -351,9 +351,9 @@ paste_c <- function(..., collapse = "") {
 # Give user the get-out-of-jail-free card if interrupt-capturing function
 # is wrapped inside a loop
 check_repeated_interrupt <- function() {
-  if (Sys.time() - the$last_interrupt < 1) {
+  if (as.double(Sys.time()) - the$last_interrupt < 1) {
     cli::cli_alert_warning("Interrupting")
     interrupt()
   }
-  the$last_interrupt <- Sys.time()
+  the$last_interrupt <- as.double(Sys.time())
 }

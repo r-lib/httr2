@@ -17,4 +17,4 @@ the$token_cache <- new_environment()
 the$last_response <- NULL
 the$last_request <- NULL
 the$pool_pollers <- new_environment()
-the$last_interrupt <- .POSIXct(-Inf)
+the$last_interrupt <- 0
