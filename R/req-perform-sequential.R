@@ -92,6 +92,8 @@ req_perform_sequential <- function(
       }
     },
     interrupt = function(cnd) {
+      check_repeated_interrupt()
+
       resps <- resps[seq_len(i)]
       cli::cli_alert_warning(
         "Terminating iteration; returning {i} response{?s}."
