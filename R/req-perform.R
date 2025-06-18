@@ -219,29 +219,6 @@ req_verbosity <- function(req, verbosity, error_call = caller_env()) {
   )
 }
 
-#' Retrieve most recent request/response
-#'
-#' These functions retrieve the most recent request made by httr2 and
-#' the response it received, to facilitate debugging problems _after_ they
-#' occur. If the request did not succeed (or no requests have been made)
-#' `last_response()` will be `NULL`.
-#'
-#' @returns An HTTP [response]/[request].
-#' @export
-#' @examples
-#' invisible(request("http://httr2.r-lib.org") |> req_perform())
-#' last_request()
-#' last_response()
-last_response <- function() {
-  the$last_response
-}
-
-#' @export
-#' @rdname last_response
-last_request <- function() {
-  the$last_request
-}
-
 # Must call req_prepare(), then req_handle(), then after the request has been
 # performed, req_completed() (on the prepared requests)
 req_prepare <- function(req) {
