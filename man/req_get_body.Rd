@@ -20,3 +20,4 @@ req |> req_body_json(list(x = 1, y = 2)) |> req_get_body()
 req |> req_body_form(x = 1, y = 2) |> req_get_body()
 req |> req_body_multipart(x = "x", y = "y") |> req_get_body() |> cat()
 }
+\keyword{internal}

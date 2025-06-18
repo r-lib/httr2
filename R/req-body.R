@@ -224,6 +224,7 @@ req_body_info <- function(req) {
 #' Mimics the algorithm that curl uses to determine the body.
 #'
 #' @inheritParams req_perform
+#' @keywords internal
 #' @export
 #' @examples
 #' req <- request(example_url())
