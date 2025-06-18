@@ -3,6 +3,9 @@
 * Refactor `url_modify()` to better retain exact formatting of URL components 
   that are not modified. (#788, #794)
 
+* httr2 will now emit OpenTelemetry traces for all requests when tracing is
+  enabled. Requires the `otelsdk` package (@atheriel, #729).
+
 # httr2 1.2.1
 
 * Colons in paths are no longer escaped.
