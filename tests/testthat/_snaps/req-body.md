@@ -53,7 +53,7 @@
 # can send named elements as multipart
 
     Code
-      cat(req_body_get(req))
+      cat(req_get_body(req))
     Output
       ---{id}
       Content-Disposition: form-data; name="a"

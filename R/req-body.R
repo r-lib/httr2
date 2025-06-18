@@ -217,7 +217,22 @@ req_body_info <- function(req) {
     multipart = "multipart data"
   )
 }
-req_body_get <- function(req) {
+
+
+#' Retrieve the body that a request will use
+#'
+#' Mimics the algorithm that curl uses to determine the body.
+#'
+#' @inheritParams req_perform
+#' @export
+#' @examples
+#' req <- request(example_url())
+#' req |> req_body_raw("abc") |> req_get_body()
+#' req |> req_body_file(system.file("DESCRIPTION")) |> req_get_body()
+#' req |> req_body_json(list(x = 1, y = 2)) |> req_get_body()
+#' req |> req_body_form(x = 1, y = 2) |> req_get_body()
+#' req |> req_body_multipart(x = "x", y = "y") |> req_get_body() |> cat()
+req_get_body <- function(req) {
   switch(
     req_body_type(req),
     empty = NULL,
@@ -244,8 +259,8 @@ req_body_apply <- function(req) {
     raw = req_body_apply_raw(req, req$body$data),
     string = req_body_apply_string(req, req$body$data),
     file = req_body_apply_connection(req, req$body$data),
-    json = req_body_apply_string(req, req_body_get(req)),
-    form = req_body_apply_string(req, req_body_get(req)),
+    json = req_body_apply_string(req, req_get_body(req)),
+    form = req_body_apply_string(req, req_get_body(req)),
     multipart = req_body_apply_multipart(req, req$body$data),
   )
 

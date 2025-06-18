@@ -50,7 +50,7 @@ last_request_json <- function(pretty = TRUE) {
   if (req_body_type(req) != "json") {
     cli::cli_abort("Last request doesn't have a JSON body.")
   }
-  httr2_json(req_body_get(req), pretty = pretty)
+  httr2_json(req_get_body(req), pretty = pretty)
 }
 
 #' @param pretty Should the JSON be pretty-printed?
