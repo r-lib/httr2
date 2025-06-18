@@ -68,7 +68,7 @@ req_headers <- function(.req, ..., .redact = NULL) {
 
   headers <- modify_list(.req$headers, ..., .ignore_case = TRUE)
   redact <- c("Authorization", .redact, which_redacted(.req$headers))
-  .req$headers <- new_headers(headers, redact)
+  .req$headers <- new_headers(headers, redact, lifespan = .req$state)
 
   .req
 }

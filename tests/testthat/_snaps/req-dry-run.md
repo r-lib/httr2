@@ -47,10 +47,20 @@
 # authorization headers are redacted
 
     Code
-      req_dry_run(req)
+      out <- req_dry_run(req)
     Output
       GET / HTTP/1.1
       accept: */*
       authorization: <REDACTED>
+      
+
+---
+
+    Code
+      out <- req_dry_run(req, redact_headers = FALSE)
+    Output
+      GET / HTTP/1.1
+      accept: */*
+      authorization: Basic dXNlcjpwYXNzd29yZA==
       
 

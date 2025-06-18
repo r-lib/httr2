@@ -63,17 +63,20 @@ req_dry_run <- function(
   handle <- req_handle(req)
   curl::handle_setopt(handle, url = req$url)
   resp <- curl::curl_echo(handle, progress = FALSE)
+  headers <- new_headers(
+    as.list(resp$headers),
+    redact = which_redacted(req$headers),
+    lifespan = current_env()
+  )
 
   if (!quiet) {
     cli::cat_line(resp$method, " ", resp$path, " HTTP/1.1")
 
-    headers <- new_headers(as.list(resp$headers), which_redacted(req$headers))
     if (testing_headers) {
       # curl::curl_echo() overrides
       headers$host <- NULL
       headers$`content-length` <- NULL
     }
-
     show_headers(headers, redact = redact_headers)
     cli::cat_line()
     show_body(resp$body, headers$`content-type`, pretty_json = pretty_json)
@@ -83,7 +86,7 @@ req_dry_run <- function(
     method = resp$method,
     path = resp$path,
     body = resp$body,
-    headers = as.list(resp$headers)
+    headers = headers_flatten(headers, redact = redact_headers)
   ))
 }
 

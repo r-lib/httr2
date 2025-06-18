@@ -1,13 +1,28 @@
-as_headers <- function(x, redact = character(), error_call = caller_env()) {
+as_headers <- function(
+  x,
+  redact = character(),
+  lifespan,
+  error_call = caller_env()
+) {
   if (is.list(x)) {
-    new_headers(x, redact = redact, error_call = error_call)
+    new_headers(
+      x,
+      redact = redact,
+      lifespan = lifespan,
+      error_call = error_call
+    )
   } else if (is.character(x) || is.raw(x)) {
     parsed <- curl::parse_headers(x)
     valid <- parsed[grepl(":", parsed, fixed = TRUE)]
     halves <- parse_in_half(valid, ":")
 
     headers <- set_names(trimws(halves$right), halves$left)
-    new_headers(as.list(headers), redact = redact, error_call = error_call)
+    new_headers(
+      as.list(headers),
+      redact = redact,
+      lifespan = lifespan,
+      error_call = error_call
+    )
   } else {
     cli::cli_abort(
       "{.arg headers} must be a list, character vector, or raw.",
@@ -16,7 +31,12 @@ as_headers <- function(x, redact = character(), error_call = caller_env()) {
   }
 }
 
-new_headers <- function(x, redact = character(), error_call = caller_env()) {
+new_headers <- function(
+  x,
+  redact = character(),
+  lifespan,
+  error_call = caller_env()
+) {
   if (!is_list(x)) {
     cli::cli_abort("{.arg x} must be a list.", call = error_call)
   }
@@ -36,7 +56,7 @@ new_headers <- function(x, redact = character(), error_call = caller_env()) {
   }
 
   needs_redact <- !is_redacted(x) & (tolower(names(x)) %in% tolower(redact))
-  x[needs_redact] <- lapply(x[needs_redact], function(x) new_weakref(the, x))
+  x[needs_redact] <- lapply(x[needs_redact], \(x) new_weakref(lifespan, x))
 
   structure(x, class = "httr2_headers")
 }
