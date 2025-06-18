@@ -1,5 +1,5 @@
 test_that("can stream bytes from a connection", {
-  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
+  resp <- request_test("/stream-bytes/2048") |> req_perform_connection()
   withr::defer(close(resp))
 
   expect_s3_class(resp, "httr2_response")
@@ -16,7 +16,7 @@ test_that("can stream bytes from a connection", {
 })
 
 test_that("can determine if a stream is complete (blocking)", {
-  resp <- request_test("/stream-bytes/2048") %>% req_perform_connection()
+  resp <- request_test("/stream-bytes/2048") |> req_perform_connection()
   withr::defer(close(resp))
 
   expect_false(resp_stream_is_complete(resp))
@@ -26,7 +26,7 @@ test_that("can determine if a stream is complete (blocking)", {
 })
 
 test_that("can determine if a stream is complete (non-blocking)", {
-  resp <- request_test("/stream-bytes/2048") %>%
+  resp <- request_test("/stream-bytes/2048") |>
     req_perform_connection(blocking = FALSE)
   withr::defer(close(resp))
 
@@ -42,7 +42,7 @@ test_that("can determine if incomplete data is complete", {
     res$send_chunk("data: ")
   })
 
-  con <- req %>% req_perform_connection(blocking = TRUE)
+  con <- req |> req_perform_connection(blocking = TRUE)
   withr::defer(close(con))
 
   expect_equal(
@@ -54,7 +54,7 @@ test_that("can determine if incomplete data is complete", {
 })
 
 test_that("can't read from a closed connection", {
-  resp <- request_test("/stream-bytes/1024") %>% req_perform_connection()
+  resp <- request_test("/stream-bytes/1024") |> req_perform_connection()
   close(resp)
 
   expect_false(resp_has_body(resp))

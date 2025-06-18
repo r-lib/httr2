@@ -1,7 +1,7 @@
 # can't change body type
 
     Code
-      req %>% req_body_json(list(x = 1))
+      req_body_json(req, list(x = 1))
     Condition
       Error in `req_body_json()`:
       ! Can't change body type from raw to json.

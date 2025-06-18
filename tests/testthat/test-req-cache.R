@@ -7,8 +7,8 @@ test_that("nothing happens if cache not enabled", {
 })
 
 test_that("never retrieves POST request from cache", {
-  req <- request("http://example.com") %>%
-    req_method("POST") %>%
+  req <- request("http://example.com") |>
+    req_method("POST") |>
     req_cache(tempfile())
 
   # Fake an equivalent GET request in the cache
@@ -23,7 +23,7 @@ test_that("never retrieves POST request from cache", {
 })
 
 test_that("immutable objects retrieved directly from cache", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(
     200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
@@ -35,7 +35,7 @@ test_that("immutable objects retrieved directly from cache", {
 })
 
 test_that("cached cache header added to request", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   # If not cached, request returned as is
   req2 <- cache_pre_fetch(req)
   expect_equal(req2, req)
@@ -57,7 +57,7 @@ test_that("cached cache header added to request", {
 })
 
 test_that("error can use cached value", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(200, body = charToRaw("OK"))
   cache_set(req, resp)
 
@@ -68,7 +68,7 @@ test_that("error can use cached value", {
 })
 
 test_that("304 retains headers but gets cached body", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(200, headers = "X: 1", body = charToRaw("OK"))
   cache_set(req, resp)
 
@@ -82,7 +82,7 @@ test_that("304 retains headers but gets cached body", {
 })
 
 test_that("automatically adds to cache", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   expect_true(is.null(cache_get(req)))
 
   resp <- response(200, headers = 'Etag: "abc"', body = charToRaw("OK"))
@@ -92,7 +92,7 @@ test_that("automatically adds to cache", {
 })
 
 test_that("cache emits useful debugging info", {
-  req <- request("http://example.com") %>% req_cache(tempfile(), debug = TRUE)
+  req <- request("http://example.com") |> req_cache(tempfile(), debug = TRUE)
   resp <- response(
     200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
@@ -106,7 +106,7 @@ test_that("cache emits useful debugging info", {
     invisible(cache_pre_fetch(req))
   })
 
-  req <- request("http://example.com") %>%
+  req <- request("http://example.com") |>
     req_cache(tempfile(), debug = TRUE, use_on_error = TRUE)
   resp <- response(200, headers = "X: 1", body = charToRaw("OK"))
   cache_set(req, resp)
@@ -121,7 +121,7 @@ test_that("cache emits useful debugging info", {
 # cache -------------------------------------------------------------------
 
 test_that("can get and set from cache", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(
     200,
     headers = list(
@@ -164,7 +164,7 @@ test_that("can get and set from cache", {
 })
 
 test_that("handles responses with files", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
 
   path <- local_write_lines("Hi there")
   resp <- response(200, headers = "Etag: ABC", body = new_path(path))
@@ -190,7 +190,7 @@ test_that("handles responses with files", {
 
 test_that("corrupt files are ignored", {
   cache_dir <- withr::local_tempdir()
-  req <- request("http://example.com") %>% req_cache(cache_dir)
+  req <- request("http://example.com") |> req_cache(cache_dir)
 
   writeLines(letters, req_cache_path(req))
   expect_true(is.null(cache_get(req)))

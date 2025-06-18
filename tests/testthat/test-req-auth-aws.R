@@ -38,7 +38,7 @@ test_that("can correctly sign a request with live credentials", {
 })
 
 test_that('aws_v4_signature calculates correct signature', {
-  req <- request("https://example.execute-api.us-east-1.amazonaws.com/v0/") %>%
+  req <- request("https://example.execute-api.us-east-1.amazonaws.com/v0/") |>
     req_method('POST')
 
   body_sha256 <- openssl::sha256(req_get_body(req) %||% "")
