@@ -3,7 +3,7 @@ test_that("throttling affects request performance", {
   on.exit(throttle_reset())
   local_mocked_bindings(unix_time = function() 0)
 
-  req <- request_test() %>% req_throttle(capacity = 4, fill_time_s = 1)
+  req <- request_test() |> req_throttle(capacity = 4, fill_time_s = 1)
   . <- replicate(4, req_perform(req))
 
   local_mocked_bindings(unix_time = function() 0.1)
@@ -17,7 +17,7 @@ test_that("first request isn't throttled", {
   mock_time <- 0
   local_mocked_bindings(unix_time = function() mock_time)
 
-  req <- request_test() %>% req_throttle(rate = 1, fill_time_s = 1)
+  req <- request_test() |> req_throttle(rate = 1, fill_time_s = 1)
   expect_equal(throttle_delay(req), 0)
 
   mock_time <- 0.1
@@ -32,11 +32,11 @@ test_that("realm defaults to hostname but can be overridden", {
 
   expect_named(the$throttle, character())
 
-  request_test() %>% req_throttle(100 / 1)
+  request_test() |> req_throttle(100 / 1)
   expect_named(the$throttle, "127.0.0.1")
 
   throttle_reset()
-  request_test() %>% req_throttle(100 / 1, realm = "custom")
+  request_test() |> req_throttle(100 / 1, realm = "custom")
   expect_named(the$throttle, "custom")
 })
 

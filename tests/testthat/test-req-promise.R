@@ -21,7 +21,7 @@ test_that("returns a promise that resolves", {
 })
 
 test_that("correctly prepares request", {
-  req <- request_test("/post") %>% req_method("POST")
+  req <- request_test("/post") |> req_method("POST")
   prom <- req_perform_promise(req)
   expect_no_error(extract_promise(prom))
 })
@@ -53,7 +53,7 @@ test_that("can promise to download files", {
 })
 
 test_that("promises can retrieve from cache", {
-  req <- request("http://example.com") %>% req_cache(tempfile())
+  req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(
     200,
     headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",

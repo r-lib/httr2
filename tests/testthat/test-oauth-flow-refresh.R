@@ -3,9 +3,9 @@ test_that("cache considers refresh_token", {
   req <- request("https://example.com")
 
   # create 2 requests with different refresh token
-  req1 <- req %>%
+  req1 <- req |>
     req_oauth_refresh(client, refresh_token = "rt1")
-  req2 <- req %>%
+  req2 <- req |>
     req_oauth_refresh(client, refresh_token = "rt2")
 
   # cache must be empty

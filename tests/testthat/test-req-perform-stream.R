@@ -30,11 +30,11 @@ test_that("HTTP errors become R errors", {
 })
 
 test_that("can override error handling", {
-  req <- request_test("/base64/:value", value = "YWJj") %>%
+  req <- request_test("/base64/:value", value = "YWJj") |>
     req_error(is_error = function(resp) TRUE)
 
   expect_error(
-    req %>% req_perform_stream(function(x) NULL),
+    req |> req_perform_stream(function(x) NULL),
     class = "httr2_http_200"
   )
 
@@ -53,7 +53,7 @@ test_that("can buffer to lines", {
   }
 
   # Each line is 225 bytes, should should be split into ~2 pieces
-  resp <- request_test("/stream/10") %>%
+  resp <- request_test("/stream/10") |>
     req_perform_stream(accumulate_lines, buffer_kb = 0.1, round = "line")
   expect_equal(length(lines), 10)
 
@@ -68,7 +68,7 @@ test_that("can supply custom rounding", {
     TRUE
   }
 
-  resp <- request_test("/stream-bytes/1024") %>%
+  resp <- request_test("/stream-bytes/1024") |>
     req_perform_stream(
       accumulate,
       buffer_kb = 0.1,
@@ -84,7 +84,7 @@ test_that("eventually terminates even if never rounded", {
     TRUE
   }
 
-  resp <- request_test("/stream-bytes/1024") %>%
+  resp <- request_test("/stream-bytes/1024") |>
     req_perform_stream(
       accumulate,
       buffer_kb = 0.1,

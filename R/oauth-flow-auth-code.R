@@ -492,7 +492,7 @@ oauth_flow_auth_code_fetch <- function(state) {
     max_seconds = 60,
     # The endpoint may temporarily return a 404 when no code is found for a
     # given state because the user hasn't finished clicking through yet.
-    is_transient = ~ resp_status(.x) %in% c(404, 429, 503)
+    is_transient = \(resp) resp_status(resp) %in% c(404, 429, 503)
   )
   resp <- req_perform(req)
   body <- resp_body_json(resp)

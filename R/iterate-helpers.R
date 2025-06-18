@@ -83,7 +83,7 @@ iterate_with_offset <- function(
 
     if (!isTRUE(resp_complete(resp))) {
       i <<- i + offset
-      req %>% req_url_query(!!param_name := i)
+      req |> req_url_query(!!param_name := i)
     }
   }
 }
@@ -100,7 +100,7 @@ iterate_with_cursor <- function(param_name, resp_param_value) {
   function(resp, req) {
     value <- resp_param_value(resp)
     if (!is.null(value)) {
-      req %>% req_url_query(!!param_name := value)
+      req |> req_url_query(!!param_name := value)
     }
   }
 }
@@ -114,7 +114,7 @@ iterate_with_link_url <- function(rel = "next") {
   function(resp, req) {
     url <- resp_link_url(resp, rel)
     if (!is.null(url)) {
-      req %>% req_url(url)
+      req |> req_url(url)
     }
   }
 }
