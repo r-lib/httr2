@@ -16,7 +16,7 @@
 #'   `req |> req_options(followlocation = FALSE)`.
 #' * 4xx client and 5xx server errors are automatically turned into R errors.
 #'   You can stop them from being turned into R errors with [req_error()],
-#'   e.g. `req |> req_error(is_error = ~ FALSE)`.
+#'   e.g. `req |> req_error(is_error = \(resp) FALSE)`.
 #'
 #' @return
 #' * `resp_status()` returns a scalar integer

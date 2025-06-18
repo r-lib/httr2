@@ -1,14 +1,14 @@
 test_that("can add and remove headers", {
   req <- request("http://example.com")
-  req <- req %>% req_headers(x = 1)
+  req <- req |> req_headers(x = 1)
   expect_equal(req$headers, new_headers(list(x = 1)))
-  req <- req %>% req_headers(x = NULL)
+  req <- req |> req_headers(x = NULL)
   expect_equal(req$headers, new_headers(list()))
 })
 
 test_that("simple vectors automatically converted to strings", {
   req <- request("http://example.com")
-  req <- req %>% req_headers(lgl = TRUE, int = 1L, dbl = 1.1, chr = "a")
+  req <- req |> req_headers(lgl = TRUE, int = 1L, dbl = 1.1, chr = "a")
   resp <- req_dry_run(req, quiet = TRUE)
 
   expect_equal(resp$headers$lgl, "TRUE")
@@ -27,13 +27,13 @@ test_that("bad inputs get clear error", {
 
 test_that("can add header called req", {
   req <- request("http://example.com")
-  req <- req %>% req_headers(req = 1)
+  req <- req |> req_headers(req = 1)
   expect_equal(req$headers, new_headers(list(req = 1)))
 })
 
 test_that("can add repeated headers", {
-  resp <- request_test() %>%
-    req_headers(a = c("a", "b")) %>%
+  resp <- request_test() |>
+    req_headers(a = c("a", "b")) |>
     req_dry_run(quiet = TRUE)
   # https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.2
   expect_equal(resp$headers$a, "a,b")
@@ -41,8 +41,8 @@ test_that("can add repeated headers", {
 
 test_that("replacing headers is case-insensitive", {
   req <- request("http://example.com")
-  req <- req %>% req_headers(A = 1)
-  req <- req %>% req_headers(a = 2)
+  req <- req |> req_headers(A = 1)
+  req <- req |> req_headers(a = 2)
   expect_equal(req$headers, new_headers(list(a = 2)))
 })
 

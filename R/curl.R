@@ -110,7 +110,7 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
 }
 
 pipe <- function() {
-  if (getRversion() >= "4.1.0") " |> " else " %>% "
+  if (getRversion() >= "4.1.0") " |> " else " |> "
 }
 
 #' @export

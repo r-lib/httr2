@@ -8,8 +8,8 @@
 
     Code
       req <- request_test("/status/404")
-      req <- req %>% req_error(body = ~ resp_body_json(.x)$error)
-      req %>% req_perform()
+      req <- req_error(req, body = function(resp) resp_body_json(resp)$error)
+      req_perform(req)
     Condition
       Error in `req_perform()`:
       ! Failed to parse error body with method defined in `req_error()`.
