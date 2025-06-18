@@ -16,7 +16,7 @@ test_that("can round trip urls", {
     "http://user:pass@google.com:80/path?a=1&b=2"
   )
 
-  expect_equal(map(urls, ~ url_build(url_parse(.x))), urls)
+  expect_equal(map(urls, \(url) url_build(url_parse(url))), urls)
 })
 
 test_that("can parse relative urls", {

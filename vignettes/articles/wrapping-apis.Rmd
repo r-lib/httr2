@@ -38,12 +38,12 @@ library(httr2)
 # by only evaluating other chunks if a simple request succeeds.
 faker_status_images <- request("https://fakerapi.it/api/v1") |>
   req_url_path_append("images") |>
-  req_error(is_error = ~FALSE) |>
+  req_error(is_error = \(resp) FALSE) |>
   req_perform() |>
   resp_status()
 faker_status_persons <- request("https://fakerapi.it/api/v1") |>
   req_url_path_append("persons") |>
-  req_error(is_error = ~FALSE) |>
+  req_error(is_error = \(resp) FALSE) |>
   req_perform() |>
   resp_status()
 

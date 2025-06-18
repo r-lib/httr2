@@ -1,5 +1,5 @@
 test_that("can perform multiple requests", {
-  req <- request(example_url("/iris")) %>%
+  req <- request(example_url("/iris")) |>
     req_url_query(limit = 5)
 
   resps <- req_perform_iterative(
@@ -16,7 +16,7 @@ test_that("can perform multiple requests", {
 })
 
 test_that("can save results to disk", {
-  req <- request(example_url("/iris")) %>%
+  req <- request(example_url("/iris")) |>
     req_url_query(limit = 5)
 
   dir <- withr::local_tempdir()
@@ -33,7 +33,7 @@ test_that("can save results to disk", {
 })
 
 test_that("user temination still returns data", {
-  req <- request(example_url("/iris")) %>%
+  req <- request(example_url("/iris")) |>
     req_url_query(limit = 5)
   next_req <- function(resp, req) interrupt()
 
@@ -45,14 +45,14 @@ test_that("user temination still returns data", {
 
 
 test_that("can retrieve all pages", {
-  req <- request(example_url("/iris")) %>%
+  req <- request(example_url("/iris")) |>
     req_url_query(limit = 1)
 
   i <- 1
   next_req <- function(resp, req) {
     i <<- i + 1
     if (i <= 120) {
-      req %>% req_url_query(page_index = 1)
+      req |> req_url_query(page_index = 1)
     }
   }
   expect_condition(

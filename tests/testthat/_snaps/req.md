@@ -8,17 +8,17 @@
       GET https://example.com
       Body: empty
     Code
-      req %>% req_body_raw("Test")
+      req_body_raw(req, "Test")
     Message
       <httr2_request>
       POST https://example.com
       Body: a string
     Code
-      req %>% req_body_multipart(Test = 1)
+      req_body_multipart(req, Test = 1)
     Message
       <httr2_request>
       POST https://example.com
-      Body: multipart encoded data
+      Body: multipart data
 
 # printing headers works with {}
 
@@ -35,7 +35,7 @@
 # individually prints repeated headers
 
     Code
-      request("https://example.com") %>% req_headers(A = 1:3)
+      req_headers(request("https://example.com"), A = 1:3)
     Message
       <httr2_request>
       GET https://example.com

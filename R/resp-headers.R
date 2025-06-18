@@ -182,7 +182,7 @@ resp_link_url <- function(resp, rel) {
   link_headers <- headers[tolower(names(headers)) == "link"]
 
   links <- unlist(lapply(link_headers, parse_link), recursive = FALSE)
-  sel <- map_lgl(links, ~ .$rel == rel)
+  sel <- map_lgl(links, \(x) x$rel == rel)
   if (sum(sel) != 1L) {
     return()
   }
