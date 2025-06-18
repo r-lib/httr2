@@ -98,7 +98,7 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
     main_args = perform_args,
     keep_if_empty = TRUE
   )
-  out <- paste0(steps, collapse = paste0(pipe(), "\n  "))
+  out <- paste0(steps, collapse = paste0(" |>\n  "))
 
   if (clip) {
     cli::cli_alert_success("Copying to clipboard:")
@@ -107,10 +107,6 @@ curl_translate <- function(cmd, simplify_headers = TRUE) {
 
   out <- paste0(out, "\n")
   structure(out, class = "httr2_cmd")
-}
-
-pipe <- function() {
-  if (getRversion() >= "4.1.0") " |> " else " |> "
 }
 
 #' @export
