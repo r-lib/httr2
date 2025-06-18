@@ -91,6 +91,8 @@ req_perform_parallel <- function(
   tryCatch(
     queue$process(),
     interrupt = function(cnd) {
+      check_repeated_interrupt()
+      
       queue$queue_status <- "errored"
       queue$process()
 
