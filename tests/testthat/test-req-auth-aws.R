@@ -41,11 +41,11 @@ test_that('aws_v4_signature calculates correct signature', {
   req <- request("https://example.execute-api.us-east-1.amazonaws.com/v0/") |>
     req_method('POST')
 
-  body_sha256 <- openssl::sha256(req_body_get(req) %||% "")
+  body_sha256 <- openssl::sha256(req_get_body(req) %||% "")
   current_time <- as.POSIXct(1737483742, origin = "1970-01-01", tz = "EST")
 
   signature <- aws_v4_signature(
-    method = req_method_get(req),
+    method = req_get_method(req),
     url = url_parse(req$url),
     headers = req$headers,
     body_sha256 = body_sha256,

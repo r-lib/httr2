@@ -33,9 +33,21 @@ req_method_apply <- function(req) {
   )
 }
 
-# Guess the method that curl will used based on options
-# https://everything.curl.dev/libcurl-http/requests#request-method
-req_method_get <- function(req) {
+#' Retrieve the method that a request will use
+#'
+#' Mimics the algorithm that curl uses to determine the method.
+#'
+#' @inheritParams req_perform
+#' @export
+#' @keywords internal
+#' @examples
+#' req <- request(example_url())
+#' req_get_method(req)
+#' req_get_method(req |> req_body_raw("abc"))
+#' req_get_method(req |> req_method("DELETE"))
+#' req_get_method(req |> req_method("HEAD"))
+req_get_method <- function(req) {
+  # https://everything.curl.dev/libcurl-http/requests#request-method
   if (!is.null(req$method)) {
     req$method
   } else if (has_name(req$options, "nobody")) {

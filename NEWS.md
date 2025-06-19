@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* New `req_get_method()` and `req_get_body()` allow you to do some limited prediction of what a request _will_ do when it's performed (#718).
 * Functions that capture interrutps (like `req_perform_parallel()` and friends) are now easier to escape if they're called inside a loop: you can press Ctrl + C twice to guarantee an exit (#1810).
 * New `last_request_json()` and `last_response_json()` to conveniently see JSON bodies (#734).
 * `req_body_json_modify()` can now be used on a request with an empty body.
