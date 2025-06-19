@@ -54,6 +54,19 @@ PooledRequest <- R6Class(
 
       private$req_prep <- req_prepare(req)
       private$handle <- req_handle(private$req_prep)
+      if (is_tracing()) {
+        # Note: we need to do this before we call handle_preflight() so that
+        # request signing works correctly with the added headers.
+        #
+        # TODO: Support resend_count.
+        private$req_prep <- req_with_span(
+          private$req_prep,
+          # Pooled request spans should not become the active span; we want
+          # subsequent requests to be siblings rather than parents.
+          active = FALSE
+        )
+      }
+      handle_preflight(private$req_prep, private$handle)
 
       curl::multi_add(
         handle = private$handle,
@@ -70,6 +83,9 @@ PooledRequest <- R6Class(
       # No handle if response was cached
       if (!is.null(private$handle)) {
         curl::multi_cancel(private$handle)
+      }
+      if (!is.null(private$req_prep)) {
+        req_record_span_status(private$req_prep)
       }
     }
   ),
@@ -101,6 +117,7 @@ PooledRequest <- R6Class(
       }
 
       resp <- create_response(self$req, curl_data, body)
+      req_record_span_status(private$req_prep, resp)
       resp <- cache_post_fetch(self$req, resp, path = private$path)
 
       if (error_is_error(self$req, resp)) {
@@ -120,6 +137,7 @@ PooledRequest <- R6Class(
       curl_error <- error_cnd(message = msg, class = error_class, call = NULL)
       error <- curl_cnd(curl_error, call = private$error_call)
       error$request <- self$req
+      req_record_span_status(private$req_prep, error)
       private$on_error(error)
     }
   )

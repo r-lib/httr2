@@ -71,7 +71,13 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
     if (!is.null(resp)) {
       close(resp)
     }
-    resp <- req_perform_connection1(req, handle, blocking = blocking)
+    resp <- req_perform_connection1(
+      req,
+      req_prep,
+      handle,
+      blocking = blocking,
+      resend_count = tries + 1L
+    )
 
     if (retry_is_transient(req, resp)) {
       tries <- tries + 1
@@ -82,7 +88,7 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
       break
     }
   }
-  req_completed(req)
+  req_completed(req_prep)
 
   if (!is_error(resp) && error_is_error(req, resp)) {
     # Read full body if there's an error
@@ -124,10 +130,22 @@ req_verbosity_connection <- function(
   req
 }
 
-req_perform_connection1 <- function(req, handle, blocking = TRUE) {
+req_perform_connection1 <- function(
+  req,
+  req_prep,
+  handle,
+  blocking = TRUE,
+  resend_count = 0
+) {
   the$last_request <- req
   the$last_response <- NULL
   signal(class = "httr2_perform_connection")
+  if (is_tracing()) {
+    # Note: we need to do this before we call handle_preflight() so that request
+    # signing works correctly with the added headers.
+    req_prep <- req_with_span(req_prep, resend_count = resend_count)
+  }
+  handle_preflight(req_prep, handle)
 
   err <- capture_curl_error({
     body <- curl::curl(req$url, handle = handle)
@@ -135,12 +153,15 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
     suppressWarnings(open(body, "rbf", blocking = blocking))
   })
   if (is_error(err)) {
+    req_record_span_status(req, err)
     close(body)
     return(err)
   }
 
   curl_data <- curl::handle_data(handle)
-  create_response(req, curl_data, body)
+  resp <- create_response(req, curl_data, body)
+  req_record_span_status(req, resp)
+  resp
 }
 
 # Make open mockable
