@@ -87,12 +87,15 @@ new_response <- function(
   check_string(method, call = error_call)
   check_string(url, call = error_call)
   check_number_whole(status_code, call = error_call)
-  check_request(request, allow_null = TRUE)
+  headers <- as_headers(headers, error_call = error_call)
+  if (!is.raw(body) && !is_path(body) && !inherits(body, "connection")) {
+    stop_input_type(body, "a raw vector, a path, or a connection")
+  }
   if (!is.null(timing) && !is_bare_numeric(timing)) {
     stop_input_type(timing, "a numeric vector", allow_null = TRUE)
   }
+  check_request(request, allow_null = TRUE)
 
-  headers <- as_headers(headers, error_call = error_call)
   # ensure we always have a date field
   if (!"date" %in% tolower(names(headers))) {
     headers$Date <- "Wed, 01 Jan 2020 00:00:00 UTC"
