@@ -30,13 +30,13 @@
 # content types are checked
 
     Code
-      request_test("/xml") %>% req_perform() %>% resp_body_json()
+      resp_body_json(req_perform(request_test("/xml")))
     Condition
       Error in `resp_body_json()`:
       ! Unexpected content type "application/xml".
       * Expecting type "application/json" or suffix "json".
     Code
-      request_test("/json") %>% req_perform() %>% resp_body_xml()
+      resp_body_xml(req_perform(request_test("/json")))
     Condition
       Error in `resp_body_xml()`:
       ! Unexpected content type "application/json".

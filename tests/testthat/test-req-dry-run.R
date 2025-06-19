@@ -1,5 +1,5 @@
 test_that("req_dry_run() returns useful data", {
-  resp <- request("http://example.com") %>%
+  resp <- request("http://example.com") |>
     req_dry_run(quiet = TRUE, testing_headers = FALSE)
   expect_equal(resp$method, "GET")
   expect_equal(resp$path, "/")
@@ -24,7 +24,7 @@ test_that("body is shown", {
 })
 
 test_that("authorization headers are redacted", {
-  req <- request("http://example.com") %>% req_auth_basic("user", "password")
+  req <- request("http://example.com") |> req_auth_basic("user", "password")
   expect_snapshot(out <- req_dry_run(req))
   expect_equal(out$headers$authorization, redacted_sentinel())
 

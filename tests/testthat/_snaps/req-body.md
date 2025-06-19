@@ -1,7 +1,7 @@
 # can't change body type
 
     Code
-      req %>% req_body_json(list(x = 1))
+      req_body_json(req, list(x = 1))
     Condition
       Error in `req_body_json()`:
       ! Can't change body type from raw to json.
@@ -53,7 +53,7 @@
 # can send named elements as multipart
 
     Code
-      cat(req_body_get(req))
+      cat(req_get_body(req))
     Output
       ---{id}
       Content-Disposition: form-data; name="a"

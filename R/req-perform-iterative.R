@@ -181,6 +181,8 @@ req_perform_iterative <- function(
       }
     },
     interrupt = function(cnd) {
+      check_repeated_interrupt()
+
       # interrupt might occur after i was incremented
       if (is.null(resps[[i]])) {
         i <<- i - 1

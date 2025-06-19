@@ -347,3 +347,13 @@ log_stream <- function(..., prefix = "<< ") {
 paste_c <- function(..., collapse = "") {
   paste0(c(...), collapse = collapse)
 }
+
+# Give user the get-out-of-jail-free card if interrupt-capturing function
+# is wrapped inside a loop
+check_repeated_interrupt <- function() {
+  if (as.double(Sys.time()) - the$last_interrupt < 1) {
+    cli::cli_alert_warning("Interrupting")
+    interrupt()
+  }
+  the$last_interrupt <- as.double(Sys.time())
+}
