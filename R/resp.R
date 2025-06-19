@@ -40,6 +40,10 @@ response <- function(
   check_string(method)
 
   headers <- as_headers(headers)
+  # ensure we always have a date field
+  if (!"date" %in% tolower(names(headers))) {
+    headers$Date <- "Wed, 01 Jan 2020 00:00:00 UTC"
+  }
 
   new_response(
     method = method,
@@ -65,7 +69,7 @@ response_json <- function(
 
   body <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
 
-  new_response(
+  response(
     method = method,
     url = url,
     status_code = as.integer(status_code),
@@ -93,10 +97,6 @@ new_response <- function(
   }
 
   headers <- as_headers(headers, error_call = error_call)
-  # ensure we always have a date field
-  if (!"date" %in% tolower(names(headers))) {
-    headers$Date <- "Wed, 01 Jan 2020 00:00:00 UTC"
-  }
 
   structure(
     list(
