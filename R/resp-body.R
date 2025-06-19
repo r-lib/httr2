@@ -69,6 +69,7 @@ resp_body_type <- function(resp) {
   } else if (inherits(resp$body, "connection")) {
     "stream"
   } else {
+    # a raw vector
     "memory"
   }
 }
