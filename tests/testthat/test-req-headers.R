@@ -68,6 +68,12 @@ test_that("redaction preserved across calls", {
   req <- req_headers(req, a = 1L, .redact = "a")
   req <- req_headers(req, a = 2)
   expect_redacted(req, "a")
+  expect_equal(headers_flatten(req$headers, FALSE), list(a = 2))
+
+  # and is reapplied regadless of case
+  req <- req_headers(req, A = 3)
+  expect_redacted(req, "A")
+  expect_equal(headers_flatten(req$headers, FALSE), list(A = 3))
 })
 
 test_that("req_headers_redacted redacts all headers", {
@@ -78,13 +84,13 @@ test_that("req_headers_redacted redacts all headers", {
 test_that("is case insensitive", {
   req <- request("http://example.com")
   req <- req_headers(req, a = 1L, .redact = "A")
-  expect_redacted(req, "A")
+  expect_redacted(req, "a")
   expect_snapshot(req)
 
   # Test the other direction too, just to be safe
   req <- request("http://example.com")
   req <- req_headers(req, A = 1L, .redact = "a")
-  expect_redacted(req, "a")
+  expect_redacted(req, "A")
 })
 
 test_that("authorization is always redacted", {

@@ -16,7 +16,7 @@ bullets <- function(x) {
         format(x)
       }
     } else {
-      if (is_redacted(x)) {
+      if (is_redacted_sentinel(x)) {
         format(x)
       } else {
         paste0("<", class(x)[[1L]], ">")

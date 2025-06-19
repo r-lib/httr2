@@ -58,7 +58,7 @@ req_verbose <- function(
     } else if (header_resp && type == 1) {
       verbose_header("<- ", msg)
     } else if (header_req && type == 2) {
-      to_redact <- attr(headers, "redact")
+      to_redact <- which_redacted(headers)
       verbose_header("-> ", msg, redact_headers, to_redact = to_redact)
     } else if (body_resp && type == 3) {
       # handled in handle_resp()
@@ -86,7 +86,8 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
 
   for (line in lines) {
     if (grepl("^[-a-zA-z0-9]+:", line)) {
-      header <- headers_redact(as_headers(line, to_redact), redact)
+      headers <- as_headers(line, to_redact, lifespan = current_env())
+      header <- headers_flatten(headers, redact)
       cli::cat_line(
         prefix,
         cli::style_bold(names(header)),
