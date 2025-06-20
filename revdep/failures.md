@@ -39,10 +39,10 @@ using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’
 export CARGO_HOME=/tmp/workdir/arcgisplaces/new/arcgisplaces.Rcheck/00_pkg_src/arcgisplaces/src/.cargo && \
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.cargo/bin" && \
 RUSTFLAGS=" --print=native-static-libs" cargo build -j 2 --offline --lib --release --manifest-path=./rust/Cargo.toml --target-dir ./rust/target
-error: package `litemap v0.7.5` cannot be built because it requires rustc 1.81 or newer, while the currently active rustc version is 1.75.0
-Either upgrade to rustc 1.81 or newer, or use
-cargo update litemap@0.7.5 --precise ver
-where `ver` is the latest version of `litemap` supporting rustc 1.75.0
+error: package `native-tls v0.2.14` cannot be built because it requires rustc 1.80.0 or newer, while the currently active rustc version is 1.75.0
+Either upgrade to rustc 1.80.0 or newer, or use
+cargo update native-tls@0.2.14 --precise ver
+where `ver` is the latest version of `native-tls` supporting rustc 1.75.0
 make: *** [Makevars:28: rust/target/release/libarcgisplaces.a] Error 101
 ERROR: compilation failed for package ‘arcgisplaces’
 * removing ‘/tmp/workdir/arcgisplaces/new/arcgisplaces.Rcheck/arcgisplaces’
