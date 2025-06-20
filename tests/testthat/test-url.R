@@ -11,7 +11,7 @@ test_that("can round trip urls", {
     "http://google.com/path?a=1&b=2",
     "http://google.com:80/path?a=1&b=2",
     "http://google.com:80/path?a=1&b=2#frag",
-    "http://google.com:80/path?a=1&b=2&c=%7b1%7b2%7d3%7d#frag",
+    "http://google.com:80/path?a=1&b=2&c=%7B1%7B2%7D3%7D#frag",
     "http://user@google.com:80/path?a=1&b=2",
     "http://user:pass@google.com:80/path?a=1&b=2"
   )
