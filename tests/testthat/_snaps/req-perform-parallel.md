@@ -13,7 +13,7 @@
     Condition
       Error in `req_perform_parallel()`:
       ! HTTP 404 Not Found.
-      * hello
+      i hello
 
 # multi_req_perform is deprecated
 
