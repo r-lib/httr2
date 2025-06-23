@@ -7,7 +7,7 @@ test_that("useful values for empty body", {
   req <- request("http://example.com")
   expect_equal(req_body_type(req), "empty")
   expect_equal(req_body_info(req), "empty")
-  expect_equal(req_body_get(req), NULL)
+  expect_equal(req_get_body(req), NULL)
 })
 
 # req_body_raw() ---------------------------------------------------------------
@@ -15,7 +15,7 @@ test_that("useful values for empty body", {
 test_that("can send string", {
   req <- request_test("/post") |> req_body_raw("test", type = "text/plain")
   expect_equal(req_body_type(req), "string")
-  expect_equal(req_body_get(req), "test")
+  expect_equal(req_get_body(req), "test")
   expect_equal(req_body_info(req), "a string")
 
   resp <- req_perform(req)
@@ -28,7 +28,7 @@ test_that("can send raw vector", {
   data <- charToRaw("abcdef")
   req <- request_test("/post") |> req_body_raw(data)
   expect_equal(req_body_type(req), "raw")
-  expect_equal(req_body_get(req), data)
+  expect_equal(req_get_body(req), data)
   expect_equal(req_body_info(req), "a 6 byte raw vector")
 
   resp <- req_perform(req)
@@ -63,7 +63,7 @@ test_that("can send file", {
 
   req <- request_test("/post") |> req_body_file(path, type = "text/plain")
   expect_equal(req_body_type(req), "file")
-  expect_equal(rawToChar(req_body_get(req)), x)
+  expect_equal(rawToChar(req_get_body(req)), x)
   expect_equal(req_body_info(req), glue::glue("a path '{path}'"))
 
   resp <- req_perform(req)
@@ -104,7 +104,7 @@ test_that("can send any type of object as json", {
   req <- request_test("/post") |> req_body_json(data)
   expect_equal(req_body_type(req), "json")
   expect_equal(req_body_info(req), "JSON data")
-  expect_equal(req_body_get(req), '{"a":"1","b":"2"}')
+  expect_equal(req_get_body(req), '{"a":"1","b":"2"}')
 
   resp <- req_perform(req)
   json <- resp_body_json(resp)
@@ -166,7 +166,7 @@ test_that("can send named elements as form", {
   req <- request_test("/post") |> req_body_form(!!!data)
   expect_equal(req_body_type(req), "form")
   expect_equal(req_body_info(req), "form data")
-  expect_equal(req_body_get(req), "a=1&b=2")
+  expect_equal(req_get_body(req), "a=1&b=2")
 
   resp <- req_perform(req)
   json <- resp_body_json(resp)
@@ -194,7 +194,7 @@ test_that("can send named elements as multipart", {
   expect_equal(req_body_type(req), "multipart")
   expect_equal(req_body_info(req), "multipart data")
   expect_snapshot(
-    cat(req_body_get(req)),
+    cat(req_get_body(req)),
     transform = function(x) gsub("--------.*", "---{id}", x)
   )
 

@@ -24,13 +24,10 @@ request <- function(base_url) {
 #' @export
 print.httr2_request <- function(x, ..., redact_headers = TRUE) {
   cli::cli_text("{.cls {class(x)}}")
-  method <- toupper(req_method_get(x))
+  method <- toupper(req_get_method(x))
   cli::cli_text("{.strong {method}} {x$url}")
 
-  bullets_with_header(
-    "Headers:",
-    headers_flatten(headers_redact(x$headers, redact_headers))
-  )
+  bullets_with_header("Headers:", headers_flatten(x$headers, redact_headers))
   cli::cli_text("{.strong Body}: {req_body_info(x)}")
   bullets_with_header("Options:", x$options)
   bullets_with_header("Policies:", x$policies)

@@ -19,7 +19,7 @@ test_that("has nice print method", {
 })
 
 test_that("print and str redact headers", {
-  x <- new_headers(list(x = 1, y = 2), redact = "x")
+  x <- new_headers(list(x = 1, y = 2), redact = "x", lifespan = current_env())
   expect_snapshot({
     print(x)
     str(x)
@@ -33,18 +33,11 @@ test_that("subsetting is case insensitive", {
   expect_equal(x["X"], new_headers(list(x = 1)))
 })
 
-test_that("redaction is case-insensitive", {
-  headers <- as_headers("AUTHORIZATION: SECRET")
-  attr(headers, "redact") <- "Authorization"
-  redacted <- headers_redact(headers)
-  expect_named(redacted, "AUTHORIZATION")
-  expect_true(is_redacted(redacted$AUTHORIZATION))
-})
-
 test_that("new_headers checks inputs", {
   expect_snapshot(error = TRUE, {
     new_headers(1)
     new_headers(list(1))
+    new_headers(list(x = mean))
   })
 })
 
@@ -54,7 +47,54 @@ test_that("can flatten repeated inputs", {
   expect_equal(headers_flatten(list(x = 1:2)), list(x = "1,2"))
 })
 
-test_that("redacted inputs are preserved", {
-  x <- new_headers(list(x = "x"), redact = "x")
-  expect_equal(headers_flatten(x), x)
+# redaction -------------------------------------------------------------------
+
+test_that("redacted values can't be serialized", {
+  path <- withr::local_tempfile()
+
+  headers <- new_headers(
+    list(a = "x", b = "y"),
+    redact = "a",
+    lifespan = current_env()
+  )
+  saveRDS(headers, path)
+
+  loaded <- readRDS(path)
+  expect_equal(headers_flatten(loaded), list(a = redacted_sentinel(), b = "y"))
+  expect_equal(headers_flatten(loaded, FALSE), list(b = "y"))
+})
+
+test_that("serialized redacted value doesn't cause curl errors", {
+  path <- withr::local_tempfile()
+
+  req <- request_test()
+  req <- req_auth_basic(req, "user", "password")
+  saveRDS(req, path)
+
+  req <- readRDS(path)
+  expect_no_error(req_perform(req))
+})
+
+test_that("can unredacted values", {
+  x <- new_headers(list(x = "x"), redact = "x", lifespan = current_env())
+  expect_equal(headers_flatten(x, redact = TRUE), list(x = redacted_sentinel()))
+  expect_equal(headers_flatten(x, redact = FALSE), list(x = "x"))
+})
+
+test_that("headers can't get double redacted", {
+  x1 <- new_headers(list(x = "x"), redact = "x", lifespan = current_env())
+  x2 <- new_headers(x1, redact = "x", lifespan = current_env())
+
+  expect_equal(headers_flatten(x2, FALSE), list(x = "x"))
+})
+
+test_that("redaction is case-insensitive", {
+  headers <- new_headers(
+    list("AUTHORIZATION" = "SECRET"),
+    redact = "authorization",
+    lifespan = current_env()
+  )
+  redacted <- headers_flatten(headers)
+  expect_named(redacted, "AUTHORIZATION")
+  expect_true(is_redacted_sentinel(redacted$AUTHORIZATION))
 })

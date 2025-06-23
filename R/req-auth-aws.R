@@ -71,7 +71,7 @@ auth_aws_sign <- function(
 ) {
   current_time <- Sys.time()
 
-  body_sha256 <- openssl::sha256(req_body_get(req))
+  body_sha256 <- openssl::sha256(req_get_body(req))
 
   # We begin by adding some necessary headers that must be added before
   # canoncalization even thought they aren't documented until later
@@ -83,7 +83,7 @@ auth_aws_sign <- function(
   )
 
   signature <- aws_v4_signature(
-    method = req_method_get(req),
+    method = req_get_method(req),
     url = url_parse(req$url),
     headers = req$headers,
     body_sha256 = body_sha256,

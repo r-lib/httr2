@@ -33,7 +33,7 @@
     Output
        <httr2_headers>
        $ x: <REDACTED>
-       $ y: num 2
+       $ y: chr "2"
 
 # new_headers checks inputs
 
@@ -47,4 +47,10 @@
     Condition
       Error:
       ! All elements of `x` must be named.
+    Code
+      new_headers(list(x = mean))
+    Condition
+      Error:
+      ! Each element of `x` must be an atomic vector or a weakref.
+      i `x[[1]]` is a function.
 

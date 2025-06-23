@@ -209,7 +209,7 @@ cache_pre_fetch <- function(req, path = NULL) {
 
   # Only GET requests should be retrieved from cache. It's not sufficient to
   # only save GET requests, because the method is not part of the cache key
-  if (req_method_get(req) != "GET") {
+  if (req_get_method(req) != "GET") {
     return(req)
   }
 
