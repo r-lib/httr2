@@ -69,6 +69,7 @@ the current request and response. You will probably want to pair it with an
 <span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_reqs <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  on_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stop"</span>, <span class="st">"return"</span><span class="op">)</span>,</span>
+<span>  mock <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"httr2_mock"</span>, <span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -104,6 +105,13 @@ perform all requests until <code>next_req()</code> returns <code>NULL</code>.</p
 <li><p><code>"return"</code>: stop iterating, returning all the successful responses so
 far, as well as an error object for the failed request.</p></li>
 </ul></dd>
+
+
+<dt id="arg-mock">mock<a class="anchor" aria-label="anchor" href="#arg-mock"></a></dt>
+<dd><p>A mocking function. If supplied, this function is called
+with the request. It should return either <code>NULL</code> (if it doesn't want to
+handle the request) or a <a href="response.html">response</a> (if it does). See <code><a href="with_mocked_responses.html">with_mock()</a></code>/
+<code><a href="with_mocked_responses.html">local_mock()</a></code> for more details.</p></dd>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
