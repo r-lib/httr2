@@ -38,7 +38,8 @@ Create a new object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{conn}}{A connection.}
+\item{\code{conn}}{A connection, that is open and ready for reading.
+\code{StreamingBody} will take care of closing it.`}
 }
 \if{html}{\out{</div>}}
 }

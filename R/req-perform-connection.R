@@ -172,7 +172,8 @@ StreamingBody <- R6::R6Class(
   "StreamingBody",
   public = list(
     #' @description Create a new object
-    #' @param conn A connection.
+    #' @param conn A connection, that is open and ready for reading.
+    #'   `StreamingBody` will take care of closing it.`
     initialize = function(conn) {
       if (!inherits(conn, "connection")) {
         stop_input_type(conn, "a connection", call = caller_env())
