@@ -43,16 +43,14 @@ components.}
 An HTTP response: an S3 list with class \code{httr2_response}.
 }
 \description{
-Generally, you should not need to call this function directly; you'll
-get a real HTTP response by calling \code{\link[=req_perform]{req_perform()}} and friends. This
-function is provided primarily for use in tests. If you are creating
-responses for mocked requests, use the lower-level \code{\link[=new_response]{new_response()}}.
-function is provided primarily for testing, and a place to describe
-the key components of a response.
-
 \code{response()} creates a generic response; \code{response_json()} creates a
-response with a JSON body, automatically adding the correct `Content-Type``
+response with a JSON body, automatically adding the correct \code{Content-Type}
 header.
+
+Generally, you should not need to call these function directly; you'll
+get a real HTTP response by calling \code{\link[=req_perform]{req_perform()}} and friends. These
+function is provided primarily for use in tests; if you are creating
+responses for mocked requests, use the lower-level \code{\link[=new_response]{new_response()}}.
 }
 \examples{
 response()

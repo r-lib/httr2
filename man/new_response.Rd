@@ -41,6 +41,5 @@ An HTTP response: an S3 list with class \code{httr2_response}.
 }
 \description{
 This is the constructor function for the \code{httr2_response} S3 class. It is
-useful primarily for mocking, as it allows you to create the object that
-httr2 expects
+useful primarily for mocking.
 }
