@@ -69,3 +69,11 @@ test_that("curl errors become errors", {
   # But last_response() is NULL
   expect_null(last_response())
 })
+
+# StreamingBody --------------------------------------------------------------
+
+test_that("validates its input", {
+  expect_snapshot(error = TRUE, {
+    StreamingBody$new(1)
+  })
+})

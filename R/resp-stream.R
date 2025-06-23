@@ -465,7 +465,7 @@ check_streaming_response <- function(
     )
   }
 
-  if (!resp$body$is_valid()) {
+  if (!resp$body$is_open()) {
     cli::cli_abort("{.arg {arg}} has already been closed.", call = call)
   }
 }

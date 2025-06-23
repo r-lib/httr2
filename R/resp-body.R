@@ -55,7 +55,7 @@ resp_has_body <- function(resp) {
     resp_body_type(resp),
     disk = file.size(resp$body) > 0,
     memory = length(resp$body) > 0,
-  stream = resp$body$is_valid()
+    stream = resp$body$is_open()
   )
 }
 

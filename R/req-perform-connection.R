@@ -160,19 +160,35 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
 # Make open mockable
 open <- NULL
 
-
+#' `StreamingBody` class
+#'
+#' This R6 class is used to represent the body of a streaming response.
+#' When using this in mocked responses, you can either create a new instance
+#' using your own connection or use a subclass for some other representation.
+#' In either case, you will pass to the `body` argument of [new_response()].
+#'
+#' @export
 StreamingBody <- R6::R6Class(
   "StreamingBody",
   public = list(
+    #' @description Create a new object
+    #' @param conn A connection.
     initialize = function(conn) {
+      if (!inherits(conn, "connection")) {
+        stop_input_type(conn, "a connection", call = caller_env())
+      }
       private$conn <- conn
     },
 
+    #' @description Read `n` bytes in a raw vector.
+    #' @param n Number of bytes to read
     read = function(n) {
       readBin(private$conn, "raw", n)
     },
 
-    read_all = function(con, buffer = 32 * 1024) {
+    #' @description Read all bytes and close the connection.
+    #' @param buffer Buffer size, in bytes.
+    read_all = function(buffer = 32 * 1024) {
       bytes <- raw()
       repeat {
         new <- self$read(buffer)
@@ -190,16 +206,20 @@ StreamingBody <- R6::R6Class(
       }
     },
 
-    is_valid = function() {
+    #' @description Is the connection still open?
+    is_open = function() {
       isValid(private$conn)
     },
 
+    #' @description Is the connection complete? (i.e. is there data remaining
+    #'   to be read?)
     is_complete = function() {
       !isIncomplete(private$conn)
     },
 
+    #' @description Close the connection
     close = function() {
-      if (self$is_valid()) {
+      if (self$is_open()) {
         close(private$conn)
       }
     }

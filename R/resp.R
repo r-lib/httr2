@@ -11,6 +11,8 @@
 #' responses for mocked requests, use the lower-level [new_response()].
 #'
 #' @inherit new_response params return
+#' @param body The response body. For `response_json()`, a R data structure that
+#'   will be serialized to JSON.
 #' @export
 #' @examples
 #' response()
@@ -78,8 +80,8 @@ response_json <- function(
 #' @param status_code HTTP status code. Must be a single integer.
 #' @param headers HTTP headers. Can be supplied as a raw or character vector
 #'   which will be parsed using the standard rules, or a named list.
-#' @param body Response, if any, contained in the response body.
-#'   For `response_json()`, a R data structure to serialize to JSON.
+#' @param body The body of the response. Can be a raw vector, a `<httr2_path>`,
+#'   or a [StreamingBody].
 #' @param timing A named numeric vector giving the time taken by various
 #'   components.
 #' @param request The [request] used to generate this response.
@@ -109,10 +111,10 @@ new_response <- function(
     )
   }
   headers <- as_headers(headers, error_call = error_call)
-  if (!is.raw(body) && !is_path(body) && !inherits(body, "connection")) {
+  if (!is.raw(body) && !is_path(body) && !inherits(body, "StreamingBody")) {
     stop_input_type(
       body,
-      "a raw vector, a path, or a connection",
+      c("a raw vector", "a path", "a <StreamingBody>"),
       call = error_call
     )
   }

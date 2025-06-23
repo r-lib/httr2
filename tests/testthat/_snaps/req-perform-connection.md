@@ -21,3 +21,10 @@
       Caused by error in `open()`:
       ! Failed to connect
 
+# validates its input
+
+    Code
+      StreamingBody$new(1)
+    Condition
+      Error in `StreamingBody$new()`:
+      ! `conn` must be a connection, not the number 1.

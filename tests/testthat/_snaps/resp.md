@@ -78,7 +78,7 @@
       new_response("GET", "http://x.com", 200, list(), 1)
     Condition
       Error:
-      ! `body` must be a raw vector, a path, or a connection, not the number 1.
+      ! `body` must be a raw vector, a path, or a <StreamingBody>, not the number 1.
     Code
       new_response("GET", "http://x.com", 200, list(), raw(), "x")
     Condition
@@ -89,4 +89,3 @@
     Condition
       Error:
       ! `request` must be an HTTP request object or `NULL`, not the number 1.
-

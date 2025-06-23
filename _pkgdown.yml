@@ -94,6 +94,7 @@ reference:
       - obfuscate
       - response
       - new_response
+      - StreamingBody
 
 articles:
   - title: Using httr2
