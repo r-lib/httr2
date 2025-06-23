@@ -24,3 +24,15 @@ test_that("response adds date if not provided by server", {
 test_that("check_response produces helpful error", {
   expect_snapshot(check_response(1), error = TRUE)
 })
+
+test_that("new_response() checks its inputs", {
+  expect_snapshot(error = TRUE, {
+    new_response(1)
+    new_response("GET", 1)
+    new_response("GET", "http://x.com", "x")
+    new_response("GET", "http://x.com", 200, 1)
+    new_response("GET", "http://x.com", 200, list(), 1)
+    new_response("GET", "http://x.com", 200, list(), raw(), "x")
+    new_response("GET", "http://x.com", 200, list(), raw(), c(x = 1), 1)
+  })
+})
