@@ -69,22 +69,11 @@ test_that("adds port to localhost url", {
 })
 
 test_that("old args are deprecated", {
-  # Allow tests to run when is_hosted_session() is TRUE.
-  local_mocked_bindings(is_hosted_session = function() FALSE)
-
-  expect_snapshot(
-    redirect <- normalize_redirect_uri("http://localhost", port = 1234)
-  )
-  expect_equal(redirect$uri, "http://localhost:1234/")
-
-  expect_snapshot(
-    redirect <- normalize_redirect_uri("http://x.com", host_name = "y.com")
-  )
-  expect_equal(redirect$uri, "http://y.com/")
-
-  expect_snapshot(
-    redirect <- normalize_redirect_uri("http://x.com", host_ip = "y.com")
-  )
+  expect_snapshot(error = TRUE, {
+    normalize_redirect_uri("http://localhost", port = 1234)
+    normalize_redirect_uri("http://x.com", host_name = "y.com")
+    normalize_redirect_uri("http://x.com", host_ip = "y.com")
+  })
 })
 
 test_that("urls left as is if not changes needed", {

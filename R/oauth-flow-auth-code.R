@@ -216,16 +216,15 @@ normalize_redirect_uri <- function(
   old <- parsed <- url_parse(redirect_uri)
 
   if (lifecycle::is_present(host_name)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       when = "1.0.0",
       what = "oauth_flow_auth_code(host_name)",
       with = "oauth_flow_auth_code(redirect_uri)"
     )
-    parsed$hostname <- host_name
   }
 
   if (lifecycle::is_present(port)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       when = "1.0.0",
       what = "oauth_flow_auth_code(port)",
       with = "oauth_flow_auth_code(redirect_uri)"
@@ -234,7 +233,7 @@ normalize_redirect_uri <- function(
   }
 
   if (lifecycle::is_present(host_ip)) {
-    lifecycle::deprecate_warn("1.0.0", "oauth_flow_auth_code(host_ip)")
+    lifecycle::deprecate_stop("1.0.0", "oauth_flow_auth_code(host_ip)")
   }
 
   localhost <- parsed$hostname %in% c("localhost", "127.0.0.1")
