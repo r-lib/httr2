@@ -18,6 +18,7 @@
 #'   or see [progress_bars] to customize it in other ways. Not compatible with
 #'   [req_progress()], as httr2 can only display a single progress bar at a
 #'   time.
+#' @inheritParams req_perform
 #' @return
 #' A list, the same length as `reqs`, containing [response]s and possibly
 #' error objects, if `on_error` is `"return"` or `"continue"` and one of the
@@ -53,6 +54,7 @@ req_perform_sequential <- function(
   reqs,
   paths = NULL,
   on_error = c("stop", "return", "continue"),
+  mock = getOption("httr2_mock", NULL),
   progress = TRUE
 ) {
   if (!is_bare_list(reqs)) {
@@ -60,6 +62,7 @@ req_perform_sequential <- function(
   }
   check_paths(paths, reqs)
   on_error <- arg_match(on_error)
+  mock <- as_mock_function(mock)
 
   err_catch <- on_error != "stop"
   err_return <- on_error == "return"
@@ -79,7 +82,7 @@ req_perform_sequential <- function(
 
         if (err_catch) {
           resps[[i]] <- tryCatch(
-            req_perform(reqs[[i]], path = paths[[i]]),
+            req_perform(reqs[[i]], path = paths[[i]], mock = mock),
             httr2_error = function(err) err
           )
         } else {

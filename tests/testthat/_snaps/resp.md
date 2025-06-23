@@ -52,3 +52,41 @@
       Error:
       ! `1` must be an HTTP response object, not the number 1.
 
+# new_response() checks its inputs
+
+    Code
+      new_response(1)
+    Condition
+      Error:
+      ! `method` must be a single string, not the number 1.
+    Code
+      new_response("GET", 1)
+    Condition
+      Error:
+      ! `url` must be a single string, not the number 1.
+    Code
+      new_response("GET", "http://x.com", "x")
+    Condition
+      Error:
+      ! `status_code` must be a whole number, not the string "x".
+    Code
+      new_response("GET", "http://x.com", 200, 1)
+    Condition
+      Error:
+      ! `headers` must be a list, character vector, or raw.
+    Code
+      new_response("GET", "http://x.com", 200, list(), 1)
+    Condition
+      Error:
+      ! `body` must be a raw vector, a path, or a connection, not the number 1.
+    Code
+      new_response("GET", "http://x.com", 200, list(), raw(), "x")
+    Condition
+      Error:
+      ! `timing` must be a numeric vector or `NULL`, not the string "x".
+    Code
+      new_response("GET", "http://x.com", 200, list(), raw(), c(x = 1), 1)
+    Condition
+      Error:
+      ! `request` must be an HTTP request object or `NULL`, not the number 1.
+

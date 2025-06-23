@@ -74,12 +74,11 @@ req_perform <- function(
   check_request(req)
   check_string(path, allow_null = TRUE)
   # verbosity checked by req_verbosity
-  check_function(mock, allow_null = TRUE)
+  mock <- as_mock_function(mock, error_call)
 
   verbosity <- verbosity %||% httr2_verbosity()
 
   if (!is.null(mock)) {
-    mock <- as_function(mock)
     mock_resp <- mock(req)
     if (!is.null(mock_resp)) {
       return(handle_resp(req, mock_resp, error_call = error_call))

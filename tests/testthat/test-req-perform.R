@@ -195,6 +195,22 @@ test_that("can cache requests with paths (if-modified-since)", {
   expect_equal(resp2$body[[1]], path2)
 })
 
+test_that("mocking works", {
+  req_200 <- request("https://ok")
+  req_404 <- request("https://notok")
+
+  local_mocked_responses(function(req) {
+    if (req$url == "https://ok") {
+      response()
+    } else {
+      response(404)
+    }
+  })
+
+  expect_equal(req_perform(req_200), response())
+  expect_error(req_perform(req_404), class = "httr2_http_404")
+})
+
 test_that("checks input types", {
   req <- request_test()
   expect_snapshot(error = TRUE, {
