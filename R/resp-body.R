@@ -42,11 +42,7 @@ resp_body_raw <- function(resp) {
     resp_body_type(resp),
     disk = readBin(resp$body, "raw", file.size(resp$body)),
     memory = resp$body,
-    stream = {
-      out <- read_con(resp$body)
-      close(resp)
-      out
-    }
+    stream = resp$body$read_all()
   )
 }
 
@@ -59,14 +55,14 @@ resp_has_body <- function(resp) {
     resp_body_type(resp),
     disk = file.size(resp$body) > 0,
     memory = length(resp$body) > 0,
-    stream = isValid(resp$body)
+  stream = resp$body$is_valid()
   )
 }
 
 resp_body_type <- function(resp) {
   if (is_path(resp$body)) {
     "disk"
-  } else if (inherits(resp$body, "connection")) {
+  } else if (inherits(resp$body, "StreamingBody")) {
     "stream"
   } else {
     "memory"

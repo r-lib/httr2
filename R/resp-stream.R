@@ -47,9 +47,8 @@
 #' close(con)
 resp_stream_raw <- function(resp, kb = 32) {
   check_streaming_response(resp)
-  conn <- resp$body
 
-  out <- readBin(conn, raw(), kb * 1024)
+  out <- resp$body$read(kb * 1024)
   if (resp_stream_show_body(resp)) {
     log_stream("Streamed ", length(out), " bytes")
     cli::cat_line()
@@ -139,7 +138,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
 #' @rdname resp_stream_raw
 resp_stream_is_complete <- function(resp) {
   check_response(resp)
-  length(resp$cache$push_back) == 0 && !isIncomplete(resp$body)
+  length(resp$cache$push_back) == 0 && resp$body$is_complete()
 }
 
 #' @export
@@ -149,8 +148,8 @@ resp_stream_is_complete <- function(resp) {
 close.httr2_response <- function(con, ...) {
   check_response(con)
 
-  if (inherits(con$body, "connection") && isValid(con$body)) {
-    close(con$body)
+  if (inherits(con$body, "StreamingBody")) {
+    con$body$close()
   }
 
   invisible()
@@ -331,18 +330,14 @@ resp_boundary_pushback <- function(
       )
     }
 
-    # We didn't have enough data. Attempt to read more
-    chunk <- readBin(
-      resp$body,
-      raw(),
-      # Don't let us exceed the max size by more than one byte; we do allow the
-      # one extra byte so we know to error.
-      n = min(chunk_size, max_size - length(buffer) + 1)
-    )
+    # We didn't have enough data. Attempt to read more, but don't let us exceed
+    # the max size by more than one byte; we do allow the one extra byte so we
+    # know to error.
+    chunk <- resp$body$read(min(chunk_size, max_size - length(buffer) + 1))
     print_buffer(chunk, "Received chunk")
 
     if (length(chunk) == 0) {
-      if (!isIncomplete(resp$body)) {
+      if (resp$body$is_complete()) {
         # We've truly reached the end of the connection; no more data is coming
         if (length(buffer) == 0) {
           return(NULL)
@@ -470,7 +465,7 @@ check_streaming_response <- function(
     )
   }
 
-  if (!isValid(resp$body)) {
+  if (!resp$body$is_valid()) {
     cli::cli_abort("{.arg {arg}} has already been closed.", call = call)
   }
 }

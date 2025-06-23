@@ -37,7 +37,7 @@
       Status: 200 OK
       Body: On disk 'path-content' (15 bytes)
     Code
-      response(200, body = con)
+      response(200, body = streaming)
     Message
       <httr2_response>
       GET https://example.com

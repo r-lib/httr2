@@ -4,7 +4,12 @@
 \alias{req_perform_connection}
 \title{Perform a request and return a streaming connection}
 \usage{
-req_perform_connection(req, blocking = TRUE, verbosity = NULL)
+req_perform_connection(
+  req,
+  blocking = TRUE,
+  verbosity = NULL,
+  mock = getOption("httr2_mock", NULL)
+)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -25,6 +30,11 @@ buffer management
 
 Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
 you can't affect directly.}
+
+\item{mock}{A mocking function. If supplied, this function is called
+with the request. It should return either \code{NULL} (if it doesn't want to
+handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
+\code{local_mock()} for more details.}
 }
 \description{
 Use \code{req_perform_connection()} to perform a request if you want to stream the

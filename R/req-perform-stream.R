@@ -55,15 +55,15 @@ req_perform_stream <- function(
   stop_time <- Sys.time() + timeout_sec
 
   resp <- req_perform_connection(req)
-  stream <- resp$body
-  withr::defer(close(stream))
+  close <- resp$body$close
+  withr::defer(close())
 
   continue <- TRUE
   incomplete <- TRUE
   buf <- raw()
 
-  while (continue && isIncomplete(stream) && Sys.time() < stop_time) {
-    buf <- c(buf, readBin(stream, raw(), buffer_kb * 1024))
+  while (continue && !resp$body$is_complete() && Sys.time() < stop_time) {
+    buf <- c(buf, resp$body$read(buffer_kb * 1024))
 
     if (length(buf) > 0) {
       cut <- cut_points(buf)

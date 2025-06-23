@@ -288,23 +288,6 @@ imap <- function(.x, .f, ...) {
   map2(.x, names(.x), .f, ...)
 }
 
-read_con <- function(con, buffer = 32 * 1024) {
-  bytes <- raw()
-  repeat {
-    new <- readBin(con, "raw", n = buffer)
-    if (length(new) == 0) {
-      break
-    }
-    bytes <- c(bytes, new)
-  }
-  if (length(bytes) == 0) {
-    NULL
-  } else {
-    bytes
-  }
-}
-
-
 # Slices the vector using the only sane semantics: start inclusive, end
 # exclusive.
 #

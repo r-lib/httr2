@@ -48,12 +48,24 @@
 #'   print(length(resp_stream_raw(resp, kb = 12)))
 #' }
 #' close(resp)
-req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
+req_perform_connection <- function(
+  req,
+  blocking = TRUE,
+  verbosity = NULL,
+  mock = getOption("httr2_mock", NULL)
+) {
   check_request(req)
   check_bool(blocking)
-  # verbosity checked in req_verbosity_connection
-
   req <- req_verbosity_connection(req, verbosity %||% httr2_verbosity())
+
+  if (!is.null(mock)) {
+    mock <- as_function(mock)
+    mock_resp <- mock(req)
+    if (!is.null(mock_resp)) {
+      return(handle_resp(req, mock_resp))
+    }
+  }
+
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   the$last_request <- req
@@ -86,10 +98,8 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
 
   if (!is_error(resp) && error_is_error(req, resp)) {
     # Read full body if there's an error
-    conn <- resp$body
-    resp$body <- read_con(conn)
+    resp$body <- resp$body$read_all()
     the$last_response <- resp
-    close(conn)
   }
   handle_resp(req, resp)
 
@@ -130,12 +140,16 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
   signal(class = "httr2_perform_connection")
 
   err <- capture_curl_error({
-    body <- curl::curl(req$url, handle = handle)
+    conn <- curl::curl(req$url, handle = handle)
     # Must open the stream in order to initiate the connection
-    suppressWarnings(open(body, "rbf", blocking = blocking))
+    withCallingHandlers(
+      open(conn, "rbf", blocking = blocking),
+      warning = \(cnd) tryInvokeRestart("muffleWarning"),
+      error = \(cnd) close(conn)
+    )
+    body <- StreamingBody$new(conn)
   })
   if (is_error(err)) {
-    close(body)
     return(err)
   }
 
@@ -145,3 +159,52 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
 
 # Make open mockable
 open <- NULL
+
+
+StreamingBody <- R6::R6Class(
+  "StreamingBody",
+  public = list(
+    initialize = function(conn) {
+      private$conn <- conn
+    },
+
+    read = function(n) {
+      readBin(private$conn, "raw", n)
+    },
+
+    read_all = function(con, buffer = 32 * 1024) {
+      bytes <- raw()
+      repeat {
+        new <- self$read(buffer)
+        if (length(new) == 0) {
+          break
+        }
+        bytes <- c(bytes, new)
+      }
+
+      self$close()
+      if (length(bytes) == 0) {
+        NULL
+      } else {
+        bytes
+      }
+    },
+
+    is_valid = function() {
+      isValid(private$conn)
+    },
+
+    is_complete = function() {
+      !isIncomplete(private$conn)
+    },
+
+    close = function() {
+      if (self$is_valid()) {
+        close(private$conn)
+      }
+    }
+  ),
+  private = list(
+    conn = NULL
+  )
+)
