@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_perform_stream()` has been soft deprecated.
+* `req_stream()` has been removed.
 * The `pool` argument to `req_perform_parallel()` has been removed.
 * `mutli_req_perform()` has been removed.
 * Deprecated `with_mock()` and `local_mock()` have been removed. 
