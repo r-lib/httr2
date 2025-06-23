@@ -70,6 +70,27 @@ test_that("curl errors become errors", {
   expect_null(last_response())
 })
 
+test_that("mocking works", {
+  req_200 <- request("https://ok")
+  req_404 <- request("https://notok")
+
+  local_mocked_responses(function(req) {
+    if (req$url == "https://ok") {
+      conn <- rawConnection(charToRaw("ok"))
+      response(body = StreamingBody$new(conn))
+    } else {
+      response(404)
+    }
+  })
+
+  resp <- req_perform_connection(req_200)
+  expect_equal(resp_body_string(resp), "ok")
+  close(resp)
+
+  expect_error(req_perform_connection(req_404), class = "httr2_http_404")
+})
+
+
 # StreamingBody --------------------------------------------------------------
 
 test_that("validates its input", {

@@ -28,3 +28,4 @@
     Condition
       Error in `StreamingBody$new()`:
       ! `conn` must be a connection, not the number 1.
+
