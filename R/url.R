@@ -273,7 +273,7 @@ url_build <- function(url) {
     query <- I(url_query_build(url$query))
   }
 
-  url <- curl::curl_modify_url(
+  curl::curl_modify_url(
     scheme = url$scheme,
     host = url$hostname,
     user = url$username,
@@ -283,7 +283,6 @@ url_build <- function(url) {
     query = query,
     fragment = url$fragment
   )
-  gsub('(%..)', perl = TRUE, replacement = '\\U\\1', url)
 }
 
 #' Parse query parameters and/or build a string
