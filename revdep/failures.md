@@ -1,187 +1,78 @@
-# GeoTox
+# arcgisplaces
 
 <details>
 
-* Version: NA
+* Version: 0.1.2
 * GitHub: NA
-* Source code: https://github.com/cran/GeoTox
-* Number of recursive dependencies: 143
+* Source code: https://github.com/cran/arcgisplaces
+* Date/Publication: 2025-04-10 16:20:02 UTC
+* Number of recursive dependencies: 42
 
-Run `revdepcheck::cloud_details(, "GeoTox")` for more info
+Run `revdepcheck::cloud_details(, "arcgisplaces")` for more info
 
 </details>
 
-## Error before installation
+## In both
+
+*   checking whether package ‘arcgisplaces’ can be installed ... ERROR
+    ```
+    Installation failed.
+    See ‘/tmp/workdir/arcgisplaces/new/arcgisplaces.Rcheck/00install.out’ for details.
+    ```
+
+## Installation
 
 ### Devel
 
 ```
-
-
-
-
+* installing *source* package ‘arcgisplaces’ ...
+** package ‘arcgisplaces’ successfully unpacked and MD5 sums checked
+** using staged installation
+Using cargo 1.75.0
+Using rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)
+Building for CRAN.
+Writing `src/Makevars`.
+`tools/config.R` has finished.
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’
+...
+export CARGO_HOME=/tmp/workdir/arcgisplaces/new/arcgisplaces.Rcheck/00_pkg_src/arcgisplaces/src/.cargo && \
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.cargo/bin" && \
+RUSTFLAGS=" --print=native-static-libs" cargo build -j 2 --offline --lib --release --manifest-path=./rust/Cargo.toml --target-dir ./rust/target
+error: package `native-tls v0.2.14` cannot be built because it requires rustc 1.80.0 or newer, while the currently active rustc version is 1.75.0
+Either upgrade to rustc 1.80.0 or newer, or use
+cargo update native-tls@0.2.14 --precise ver
+where `ver` is the latest version of `native-tls` supporting rustc 1.75.0
+make: *** [Makevars:28: rust/target/release/libarcgisplaces.a] Error 101
+ERROR: compilation failed for package ‘arcgisplaces’
+* removing ‘/tmp/workdir/arcgisplaces/new/arcgisplaces.Rcheck/arcgisplaces’
 
 
 ```
 ### CRAN
 
 ```
-
-
-
-
-
-
-```
-# insight
-
-<details>
-
-* Version: 1.1.0
-* GitHub: https://github.com/easystats/insight
-* Source code: https://github.com/cran/insight
-* Date/Publication: 2025-03-01 23:10:06 UTC
-* Number of recursive dependencies: 425
-
-Run `revdepcheck::cloud_details(, "insight")` for more info
-
-</details>
-
-## Error before installation
-
-### Devel
-
-```
-* using log directory ‘/tmp/workdir/insight/new/insight.Rcheck’
-* using R version 4.3.1 (2023-06-16)
-* using platform: x86_64-pc-linux-gnu (64-bit)
-* R was compiled by
-    gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-    GNU Fortran (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-* running under: Ubuntu 24.04.1 LTS
-* using session charset: UTF-8
-* using option ‘--no-manual’
-* checking for file ‘insight/DESCRIPTION’ ... OK
+* installing *source* package ‘arcgisplaces’ ...
+** package ‘arcgisplaces’ successfully unpacked and MD5 sums checked
+** using staged installation
+Using cargo 1.75.0
+Using rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)
+Building for CRAN.
+Writing `src/Makevars`.
+`tools/config.R` has finished.
+** libs
+using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’
 ...
-  When sourcing ‘insight.R’:
-Error: function 'cholmod_factor_ldetA' not provided by package 'Matrix'
-Execution halted
-
-  ‘display.Rmd’ using ‘UTF-8’... OK
-  ‘export.Rmd’ using ‘UTF-8’... OK
-  ‘insight.Rmd’ using ‘UTF-8’... failed
-* checking re-building of vignette outputs ... OK
-* DONE
-Status: 3 ERRORs, 1 NOTE
-
-
-
-
-
-```
-### CRAN
-
-```
-* using log directory ‘/tmp/workdir/insight/old/insight.Rcheck’
-* using R version 4.3.1 (2023-06-16)
-* using platform: x86_64-pc-linux-gnu (64-bit)
-* R was compiled by
-    gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-    GNU Fortran (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-* running under: Ubuntu 24.04.1 LTS
-* using session charset: UTF-8
-* using option ‘--no-manual’
-* checking for file ‘insight/DESCRIPTION’ ... OK
-...
-  When sourcing ‘insight.R’:
-Error: function 'cholmod_factor_ldetA' not provided by package 'Matrix'
-Execution halted
-
-  ‘display.Rmd’ using ‘UTF-8’... OK
-  ‘export.Rmd’ using ‘UTF-8’... OK
-  ‘insight.Rmd’ using ‘UTF-8’... failed
-* checking re-building of vignette outputs ... OK
-* DONE
-Status: 3 ERRORs, 1 NOTE
-
-
-
-
-
-```
-# parameters
-
-<details>
-
-* Version: 0.24.2
-* GitHub: https://github.com/easystats/parameters
-* Source code: https://github.com/cran/parameters
-* Date/Publication: 2025-03-04 14:50:06 UTC
-* Number of recursive dependencies: 474
-
-Run `revdepcheck::cloud_details(, "parameters")` for more info
-
-</details>
-
-## Error before installation
-
-### Devel
-
-```
-* using log directory ‘/tmp/workdir/parameters/new/parameters.Rcheck’
-* using R version 4.3.1 (2023-06-16)
-* using platform: x86_64-pc-linux-gnu (64-bit)
-* R was compiled by
-    gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-    GNU Fortran (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-* running under: Ubuntu 24.04.1 LTS
-* using session charset: UTF-8
-* using option ‘--no-manual’
-* checking for file ‘parameters/DESCRIPTION’ ... OK
-...
-  • equivalence_test/equivalence-test-5.svg
-  Error: Test failures
-  Execution halted
-* checking for unstated dependencies in vignettes ... OK
-* checking package vignettes in ‘inst/doc’ ... OK
-* checking running R code from vignettes ... OK
-  ‘overview_of_vignettes.Rmd’ using ‘UTF-8’... OK
-* checking re-building of vignette outputs ... OK
-* DONE
-Status: 2 ERRORs, 2 NOTEs
-
-
-
-
-
-```
-### CRAN
-
-```
-* using log directory ‘/tmp/workdir/parameters/old/parameters.Rcheck’
-* using R version 4.3.1 (2023-06-16)
-* using platform: x86_64-pc-linux-gnu (64-bit)
-* R was compiled by
-    gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-    GNU Fortran (Ubuntu 13.2.0-23ubuntu4) 13.2.0
-* running under: Ubuntu 24.04.1 LTS
-* using session charset: UTF-8
-* using option ‘--no-manual’
-* checking for file ‘parameters/DESCRIPTION’ ... OK
-...
-  • equivalence_test/equivalence-test-5.svg
-  Error: Test failures
-  Execution halted
-* checking for unstated dependencies in vignettes ... OK
-* checking package vignettes in ‘inst/doc’ ... OK
-* checking running R code from vignettes ... OK
-  ‘overview_of_vignettes.Rmd’ using ‘UTF-8’... OK
-* checking re-building of vignette outputs ... OK
-* DONE
-Status: 2 ERRORs, 2 NOTEs
-
-
-
+export CARGO_HOME=/tmp/workdir/arcgisplaces/old/arcgisplaces.Rcheck/00_pkg_src/arcgisplaces/src/.cargo && \
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.cargo/bin" && \
+RUSTFLAGS=" --print=native-static-libs" cargo build -j 2 --offline --lib --release --manifest-path=./rust/Cargo.toml --target-dir ./rust/target
+error: package `native-tls v0.2.14` cannot be built because it requires rustc 1.80.0 or newer, while the currently active rustc version is 1.75.0
+Either upgrade to rustc 1.80.0 or newer, or use
+cargo update native-tls@0.2.14 --precise ver
+where `ver` is the latest version of `native-tls` supporting rustc 1.75.0
+make: *** [Makevars:28: rust/target/release/libarcgisplaces.a] Error 101
+ERROR: compilation failed for package ‘arcgisplaces’
+* removing ‘/tmp/workdir/arcgisplaces/old/arcgisplaces.Rcheck/arcgisplaces’
 
 
 ```

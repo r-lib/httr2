@@ -9,12 +9,11 @@ test_that("can round trip urls", {
     "http://google.com/",
     "http://google.com/path",
     "http://google.com/path?a=1&b=2",
-    "http://google.com:80/path?a=1&b=2",
-    "http://google.com:80/path?a=1&b=2#frag",
-    "http://google.com:80/path?a=1&b=2&c=%7B1%7B2%7D3%7D#frag",
-    "http://user@google.com:80/path?a=1&b=2",
-    "http://user:pass@google.com:80/path?a=1&b=2",
-    "svn+ssh://my.svn.server/repo/trunk"
+    "http://google.com:81/path?a=1&b=2",
+    "http://google.com:81/path?a=1&b=2#frag",
+    "http://google.com:81/path?a=1&b=2&c=%7B1%7B2%7D3%7D#frag",
+    "http://user@google.com:81/path?a=1&b=2",
+    "http://user:pass@google.com:81/path?a=1&b=2"
   )
 
   expect_equal(map(urls, \(url) url_build(url_parse(url))), urls)
@@ -30,23 +29,17 @@ test_that("can parse relative urls", {
 
 test_that("can print all url details", {
   expect_snapshot(
-    url_parse("http://user:pass@example.com:80/path?a=1&b=2&c={1{2}3}#frag")
+    url_parse("http://user:pass@example.com:81/path?a=1&b=2&c={1{2}3}#frag")
   )
-})
-
-test_that("password also requires username", {
-  url <- url_parse("http://username:pwd@example.com")
-  url$username <- NULL
-  expect_snapshot(url_build(url), error = TRUE)
 })
 
 test_that("url_build validates its input", {
   expect_snapshot(url_build("abc"), error = TRUE)
 })
 
-test_that("decodes query params but not paths", {
+test_that("decodes params and paths", {
   url <- url_parse("http://example.com/a%20b?q=a%20b")
-  expect_equal(url$path, "/a%20b")
+  expect_equal(url$path, "/a b")
   expect_equal(url$query$q, "a b")
 })
 
@@ -97,10 +90,14 @@ test_that("can accept query as a string or list", {
   expect_equal(url_modify(url, query = list()), "http://test/")
 })
 
-test_that("automatically escapes query components", {
+test_that("encodes params and paths", {
   expect_equal(
     url_modify("https://example.com", query = list(q = "a b")),
     "https://example.com/?q=a%20b"
+  )
+  expect_equal(
+    url_modify("https://example.com", path = "a b"),
+    "https://example.com/a%20b"
   )
 })
 
