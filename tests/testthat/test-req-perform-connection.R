@@ -76,7 +76,7 @@ test_that("mocking works", {
 
   local_mocked_responses(function(req) {
     if (req$url == "https://ok") {
-      conn <- rawConnection(charToRaw("ok"))
+      conn <- rawConnection(charToRaw("a\nb\n"))
       response(body = StreamingBody$new(conn))
     } else {
       response(404)
@@ -84,7 +84,8 @@ test_that("mocking works", {
   })
 
   resp <- req_perform_connection(req_200)
-  expect_equal(resp_body_string(resp), "ok")
+  expect_equal(resp_stream_lines(resp), "a")
+  expect_equal(resp_stream_lines(resp), "b")
   close(resp)
 
   expect_error(req_perform_connection(req_404), class = "httr2_http_404")
