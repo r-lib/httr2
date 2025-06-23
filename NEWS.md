@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `with_mock()` and `local_mock()` have been removed. 
 * The `host_name`, `host_ip`, and `port` arguments to `req_oauth_auth_code()` and `oauth_flow_auth_code()` are now defunct.
 * `req_perform_iterative()`, `req_perform_sequential()`, `req_perform_parallel()`, and `req_perform_promise()` now support mocking (#651).
 * `new_response()` is now exported (#751).

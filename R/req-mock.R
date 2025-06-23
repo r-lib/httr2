@@ -37,28 +37,11 @@ with_mocked_responses <- function(mock, code) {
   mock <- as_mock_function(mock)
   withr::with_options(list(httr2_mock = mock), code)
 }
-
-#' @export
-#' @rdname with_mocked_responses
-#' @usage NULL
-with_mock <- function(mock, code) {
-  lifecycle::deprecate_stop("1.1.0", "with_mock()", "with_mocked_responses()")
-  with_mocked_responses(mock, code)
-}
-
 #' @export
 #' @rdname with_mocked_responses
 local_mocked_responses <- function(mock, env = caller_env()) {
   mock <- as_mock_function(mock)
   withr::local_options(httr2_mock = mock, .local_envir = env)
-}
-
-#' @export
-#' @rdname with_mocked_responses
-#' @usage NULL
-local_mock <- function(mock, env = caller_env()) {
-  lifecycle::deprecate_warn("1.1.0", "local_mock()", "local_mocked_responses()")
-  local_mocked_responses(mock, env)
 }
 
 as_mock_function <- function(mock, error_call = caller_env()) {
