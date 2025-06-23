@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* URL construction is now powered by `curl::curl_modify_url()`, and hence now (correctly) escapes the `path` component (#732). This also means that `req_url_path()` now can only affect the path component of the URL, not the query params or fragment.
+* URL construction is now powered by `curl::curl_modify_url()`, and hence now (correctly) escapes the `path` component (#732). This means that `req_url_path()` now can only affect the path component of the URL, not the query params or fragment.
 * Functions that capture interrutps (like `req_perform_parallel()` and friends) are now easier to escape if they're called inside a loop: you can press Ctrl + C twice to guarantee an exit (#1810).
 * New `last_request_json()` and `last_response_json()` to conveniently see JSON bodies (#734).
 * `req_body_json_modify()` can now be used on a request with an empty body.
