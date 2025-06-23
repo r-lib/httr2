@@ -1,27 +1,16 @@
-#' Create a new HTTP response
+#' Create a HTTP response for testing
 #'
 #' @description
-#' Generally, you should not need to call this function directly; you'll
-#' get a real HTTP response by calling [req_perform()] and friends. This
-#' function is provided primarily for testing, and a place to describe
-#' the key components of a response.
-#'
 #' `response()` creates a generic response; `response_json()` creates a
-#' response with a JSON body, automatically adding the correct Content-Type
+#' response with a JSON body, automatically adding the correct `Content-Type`
 #' header.
 #'
-#' @keywords internal
-#' @param status_code HTTP status code. Must be a single integer.
-#' @param url URL response came from; might not be the same as the URL in
-#'   the request if there were any redirects.
-#' @param method HTTP method used to retrieve the response.
-#' @param headers HTTP headers. Can be supplied as a raw or character vector
-#'   which will be parsed using the standard rules, or a named list.
-#' @param body Response, if any, contained in the response body.
-#'   For `response_json()`, a R data structure to serialize to JSON.
-#' @param timing A named numeric vector giving the time taken by various
-#'   components.
-#' @returns An HTTP response: an S3 list with class `httr2_response`.
+#' Generally, you should not need to call these function directly; you'll
+#' get a real HTTP response by calling [req_perform()] and friends. These
+#' function is provided primarily for use in tests; if you are creating
+#' responses for mocked requests, use the lower-level [new_response()].
+#'
+#' @inherit new_response params return
 #' @export
 #' @examples
 #' response()
@@ -40,6 +29,10 @@ response <- function(
   check_string(method)
 
   headers <- as_headers(headers)
+  # ensure we always have a date field
+  if (!"date" %in% tolower(names(headers))) {
+    headers$Date <- "Wed, 01 Jan 2020 00:00:00 UTC"
+  }
 
   new_response(
     method = method,
@@ -74,6 +67,25 @@ response_json <- function(
   )
 }
 
+#' Create a HTTP response
+#'
+#' This is the constructor function for the `httr2_response` S3 class. It is
+#' useful primarily for mocking.
+#'
+#' @param method HTTP method used to retrieve the response.
+#' @param url URL response came from; might not be the same as the URL in
+#'   the request if there were any redirects.
+#' @param status_code HTTP status code. Must be a single integer.
+#' @param headers HTTP headers. Can be supplied as a raw or character vector
+#'   which will be parsed using the standard rules, or a named list.
+#' @param body Response, if any, contained in the response body.
+#'   For `response_json()`, a R data structure to serialize to JSON.
+#' @param timing A named numeric vector giving the time taken by various
+#'   components.
+#' @param request The [request] used to generate this response.
+#' @param error_call Environment (on call stack) used in error messages.
+#' @returns An HTTP response: an S3 list with class `httr2_response`.
+#' @export
 new_response <- function(
   method,
   url,
@@ -87,15 +99,22 @@ new_response <- function(
   check_string(method, call = error_call)
   check_string(url, call = error_call)
   check_number_whole(status_code, call = error_call)
-  check_request(request, allow_null = TRUE)
+  check_request(request, allow_null = TRUE, call = error_call)
   if (!is.null(timing) && !is_bare_numeric(timing)) {
-    stop_input_type(timing, "a numeric vector", allow_null = TRUE)
+    stop_input_type(
+      timing,
+      "a numeric vector",
+      allow_null = TRUE,
+      call = error_call
+    )
   }
-
   headers <- as_headers(headers, error_call = error_call)
-  # ensure we always have a date field
-  if (!"date" %in% tolower(names(headers))) {
-    headers$Date <- "Wed, 01 Jan 2020 00:00:00 UTC"
+  if (!is.raw(body) && !is_path(body) && !inherits(body, "connection")) {
+    stop_input_type(
+      body,
+      "a raw vector, a path, or a connection",
+      call = error_call
+    )
   }
 
   structure(

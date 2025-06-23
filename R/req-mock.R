@@ -1,8 +1,10 @@
 #' Temporarily mock requests
 #'
 #' Mocking allows you to selectively and temporarily replace the response
-#' you would typically receive from a request with your own code. It's
-#' primarily used for testing.
+#' you would typically receive from a request with your own code. These
+#' functions are low-level and we don't recommend using them directly.
+#' Instead use package that uses these functions under the hood, like
+#' \pkg{httptest2} or \pkg{vcr}.
 #'
 #' @param mock A function, a list, or `NULL`.
 #'

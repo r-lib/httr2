@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * `req_perform_iterative()`, `req_perform_sequential()`, `req_perform_parallel()`, and `req_perform_promise()` now support mocking (#651).
+* `new_response()` is now exported (#751).
 * URL construction is now powered by `curl::curl_modify_url()`, and hence now (correctly) escapes the `path` component (#732). This means that `req_url_path()` now can only affect the path component of the URL, not the query params or fragment.
 * Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can longer perform such requests that have been saved and reloaded (#721).
 * New `req_get_method()` and `req_get_body()` allow you to do some limited prediction of what a request _will_ do when it's performed (#718).
