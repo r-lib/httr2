@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* The `pool` argument to `req_perform_parallel()` has been removed.
+* `mutli_req_perform()` has been removed.
 * Deprecated `with_mock()` and `local_mock()` have been removed. 
 * The deprecated `host_name`, `host_ip`, and `port` arguments to `req_oauth_auth_code()` and `oauth_flow_auth_code()` have been removed..
 * `req_perform_iterative()`, `req_perform_sequential()`, `req_perform_parallel()`, and `req_perform_promise()` now support mocking (#651).

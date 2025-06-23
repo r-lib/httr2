@@ -18,8 +18,7 @@ req_perform_promise(
 \item{path}{Optionally, path to save body of the response. This is useful
 for large responses since it avoids storing the response in memory.}
 
-\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
-to control the maximum number of concurrent requests, set \code{max_active}.}
+\item{pool}{A pool created by \code{\link[curl:multi]{curl::new_pool()}}.}
 
 \item{verbosity}{How much information to print? This is a wrapper
 around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control verbosity:

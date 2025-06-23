@@ -7,7 +7,6 @@
 req_perform_parallel(
   reqs,
   paths = NULL,
-  pool = deprecated(),
   on_error = c("stop", "return", "continue"),
   progress = TRUE,
   max_active = 10,
@@ -20,9 +19,6 @@ req_perform_parallel(
 \item{paths}{An optional character vector of paths, if you want to download
 the response bodies to disk. If supplied, must be the same length as
 \code{reqs}.}
-
-\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
-to control the maximum number of concurrent requests, set \code{max_active}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{

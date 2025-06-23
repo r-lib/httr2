@@ -350,13 +350,3 @@ test_that("wait for deadline waits after pool complete", {
   expect_true(pool_wait_for_deadline(pool, deadline = 1))
   expect_equal(slept, 1)
 })
-
-# Deprecations ----------------------------------------------------------------
-
-test_that("multi_req_perform is deprecated", {
-  expect_snapshot(multi_req_perform(list()))
-})
-
-test_that("pool argument is deprecated", {
-  expect_snapshot(. <- req_perform_parallel(list(), pool = curl::new_pool()))
-})
