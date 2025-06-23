@@ -4,6 +4,7 @@ pooled_request <- function(
   on_success = NULL,
   on_failure = NULL,
   on_error = NULL,
+  mock = NULL,
   error_call = caller_env()
 ) {
   check_request(req)
@@ -18,7 +19,8 @@ pooled_request <- function(
     error_call = error_call,
     on_success = on_success,
     on_failure = on_failure,
-    on_error = on_error
+    on_error = on_error,
+    mock = mock
   )
 }
 
@@ -35,7 +37,8 @@ PooledRequest <- R6Class(
       error_call = NULL,
       on_success = NULL,
       on_failure = NULL,
-      on_error = NULL
+      on_error = NULL,
+      mock = NULL
     ) {
       self$req <- req
       private$path <- path
@@ -43,12 +46,21 @@ PooledRequest <- R6Class(
       private$on_success <- on_success
       private$on_failure <- on_failure
       private$on_error <- on_error
+      private$mock <- mock
     },
 
     submit = function(pool) {
+      if (!is.null(private$mock)) {
+        mock_resp <- private$mock(self$req)
+        if (!is.null(mock_resp)) {
+          private$handle_response(mock_resp, self$req)
+          return()
+        }
+      }
+
       req <- cache_pre_fetch(self$req, private$path)
       if (is_response(req)) {
-        private$on_success(req)
+        private$handle_response(req, self$req)
         return()
       }
 
@@ -84,6 +96,7 @@ PooledRequest <- R6Class(
     on_success = NULL,
     on_failure = NULL,
     on_error = NULL,
+    mock = NULL,
 
     # curl success could be httr2 success or httr2 failure
     succeed = function(curl_data) {
@@ -102,9 +115,12 @@ PooledRequest <- R6Class(
 
       resp <- create_response(self$req, curl_data, body)
       resp <- cache_post_fetch(self$req, resp, path = private$path)
+      private$handle_response(resp, self$req)
+    },
 
-      if (error_is_error(self$req, resp)) {
-        cnd <- resp_failure_cnd(self$req, resp, error_call = private$error_call)
+    handle_response = function(resp, req) {
+      if (error_is_error(req, resp)) {
+        cnd <- resp_failure_cnd(req, resp, error_call = private$error_call)
         private$on_failure(cnd)
       } else {
         private$on_success(resp)

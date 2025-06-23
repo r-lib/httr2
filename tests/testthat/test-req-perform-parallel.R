@@ -317,6 +317,24 @@ test_that("throttling is limited by deadline", {
   expect_equal(the$throttle[["test"]]$tokens, 1)
 })
 
+
+test_that("mocking works", {
+  req_200 <- request("https://ok")
+  req_404 <- request("https://notok")
+
+  local_mocked_responses(function(req) {
+    if (req$url == "https://ok") {
+      response()
+    } else {
+      response(404)
+    }
+  })
+
+  resps <- req_perform_parallel(list(req_200, req_404), on_error = "continue")
+  expect_equal(resps[[1]], response())
+  expect_s3_class(resps[[2]], "httr2_http_404")
+})
+
 # Pool helpers ----------------------------------------------------------------
 
 test_that("wait for deadline waits after pool complete", {

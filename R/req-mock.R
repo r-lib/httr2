@@ -69,13 +69,10 @@ as_mock_function <- function(mock, error_call = caller_env()) {
     mock
   } else if (is_formula(mock)) {
     mock <- as_function(mock, call = error_call)
-  } else if (is.list(mock)) {
+  } else if (is_bare_list(mock)) {
     mocked_response_sequence(!!!mock)
   } else {
-    cli::cli_abort(
-      "{.arg mock} must be a function or list, not {.obj_type_friendly {mock}}.",
-      call = error_call
-    )
+    stop_input_type(mock, c("function", "list", "NULL"), call = error_call)
   }
 }
 

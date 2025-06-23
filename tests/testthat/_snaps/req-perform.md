@@ -48,5 +48,5 @@
       req_perform(req, mock = 7)
     Condition
       Error in `req_perform()`:
-      ! `mock` must be a function or `NULL`, not the number 7.
+      ! `mock` must be function, list, or NULL, not the number 7.
 

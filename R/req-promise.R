@@ -71,13 +71,15 @@ req_perform_promise <- function(
   req,
   path = NULL,
   pool = NULL,
-  verbosity = NULL
+  verbosity = NULL,
+  mock = getOption("httr2_mock", NULL)
 ) {
   check_installed(c("promises", "later"))
 
   check_request(req)
   check_string(path, allow_null = TRUE)
   verbosity <- verbosity %||% httr2_verbosity()
+  mock <- as_mock_function(mock)
 
   if (missing(pool)) {
     if (!identical(later::current_loop(), later::global_loop())) {
@@ -100,7 +102,8 @@ req_perform_promise <- function(
       path = path,
       on_success = function(resp) resolve(resp),
       on_failure = function(error) reject(error),
-      on_error = function(error) reject(error)
+      on_error = function(error) reject(error),
+      mock = mock
     )
     pooled_req$submit(pool)
     ensure_pool_poller(pool, reject)

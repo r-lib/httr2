@@ -55,3 +55,20 @@ test_that("on_error = 'return' returns error", {
   expect_s3_class(out[[3]], "httr2_http_404")
   expect_equal(out[[4]], NULL)
 })
+
+test_that("mocking works", {
+  req_200 <- request("https://ok")
+  req_404 <- request("https://notok")
+
+  local_mocked_responses(function(req) {
+    if (req$url == "https://ok") {
+      response()
+    } else {
+      response(404)
+    }
+  })
+
+  resps <- req_perform_sequential(list(req_200, req_404), on_error = "continue")
+  expect_equal(resps[[1]], response())
+  expect_s3_class(resps[[2]], "httr2_http_404")
+})

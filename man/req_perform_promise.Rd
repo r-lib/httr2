@@ -4,7 +4,13 @@
 \alias{req_perform_promise}
 \title{Perform request asynchronously using the promises package}
 \usage{
-req_perform_promise(req, path = NULL, pool = NULL, verbosity = NULL)
+req_perform_promise(
+  req,
+  path = NULL,
+  pool = NULL,
+  verbosity = NULL,
+  mock = getOption("httr2_mock", NULL)
+)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -26,6 +32,11 @@ around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control
 
 Use \code{\link[=with_verbosity]{with_verbosity()}} to control the verbosity of requests that
 you can't affect directly.}
+
+\item{mock}{A mocking function. If supplied, this function is called
+with the request. It should return either \code{NULL} (if it doesn't want to
+handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
+\code{local_mock()} for more details.}
 }
 \value{
 a \code{\link[promises:promise]{promises::promise()}} object which resolves to a \link{response} if
