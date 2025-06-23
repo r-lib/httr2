@@ -354,6 +354,8 @@ format_query_param <- function(
 
   if (inherits(x, "AsIs")) {
     unclass(x)
+  } else if (is_obfuscated(x)) {
+    x
   } else {
     x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
     x <- curl::curl_escape(x)
