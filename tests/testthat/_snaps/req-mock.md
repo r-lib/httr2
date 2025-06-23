@@ -24,5 +24,5 @@
       local_mocked_responses(10)
     Condition
       Error in `local_mocked_responses()`:
-      ! `mock` must be a function or list, not a number.
+      ! `mock` must be function, list, or NULL, not the number 10.
 

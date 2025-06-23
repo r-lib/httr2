@@ -1,18 +1,13 @@
-test_that("can override requests through mocking", {
+test_that("can override requests with local_ or with_", {
+  req <- request("https://google.com")
   resp <- response()
-  req <- request("https://google.com")
 
-  expect_equal(with_mocked_responses(\(req) resp, req_perform(req)), resp)
+  with_mocked_responses(\(req) resp, {
+    expect_equal(req_perform(req), resp)
+  })
 
-  local_mocked_responses(function(req) resp)
+  local_mocked_responses(\(req) resp)
   expect_equal(req_perform(req), resp)
-})
-
-test_that("can generate errors with mocking", {
-  local_mocked_responses(\(req) response(404))
-
-  req <- request("https://google.com")
-  expect_error(req_perform(req), class = "httr2_http_404")
 })
 
 test_that("local_mock and with_mock are deprecated", {

@@ -111,6 +111,7 @@ req_perform_iterative <- function(
   path = NULL,
   max_reqs = 20,
   on_error = c("stop", "return"),
+  mock = getOption("httr2_mock", NULL),
   progress = TRUE
 ) {
   check_request(req)
@@ -118,6 +119,7 @@ req_perform_iterative <- function(
   check_number_whole(max_reqs, allow_infinite = TRUE, min = 1)
   check_string(path, allow_empty = FALSE, allow_null = TRUE)
   on_error <- arg_match(on_error)
+  mock <- as_mock_function(mock, error_call)
 
   get_path <- function(i) {
     if (is.null(path)) {
@@ -144,7 +146,7 @@ req_perform_iterative <- function(
         return = function(cnd) cnd
       )
       resp <- try_fetch(
-        req_perform(req, path = get_path(i)),
+        req_perform(req, path = get_path(i), mock = mock),
         httr2_error = httr2_error
       )
       resps[[i]] <- resp

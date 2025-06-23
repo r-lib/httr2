@@ -148,3 +148,24 @@ test_that("req_perform_promise uses the default loop", {
   expect_equal(resp_status(extract_promise(p1, timeout = 1)), 200)
   expect_equal(resp_status(extract_promise(p2, timeout = 1)), 200)
 })
+
+test_that("mocking works", {
+  req_200 <- request("https://ok")
+  req_404 <- request("https://notok")
+
+  local_mocked_responses(function(req) {
+    if (req$url == "https://ok") {
+      response()
+    } else {
+      response(404)
+    }
+  })
+  expect_equal(
+    extract_promise(req_perform_promise(req_200)),
+    response()
+  )
+  expect_error(
+    extract_promise(req_perform_promise(req_404)),
+    class = "httr2_http_404"
+  )
+})

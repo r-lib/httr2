@@ -67,7 +67,8 @@ req_perform_parallel <- function(
   pool = deprecated(),
   on_error = c("stop", "return", "continue"),
   progress = TRUE,
-  max_active = 10
+  max_active = 10,
+  mock = getOption("httr2_mock", NULL)
 ) {
   check_paths(paths, reqs)
   if (lifecycle::is_present(pool)) {
@@ -78,6 +79,7 @@ req_perform_parallel <- function(
   }
   on_error <- arg_match(on_error)
   check_number_whole(max_active, min = 1)
+  mock <- as_mock_function(mock, error_call)
 
   queue <- RequestQueue$new(
     reqs = reqs,
@@ -85,6 +87,7 @@ req_perform_parallel <- function(
     max_active = max_active,
     on_error = on_error,
     progress = progress,
+    mock = mock,
     error_call = environment()
   )
 
@@ -92,7 +95,7 @@ req_perform_parallel <- function(
     queue$process(),
     interrupt = function(cnd) {
       check_repeated_interrupt()
-      
+
       queue$queue_status <- "errored"
       queue$process()
 
@@ -131,6 +134,7 @@ RequestQueue <- R6::R6Class(
     n_complete = 0,
     n_retries = 0,
     on_error = "stop",
+    mock = NULL,
     progress = NULL,
 
     # Vectorised along reqs
@@ -150,6 +154,7 @@ RequestQueue <- R6::R6Class(
       max_active = 10,
       on_error = "stop",
       progress = FALSE,
+      mock = NULL,
       error_call = caller_env()
     ) {
       n <- length(reqs)
@@ -176,6 +181,7 @@ RequestQueue <- R6::R6Class(
         max_streams = 100
       )
       self$on_error <- on_error
+      self$mock <- mock
 
       self$queue_status <- "working"
       self$n_pending <- n
@@ -190,6 +196,7 @@ RequestQueue <- R6::R6Class(
           on_success = function(resp) self$done_success(i, resp),
           on_failure = function(error) self$done_failure(i, error),
           on_error = function(error) self$done_error(i, error),
+          mock = mock,
           error_call = error_call
         )
       })
