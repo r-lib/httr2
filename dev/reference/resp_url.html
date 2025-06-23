@@ -98,11 +98,12 @@ resp_url_queries() returns the query component as a named list.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="fu"><a href="example_url.html">example_url</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_path</a></span><span class="op">(</span><span class="st">"/get?hello=world"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_path</a></span><span class="op">(</span><span class="st">"/get"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="req_url.html">req_url_query</a></span><span class="op">(</span>hello <span class="op">=</span> <span class="st">"world"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "http://127.0.0.1:35505/get?hello=world"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "http://127.0.0.1:45695/get?hello=world"</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_url_path</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/get"</span>
 <span class="r-in"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">resp_url_queries</span><span class="op">(</span><span class="op">)</span></span></span>
