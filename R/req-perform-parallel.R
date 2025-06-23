@@ -154,16 +154,46 @@ RequestQueue <- R6::R6Class(
     ) {
       n <- length(reqs)
 
+      barname <- ""
+
+      if (is.character(progress)){
+        barname <- progress
+        progress <- TRUE
+      }
+
       if (isTRUE(progress)) {
-        self$progress <- cli::cli_progress_bar(
+        self$progress <- create_progress_bar(
           total = n,
-          format = paste0(
-            "[{self$queue_status}] ",
-            "({self$n_pending} + {self$n_retries}) -> {self$n_active} -> {self$n_complete} | ",
-            "{cli::pb_bar} {cli::pb_percent}"
-          ),
-          .envir = error_call
+          name = barname,
+          config = list(format = paste0(
+                "{cli::pb_name}[{cli::pb_extra$queue_status}] ",
+                "({cli::pb_extra$n_pending} + {cli::pb_extra$n_retries}) -> {cli::pb_extra$n_active} -> {cli::pb_extra$n_complete} | ",
+                "{cli::pb_bar} {cli::pb_percent}"),
+                extra=list(
+                  queue_status="working",
+                  n_pending=n,
+                  n_retries=0,
+                  n_active=0,
+                  n_complete=0
+                )
+              ),
+          env = error_call
         )
+      } else if(is_list(progress)){
+        self$progress <- create_progress_bar(
+          total = n,
+          name = "Performing",
+          # Must append the extras even though they will probably go unused
+          # in a custom format
+          config = append(progress, list(extra=list(
+            queue_status="working",
+            n_pending=n,
+            n_retries=0,
+            n_active=0,
+            n_complete=0
+          ))),
+          env = error_call
+          )
       }
 
       # goal is for pool to not do any queueing; i.e. the curl pool will
@@ -218,7 +248,14 @@ RequestQueue <- R6::R6Class(
       }
 
       if (!is.null(self$progress)) {
-        cli::cli_progress_update(id = self$progress, set = self$n_complete)
+        extralist <- list(
+          queue_status=self$queue_status,
+          n_pending=self$n_pending,
+          n_retries=self$n_retries,
+          n_active=self$n_active,
+          n_complete=self$n_complete
+        )
+        self$progress$update(set = self$n_complete, extra=extralist)
       }
 
       if (self$queue_status == "waiting") {
