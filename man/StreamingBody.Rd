@@ -2,11 +2,11 @@
 % Please edit documentation in R/req-perform-connection.R
 \name{StreamingBody}
 \alias{StreamingBody}
-\title{StreamingBody class}
+\title{\code{StreamingBody} class}
 \description{
-StreamingBody class
+\code{StreamingBody} class
 
-StreamingBody class
+\code{StreamingBody} class
 }
 \details{
 This R6 class is used to represent the body of a streaming response.
@@ -47,7 +47,7 @@ Create a new object
 \if{html}{\out{<a id="method-StreamingBody-read"></a>}}
 \if{latex}{\out{\hypertarget{method-StreamingBody-read}{}}}
 \subsection{Method \code{read()}}{
-Read \code{n} bytes in a raw vector.
+Read \code{n} bytes into a raw vector.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{StreamingBody$read(n)}\if{html}{\out{</div>}}
 }
