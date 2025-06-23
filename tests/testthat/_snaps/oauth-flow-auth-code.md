@@ -6,26 +6,6 @@
       Error in `oauth_flow_auth_code()`:
       ! Can't use localhost `redirect_uri` in a hosted environment.
 
-# old args are deprecated
-
-    Code
-      normalize_redirect_uri("http://localhost", port = 1234)
-    Condition
-      Error:
-      ! The `port` argument of `oauth_flow_auth_code()` was deprecated in httr2 1.0.0 and is now defunct.
-      i Please use the `redirect_uri` argument instead.
-    Code
-      normalize_redirect_uri("http://x.com", host_name = "y.com")
-    Condition
-      Error:
-      ! The `host_name` argument of `oauth_flow_auth_code()` was deprecated in httr2 1.0.0 and is now defunct.
-      i Please use the `redirect_uri` argument instead.
-    Code
-      normalize_redirect_uri("http://x.com", host_ip = "y.com")
-    Condition
-      Error:
-      ! The `host_ip` argument of `oauth_flow_auth_code()` was deprecated in httr2 1.0.0 and is now defunct.
-
 # forwards oauth error
 
     Code
