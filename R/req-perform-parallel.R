@@ -81,6 +81,7 @@ req_perform_parallel <- function(
     mock = mock,
     frame = environment()
   )
+  queue$progress$update(set = 0)
 
   tryCatch(
     queue$process(),
@@ -96,6 +97,7 @@ req_perform_parallel <- function(
       )
     }
   )
+  queue$progress$done()
 
   if (on_error == "stop") {
     is_error <- map_lgl(queue$resps, is_error)
