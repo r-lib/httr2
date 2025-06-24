@@ -266,11 +266,11 @@ req_body_apply <- function(req) {
   req <- switch(
     req_get_body_type(req),
     empty = req,
-    raw = req_body_apply_raw(req, req$body$data),
-    string = req_body_apply_string(req, req$body$data),
-    file = req_body_apply_file(req, req$body$data),
+    raw = ,
+    string = req_body_apply_data(req, req$body$data),
+    file = req_body_apply_stream(req, req$body$data),
     json = ,
-    form = req_body_apply_string(req, req_body_render(req)),
+    form = req_body_apply_data(req, req_body_render(req)),
     multipart = req_body_apply_multipart(req, req$body$data),
   )
 
@@ -282,13 +282,12 @@ req_body_apply <- function(req) {
   req
 }
 
+# Needed for JSON and form types since these have special representation
+# in httr2 but not curl.
 req_body_render <- function(req) {
   type <- req_get_body_type(req)
   switch(
     type,
-    empty = "",
-    raw = ,
-    string = req$body$data,
     form = url_query_build(unobfuscate(req$body$data)),
     json = unclass(exec(
       jsonlite::toJSON,
@@ -299,15 +298,13 @@ req_body_render <- function(req) {
   )
 }
 
-
-req_body_apply_raw <- function(req, data) {
+req_body_apply_data <- function(req, data) {
+  if (is_string(data)) {
+    data <- charToRaw(enc2utf8(data))
+  }
   req_options(req, post = TRUE, postfieldsize = length(data), postfields = data)
 }
-req_body_apply_string <- function(req, data) {
-  req_body_apply_raw(req, charToRaw(enc2utf8(data)))
-}
-
-req_body_apply_file <- function(req, data) {
+req_body_apply_stream <- function(req, data) {
   size <- file.info(data)$size
   # Only open connection if needed
   delayedAssign("con", file(data, "rb"))

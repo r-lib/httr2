@@ -71,7 +71,19 @@ auth_aws_sign <- function(
 ) {
   current_time <- Sys.time()
 
-  body_sha256 <- openssl::sha256(req_body_render(req))
+  # Assumes that the body is JSON
+  type <- req_get_body_type(req)
+  body <- switch(
+    type,
+    empty = "",
+    json = req_body_render(req),
+    form = req_body_render(req),
+    cli::cli_abort(
+      "Unsupported body type: type",
+      call = quote(req_auth_aws_v4())
+    )
+  )
+  body_sha256 <- openssl::sha256(body)
 
   # We begin by adding some necessary headers that must be added before
   # canoncalization even thought they aren't documented until later
