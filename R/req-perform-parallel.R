@@ -81,7 +81,6 @@ req_perform_parallel <- function(
     mock = mock,
     frame = environment()
   )
-  queue$progress$update(set = 0)
 
   tryCatch(
     queue$process(),
