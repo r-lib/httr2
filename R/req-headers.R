@@ -95,3 +95,37 @@ check_header_values <- function(..., error_call = caller_env()) {
 
   invisible()
 }
+
+#' Retrieve the headers that a request will send
+#'
+#' This reveals the custom headers set on this request, not all the headers
+#' that curl will send. If you need those, use [req_dry_run()].
+#'
+#' @inheritParams req_perform
+#' @param redacted What to do with redacted headers?
+#'   * `"drop"` (the default) drops them.
+#'   * `"redact"` replaces them with `<REDACTED>`.
+#'   * `"reveal"` leaves them in place.
+#' @keywords internal
+#' @returns A named character vector.
+#' @export
+#' @examples
+#' req <- request("http://example.com")
+#' req <- req_headers(req, a = 1L, b = 2L, .redact = "a")
+#'
+#' req_get_headers(req, "drop")
+#' req_get_headers(req, "redact")
+#' req_get_headers(req, "reveal")
+req_get_headers <- function(req, redacted = c("drop", "redact", "reveal")) {
+  check_request(req)
+  redacted <- arg_match(redacted)
+
+  headers <- req$headers
+  if (redacted == "drop") {
+    headers <- headers[!is_redacted(headers)]
+  } else if (redacted == "redact") {
+    headers[is_redacted(headers)] <- "<REDACTED>"
+  }
+  headers <- headers_flatten(headers, redact = FALSE)
+  unlist(headers, recursive = FALSE)
+}

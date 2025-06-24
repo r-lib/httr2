@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-body.R
 \name{req_get_body}
 \alias{req_get_body}
-\title{Retrieve the body that a request will use}
+\title{Retrieve the body that a request will send}
 \usage{
 req_get_body(req)
 }

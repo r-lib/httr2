@@ -219,7 +219,7 @@ req_body_info <- function(req) {
 }
 
 
-#' Retrieve the body that a request will use
+#' Retrieve the body that a request will send
 #'
 #' Mimics the algorithm that curl uses to determine the body.
 #'

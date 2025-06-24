@@ -46,6 +46,17 @@ test_that("replacing headers is case-insensitive", {
   expect_equal(req$headers, new_headers(list(a = 2)))
 })
 
+# accessor ----------------------------------------------------------------
+
+test_that("can control redaction", {
+  req <- request("http://example.com")
+  req <- req_headers(req, a = 1L, b = 2L, .redact = "a")
+
+  expect_equal(req_get_headers(req, "drop"), c(b = "2"))
+  expect_equal(req_get_headers(req, "redact"), c(a = "<REDACTED>", b = "2"))
+  expect_equal(req_get_headers(req, "reveal"), c(a = "1", b = "2"))
+})
+
 # redaction ---------------------------------------------------------------
 
 test_that("can control which headers to redact", {
