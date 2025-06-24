@@ -124,7 +124,7 @@ req_body_json <- function(
 #' @rdname req_body
 req_body_json_modify <- function(req, ...) {
   check_request(req)
-  if (!req_body_type(req) %in% c("empty", "json")) {
+  if (!req_get_body_type(req) %in% c("empty", "json")) {
     cli::cli_abort("Can only be used after {.fn req_body_json}.")
   }
 
@@ -180,6 +180,7 @@ req_body <- function(
   params = list(),
   error_call = parent.frame()
 ) {
+  # If this changes, also update docs in req_get_body_type()
   arg_match(type, c("raw", "string", "file", "json", "form", "multipart"))
 
   if (!is.null(req$body) && req$body$type != type) {
@@ -201,13 +202,9 @@ req_body <- function(
   req
 }
 
-req_body_type <- function(req) {
-  req$body$type %||% "empty"
-}
-
 req_body_info <- function(req) {
   switch(
-    req_body_type(req),
+    req_get_body_type(req),
     empty = "empty",
     raw = glue("a {length(req$body$data)} byte raw vector"),
     string = "a string",
@@ -221,51 +218,59 @@ req_body_info <- function(req) {
 
 #' Retrieve the body that a request will send
 #'
-#' Mimics the algorithm that curl uses to determine the body.
+#' @description
+#' This pair of functions gives you sufficient information to capture a
+#' request body, and if necessary, later recreate it. There are seven
+#' possible body types:
+#'
+#' * empty: no body.
+#' * raw: created by [req_body_raw()] with a raw vector.
+#' * string: created by [req_body_raw()] with a string.
+#' * file: created by [req_body_file()].
+#' * json: created by [req_body_json()]/[req_body_json_modify()].
+#' * form: created by [req_body_form()].
+#' * multipart: created by [req_body_multipart()].
 #'
 #' @inheritParams req_perform
 #' @keywords internal
 #' @export
 #' @examples
 #' req <- request(example_url())
-#' req |> req_body_raw("abc") |> req_get_body()
-#' req |> req_body_file(system.file("DESCRIPTION")) |> req_get_body()
-#' req |> req_body_json(list(x = 1, y = 2)) |> req_get_body()
-#' req |> req_body_form(x = 1, y = 2) |> req_get_body()
-#' req |> req_body_multipart(x = "x", y = "y") |> req_get_body() |> cat()
-req_get_body <- function(req) {
-  switch(
-    req_body_type(req),
-    empty = NULL,
-    raw = req$body$data,
-    string = req$body$data,
-    file = readBin(req$body$data, "raw", n = file.size(req$body$data)),
-    json = unclass(exec(
-      jsonlite::toJSON,
-      unobfuscate(req$body$data),
-      !!!req$body$params
-    )),
-    form = url_query_build(unobfuscate(req$body$data)),
-    multipart = {
-      # This is a bit clumsy because it requires a real request, which is
-      # currently a bit slow and requires httpuv. But better than nothing.
-      # Details at https://github.com/jeroen/curl/issues/388
-      handle <- req_handle(req_body_apply(req))
-      echo <- curl::curl_echo(handle, progress = FALSE)
-      rawToChar(echo$body)
-    }
-  )
+#' req |> req_body_raw("abc") |> req_get_body_type()
+#' req |> req_body_file(system.file("DESCRIPTION")) |> req_get_body_type()
+#' req |> req_body_json(list(x = 1, y = 2)) |> req_get_body_type()
+#' req |> req_body_form(x = 1, y = 2) |> req_get_body_type()
+#' req |> req_body_multipart(x = "x", y = "y") |> req_get_body_type()
+req_get_body_type <- function(req) {
+  check_request(req)
+  req$body$type %||% "empty"
+}
+
+#' @export
+#' @rdname req_get_body_type
+#' @param obfuscated Form and JSON bodies can contain [obfuscated] values.
+#'   This argument control what happens to them: should they be removed,
+#'   redacted, or revealed.
+req_get_body <- function(req, obfuscated = c("remove", "redact", "reveal")) {
+  check_request(req)
+  obfuscated <- arg_match(obfuscated)
+
+  data <- req$body$data
+  if (req_get_body_type(req) %in% c("json", "form")) {
+    data <- unobfuscate(data, obfuscated)
+  }
+  data
 }
 
 req_body_apply <- function(req) {
   req <- switch(
-    req_body_type(req),
+    req_get_body_type(req),
     empty = req,
     raw = req_body_apply_raw(req, req$body$data),
     string = req_body_apply_string(req, req$body$data),
-    file = req_body_apply_connection(req, req$body$data),
-    json = req_body_apply_string(req, req_get_body(req)),
-    form = req_body_apply_string(req, req_get_body(req)),
+    file = req_body_apply_file(req, req$body$data),
+    json = ,
+    form = req_body_apply_string(req, req_body_render(req)),
     multipart = req_body_apply_multipart(req, req$body$data),
   )
 
@@ -276,13 +281,33 @@ req_body_apply <- function(req) {
 
   req
 }
+
+req_body_render <- function(req) {
+  type <- req_get_body_type(req)
+  switch(
+    type,
+    empty = "",
+    raw = ,
+    string = req$body$data,
+    form = url_query_build(unobfuscate(req$body$data)),
+    json = unclass(exec(
+      jsonlite::toJSON,
+      unobfuscate(req$body$data),
+      !!!req$body$params
+    )),
+    cli::cli_abort("Unsupported type {type}", .internal = TRUE)
+  )
+}
+
+
 req_body_apply_raw <- function(req, data) {
   req_options(req, post = TRUE, postfieldsize = length(data), postfields = data)
 }
 req_body_apply_string <- function(req, data) {
   req_body_apply_raw(req, charToRaw(enc2utf8(data)))
 }
-req_body_apply_connection <- function(req, data) {
+
+req_body_apply_file <- function(req, data) {
   size <- file.info(data)$size
   # Only open connection if needed
   delayedAssign("con", file(data, "rb"))

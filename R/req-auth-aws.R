@@ -71,7 +71,7 @@ auth_aws_sign <- function(
 ) {
   current_time <- Sys.time()
 
-  body_sha256 <- openssl::sha256(req_get_body(req))
+  body_sha256 <- openssl::sha256(req_body_render(req))
 
   # We begin by adding some necessary headers that must be added before
   # canoncalization even thought they aren't documented until later
