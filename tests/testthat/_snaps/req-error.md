@@ -14,7 +14,12 @@
     Condition
       Error in `req_perform()`:
       ! HTTP 200 OK.
-      i Ad aliquip et occaecat consequat eiusmod enim Lorem incididunt laboris deserunt. Consectetur magna ea ad quis dolore. Deserunt elit elit dolore magna fugiat ipsum id eu nostrud voluptate Lorem ad id anim. Cupidatat nulla ipsum irure nisi sunt ipsum commodo eu sint eiusmod consectetur.
+      i Ad aliquip et occaecat consequat eiusmod enim Lorem
+        incididunt laboris deserunt. Consectetur magna ea ad quis
+        dolore. Deserunt elit elit dolore magna fugiat ipsum id
+        eu nostrud voluptate Lorem ad id anim. Cupidatat nulla
+        ipsum irure nisi sunt ipsum commodo eu sint eiusmod
+        consectetur.
 
 # failing callback still generates useful body
 

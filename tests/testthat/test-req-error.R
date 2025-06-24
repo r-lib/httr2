@@ -19,7 +19,7 @@ test_that("can customise error info", {
 })
 
 test_that("long custom body is wrapped", {
-  # TODO: figure out why this text isn't wrapped
+  withr::local_options(cli.condition_width = 60)
 
   body <- paste0(
     "Ad aliquip et occaecat consequat eiusmod enim Lorem incididunt laboris ",
