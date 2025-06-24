@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_parallel()` handles `progress` argument consistently with other functions (#726).
 * `req_error()` errors with long bodies are now correctly wrapped (#727).
 * `req_perform_stream()` has been soft deprecated.
 * Deprecated functions `mutli_req_perform()`, `req_stream()`, `with_mock()` and `local_mock()` hav been removed. Deprecated arguments `req_perform_parallel(pool)` and `req_oauth_auth_code(host_name, host_ip, port)`/ `oauth_flow_auth_code(host_name, host_ip, port)` have been removed.

@@ -79,7 +79,7 @@ req_perform_parallel <- function(
     on_error = on_error,
     progress = progress,
     mock = mock,
-    error_call = environment()
+    frame = environment()
   )
 
   tryCatch(
@@ -96,6 +96,7 @@ req_perform_parallel <- function(
       )
     }
   )
+  queue$progress$done()
 
   if (on_error == "stop") {
     is_error <- map_lgl(queue$resps, is_error)
@@ -146,21 +147,20 @@ RequestQueue <- R6::R6Class(
       on_error = "stop",
       progress = FALSE,
       mock = NULL,
-      error_call = caller_env()
+      frame = caller_env()
     ) {
       n <- length(reqs)
 
-      if (isTRUE(progress)) {
-        self$progress <- cli::cli_progress_bar(
-          total = n,
-          format = paste0(
-            "[{self$queue_status}] ",
-            "({self$n_pending} + {self$n_retries}) -> {self$n_active} -> {self$n_complete} | ",
-            "{cli::pb_bar} {cli::pb_percent}"
-          ),
-          .envir = error_call
-        )
-      }
+      self$progress <- create_progress_bar(
+        progress,
+        total = n,
+        format = paste0(
+          "[{self$queue_status}] ",
+          "({self$n_pending} + {self$n_retries}) -> {self$n_active} -> {self$n_complete} | ",
+          "{cli::pb_bar} {cli::pb_percent}"
+        ),
+        frame = frame
+      )
 
       # goal is for pool to not do any queueing; i.e. the curl pool will
       # only ever contain requests that we actually want to process. Any
@@ -188,7 +188,7 @@ RequestQueue <- R6::R6Class(
           on_failure = function(error) self$done_failure(i, error),
           on_error = function(error) self$done_error(i, error),
           mock = mock,
-          error_call = error_call
+          error_call = frame
         )
       })
       self$resps <- vector("list", n)
@@ -215,9 +215,7 @@ RequestQueue <- R6::R6Class(
         return(FALSE)
       }
 
-      if (!is.null(self$progress)) {
-        cli::cli_progress_update(id = self$progress, set = self$n_complete)
-      }
+      self$progress$update(set = self$n_complete)
 
       if (self$queue_status == "waiting") {
         request_deadline <- max(self$token_deadline, self$rate_limit_deadline)
