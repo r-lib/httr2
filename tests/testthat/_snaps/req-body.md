@@ -65,3 +65,18 @@
       2
       ---{id}
 
+# mutlipart data is unobufcated
+
+    Code
+      cat(req_get_body(req))
+    Output
+      ---{id}
+      Content-Disposition: form-data; name="x"
+      
+      x
+      ---{id}
+      Content-Disposition: form-data; name="y"
+      
+      y
+      ---{id}
+

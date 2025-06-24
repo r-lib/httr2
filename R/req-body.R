@@ -240,7 +240,11 @@ req_get_body <- function(req) {
     raw = req$body$data,
     string = req$body$data,
     file = readBin(req$body$data, "raw", n = file.size(req$body$data)),
-    json = unclass(exec(jsonlite::toJSON, req$body$data, !!!req$body$params)),
+    json = unclass(exec(
+      jsonlite::toJSON,
+      unobfuscate(req$body$data),
+      !!!req$body$params
+    )),
     form = url_query_build(unobfuscate(req$body$data)),
     multipart = {
       # This is a bit clumsy because it requires a real request, which is
