@@ -159,16 +159,17 @@ resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
   info <- error_body(req, resp, error_call)
 
   catch_cnd(abort(
-    c(message, resp_auth_message(resp), info),
+    c(message, resp_auth_message(resp), i = info),
     status = status,
     resp = resp,
+    request = req,
     class = c(
       glue("httr2_http_{status}"),
       "httr2_http",
       "httr2_error",
       "rlang_error"
     ),
-    request = req,
+    use_cli_format = TRUE,
     call = error_call
   ))
 }
