@@ -129,11 +129,7 @@ req_perform_iterative <- function(
     }
   }
 
-  progress <- create_progress_bar(
-    total = max_reqs,
-    name = "Iterating",
-    config = progress
-  )
+  progress <- create_progress_bar(progress, max_reqs)
 
   resps <- vector("list", length = if (is.finite(max_reqs)) max_reqs else 100)
   i <- 1L
