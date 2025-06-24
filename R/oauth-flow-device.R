@@ -10,6 +10,10 @@
 #' <https://httr2.r-lib.org/articles/oauth.html>.
 #'
 #' @export
+#' @param open_browser If `TRUE`, the device verification URL will be opened in
+#'   the user's browser. If not, the URL is instead printed onto the console and
+#'   the user must open it themselves. By default the browser is opened only when
+#'   running interactively.
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
 #' @returns `req_oauth_device()` returns a modified HTTP [request] that will
@@ -30,6 +34,7 @@ req_oauth_device <- function(
   client,
   auth_url,
   scope = NULL,
+  open_browser = NA,
   auth_params = list(),
   token_params = list(),
   cache_disk = FALSE,
@@ -42,6 +47,9 @@ req_oauth_device <- function(
     auth_params = auth_params,
     token_params = token_params
   )
+  if (!is.na(open_browser)) {
+    params$open_browser = open_browser
+  }
   cache <- cache_choose(client, cache_disk, cache_key)
   req_oauth(req, "oauth_flow_device", params, cache = cache)
 }
@@ -53,10 +61,11 @@ oauth_flow_device <- function(
   auth_url,
   pkce = FALSE,
   scope = NULL,
+  open_browser = is_interactive(),
   auth_params = list(),
   token_params = list()
 ) {
-  oauth_flow_check("device", client, interactive = is_interactive())
+  oauth_flow_check("device", client, interactive = open_browser)
 
   if (pkce) {
     code <- oauth_flow_auth_code_pkce()
@@ -77,7 +86,7 @@ oauth_flow_device <- function(
     request$verification_uri %||%
     request$verification_url
 
-  if (is_interactive()) {
+  if (open_browser) {
     cli::cli_alert(
       "Copy {.strong {request$user_code}} and paste when requested by the browser"
     )
