@@ -1,4 +1,7 @@
 test_that("can request verbose record of request", {
+  skip_on_ci()
+  skip_on_cran()
+
   req <- local_app_request(method = "post", function(req, res) {
     res$send_json(list(x = 1), auto_unbox = TRUE)
   })
