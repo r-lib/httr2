@@ -1,5 +1,8 @@
 # httr2 (development version)
 
+* `req_perform_stream()` has been soft deprecated.
+* Deprecated functions `mutli_req_perform()`, `req_stream()`, `with_mock()` and `local_mock()` hav been removed. Deprecated arguments `req_perform_parallel(pool)` and `req_oauth_auth_code(host_name, host_ip, port)`/ `oauth_flow_auth_code(host_name, host_ip, port)` have been removed.
+* `req_body_json()` and `req_body_form()` correctly unobfuscated inputs, as documented (#754).
 * `req_perform_iterative()`, `req_perform_sequential()`, `req_perform_parallel()`, and `req_perform_promise()` now support mocking (#651).
 * `new_response()` is now exported (#751).
 * URL construction is now powered by `curl::curl_modify_url()`, and hence now (correctly) escapes the `path` component (#732). This means that `req_url_path()` now can only affect the path component of the URL, not the query params or fragment.

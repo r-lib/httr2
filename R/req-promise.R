@@ -29,7 +29,7 @@
 #'
 #' @inheritParams req_perform
 #' @inheritParams req_perform_parallel
-#'
+#' @param pool A pool created by [curl::new_pool()].
 #' @return a [promises::promise()] object which resolves to a [response] if
 #' successful or rejects on the same errors thrown by [req_perform()].
 #' @export

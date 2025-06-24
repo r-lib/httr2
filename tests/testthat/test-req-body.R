@@ -158,6 +158,12 @@ test_that("can't modify non-json data", {
   expect_snapshot(req |> req_body_json_modify(a = 1), error = TRUE)
 })
 
+test_that("json is unobufcated", {
+  req <- request_test() |>
+    req_body_json(list(x = "x", y = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")))
+  expect_equal(req_get_body(req), '{"x":"x","y":"y"}')
+})
+
 # req_body_form() --------------------------------------------------------------
 
 test_that("can send named elements as form", {
@@ -183,6 +189,12 @@ test_that("can modify body data", {
 
   req3 <- req1 |> req_body_form(a = 3, a = 4)
   expect_equal(req3$body$data, list(a = I("3"), a = I("4")))
+})
+
+test_that("form data is unobufcated", {
+  req <- request_test() |>
+    req_body_form(x = "x", y = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))
+  expect_equal(req_get_body(req), 'x=x&y=y')
 })
 
 # req_body_multipart() ---------------------------------------------------------
@@ -228,4 +240,13 @@ test_that("no issues with partial name matching", {
     req_body_multipart(d = "some data")
 
   expect_named(req$body$data, "d")
+})
+
+test_that("mutlipart data is unobufcated", {
+  req <- request_test() |>
+    req_body_multipart(x = "x", y = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))
+  expect_snapshot(
+    cat(req_get_body(req)),
+    transform = function(x) gsub("--------.*", "---{id}", x)
+  )
 })

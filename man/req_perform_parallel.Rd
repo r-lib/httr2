@@ -7,7 +7,6 @@
 req_perform_parallel(
   reqs,
   paths = NULL,
-  pool = deprecated(),
   on_error = c("stop", "return", "continue"),
   progress = TRUE,
   max_active = 10,
@@ -20,9 +19,6 @@ req_perform_parallel(
 \item{paths}{An optional character vector of paths, if you want to download
 the response bodies to disk. If supplied, must be the same length as
 \code{reqs}.}
-
-\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
-to control the maximum number of concurrent requests, set \code{max_active}.}
 
 \item{on_error}{What should happen if one of the requests fails?
 \itemize{
@@ -42,8 +38,8 @@ time.}
 
 \item{mock}{A mocking function. If supplied, this function is called
 with the request. It should return either \code{NULL} (if it doesn't want to
-handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
-\code{local_mock()} for more details.}
+handle the request) or a \link{response} (if it does). See
+\code{\link[=with_mocked_responses]{with_mocked_responses()}}/\code{local_mocked_responses()} for more details.}
 }
 \value{
 A list, the same length as \code{reqs}, containing \link{response}s and possibly

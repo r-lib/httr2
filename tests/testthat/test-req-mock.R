@@ -10,13 +10,6 @@ test_that("can override requests with local_ or with_", {
   expect_equal(req_perform(req), resp)
 })
 
-test_that("local_mock and with_mock are deprecated", {
-  expect_snapshot(error = TRUE, {
-    local_mock(\(req) response(404))
-    . <- with_mock(NULL, \(req) response(404))
-  })
-})
-
 test_that("mocked_response_sequence returns responses then errors", {
   local_mocked_responses(list(
     response(200),

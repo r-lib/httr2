@@ -1,11 +1,11 @@
-# req_stream() is deprecated
+# req_perform_stream() has been soft deprecated
 
     Code
-      resp <- req_stream(req, identity, buffer_kb = 32)
+      . <- req_perform_stream(req, function(x) NULL)
     Condition
       Warning:
-      `req_stream()` was deprecated in httr2 1.0.0.
-      i Please use `req_perform_stream()` instead.
+      `req_perform_stream()` was deprecated in httr2 1.2.0.
+      i Please use `req_perform_connection()` instead.
 
 # req_perform_stream checks its inputs
 

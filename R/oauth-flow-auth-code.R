@@ -51,8 +51,6 @@
 #'   [oauth_flow_auth_code_url()].
 #' @param token_params List containing additional parameters passed to the
 #'   `token_url`.
-#' @param host_name,host_ip,port `r lifecycle::badge("deprecated")`
-#'   Now use `redirect_uri` instead.
 #' @param redirect_uri URL to redirect back to after authorization is complete.
 #'   Often this must be registered with the API in advance.
 #'
@@ -107,17 +105,9 @@ req_oauth_auth_code <- function(
   token_params = list(),
   redirect_uri = oauth_redirect_uri(),
   cache_disk = FALSE,
-  cache_key = NULL,
-  host_name = deprecated(),
-  host_ip = deprecated(),
-  port = deprecated()
+  cache_key = NULL
 ) {
-  redirect <- normalize_redirect_uri(
-    redirect_uri = redirect_uri,
-    host_name = host_name,
-    host_ip = host_ip,
-    port = port
-  )
+  redirect <- normalize_redirect_uri(redirect_uri = redirect_uri)
 
   params <- list(
     client = client,
@@ -142,19 +132,11 @@ oauth_flow_auth_code <- function(
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
-  redirect_uri = oauth_redirect_uri(),
-  host_name = deprecated(),
-  host_ip = deprecated(),
-  port = deprecated()
+  redirect_uri = oauth_redirect_uri()
 ) {
   oauth_flow_check("authorization code", client, interactive = TRUE)
 
-  redirect <- normalize_redirect_uri(
-    redirect_uri = redirect_uri,
-    host_name = host_name,
-    host_ip = host_ip,
-    port = port
-  )
+  redirect <- normalize_redirect_uri(redirect_uri = redirect_uri)
 
   if (pkce) {
     code <- oauth_flow_auth_code_pkce()
@@ -206,37 +188,8 @@ oauth_flow_auth_code <- function(
   )
 }
 
-normalize_redirect_uri <- function(
-  redirect_uri,
-  host_name = deprecated(),
-  host_ip = deprecated(),
-  port = deprecated(),
-  error_call = caller_env()
-) {
+normalize_redirect_uri <- function(redirect_uri, error_call = caller_env()) {
   old <- parsed <- url_parse(redirect_uri)
-
-  if (lifecycle::is_present(host_name)) {
-    lifecycle::deprecate_warn(
-      when = "1.0.0",
-      what = "oauth_flow_auth_code(host_name)",
-      with = "oauth_flow_auth_code(redirect_uri)"
-    )
-    parsed$hostname <- host_name
-  }
-
-  if (lifecycle::is_present(port)) {
-    lifecycle::deprecate_warn(
-      when = "1.0.0",
-      what = "oauth_flow_auth_code(port)",
-      with = "oauth_flow_auth_code(redirect_uri)"
-    )
-    parsed$port <- port
-  }
-
-  if (lifecycle::is_present(host_ip)) {
-    lifecycle::deprecate_warn("1.0.0", "oauth_flow_auth_code(host_ip)")
-  }
-
   localhost <- parsed$hostname %in% c("localhost", "127.0.0.1")
 
   if (localhost) {
