@@ -160,5 +160,5 @@ resp_auth_message <- function(resp) {
 
   non_error <- www_auth[!grepl("^error|^scheme$", names(www_auth))]
   msg <- c(msg, paste0(names(non_error), ": ", non_error))
-  msg
+  set_names(msg, "*")
 }
