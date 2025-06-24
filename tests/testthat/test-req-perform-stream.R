@@ -1,13 +1,13 @@
-test_that("req_stream() is deprecated", {
-  req <- request(example_url("/stream-bytes/100"))
-  expect_snapshot(
-    resp <- req_stream(req, identity, buffer_kb = 32)
-  )
+test_that("req_perform_stream() has been soft deprecated", {
+  req <- request_test("/stream-bytes/1024")
+  expect_snapshot(. <- req_perform_stream(req, \(x) NULL))
 })
 
 # req_perform_stream() --------------------------------------------------------
 
 test_that("returns stream body; sets last request & response", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   req <- request_test("/stream-bytes/1024")
   resp <- req_perform_stream(req, function(x) NULL)
   expect_s3_class(resp, "httr2_response")
@@ -18,6 +18,8 @@ test_that("returns stream body; sets last request & response", {
 })
 
 test_that("HTTP errors become R errors", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   req <- request_test("/status/404")
   expect_error(
     req_perform_stream(req, function(x) TRUE),
@@ -30,6 +32,8 @@ test_that("HTTP errors become R errors", {
 })
 
 test_that("can override error handling", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   req <- request_test("/base64/:value", value = "YWJj") |>
     req_error(is_error = function(resp) TRUE)
 
@@ -46,6 +50,8 @@ test_that("can override error handling", {
 })
 
 test_that("can buffer to lines", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   lines <- character()
   accumulate_lines <- function(x) {
     lines <<- c(lines, strsplit(rawToChar(x), "\n", fixed = TRUE)[[1]])
@@ -62,6 +68,8 @@ test_that("can buffer to lines", {
 })
 
 test_that("can supply custom rounding", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   out <- list()
   accumulate <- function(x) {
     out <<- c(out, list(x))
@@ -78,6 +86,8 @@ test_that("can supply custom rounding", {
 })
 
 test_that("eventually terminates even if never rounded", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   out <- raw()
   accumulate <- function(x) {
     out <<- c(out, x)
@@ -93,7 +103,10 @@ test_that("eventually terminates even if never rounded", {
   expect_equal(length(out), 1024)
 })
 
+
 test_that("req_perform_stream checks its inputs", {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   req <- request_test("/stream-bytes/1024")
   callback <- function(x) NULL
 

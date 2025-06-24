@@ -28,8 +28,6 @@
 #' the circuit breaker is never triggered.
 #'
 #' @inherit req_perform_sequential params return
-#' @param pool `r lifecycle::badge("deprecated")`. No longer supported;
-#'   to control the maximum number of concurrent requests, set `max_active`.
 #' @param max_active Maximum number of concurrent requests.
 #' @export
 #' @examples
@@ -64,19 +62,12 @@
 req_perform_parallel <- function(
   reqs,
   paths = NULL,
-  pool = deprecated(),
   on_error = c("stop", "return", "continue"),
   progress = TRUE,
   max_active = 10,
   mock = getOption("httr2_mock", NULL)
 ) {
   check_paths(paths, reqs)
-  if (lifecycle::is_present(pool)) {
-    lifecycle::deprecate_warn(
-      when = "1.1.0",
-      what = "req_perform_parallel(pool)"
-    )
-  }
   on_error <- arg_match(on_error)
   check_number_whole(max_active, min = 1)
   mock <- as_mock_function(mock, error_call)
@@ -386,42 +377,4 @@ pool_wait <- function(pool, poll, timeout) {
   signal("", class = "httr2_pool_wait", timeout = timeout)
   done <- curl::multi_run(pool = pool, poll = poll, timeout = timeout)
   (done$success + done$error) > 0 || done$pending == 0
-}
-
-
-#' Perform a list of requests in parallel
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' Please use [req_perform_parallel()] instead, and note:
-#'
-#' * `cancel_on_error = FALSE` is now `on_error = "continue"`
-#' * `cancel_on_error = TRUE` is now `on_error = "return"`
-#'
-#' @export
-#' @param cancel_on_error Should all pending requests be cancelled when you
-#'   hit an error? Set this to `TRUE` to stop all requests as soon as you
-#'   hit an error. Responses that were never performed be `NULL` in the result.
-#' @inheritParams req_perform_parallel
-#' @keywords internal
-multi_req_perform <- function(
-  reqs,
-  paths = NULL,
-  pool = deprecated(),
-  cancel_on_error = FALSE
-) {
-  lifecycle::deprecate_warn(
-    "1.0.0",
-    "multi_req_perform()",
-    "req_perform_parallel()"
-  )
-  check_bool(cancel_on_error)
-
-  req_perform_parallel(
-    reqs = reqs,
-    paths = paths,
-    pool = pool,
-    on_error = if (cancel_on_error) "continue" else "return"
-  )
 }

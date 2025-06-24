@@ -34,8 +34,8 @@
 #'   for large responses since it avoids storing the response in memory.
 #' @param mock A mocking function. If supplied, this function is called
 #'   with the request. It should return either `NULL` (if it doesn't want to
-#'   handle the request) or a [response] (if it does). See [with_mock()]/
-#'   `local_mock()` for more details.
+#'   handle the request) or a [response] (if it does). See
+#'   [with_mocked_responses()]/`local_mocked_responses()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
 #'   around [req_verbose()] that uses an integer to control verbosity:
 #'
