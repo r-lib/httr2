@@ -134,8 +134,7 @@ for large responses since it avoids storing the response in memory.</p></dd>
 
 
 <dt id="arg-pool">pool<a class="anchor" aria-label="anchor" href="#arg-pool"></a></dt>
-<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a>. No longer supported;
-to control the maximum number of concurrent requests, set <code>max_active</code>.</p></dd>
+<dd><p>A pool created by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code>.</p></dd>
 
 
 <dt id="arg-verbosity">verbosity<a class="anchor" aria-label="anchor" href="#arg-verbosity"></a></dt>
@@ -151,8 +150,8 @@ you can't affect directly.</p></dd>
 <dt id="arg-mock">mock<a class="anchor" aria-label="anchor" href="#arg-mock"></a></dt>
 <dd><p>A mocking function. If supplied, this function is called
 with the request. It should return either <code>NULL</code> (if it doesn't want to
-handle the request) or a <a href="response.html">response</a> (if it does). See <code><a href="with_mocked_responses.html">with_mock()</a></code>/
-<code><a href="with_mocked_responses.html">local_mock()</a></code> for more details.</p></dd>
+handle the request) or a <a href="response.html">response</a> (if it does). See
+<code><a href="with_mocked_responses.html">with_mocked_responses()</a></code>/<code><a href="with_mocked_responses.html">local_mocked_responses()</a></code> for more details.</p></dd>
 
 </dl></div>
     <div class="section level2">
