@@ -85,7 +85,7 @@ auth_aws_sign <- function(
   signature <- aws_v4_signature(
     method = req_get_method(req),
     url = url_parse(req$url),
-    headers = req$headers,
+    headers = as.list(req_get_headers(req, "reveal")),
     body_sha256 = body_sha256,
     current_time = current_time,
     aws_service = aws_service,
