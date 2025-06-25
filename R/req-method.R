@@ -33,13 +33,13 @@ req_method_apply <- function(req) {
   )
 }
 
-#' Retrieve the method that a request will use
+#' Get request method
 #'
-#' Mimics the algorithm that curl uses to determine the method.
+#' Defaults to `GET`, unless the request has a body, in which case it uses
+#' `POST`. Either way the method can be overridden with [req_method()].
 #'
 #' @inheritParams req_perform
 #' @export
-#' @keywords internal
 #' @examples
 #' req <- request(example_url())
 #' req_get_method(req)

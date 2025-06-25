@@ -95,6 +95,10 @@ reference:
       - response
       - new_response
 
+  - title: Introspection
+    contents:
+      - starts_with("req_get_")
+
 articles:
   - title: Using httr2
     navbar: ~

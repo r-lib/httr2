@@ -3,7 +3,7 @@
 \name{req_get_body_type}
 \alias{req_get_body_type}
 \alias{req_get_body}
-\title{Retrieve the body that a request will send}
+\title{Get request body}
 \usage{
 req_get_body_type(req)
 
@@ -17,9 +17,9 @@ This argument control what happens to them: should they be removed,
 redacted, or revealed.}
 }
 \description{
-This pair of functions gives you sufficient information to capture a
-request body, and if necessary, later recreate it. There are seven
-possible body types:
+This pair of functions gives you sufficient information to capture the
+body of a request, and recreate, if needed. httr2 currently supports
+seven possible body types:
 \itemize{
 \item empty: no body.
 \item raw: created by \code{\link[=req_body_raw]{req_body_raw()}} with a raw vector.
@@ -38,4 +38,3 @@ req |> req_body_json(list(x = 1, y = 2)) |> req_get_body_type()
 req |> req_body_form(x = 1, y = 2) |> req_get_body_type()
 req |> req_body_multipart(x = "x", y = "y") |> req_get_body_type()
 }
-\keyword{internal}

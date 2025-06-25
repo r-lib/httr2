@@ -216,12 +216,12 @@ req_body_info <- function(req) {
 }
 
 
-#' Retrieve the body that a request will send
+#' Get request body
 #'
 #' @description
-#' This pair of functions gives you sufficient information to capture a
-#' request body, and if necessary, later recreate it. There are seven
-#' possible body types:
+#' This pair of functions gives you sufficient information to capture the
+#' body of a request, and recreate, if needed. httr2 currently supports
+#' seven possible body types:
 #'
 #' * empty: no body.
 #' * raw: created by [req_body_raw()] with a raw vector.
@@ -232,7 +232,6 @@ req_body_info <- function(req) {
 #' * multipart: created by [req_body_multipart()].
 #'
 #' @inheritParams req_perform
-#' @keywords internal
 #' @export
 #' @examples
 #' req <- request(example_url())
@@ -248,6 +247,11 @@ req_get_body_type <- function(req) {
 
 #' @export
 #' @rdname req_get_body_type
+#' @param obfuscated What to do with obfuscated values that can be present in
+#'   JSON, form, and multipart bodies?
+#'   * `"remove"` (the default) replaces them with `NULL`.
+#'   * `"redact"` replaces them with `<REDACTED>`.
+#'   * `"reveal"` leaves them in place.
 #' @param obfuscated Form and JSON bodies can contain [obfuscated] values.
 #'   This argument control what happens to them: should they be removed,
 #'   redacted, or revealed.
@@ -256,7 +260,7 @@ req_get_body <- function(req, obfuscated = c("remove", "redact", "reveal")) {
   obfuscated <- arg_match(obfuscated)
 
   data <- req$body$data
-  if (req_get_body_type(req) %in% c("json", "form")) {
+  if (req_get_body_type(req) %in% c("json", "form", "multipart")) {
     data <- unobfuscate(data, obfuscated)
   }
   data
