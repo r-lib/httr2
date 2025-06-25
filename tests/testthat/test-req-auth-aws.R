@@ -16,6 +16,17 @@ test_that("can correctly sign a request with dummy credentials", {
   expect_no_error(req_auth_clear_cache(req))
 })
 
+test_that("clear error if body type is unsupported", {
+  req <- request("https://sts.amazonaws.com/")
+  req <- req_auth_aws_v4(
+    req,
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+  req <- req_body_multipart(req, x = "y")
+  expect_snapshot(req_perform(req), error = TRUE)
+})
+
 test_that("can correctly sign a request with live credentials", {
   skip_if_not(has_paws_credentials())
   creds <- paws.common::locate_credentials()

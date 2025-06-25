@@ -15,10 +15,7 @@ req_oauth_auth_code(
   token_params = list(),
   redirect_uri = oauth_redirect_uri(),
   cache_disk = FALSE,
-  cache_key = NULL,
-  host_name = deprecated(),
-  host_ip = deprecated(),
-  port = deprecated()
+  cache_key = NULL
 )
 
 oauth_flow_auth_code(
@@ -28,10 +25,7 @@ oauth_flow_auth_code(
   pkce = TRUE,
   auth_params = list(),
   token_params = list(),
-  redirect_uri = oauth_redirect_uri(),
-  host_name = deprecated(),
-  host_ip = deprecated(),
-  port = deprecated()
+  redirect_uri = oauth_redirect_uri()
 )
 }
 \arguments{
@@ -86,9 +80,6 @@ Learn more in \url{https://httr2.r-lib.org/articles/oauth.html}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
-
-\item{host_name, host_ip, port}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-Now use \code{redirect_uri} instead.}
 }
 \value{
 \code{req_oauth_auth_code()} returns a modified HTTP \link{request} that will

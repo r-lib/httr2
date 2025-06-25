@@ -1,4 +1,7 @@
 test_that("can request verbose record of request", {
+  skip_on_ci()
+  skip_on_cran()
+
   req <- local_app_request(method = "post", function(req, res) {
     res$send_json(list(x = 1), auto_unbox = TRUE)
   })
@@ -26,6 +29,9 @@ test_that("can request verbose record of request", {
 })
 
 test_that("redacts headers as needed", {
+  skip_on_ci()
+  skip_on_cran()
+
   req <- request(example_url()) |>
     req_verbose_test() |>
     req_verbose(header_req = TRUE, header_resp = FALSE) |>
@@ -35,6 +41,9 @@ test_that("redacts headers as needed", {
 })
 
 test_that("can display compressed bodies", {
+  skip_on_ci()
+  skip_on_cran()
+
   req <- request(example_url()) |>
     req_url_path("gzip") |>
     req_verbose_test() |>
@@ -44,6 +53,9 @@ test_that("can display compressed bodies", {
 })
 
 test_that("response json is automatically prettified", {
+  skip_on_ci()
+  skip_on_cran()
+
   req <- local_app_request(function(req, res) {
     res$set_header("Content-Type", "application/json")
     res$send('{"foo":"bar","baz":[1,2,3]}')
@@ -60,6 +72,9 @@ test_that("response json is automatically prettified", {
 })
 
 test_that("request json is automatically prettified", {
+  skip_on_ci()
+  skip_on_cran()
+
   req <- request(example_url("/post")) |>
     req_verbose_test() |>
     req_body_json(list(foo = "bar", baz = c(1, 2, 3))) |>

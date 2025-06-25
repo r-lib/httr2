@@ -239,47 +239,49 @@ check_function2 <- function(
 # This is inspired by the C interface of `cli_progress_bar()` which has just
 # 2 arguments: `total` and `config`
 create_progress_bar <- function(
+  progress,
   total,
-  name,
-  config,
-  env = caller_env(),
-  config_arg = caller_arg(config),
-  error_call = caller_env()
+  name = "iterating",
+  format = NULL,
+  envir = caller_env(),
+  frame = caller_env()
 ) {
-  if (is_false(config)) {
+  if (is_false(progress)) {
     return(list(
       update = function(...) {},
       done = function() {}
     ))
   }
 
-  if (is.null(config) || is_bool(config)) {
+  if (is.null(progress) || isTRUE(progress)) {
     args <- list()
-  } else if (is_scalar_character(config)) {
-    args <- list(name = config)
-  } else if (is.list(config)) {
-    args <- config
+    args$name <- name
+    args$format <- format
+  } else if (is_scalar_character(progress)) {
+    args <- list(name = progress)
+  } else if (is.list(progress)) {
+    args <- progress
+    args$name <- args$name %||% name
+    args$format <- args$format %||% format
   } else {
     stop_input_type(
-      config,
+      progress,
       what = c("a bool", "a string", "a list"),
-      arg = config_arg,
-      call = error_call
+      call = frame
     )
   }
 
-  args$name <- args[["name"]] %||% name
-  # Can be removed if https://github.com/r-lib/cli/issues/630 is fixed
-  if (is.infinite(total)) {
-    total <- NA
-  }
   args$total <- total
-  args$.envir <- env
+  args$.envir <- envir
+  args$.auto_close <- FALSE
 
   id <- exec(cli::cli_progress_bar, !!!args)
+  withr::defer(cli::cli_progress_done(id = id), envir = frame)
 
   list(
-    update = function(...) cli::cli_progress_update(..., id = id),
+    update = function(...) {
+      cli::cli_progress_update(..., id = id, .envir = envir)
+    },
     done = function() cli::cli_progress_done(id = id)
   )
 }

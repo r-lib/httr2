@@ -38,8 +38,8 @@ far, as well as an error object for the failed request.
 
 \item{mock}{A mocking function. If supplied, this function is called
 with the request. It should return either \code{NULL} (if it doesn't want to
-handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
-\code{local_mock()} for more details.}
+handle the request) or a \link{response} (if it does). See
+\code{\link[=with_mocked_responses]{with_mocked_responses()}}/\code{local_mocked_responses()} for more details.}
 
 \item{progress}{Display a progress bar for the status of all requests? Use
 \code{TRUE} to turn on a basic progress bar, use a string to give it a name,

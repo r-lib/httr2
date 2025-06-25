@@ -18,8 +18,7 @@ req_perform_promise(
 \item{path}{Optionally, path to save body of the response. This is useful
 for large responses since it avoids storing the response in memory.}
 
-\item{pool}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}. No longer supported;
-to control the maximum number of concurrent requests, set \code{max_active}.}
+\item{pool}{A pool created by \code{\link[curl:multi]{curl::new_pool()}}.}
 
 \item{verbosity}{How much information to print? This is a wrapper
 around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control verbosity:
@@ -35,8 +34,8 @@ you can't affect directly.}
 
 \item{mock}{A mocking function. If supplied, this function is called
 with the request. It should return either \code{NULL} (if it doesn't want to
-handle the request) or a \link{response} (if it does). See \code{\link[=with_mock]{with_mock()}}/
-\code{local_mock()} for more details.}
+handle the request) or a \link{response} (if it does). See
+\code{\link[=with_mocked_responses]{with_mocked_responses()}}/\code{local_mocked_responses()} for more details.}
 }
 \value{
 a \code{\link[promises:promise]{promises::promise()}} object which resolves to a \link{response} if

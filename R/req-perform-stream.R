@@ -1,11 +1,9 @@
 #' Perform a request and handle data as it streams back
 #'
 #' @description
-#' `r lifecycle::badge("superseded")`
+#' `r lifecycle::badge("deprecated")`
 #'
-#' We now recommend [req_perform_connection()] since it has a considerably more
-#' flexible interface. Unless I hear compelling reasons otherwise, I'm likely
-#' to deprecate `req_perform_stream()` in a future release.
+#' Please use [req_perform_connection()] instead.
 #'
 #' After preparing a request, call `req_perform_stream()` to perform the request
 #' and handle the result with a streaming callback. This is useful for
@@ -30,6 +28,7 @@
 #'   will contain the HTTP response body if the request was unsuccessful.
 #' @export
 #' @examples
+#' # PREVIOSULY
 #' show_bytes <- function(x) {
 #'   cat("Got ", length(x), " bytes\n", sep = "")
 #'   TRUE
@@ -37,7 +36,16 @@
 #' resp <- request(example_url()) |>
 #'   req_url_path("/stream-bytes/100000") |>
 #'   req_perform_stream(show_bytes, buffer_kb = 32)
-#' resp
+#'
+#' # NOW
+#' resp <- request(example_url()) |>
+#'   req_url_path("/stream-bytes/100000") |>
+#'   req_perform_connection()
+#' while (!resp_stream_is_complete(resp)) {
+#'   x <-  resp_stream_raw(resp, kb = 32)
+#'   cat("Got ", length(x), " bytes\n", sep = "")
+#' }
+#' close(resp)
 req_perform_stream <- function(
   req,
   callback,
@@ -45,6 +53,14 @@ req_perform_stream <- function(
   buffer_kb = 64,
   round = c("byte", "line")
 ) {
+  # soft deprecated because quite a few packages use it, and it was our
+  # recommended approach for a while
+  lifecycle::deprecate_soft(
+    when = "1.2.0",
+    what = "req_perform_stream()",
+    with = "req_perform_connection()"
+  )
+
   check_request(req)
 
   check_function(callback)
@@ -109,22 +125,4 @@ as_round_function <- function(
       call = error_call
     )
   }
-}
-
-#' @export
-#' @rdname req_perform_stream
-#' @usage NULL
-req_stream <- function(req, callback, timeout_sec = Inf, buffer_kb = 64) {
-  lifecycle::deprecate_warn(
-    "1.0.0",
-    "req_stream()",
-    "req_perform_stream()"
-  )
-
-  req_perform_stream(
-    req = req,
-    callback = callback,
-    timeout_sec = timeout_sec,
-    buffer_kb = buffer_kb
-  )
 }

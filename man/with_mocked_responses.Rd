@@ -2,9 +2,7 @@
 % Please edit documentation in R/req-mock.R
 \name{with_mocked_responses}
 \alias{with_mocked_responses}
-\alias{with_mock}
 \alias{local_mocked_responses}
-\alias{local_mock}
 \title{Temporarily mock requests}
 \usage{
 with_mocked_responses(mock, code)

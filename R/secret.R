@@ -229,11 +229,20 @@ print.httr2_obfuscated <- function(x, ...) {
   invisible(x)
 }
 
-unobfuscate <- function(x) {
-  if (inherits(x, "httr2_obfuscated")) {
-    secret_decrypt(x, obfuscate_key())
+unobfuscate <- function(x, handle = c("reveal", "redact", "remove")) {
+  handle <- arg_match(handle)
+  unobfuscate_rec(x, handle = handle)
+}
+unobfuscate_rec <- function(x, handle = "reveal") {
+  if (is_obfuscated(x)) {
+    switch(
+      handle,
+      reveal = secret_decrypt(x, obfuscate_key()),
+      redact = "<REDACTED>",
+      remove = NULL
+    )
   } else if (is.list(x)) {
-    x[] <- lapply(x, unobfuscate)
+    x[] <- lapply(x, unobfuscate, handle = handle)
     x
   } else {
     x
@@ -241,6 +250,9 @@ unobfuscate <- function(x) {
 }
 attr(unobfuscate, "srcref") <- "function(x) {}"
 
+is_obfuscated <- function(x) {
+  inherits(x, "httr2_obfuscated")
+}
 
 # Helpers -----------------------------------------------------------------
 

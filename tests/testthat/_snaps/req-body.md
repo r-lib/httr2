@@ -50,18 +50,3 @@
       Error in `req_body_json_modify()`:
       ! Can only be used after `req_body_json()`.
 
-# can send named elements as multipart
-
-    Code
-      cat(req_get_body(req))
-    Output
-      ---{id}
-      Content-Disposition: form-data; name="a"
-      
-      1
-      ---{id}
-      Content-Disposition: form-data; name="b"
-      
-      2
-      ---{id}
-

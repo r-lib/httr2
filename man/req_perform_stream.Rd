@@ -2,7 +2,6 @@
 % Please edit documentation in R/req-perform-stream.R
 \name{req_perform_stream}
 \alias{req_perform_stream}
-\alias{req_stream}
 \title{Perform a request and handle data as it streams back}
 \usage{
 req_perform_stream(
@@ -35,11 +34,9 @@ successful (since the \code{callback} function will have handled it). The body
 will contain the HTTP response body if the request was unsuccessful.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-We now recommend \code{\link[=req_perform_connection]{req_perform_connection()}} since it has a considerably more
-flexible interface. Unless I hear compelling reasons otherwise, I'm likely
-to deprecate \code{req_perform_stream()} in a future release.
+Please use \code{\link[=req_perform_connection]{req_perform_connection()}} instead.
 
 After preparing a request, call \code{req_perform_stream()} to perform the request
 and handle the result with a streaming callback. This is useful for
@@ -50,6 +47,7 @@ to stream an error response, you can use \code{\link[=req_error]{req_error()}} t
 handling so that the body is streamed to you.
 }
 \examples{
+# PREVIOSULY
 show_bytes <- function(x) {
   cat("Got ", length(x), " bytes\n", sep = "")
   TRUE
@@ -57,5 +55,14 @@ show_bytes <- function(x) {
 resp <- request(example_url()) |>
   req_url_path("/stream-bytes/100000") |>
   req_perform_stream(show_bytes, buffer_kb = 32)
-resp
+
+# NOW
+resp <- request(example_url()) |>
+  req_url_path("/stream-bytes/100000") |>
+  req_perform_connection()
+while (!resp_stream_is_complete(resp)) {
+  x <-  resp_stream_raw(resp, kb = 32)
+  cat("Got ", length(x), " bytes\n", sep = "")
+}
+close(resp)
 }

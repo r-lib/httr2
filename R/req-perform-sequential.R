@@ -67,11 +67,7 @@ req_perform_sequential <- function(
   err_catch <- on_error != "stop"
   err_return <- on_error == "return"
 
-  progress <- create_progress_bar(
-    total = length(reqs),
-    name = "Iterating",
-    config = progress
-  )
+  progress <- create_progress_bar(progress, length(reqs))
 
   resps <- rep_along(reqs, list())
 

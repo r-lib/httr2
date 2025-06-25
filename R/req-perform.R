@@ -34,8 +34,8 @@
 #'   for large responses since it avoids storing the response in memory.
 #' @param mock A mocking function. If supplied, this function is called
 #'   with the request. It should return either `NULL` (if it doesn't want to
-#'   handle the request) or a [response] (if it does). See [with_mock()]/
-#'   `local_mock()` for more details.
+#'   handle the request) or a [response] (if it does). See
+#'   [with_mocked_responses()]/`local_mocked_responses()` for more details.
 #' @param verbosity How much information to print? This is a wrapper
 #'   around [req_verbose()] that uses an integer to control verbosity:
 #'
@@ -159,16 +159,17 @@ resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
   info <- error_body(req, resp, error_call)
 
   catch_cnd(abort(
-    c(message, resp_auth_message(resp), info),
+    c(message, resp_auth_message(resp), i = info),
     status = status,
     resp = resp,
+    request = req,
     class = c(
       glue("httr2_http_{status}"),
       "httr2_http",
       "httr2_error",
       "rlang_error"
     ),
-    request = req,
+    use_cli_format = TRUE,
     call = error_call
   ))
 }

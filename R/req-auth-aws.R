@@ -71,7 +71,18 @@ auth_aws_sign <- function(
 ) {
   current_time <- Sys.time()
 
-  body_sha256 <- openssl::sha256(req_get_body(req))
+  type <- req_get_body_type(req)
+  body <- switch(
+    type,
+    empty = "",
+    json = req_body_render(req),
+    form = req_body_render(req),
+    cli::cli_abort(
+      "Unsupported body type: {type}",
+      call = quote(req_auth_aws_v4())
+    )
+  )
+  body_sha256 <- openssl::sha256(body)
 
   # We begin by adding some necessary headers that must be added before
   # canoncalization even thought they aren't documented until later
@@ -85,7 +96,7 @@ auth_aws_sign <- function(
   signature <- aws_v4_signature(
     method = req_get_method(req),
     url = url_parse(req$url),
-    headers = req$headers,
+    headers = as.list(req_get_headers(req, "reveal")),
     body_sha256 = body_sha256,
     current_time = current_time,
     aws_service = aws_service,

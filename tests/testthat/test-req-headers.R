@@ -46,6 +46,17 @@ test_that("replacing headers is case-insensitive", {
   expect_equal(req$headers, new_headers(list(a = 2)))
 })
 
+# accessor ----------------------------------------------------------------
+
+test_that("can control redaction", {
+  req <- request("http://example.com")
+  req <- req_headers(req, a = 1L, b = 2L, .redact = "a")
+
+  expect_equal(req_get_headers(req, "drop"), list(b = "2"))
+  expect_equal(req_get_headers(req, "redact"), list(a = "<REDACTED>", b = "2"))
+  expect_equal(req_get_headers(req, "reveal"), list(a = "1", b = "2"))
+})
+
 # redaction ---------------------------------------------------------------
 
 test_that("can control which headers to redact", {
@@ -68,12 +79,12 @@ test_that("redaction preserved across calls", {
   req <- req_headers(req, a = 1L, .redact = "a")
   req <- req_headers(req, a = 2)
   expect_redacted(req, "a")
-  expect_equal(headers_flatten(req$headers, FALSE), list(a = 2))
+  expect_equal(headers_flatten(req$headers, FALSE), list(a = "2"))
 
   # and is reapplied regadless of case
   req <- req_headers(req, A = 3)
   expect_redacted(req, "A")
-  expect_equal(headers_flatten(req$headers, FALSE), list(A = 3))
+  expect_equal(headers_flatten(req$headers, FALSE), list(A = "3"))
 })
 
 test_that("req_headers_redacted redacts all headers", {
