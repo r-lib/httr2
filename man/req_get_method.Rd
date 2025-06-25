@@ -2,7 +2,7 @@
 % Please edit documentation in R/req-method.R
 \name{req_get_method}
 \alias{req_get_method}
-\title{Retrieve the method that a request will use}
+\title{Get request method}
 \usage{
 req_get_method(req)
 }
@@ -10,7 +10,8 @@ req_get_method(req)
 \item{req}{A httr2 \link{request} object.}
 }
 \description{
-Mimics the algorithm that curl uses to determine the method.
+Defaults to \code{GET}, unless the request has a body, in which case it uses
+\code{POST}. Either way the method can be overridden with \code{\link[=req_method]{req_method()}}.
 }
 \examples{
 req <- request(example_url())
@@ -19,4 +20,3 @@ req_get_method(req |> req_body_raw("abc"))
 req_get_method(req |> req_method("DELETE"))
 req_get_method(req |> req_method("HEAD"))
 }
-\keyword{internal}

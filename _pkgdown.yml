@@ -85,15 +85,24 @@ reference:
       - starts_with("oauth_")
       - -starts_with("req_oauth")
 
-  - title: Package development
+  - title: Developer tooling
     desc: >
       These functions are useful when developing packges that use httr2.
+    
+  - subtitle: Keeping secrets
     contents:
-      - with_mocked_responses
-      - secrets
       - obfuscate
+      - secrets
+
+  - subtitle: Testing
+    contents:
       - response
+
+  - subtitle: Introspection and mocking
+    contents:
       - new_response
+      - starts_with("req_get_")
+      - with_mocked_responses
 
 articles:
   - title: Using httr2
