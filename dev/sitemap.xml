@@ -36,7 +36,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/req_cookie_preserve.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_dry_run.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_error.html</loc></url>
-<url><loc>https://httr2.r-lib.org/dev/reference/req_get_body.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/req_get_body_type.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_get_headers.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_get_method.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/req_headers.html</loc></url>
