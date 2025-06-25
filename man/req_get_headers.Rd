@@ -17,7 +17,7 @@ req_get_headers(req, redacted = c("drop", "redact", "reveal"))
 }}
 }
 \value{
-A named character vector.
+A named list.
 }
 \description{
 Retrieve custom headers set on the request. Use \code{\link[=req_dry_run]{req_dry_run()}} to get all

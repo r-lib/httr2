@@ -106,7 +106,7 @@ check_header_values <- function(..., error_call = caller_env()) {
 #'   * `"drop"` (the default) drops them.
 #'   * `"redact"` replaces them with `<REDACTED>`.
 #'   * `"reveal"` leaves them in place.
-#' @returns A named character vector.
+#' @returns A named list.
 #' @export
 #' @examples
 #' req <- request("http://example.com")
@@ -125,6 +125,5 @@ req_get_headers <- function(req, redacted = c("drop", "redact", "reveal")) {
   } else if (redacted == "redact") {
     headers[is_redacted(headers)] <- "<REDACTED>"
   }
-  headers <- headers_flatten(headers, redact = FALSE)
-  unlist(headers, recursive = FALSE)
+  headers_flatten(headers, redact = FALSE)
 }
