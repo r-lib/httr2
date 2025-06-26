@@ -52,6 +52,13 @@ test_that("unobfuscate operates recursively", {
   )
 })
 
+test_that("unobfuscated can control behaviour", {
+  x <- list(obfuscated("JKWA-5KOJpjZcuwVYjILoayq4A"))
+  expect_equal(unobfuscate(x, "reveal"), list("abc"))
+  expect_equal(unobfuscate(x, "redact"), list("<REDACTED>"))
+  expect_equal(unobfuscate(x, "remove"), list(NULL))
+})
+
 test_that("secret_has_key returns FALSE/TRUE", {
   withr::local_envvar(ENVVAR_THAT_DOES_EXIST = "1")
   expect_equal(secret_has_key("ENVVAR_THAT_DOESNT_EXIST"), FALSE)

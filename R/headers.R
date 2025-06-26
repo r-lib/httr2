@@ -127,6 +127,10 @@ headers_flatten <- function(x, redact = TRUE) {
     out[is_redacted] <- list(redacted_sentinel())
   } else {
     out[is_redacted] <- lapply(x[is_redacted], wref_value)
+    # also need to ensure redacted values are simple strings
+    out[is_redacted] <- lapply(out[is_redacted], function(x) {
+      if (!is.null(x)) paste(x, collapse = ",")
+    })
     # need to strip serialized weakrefs that now yield NULL
     out <- compact(out)
   }

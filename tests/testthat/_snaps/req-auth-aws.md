@@ -1,3 +1,11 @@
+# clear error if body type is unsupported
+
+    Code
+      req_perform(req)
+    Condition
+      Error in `req_auth_aws_v4()`:
+      ! Unsupported body type: multipart
+
 # aws_v4_signature calculates correct signature
 
     Code
