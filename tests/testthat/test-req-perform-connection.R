@@ -75,6 +75,7 @@ test_that("mocking works", {
   req_404 <- request("https://notok")
 
   local_mocked_responses(function(req) {
+    expect_equal(req$policies$connection, TRUE)
     if (req$url == "https://ok") {
       conn <- rawConnection(charToRaw("a\nb\n"))
       response(body = StreamingBody$new(conn))

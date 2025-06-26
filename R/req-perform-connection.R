@@ -57,6 +57,7 @@ req_perform_connection <- function(
   check_request(req)
   check_bool(blocking)
   req <- req_verbosity_connection(req, verbosity %||% httr2_verbosity())
+  req <- req_policies(req, connection = TRUE)
 
   if (!is.null(mock)) {
     mock <- as_function(mock)
