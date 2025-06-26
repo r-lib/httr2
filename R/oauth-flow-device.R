@@ -34,7 +34,7 @@ req_oauth_device <- function(
   client,
   auth_url,
   scope = NULL,
-  open_browser = NA,
+  open_browser = is_interactive(),
   auth_params = list(),
   token_params = list(),
   cache_disk = FALSE,
@@ -44,12 +44,10 @@ req_oauth_device <- function(
     client = client,
     auth_url = auth_url,
     scope = scope,
+    open_browser = open_browser,
     auth_params = auth_params,
     token_params = token_params
   )
-  if (!is.na(open_browser)) {
-    params$open_browser = open_browser
-  }
   cache <- cache_choose(client, cache_disk, cache_key)
   req_oauth(req, "oauth_flow_device", params, cache = cache)
 }
