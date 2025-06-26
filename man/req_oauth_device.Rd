@@ -10,6 +10,7 @@ req_oauth_device(
   client,
   auth_url,
   scope = NULL,
+  open_browser = is_interactive(),
   auth_params = list(),
   token_params = list(),
   cache_disk = FALSE,
@@ -21,6 +22,7 @@ oauth_flow_device(
   auth_url,
   pkce = FALSE,
   scope = NULL,
+  open_browser = is_interactive(),
   auth_params = list(),
   token_params = list()
 )
@@ -34,6 +36,10 @@ oauth_flow_device(
 the documentation.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
+
+\item{open_browser}{If \code{TRUE} (the default in interactive sessions), the
+device verification URL will be opened in the user's browser. If \code{FALSE},
+the URL is printed to the console and the user must open it themselves.}
 
 \item{auth_params}{A list containing additional parameters passed to
 \code{\link[=oauth_flow_auth_code_url]{oauth_flow_auth_code_url()}}.}
