@@ -64,7 +64,7 @@ test_that("curl errors become errors", {
 
   # and captures request
   cnd <- catch_cnd(req_perform_connection(req), classes = "error")
-  expect_equal(cnd$request, req)
+  expect_equal(cnd$request, req_policies(req, connection = TRUE))
 
   # But last_response() is NULL
   expect_null(last_response())
