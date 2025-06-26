@@ -10,10 +10,9 @@
 #' <https://httr2.r-lib.org/articles/oauth.html>.
 #'
 #' @export
-#' @param open_browser If `TRUE`, the device verification URL will be opened in
-#'   the user's browser. If not, the URL is instead printed onto the console and
-#'   the user must open it themselves. By default the browser is opened only when
-#'   running interactively.
+#' @param open_browser If `TRUE` (the default in interactive sessions), the
+#'   device verification URL will be opened in the user's browser. If `FALSE`,
+#'   the URL is printed to the console and the user must open it themselves.
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
 #' @returns `req_oauth_device()` returns a modified HTTP [request] that will
