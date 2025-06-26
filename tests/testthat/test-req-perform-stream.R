@@ -13,7 +13,7 @@ test_that("returns stream body; sets last request & response", {
   expect_s3_class(resp, "httr2_response")
   expect_false(resp_has_body(resp))
 
-  expect_equal(last_request(), req)
+  expect_equal(last_request(), req_policies(req, connection = TRUE))
   expect_equal(last_response(), resp)
 })
 

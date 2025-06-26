@@ -3,8 +3,8 @@ test_that("response has basic print method", {
   writeBin("sample content", "path-content")
 
   withr::defer(unlink(c("path-empty", "path-content")))
-  con <- file()
-  withr::defer(close(con))
+  streaming <- StreamingBody$new(file())
+  withr::defer(streaming$close())
 
   expect_snapshot({
     response(200)
@@ -12,8 +12,9 @@ test_that("response has basic print method", {
     response(200, body = charToRaw("abcdef"))
     response(200, body = new_path("path-empty"))
     response(200, body = new_path("path-content"))
-    response(200, body = con)
+    response(200, body = streaming)
   })
+
 })
 
 test_that("response adds date if not provided by server", {

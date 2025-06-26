@@ -48,12 +48,25 @@
 #'   print(length(resp_stream_raw(resp, kb = 12)))
 #' }
 #' close(resp)
-req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
+req_perform_connection <- function(
+  req,
+  blocking = TRUE,
+  verbosity = NULL,
+  mock = getOption("httr2_mock", NULL)
+) {
   check_request(req)
   check_bool(blocking)
-  # verbosity checked in req_verbosity_connection
-
   req <- req_verbosity_connection(req, verbosity %||% httr2_verbosity())
+  req <- req_policies(req, connection = TRUE)
+
+  if (!is.null(mock)) {
+    mock <- as_function(mock)
+    mock_resp <- mock(req)
+    if (!is.null(mock_resp)) {
+      return(handle_resp(req, mock_resp))
+    }
+  }
+
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
   the$last_request <- req
@@ -86,10 +99,8 @@ req_perform_connection <- function(req, blocking = TRUE, verbosity = NULL) {
 
   if (!is_error(resp) && error_is_error(req, resp)) {
     # Read full body if there's an error
-    conn <- resp$body
-    resp$body <- read_con(conn)
+    resp$body <- resp$body$read_all()
     the$last_response <- resp
-    close(conn)
   }
   handle_resp(req, resp)
 
@@ -130,12 +141,16 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
   signal(class = "httr2_perform_connection")
 
   err <- capture_curl_error({
-    body <- curl::curl(req$url, handle = handle)
+    conn <- curl::curl(req$url, handle = handle)
     # Must open the stream in order to initiate the connection
-    suppressWarnings(open(body, "rbf", blocking = blocking))
+    withCallingHandlers(
+      open(conn, "rbf", blocking = blocking),
+      warning = \(cnd) tryInvokeRestart("muffleWarning"),
+      error = \(cnd) close(conn)
+    )
+    body <- StreamingBody$new(conn)
   })
   if (is_error(err)) {
-    close(body)
     return(err)
   }
 
@@ -145,3 +160,73 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
 
 # Make open mockable
 open <- NULL
+
+#' `StreamingBody` class
+#'
+#' This R6 class is used to represent the body of a streaming response.
+#' When using this in mocked responses, you can either create a new instance
+#' using your own connection or use a subclass for some other representation.
+#' In either case, you will pass to the `body` argument of [new_response()].
+#'
+#' @export
+StreamingBody <- R6::R6Class(
+  "StreamingBody",
+  public = list(
+    #' @description Create a new object
+    #' @param conn A connection, that is open and ready for reading.
+    #'   `StreamingBody` will take care of closing it.`
+    initialize = function(conn) {
+      if (!inherits(conn, "connection")) {
+        stop_input_type(conn, "a connection", call = caller_env())
+      }
+      private$conn <- conn
+    },
+
+    #' @description Read `n` bytes into a raw vector.
+    #' @param n Number of bytes to read
+    read = function(n) {
+      readBin(private$conn, "raw", n)
+    },
+
+    #' @description Read all bytes and close the connection.
+    #' @param buffer Buffer size, in bytes.
+    read_all = function(buffer = 32 * 1024) {
+      bytes <- raw()
+      repeat {
+        new <- self$read(buffer)
+        if (length(new) == 0) {
+          break
+        }
+        bytes <- c(bytes, new)
+      }
+
+      self$close()
+      if (length(bytes) == 0) {
+        NULL
+      } else {
+        bytes
+      }
+    },
+
+    #' @description Is the connection still open?
+    is_open = function() {
+      isValid(private$conn)
+    },
+
+    #' @description Is the connection complete? (i.e. is there data remaining
+    #'   to be read?)
+    is_complete = function() {
+      !isIncomplete(private$conn)
+    },
+
+    #' @description Close the connection
+    close = function() {
+      if (self$is_open()) {
+        close(private$conn)
+      }
+    }
+  ),
+  private = list(
+    conn = NULL
+  )
+)

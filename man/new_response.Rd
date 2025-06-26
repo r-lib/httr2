@@ -26,8 +26,8 @@ the request if there were any redirects.}
 \item{headers}{HTTP headers. Can be supplied as a raw or character vector
 which will be parsed using the standard rules, or a named list.}
 
-\item{body}{Response, if any, contained in the response body.
-For \code{response_json()}, a R data structure to serialize to JSON.}
+\item{body}{The body of the response. Can be a raw vector, a \verb{<httr2_path>},
+or a \link{StreamingBody}.}
 
 \item{timing}{A named numeric vector giving the time taken by various
 components.}
