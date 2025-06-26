@@ -71,6 +71,7 @@ but it also works well from within R.</p>
 <span>  <span class="va">client</span>,</span>
 <span>  <span class="va">auth_url</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  open_browser <span class="op">=</span> <span class="fu">is_interactive</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cache_disk <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -82,6 +83,7 @@ but it also works well from within R.</p>
 <span>  <span class="va">auth_url</span>,</span>
 <span>  pkce <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  open_browser <span class="op">=</span> <span class="fu">is_interactive</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -106,6 +108,12 @@ the documentation.</p></dd>
 
 <dt id="arg-scope">scope<a class="anchor" aria-label="anchor" href="#arg-scope"></a></dt>
 <dd><p>Scopes to be requested from the resource owner.</p></dd>
+
+
+<dt id="arg-open-browser">open_browser<a class="anchor" aria-label="anchor" href="#arg-open-browser"></a></dt>
+<dd><p>If <code>TRUE</code> (the default in interactive sessions), the
+device verification URL will be opened in the user's browser. If <code>FALSE</code>,
+the URL is printed to the console and the user must open it themselves.</p></dd>
 
 
 <dt id="arg-auth-params">auth_params<a class="anchor" aria-label="anchor" href="#arg-auth-params"></a></dt>
