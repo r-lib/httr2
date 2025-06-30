@@ -54,7 +54,7 @@ or an empty list (\code{"list"}).}
 data in the body.
 \itemize{
 \item For \code{req_body_form()}, the values must be strings (or things easily
-coerced to strings). Vectors are convertd to strings using the
+coerced to strings). Vectors are converted to strings using the
 value of \code{.multi}.
 \item For \code{req_body_multipart()} the values must be strings or objects
 produced by \code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
