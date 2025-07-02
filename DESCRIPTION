@@ -44,7 +44,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.1.8),
     tibble,
-    webfakes,
+    webfakes (>= 1.4.0),
     xml2
 VignetteBuilder:
     knitr
@@ -55,5 +55,3 @@ Config/testthat/start-first: resp-stream, req-perform
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Remotes:  
-    r-lib/webfakes
