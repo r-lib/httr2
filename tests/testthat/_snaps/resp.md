@@ -37,7 +37,7 @@
       Status: 200 OK
       Body: On disk 'path-content' (15 bytes)
     Code
-      response(200, body = con)
+      response(200, body = streaming)
     Message
       <httr2_response>
       GET https://example.com
@@ -78,7 +78,7 @@
       new_response("GET", "http://x.com", 200, list(), 1)
     Condition
       Error:
-      ! `body` must be a raw vector, a path, or a connection, not the number 1.
+      ! `body` must be a raw vector, a path, or a <StreamingBody>, not the number 1.
     Code
       new_response("GET", "http://x.com", 200, list(), raw(), "x")
     Condition

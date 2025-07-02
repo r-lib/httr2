@@ -33,8 +33,8 @@ the request if there were any redirects.}
 \item{headers}{HTTP headers. Can be supplied as a raw or character vector
 which will be parsed using the standard rules, or a named list.}
 
-\item{body}{Response, if any, contained in the response body.
-For \code{response_json()}, a R data structure to serialize to JSON.}
+\item{body}{The response body. For \code{response_json()}, a R data structure that
+will be serialized to JSON.}
 
 \item{timing}{A named numeric vector giving the time taken by various
 components.}
