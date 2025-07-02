@@ -1,22 +1,67 @@
 # httr2 (development version)
 
-* `req_perform_iterative()`, `req_perform_sequential()`, `req_perform_parallel()`, `req_perform_promise()`, `req_perform_connection()` now support mocking (#651). To mock a streaming connection, create a response with a body that's a `StreamingBody` instance.
-* `req_oauth_device()` gains an `open_browser` argument that lets you take control of whether a browser is opened or the URL is printed (@plietar, #763)
-* `req_perform_parallel()` handles `progress` argument consistently with other functions (#726).
-* `req_error()` errors with long bodies are now correctly wrapped (#727).
-* `req_perform_stream()` has been soft deprecated.
-* Deprecated functions `mutli_req_perform()`, `req_stream()`, `with_mock()` and `local_mock()` hav been removed. Deprecated arguments `req_perform_parallel(pool)` and `req_oauth_auth_code(host_name, host_ip, port)`/ `oauth_flow_auth_code(host_name, host_ip, port)` have been removed.
-* `req_body_json()` and `req_body_form()` correctly unobfuscated inputs, as documented (#754).
-* `req_perform_iterative()`, `req_perform_sequential()`, `req_perform_parallel()`, and `req_perform_promise()` now support mocking (#651).
+## Lifecycle changes
+
+* `req_perform_stream()` has been soft deprecated in favour of 
+  `req_perform_connection()`.
+
+* Deprecated functions `mutli_req_perform()`, `req_stream()`, `with_mock()` and 
+  `local_mock()` have been removed. 
+
+* Deprecated arguments `req_perform_parallel(pool)`, 
+  `req_oauth_auth_code(host_name, host_ip, port)`, and 
+  `oauth_flow_auth_code(host_name, host_ip, port)` have been removed.
+
+## New features
+
+* Redacted headers are no longer serialized to disk. This is important since it 
+  makes it harder to accidentally leak secrets to files on disk, but comes at a 
+  cost: you can longer perform such requests that have been saved and reloaded 
+  (#721).
+
+* URL construction is now powered by `curl::curl_modify_url()`, and hence now 
+  (correctly) escapes the `path` component (#732). This means that 
+  `req_url_path()` now can only affect the path component of the URL, not 
+  the query params or fragment.
+
+* New `last_request_json()` and `last_response_json()` to conveniently see 
+  JSON bodies (#734).
+
+* New `req_get_method()`, `req_get_headers()`, `req_body_get_type()`, 
+  `req_get_body()` allow you to introspect a request object (#718).
+
+* New `resp_timing()` exposes timing information about the request measured 
+  by libcurl (@arcresu, #725).
+
+## Minor improvements bug fixues
+
+* Functions that capture interrutps (like `req_perform_parallel()` and friends) 
+  are now easier to escape if they're called inside a loop: you can press 
+  Ctrl + C twice to guarantee an exit (#1810).
+
+* `req_perform_iterative()`, `req_perform_sequential()`, 
+  `req_perform_parallel()`, `req_perform_promise()`, and 
+  `req_perform_connection()` now support mocking (#651). To mock the response 
+  from `req_perform_connection()` create a response with the new `StreamingBody`
+  for a body.
+
 * `new_response()` is now exported (#751).
-* URL construction is now powered by `curl::curl_modify_url()`, and hence now (correctly) escapes the `path` component (#732). This means that `req_url_path()` now can only affect the path component of the URL, not the query params or fragment.
-* Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can longer perform such requests that have been saved and reloaded (#721).
-* New `req_get_method()`, `req_get_headers()`, `req_body_get_type()`, `req_get_body()` allow you to introspect a request object (#718).
-* Functions that capture interrutps (like `req_perform_parallel()` and friends) are now easier to escape if they're called inside a loop: you can press Ctrl + C twice to guarantee an exit (#1810).
-* New `last_request_json()` and `last_response_json()` to conveniently see JSON bodies (#734).
+
+* `req_body_json()` and `req_body_form()` correctly unobfuscated inputs, 
+  as documented (#754).
+
 * `req_body_json_modify()` can now be used on a request with an empty body.
-* `resp_timing()` exposes timing information about the request measured by libcurl (@arcresu, #725).
-* `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` to avoid select/recycling issues (@Kevanness, #719).
+
+* `req_error()` errors with long bodies are now correctly wrapped (#727).
+
+* `req_oauth_device()` gains an `open_browser` argument that lets you take 
+  control of whether a browser is opened or the URL is printed (@plietar, #763)
+
+* `req_perform_parallel()` handles `progress` argument consistently with other 
+  functions (#726).
+
+* `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` 
+  to avoid select/recycling issues (@Kevanness, #719).
 
 # httr2 1.1.2
 
