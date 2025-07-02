@@ -54,7 +54,7 @@ req |> req_headers("Accept" = "application/json")
 req |> req_body_json(list(x = 1, y = 2))
 #> <httr2_request>
 #> POST https://r-project.org
-#> Body: json encoded data
+#> Body: JSON data
 
 # Modify the path in the url
 req |> req_url_path(path = "path/to/my/file")
@@ -89,7 +89,7 @@ req |> req_dry_run()
 #> accept: */*
 #> accept-encoding: deflate, gzip
 #> host: r-project.org
-#> user-agent: httr2/1.1.1.9000 r-curl/6.2.2 libcurl/8.11.1
+#> user-agent: httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.14.1
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -101,7 +101,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (7055 bytes)
+#> Body: In memory (6740 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
