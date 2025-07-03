@@ -58,7 +58,9 @@
   control of whether a browser is opened or the URL is printed (@plietar, #763)
 
 * `req_perform_parallel()` handles `progress` argument consistently with other 
-  functions (#726).
+  functions (#726) and now respects the `max_tries` argument to `req_retry()`.
+  (It also correctly reports the number of _pending_ retries, not total retries
+  in the progress bar.)
 
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` 
   to avoid select/recycling issues (@Kevanness, #719).
