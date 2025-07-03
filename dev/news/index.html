@@ -46,35 +46,33 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>
-<code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code>, <code><a href="../reference/req_perform_sequential.html">req_perform_sequential()</a></code>, <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code>, <code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code>, <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> now support mocking (<a href="https://github.com/r-lib/httr2/issues/651" class="external-link">#651</a>). To mock a streaming connection, create a response with a body that’s a <code>StreamingBody</code> instance.</li>
-<li>
-<code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> gains an <code>open_browser</code> argument that lets you take control of whether a browser is opened or the URL is printed (<a href="https://github.com/plietar" class="external-link">@plietar</a>, <a href="https://github.com/r-lib/httr2/issues/763" class="external-link">#763</a>)</li>
-<li>
-<code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> handles <code>progress</code> argument consistently with other functions (<a href="https://github.com/r-lib/httr2/issues/726" class="external-link">#726</a>).</li>
-<li>
-<code><a href="../reference/req_error.html">req_error()</a></code> errors with long bodies are now correctly wrapped (<a href="https://github.com/r-lib/httr2/issues/727" class="external-link">#727</a>).</li>
-<li>
-<code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> has been soft deprecated.</li>
-<li>Deprecated functions <code>mutli_req_perform()</code>, <code>req_stream()</code>, <code>with_mock()</code> and <code>local_mock()</code> hav been removed. Deprecated arguments <code>req_perform_parallel(pool)</code> and <code>req_oauth_auth_code(host_name, host_ip, port)</code>/ <code>oauth_flow_auth_code(host_name, host_ip, port)</code> have been removed.</li>
-<li>
-<code><a href="../reference/req_body.html">req_body_json()</a></code> and <code><a href="../reference/req_body.html">req_body_form()</a></code> correctly unobfuscated inputs, as documented (<a href="https://github.com/r-lib/httr2/issues/754" class="external-link">#754</a>).</li>
-<li>
-<code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code>, <code><a href="../reference/req_perform_sequential.html">req_perform_sequential()</a></code>, <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code>, and <code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code> now support mocking (<a href="https://github.com/r-lib/httr2/issues/651" class="external-link">#651</a>).</li>
-<li>
-<code><a href="../reference/new_response.html">new_response()</a></code> is now exported (<a href="https://github.com/r-lib/httr2/issues/751" class="external-link">#751</a>).</li>
-<li>URL construction is now powered by <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html" class="external-link">curl::curl_modify_url()</a></code>, and hence now (correctly) escapes the <code>path</code> component (<a href="https://github.com/r-lib/httr2/issues/732" class="external-link">#732</a>). This means that <code><a href="../reference/req_url.html">req_url_path()</a></code> now can only affect the path component of the URL, not the query params or fragment.</li>
-<li>Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can longer perform such requests that have been saved and reloaded (<a href="https://github.com/r-lib/httr2/issues/721" class="external-link">#721</a>).</li>
-<li>New <code><a href="../reference/req_get_method.html">req_get_method()</a></code>, <code><a href="../reference/req_get_headers.html">req_get_headers()</a></code>, <code>req_body_get_type()</code>, <code><a href="../reference/req_get_body_type.html">req_get_body()</a></code> allow you to introspect a request object (<a href="https://github.com/r-lib/httr2/issues/718" class="external-link">#718</a>).</li>
-<li>Functions that capture interrutps (like <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> and friends) are now easier to escape if they’re called inside a loop: you can press Ctrl + C twice to guarantee an exit (<a href="https://github.com/r-lib/httr2/issues/1810" class="external-link">#1810</a>).</li>
-<li>New <code><a href="../reference/last_response.html">last_request_json()</a></code> and <code><a href="../reference/last_response.html">last_response_json()</a></code> to conveniently see JSON bodies (<a href="https://github.com/r-lib/httr2/issues/734" class="external-link">#734</a>).</li>
-<li>
-<code><a href="../reference/req_body.html">req_body_json_modify()</a></code> can now be used on a request with an empty body.</li>
-<li>
-<code><a href="../reference/resp_timing.html">resp_timing()</a></code> exposes timing information about the request measured by libcurl (<a href="https://github.com/arcresu" class="external-link">@arcresu</a>, <a href="https://github.com/r-lib/httr2/issues/725" class="external-link">#725</a>).</li>
-<li>
-<code><a href="../reference/req_url.html">req_url_query()</a></code> now re-calculates n lengths when using <code>.multi = "explode"</code> to avoid select/recycling issues (<a href="https://github.com/Kevanness" class="external-link">@Kevanness</a>, <a href="https://github.com/r-lib/httr2/issues/719" class="external-link">#719</a>).</li>
+<div class="section level3">
+<h3 id="lifecycle-changes-development-version">Lifecycle changes<a class="anchor" aria-label="anchor" href="#lifecycle-changes-development-version"></a></h3>
+<ul><li><p><code><a href="../reference/req_perform_stream.html">req_perform_stream()</a></code> has been soft deprecated in favour of <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code>.</p></li>
+<li><p>Deprecated functions <code>mutli_req_perform()</code>, <code>req_stream()</code>, <code>with_mock()</code> and <code>local_mock()</code> have been removed.</p></li>
+<li><p>Deprecated arguments <code>req_perform_parallel(pool)</code>, <code>req_oauth_auth_code(host_name, host_ip, port)</code>, and <code>oauth_flow_auth_code(host_name, host_ip, port)</code> have been removed.</p></li>
 </ul></div>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li><p>Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can longer perform such requests that have been saved and reloaded (<a href="https://github.com/r-lib/httr2/issues/721" class="external-link">#721</a>).</p></li>
+<li><p>URL construction is now powered by <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html" class="external-link">curl::curl_modify_url()</a></code>, and hence now (correctly) escapes the <code>path</code> component (<a href="https://github.com/r-lib/httr2/issues/732" class="external-link">#732</a>). This means that <code><a href="../reference/req_url.html">req_url_path()</a></code> now can only affect the path component of the URL, not the query params or fragment.</p></li>
+<li><p>New <code><a href="../reference/last_response.html">last_request_json()</a></code> and <code><a href="../reference/last_response.html">last_response_json()</a></code> to conveniently see JSON bodies (<a href="https://github.com/r-lib/httr2/issues/734" class="external-link">#734</a>).</p></li>
+<li><p>New <code><a href="../reference/req_get_method.html">req_get_method()</a></code>, <code><a href="../reference/req_get_headers.html">req_get_headers()</a></code>, <code>req_body_get_type()</code>, <code><a href="../reference/req_get_body_type.html">req_get_body()</a></code> allow you to introspect a request object (<a href="https://github.com/r-lib/httr2/issues/718" class="external-link">#718</a>).</p></li>
+<li><p>New <code><a href="../reference/resp_timing.html">resp_timing()</a></code> exposes timing information about the request measured by libcurl (<a href="https://github.com/arcresu" class="external-link">@arcresu</a>, <a href="https://github.com/r-lib/httr2/issues/725" class="external-link">#725</a>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="minor-improvements-bug-fixues-development-version">Minor improvements bug fixues<a class="anchor" aria-label="anchor" href="#minor-improvements-bug-fixues-development-version"></a></h3>
+<ul><li><p>Functions that capture interrutps (like <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> and friends) are now easier to escape if they’re called inside a loop: you can press Ctrl + C twice to guarantee an exit (<a href="https://github.com/r-lib/httr2/issues/1810" class="external-link">#1810</a>).</p></li>
+<li><p><code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code>, <code><a href="../reference/req_perform_sequential.html">req_perform_sequential()</a></code>, <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code>, <code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code>, and <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> now support mocking (<a href="https://github.com/r-lib/httr2/issues/651" class="external-link">#651</a>). To mock the response from <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> create a response with the new <code>StreamingBody</code> for a body.</p></li>
+<li><p><code><a href="../reference/new_response.html">new_response()</a></code> is now exported (<a href="https://github.com/r-lib/httr2/issues/751" class="external-link">#751</a>).</p></li>
+<li><p><code><a href="../reference/req_body.html">req_body_json()</a></code> and <code><a href="../reference/req_body.html">req_body_form()</a></code> correctly unobfuscated inputs, as documented (<a href="https://github.com/r-lib/httr2/issues/754" class="external-link">#754</a>).</p></li>
+<li><p><code><a href="../reference/req_body.html">req_body_json_modify()</a></code> can now be used on a request with an empty body.</p></li>
+<li><p><code><a href="../reference/req_error.html">req_error()</a></code> errors with long bodies are now correctly wrapped (<a href="https://github.com/r-lib/httr2/issues/727" class="external-link">#727</a>).</p></li>
+<li><p><code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> gains an <code>open_browser</code> argument that lets you take control of whether a browser is opened or the URL is printed (<a href="https://github.com/plietar" class="external-link">@plietar</a>, <a href="https://github.com/r-lib/httr2/issues/763" class="external-link">#763</a>)</p></li>
+<li><p><code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> handles <code>progress</code> argument consistently with other functions (<a href="https://github.com/r-lib/httr2/issues/726" class="external-link">#726</a>).</p></li>
+<li><p><code><a href="../reference/req_url.html">req_url_query()</a></code> now re-calculates n lengths when using <code>.multi = "explode"</code> to avoid select/recycling issues (<a href="https://github.com/Kevanness" class="external-link">@Kevanness</a>, <a href="https://github.com/r-lib/httr2/issues/719" class="external-link">#719</a>).</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.2" id="httr2-112">httr2 1.1.2<a class="anchor" aria-label="anchor" href="#httr2-112"></a></h2><p class="text-muted">CRAN release: 2025-03-26</p>
 <ul><li>
