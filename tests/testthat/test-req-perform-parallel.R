@@ -181,6 +181,27 @@ test_that("requests are throttled", {
   expect_equal(mock_time, 4)
 })
 
+test_that("respects max_tries", {
+  three_tries <- function(req, res) {
+    if (res$app$locals$i < 3) {
+      res$set_status(429)$set_header("retry-after", 0)$send_json(FALSE)
+    } else {
+      res$send_json(TRUE)
+    }
+  }
+
+  req <- local_app_request(three_tries)
+  out <- req_perform_parallel(list(req), on_error = "return")
+  expect_s3_class(out[[1]], "httr2_http_429")
+
+  req <- req_retry(local_app_request(three_tries), max_tries = 2)
+  out <- req_perform_parallel(list(req), on_error = "return")
+  expect_s3_class(out[[1]], "httr2_http_429")
+
+  req <- req_retry(local_app_request(three_tries), max_tries = 10)
+  out <- req_perform_parallel(list(req), on_error = "return")
+  expect_s3_class(out[[1]], "httr2_response")
+})
 
 # Tests of lower-level operation -----------------------------------------------
 
@@ -255,7 +276,7 @@ test_that("can retry a transient error", {
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "waiting")
   expect_equal(queue$rate_limit_deadline, mock_time + 2)
-  expect_equal(queue$n_pending, 1)
+  expect_equal(queue$n_retrying, 1)
   expect_s3_class(queue$resps[[1]], "httr2_http_429")
   expect_equal(resp_body_json(queue$resps[[1]]$resp), list(status = "waiting"))
 
@@ -268,7 +289,7 @@ test_that("can retry a transient error", {
   expect_null(queue$process1())
   expect_equal(queue$queue_status, "working")
   expect_equal(queue$n_active, 0)
-  expect_equal(queue$n_pending, 1)
+  expect_equal(queue$n_retrying, 1)
 
   # Resubmit
   expect_null(queue$process1())
