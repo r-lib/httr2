@@ -58,3 +58,6 @@ req_get_method <- function(req) {
     "GET"
   }
 }
+
+# shim so httptest2 doesn't fail
+req_method_get <- req_get_method
