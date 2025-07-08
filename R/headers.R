@@ -108,6 +108,10 @@ str.httr2_headers <- function(object, ..., no.list = FALSE) {
 is_redacted <- function(x) {
   map_lgl(x, is_weakref)
 }
+is_redacted_empty <- function(x) {
+  map_lgl(x, \(x) is_weakref(x) && is.null(wref_value(x)))
+}
+
 which_redacted <- function(x) {
   names(x)[is_redacted(x)]
 }

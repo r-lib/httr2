@@ -57,6 +57,16 @@ test_that("can control redaction", {
   expect_equal(req_get_headers(req, "reveal"), list(a = "1", b = "2"))
 })
 
+test_that("empty redacted headers are always dropped", {
+  req <- request("http://example.com")
+  req <- req_headers(req, a = 1L, b = 2L, .redact = "a")
+  req2 <- unserialize(serialize(req, NULL))
+
+  expect_equal(req_get_headers(req2, "drop"), list(b = "2"))
+  expect_equal(req_get_headers(req2, "redact"), list(b = "2"))
+  expect_equal(req_get_headers(req2, "reveal"), list(b = "2"))
+})
+
 # redaction ---------------------------------------------------------------
 
 test_that("can control which headers to redact", {

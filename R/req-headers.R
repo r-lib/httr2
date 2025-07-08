@@ -120,6 +120,8 @@ req_get_headers <- function(req, redacted = c("drop", "redact", "reveal")) {
   redacted <- arg_match(redacted)
 
   headers <- req$headers
+  headers <- headers[!is_redacted_empty(headers)]
+
   if (redacted == "drop") {
     headers <- headers[!is_redacted(headers)]
   } else if (redacted == "redact") {
