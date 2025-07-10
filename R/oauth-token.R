@@ -53,7 +53,7 @@ oauth_token <- function(
 
 #' @export
 print.httr2_token <- function(x, ...) {
-  cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
+  cli::cat_line(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
   if (has_name(x, "expires_at")) {
     x$expires_at <- format(.POSIXct(x$expires_at))
   }

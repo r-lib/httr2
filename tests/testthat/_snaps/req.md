@@ -3,19 +3,19 @@
     Code
       req <- request("https://example.com")
       req
-    Message
+    Output
       <httr2_request>
       GET https://example.com
       Body: empty
     Code
       req_body_raw(req, "Test")
-    Message
+    Output
       <httr2_request>
       POST https://example.com
       Body: a string
     Code
       req_body_multipart(req, Test = 1)
-    Message
+    Output
       <httr2_request>
       POST https://example.com
       Body: multipart data
@@ -24,7 +24,7 @@
 
     Code
       req_headers(request("http://test"), x = "{z}", `{z}` = "x")
-    Message
+    Output
       <httr2_request>
       GET http://test
       Headers:
@@ -36,7 +36,7 @@
 
     Code
       req_headers(request("https://example.com"), A = 1:3)
-    Message
+    Output
       <httr2_request>
       GET https://example.com
       Headers:

@@ -3,7 +3,7 @@ bullets_with_header <- function(header, x) {
     return()
   }
 
-  cli::cli_text("{.strong {header}}")
+  cli::cat_line(cli::format_inline("{.strong {header}}"))
   bullets(x)
 }
 
@@ -28,7 +28,7 @@ bullets <- function(x) {
   names <- gsub(" ", "\u00a0", names, fixed = TRUE)
 
   for (i in seq_along(x)) {
-    cli::cli_li("{.field {names[[i]]}}: {vals[[i]]}")
+    cli::cat_line(cli::format_inline("* {.field {names[[i]]}}: {vals[[i]]}"))
   }
 }
 

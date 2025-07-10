@@ -21,7 +21,7 @@ test_that("print method obfuscates Authorization header unless requested", {
   output <- testthat::capture_messages(print(req))
   expect_false(any(grepl("SECRET", output, fixed = TRUE)))
 
-  output <- testthat::capture_messages(print(req, redact_headers = FALSE))
+  output <- capture.output(print(req, redact_headers = FALSE))
   expect_true(any(grepl("Authorization: \"Basic", output, fixed = TRUE)))
   expect_false(any(grepl("REDACTED", output, fixed = TRUE)))
 })

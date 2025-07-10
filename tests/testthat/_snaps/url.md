@@ -2,7 +2,7 @@
 
     Code
       url_parse("http://user:pass@example.com:81/path?a=1&b=2&c={1{2}3}#frag")
-    Message
+    Output
       <httr2_url> http://user:pass@example.com:81/path?a=1&b=2&c=%7B1%7B2%7D3%7D#frag
       * scheme: http
       * hostname: example.com

@@ -63,6 +63,8 @@
 * `req_url_query()` now re-calculates n lengths when using `.multi = "explode"` 
   to avoid select/recycling issues (@Kevanness, #719).
 
+* All print methods now send output to stdout, not the message stream.
+
 # httr2 1.1.2
 
 * `req_headers()` more carefully checks its input types (#707).
