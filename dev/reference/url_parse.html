@@ -88,48 +88,48 @@ detailed in <a href="https://datatracker.ietf.org/doc/html/rfc3986" class="exter
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">url_parse</span><span class="op">(</span><span class="st">"http://google.com/"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com/</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">scheme</span>: http</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">hostname</span>: google.com</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">path</span>: /</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com/</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">scheme</span>: http</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">hostname</span>: google.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">path</span>: /</span>
 <span class="r-in"><span><span class="fu">url_parse</span><span class="op">(</span><span class="st">"http://google.com:80/"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com:80/</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">scheme</span>: http</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">hostname</span>: google.com</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">port</span>: 80</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">path</span>: /</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com:80/</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">scheme</span>: http</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">hostname</span>: google.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">port</span>: 80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">path</span>: /</span>
 <span class="r-in"><span><span class="fu">url_parse</span><span class="op">(</span><span class="st">"http://google.com:80/?a=1&amp;b=2"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com:80/?a=1&amp;b=2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">scheme</span>: http</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">hostname</span>: google.com</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">port</span>: 80</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">path</span>: /</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">query</span>:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   • <span style="color: #00BB00;">a</span>: 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   • <span style="color: #00BB00;">b</span>: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com:80/?a=1&amp;b=2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">scheme</span>: http</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">hostname</span>: google.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">port</span>: 80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">path</span>: /</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">query</span>:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   * <span style="color: #00BB00;">a</span>: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   * <span style="color: #00BB00;">b</span>: 2</span>
 <span class="r-in"><span><span class="fu">url_parse</span><span class="op">(</span><span class="st">"http://username@google.com:80/path;test?a=1&amp;b=2#40"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://username@google.com:80/path%3Btest?a=1&amp;b=2#40</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">scheme</span>: http</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">hostname</span>: google.com</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">username</span>: username</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">port</span>: 80</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">path</span>: /path;test</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">query</span>:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   • <span style="color: #00BB00;">a</span>: 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   • <span style="color: #00BB00;">b</span>: 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">fragment</span>: 40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://username@google.com:80/path%3Btest?a=1&amp;b=2#40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">scheme</span>: http</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">hostname</span>: google.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">username</span>: username</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">port</span>: 80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">path</span>: /path;test</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">query</span>:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   * <span style="color: #00BB00;">a</span>: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   * <span style="color: #00BB00;">b</span>: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">fragment</span>: 40</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># You can parse a relative URL if you also provide a base url</span></span></span>
 <span class="r-in"><span><span class="fu">url_parse</span><span class="op">(</span><span class="st">"foo"</span>, <span class="st">"http://google.com/bar/"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com/bar/foo</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">scheme</span>: http</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">hostname</span>: google.com</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">path</span>: /bar/foo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com/bar/foo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">scheme</span>: http</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">hostname</span>: google.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">path</span>: /bar/foo</span>
 <span class="r-in"><span><span class="fu">url_parse</span><span class="op">(</span><span class="st">".."</span>, <span class="st">"http://google.com/bar/"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com/</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">scheme</span>: http</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">hostname</span>: google.com</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #00BB00;">path</span>: /</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_url&gt;</span> http://google.com/</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">scheme</span>: http</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">hostname</span>: google.com</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">path</span>: /</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

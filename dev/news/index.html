@@ -71,6 +71,7 @@
 <li><p><code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> gains an <code>open_browser</code> argument that lets you take control of whether a browser is opened or the URL is printed (<a href="https://github.com/plietar" class="external-link">@plietar</a>, <a href="https://github.com/r-lib/httr2/issues/763" class="external-link">#763</a>)</p></li>
 <li><p><code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> handles <code>progress</code> argument consistently with other functions (<a href="https://github.com/r-lib/httr2/issues/726" class="external-link">#726</a>).</p></li>
 <li><p><code><a href="../reference/req_url.html">req_url_query()</a></code> now re-calculates n lengths when using <code>.multi = "explode"</code> to avoid select/recycling issues (<a href="https://github.com/Kevanness" class="external-link">@Kevanness</a>, <a href="https://github.com/r-lib/httr2/issues/719" class="external-link">#719</a>).</p></li>
+<li><p>All print methods now send output to stdout, not the message stream.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
