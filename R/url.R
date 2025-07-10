@@ -216,40 +216,35 @@ is_url <- function(x) inherits(x, "httr2_url")
 
 #' @export
 print.httr2_url <- function(x, ...) {
-  cli::cli_text("{.cls {class(x)}} {url_build(x)}")
+  cli::cat_line(cli::format_inline("{.cls {class(x)}} {url_build(x)}"))
   if (!is.null(x$scheme)) {
-    cli::cli_li("{.field scheme}: {x$scheme}")
+    cli::cat_line(cli::format_inline("* {.field scheme}: {x$scheme}"))
   }
   if (!is.null(x$hostname)) {
-    cli::cli_li("{.field hostname}: {x$hostname}")
+    cli::cat_line(cli::format_inline("* {.field hostname}: {x$hostname}"))
   }
   if (!is.null(x$username)) {
-    cli::cli_li("{.field username}: {x$username}")
+    cli::cat_line(cli::format_inline("* {.field username}: {x$username}"))
   }
   if (!is.null(x$password)) {
-    cli::cli_li("{.field password}: {x$password}")
+    cli::cat_line(cli::format_inline("* {.field password}: {x$password}"))
   }
   if (!is.null(x$port)) {
-    cli::cli_li("{.field port}: {x$port}")
+    cli::cat_line(cli::format_inline("* {.field port}: {x$port}"))
   }
   if (!is.null(x$path)) {
-    cli::cli_li("{.field path}: {x$path}")
+    cli::cat_line(cli::format_inline("* {.field path}: {x$path}"))
   }
   if (!is.null(x$query)) {
-    cli::cli_li("{.field query}: ")
-    id <- cli::cli_ul()
-    # escape curly brackets for cli by replacing single with double brackets
-    query_vals <- gsub(
-      "{",
-      "{{",
-      gsub("}", "}}", x$query, fixed = TRUE),
-      fixed = TRUE
-    )
-    cli::cli_li(paste0("  {.field ", names(x$query), "}: ", query_vals))
-    cli::cli_end(id)
+    cli::cat_line(cli::format_inline("* {.field query}:"))
+    for (i in seq_along(x$query)) {
+      nm <- names(x$query)[[i]]
+      val <- x$query[[i]]
+      cli::cat_line(cli::format_inline("  * {.field {nm}}: {val}"))
+    }
   }
   if (!is.null(x$fragment)) {
-    cli::cli_li("{.field fragment}: {x$fragment}")
+    cli::cat_line(cli::format_inline("* {.field fragment}: {x$fragment}"))
   }
   invisible(x)
 }

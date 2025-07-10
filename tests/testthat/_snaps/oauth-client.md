@@ -44,7 +44,7 @@
 
     Code
       oauth_client("x", url)
-    Message
+    Output
       <httr2_oauth_client>
       * name     : "bf27508f7925b06bf28a10f3805351ab"
       * id       : "x"
@@ -52,7 +52,7 @@
       * auth     : "oauth_client_req_auth_body"
     Code
       oauth_client("x", url, secret = "SECRET")
-    Message
+    Output
       <httr2_oauth_client>
       * name     : "bf27508f7925b06bf28a10f3805351ab"
       * id       : "x"
@@ -63,7 +63,7 @@
       oauth_client("x", url, auth = function(...) {
         xxx
       })
-    Message
+    Output
       <httr2_oauth_client>
       * name     : "bf27508f7925b06bf28a10f3805351ab"
       * id       : "x"

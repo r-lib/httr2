@@ -2,7 +2,7 @@
 
     Code
       token
-    Message
+    Output
       <httr2_token>
       * token_type  : "bearer"
       * access_token: <REDACTED>
@@ -12,7 +12,7 @@
 
     Code
       oauth_token(access_token = "secret", refresh_token = "secret", id_token = "secret")
-    Message
+    Output
       <httr2_token>
       * token_type   : "bearer"
       * access_token : <REDACTED>

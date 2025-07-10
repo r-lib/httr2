@@ -151,24 +151,32 @@ create_response <- function(req, curl_data, body) {
 
 #' @export
 print.httr2_response <- function(x, ...) {
-  cli::cli_text("{.cls {class(x)}}")
-  cli::cli_text("{.strong {x$method}} {x$url}")
-  cli::cli_text("{.field Status}: {x$status_code} {resp_status_desc(x)}")
+  cli::cat_line(cli::format_inline("{.cls {class(x)}}"))
+  cli::cat_line(cli::format_inline("{.strong {x$method}} {x$url}"))
+  cli::cat_line(cli::format_inline(
+    "{.field Status}: {x$status_code} {resp_status_desc(x)}"
+  ))
   if (resp_header_exists(x, "Content-Type")) {
-    cli::cli_text("{.field Content-Type}: {resp_content_type(x)}")
+    cli::cat_line(cli::format_inline(
+      "{.field Content-Type}: {resp_content_type(x)}"
+    ))
   }
 
   body <- x$body
   if (!resp_has_body(x)) {
-    cli::cli_text("{.field Body}: None")
+    cli::cat_line(cli::format_inline("{.field Body}: None"))
   } else {
     switch(
       resp_body_type(x),
-      disk = cli::cli_text(
+      disk = cli::cat_line(cli::format_inline(
         "{.field Body}: On disk {.path {body}} ({file.size(body)} bytes)"
-      ),
-      memory = cli::cli_text("{.field Body}: In memory ({length(body)} bytes)"),
-      stream = cli::cli_text("{.field Body}: Streaming connection")
+      )),
+      memory = cli::cat_line(cli::format_inline(
+        "{.field Body}: In memory ({length(body)} bytes)"
+      )),
+      stream = cli::cat_line(cli::format_inline(
+        "{.field Body}: Streaming connection"
+      ))
     )
   }
 

@@ -92,7 +92,7 @@ oauth_client <- function(
 
 #' @export
 print.httr2_oauth_client <- function(x, ...) {
-  cli::cli_text(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
+  cli::cat_line(cli::style_bold("<", paste(class(x), collapse = "/"), ">"))
   redacted <- list_redact(compact(x), c("secret", "key"))
   bullets(redacted)
   invisible(x)

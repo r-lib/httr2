@@ -2,14 +2,14 @@
 
     Code
       response(200)
-    Message
+    Output
       <httr2_response>
       GET https://example.com
       Status: 200 OK
       Body: None
     Code
       response(200, headers = "Content-Type: text/html")
-    Message
+    Output
       <httr2_response>
       GET https://example.com
       Status: 200 OK
@@ -17,28 +17,28 @@
       Body: None
     Code
       response(200, body = charToRaw("abcdef"))
-    Message
+    Output
       <httr2_response>
       GET https://example.com
       Status: 200 OK
       Body: In memory (6 bytes)
     Code
       response(200, body = new_path("path-empty"))
-    Message
+    Output
       <httr2_response>
       GET https://example.com
       Status: 200 OK
       Body: None
     Code
       response(200, body = new_path("path-content"))
-    Message
+    Output
       <httr2_response>
       GET https://example.com
       Status: 200 OK
       Body: On disk 'path-content' (15 bytes)
     Code
       response(200, body = streaming)
-    Message
+    Output
       <httr2_response>
       GET https://example.com
       Status: 200 OK

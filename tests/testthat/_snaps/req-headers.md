@@ -15,7 +15,7 @@
 
     Code
       req
-    Message
+    Output
       <httr2_request>
       GET http://example.com
       Headers:
