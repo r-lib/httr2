@@ -21,7 +21,7 @@ req_url_query(
 
 req_url_path(req, ...)
 
-req_url_path_append(req, ...)
+req_url_path_append(req, ..., encode = TRUE)
 }
 \arguments{
 \item{req, .req}{A httr2 \link{request} object.}
