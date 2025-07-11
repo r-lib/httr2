@@ -1,7 +1,9 @@
-test_that("can override url", {
-  req <- request("http://example.com/")
-  expect_equal(req_url(req, "http://foo.com:10")$url, "http://foo.com:10")
+test_that("can get and set url", {
+  req1 <- request("http://example.com/")
+  req2 <- req_url(req1, "http://foo.com:10")
+  expect_equal(req_get_url(req2), "http://foo.com:10")
 })
+
 
 test_that("automatically adds /", {
   req1 <- request("http://example.com")
