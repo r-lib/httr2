@@ -27,8 +27,9 @@
 * New `last_request_json()` and `last_response_json()` to conveniently see 
   JSON bodies (#734).
 
-* New `req_get_method()`, `req_get_headers()`, `req_body_get_type()`, 
-  `req_get_body()` allow you to introspect a request object (#718).
+* New `req_get_url()`, `req_get_method()`, `req_get_headers()`, 
+  `req_body_get_type()`, and `req_get_body()` allow you to introspect a request 
+  object (#718).
 
 * New `resp_timing()` exposes timing information about the request measured 
   by libcurl (@arcresu, #725).

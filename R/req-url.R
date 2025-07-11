@@ -104,6 +104,24 @@ req_url_path_append <- function(req, ...) {
   req_url(req, url_build(url))
 }
 
+#' Get request URL
+#'
+#' Retrieve the URL from a request.
+#'
+#' @inheritParams req_perform
+#' @returns A character string.
+#' @export
+#' @examples
+#' request("https://httpbin.org") |>
+#'   req_url_path("/get") |>
+#'   req_url_query(hello = "world") |>
+#'   req_get_url()
+req_get_url <- function(req) {
+  check_request(req)
+  req$url
+}
+
+
 dots_to_path <- function(...) {
   path <- paste(c(...), collapse = "/")
   # Ensure we don't add duplicate /s
