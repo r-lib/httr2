@@ -80,6 +80,146 @@ Run `revdepcheck::cloud_details(, "brickster")` for more info
       Execution halted
     ```
 
+# dataRetrieval
+
+<details>
+
+* Version: 2.7.19
+* GitHub: https://github.com/DOI-USGS/dataRetrieval
+* Source code: https://github.com/cran/dataRetrieval
+* Date/Publication: 2025-06-27 16:20:17 UTC
+* Number of recursive dependencies: 84
+
+Run `revdepcheck::cloud_details(, "dataRetrieval")` for more info
+
+</details>
+
+## Newly broken
+
+*   checking whether package ‘dataRetrieval’ can be installed ... ERROR
+    ```
+    Installation failed.
+    See ‘/tmp/workdir/dataRetrieval/new/dataRetrieval.Rcheck/00install.out’ for details.
+    ```
+
+## Newly fixed
+
+*   checking re-building of vignette outputs ... ERROR
+    ```
+    Error(s) in re-building vignettes:
+    --- re-building ‘dataRetrieval.Rmd’ using rmarkdown
+    ```
+
+## Installation
+
+### Devel
+
+```
+* installing *source* package ‘dataRetrieval’ ...
+** package ‘dataRetrieval’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+...
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+Error: package or namespace load failed for ‘dataRetrieval’:
+ .onLoad failed in loadNamespace() for 'dataRetrieval', details:
+  call: httr2::req_perform(check_endpoints_req)
+  error: HTTP 404 Not Found.
+Error: loading failed
+Execution halted
+ERROR: loading failed
+* removing ‘/tmp/workdir/dataRetrieval/new/dataRetrieval.Rcheck/dataRetrieval’
+
+
+```
+### CRAN
+
+```
+* installing *source* package ‘dataRetrieval’ ...
+** package ‘dataRetrieval’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (dataRetrieval)
+
+
+```
+# eudata
+
+<details>
+
+* Version: 0.1.2
+* GitHub: https://github.com/prokaj/eudata
+* Source code: https://github.com/cran/eudata
+* Date/Publication: 2025-07-09 11:00:03 UTC
+* Number of recursive dependencies: 66
+
+Run `revdepcheck::cloud_details(, "eudata")` for more info
+
+</details>
+
+## Newly broken
+
+*   checking whether package ‘eudata’ can be installed ... ERROR
+    ```
+    Installation failed.
+    See ‘/tmp/workdir/eudata/new/eudata.Rcheck/00install.out’ for details.
+    ```
+
+## Installation
+
+### Devel
+
+```
+* installing *source* package ‘eudata’ ...
+** package ‘eudata’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Error: object ‘req_stream’ is not exported by 'namespace:httr2'
+Execution halted
+ERROR: lazy loading failed for package ‘eudata’
+* removing ‘/tmp/workdir/eudata/new/eudata.Rcheck/eudata’
+
+
+```
+### CRAN
+
+```
+* installing *source* package ‘eudata’ ...
+** package ‘eudata’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (eudata)
+
+
+```
 # genesysr
 
 <details>
@@ -99,47 +239,6 @@ Run `revdepcheck::cloud_details(, "genesysr")` for more info
 *   checking dependencies in R code ... WARNING
     ```
     Missing or unexported object: ‘httr2::req_stream’
-    ```
-
-# hakaiApi
-
-<details>
-
-* Version: 1.0.3
-* GitHub: https://github.com/HakaiInstitute/hakai-api-client-r
-* Source code: https://github.com/cran/hakaiApi
-* Date/Publication: 2025-05-27 23:10:05 UTC
-* Number of recursive dependencies: 67
-
-Run `revdepcheck::cloud_details(, "hakaiApi")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking tests ... ERROR
-    ```
-      Running ‘testthat.R’
-    Running the tests in ‘tests/testthat.R’ failed.
-    Complete output:
-      > # This file is part of the standard setup for testthat.
-      > # It is recommended that you do not modify it.
-      > #
-      > # Where should you do additional test configuration?
-      > # Learn more about the roles of various files in:
-      > # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
-      > # * https://testthat.r-lib.org/articles/special-files.html
-    ...
-      `expected` is a character vector ('detoo')
-      ── Failure ('test-utils.R:28:3'): base_request uses user agent from environment variable ──
-      req$headers$Authorization (`actual`) not equal to "detoo" (`expected`).
-      
-      `actual` is a weak reference
-      `expected` is a character vector ('detoo')
-      
-      [ FAIL 2 | WARN 0 | SKIP 0 | PASS 29 ]
-      Error: Test failures
-      Execution halted
     ```
 
 # httptest2
@@ -186,88 +285,6 @@ Run `revdepcheck::cloud_details(, "httptest2")` for more info
 *   checking dependencies in R code ... WARNING
     ```
     Missing or unexported object: ‘httr2::with_mock’
-    ```
-
-# lgrExtra
-
-<details>
-
-* Version: 0.1.0
-* GitHub: NA
-* Source code: https://github.com/cran/lgrExtra
-* Date/Publication: 2025-06-20 19:20:02 UTC
-* Number of recursive dependencies: 87
-
-Run `revdepcheck::cloud_details(, "lgrExtra")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking tests ... ERROR
-    ```
-      Running ‘testthat.R’
-    Running the tests in ‘tests/testthat.R’ failed.
-    Complete output:
-      > library(testthat)
-      > library(lgrExtra)
-      > 
-      > test_check("lgrExtra")
-      [ FAIL 1 | WARN 0 | SKIP 6 | PASS 113 ]
-      
-      ══ Skipped tests (6) ═══════════════════════════════════════════════════════════
-    ...
-        'test_AppenderDbi.R:251:7'
-      
-      ══ Failed tests ════════════════════════════════════════════════════════════════
-      ── Failure ('test_AppenderDynatrace.R:34:3'): AppenderDynatrace: appending works ──
-      sent_request$headers[["Authorization"]] not identical to "Api-Token hashbaz".
-      target is weakref, current is character
-      
-      [ FAIL 1 | WARN 0 | SKIP 6 | PASS 113 ]
-      Error: Test failures
-      Execution halted
-    ```
-
-# MolgenisArmadillo
-
-<details>
-
-* Version: 2.9.1
-* GitHub: https://github.com/molgenis/molgenis-r-armadillo
-* Source code: https://github.com/cran/MolgenisArmadillo
-* Date/Publication: 2025-06-13 13:10:02 UTC
-* Number of recursive dependencies: 83
-
-Run `revdepcheck::cloud_details(, "MolgenisArmadillo")` for more info
-
-</details>
-
-## Newly broken
-
-*   checking tests ... ERROR
-    ```
-      Running ‘testthat.R’
-    Running the tests in ‘tests/testthat.R’ failed.
-    Complete output:
-      > library(testthat)
-      > library(tibble)
-      > library(MolgenisArmadillo)
-      > library(webmockr)
-      > 
-      > test_check("MolgenisArmadillo")
-      crul not installed, skipping enable
-    ...
-        5.         └─waldo:::compare_structure(x, y, paths = c(x_arg, y_arg), opts = opts)
-        6.           └─waldo:::compare_by_name(x, y, paths, opts)
-        7.             └─waldo:::compare_structure(...)
-        8.               └─waldo:::compare_by_name(x, y, paths, opts)
-        9.                 └─waldo:::compare_structure(...)
-       10.                   └─rlang::abort(...)
-      
-      [ FAIL 1 | WARN 4 | SKIP 0 | PASS 241 ]
-      Error: Test failures
-      Execution halted
     ```
 
 # openeo
