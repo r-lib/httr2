@@ -15,7 +15,7 @@ the most recent request and response. They will error if not JSON."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@ the most recent request and response. They will error if not JSON."><meta proper
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/07/httr2-1-2-0/">httr2 1.2.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -104,7 +105,7 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://httr2.r-lib.org/</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (19266 bytes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (19168 bytes)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">.</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="fu"><a href="example_url.html">example_url</a></span><span class="op">(</span><span class="st">"/post"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -129,8 +130,8 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   },</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "headers": {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:36275",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.5.0",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:37793",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.2.0.9000 r-curl/6.4.0 libcurl/8.5.0",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept": "*/*",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept-Encoding": "deflate, gzip, br, zstd",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Content-Type": "application/json",</span>
@@ -143,7 +144,7 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "method": "post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "path": "/post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "origin": "127.0.0.1",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:36275/post"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:37793/post"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-in"><span><span class="fu">last_response_json</span><span class="op">(</span>pretty <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
@@ -152,8 +153,8 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "files": {},</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "form": {},</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "headers": {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:36275",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.5.0",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:37793",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.2.0.9000 r-curl/6.4.0 libcurl/8.5.0",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept": "*/*",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept-Encoding": "deflate, gzip, br, zstd",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Content-Type": "application/json",</span>
@@ -166,7 +167,7 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "method": "post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "path": "/post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "origin": "127.0.0.1",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:36275/post"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:37793/post"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 </code></pre></div>
     </div>

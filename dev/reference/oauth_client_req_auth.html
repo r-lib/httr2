@@ -43,7 +43,7 @@ the auth_params argument."><meta property="og:image" content="https://httr2.r-li
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@ the auth_params argument."><meta property="og:image" content="https://httr2.r-li
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/07/httr2-1-2-0/">httr2 1.2.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -162,7 +163,7 @@ JWT header.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 35</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-type</span>: application/x-www-form-urlencoded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.5.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.2.0.9000 r-curl/6.4.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> client_id=12345&amp;client_secret=56789</span>
 <span class="r-in"><span></span></span>
@@ -180,7 +181,7 @@ JWT header.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">authorization</span>: <span style="color: #555555;">&lt;REDACTED&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.5.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.2.0.9000 r-curl/6.4.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">client3</span> <span class="op">&lt;-</span> <span class="fu"><a href="oauth_client.html">oauth_client</a></span><span class="op">(</span></span></span>
@@ -199,9 +200,9 @@ JWT header.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-length</span>: 623</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">content-type</span>: application/x-www-form-urlencoded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">host</span>: example.com</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.5.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.2.0.9000 r-curl/6.4.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTIyNjUzMzcsIm5iZiI6MTc1MjI2NTAzNywiaWF0IjoxNzUyMjY1MDM3LCJqdGkiOiJyT0tqQjBKeFFvUU1fYng5V3Z6WHJoWFpwZi0xY3ZXTlpvTlEwR2owbnR3In0.pYbUmTQUOjZnS2innEq0WznLE4tGuMp0bUqO_X5zyP0Zz52GlBR1r3MKEcmAubZ4-pNXGECr1C5RLEjsWM4CO3fPnzd2QEI2a79R_RxeztQaXxZIAKAQA46I0UB_wKW0LsCkwKHnPRhiNKCoVKvJIhi6-Jq-E6LML-_cgbbfH1YhnPoov5Mgq69mECl2NuWWflqTAwoAbqqPhxVC9HnNYwWpJsZ3TzYQmpm9uerDRLjNhHv1QEBGbesAS3vzyh-jr5LQ0x9fH0Y135AoX1H2-fsMWtDOAswIAF_jzV8-zfu3DAL-xzPdQfD5X1t9NutSnK1_4LftjlM7eesqu8e-9w&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NTI1MDAxNDAsIm5iZiI6MTc1MjQ5OTg0MCwiaWF0IjoxNzUyNDk5ODQwLCJqdGkiOiJjR2Mtb1QwcFlmVE5EcVpMVWo5aWpabUVDZGlpbkIwQ2VjeEZRbVFiS3Q4In0.LTC9AzmMeuXinI1QK_vpDJr-uwnYQ9QobXQo2k5lGwOsrhZ0x5oeYwGIQdt92yogEcB5HmEbiCqTG7-okZuIbmouXWg6OXirVlo1aIBq-EUqZeozkLWyfId9p_xh7JFhBI3_v5UJfRu4wcA4m2Uw1beJiNXoJIdJ7rN3q9M9EgagTyFEnyNDrfpafgc1chUjYPPvPt9PRdcXGuiakmKg6x0ikduW6QTtgdVrL0ooWSgLaYJpqNdux5gaMU8Uf0sAkJbLE4bISsqBPHuV3QtpGditiVAhfJs5iF_L-zPG3NL9b5EbdEaC4sWf66ysUSfx8Qrs_jaSJ0CIcZHLJymd4A&amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
