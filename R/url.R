@@ -279,6 +279,7 @@ url_build <- function(url) {
     fragment = url$fragment
   )
 
+  # Workaround https://github.com/curl/curl/issues/17977
   # curl url parser esacapes colons in paths which google seems to use
   # quite frequently. So we hack the problem away for now, restoring the
   # behaviour of httr2 1.1.2
