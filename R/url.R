@@ -282,9 +282,12 @@ url_build <- function(url) {
   # curl url parser esacapes colons in paths which google seems to use
   # quite frequently. So we hack the problem away for now, restoring the
   # behaviour of httr2 1.1.2
-  path <- curl::curl_parse_url(url, decode = FALSE)$path
-  path <- gsub("%3A", ":", path)
-  curl::curl_modify_url(url, path = I(path))
+  if (grepl("%3A", url, fixed = TRUE)) {
+    path <- curl::curl_parse_url(url, decode = FALSE)$path
+    path <- gsub("%3A", ":", path, fixed = TRUE)
+    url <- curl::curl_modify_url(url, path = I(path))
+  }
+  url
 }
 
 #' Parse query parameters and/or build a string
