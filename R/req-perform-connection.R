@@ -148,14 +148,13 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
       warning = \(cnd) tryInvokeRestart("muffleWarning"),
       error = \(cnd) close(conn)
     )
-    body <- StreamingBody$new(conn)
+    body <- StreamingBody$new(conn, handle)
   })
   if (is_error(err)) {
     return(err)
   }
 
-  curl_data <- curl::handle_data(handle)
-  create_response(req, curl_data, body)
+  create_response(req, body$get_data(), body)
 }
 
 # Make open mockable
@@ -175,11 +174,13 @@ StreamingBody <- R6::R6Class(
     #' @description Create a new object
     #' @param conn A connection, that is open and ready for reading.
     #'   `StreamingBody` will take care of closing it.`
-    initialize = function(conn) {
+    #' @param handle A curl handle. Use to accesss data and file descriptors.
+    initialize = function(conn, handle) {
       if (!inherits(conn, "connection")) {
         stop_input_type(conn, "a connection", call = caller_env())
       }
       private$conn <- conn
+      private$handle <- handle
     },
 
     #' @description Read `n` bytes into a raw vector.
@@ -219,6 +220,18 @@ StreamingBody <- R6::R6Class(
       !isIncomplete(private$conn)
     },
 
+    #' @description Get the active file descriptions and timeout from the
+    #'   handle. Wrapper around [curl::multi_fdset()].
+    get_fdset = function() {
+      curl::multi_fdset(private$handle)
+    },
+
+    #' @description Get the response data from the handle. Wrapper
+    #'   around [curl::handle_data()].
+    get_data = function() {
+      curl::handle_data(private$handle)
+    },
+
     #' @description Close the connection
     close = function() {
       if (self$is_open()) {
@@ -227,6 +240,7 @@ StreamingBody <- R6::R6Class(
     }
   ),
   private = list(
-    conn = NULL
+    conn = NULL,
+    handle = NULL
   )
 )

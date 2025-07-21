@@ -22,6 +22,8 @@ In either case, you will pass to the \code{body} argument of \code{\link[=new_re
 \item \href{#method-StreamingBody-read_all}{\code{StreamingBody$read_all()}}
 \item \href{#method-StreamingBody-is_open}{\code{StreamingBody$is_open()}}
 \item \href{#method-StreamingBody-is_complete}{\code{StreamingBody$is_complete()}}
+\item \href{#method-StreamingBody-get_fdset}{\code{StreamingBody$get_fdset()}}
+\item \href{#method-StreamingBody-get_data}{\code{StreamingBody$get_data()}}
 \item \href{#method-StreamingBody-close}{\code{StreamingBody$close()}}
 \item \href{#method-StreamingBody-clone}{\code{StreamingBody$clone()}}
 }
@@ -32,7 +34,7 @@ In either case, you will pass to the \code{body} argument of \code{\link[=new_re
 \subsection{Method \code{new()}}{
 Create a new object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{StreamingBody$new(conn)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{StreamingBody$new(conn, handle)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -40,6 +42,8 @@ Create a new object
 \describe{
 \item{\code{conn}}{A connection, that is open and ready for reading.
 \code{StreamingBody} will take care of closing it.`}
+
+\item{\code{handle}}{A curl handle. Use to accesss data and file descriptors.}
 }
 \if{html}{\out{</div>}}
 }
@@ -96,6 +100,28 @@ Is the connection complete? (i.e. is there data remaining
 to be read?)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{StreamingBody$is_complete()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-StreamingBody-get_fdset"></a>}}
+\if{latex}{\out{\hypertarget{method-StreamingBody-get_fdset}{}}}
+\subsection{Method \code{get_fdset()}}{
+Get the active file descriptions and timeout from the
+handle. Wrapper around \code{\link[curl:multi]{curl::multi_fdset()}}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{StreamingBody$get_fdset()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-StreamingBody-get_data"></a>}}
+\if{latex}{\out{\hypertarget{method-StreamingBody-get_data}{}}}
+\subsection{Method \code{get_data()}}{
+Get the response data from the handle. Wrapper
+around \code{\link[curl:curl_fetch]{curl::handle_data()}}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{StreamingBody$get_data()}\if{html}{\out{</div>}}
 }
 
 }
