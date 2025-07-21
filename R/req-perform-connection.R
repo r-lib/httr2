@@ -222,7 +222,7 @@ StreamingBody <- R6::R6Class(
     #' @description Get the active file descriptions and timeout from the
     #'   handle. Wrapper around [curl::multi_fdset()].
     get_fdset = function() {
-      curl::multi_fdset(private$connection)
+      curl::multi_fdset(private$conn)
     },
 
     #' @description Close the connection

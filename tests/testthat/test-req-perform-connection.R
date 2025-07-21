@@ -100,3 +100,13 @@ test_that("validates its input", {
     StreamingBody$new(1)
   })
 })
+
+test_that("can access fdset", {
+  skip_on_cran()
+
+  con <- curl::curl(example_url('/drip'), open = 'rb')
+  on.exit(close(con))
+
+  body <- StreamingBody$new(con)
+  expect_length(body$get_fdset()$reads, 1)
+})
