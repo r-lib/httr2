@@ -232,7 +232,8 @@ StreamingBody <- R6::R6Class(
     },
 
     #' @description Get the active file descriptions and timeout from the
-    #'   handle. Wrapper around [curl::multi_fdset()].
+    #'   handle. Wrapper around [curl::multi_fdset()]. Returns `NULL` if handle
+    #'   not set.
     get_fdset = function() {
       if (is.null(private$handle)) {
         NULL
@@ -242,7 +243,7 @@ StreamingBody <- R6::R6Class(
     },
 
     #' @description Get the response data from the handle. Wrapper
-    #'   around [curl::handle_data()].
+    #'   around [curl::handle_data()]. Returns `NULL` if handle not set.
     get_data = function() {
       if (is.null(private$handle)) {
         NULL

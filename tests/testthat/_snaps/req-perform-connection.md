@@ -28,4 +28,9 @@
     Condition
       Error in `StreamingBody$new()`:
       ! `conn` must be a connection, not the number 1.
+    Code
+      StreamingBody$new(conn, 1)
+    Condition
+      Error in `StreamingBody$new()`:
+      ! `handle` must be a curl handle or `NULL`, not the number 1.
 

@@ -95,7 +95,20 @@ test_that("mocking works", {
 # StreamingBody --------------------------------------------------------------
 
 test_that("validates its input", {
+  conn <- rawConnection(charToRaw("a\nb\n"))
+  close(conn)
+
   expect_snapshot(error = TRUE, {
     StreamingBody$new(1)
+    StreamingBody$new(conn, 1)
   })
+})
+
+test_that("handle specific methods return NULL if no handle", {
+  conn <- rawConnection(charToRaw("a\nb\n"))
+  body <- StreamingBody$new(conn)
+  on.exit(body$close())
+
+  expect_equal(body$get_data(), NULL)
+  expect_equal(body$get_fdset(), NULL)
 })

@@ -110,7 +110,8 @@ to be read?)
 \if{latex}{\out{\hypertarget{method-StreamingBody-get_fdset}{}}}
 \subsection{Method \code{get_fdset()}}{
 Get the active file descriptions and timeout from the
-handle. Wrapper around \code{\link[curl:multi]{curl::multi_fdset()}}.
+handle. Wrapper around \code{\link[curl:multi]{curl::multi_fdset()}}. Returns \code{NULL} if handle
+not set.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{StreamingBody$get_fdset()}\if{html}{\out{</div>}}
 }
@@ -121,7 +122,7 @@ handle. Wrapper around \code{\link[curl:multi]{curl::multi_fdset()}}.
 \if{latex}{\out{\hypertarget{method-StreamingBody-get_data}{}}}
 \subsection{Method \code{get_data()}}{
 Get the response data from the handle. Wrapper
-around \code{\link[curl:curl_fetch]{curl::handle_data()}}.
+around \code{\link[curl:curl_fetch]{curl::handle_data()}}. Returns \code{NULL} if handle not set.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{StreamingBody$get_data()}\if{html}{\out{</div>}}
 }
