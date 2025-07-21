@@ -72,6 +72,7 @@ In either case, you will pass to the <code>body</code> argument of <code><a href
 <li><p><a href="#method-StreamingBody-read_all"><code>StreamingBody$read_all()</code></a></p></li>
 <li><p><a href="#method-StreamingBody-is_open"><code>StreamingBody$is_open()</code></a></p></li>
 <li><p><a href="#method-StreamingBody-is_complete"><code>StreamingBody$is_complete()</code></a></p></li>
+<li><p><a href="#method-StreamingBody-get_fdset"><code>StreamingBody$get_fdset()</code></a></p></li>
 <li><p><a href="#method-StreamingBody-close"><code>StreamingBody$close()</code></a></p></li>
 <li><p><a href="#method-StreamingBody-clone"><code>StreamingBody$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-StreamingBody-new"></a><div class="section">
@@ -140,10 +141,20 @@ to be read?)</p><div class="section">
 </div>
 
 
+</div><p></p><hr><a id="method-StreamingBody-get_fdset"></a><div class="section">
+<h3 id="method-get-fdset-">Method <code>get_fdset()</code><a class="anchor" aria-label="anchor" href="#method-get-fdset-"></a></h3>
+<p>Get the active file descriptions and timeout from the
+handle. Wrapper around <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::multi_fdset()</a></code>. Returns <code>NULL</code> if handle
+not set.</p><div class="section">
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">StreamingBody</span><span class="op">$</span><span class="fu">get_fdset</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-StreamingBody-close"></a><div class="section">
 <h3 id="method-close-">Method <code><a href="https://rdrr.io/r/base/connections.html" class="external-link">close()</a></code><a class="anchor" aria-label="anchor" href="#method-close-"></a></h3>
 <p>Close the connection</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">StreamingBody</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -151,7 +162,7 @@ to be read?)</p><div class="section">
 </div><p></p><hr><a id="method-StreamingBody-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">StreamingBody</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
