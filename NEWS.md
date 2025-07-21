@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `StreamingBody` now stores the handle so it can expose a `$get_fdset()` method (#776).
 * Colons in paths are no longer escaped.
 
 # httr2 1.2.0
