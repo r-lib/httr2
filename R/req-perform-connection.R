@@ -219,6 +219,12 @@ StreamingBody <- R6::R6Class(
       !isIncomplete(private$conn)
     },
 
+    #' @description Get the active file descriptions and timeout from the
+    #'   handle. Wrapper around [curl::multi_fdset()].
+    get_fdset = function() {
+      curl::multi_fdset(private$conn)
+    },
+
     #' @description Close the connection
     close = function() {
       if (self$is_open()) {
