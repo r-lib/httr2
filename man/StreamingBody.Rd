@@ -34,7 +34,7 @@ In either case, you will pass to the \code{body} argument of \code{\link[=new_re
 \subsection{Method \code{new()}}{
 Create a new object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{StreamingBody$new(conn, handle)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{StreamingBody$new(conn, handle = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -43,7 +43,9 @@ Create a new object
 \item{\code{conn}}{A connection, that is open and ready for reading.
 \code{StreamingBody} will take care of closing it.`}
 
-\item{\code{handle}}{A curl handle. Use to accesss data and file descriptors.}
+\item{\code{handle}}{Optionally, a curl handle. Use to accesss data and
+file descriptors. In most cases, this is optional when mocking a
+response.}
 }
 \if{html}{\out{</div>}}
 }

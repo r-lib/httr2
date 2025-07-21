@@ -78,7 +78,7 @@ test_that("mocking works", {
     expect_equal(req$policies$connection, TRUE)
     if (req$url == "https://ok") {
       conn <- rawConnection(charToRaw("a\nb\n"))
-      response(body = StreamingBody$new(conn, NULL))
+      response(body = StreamingBody$new(conn))
     } else {
       response(404)
     }
@@ -91,7 +91,6 @@ test_that("mocking works", {
 
   expect_error(req_perform_connection(req_404), class = "httr2_http_404")
 })
-
 
 # StreamingBody --------------------------------------------------------------
 

@@ -174,11 +174,22 @@ StreamingBody <- R6::R6Class(
     #' @description Create a new object
     #' @param conn A connection, that is open and ready for reading.
     #'   `StreamingBody` will take care of closing it.`
-    #' @param handle A curl handle. Use to accesss data and file descriptors.
-    initialize = function(conn, handle) {
+    #' @param handle Optionally, a curl handle. Use to accesss data and
+    #'   file descriptors. In most cases, this is optional when mocking a
+    #'   response.
+    initialize = function(conn, handle = NULL) {
       if (!inherits(conn, "connection")) {
         stop_input_type(conn, "a connection", call = caller_env())
       }
+      if (!inherits(handle, "curl_handle") && !is.null(handle)) {
+        stop_input_type(
+          handle,
+          "a curl handle",
+          allow_null = TRUE,
+          call = caller_env()
+        )
+      }
+
       private$conn <- conn
       private$handle <- handle
     },
@@ -223,13 +234,21 @@ StreamingBody <- R6::R6Class(
     #' @description Get the active file descriptions and timeout from the
     #'   handle. Wrapper around [curl::multi_fdset()].
     get_fdset = function() {
-      curl::multi_fdset(private$handle)
+      if (is.null(private$handle)) {
+        NULL
+      } else {
+        curl::multi_fdset(private$handle)
+      }
     },
 
     #' @description Get the response data from the handle. Wrapper
     #'   around [curl::handle_data()].
     get_data = function() {
-      curl::handle_data(private$handle)
+      if (is.null(private$handle)) {
+        NULL
+      } else {
+        curl::handle_data(private$handle)
+      }
     },
 
     #' @description Close the connection
