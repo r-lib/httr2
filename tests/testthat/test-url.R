@@ -101,6 +101,13 @@ test_that("encodes params and paths", {
   )
 })
 
+test_that("colons in paths are left as is", {
+  expect_equal(
+    url_modify("https://example.com", path = "a:b/foo bar/"),
+    "https://example.com/a:b/foo%20bar/"
+  )
+})
+
 test_that("checks various query formats", {
   url <- "http://example.com"
 

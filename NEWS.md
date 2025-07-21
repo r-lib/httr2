@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* Colons in paths are no longer escaped.
+
 # httr2 1.2.0
 
 ## Lifecycle changes
