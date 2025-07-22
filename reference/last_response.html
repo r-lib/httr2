@@ -15,7 +15,7 @@ the most recent request and response. They will error if not JSON."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> https://httr2.r-lib.org/</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/html</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (19266 bytes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: In memory (19168 bytes)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">.</span> <span class="op">&lt;-</span> <span class="fu"><a href="request.html">request</a></span><span class="op">(</span><span class="fu"><a href="example_url.html">example_url</a></span><span class="op">(</span><span class="st">"/post"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="req_body.html">req_body_json</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -130,8 +130,8 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   },</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "headers": {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:39179",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.2.0 r-curl/6.4.0 libcurl/8.5.0",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:44141",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.2.1 r-curl/6.4.0 libcurl/8.5.0",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept": "*/*",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept-Encoding": "deflate, gzip, br, zstd",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Content-Type": "application/json",</span>
@@ -144,7 +144,7 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "method": "post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "path": "/post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "origin": "127.0.0.1",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:39179/post"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:44141/post"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-in"><span><span class="fu">last_response_json</span><span class="op">(</span>pretty <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
@@ -153,8 +153,8 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "files": {},</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "form": {},</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "headers": {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:39179",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.2.0 r-curl/6.4.0 libcurl/8.5.0",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "Host": "127.0.0.1:44141",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     "User-Agent": "httr2/1.2.1 r-curl/6.4.0 libcurl/8.5.0",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept": "*/*",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Accept-Encoding": "deflate, gzip, br, zstd",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     "Content-Type": "application/json",</span>
@@ -167,7 +167,7 @@ don't have JSON bodies.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "method": "post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "path": "/post",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "origin": "127.0.0.1",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:39179/post"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "url": "http://127.0.0.1:44141/post"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 </code></pre></div>
     </div>

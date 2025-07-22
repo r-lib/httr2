@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,10 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.1" id="httr2-121">httr2 1.2.1<a class="anchor" aria-label="anchor" href="#httr2-121"></a></h2><p class="text-muted">CRAN release: 2025-07-22</p>
+<ul><li>Colons in paths are no longer escaped.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.0" id="httr2-120">httr2 1.2.0<a class="anchor" aria-label="anchor" href="#httr2-120"></a></h2><p class="text-muted">CRAN release: 2025-07-13</p>
 <div class="section level3">
 <h3 id="lifecycle-changes-1-2-0">Lifecycle changes<a class="anchor" aria-label="anchor" href="#lifecycle-changes-1-2-0"></a></h3>
@@ -55,15 +59,15 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-1-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0"></a></h3>
-<ul><li><p>Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can longer perform such requests that have been saved and reloaded (<a href="https://github.com/r-lib/httr2/issues/721" class="external-link">#721</a>).</p></li>
+<ul><li><p>Redacted headers are no longer serialized to disk. This is important since it makes it harder to accidentally leak secrets to files on disk, but comes at a cost: you can no longer perform such requests that have been saved and reloaded (<a href="https://github.com/r-lib/httr2/issues/721" class="external-link">#721</a>).</p></li>
 <li><p>URL construction is now powered by <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html" class="external-link">curl::curl_modify_url()</a></code>, and hence now (correctly) escapes the <code>path</code> component (<a href="https://github.com/r-lib/httr2/issues/732" class="external-link">#732</a>). This means that <code><a href="../reference/req_url.html">req_url_path()</a></code> now can only affect the path component of the URL, not the query params or fragment.</p></li>
 <li><p>New <code><a href="../reference/last_response.html">last_request_json()</a></code> and <code><a href="../reference/last_response.html">last_response_json()</a></code> to conveniently see JSON bodies (<a href="https://github.com/r-lib/httr2/issues/734" class="external-link">#734</a>).</p></li>
 <li><p>New <code><a href="../reference/req_get_url.html">req_get_url()</a></code>, <code><a href="../reference/req_get_method.html">req_get_method()</a></code>, <code><a href="../reference/req_get_headers.html">req_get_headers()</a></code>, <code>req_body_get_type()</code>, and <code><a href="../reference/req_get_body_type.html">req_get_body()</a></code> allow you to introspect a request object (<a href="https://github.com/r-lib/httr2/issues/718" class="external-link">#718</a>).</p></li>
 <li><p>New <code><a href="../reference/resp_timing.html">resp_timing()</a></code> exposes timing information about the request measured by libcurl (<a href="https://github.com/arcresu" class="external-link">@arcresu</a>, <a href="https://github.com/r-lib/httr2/issues/725" class="external-link">#725</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-improvements-bug-fixues-1-2-0">Minor improvements bug fixues<a class="anchor" aria-label="anchor" href="#minor-improvements-bug-fixues-1-2-0"></a></h3>
-<ul><li><p>Functions that capture interrutps (like <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> and friends) are now easier to escape if they’re called inside a loop: you can press Ctrl + C twice to guarantee an exit (<a href="https://github.com/r-lib/httr2/issues/1810" class="external-link">#1810</a>).</p></li>
+<h3 id="minor-improvements-and-bug-fixes-1-2-0">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-1-2-0"></a></h3>
+<ul><li><p>Functions that capture interrupts (like <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code> and friends) are now easier to escape if they’re called inside a loop: you can press Ctrl + C twice to guarantee an exit (<a href="https://github.com/r-lib/httr2/issues/1810" class="external-link">#1810</a>).</p></li>
 <li><p><code><a href="../reference/req_perform_iterative.html">req_perform_iterative()</a></code>, <code><a href="../reference/req_perform_sequential.html">req_perform_sequential()</a></code>, <code><a href="../reference/req_perform_parallel.html">req_perform_parallel()</a></code>, <code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code>, and <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> now support mocking (<a href="https://github.com/r-lib/httr2/issues/651" class="external-link">#651</a>). To mock the response from <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> create a response with the new <code>StreamingBody</code> for a body.</p></li>
 <li><p><code><a href="../reference/new_response.html">new_response()</a></code> is now exported (<a href="https://github.com/r-lib/httr2/issues/751" class="external-link">#751</a>).</p></li>
 <li><p><code><a href="../reference/req_body.html">req_body_json()</a></code> and <code><a href="../reference/req_body.html">req_body_form()</a></code> correctly unobfuscated inputs, as documented (<a href="https://github.com/r-lib/httr2/issues/754" class="external-link">#754</a>).</p></li>
