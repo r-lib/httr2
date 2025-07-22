@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.2.1
 
 * Colons in paths are no longer escaped.
