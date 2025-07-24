@@ -95,9 +95,6 @@ url_modify <- function(
     stop_input_type(url, "a string or parsed URL")
   }
   string_url <- is_string(url)
-  if (string_url) {
-    url <- url_parse(url)
-  }
 
   check_url_component(scheme)
   check_url_component(hostname)
@@ -130,11 +127,12 @@ url_modify <- function(
     fragment = fragment
   )
   new <- new[!map_lgl(new, leave_as_is)]
-  url[names(new)] <- new
 
   if (string_url) {
-    url_build(url)
+    new[map_lgl(new, is.null)] <- ""
+    url_build(structure(c(url = url, new), class = "httr2_url"))
   } else {
+    url[names(new)] <- new
     url
   }
 }
@@ -262,13 +260,16 @@ url_build <- function(url) {
     stop_input_type(url, "a parsed URL")
   }
 
-  if (length(url$query) == 0) {
+  if (is.null(url$query)) {
+    query <- NULL
+  } else if (length(url$query) == 0 || identical(url$query, "")) {
     query <- ""
   } else {
     query <- I(url_query_build(url$query))
   }
 
   url <- curl::curl_modify_url(
+    url = url$url,
     scheme = url$scheme,
     host = url$hostname,
     user = url$username,
