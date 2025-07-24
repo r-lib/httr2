@@ -95,7 +95,7 @@ and then performs the request in the background, returning program control befor
 is finished. See the
 <a href="https://rstudio.github.io/promises/articles/promises_01_motivation.html" class="external-link">promises package documentation</a>
 for more details on how to work with the resulting promise object.</p>
-<p>If using together with <code><a href="https://r-lib.github.io/later/reference/create_loop.html" class="external-link">later::with_temp_loop()</a></code> or other private event loops,
+<p>If using together with <code><a href="https://later.r-lib.org/reference/create_loop.html" class="external-link">later::with_temp_loop()</a></code> or other private event loops,
 a new curl pool made by <code><a href="https://jeroen.r-universe.dev/curl/reference/multi.html" class="external-link">curl::new_pool()</a></code> should be created for requests made
 within the loop to ensure that only these requests are being polled by the loop.</p>
 <p>Like with <code><a href="req_perform_parallel.html">req_perform_parallel()</a></code>, exercise caution when using this function;
