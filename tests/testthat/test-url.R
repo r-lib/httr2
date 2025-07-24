@@ -127,7 +127,7 @@ test_that("path always starts with /", {
   expect_equal(url_modify("https://x.com/abc", path = NULL), "https://x.com/")
 })
 
-test_that("escaped slashes are retained", {
+test_that("only modifies specified components", {
   url <- "http://x.com/a%2Fb/"
   expect_equal(url_modify(url), url)
   expect_equal(url_modify(url, query = list(x=1)), "http://x.com/a%2Fb/?x=1")
