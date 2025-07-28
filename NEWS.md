@@ -99,7 +99,7 @@
 * `req_headers_redacted()` now supports dynamic dots (#647).
 * `req_oauth_auth_code()` no longer adds trailing "/" characters to properly formed `redirect_uri` values (@jonthegeek, #646).
 * `req_perform_connection()` produces more helpful error messages when requests fail at the networking level.
-* `req_perform_parallel(pool)` now is deprecated in favour of a new `max_active` argument (#681).
+* `Breaking: the `pool` of `req_perform_parallel()` argument is deprecated in favor of the new `max_active argument (#681).
 * `req_user_agent()` memoizes the default user agent to improve performance, as computing version numbers is relatively slow (300 µs).
 * `resp_link_url()` once again respects the case insensitivity for header names (@DavidRLovell, #655).
 * `resp_stream_sse()` automatically retrieves the next event when the current event contains no data, and returns data as a single string (#650).
