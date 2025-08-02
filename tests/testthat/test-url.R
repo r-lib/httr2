@@ -133,6 +133,18 @@ test_that("only modifies specified components", {
   expect_equal(url_modify(url, query = list(x=1)), "http://x.com/a%2Fb/?x=1")
 })
 
+test_that("appending to path does not normalise encoding", {
+  req <- request("http://x.com/a%2Fb/")
+  expect_equal(
+    req_url_path_append(req, "foo/bar")$url,
+    "http://x.com/a%2Fb/foo/bar"
+  )
+  expect_equal(
+    req_url_path_append(req, "foo%2Fbar")$url,
+    "http://x.com/a%2Fb/foo%2Fbar"
+  )
+})
+
 # relative url ------------------------------------------------------------
 
 test_that("can set relative urls", {
