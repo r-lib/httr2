@@ -60,6 +60,9 @@ test_that("httr2_translate() works with file bodies", {
   path <- tempfile()
   writeLines("test content", path)
 
+  # normalize the path
+  path <- normalizePath(path)
+
   expect_snapshot(
     {
       request("https://httpbin.org/post") |>
@@ -67,7 +70,7 @@ test_that("httr2_translate() works with file bodies", {
         httr2_translate()
     },
     transform = function(x) {
-      gsub(path, "<tempfile>", x, fixed = TRUE)
+      gsub(dirname(path), "<tempfile>", x, fixed = TRUE)
     }
   )
 })
@@ -94,6 +97,12 @@ test_that("httr2_translate() works with options", {
 test_that("httr2_translate() works with cookies", {
   cookie_file <- tempfile()
 
+  # create the tempfile
+  file.create(cookie_file)
+
+  # normalize the path
+  cookie_file <- normalizePath(cookie_file)
+
   expect_snapshot(
     {
       request("https://httpbin.org/cookies") |>
@@ -101,7 +110,7 @@ test_that("httr2_translate() works with cookies", {
         httr2_translate()
     },
     transform = function(x) {
-      gsub(cookie_file, "<cookie-file>", x, fixed = TRUE)
+      gsub(dirname(cookie_file), "<cookie-file>", x, fixed = TRUE)
     }
   )
 })
