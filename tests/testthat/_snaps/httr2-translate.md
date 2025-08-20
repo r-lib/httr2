@@ -57,7 +57,7 @@
     Code
       httr2_translate(req_body_file(request("https://httpbin.org/post"), path, type = "text/plain"))
     Output
-      [1] "curl -X POST \\\n  -H \"Content-Type: text/plain\" \\\n  --data-binary \"@<tempfile>/file123d32a1a3f82\" \\\n  \"https://httpbin.org/post\""
+      [1] "curl -X POST \\\n  -H \"Content-Type: text/plain\" \\\n  --data-binary \"@<tempfile>\" \\\n  \"https://httpbin.org/post\""
 
 # httr2_translate() works with custom content types
 
@@ -81,7 +81,7 @@
       httr2_translate(req_options(request("https://httpbin.org/cookies"), cookiejar = cookie_file,
       cookiefile = cookie_file))
     Output
-      [1] "curl --cookie-jar \"<cookie-file>/file123d315b9cab\" \\\n  --cookie \"<cookie-file>/file123d315b9cab\" \\\n  \"https://httpbin.org/cookies\""
+      [1] "curl --cookie-jar \"<cookie-file>\" \\\n  --cookie \"<cookie-file>\" \\\n  \"https://httpbin.org/cookies\""
 
 # httr2_translate() works with obfuscated values in headers
 

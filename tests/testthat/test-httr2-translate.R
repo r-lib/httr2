@@ -70,7 +70,7 @@ test_that("httr2_translate() works with file bodies", {
         httr2_translate()
     },
     transform = function(x) {
-      gsub(dirname(path), "<tempfile>", x, fixed = TRUE)
+      gsub(path, "<tempfile>", x, fixed = TRUE)
     }
   )
 })
@@ -110,7 +110,7 @@ test_that("httr2_translate() works with cookies", {
         httr2_translate()
     },
     transform = function(x) {
-      gsub(dirname(cookie_file), "<cookie-file>", x, fixed = TRUE)
+      gsub(cookie_file, "<cookie-file>", x, fixed = TRUE)
     }
   )
 })
