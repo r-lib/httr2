@@ -61,7 +61,7 @@ test_that("httr2_translate() works with file bodies", {
   writeLines("test content", path)
 
   # normalize the path
-  path <- normalizePath(path)
+  path <- normalizePath(path, winslash = "/")
 
   expect_snapshot(
     {
@@ -101,7 +101,7 @@ test_that("httr2_translate() works with cookies", {
   file.create(cookie_file)
 
   # normalize the path
-  cookie_file <- normalizePath(cookie_file)
+  cookie_file <- normalizePath(cookie_file, winslash = "/")
 
   expect_snapshot(
     {
