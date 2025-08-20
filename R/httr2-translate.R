@@ -52,27 +52,27 @@ httr2_translate <- function(.req) {
     headers <- .req$headers
     for (name in names(headers)) {
       value <- headers[[name]]
-      
-      # Handle weak references first
+
+      # handle weakrefs
       if (rlang::is_weakref(value)) {
         value <- rlang::wref_value(value)
       }
-      
-      # Handle obfuscated values by revealing them
+
+      # unobfuscate obfuscated
       if (is_obfuscated(value)) {
         value <- unobfuscate(value, handle = "reveal")
       }
-      
+
       cmd_parts <- c(cmd_parts, paste0('-H "', name, ': ', value, '"'))
     }
   }
 
-  # Handle options (curl options like timeout, proxy, etc.)
+  # manage options
   if (!is.null(.req$options) && length(.req$options) > 0) {
     options <- .req$options
     for (name in names(options)) {
       value <- options[[name]]
-      # Convert common curl options to curl command flags
+      # convert options to curl flags
       curl_flag <- switch(
         name,
         "timeout" = paste0("--max-time ", value),
@@ -85,7 +85,7 @@ httr2_translate <- function(.req) {
         "verbose" = if (value) "--verbose" else NULL,
         "cookiejar" = paste0('--cookie-jar "', value, '"'),
         "cookiefile" = paste0('--cookie "', value, '"'),
-        # For unknown options, create a generic --option format
+        # for unknown options try guess the flag if it was the intention
         paste0("--", gsub("_", "-", name), " ", value)
       )
       if (!is.null(curl_flag)) {
@@ -94,7 +94,6 @@ httr2_translate <- function(.req) {
     }
   }
 
-  # Handle body data if present
   if (!is.null(.req$body)) {
     body_type <- .req$body$type %||% "empty"
     # if content_type set here we use it
@@ -109,7 +108,7 @@ httr2_translate <- function(.req) {
       }
     }
 
-    # Add content-type header if we have one and it's not already set
+    # add content-type header if we have one and it's not already set
     if (!is.null(content_type)) {
       if (
         is.null(.req$headers) ||
@@ -164,12 +163,12 @@ httr2_translate <- function(.req) {
 
   cmd_parts <- c(cmd_parts, paste0('"', url, '"'))
 
-  # Join all parts with proper formatting
+  # join all parts with proper formatting
   if (length(cmd_parts) <= 2) {
-    # Simple commands on one line
     paste(cmd_parts, collapse = " ")
   } else {
-    # Multi-line format with continuation - but keep first part on same line as 'curl'
+    # need to ensure that "curl" isn't on its own line
+    # for compatibility with curl_translate()
     first_part <- paste(cmd_parts[1:2], collapse = " ")
     remaining_parts <- cmd_parts[-(1:2)]
 

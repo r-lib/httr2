@@ -16,7 +16,10 @@ test_that("httr2_translate() works with POST methods", {
 test_that("httr2_translate() works with headers", {
   expect_snapshot({
     request("https://httpbin.org/get") |>
-      req_headers("Accept" = "application/json", "User-Agent" = "httr2/1.0") |>
+      req_headers(
+        "Accept" = "application/json",
+        "User-Agent" = "httr2/1.0"
+      ) |>
       httr2_translate()
   })
 })
@@ -56,7 +59,7 @@ test_that("httr2_translate() works with string bodies", {
 test_that("httr2_translate() works with file bodies", {
   path <- tempfile()
   writeLines("test content", path)
-  
+
   expect_snapshot(
     {
       request("https://httpbin.org/post") |>
@@ -72,7 +75,10 @@ test_that("httr2_translate() works with file bodies", {
 test_that("httr2_translate() works with custom content types", {
   expect_snapshot({
     request("https://httpbin.org/post") |>
-      req_body_json(list(test = "data"), type = "application/vnd.api+json") |>
+      req_body_json(
+        list(test = "data"),
+        type = "application/vnd.api+json"
+      ) |>
       httr2_translate()
   })
 })
@@ -87,7 +93,7 @@ test_that("httr2_translate() works with options", {
 
 test_that("httr2_translate() works with cookies", {
   cookie_file <- tempfile()
-  
+
   expect_snapshot(
     {
       request("https://httpbin.org/cookies") |>
@@ -123,7 +129,7 @@ test_that("httr2_translate() works with obfuscated values in form body", {
   expect_snapshot({
     request("https://httpbin.org/post") |>
       req_body_form(
-        username = "test", 
+        username = "test",
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
       ) |>
       httr2_translate()
