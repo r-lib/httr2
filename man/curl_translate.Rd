@@ -44,3 +44,6 @@ curl_translate("curl http://example.com -X DELETE")
 curl_translate("curl http://example.com --header A:1 --header B:2")
 curl_translate("curl http://example.com --verbose")
 }
+\seealso{
+\code{\link[=req_as_curl]{req_as_curl()}}
+}

@@ -1,62 +1,62 @@
-test_that("httr2_translate() works with basic GET requests", {
+test_that("req_as_curl() works with basic GET requests", {
   expect_snapshot({
-    request("https://httpbin.org/get") |>
-      httr2_translate()
+    request("https://hb.cran.dev/get") |>
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with POST methods", {
+test_that("req_as_curl() works with POST methods", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_method("POST") |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with headers", {
+test_that("req_as_curl() works with headers", {
   expect_snapshot({
-    request("https://httpbin.org/get") |>
+    request("https://hb.cran.dev/get") |>
       req_headers(
         "Accept" = "application/json",
         "User-Agent" = "httr2/1.0"
       ) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with JSON bodies", {
+test_that("req_as_curl() works with JSON bodies", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_json(list(name = "test", value = 123)) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with form bodies", {
+test_that("req_as_curl() works with form bodies", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_form(name = "test", value = "123") |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with multipart bodies", {
+test_that("req_as_curl() works with multipart bodies", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_multipart(name = "test", value = "123") |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with string bodies", {
+test_that("req_as_curl() works with string bodies", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_raw("test data", type = "text/plain") |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with file bodies", {
+test_that("req_as_curl() works with file bodies", {
   path <- tempfile()
   writeLines("test content", path)
 
@@ -65,9 +65,9 @@ test_that("httr2_translate() works with file bodies", {
 
   expect_snapshot(
     {
-      request("https://httpbin.org/post") |>
+      request("https://hb.cran.dev/post") |>
         req_body_file(path, type = "text/plain") |>
-        httr2_translate()
+        req_as_curl()
     },
     transform = function(x) {
       gsub(path, "<tempfile>", x, fixed = TRUE)
@@ -75,26 +75,26 @@ test_that("httr2_translate() works with file bodies", {
   )
 })
 
-test_that("httr2_translate() works with custom content types", {
+test_that("req_as_curl() works with custom content types", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_json(
         list(test = "data"),
         type = "application/vnd.api+json"
       ) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with options", {
+test_that("req_as_curl() works with options", {
   expect_snapshot({
-    request("https://httpbin.org/get") |>
+    request("https://hb.cran.dev/get") |>
       req_options(timeout = 30, verbose = TRUE, ssl_verifypeer = FALSE) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with cookies", {
+test_that("req_as_curl() works with cookies", {
   cookie_file <- tempfile()
 
   # create the tempfile
@@ -105,9 +105,9 @@ test_that("httr2_translate() works with cookies", {
 
   expect_snapshot(
     {
-      request("https://httpbin.org/cookies") |>
+      request("https://hb.cran.dev/cookies") |>
         req_options(cookiejar = cookie_file, cookiefile = cookie_file) |>
-        httr2_translate()
+        req_as_curl()
     },
     transform = function(x) {
       gsub(cookie_file, "<cookie-file>", x, fixed = TRUE)
@@ -115,37 +115,37 @@ test_that("httr2_translate() works with cookies", {
   )
 })
 
-test_that("httr2_translate() works with obfuscated values in headers", {
+test_that("req_as_curl() works with obfuscated values in headers", {
   expect_snapshot({
-    request("https://httpbin.org/get") |>
+    request("https://hb.cran.dev/get") |>
       req_headers("Authorization" = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with obfuscated values in JSON body", {
+test_that("req_as_curl() works with obfuscated values in JSON body", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_json(list(
         username = "test",
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
       )) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with obfuscated values in form body", {
+test_that("req_as_curl() works with obfuscated values in form body", {
   expect_snapshot({
-    request("https://httpbin.org/post") |>
+    request("https://hb.cran.dev/post") |>
       req_body_form(
         username = "test",
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
       ) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with complex requests", {
+test_that("req_as_curl() works with complex requests", {
   expect_snapshot({
     request("https://api.github.com/user/repos") |>
       req_method("POST") |>
@@ -160,19 +160,19 @@ test_that("httr2_translate() works with complex requests", {
         private = TRUE
       )) |>
       req_options(timeout = 60) |>
-      httr2_translate()
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() works with simple requests (single line)", {
+test_that("req_as_curl() works with simple requests (single line)", {
   expect_snapshot({
-    request("https://httpbin.org/get") |>
-      httr2_translate()
+    request("https://hb.cran.dev/get") |>
+      req_as_curl()
   })
 })
 
-test_that("httr2_translate() validates input", {
+test_that("req_as_curl() validates input", {
   expect_snapshot(error = TRUE, {
-    httr2_translate("not a request")
+    req_as_curl("not a request")
   })
 })

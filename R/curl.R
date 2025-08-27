@@ -24,6 +24,7 @@
 #'   was copied from the clipboard, the translation will be copied back
 #'   to the clipboard.
 #' @export
+#' @seealso [req_as_curl()]
 #' @examples
 #' curl_translate("curl http://example.com")
 #' curl_translate("curl http://example.com -X DELETE")
