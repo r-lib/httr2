@@ -211,7 +211,7 @@ oauth_cache_path <- function() {
     return(path)
   }
 
-  rappdirs::user_cache_dir("httr2")
+  tools::R_user_dir("httr2", which = "cache")
 }
 
 
