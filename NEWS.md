@@ -1,7 +1,7 @@
 # httr2 (development version)
 
 * Refactor `url_modify()` to better retain exact formatting of URL components 
-  that are not modified. (#788)
+  that are not modified. (#788, #794)
 
 # httr2 1.2.1
 
