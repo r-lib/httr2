@@ -73,7 +73,7 @@ test_that("can send file with redirect", {
   path <- tempfile()
   writeChar(str, path)
 
-  resp <- request_test("/redirect-to") %>%
+  resp <- request_test("/redirect-to") |>
     req_url_query(url = "/post", status_code = "307") |>
     req_body_file(path, type = "text/plain") |>
     req_perform()
