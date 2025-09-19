@@ -102,11 +102,11 @@ popular web services, but it’s fundamentally designed for a different
 use case. This means that while httr2 can make the interactive
 experience pretty seamless, unattended usage (i.e. on CI or in an
 automated script) is usually going to include some pain.</p>
-<p>This vignette builds on the techniques discussed in
-<code>vignette("wrapping-apis")</code>, so I recommend you read that
-vignette first. I’ll also assume that you’re working in a package, since
-most people want to wrap up an API into a bunch of R functions, but most
-of the ideas will also apply if you’re creating a one-off script.</p>
+<p>This vignette builds on the techniques discussed in vignette <a href="https://httr2.r-lib.org/articles/wrapping-apis.html">Wrapping
+APIs</a>, so I recommend you read that vignette first. I’ll also assume
+that you’re working in a package, since most people want to wrap up an
+API into a bunch of R functions, but most of the ideas will also apply
+if you’re creating a one-off script.</p>
 <div class="section level2">
 <h2 id="oauth-basics">OAuth basics<a class="anchor" aria-label="anchor" href="#oauth-basics"></a>
 </h2>
@@ -235,7 +235,7 @@ paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
 your client specification.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("2knqnrfcZWhcefYMLxMd7kUb4XnUJA")</span></span></code></pre></div>
+<span><span class="co">#&gt; obfuscated("7KgPm1VydbPrV1-cvo1p66pP3VWVDw")</span></span></code></pre></div>
 <p>Here’s what a complete client specification for GitHub looks like,
 using a real app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
