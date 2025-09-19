@@ -291,7 +291,7 @@
 
 ## OAuth features
 
-* A new `vignette("oauth")` gives many more details about how OAuth works and
+* A new [OAuth vignette](https://httr2.r-lib.org/articles/oauth.html) gives many more details about how OAuth works and
   how to use it with httr2 (#234), and the OAuth docs have been overhauled to
   make it more clear that you should use `req_oauth_*()`, not `oauth_*()` (#330).
 
