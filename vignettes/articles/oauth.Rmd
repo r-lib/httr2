@@ -23,7 +23,7 @@ You'll notice none of these common scenarios quite match to using an R package t
 OAuth gives you the incredible power to extract data from popular web services, but it's fundamentally designed for a different use case.
 This means that while httr2 can make the interactive experience pretty seamless, unattended usage (i.e. on CI or in an automated script) is usually going to include some pain.
 
-This vignette builds on the techniques discussed in `vignette("wrapping-apis")`, so I recommend you read that vignette first.
+This vignette builds on the techniques discussed in vignette [Wrapping APIs](https://httr2.r-lib.org/articles/wrapping-apis.html), so I recommend you read that vignette first.
 I'll also assume that you're working in a package, since most people want to wrap up an API into a bunch of R functions, but most of the ideas will also apply if you're creating a one-off script.
 
 ## OAuth basics

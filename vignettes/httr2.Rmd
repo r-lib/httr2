@@ -200,4 +200,4 @@ These include:
 
 -   `req_retry()` sets up a retry strategy so that if the request either fails or you get a transient HTTP error, it'll automatically retry after a short delay.
 
-For more details see their documentation, as well as examples of the usage in real APIs in `vignette("wrapping-apis")`.
+For more details see their documentation, as well as examples of the usage in real APIs in the [Wrapping APIs](https://httr2.r-lib.org/articles/wrapping-apis.html) article.
