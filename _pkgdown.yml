@@ -76,6 +76,7 @@ reference:
   - title: Miscellaneous helpers
     contents:
       - curl_translate
+      - httr2_translate
       - is_online
 
   - title: OAuth
@@ -88,7 +89,7 @@ reference:
   - title: Developer tooling
     desc: >
       These functions are useful when developing packges that use httr2.
-    
+
   - subtitle: Keeping secrets
     contents:
       - obfuscate
