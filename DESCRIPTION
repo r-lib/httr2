@@ -29,6 +29,7 @@ Imports:
     withr
 Suggests:
     askpass,
+    beepr,
     bench,
     clipr,
     covr,
@@ -54,4 +55,4 @@ Config/testthat/parallel: true
 Config/testthat/start-first: resp-stream, req-perform
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

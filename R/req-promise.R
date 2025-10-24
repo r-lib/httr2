@@ -129,8 +129,10 @@ ensure_pool_poller <- function(pool) {
             exceptfds = fds$exceptions,
             timeout = fds$timeout
           )
+          beepr::beep(1)
         } else {
           monitor$ending()
+          beepr::beep(2)
         }
       },
       error = function(cnd) {
