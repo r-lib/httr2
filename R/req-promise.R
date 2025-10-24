@@ -117,7 +117,7 @@ ensure_pool_poller <- function(pool, reject) {
   }
 
   poll_pool <- function(ready) {
-    tryCatch(
+    withCallingHandlers(
       {
         status <- curl::multi_run(0, pool = pool)
         if (status$pending > 0) {
@@ -135,7 +135,6 @@ ensure_pool_poller <- function(pool, reject) {
       },
       error = function(cnd) {
         monitor$ending()
-        reject(cnd)
       }
     )
   }
