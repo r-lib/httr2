@@ -106,11 +106,11 @@ req_perform_promise <- function(
       mock = mock
     )
     pooled_req$submit(pool)
-    ensure_pool_poller(pool, reject)
+    ensure_pool_poller(pool)
   })
 }
 
-ensure_pool_poller <- function(pool, reject) {
+ensure_pool_poller <- function(pool) {
   monitor <- pool_poller_monitor(pool)
   if (monitor$already_going()) {
     return()
