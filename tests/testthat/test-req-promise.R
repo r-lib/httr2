@@ -176,6 +176,7 @@ test_that("tracing works as expected", {
   skip_if_not_installed("otelsdk")
 
   spans <- otelsdk::with_otel_record({
+    otel_refresh_tracer("httr2")
     # A request with no URL (which shouldn't create a span).
     try(req_perform_promise(request("")), silent = TRUE)
 
@@ -211,6 +212,8 @@ test_that("tracing works as expected", {
       "traceparent" %in% names(resp_body_json(resp)[["headers"]])
     )
   })[["traces"]]
+  # reset tracer after tests
+  otel_refresh_tracer("httr2")
 
   expect_length(spans, 5L)
 

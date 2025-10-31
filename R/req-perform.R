@@ -190,7 +190,7 @@ req_perform1 <- function(
   the$last_request <- req
   the$last_response <- NULL
   signal(class = "httr2_perform")
-  if (is_tracing()) {
+  if (otel_is_tracing) {
     # Note: we need to do this before we call handle_preflight() so that request
     # signing works correctly with the added headers.
     req_prep <- req_with_span(req_prep, resend_count = resend_count)

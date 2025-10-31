@@ -66,7 +66,7 @@ PooledRequest <- R6Class(
 
       private$req_prep <- req_prepare(req)
       private$handle <- req_handle(private$req_prep)
-      if (is_tracing()) {
+      if (otel_is_tracing) {
         # Note: we need to do this before we call handle_preflight() so that
         # request signing works correctly with the added headers.
         #

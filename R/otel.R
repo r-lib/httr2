@@ -1,3 +1,7 @@
+otel_tracer_name <- "org.r-lib.httr2"
+otel_tracer <- NULL
+otel_is_tracing <- FALSE
+
 # Attaches an Open Telemetry span that abides by the semantic conventions for
 # HTTP clients to the request, including the associated W3C trace context
 # headers.
@@ -6,11 +10,11 @@
 req_with_span <- function(
   req,
   resend_count = 0,
-  tracer = get_tracer(),
+  tracer = otel_tracer,
   activation_scope = parent.frame(),
   activate = TRUE
 ) {
-  if (!is_tracing(tracer)) {
+  if (!tracer_enabled(tracer)) {
     cli::cli_abort(
       "Cannot create request span; tracing is not enabled",
       .internal = TRUE
@@ -93,22 +97,24 @@ req_record_span_status <- function(req, resp = NULL) {
   }
 }
 
-get_tracer <- function() {
-  if (!is.null(the$tracer)) {
-    return(the$tracer)
-  }
-  if (!is_installed("otel")) {
-    return(NULL)
-  }
-  if (is_testing()) {
-    # Don't cache the tracer in unit tests. It interferes with tracer provider
-    # injection in otelsdk::with_otel_record().
-    return(otel::get_tracer("httr2"))
-  }
-  the$tracer <- otel::get_tracer("httr2")
-  the$tracer
+otel_cache_tracer <- function() {
+  requireNamespace("otel", quietly = TRUE) || return()
+  otel_tracer <<- otel::get_tracer(otel_tracer_name)
+  otel_is_tracing <<- tracer_enabled(otel_tracer)
 }
 
-is_tracing <- function(tracer = get_tracer()) {
-  !is.null(tracer) && tracer$is_enabled()
+tracer_enabled <- function(tracer) {
+  .subset2(tracer, "is_enabled")()
+}
+
+otel_refresh_tracer <- function(pkgname) {
+  requireNamespace("otel", quietly = TRUE) || return()
+  ns <- getNamespace(pkgname)
+  do.call(unlockBinding, list("otel_is_tracing", ns)) # do.call for R CMD Check
+  do.call(unlockBinding, list("otel_tracer", ns))
+  otel_tracer <- otel::get_tracer()
+  ns[["otel_is_tracing"]] <- tracer_enabled(otel_tracer)
+  ns[["otel_tracer"]] <- otel_tracer
+  lockBinding("otel_is_tracing", ns)
+  lockBinding("otel_tracer", ns)
 }
