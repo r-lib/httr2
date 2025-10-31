@@ -335,6 +335,72 @@ test_that("mocking works", {
   expect_s3_class(resps[[2]], "httr2_http_404")
 })
 
+# otel -----------------------------------------------------------------------
+
+test_that("tracing works as expected", {
+  skip_if_not_installed("otelsdk")
+
+  spans <- otelsdk::with_otel_record({
+    otel_refresh_tracer("httr2")
+    # A request with no URL (which shouldn't create a span).
+    try(req_perform_parallel(list(request(""))), silent = TRUE)
+
+    # A request with an HTTP error.
+    try(
+      req_perform_parallel(list(request_test("/status/:status", status = 404))),
+      silent = TRUE
+    )
+
+    # A request with a curl error.
+    with_mocked_bindings(
+      try(req_perform(request("http://127.0.0.1")), silent = TRUE),
+      curl_fetch = function(...) abort("Failed to connect")
+    )
+
+    # Three regular requests, nested inside a parent span.
+    parent <- otel::start_span("parent", tracer = "test")
+    otel::with_active_span(parent, {
+      resp <- req_perform_parallel(list(
+        request_test("/headers"),
+        request_test("/headers"),
+        request_test("/headers")
+      ))
+    })
+    parent$end()
+
+    # Verify that context propagation works as expected.
+    expect_true(
+      "traceparent" %in% names(resp_body_json(resp[[1]])[["headers"]])
+    )
+  })[["traces"]]
+
+  # reset tracer after tests
+  otel_refresh_tracer("httr2")
+
+  expect_length(spans, 6L)
+
+  # And for requests with HTTP errors.
+  expect_equal(spans[[1]]$status, "error")
+  expect_equal(spans[[1]]$description, "Not Found")
+  expect_equal(spans[[1]]$attributes$http.response.status_code, 404L)
+  expect_equal(spans[[1]]$attributes$error.type, "404")
+
+  # And for spans with curl errors.
+  expect_equal(spans[[2]]$status, "error")
+  expect_equal(spans[[2]]$attributes$error.type, "rlang_error")
+
+  # We should have attached the curl error as an event.
+  expect_length(spans[[2]]$events, 1L)
+  expect_equal(spans[[2]]$events[[1]]$name, "exception")
+
+  # Verify that the parent span is the same for parallel requests (that is,
+  # they are siblings).
+  expect_equal(spans[[3]]$parent, spans[[6]]$span_id)
+  expect_equal(spans[[4]]$parent, spans[[6]]$span_id)
+  expect_equal(spans[[5]]$parent, spans[[6]]$span_id)
+  expect_equal(spans[[6]]$parent, "0000000000000000")
+})
+
 # Pool helpers ----------------------------------------------------------------
 
 test_that("wait for deadline waits after pool complete", {

@@ -219,3 +219,100 @@ test_that("checks input types", {
     req_perform(req, mock = 7)
   })
 })
+
+# otel -----------------------------------------------------------------------
+
+test_that("tracing works as expected", {
+  skip_if_not_installed("otelsdk")
+
+  spans <- otelsdk::with_otel_record({
+    otel_refresh_tracer("httr2")
+    # A request with no URL (which shouldn't create a span).
+    try(req_perform(request("")), silent = TRUE)
+
+    # A regular request.
+    resp <- req_perform(request_test("/headers"))
+
+    # Verify that context propagation works as expected.
+    expect_true("traceparent" %in% names(resp_body_json(resp)[["headers"]]))
+
+    # A request with an HTTP error.
+    try(
+      req_perform(request_test("/status/:status", status = 404)),
+      silent = TRUE
+    )
+
+    # A request with basic credentials that we should redact.
+    parsed <- url_parse(example_url())
+    parsed$username <- "user"
+    parsed$password <- "secret"
+    req_perform(request(url_build(parsed)))
+
+    # A request with a curl error.
+    with_mocked_bindings(
+      try(req_perform(request("http://127.0.0.1")), silent = TRUE),
+      curl_fetch = function(...) abort("Failed to connect")
+    )
+
+    # A request that triggers retries, generating three individual spans.
+    request_test("/status/:status", status = 429) |>
+      req_retry(max_tries = 3, backoff = ~0) |>
+      req_perform() |>
+      try(silent = TRUE)
+  })[["traces"]]
+
+  # reset tracer after tests
+  otel_refresh_tracer("httr2")
+
+  expect_length(spans, 7L)
+
+  # Validate the span for regular requests.
+  expect_equal(spans[[1]]$status, "ok")
+  expect_named(
+    spans[[1]]$attributes,
+    c(
+      "http.response.status_code",
+      "user_agent.original",
+      "url.full",
+      "server.address",
+      "server.port",
+      "http.request.method"
+    ),
+    ignore.order = TRUE
+  )
+  expect_equal(spans[[1]]$attributes$http.request.method, "GET")
+  expect_equal(spans[[1]]$attributes$http.response.status_code, 200L)
+  expect_equal(spans[[1]]$attributes$server.address, "127.0.0.1")
+  expect_match(spans[[1]]$attributes$user_agent.original, "^httr2/")
+
+  # And for requests with HTTP errors.
+  expect_equal(spans[[2]]$status, "error")
+  expect_equal(spans[[2]]$description, "Not Found")
+  expect_equal(spans[[2]]$attributes$http.response.status_code, 404L)
+  expect_equal(spans[[2]]$attributes$error.type, "404")
+
+  # And for spans with redacted credentials.
+  expect_match(
+    spans[[3]]$attributes$url.full,
+    regexp = "http://REDACTED:REDACTED@127.0.0.1:[0-9]+/",
+  )
+
+  # And for spans with curl errors.
+  expect_equal(spans[[4]]$status, "error")
+  expect_equal(spans[[4]]$attributes$error.type, "rlang_error")
+
+  # We should have attached the curl error as an event.
+  expect_length(spans[[4]]$events, 1L)
+  expect_equal(spans[[4]]$events[[1]]$name, "exception")
+
+  # For spans with retries, we expect the parent context to be the same for
+  # each span. (In this case, there is no parent span, so it should be empty.)
+  # It is important that they not be children of one another.
+  expect_equal(spans[[5]]$parent, "0000000000000000")
+  expect_equal(spans[[6]]$parent, "0000000000000000")
+  expect_equal(spans[[7]]$parent, "0000000000000000")
+
+  # Verify that we set resend counts correctly.
+  expect_equal(spans[[6]]$attributes$http.request.resend_count, 2L)
+  expect_equal(spans[[7]]$attributes$http.request.resend_count, 3L)
+})

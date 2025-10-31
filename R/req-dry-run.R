@@ -61,7 +61,7 @@ req_dry_run <- function(
 
   req <- req_prepare(req)
   handle <- req_handle(req)
-  curl::handle_setopt(handle, url = req$url)
+  handle_preflight(req, handle)
   resp <- curl::curl_echo(handle, progress = FALSE)
   headers <- new_headers(
     as.list(resp$headers),

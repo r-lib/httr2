@@ -169,3 +169,72 @@ test_that("mocking works", {
     class = "httr2_http_404"
   )
 })
+
+# otel -----------------------------------------------------------------------
+
+test_that("tracing works as expected", {
+  skip_if_not_installed("otelsdk")
+  skip_on_os("windows")
+
+  spans <- otelsdk::with_otel_record({
+    otel_refresh_tracer("httr2")
+    # A request with no URL (which shouldn't create a span).
+    try(req_perform_promise(request("")), silent = TRUE)
+
+    # A request with an HTTP error.
+    p <- req_perform_promise(request_test("/status/:status", status = 404))
+    try(extract_promise(p), silent = TRUE)
+
+    # A request with a curl error.
+    with_mocked_bindings(
+      {
+        p <- req_perform_promise(request("http://127.0.0.1"))
+        try(extract_promise(p), silent = TRUE)
+      },
+      curl_fetch = function(...) abort("Failed to connect")
+    )
+
+    # A request with no parent context.
+    p <- req_perform_promise(request_test("/headers"))
+
+    # A request nested inside a parent span.
+    parent <- otel::start_span("parent", tracer = "test")
+    otel::with_active_span(parent, {
+      child <- req_perform_promise(request_test())
+      # Resolve the earlier request with a different session; this should not
+      # affect its parent.
+      resp <- extract_promise(p)
+    })
+    extract_promise(child)
+    parent$end()
+
+    # Verify that context propagation works as expected.
+    expect_true(
+      "traceparent" %in% names(resp_body_json(resp)[["headers"]])
+    )
+  })[["traces"]]
+  # reset tracer after tests
+  otel_refresh_tracer("httr2")
+
+  expect_length(spans, 5L)
+
+  # And for requests with HTTP errors.
+  expect_equal(spans[[1]]$status, "error")
+  expect_equal(spans[[1]]$description, "Not Found")
+  expect_equal(spans[[1]]$attributes$http.response.status_code, 404L)
+  expect_equal(spans[[1]]$attributes$error.type, "404")
+
+  # And for spans with curl errors.
+  expect_equal(spans[[2]]$status, "error")
+  expect_equal(spans[[2]]$attributes$error.type, "curl_error_couldnt_connect")
+
+  # We should have attached the curl error as an event.
+  expect_length(spans[[2]]$events, 1L)
+  expect_equal(spans[[2]]$events[[1]]$name, "exception")
+
+  # Verify that the spans for requests resolved later still have the parent
+  # context in which they were submitted.
+  expect_equal(spans[[3]]$parent, "0000000000000000")
+  expect_equal(spans[[4]]$parent, spans[[5]]$span_id)
+  expect_equal(spans[[5]]$parent, "0000000000000000")
+})
