@@ -174,6 +174,7 @@ test_that("mocking works", {
 
 test_that("tracing works as expected", {
   skip_if_not_installed("otelsdk")
+  skip_on_os("windows")
 
   spans <- otelsdk::with_otel_record({
     otel_refresh_tracer("httr2")

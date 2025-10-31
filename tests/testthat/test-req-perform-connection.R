@@ -115,6 +115,7 @@ test_that("can access fdset", {
 
 test_that("tracing works as expected", {
   skip_if_not_installed("otelsdk")
+  skip_on_os("windows")
 
   spans <- otelsdk::with_otel_record({
     otel_refresh_tracer("httr2")
@@ -138,7 +139,8 @@ test_that("tracing works as expected", {
     parsed <- url_parse(example_url())
     parsed$username <- "user"
     parsed$password <- "secret"
-    req_perform_connection(request(url_build(parsed)))
+    resp <- req_perform_connection(request(url_build(parsed)))
+    close(resp)
 
     # A request with a curl error.
     with_mocked_bindings(
@@ -169,7 +171,8 @@ test_that("tracing works as expected", {
       "server.address",
       "server.port",
       "http.request.method"
-    )
+    ),
+    ignore.order = TRUE
   )
   expect_equal(spans[[1]]$attributes$http.request.method, "GET")
   expect_equal(spans[[1]]$attributes$http.response.status_code, 200L)

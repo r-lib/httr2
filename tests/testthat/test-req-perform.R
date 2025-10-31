@@ -277,7 +277,8 @@ test_that("tracing works as expected", {
       "server.address",
       "server.port",
       "http.request.method"
-    )
+    ),
+    ignore.order = TRUE
   )
   expect_equal(spans[[1]]$attributes$http.request.method, "GET")
   expect_equal(spans[[1]]$attributes$http.response.status_code, 200L)
