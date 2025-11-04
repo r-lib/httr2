@@ -14,12 +14,6 @@ req_with_span <- function(
   activation_scope = parent.frame(),
   activate = TRUE
 ) {
-  if (!tracer_enabled(tracer)) {
-    cli::cli_abort(
-      "Cannot create request span; tracing is not enabled",
-      .internal = TRUE
-    )
-  }
   parsed <- tryCatch(url_parse(req$url), error = function(cnd) NULL)
   if (is.null(parsed)) {
     # Don't create spans for invalid URLs.
