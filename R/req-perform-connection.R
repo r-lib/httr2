@@ -151,11 +151,9 @@ req_perform_connection1 <- function(
   the$last_request <- req
   the$last_response <- NULL
   signal(class = "httr2_perform_connection")
-  if (otel_is_tracing) {
-    # Note: we need to do this before we call handle_preflight() so that request
-    # signing works correctly with the added headers.
-    req_prep <- req_with_span(req_prep, resend_count = resend_count)
-  }
+  # Note: we need to do this before we call handle_preflight() so that request
+  # signing works correctly with the added headers.
+  req_prep <- req_with_span(req_prep, resend_count = resend_count)
   handle_preflight(req_prep, handle)
 
   err <- capture_curl_error({

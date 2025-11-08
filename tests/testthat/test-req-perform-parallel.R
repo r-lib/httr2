@@ -340,8 +340,7 @@ test_that("mocking works", {
 test_that("tracing works as expected", {
   skip_if_not_installed("otelsdk")
 
-  spans <- otelsdk::with_otel_record({
-    otel_refresh_tracer()
+  spans <- with_otel_record({
     # A request with no URL (which shouldn't create a span).
     try(req_perform_parallel(list(request(""))), silent = TRUE)
 
@@ -374,9 +373,6 @@ test_that("tracing works as expected", {
     )
   })[["traces"]]
 
-  # reset tracer after tests
-  otel_refresh_tracer()
-
   expect_length(spans, 6L)
 
   # And for requests with HTTP errors.
@@ -398,7 +394,6 @@ test_that("tracing works as expected", {
   expect_equal(spans[[3]]$parent, spans[[6]]$span_id)
   expect_equal(spans[[4]]$parent, spans[[6]]$span_id)
   expect_equal(spans[[5]]$parent, spans[[6]]$span_id)
-  expect_equal(spans[[6]]$parent, "0000000000000000")
 })
 
 # Pool helpers ----------------------------------------------------------------

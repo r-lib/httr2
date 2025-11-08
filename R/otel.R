@@ -1,61 +1,86 @@
 otel_tracer_name <- "org.r-lib.httr2"
-otel_tracer <- NULL
-otel_is_tracing <- FALSE
+
+otel_cache_tracer <- NULL
+req_with_span <- NULL
 
 # Attaches an Open Telemetry span that abides by the semantic conventions for
 # HTTP clients to the request, including the associated W3C trace context
 # headers.
 #
 # See: https://opentelemetry.io/docs/specs/semconv/http/http-spans/#http-client-span
-req_with_span <- function(
-  req,
-  resend_count = 0,
-  tracer = otel_tracer,
-  activation_scope = parent.frame(),
-  activate = TRUE
-) {
-  parsed <- tryCatch(url_parse(req$url), error = function(cnd) NULL)
-  if (is.null(parsed)) {
-    # Don't create spans for invalid URLs.
-    return(req)
+local({
+  otel_tracer <- NULL
+  otel_is_tracing <- FALSE
+
+  otel_cache_tracer <<- function() {
+    requireNamespace("otel", quietly = TRUE) || return()
+    otel_tracer <<- otel::get_tracer(otel_tracer_name)
+    otel_is_tracing <<- tracer_enabled(otel_tracer)
   }
-  if (!req_has_user_agent(req)) {
-    req <- req_user_agent(req)
+
+  req_with_span <<- function(
+    req,
+    resend_count = 0,
+    tracer = otel_tracer,
+    activation_scope = parent.frame(),
+    activate = TRUE
+  ) {
+    otel_is_tracing || return(req)
+    parsed <- tryCatch(url_parse(req$url), error = function(cnd) NULL)
+    if (is.null(parsed)) {
+      # Don't create spans for invalid URLs.
+      return(req)
+    }
+    if (!req_has_user_agent(req)) {
+      req <- req_user_agent(req)
+    }
+    default_port <- 443L
+    if (parsed$scheme == "http") {
+      default_port <- 80L
+    }
+    # Follow the semantic conventions and redact credentials in the URL, when
+    # present.
+    if (!is.null(parsed$username)) {
+      parsed$username <- "REDACTED"
+    }
+    if (!is.null(parsed$password)) {
+      parsed$password <- "REDACTED"
+    }
+    method <- req_get_method(req)
+    # Set required (and some recommended) attributes, especially those relevant to
+    # sampling at span creation time.
+    attributes <- compact(list(
+      "http.request.method" = method,
+      "server.address" = parsed$hostname,
+      "server.port" = parsed$port %||% default_port,
+      "url.full" = url_build(parsed),
+      "http.request.resend_count" = if (resend_count > 1) resend_count,
+      "user_agent.original" = req$options$useragent
+    ))
+    span <- tracer$start_span(
+      name = method,
+      options = list(kind = "CLIENT"),
+      attributes = attributes
+    )
+    if (activate) {
+      span$activate(activation_scope, end_on_exit = TRUE)
+    }
+    req <- req_headers(req, !!!otel::pack_http_context())
+    req$state$span <- span
+    req
   }
-  default_port <- 443L
-  if (parsed$scheme == "http") {
-    default_port <- 80L
-  }
-  # Follow the semantic conventions and redact credentials in the URL, when
-  # present.
-  if (!is.null(parsed$username)) {
-    parsed$username <- "REDACTED"
-  }
-  if (!is.null(parsed$password)) {
-    parsed$password <- "REDACTED"
-  }
-  method <- req_get_method(req)
-  # Set required (and some recommended) attributes, especially those relevant to
-  # sampling at span creation time.
-  attributes <- compact(list(
-    "http.request.method" = method,
-    "server.address" = parsed$hostname,
-    "server.port" = parsed$port %||% default_port,
-    "url.full" = url_build(parsed),
-    "http.request.resend_count" = if (resend_count > 1) resend_count,
-    "user_agent.original" = req$options$useragent
-  ))
-  span <- tracer$start_span(
-    name = method,
-    options = list(kind = "CLIENT"),
-    attributes = attributes
-  )
-  if (activate) {
-    span$activate(activation_scope, end_on_exit = TRUE)
-  }
-  req <- req_headers(req, !!!otel::pack_http_context())
-  req$state$span <- span
-  req
+})
+
+tracer_enabled <- function(tracer) {
+  .subset2(tracer, "is_enabled")()
+}
+
+with_otel_record <- function(expr) {
+  on.exit(otel_cache_tracer())
+  otelsdk::with_otel_record({
+    otel_cache_tracer()
+    expr
+  })
 }
 
 req_record_span_status <- function(req, resp = NULL) {
@@ -89,29 +114,4 @@ req_record_span_status <- function(req, resp = NULL) {
   } else {
     span$set_status("ok")
   }
-}
-
-otel_cache_tracer <- function() {
-  requireNamespace("otel", quietly = TRUE) || return()
-  otel_tracer <<- otel::get_tracer(otel_tracer_name)
-  otel_is_tracing <<- tracer_enabled(otel_tracer)
-}
-
-tracer_enabled <- function(tracer) {
-  .subset2(tracer, "is_enabled")()
-}
-
-otel_refresh_tracer <- function() {
-  requireNamespace("otel", quietly = TRUE) || return()
-  tracer <- otel::get_tracer()
-  modify_binding(
-    topenv(),
-    list(otel_tracer = tracer, otel_is_tracing = tracer_enabled(tracer))
-  )
-}
-
-modify_binding <- function(env, lst) {
-  lapply(names(lst), unlockBinding, env)
-  list2env(lst, envir = env)
-  lapply(names(lst), lockBinding, env)
 }

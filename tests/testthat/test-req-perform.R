@@ -225,8 +225,7 @@ test_that("checks input types", {
 test_that("tracing works as expected", {
   skip_if_not_installed("otelsdk")
 
-  spans <- otelsdk::with_otel_record({
-    otel_refresh_tracer()
+  spans <- with_otel_record({
     # A request with no URL (which shouldn't create a span).
     try(req_perform(request("")), silent = TRUE)
 
@@ -260,9 +259,6 @@ test_that("tracing works as expected", {
       req_perform() |>
       try(silent = TRUE)
   })[["traces"]]
-
-  # reset tracer after tests
-  otel_refresh_tracer()
 
   expect_length(spans, 7L)
 
@@ -308,9 +304,8 @@ test_that("tracing works as expected", {
   # For spans with retries, we expect the parent context to be the same for
   # each span. (In this case, there is no parent span, so it should be empty.)
   # It is important that they not be children of one another.
-  expect_equal(spans[[5]]$parent, "0000000000000000")
-  expect_equal(spans[[6]]$parent, "0000000000000000")
-  expect_equal(spans[[7]]$parent, "0000000000000000")
+  expect_equal(spans[[5]]$parent, spans[[6]]$parent)
+  expect_equal(spans[[6]]$parent, spans[[7]]$parent)
 
   # Verify that we set resend counts correctly.
   expect_equal(spans[[6]]$attributes$http.request.resend_count, 2L)

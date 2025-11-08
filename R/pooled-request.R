@@ -66,18 +66,16 @@ PooledRequest <- R6Class(
 
       private$req_prep <- req_prepare(req)
       private$handle <- req_handle(private$req_prep)
-      if (otel_is_tracing) {
-        # Note: we need to do this before we call handle_preflight() so that
-        # request signing works correctly with the added headers.
-        #
-        # TODO: Support resend_count.
-        private$req_prep <- req_with_span(
-          private$req_prep,
-          # Pooled request spans should not become the active span; we want
-          # subsequent requests to be siblings rather than parents.
-          activate = FALSE
-        )
-      }
+      # Note: we need to do this before we call handle_preflight() so that
+      # request signing works correctly with the added headers.
+      #
+      # TODO: Support resend_count.
+      private$req_prep <- req_with_span(
+        private$req_prep,
+        # Pooled request spans should not become the active span; we want
+        # subsequent requests to be siblings rather than parents.
+        activate = FALSE
+      )
       handle_preflight(private$req_prep, private$handle)
 
       curl::multi_add(
@@ -96,9 +94,7 @@ PooledRequest <- R6Class(
       if (!is.null(private$handle)) {
         curl::multi_cancel(private$handle)
       }
-      if (!is.null(private$req_prep)) {
-        req_record_span_status(private$req_prep)
-      }
+      req_record_span_status(private$req_prep)
     }
   ),
   private = list(

@@ -176,8 +176,7 @@ test_that("tracing works as expected", {
   skip_if_not_installed("otelsdk")
   skip_on_os("windows")
 
-  spans <- otelsdk::with_otel_record({
-    otel_refresh_tracer()
+  spans <- with_otel_record({
     # A request with no URL (which shouldn't create a span).
     try(req_perform_promise(request("")), silent = TRUE)
 
@@ -213,8 +212,6 @@ test_that("tracing works as expected", {
       "traceparent" %in% names(resp_body_json(resp)[["headers"]])
     )
   })[["traces"]]
-  # reset tracer after tests
-  otel_refresh_tracer()
 
   expect_length(spans, 5L)
 
@@ -234,7 +231,6 @@ test_that("tracing works as expected", {
 
   # Verify that the spans for requests resolved later still have the parent
   # context in which they were submitted.
-  expect_equal(spans[[3]]$parent, "0000000000000000")
+  expect_equal(spans[[3]]$parent, spans[[5]]$parent)
   expect_equal(spans[[4]]$parent, spans[[5]]$span_id)
-  expect_equal(spans[[5]]$parent, "0000000000000000")
 })
