@@ -13,7 +13,9 @@ local({
   otel_is_tracing <- FALSE
 
   otel_cache_tracer <<- function() {
-    requireNamespace("otel", quietly = TRUE) || return()
+    if (!requireNamespace("otel", quietly = TRUE)) {
+      return()
+    }
     otel_tracer <<- otel::get_tracer(otel_tracer_name)
     otel_is_tracing <<- tracer_enabled(otel_tracer)
   }
@@ -25,7 +27,9 @@ local({
     activation_scope = parent.frame(),
     activate = TRUE
   ) {
-    otel_is_tracing || return(req)
+    if (!otel_is_tracing) {
+      return(req)
+    }
     parsed <- tryCatch(url_parse(req$url), error = function(cnd) NULL)
     if (is.null(parsed)) {
       # Don't create spans for invalid URLs.
@@ -59,7 +63,7 @@ local({
     ))
     span <- tracer$start_span(
       name = method,
-      options = list(kind = "CLIENT"),
+      options = list(kind = "client"),
       attributes = attributes
     )
     if (activate) {
@@ -75,6 +79,10 @@ tracer_enabled <- function(tracer) {
   .subset2(tracer, "is_enabled")()
 }
 
+span_recording <- function(span) {
+  .subset2(span, "is_recording")()
+}
+
 with_otel_record <- function(expr) {
   on.exit(otel_cache_tracer())
   otelsdk::with_otel_record({
@@ -85,7 +93,7 @@ with_otel_record <- function(expr) {
 
 req_record_span_status <- function(req, resp = NULL) {
   span <- req$state$span
-  if (is.null(span) || !span$is_recording()) {
+  if (is.null(span) || !span_recording(span)) {
     return()
   }
   # For more accurate span timing, we end the span after the response has been
