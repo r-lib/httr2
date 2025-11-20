@@ -47,7 +47,7 @@ because if you have five requests in flight and the first one gets rate
 limited, it's likely that all the others do too. This also means that
 the circuit breaker is never triggered.
 
-"><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+"><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -202,7 +202,7 @@ be a mix of requests and error objects.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [working] (0 + 0) -&gt; 2 -&gt; 2 | <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50%</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [working] (0 + 0) -&gt; 0 -&gt; 4 | <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.051   0.001   1.096 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.050   0.001   1.086 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># req_perform_parallel() will fail on error</span></span></span>
 <span class="r-in"><span><span class="va">reqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -220,7 +220,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_successes</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_response&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:40875/status/200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:36963/status/200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Status</span>: 200 OK</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Content-Type</span>: text/plain</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">Body</span>: None</span>
@@ -230,7 +230,7 @@ be a mix of requests and error objects.</p>
 <span class="r-in"><span><span class="va">resps</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_failures</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="resps_successes.html">resps_requests</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;httr2_request&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:40875/status/400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">GET</span> http://127.0.0.1:36963/status/400</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Body</span>: empty</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Policies:</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> * <span style="color: #00BB00;">throttle_realm</span>: "127.0.0.1"</span>
@@ -253,7 +253,7 @@ be a mix of requests and error objects.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>
