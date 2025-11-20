@@ -129,5 +129,5 @@ request("https://google.com") |>
 #> GET https://www.google.com/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (17710 bytes)
+#> Body: In memory (17717 bytes)
 ```

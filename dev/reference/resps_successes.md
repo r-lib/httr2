@@ -1,15 +1,15 @@
 # Tools for working with lists of responses
 
-These function provide a basic toolkit for operating with lists of
+These functions provide a basic toolkit for operating with lists of
 responses and possibly errors, as returned by
 [`req_perform_parallel()`](https://httr2.r-lib.org/dev/reference/req_perform_parallel.md),
 [`req_perform_sequential()`](https://httr2.r-lib.org/dev/reference/req_perform_sequential.md)
 and
 [`req_perform_iterative()`](https://httr2.r-lib.org/dev/reference/req_perform_iterative.md).
 
-- `resps_successes()` returns a list successful responses.
+- `resps_successes()` returns a list of successful responses.
 
-- `resps_failures()` returns a list failed responses (i.e. errors).
+- `resps_failures()` returns a list of failed responses (i.e. errors).
 
 - `resps_requests()` returns the list of requests that corresponds to
   each request.
@@ -62,14 +62,14 @@ resps <- req_perform_parallel(reqs, on_error = "continue")
 resps |> resps_successes()
 #> [[1]]
 #> <httr2_response>
-#> GET http://127.0.0.1:36963/ip
+#> GET http://127.0.0.1:35643/ip
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (27 bytes)
 #> 
 #> [[2]]
 #> <httr2_response>
-#> GET http://127.0.0.1:36963/user-agent
+#> GET http://127.0.0.1:35643/user-agent
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (65 bytes)
@@ -92,7 +92,7 @@ resps |>
   resps_requests()
 #> [[1]]
 #> <httr2_request>
-#> GET http://127.0.0.1:36963/status/404
+#> GET http://127.0.0.1:35643/status/404
 #> Body: empty
 #> 
 #> [[2]]

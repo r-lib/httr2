@@ -45,7 +45,7 @@ resp <- request(example_url()) |>
   req_perform()
 
 resp |> resp_url()
-#> [1] "http://127.0.0.1:36963/get?hello=world"
+#> [1] "http://127.0.0.1:35643/get?hello=world"
 resp |> resp_url_path()
 #> [1] "/get"
 resp |> resp_url_queries()

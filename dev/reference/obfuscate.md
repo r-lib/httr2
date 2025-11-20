@@ -44,11 +44,11 @@ it can be unobfuscated when needed.
 
 ``` r
 obfuscate("good morning")
-#> obfuscated("W-zb_uX_RUAi5WBpqsZlaS9NHQWa-66f0p_eXQ")
+#> obfuscated("Zpd3kuPaMLpsjgj6Nu4WbY0h5KJMuy-tyj3bAA")
 
 # Every time you obfuscate you'll get a different value because it
 # includes 16 bytes of random data which protects against certain types of
 # brute force attack
 obfuscate("good morning")
-#> obfuscated("3RrElatYS72WI358GgpZgzb0qE9IjNHqqA_F7Q")
+#> obfuscated("-0D5sCzhdacLAXYAuhjTKhSYV5_jMGDSbhRiUQ")
 ```
