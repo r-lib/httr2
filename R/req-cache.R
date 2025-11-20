@@ -1,7 +1,7 @@
 #' Automatically cache requests
 #'
 #' @description
-#' Use `req_perform()` to automatically cache HTTP requests. Most API requests
+#' Use `req_cache()` to automatically cache HTTP requests. Most API requests
 #' are not cacheable, but static files often are.
 #'
 #' `req_cache()` caches responses to GET requests that have status code 200 and
