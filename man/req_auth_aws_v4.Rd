@@ -28,7 +28,7 @@ hostname.}
 This is a custom auth protocol implemented by AWS.
 }
 \examples{
-\dontshow{if (httr2:::has_paws_credentials()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (httr2:::has_paws_credentials()) withAutoprint(\{ # examplesIf}
 creds <- paws.common::locate_credentials()
 model_id <- "anthropic.claude-3-5-sonnet-20240620-v1:0"
 req <- request("https://bedrock-runtime.us-east-1.amazonaws.com")
