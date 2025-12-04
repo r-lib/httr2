@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+- httr2 will now emit OpenTelemetry traces for all requests when tracing
+  is enabled. Requires the `otelsdk` package
+  ([@atheriel](https://github.com/atheriel),
+  [\#729](https://github.com/r-lib/httr2/issues/729)).
 - [`req_perform_connection()`](https://httr2.r-lib.org/dev/reference/req_perform_connection.md)
   no longer errors with
   `no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')`
