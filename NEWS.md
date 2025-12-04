@@ -1,10 +1,9 @@
 # httr2 (development version)
 
+* httr2 will now emit OpenTelemetry traces for all requests when tracing is  enabled. Requires the `otelsdk` package (@atheriel, #729).
+* `req_perform_connection()` no longer errors with `no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')` (#817).
 * Refactor `url_modify()` to better retain exact formatting of URL components 
   that are not modified. (#788, #794)
-
-* httr2 will now emit OpenTelemetry traces for all requests when tracing is
-  enabled. Requires the `otelsdk` package (@atheriel, #729).
 
 # httr2 1.2.1
 

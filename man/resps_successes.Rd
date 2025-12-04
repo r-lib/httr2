@@ -26,12 +26,12 @@ output in \code{list()} to avoid combining all the bodies into a single raw
 vector, e.g. \verb{resps |> resps_data(\\(resp) list(resp_body_raw(resp)))}.}
 }
 \description{
-These function provide a basic toolkit for operating with lists of
+These functions provide a basic toolkit for operating with lists of
 responses and possibly errors, as returned by \code{\link[=req_perform_parallel]{req_perform_parallel()}},
 \code{\link[=req_perform_sequential]{req_perform_sequential()}} and \code{\link[=req_perform_iterative]{req_perform_iterative()}}.
 \itemize{
-\item \code{resps_successes()} returns a list successful responses.
-\item \code{resps_failures()} returns a list failed responses (i.e. errors).
+\item \code{resps_successes()} returns a list of successful responses.
+\item \code{resps_failures()} returns a list of failed responses (i.e. errors).
 \item \code{resps_requests()} returns the list of requests that corresponds to
 each request.
 \item \code{resps_data()} returns all the data in a single vector or data frame.

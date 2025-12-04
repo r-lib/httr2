@@ -81,7 +81,7 @@ req_perform_connection <- function(
     retry_check_breaker(req, tries)
     sys_sleep(delay, "for retry backoff")
 
-    if (!is.null(resp)) {
+    if (is_response(resp)) {
       close(resp)
     }
     resp <- req_perform_connection1(
@@ -159,15 +159,12 @@ req_perform_connection1 <- function(
   err <- capture_curl_error({
     conn <- curl::curl(req$url, handle = handle)
     # Must open the stream in order to initiate the connection
-    withCallingHandlers(
-      open(conn, "rbf", blocking = blocking),
-      warning = \(cnd) tryInvokeRestart("muffleWarning"),
-      error = \(cnd) close(conn)
-    )
+    suppressWarnings(open(conn, "rbf", blocking = blocking))
     body <- StreamingBody$new(conn)
   })
   if (is_error(err)) {
     req_record_span_status(req, err)
+    close(conn)
     return(err)
   }
 

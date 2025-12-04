@@ -51,7 +51,7 @@ The cache pruning is performed at most once per minute.}
 A modified HTTP \link{request}.
 }
 \description{
-Use \code{req_perform()} to automatically cache HTTP requests. Most API requests
+Use \code{req_cache()} to automatically cache HTTP requests. Most API requests
 are not cacheable, but static files often are.
 
 \code{req_cache()} caches responses to GET requests that have status code 200 and

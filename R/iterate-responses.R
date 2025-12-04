@@ -1,12 +1,12 @@
 #' Tools for working with lists of responses
 #'
 #' @description
-#' These function provide a basic toolkit for operating with lists of
+#' These functions provide a basic toolkit for operating with lists of
 #' responses and possibly errors, as returned by [req_perform_parallel()],
 #' [req_perform_sequential()] and [req_perform_iterative()].
 #'
-#' * `resps_successes()` returns a list successful responses.
-#' * `resps_failures()` returns a list failed responses (i.e. errors).
+#' * `resps_successes()` returns a list of successful responses.
+#' * `resps_failures()` returns a list of failed responses (i.e. errors).
 #' * `resps_requests()` returns the list of requests that corresponds to
 #'   each request.
 #' * `resps_data()` returns all the data in a single vector or data frame.

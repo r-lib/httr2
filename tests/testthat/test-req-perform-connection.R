@@ -70,6 +70,15 @@ test_that("curl errors become errors", {
   expect_null(last_response())
 })
 
+test_that("correclty reports curl error with retries (#817)", {
+  local_mocked_bindings(open = function(...) abort("Failed to connect"))
+
+  req <- request("http://127.0.0.1") |>
+    req_retry(max_tries = 2, retry_on_failure = TRUE, backoff = \(i) 0)
+
+  expect_snapshot(req_perform_connection(req), error = TRUE)
+})
+
 test_that("mocking works", {
   req_200 <- request("https://ok")
   req_404 <- request("https://notok")
