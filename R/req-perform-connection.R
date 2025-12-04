@@ -143,14 +143,11 @@ req_perform_connection1 <- function(req, handle, blocking = TRUE) {
   err <- capture_curl_error({
     conn <- curl::curl(req$url, handle = handle)
     # Must open the stream in order to initiate the connection
-    withCallingHandlers(
-      open(conn, "rbf", blocking = blocking),
-      warning = \(cnd) tryInvokeRestart("muffleWarning"),
-      error = \(cnd) close(conn)
-    )
+    suppressWarnings(open(conn, "rbf", blocking = blocking))
     body <- StreamingBody$new(conn)
   })
   if (is_error(err)) {
+    close(conn)
     return(err)
   }
 
