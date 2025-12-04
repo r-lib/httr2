@@ -112,8 +112,11 @@ error_body <- function(req, resp, call = caller_env()) {
 }
 
 capture_curl_error <- function(code, call = caller_env()) {
-  resp <- tryCatch(
-    code,
+  tryCatch(
+    {
+      code
+      NULL
+    },
     error = function(err) curl_cnd(err, call = call)
   )
 }

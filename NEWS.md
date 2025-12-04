@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_perform_connection()` no longer errors with `no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')` (#817).
 * Refactor `url_modify()` to better retain exact formatting of URL components 
   that are not modified. (#788, #794)
 
