@@ -39,6 +39,8 @@ Suggests:
     knitr,
     later (>= 1.4.0),
     nanonext,
+    otel (>= 0.2.0),
+    otelsdk (>= 0.2.0),
     paws.common,
     promises,
     rmarkdown,
