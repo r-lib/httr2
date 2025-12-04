@@ -9,6 +9,7 @@
       "Edit(R/**)",
       "Edit(tests/**)",
       "Edit(vignettes/**)",
+      "Edit(NEWS.md)"
     ],
     "deny": []
   }
