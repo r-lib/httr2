@@ -1,16 +1,17 @@
 #' Tools for working with lists of responses
 #'
 #' @description
-#' These functions provide a basic toolkit for operating with lists of
+#' These functions provide a basic toolkit for working with lists of
 #' responses and possibly errors, as returned by [req_perform_parallel()],
-#' [req_perform_sequential()] and [req_perform_iterative()].
+#' [req_perform_sequential()], and [req_perform_iterative()].
 #'
 #' * `resps_successes()` returns a list of successful responses.
 #' * `resps_failures()` returns a list of failed responses (i.e. errors).
+#' * `resps_ok()` returns a logical vector indicating which requests were
+#'   successful.
 #' * `resps_requests()` returns the list of requests that corresponds to
-#'   each request.
+#'   each response.
 #' * `resps_data()` returns all the data in a single vector or data frame.
-#'   It requires the vctrs package to be installed.
 #'
 #' @export
 #' @param resps A list of responses (possibly including errors).
@@ -52,6 +53,8 @@ resps_failures <- function(resps) {
   resps[!resps_ok(resps)]
 }
 
+#' @export
+#' @rdname resps_successes
 resps_ok <- function(resps) {
   vapply(resps, is_response, logical(1))
 }

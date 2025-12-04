@@ -3,6 +3,7 @@
 \name{resps_successes}
 \alias{resps_successes}
 \alias{resps_failures}
+\alias{resps_ok}
 \alias{resps_requests}
 \alias{resps_data}
 \title{Tools for working with lists of responses}
@@ -10,6 +11,8 @@
 resps_successes(resps)
 
 resps_failures(resps)
+
+resps_ok(resps)
 
 resps_requests(resps)
 
@@ -26,16 +29,17 @@ output in \code{list()} to avoid combining all the bodies into a single raw
 vector, e.g. \verb{resps |> resps_data(\\(resp) list(resp_body_raw(resp)))}.}
 }
 \description{
-These functions provide a basic toolkit for operating with lists of
+These functions provide a basic toolkit for working with lists of
 responses and possibly errors, as returned by \code{\link[=req_perform_parallel]{req_perform_parallel()}},
-\code{\link[=req_perform_sequential]{req_perform_sequential()}} and \code{\link[=req_perform_iterative]{req_perform_iterative()}}.
+\code{\link[=req_perform_sequential]{req_perform_sequential()}}, and \code{\link[=req_perform_iterative]{req_perform_iterative()}}.
 \itemize{
 \item \code{resps_successes()} returns a list of successful responses.
 \item \code{resps_failures()} returns a list of failed responses (i.e. errors).
+\item \code{resps_ok()} returns a logical vector indicating which requests were
+successful.
 \item \code{resps_requests()} returns the list of requests that corresponds to
-each request.
+each response.
 \item \code{resps_data()} returns all the data in a single vector or data frame.
-It requires the vctrs package to be installed.
 }
 }
 \examples{
