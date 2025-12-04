@@ -291,6 +291,7 @@ server, but affect the overall process of
   : Iteration helpers
 - [`resps_successes()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
   [`resps_failures()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
+  [`resps_ok()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
   [`resps_requests()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
   [`resps_data()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
   : Tools for working with lists of responses

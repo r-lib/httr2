@@ -1,9 +1,9 @@
 # Tools for working with lists of responses
 
-These functions provide a basic toolkit for operating with lists of
+These functions provide a basic toolkit for working with lists of
 responses and possibly errors, as returned by
 [`req_perform_parallel()`](https://httr2.r-lib.org/dev/reference/req_perform_parallel.md),
-[`req_perform_sequential()`](https://httr2.r-lib.org/dev/reference/req_perform_sequential.md)
+[`req_perform_sequential()`](https://httr2.r-lib.org/dev/reference/req_perform_sequential.md),
 and
 [`req_perform_iterative()`](https://httr2.r-lib.org/dev/reference/req_perform_iterative.md).
 
@@ -11,11 +11,13 @@ and
 
 - `resps_failures()` returns a list of failed responses (i.e. errors).
 
+- `resps_ok()` returns a logical vector indicating which requests were
+  successful.
+
 - `resps_requests()` returns the list of requests that corresponds to
-  each request.
+  each response.
 
 - `resps_data()` returns all the data in a single vector or data frame.
-  It requires the vctrs package to be installed.
 
 ## Usage
 
@@ -23,6 +25,8 @@ and
 resps_successes(resps)
 
 resps_failures(resps)
+
+resps_ok(resps)
 
 resps_requests(resps)
 
@@ -62,14 +66,14 @@ resps <- req_perform_parallel(reqs, on_error = "continue")
 resps |> resps_successes()
 #> [[1]]
 #> <httr2_response>
-#> GET http://127.0.0.1:46325/ip
+#> GET http://127.0.0.1:44951/ip
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (27 bytes)
 #> 
 #> [[2]]
 #> <httr2_response>
-#> GET http://127.0.0.1:46325/user-agent
+#> GET http://127.0.0.1:44951/user-agent
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (65 bytes)
@@ -92,7 +96,7 @@ resps |>
   resps_requests()
 #> [[1]]
 #> <httr2_request>
-#> GET http://127.0.0.1:46325/status/404
+#> GET http://127.0.0.1:44951/status/404
 #> Body: empty
 #> 
 #> [[2]]

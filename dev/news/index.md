@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+- New
+  [`resps_ok()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
+  returns a logical vector indicating which requests were successful
+  ([\#807](https://github.com/r-lib/httr2/issues/807)).
 - httr2 will now emit OpenTelemetry traces for all requests when tracing
   is enabled. Requires the `otelsdk` package
   ([@atheriel](https://github.com/atheriel),
