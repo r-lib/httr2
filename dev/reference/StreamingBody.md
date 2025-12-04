@@ -108,7 +108,6 @@ Is the connection complete? (i.e. is there data remaining to be read?)
 Get the active file descriptions and timeout from the handle. Wrapper
 around
 [`curl::multi_fdset()`](https://jeroen.r-universe.dev/curl/reference/multi.html).
-Returns `NULL` if handle not set.
 
 #### Usage
 
