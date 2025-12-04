@@ -81,7 +81,7 @@ req_perform_connection <- function(
     retry_check_breaker(req, tries)
     sys_sleep(delay, "for retry backoff")
 
-    if (!is.null(resp)) {
+    if (is_response(resp)) {
       close(resp)
     }
     resp <- req_perform_connection1(req, handle, blocking = blocking)
