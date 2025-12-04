@@ -95,7 +95,7 @@ try(req |> req_perform())
 # You can still retrieve it with last_response()
 last_response()
 #> <httr2_response>
-#> GET http://127.0.0.1:36377/status/404
+#> GET http://127.0.0.1:46325/status/404
 #> Status: 404 Not Found
 #> Content-Type: text/plain
 #> Body: None
@@ -106,7 +106,7 @@ resp <- req |>
   req_perform()
 resp
 #> <httr2_response>
-#> GET http://127.0.0.1:36377/status/404
+#> GET http://127.0.0.1:46325/status/404
 #> Status: 404 Not Found
 #> Content-Type: text/plain
 #> Body: None
