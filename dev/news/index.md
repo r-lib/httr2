@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+- [`req_perform_connection()`](https://httr2.r-lib.org/dev/reference/req_perform_connection.md)
+  no longer errors with
+  `no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')`
+  ([\#817](https://github.com/r-lib/httr2/issues/817)).
 - Refactor
   [`url_modify()`](https://httr2.r-lib.org/dev/reference/url_modify.md)
   to better retain exact formatting of URL components that are not
