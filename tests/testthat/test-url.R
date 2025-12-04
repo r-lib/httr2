@@ -130,7 +130,7 @@ test_that("path always starts with /", {
 test_that("only modifies specified components", {
   url <- "http://x.com/a%2Fb/"
   expect_equal(url_modify(url), url)
-  expect_equal(url_modify(url, query = list(x=1)), "http://x.com/a%2Fb/?x=1")
+  expect_equal(url_modify(url, query = list(x = 1)), "http://x.com/a%2Fb/?x=1")
 })
 
 test_that("appending to path does not normalise encoding", {
