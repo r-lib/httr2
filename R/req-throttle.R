@@ -48,13 +48,15 @@ req_throttle <- function(req, rate, capacity, fill_time_s = 60, realm = NULL) {
     capacity <- rate * fill_time_s
   } else {
     check_number_whole(capacity, min = 0)
+    rate <- capacity / fill_time_s
   }
   check_number_decimal(fill_time_s, min = 0)
   check_string(realm, allow_null = TRUE)
 
   realm <- realm %||% url_parse(req$url)$hostname
-  the$throttle[[realm]] <- TokenBucket$new(capacity, fill_time_s)
-
+  if (!throttle_exists(realm, capacity, rate)) {
+    the$throttle[[realm]] <- TokenBucket$new(capacity, rate)
+  }
   req_policies(req, throttle_realm = realm)
 }
 
@@ -92,6 +94,15 @@ throttle_reset <- function(realm = NULL) {
   invisible()
 }
 
+throttle_exists <- function(realm, capacity, fill_rate) {
+  if (!env_has(the$throttle, realm)) {
+    return(FALSE)
+  }
+
+  cur_throttle <- the$throttle[[realm]]
+  cur_throttle$capacity == capacity && cur_throttle$fill_rate == fill_rate
+}
+
 throttle_delay <- function(req) {
   if (!req_policy_exists(req, "throttle_realm")) {
     0
@@ -115,10 +126,11 @@ TokenBucket <- R6::R6Class(
     last_fill = NULL,
     tokens = NULL,
 
-    initialize = function(capacity, fill_time_s) {
+    initialize = function(capacity, fill_rate) {
       self$capacity <- capacity
       self$tokens <- capacity
-      self$fill_rate <- capacity / fill_time_s
+      self$fill_rate <- fill_rate
+
       self$last_fill <- unix_time()
     },
 
