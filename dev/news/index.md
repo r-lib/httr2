@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+- Multiple calls to
+  [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
+  no longer reset the token bucket
+  ([\#801](https://github.com/r-lib/httr2/issues/801)).
 - New
   [`resps_ok()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
   returns a logical vector indicating which requests were successful
