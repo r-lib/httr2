@@ -193,7 +193,7 @@ normalize_redirect_uri <- function(redirect_uri, error_call = caller_env()) {
   localhost <- parsed$hostname %in% c("localhost", "127.0.0.1")
 
   if (localhost) {
-    check_installed("httpuv", "desktop OAuth")
+    check_installed("httpuv", "for desktop OAuth", call = NULL)
     if (is_hosted_session()) {
       cli::cli_abort(
         "Can't use localhost {.arg redirect_uri} in a hosted environment.",
