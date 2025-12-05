@@ -59,7 +59,7 @@ works well when you are working on your own computer.
 
 Secondly, you can provide a URL to a website that uses Javascript to
 give the user a code to copy and paste back into the R session (see
-\url{https://www.tidyverse.org/google-callback/} and
+\url{https://tidyverse.org/google-callback/} and
 \url{https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html}
 for examples). This is less convenient (because it requires more
 user interaction) but also works in hosted environments like RStudio
