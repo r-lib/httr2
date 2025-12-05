@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.2.2
 
 * httr2 will now emit OpenTelemetry traces for all requests when tracing is enabled. Requires the `otelsdk` package (@atheriel, #729).
 * `req_throttle()` no longer resets the token bucket when used repeatedly with the same host (#801) and never generates negative wait times (#820).
