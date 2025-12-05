@@ -24,6 +24,8 @@ test_that("can perform a single request", {
 })
 
 test_that("requests happen in parallel", {
+  skip_on_cran()
+
   # test works best if webfakes has ample threads and keepalive
   reqs <- list2(
     request_test("/delay/:secs", secs = 0),
