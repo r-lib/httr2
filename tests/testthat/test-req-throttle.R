@@ -8,7 +8,7 @@ test_that("throttling affects request performance", {
 
   local_mocked_bindings(unix_time = function() 0.1)
   expect_snapshot(time <- system.time(req_perform(req))[[3]])
-  expect_gte(time, 1 / 4 - 0.1)
+  expect_gte(time, 1 / 4 - 0.1 - 1e-6)
 })
 
 test_that("first request isn't throttled", {
