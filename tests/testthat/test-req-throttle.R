@@ -102,3 +102,24 @@ test_that("token bucket handles fractions correctly", {
   mock_time <- mock_time + 0.1
   expect_equal(bucket$refill(), 0)
 })
+
+test_that("never returns negative time", {
+  mock_time <- 0
+  local_mocked_bindings(unix_time = function() mock_time)
+
+  bucket <- TokenBucket$new(capacity = 5, fill_rate = 1)
+  mock_time <- 5
+
+  # first five are free
+  replicate(5, expect_equal(bucket$take_token(), 0))
+
+  # we get another 5 after 5 seconds
+  mock_time <- mock_time + 5
+  replicate(5, expect_equal(bucket$take_token(), 0))
+
+  # if we only wait a second, we only get one
+  mock_time <- mock_time + 1
+  expect_equal(bucket$take_token(), 0)
+  expect_equal(bucket$take_token(), 1)
+  expect_equal(bucket$take_token(), 2)
+})

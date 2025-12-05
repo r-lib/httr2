@@ -152,7 +152,6 @@ TokenBucket <- R6::R6Class(
       if (self$tokens >= 1) {
         0
       } else {
-        self$refill()
         (1 - self$tokens) / self$fill_rate
       }
     },
@@ -161,6 +160,7 @@ TokenBucket <- R6::R6Class(
     # Might cause tokens to drop below 0 temporarily so if you don't end up
     # waiting this long, you need to return the token
     take_token = function() {
+      self$refill()
       wait <- self$token_wait_time()
       self$tokens <- self$tokens - 1
       wait
