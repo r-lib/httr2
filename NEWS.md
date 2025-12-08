@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.2.2
 
 * httr2 will now emit OpenTelemetry traces for all requests when tracing is enabled. Requires the `otelsdk` package (@atheriel, #729).
