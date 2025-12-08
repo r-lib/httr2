@@ -21,7 +21,7 @@ redirect_uri and httr2 will prompt the user to enter the code manually.
 Learn more about the overall OAuth authentication flow in
 https://httr2.r-lib.org/articles/oauth.html, and more about the motivations
 behind this flow in
-https://stack-auth.com/blog/oauth-from-first-principles."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+https://stack-auth.com/blog/oauth-from-first-principles."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -29,7 +29,7 @@ https://stack-auth.com/blog/oauth-from-first-principles."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,7 +156,7 @@ it, then specify it with (e.g.) <code>"http://localhost:1011"</code>. This techn
 works well when you are working on your own computer.</p>
 <p>Secondly, you can provide a URL to a website that uses Javascript to
 give the user a code to copy and paste back into the R session (see
-<a href="https://www.tidyverse.org/google-callback/" class="external-link">https://www.tidyverse.org/google-callback/</a> and
+<a href="https://tidyverse.org/google-callback/" class="external-link">https://tidyverse.org/google-callback/</a> and
 <a href="https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html" class="external-link">https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html</a>
 for examples). This is less convenient (because it requires more
 user interaction) but also works in hosted environments like RStudio
@@ -210,11 +210,11 @@ client credentials is more work than just creating a new client.</p>
 write your own auth code flow, if the API you are wrapping does not adhere
 closely to the standard.</p>
 <p>Other OAuth flows:
-<code><a href="req_oauth_bearer_jwt.html">req_oauth_bearer_jwt</a>()</code>,
-<code><a href="req_oauth_client_credentials.html">req_oauth_client_credentials</a>()</code>,
-<code><a href="req_oauth_password.html">req_oauth_password</a>()</code>,
-<code><a href="req_oauth_refresh.html">req_oauth_refresh</a>()</code>,
-<code><a href="req_oauth_token_exchange.html">req_oauth_token_exchange</a>()</code></p></div>
+<code><a href="req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code>,
+<code><a href="req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code>,
+<code><a href="req_oauth_password.html">req_oauth_password()</a></code>,
+<code><a href="req_oauth_refresh.html">req_oauth_refresh()</a></code>,
+<code><a href="req_oauth_token_exchange.html">req_oauth_token_exchange()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -248,7 +248,7 @@ closely to the standard.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>

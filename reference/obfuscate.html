@@ -23,7 +23,7 @@ Working together this pair of functions provides a way to obfuscate mildly
 confidential information, like OAuth client secrets. The secret can not be
 revealed from your inspecting source code, but a skilled R programmer could
 figure it out with some effort. The main goal is to protect against scraping;
-there's no way for an automated tool to grab your obfuscated secrets."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+there's no way for an automated tool to grab your obfuscated secrets."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -31,7 +31,7 @@ there's no way for an automated tool to grab your obfuscated secrets."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,13 +108,13 @@ so it can be unobfuscated when needed.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("Qrp6Tf4TcS2WuPu8ZHuv5se-JYvqIyP_kS1zoA")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("MkyZsCdCaF_cmA-gNmbKUVsFH4WtnLRqW2i2ow")</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Every time you obfuscate you'll get a different value because it</span></span></span>
 <span class="r-in"><span><span class="co"># includes 16 bytes of random data which protects against certain types of</span></span></span>
 <span class="r-in"><span><span class="co"># brute force attack</span></span></span>
 <span class="r-in"><span><span class="fu">obfuscate</span><span class="op">(</span><span class="st">"good morning"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("SUPi0qJQ-OLTqgkBnlsyRIOyeerV4GPl9eOHYg")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> obfuscated("tWOHaoOrHZ_Yi15hL4pY9AQiNezPQcgkOZl90g")</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -128,7 +128,7 @@ so it can be unobfuscated when needed.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>

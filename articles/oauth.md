@@ -1,0 +1,442 @@
+# OAuth
+
+``` r
+library(httr2)
+```
+
+OAuth[¹](#fn1) is an authorization framework design for performing work
+on the behalf of a user. You’ve probably used it a bunch without knowing
+what it’s called: you use it when you login to a non-Google website
+using your Google account, when you give your phone access to your
+twitter account, or when you login to a streaming app on your smart TV.
+
+You’ll notice none of these common scenarios quite match to using an R
+package to scrape data from a web API, and that’s the pleasure and pain
+of OAuth. OAuth gives you the incredible power to extract data from
+popular web services, but it’s fundamentally designed for a different
+use case. This means that while httr2 can make the interactive
+experience pretty seamless, unattended usage (i.e. on CI or in an
+automated script) is usually going to include some pain.
+
+This vignette builds on the techniques discussed in vignette [Wrapping
+APIs](https://httr2.r-lib.org/articles/wrapping-apis.html), so I
+recommend you read that vignette first. I’ll also assume that you’re
+working in a package, since most people want to wrap up an API into a
+bunch of R functions, but most of the ideas will also apply if you’re
+creating a one-off script.
+
+## OAuth basics
+
+OAuth is a broad framework that has many different variants, called
+**flows**, which makes it hard to provide sweeping generalisations, but
+the basic idea of OAuth is to create a hierarchy of increasingly more
+specific and shorter-lived credentials, so that the impact of a
+credential being lost is as small as possible.
+
+The longest lived and most powerful credential is typically a user name
+and password. Most people don’t change their passwords regularly, and
+often (against all advice) reuse the same password on multiple websites.
+And if you have a user name and password, you have total control over
+that account; you can even use it to change the password so the actual
+user can’t log in. That means as a programmer you never want to touch
+user name-password pairs because if they’re lost or stolen, they give
+very wide access.
+
+Avoiding that problem lead to the creation of OAuth. The basic idea is
+that instead of your package asking the user to give you their user name
+and password, you instead ask them to log in and give your package
+permission to use the API on their behalf. The API gives this permission
+in the form of an **access token** which is essentially a random string
+of numbers and letters, e.g. `UfNlXaEog03hdRPTUPpEInEiIW01jI1WcjOB`. An
+access token is very short lived, lasting maybe only days, and is bound
+to a specified **scope** of access. The access token has some big
+advantages over a user name and password:
+
+- It’s short-lived so if it’s lost or stolen, there’s only a limited
+  amount of time where it can be abused.
+- It has limited scope, so even if stolen, it can’t be used to do
+  something particularly nefarious like changing your password or
+  contact details.
+- It’s bound to a specific application, so it can be invalidated
+  (cancelled) without affecting any other uses.
+
+If you have an access token you can use it to authenticate an API by
+passing it as a **bearer token** in the `Authorization` header, which
+you can do with
+[`req_auth_bearer_token()`](https://httr2.r-lib.org/reference/req_auth_bearer_token.md).
+However, in most cases you will want to let httr2 manage this by calling
+one of the `req_oauth_` functions we’ll talk about shortly.
+
+One of the reasons that you want httr2 to manage your tokens is that
+because access tokens are so short lived, they’re often accompanied by a
+**refresh token**. A refresh token lasts for a longer amount of time and
+has one job: it allows you to get a new access token when the previous
+one expires. You need to look after a refresh token a little more
+carefully than an access token. In particular, you should never include
+a refresh token in a HTTP request as that’s the job of the access token.
+
+Overall this leads to a hierarchy of credentials from weakest to
+strongest:
+
+- The access token usually only lasts a couple hours and needs to be
+  submitted with every request.
+- The refresh token lasts for days to weeks and it’s designed to be
+  stored locally so you can regenerate access tokens. (We’ll talk about
+  this more in Caching, below.)
+- The user name + password gives access to everything so your code
+  should never touch them!
+
+Now that you’ve got the basic idea of OAuth, lets talk about the
+details.
+
+## Clients
+
+The first step in working with any OAuth API is to create an
+**application** **client**. It’s called an application client because in
+the wider world OAuth is usually used with a web, phone, or tv app, but
+here your “app” is going to be your R package. For this reason, httr2
+calls the application client a **client**, but many APIs will call it an
+OAuth application.
+
+To create a client, you’ll need to first register for a developer
+account on the API’s website. In most cases this is easy, totally
+automated, and only takes a couple of minutes. That will give you access
+to some sort of developer portal which you can then use to register a
+new OAuth app (aka a client). This process varies from API to API (it’s
+normal to spend some time hunting through the docs and settings), but at
+the end of it you’ll get a client id (another random string of numbers
+and letters). Sometimes the client id is all you need, and you can
+create a httr2 client with
+[`oauth_client()`](https://httr2.r-lib.org/reference/oauth_client.md),
+e.g.:
+
+``` r
+client <- oauth_client(
+  id = "28acfec0674bb3da9f38",
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test-2"
+)
+```
+
+The call to
+[`oauth_client()`](https://httr2.r-lib.org/reference/oauth_client.md)
+also includes a `name` and a `token_url`.
+
+- The `name` is human-facing, and should typically be the same as your
+  package (the thing that prompted you to create the client). I have a
+  bunch of apps that I’ve used for testing, so here I’ve used the name
+  `hadley-oauth-test-2` to remind me which app this client corresponds
+  to.
+- The `token_url` points to the URL that’s used to obtain an access
+  token. You’ll need to find this from the documentation for the API
+  you’re wrapping; it will typically be found in the section that
+  describes the OAuth process and will be an endpoint that returns an
+  access token. Don’t be surprised if this endpoint feels very different
+  to the rest of the API; auth is often implemented by a third-party
+  package with slightly different conventions to the rest of the API.
+
+### Client secret
+
+In most cases, however, the API will also require a client secret. While
+this is called a secret, it’s typically not that important to keep it a
+secret because of two reasons:
+
+- It’s typically easy to create an new app on the developer website so
+  stealing yours wouldn’t save much time.
+- It’s unusual for an OAuth client to be able to do anything in its own
+  right, so stealing your secret doesn’t have much benefit.
+
+That means that unless you have paid for the app or given it private
+information while creating it, it’s ok to embed the client in your
+package. That said, httr2 provides some tooling to obfuscate your client
+secret so that the client secret isn’t directly embedded in your source
+code, and hence vulnerable to scraping.
+
+To obfuscate a string, call
+[`obfuscate()`](https://httr2.r-lib.org/reference/obfuscate.md), then
+copy and paste the result into your package. For example, if your client
+secret was “secret”, you’d call
+[`obfuscate()`](https://httr2.r-lib.org/reference/obfuscate.md) then
+you’d copy and paste `obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")` into
+your client specification.
+
+``` r
+obfuscate("secret")
+#> obfuscated("PuFzsnARUHnH4x2jmWdoatZzAhsPAQ")
+```
+
+Here’s what a complete client specification for GitHub looks like, using
+a real app that I created specifically for this vignette:
+
+``` r
+client <- oauth_client(
+  id = "28acfec0674bb3da9f38",
+  secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+  token_url = "https://github.com/login/oauth/access_token",
+  name = "hadley-oauth-test"
+)
+```
+
+You can certainly uncover my client secret if you are an experienced R
+programmer and are willing to spend a bit of time experimenting, but I’m
+pretty sure it’d be easy for you to just create your own app on GitHub.
+
+### Packaging
+
+I recommend wrapping client creation in a function in your package,
+e.g.:
+
+``` r
+github_client <- function() {
+  oauth_client(
+    id = "28acfec0674bb3da9f38",
+    secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
+    token_url = "https://github.com/login/oauth/access_token",
+    name = "hadley-oauth-test"
+  )
+}
+```
+
+You’ll need this in order to run tests for your package, but you’ll
+probably also want to use it as the default client for your users. In
+some cases, it will be necessary for each user to create their own app
+and matching client (e.g. if rate limits are applied by app, not by
+user), but this is much less user friendly so you should avoid it if
+possible. That said, you should always provide a way for a user to
+supply their own client when you bundle a default. You can see an
+example of this in [the googledrive
+package](https://googledrive.tidyverse.org/articles/bring-your-own-app.html).
+
+## Authorization code flow
+
+Once you have a client you need to use it with a flow in order to get a
+token. You’ll need to read the docs for your API to figure out which
+flows it supports, but the most common is the **authorization
+code**[²](#fn2) flow, which works something like this:
+
+1.  httr2 opens a browser using the **authorization URL** provided by
+    the API. The URL includes parameters that identify your app and what
+    **scope** of access you’re looking for (e.g. `tweet.read`,
+    `userinfo.write`).
+2.  The user logs in using their user name and password (hopefully using
+    a [password
+    manager](https://www.nytimes.com/wirecutter/blog/why-you-need-a-password-manager-yes-you/))
+    and approves the request.
+3.  The API sends an **authorization code** back to httr2 using a
+    callback URL that was supplied in the initial request.
+4.  httr2 sends the authorization code to the **token URL** to get an
+    access token.
+
+In httr2 this flow is implemented by a pair of functions:
+[`oauth_flow_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md)
+and
+[`req_oauth_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md).
+Start with
+[`oauth_flow_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md)
+to check that you have all the parameters correctly specified, then use
+[`req_oauth_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md)
+to authenticate requests. These two steps are described in the following
+sections.
+
+### Creating a token
+
+[`oauth_flow_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md)
+is the best way to verify you’ve correctly specified the parameters to
+the client and the `auth_url`, without depending on correctly
+understanding any other part of the API. For example, you could get a
+token to access the GitHub API (using the client defined above) with
+this code:
+
+``` r
+token <- oauth_flow_auth_code(
+  client = client,
+  auth_url = "https://github.com/login/oauth/authorize"
+)
+```
+
+This flow can’t be used inside a vignette because it’s designed
+specifically for interactive use, but if you do run it and print out the
+`token`, you’ll see something like this:
+
+``` r
+token
+#> <httr2_token>
+#> token_type: bearer
+#> access_token: <REDACTED>
+#> scope: ''
+```
+
+There’s not much to see here because httr2 automatically redacts the
+access token (because that could be used to perform actions on behalf of
+the user).
+
+If your call to
+[`oauth_flow_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md)
+succeeds then you’ve got everything set up correctly and you can proceed
+to the next step. Otherwise, you’ll get an HTTP error. If you’re very
+lucky, that error will be informative and will help you figure out want
+went wrong. However, in most cases, you’ll need to carefully double
+check that you’ve correctly copied and pasted the client id and secret,
+and check that you’ve supplied the correct authorization and token urls
+(`auth_url` and `token_url`). If the docs have multiple candidates for
+each and you’re unclear about which is which, you’ll need to do some
+systematic experimentation.
+
+### Authenticating a request
+
+Initial configuration is the only time that you’ll see an `httr2_token`
+object because you’ll generally want to rely on httr2 to manage the
+tokens for you. You’ll do that with
+[`req_oauth_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md).
+To check that it’s working correctly, I recommend finding the simplest
+possible API endpoint to test it with. A good place to start is an
+endpoint that provides information about the “current” user, if your API
+provides one.
+
+For example, the GitHub API provides a `GET` endpoint at `/user` that
+returns information about the current user. If we make a request to this
+endpoint without authentication, we’ll get an error:
+
+``` r
+req <- request("https://api.github.com/user")
+req |>
+  req_perform()
+#> Error in `req_perform()`:
+#> ! HTTP 401 Unauthorized.
+```
+
+We can authenticate this request with
+[`req_oauth_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md),
+using the same arguments as our previous call to
+[`oauth_flow_auth_code()`](https://httr2.r-lib.org/reference/req_oauth_auth_code.md):
+
+``` r
+req |>
+  req_oauth_auth_code(
+    client = github_client(),
+    auth_url = "https://github.com/login/oauth/authorize"
+  ) |>
+  req_perform() |>
+  resp_body_json() |>
+  str()
+```
+
+When you run this code, you’ll see something like this, but it will
+obviously contain information about you, not me.
+
+``` r
+#> List of 32
+#>  $ login        : chr "hadley"
+#>  $ id           : int 4196
+#>  $ node_id      : chr "MDQ6VXNlcjQxOTY="
+#>  $ avatar_url   : chr "https://avatars.githubusercontent.com/u/4196?v=4"
+#>  $ gravatar_id  : chr ""
+#>  $ url          : chr "https://api.github.com/users/hadley"
+#>  $ html_url     : chr "https://github.com/hadley"
+#>  ...
+#>  $ type         : chr "User"
+#>  $ site_admin   : logi FALSE
+#>  $ name         : chr "Hadley Wickham"
+#>  $ company      : chr "@posit-pbc"
+#>  $ blog         : chr "http://hadley.nz"
+#>  $ location     : chr "Houston, TX"
+```
+
+### Caching
+
+There are two big reasons to allow httr2 to manage tokens for you. The
+first is that httr2 will automatically refresh the token if it’s
+expired. The second is cross-session caching, as described below.
+
+By default, the OAuth token will be cached in memory. That means that
+you will only need to authenticate once in the current session, but
+you’ll need to re-authenticate if you restart R. In some cases, you may
+want to save the tokens (refresh and access) so that they can be used
+across sessions. This is easy to do (just set `cache_disk = TRUE`) but
+you need to think through the consequences of saving the refresh token
+on disk.
+
+httr2 does the best it can to save these credentials securely. They are
+stored in a local cache directory
+([`oauth_cache_path()`](https://httr2.r-lib.org/reference/oauth_cache_path.md))
+that is accessible to the current user, and they are encrypted so they
+will be hard for any package other than httr2 to read. However, there’s
+no way to prevent other R code from using httr2 to access them, so if
+you do choose to cache tokens, you should inform the user and give them
+the ability to opt-out. httr2 automatically deletes any cached tokens
+that are older than 30 days whenever it’s loaded. This means that you’ll
+need to re-auth at least once a month, but prevents tokens from hanging
+around on disk long after you’ve forgotten you created them.
+
+You can see which clients have cached tokens by looking in the cache
+directory used by httr2:
+
+``` r
+dir(oauth_cache_path(), recursive = TRUE)
+```
+
+Each client gets its own subdirectory named using the client `name`, so
+if you turn caching on, it’s particularly important to give your client
+a good name so that the user can easily tell which package the tokens
+belong to.
+
+## Other flows
+
+When wrapping an API, you’ll need to carefully read the documentation to
+figure out which flows it provides. If possible you’ll want to use the
+authorization code flow since it generally provides the best experience,
+but if it’s not available you’ll need to carefully consider the others.
+Currently, httr2 supports the following flows:
+
+- [`req_oauth_device()`](https://httr2.r-lib.org/reference/req_oauth_device.md)
+  uses the “device” flow which is designed for devices like TVs that
+  don’t have an easy way to enter data. It also works well from the
+  console.
+
+- [`req_oauth_client_credentials()`](https://httr2.r-lib.org/reference/req_oauth_client_credentials.md)
+  and
+  [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/reference/req_oauth_bearer_jwt.md)
+  are often needed for **service accounts**, accounts that represent
+  automated services, not people, and are often used in non-interactive
+  environments.
+
+- [`req_oauth_password()`](https://httr2.r-lib.org/reference/req_oauth_password.md)
+  exchanges a user name and password for an access token.
+
+- [`req_oauth_refresh()`](https://httr2.r-lib.org/reference/req_oauth_refresh.md)
+  works directly with a refresh token that you already have. It’s useful
+  for testing and automation.
+
+httr2 doesn’t support the implicit grant flow. This was historically
+important but is now [mostly
+deprecated](https://developer.okta.com/blog/2019/05/01/is-the-oauth-implicit-flow-dead)
+and was never a particularly good fit for R because it relies on a
+technique for returning the access token that only reliably works inside
+a web browser.
+
+Regardless of which flow you use, you’ll need to follow the same process
+as the example above: first figure out how to get a token using the
+`oauth_flow_` function, then actually use oauth with a request, by
+calling the matching `req_oauth_` function.
+
+One additional wrinkle is that many APIs don’t implement the flow in
+exactly the same way as the spec so httr2’s built-in flows might not
+work at all. If your initial attempt doesn’t work, you’re going to need
+to do some sleuthing. This is going to be painful, but unfortunately
+there’s no way around it. I recommend wrapping your httr2 code in
+[`with_verbosity()`](https://httr2.r-lib.org/reference/with_verbosity.md)
+so you can see exactly what httr2 is sending to the server. You’ll then
+need to carefully compare this to the API documentation and play “spot
+the difference”. You’re very welcome to file an issue and I’ll do my
+best to help you out.
+
+------------------------------------------------------------------------
+
+1.  Here I’ll only talk about OAuth 2.0 which is the only version in
+    common use today. OAuth 1.0 is largely only of historical interest.
+
+2.  Confusingly, Github calls this the “web application flow”, but this
+    is not the official name. This is a general problem with OAuth docs;
+    often they use different terms for the same things. In httr2, I’ve
+    tried to stick as closely as possible to the terms used in the
+    official RFC specifications.
