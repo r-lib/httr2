@@ -66,14 +66,14 @@ resps <- req_perform_parallel(reqs, on_error = "continue")
 resps |> resps_successes()
 #> [[1]]
 #> <httr2_response>
-#> GET http://127.0.0.1:43375/ip
+#> GET http://127.0.0.1:35099/ip
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (27 bytes)
 #> 
 #> [[2]]
 #> <httr2_response>
-#> GET http://127.0.0.1:43375/user-agent
+#> GET http://127.0.0.1:35099/user-agent
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (65 bytes)
@@ -87,7 +87,7 @@ resps |>
 #> [1] "127.0.0.1"
 #> 
 #> $`user-agent`
-#> [1] "httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0"
+#> [1] "httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0"
 #> 
 
 # find requests corresponding to failure responses
@@ -96,7 +96,7 @@ resps |>
   resps_requests()
 #> [[1]]
 #> <httr2_request>
-#> GET http://127.0.0.1:43375/status/404
+#> GET http://127.0.0.1:35099/status/404
 #> Body: empty
 #> 
 #> [[2]]

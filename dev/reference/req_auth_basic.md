@@ -47,7 +47,7 @@ req |> req_dry_run()
 #> accept-encoding: deflate, gzip, br, zstd
 #> authorization: <REDACTED>
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # httr2 does its best to redact the Authorization header so that you don't
@@ -64,7 +64,7 @@ req |> req_dry_run(redact_headers = FALSE)
 #> accept-encoding: deflate, gzip, br, zstd
 #> authorization: Basic aGFkbGV5OlNFQ1JFVA==
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # We do this because the authorization header is not encrypted and the

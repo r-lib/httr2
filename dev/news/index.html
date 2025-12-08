@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,12 +47,17 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>Multiple calls to <code><a href="../reference/req_throttle.html">req_throttle()</a></code> no longer reset the token bucket (<a href="https://github.com/r-lib/httr2/issues/801" class="external-link">#801</a>).</li>
-<li>New <code><a href="../reference/resps_successes.html">resps_ok()</a></code> returns a logical vector indicating which requests were successful (<a href="https://github.com/r-lib/httr2/issues/807" class="external-link">#807</a>).</li>
-<li>httr2 will now emit OpenTelemetry traces for all requests when tracing is enabled. Requires the <code>otelsdk</code> package (<a href="https://github.com/atheriel" class="external-link">@atheriel</a>, <a href="https://github.com/r-lib/httr2/issues/729" class="external-link">#729</a>).</li>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.2" id="httr2-122">httr2 1.2.2<a class="anchor" aria-label="anchor" href="#httr2-122"></a></h2>
+<ul><li>httr2 will now emit OpenTelemetry traces for all requests when tracing is enabled. Requires the <code>otelsdk</code> package (<a href="https://github.com/atheriel" class="external-link">@atheriel</a>, <a href="https://github.com/r-lib/httr2/issues/729" class="external-link">#729</a>).</li>
 <li>
-<code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> no longer errors with <code>no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')</code> (<a href="https://github.com/r-lib/httr2/issues/817" class="external-link">#817</a>).</li>
-<li>Refactor <code><a href="../reference/url_modify.html">url_modify()</a></code> to better retain exact formatting of URL components that are not modified. (<a href="https://github.com/r-lib/httr2/issues/788" class="external-link">#788</a>, <a href="https://github.com/r-lib/httr2/issues/794" class="external-link">#794</a>)</li>
+<code><a href="../reference/req_throttle.html">req_throttle()</a></code> no longer resets the token bucket when used repeatedly with the same host (<a href="https://github.com/r-lib/httr2/issues/801" class="external-link">#801</a>) and never generates negative wait times (<a href="https://github.com/r-lib/httr2/issues/820" class="external-link">#820</a>).</li>
+<li>
+<code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> no longer errors with <code>no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')"</code> (<a href="https://github.com/r-lib/httr2/issues/817" class="external-link">#817</a>).</li>
+<li>New <code><a href="../reference/resps_successes.html">resps_ok()</a></code> returns a logical vector indicating which requests were successful (<a href="https://github.com/r-lib/httr2/issues/807" class="external-link">#807</a>).</li>
+<li>
+<code><a href="../reference/url_modify.html">url_modify()</a></code> refactored to better retain exact formatting of URL not modified components (<a href="https://github.com/r-lib/httr2/issues/788" class="external-link">#788</a>, <a href="https://github.com/r-lib/httr2/issues/794" class="external-link">#794</a>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.1" id="httr2-121">httr2 1.2.1<a class="anchor" aria-label="anchor" href="#httr2-121"></a></h2><p class="text-muted">CRAN release: 2025-07-22</p>

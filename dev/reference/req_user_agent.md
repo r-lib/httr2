@@ -35,7 +35,7 @@ request("http://example.com") |> req_dry_run()
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 request("http://example.com") |> req_user_agent("MyString") |> req_dry_run()

@@ -55,7 +55,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> host: example.com
 #> myheader: MyValue
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # Repeated use overrides the previous value:
@@ -68,7 +68,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> host: example.com
 #> myheader: New value
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # Setting Accept to NULL uses curl's default:
@@ -79,7 +79,7 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # Setting it to "" removes it:
@@ -89,7 +89,7 @@ req |>
 #> GET / HTTP/1.1
 #> accept-encoding: deflate, gzip, br, zstd
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # If you need to repeat a header, provide a vector of values
@@ -102,7 +102,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> headername: Value 1,Value 2,Value 3
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # If you have headers in a list, use !!!
@@ -117,7 +117,7 @@ req |>
 #> headerthree: three
 #> headertwo: two
 #> host: example.com
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 
 # Use `req_headers_redacted()`` to hide a header in the output
@@ -139,6 +139,6 @@ req_secret |> req_dry_run()
 #> host: example.com
 #> public: but-this-is-not
 #> secret: <REDACTED>
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> 
 ```

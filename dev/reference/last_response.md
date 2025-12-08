@@ -51,7 +51,7 @@ last_response()
 #> GET https://httr2.r-lib.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (19168 bytes)
+#> Body: In memory (19321 bytes)
 
 . <- request(example_url("/post")) |>
   req_body_json(list(a = 1, b = 2)) |>
@@ -76,8 +76,8 @@ last_response_json()
 #> 
 #>   },
 #>   "headers": {
-#>     "Host": "127.0.0.1:43375",
-#>     "User-Agent": "httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0",
+#>     "Host": "127.0.0.1:35099",
+#>     "User-Agent": "httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0",
 #>     "Accept": "*/*",
 #>     "Accept-Encoding": "deflate, gzip, br, zstd",
 #>     "Content-Type": "application/json",
@@ -90,7 +90,7 @@ last_response_json()
 #>   "method": "post",
 #>   "path": "/post",
 #>   "origin": "127.0.0.1",
-#>   "url": "http://127.0.0.1:43375/post"
+#>   "url": "http://127.0.0.1:35099/post"
 #> }
 last_response_json(pretty = FALSE)
 #> {
@@ -99,8 +99,8 @@ last_response_json(pretty = FALSE)
 #>   "files": {},
 #>   "form": {},
 #>   "headers": {
-#>     "Host": "127.0.0.1:43375",
-#>     "User-Agent": "httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0",
+#>     "Host": "127.0.0.1:35099",
+#>     "User-Agent": "httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0",
 #>     "Accept": "*/*",
 #>     "Accept-Encoding": "deflate, gzip, br, zstd",
 #>     "Content-Type": "application/json",
@@ -113,6 +113,6 @@ last_response_json(pretty = FALSE)
 #>   "method": "post",
 #>   "path": "/post",
 #>   "origin": "127.0.0.1",
-#>   "url": "http://127.0.0.1:43375/post"
+#>   "url": "http://127.0.0.1:35099/post"
 #> }
 ```

@@ -59,38 +59,38 @@ fun <- function() {
 with_verbosity(fun())
 #> -> GET / HTTP/2
 #> -> Host: httr2.r-lib.org
-#> -> User-Agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.5.0
+#> -> User-Agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
 #> -> Accept: */*
 #> -> Accept-Encoding: deflate, gzip, br, zstd
 #> -> 
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 05 Dec 2025 16:50:44 GMT
+#> <- last-modified: Mon, 08 Dec 2025 15:02:17 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"69330d64-4ae0"
-#> <- expires: Fri, 05 Dec 2025 17:01:29 GMT
+#> <- etag: W/"6936e879-4b79"
+#> <- expires: Mon, 08 Dec 2025 15:13:22 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 7A9B:294EAB:3578D8:38B150:69330D91
+#> <- x-github-request-id: 4476:135A:7259CB:768AA7:6936E8B9
 #> <- accept-ranges: bytes
-#> <- date: Fri, 05 Dec 2025 16:52:26 GMT
+#> <- date: Mon, 08 Dec 2025 15:03:43 GMT
 #> <- via: 1.1 varnish
 #> <- age: 22
-#> <- x-served-by: cache-chi-kigq8000178-CHI
+#> <- x-served-by: cache-pao-kpao1770022-PAO
 #> <- x-cache: HIT
-#> <- x-cache-hits: 6
-#> <- x-timer: S1764953547.927028,VS0,VE0
+#> <- x-cache-hits: 5
+#> <- x-timer: S1765206223.427115,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 773431c62e095f12e6dac80fd6b030021846fd76
-#> <- content-length: 4768
+#> <- x-fastly-request-id: 89b82102815f06b0f797c824809730eed54f886b
+#> <- content-length: 4833
 #> <- 
 #> <httr2_response>
 #> GET https://httr2.r-lib.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (19168 bytes)
+#> Body: In memory (19321 bytes)
 
 fun <- function() {
   local_verbosity(2)

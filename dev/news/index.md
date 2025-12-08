@@ -2,26 +2,28 @@
 
 ## httr2 (development version)
 
-- Multiple calls to
-  [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
-  no longer reset the token bucket
-  ([\#801](https://github.com/r-lib/httr2/issues/801)).
-- New
-  [`resps_ok()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
-  returns a logical vector indicating which requests were successful
-  ([\#807](https://github.com/r-lib/httr2/issues/807)).
+## httr2 1.2.2
+
 - httr2 will now emit OpenTelemetry traces for all requests when tracing
   is enabled. Requires the `otelsdk` package
   ([@atheriel](https://github.com/atheriel),
   [\#729](https://github.com/r-lib/httr2/issues/729)).
+- [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
+  no longer resets the token bucket when used repeatedly with the same
+  host ([\#801](https://github.com/r-lib/httr2/issues/801)) and never
+  generates negative wait times
+  ([\#820](https://github.com/r-lib/httr2/issues/820)).
 - [`req_perform_connection()`](https://httr2.r-lib.org/dev/reference/req_perform_connection.md)
   no longer errors with
-  `no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')`
+  `no applicable method for 'close' applied to an object of class "c('httr2_failure', 'httr2_error', 'rlang_error', 'error', 'condition')"`
   ([\#817](https://github.com/r-lib/httr2/issues/817)).
-- Refactor
-  [`url_modify()`](https://httr2.r-lib.org/dev/reference/url_modify.md)
-  to better retain exact formatting of URL components that are not
-  modified. ([\#788](https://github.com/r-lib/httr2/issues/788),
+- New
+  [`resps_ok()`](https://httr2.r-lib.org/dev/reference/resps_successes.md)
+  returns a logical vector indicating which requests were successful
+  ([\#807](https://github.com/r-lib/httr2/issues/807)).
+- [`url_modify()`](https://httr2.r-lib.org/dev/reference/url_modify.md)
+  refactored to better retain exact formatting of URL not modified
+  components ([\#788](https://github.com/r-lib/httr2/issues/788),
   [\#794](https://github.com/r-lib/httr2/issues/794))
 
 ## httr2 1.2.1
