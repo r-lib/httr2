@@ -60,7 +60,6 @@ req_oauth_bearer_jwt <- function(
 #' @rdname req_oauth_bearer_jwt
 oauth_flow_bearer_jwt <- function(
   client,
-  claim,
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
@@ -71,15 +70,12 @@ oauth_flow_bearer_jwt <- function(
     cli::cli_abort("JWT flow requires {.arg client} with a key.")
   }
 
-  if (is_list(claim)) {
-    claim <- exec("jwt_claim", !!!claim)
-  } else if (is.function(claim)) {
-    claim <- claim()
-  } else {
-    cli::cli_abort("{.arg claim} must be a list or function.")
-  }
-
-  jwt <- exec(signature, claim = claim, key = client$key, !!!signature_params)
+  jwt <- exec(
+    signature,
+    claim = client$auth_params$claim,
+    key = client$key,
+    !!!signature_params
+  )
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1
   oauth_client_get_token(
