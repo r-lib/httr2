@@ -13,11 +13,6 @@
 #' @family OAuth flows
 #' @inheritParams req_perform
 #' @inheritParams req_oauth_auth_code
-#' @param claim A list of claims. If all elements of the claim set are static
-#'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
-#'   [jwt_claim()] will automatically fill in the dynamic components.
-#'   If other components need to vary, you can instead provide a zero-argument
-#'   callback function which should call `jwt_claim()`.
 #' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
 #'   `size`, `header`.
@@ -37,7 +32,6 @@
 req_oauth_bearer_jwt <- function(
   req,
   client,
-  claim,
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
@@ -45,7 +39,6 @@ req_oauth_bearer_jwt <- function(
 ) {
   params <- list(
     client = client,
-    claim = claim,
     signature = signature,
     signature_params = signature_params,
     scope = scope,
@@ -67,7 +60,13 @@ oauth_flow_bearer_jwt <- function(
 ) {
   check_installed("jose")
   if (is.null(client$key)) {
-    cli::cli_abort("JWT flow requires {.arg client} with a key.")
+    cli::cli_abort("JWT flow requires {.arg client} with a key and a claim.")
+  }
+
+  if (is.null(client$auth_params$claim)) {
+    cli::cli_abort(
+      "JWT flow requires {.arg client} with a claim in {.arg auth_params}."
+    )
   }
 
   jwt <- exec(
