@@ -68,3 +68,35 @@ test_that("can authenticate using header or body", {
     list(client_id = I("id"), client_secret = I("secret"))
   )
 })
+
+test_that("validates claim", {
+  expect_snapshot(
+    oauth_client(
+      "test",
+      "http://example.com",
+      key = "abc",
+      auth_params = list(claim = "123")
+    ),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    oauth_client(
+      "test",
+      "http://example.com",
+      key = "abc",
+      auth_params = list(claim = jwt_claim())
+    ),
+    error = FALSE
+  )
+
+  expect_snapshot(
+    oauth_client(
+      "test",
+      "http://example.com",
+      key = "abc",
+      auth_params = list(claim = jwt_claim)
+    ),
+    error = FALSE
+  )
+})
