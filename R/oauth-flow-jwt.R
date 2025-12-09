@@ -50,7 +50,7 @@ req_oauth_bearer_jwt <- function(
     token_params = token_params
   )
 
-  cache <- cache_mem(client, claim)
+  cache <- cache_mem(client)
   req_oauth(req, "oauth_flow_bearer_jwt", params, cache = cache)
 }
 
