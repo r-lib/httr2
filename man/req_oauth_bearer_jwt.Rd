@@ -54,8 +54,13 @@ Learn more about the overall OAuth authentication flow in
 req_auth <- function(req) {
   req_oauth_bearer_jwt(
     req,
-    client = oauth_client("example", "https://example.com/get_token"),
-    claim = jwt_claim()
+    client = oauth_client(
+      "example",
+      "https://example.com/get_token",
+      auth_params = list(
+       claim = jwt_claim()
+      )
+    )
   )
 }
 
