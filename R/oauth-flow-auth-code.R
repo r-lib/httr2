@@ -183,7 +183,7 @@ oauth_flow_auth_code <- function(
     client,
     grant_type = "authorization_code",
     code = code,
-    redirect_uri = redirect_uri,
+    redirect_uri = redirect$uri,
     !!!token_params
   )
 }
