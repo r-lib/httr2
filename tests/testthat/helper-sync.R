@@ -59,6 +59,9 @@ wait_for_http_data <- function(resp, timeout_s) {
   while ((remaining <- deadline - as.double(Sys.time())) > 0) {
     fdset <- resp$body$get_fdset()
     if (length(fdset$reads) == 0) {
+      if (resp$body$is_complete()) {
+        return(invisible(TRUE))
+      }
       return(invisible(FALSE))
     }
 
@@ -74,19 +77,21 @@ wait_for_http_data <- function(resp, timeout_s) {
 
     if (!fd_ready) {
       break
-    } # Timeout
-
-    # Try to actually read data from FD
-    chunk <- resp$body$read(256)
-
-    if (length(chunk) > 0) {
-      # Append new data to push_back so tests can read it
-      resp$cache$push_back <- c(resp$cache$push_back, chunk)
-      return(invisible(TRUE))
     }
 
-    if (resp$body$is_complete()) {
-      return(invisible(TRUE))
+    # FD is ready - try reading with retries to allow curl to process the data
+    # later_fd fires when socket is readable, but curl may need time to process
+    retry_deadline <- as.double(Sys.time()) + 0.1
+    while (as.double(Sys.time()) < retry_deadline) {
+      chunk <- resp$body$read(256)
+      if (length(chunk) > 0) {
+        resp$cache$push_back <- c(resp$cache$push_back, chunk)
+        return(invisible(TRUE))
+      }
+      if (resp$body$is_complete()) {
+        return(invisible(TRUE))
+      }
+      Sys.sleep(0.01)
     }
   }
 
