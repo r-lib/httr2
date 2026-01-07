@@ -1,7 +1,6 @@
 sync_req <- function(name, .env = parent.frame()) {
   skip_on_cran()
   skip_if_not_installed("nanonext")
-  skip_if_not_installed("later")
 
   if (missing(name) || !is.character(name)) {
     cli::cli_abort(
@@ -55,43 +54,22 @@ wait_for_http_data <- function(resp, timeout_s) {
   }
 
   deadline <- as.double(Sys.time()) + timeout_s
+  poll_interval <- 0.01
 
-  while ((remaining <- deadline - as.double(Sys.time())) > 0) {
-    fdset <- resp$body$get_fdset()
-    if (length(fdset$reads) == 0) {
-      if (resp$body$is_complete()) {
-        return(invisible(TRUE))
-      }
-      return(invisible(FALSE))
+  while (as.double(Sys.time()) < deadline) {
+    chunk <- resp$body$read(256)
+    if (length(chunk) > 0) {
+      resp$cache$push_back <- c(resp$cache$push_back, chunk)
+      return(invisible(TRUE))
     }
 
-    fd_ready <- FALSE
-    later::later_fd(
-      func = function(ready) {
-        fd_ready <<- any(ready, na.rm = TRUE)
-      },
-      readfds = fdset$reads,
-      timeout = remaining
-    )
-    later::run_now(remaining)
-
-    if (!fd_ready) {
-      break
+    if (resp$body$is_complete()) {
+      return(invisible(TRUE))
     }
 
-    # FD is ready - try reading with retries to allow curl to process the data
-    # later_fd fires when socket is readable, but curl may need time to process
-    retry_deadline <- as.double(Sys.time()) + 0.1
-    while (as.double(Sys.time()) < retry_deadline) {
-      chunk <- resp$body$read(256)
-      if (length(chunk) > 0) {
-        resp$cache$push_back <- c(resp$cache$push_back, chunk)
-        return(invisible(TRUE))
-      }
-      if (resp$body$is_complete()) {
-        return(invisible(TRUE))
-      }
-      Sys.sleep(0.01)
+    remaining <- deadline - as.double(Sys.time())
+    if (remaining > 0) {
+      Sys.sleep(poll_interval)
     }
   }
 
