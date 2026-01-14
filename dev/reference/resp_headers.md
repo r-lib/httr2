@@ -54,36 +54,34 @@ resp |> resp_headers()
 #> <httr2_headers>
 #> server: GitHub.com
 #> content-type: text/html; charset=utf-8
-#> x-origin-cache: HIT
-#> last-modified: Mon, 08 Dec 2025 15:04:45 GMT
+#> last-modified: Wed, 14 Jan 2026 19:13:41 GMT
 #> access-control-allow-origin: *
-#> etag: W/"6936e90d-4b79"
-#> expires: Wed, 14 Jan 2026 19:22:26 GMT
+#> etag: W/"6967eae5-4b79"
+#> expires: Wed, 14 Jan 2026 19:35:42 GMT
 #> cache-control: max-age=600
 #> content-encoding: gzip
 #> x-proxy-cache: MISS
-#> x-github-request-id: BB10:386A84:26DEE2:27C2BA:6967EA99
+#> x-github-request-id: 0EFE:3B4011:4162F9:477857:6967EDB5
 #> accept-ranges: bytes
-#> date: Wed, 14 Jan 2026 19:12:43 GMT
+#> date: Wed, 14 Jan 2026 19:31:52 GMT
 #> via: 1.1 varnish
-#> age: 18
-#> x-served-by: cache-sjc10072-SJC
+#> age: 155
+#> x-served-by: cache-chi-kigq8000115-CHI
 #> x-cache: HIT
 #> x-cache-hits: 4
-#> x-timer: S1768417964.824324,VS0,VE0
+#> x-timer: S1768419113.789051,VS0,VE0
 #> vary: Accept-Encoding
-#> x-fastly-request-id: 7ca5bff5d9c5f602af7d4d5c154362ddd0d07f56
+#> x-fastly-request-id: efe1288d1af51fc87d33d5531c44e6cb902b399a
 #> content-length: 4833
 resp |> resp_headers("x-")
 #> <httr2_headers>
-#> x-origin-cache: HIT
 #> x-proxy-cache: MISS
-#> x-github-request-id: BB10:386A84:26DEE2:27C2BA:6967EA99
-#> x-served-by: cache-sjc10072-SJC
+#> x-github-request-id: 0EFE:3B4011:4162F9:477857:6967EDB5
+#> x-served-by: cache-chi-kigq8000115-CHI
 #> x-cache: HIT
 #> x-cache-hits: 4
-#> x-timer: S1768417964.824324,VS0,VE0
-#> x-fastly-request-id: 7ca5bff5d9c5f602af7d4d5c154362ddd0d07f56
+#> x-timer: S1768419113.789051,VS0,VE0
+#> x-fastly-request-id: efe1288d1af51fc87d33d5531c44e6cb902b399a
 
 resp |> resp_header_exists("server")
 #> [1] TRUE
