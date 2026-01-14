@@ -47,9 +47,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-</div>
+<ul><li>
+<code><a href="../reference/last_response.html">last_response_json()</a></code> now works with content-types that end with <code>+json</code>, e.g., <code>application/problem+json</code> (<a href="https://github.com/cgiachalis" class="external-link">@cgiachalis</a>, <a href="https://github.com/r-lib/httr2/issues/782" class="external-link">#782</a>).</li>
+</ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.2" id="httr2-122">httr2 1.2.2<a class="anchor" aria-label="anchor" href="#httr2-122"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.2" id="httr2-122">httr2 1.2.2<a class="anchor" aria-label="anchor" href="#httr2-122"></a></h2><p class="text-muted">CRAN release: 2025-12-08</p>
 <ul><li>httr2 will now emit OpenTelemetry traces for all requests when tracing is enabled. Requires the <code>otelsdk</code> package (<a href="https://github.com/atheriel" class="external-link">@atheriel</a>, <a href="https://github.com/r-lib/httr2/issues/729" class="external-link">#729</a>).</li>
 <li>
 <code><a href="../reference/req_throttle.html">req_throttle()</a></code> no longer resets the token bucket when used repeatedly with the same host (<a href="https://github.com/r-lib/httr2/issues/801" class="external-link">#801</a>) and never generates negative wait times (<a href="https://github.com/r-lib/httr2/issues/820" class="external-link">#820</a>).</li>

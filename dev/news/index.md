@@ -2,7 +2,15 @@
 
 ## httr2 (development version)
 
+- [`last_response_json()`](https://httr2.r-lib.org/dev/reference/last_response.md)
+  now works with content-types that end with `+json`, e.g.,
+  `application/problem+json`
+  ([@cgiachalis](https://github.com/cgiachalis),
+  [\#782](https://github.com/r-lib/httr2/issues/782)).
+
 ## httr2 1.2.2
+
+CRAN release: 2025-12-08
 
 - httr2 will now emit OpenTelemetry traces for all requests when tracing
   is enabled. Requires the `otelsdk` package
