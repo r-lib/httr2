@@ -1,7 +1,5 @@
 # httr2 (development version)
 
-## Minor improvements and bug fixes
-
 * `last_response_json()` now works with content-types that end with `+json`, 
 e.g., `application/problem+json` (@cgiachalis, #782).
 
