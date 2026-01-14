@@ -61,11 +61,12 @@ last_response_json <- function(pretty = TRUE) {
   if (is.null(resp)) {
     cli::cli_abort("No request has been made successfully yet.")
   }
-  content_type <- resp_content_type(resp)
-  if (!(identical(content_type, "application/json") ||
-      identical(content_type, "application/problem+json"))) {
-    cli::cli_abort("Last response doesn't have a JSON body.")
-  }
+  check_content_type(
+    resp_content_type(resp),
+    valid_types = "application/json",
+    valid_suffix = "json",
+    inform_check_type = TRUE
+  )
   httr2_json(resp_body_string(resp), pretty = pretty)
 }
 
