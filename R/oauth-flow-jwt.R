@@ -13,11 +13,6 @@
 #' @family OAuth flows
 #' @inheritParams req_perform
 #' @inheritParams req_oauth_auth_code
-#' @param claim A list of claims. If all elements of the claim set are static
-#'   apart from `iat`, `nbf`, `exp`, or `jti`, provide a list and
-#'   [jwt_claim()] will automatically fill in the dynamic components.
-#'   If other components need to vary, you can instead provide a zero-argument
-#'   callback function which should call `jwt_claim()`.
 #' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
 #'   `size`, `header`.
@@ -27,8 +22,13 @@
 #' req_auth <- function(req) {
 #'   req_oauth_bearer_jwt(
 #'     req,
-#'     client = oauth_client("example", "https://example.com/get_token"),
-#'     claim = jwt_claim()
+#'     client = oauth_client(
+#'       "example",
+#'       "https://example.com/get_token",
+#'       auth_params = list(
+#'        claim = jwt_claim()
+#'       )
+#'     )
 #'   )
 #' }
 #'
@@ -37,7 +37,6 @@
 req_oauth_bearer_jwt <- function(
   req,
   client,
-  claim,
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
@@ -45,14 +44,13 @@ req_oauth_bearer_jwt <- function(
 ) {
   params <- list(
     client = client,
-    claim = claim,
     signature = signature,
     signature_params = signature_params,
     scope = scope,
     token_params = token_params
   )
 
-  cache <- cache_mem(client, claim)
+  cache <- cache_mem(client)
   req_oauth(req, "oauth_flow_bearer_jwt", params, cache = cache)
 }
 
@@ -60,7 +58,6 @@ req_oauth_bearer_jwt <- function(
 #' @rdname req_oauth_bearer_jwt
 oauth_flow_bearer_jwt <- function(
   client,
-  claim,
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
@@ -68,18 +65,21 @@ oauth_flow_bearer_jwt <- function(
 ) {
   check_installed("jose")
   if (is.null(client$key)) {
-    cli::cli_abort("JWT flow requires {.arg client} with a key.")
+    cli::cli_abort("JWT flow requires {.arg client} with a key and a claim.")
   }
 
-  if (is_list(claim)) {
-    claim <- exec("jwt_claim", !!!claim)
-  } else if (is.function(claim)) {
-    claim <- claim()
-  } else {
-    cli::cli_abort("{.arg claim} must be a list or function.")
+  if (is.null(client$auth_params$claim)) {
+    cli::cli_abort(
+      "JWT flow requires {.arg client} with a claim in {.arg auth_params}."
+    )
   }
 
-  jwt <- exec(signature, claim = claim, key = client$key, !!!signature_params)
+  jwt <- exec(
+    signature,
+    claim = client$auth_params$claim,
+    key = client$key,
+    !!!signature_params
+  )
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.1
   oauth_client_get_token(

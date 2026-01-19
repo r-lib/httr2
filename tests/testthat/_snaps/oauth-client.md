@@ -70,3 +70,40 @@
       * token_url: "http://example.com"
       * auth     : <function>
 
+# validates claim
+
+    Code
+      oauth_client("test", "http://example.com", key = "abc", auth_params = list(
+        claim = "123"))
+    Condition
+      Error in `oauth_client()`:
+      ! claim in `auth_params` must be a list or function.
+
+---
+
+    Code
+      oauth_client("test", "http://example.com", key = "abc", auth_params = list(
+        claim = jwt_claim()))
+    Output
+      <httr2_oauth_client>
+      * name       : "b3d60321e62eb364e9c8dc12ffeec242"
+      * id         : "test"
+      * key        : <REDACTED>
+      * token_url  : "http://example.com"
+      * auth       : "oauth_client_req_auth_jwt_sig"
+      * auth_params: <list>
+
+---
+
+    Code
+      oauth_client("test", "http://example.com", key = "abc", auth_params = list(
+        claim = jwt_claim))
+    Output
+      <httr2_oauth_client>
+      * name       : "b3d60321e62eb364e9c8dc12ffeec242"
+      * id         : "test"
+      * key        : <REDACTED>
+      * token_url  : "http://example.com"
+      * auth       : "oauth_client_req_auth_jwt_sig"
+      * auth_params: <list>
+
