@@ -61,7 +61,7 @@ make_progress <- function(type, frame = caller_env()) {
       }
     }
 
-    if (now < total && total > 0) {
+    if (now < total || total == 0) {
       cli::cli_progress_update(set = now, .envir = frame)
     } else {
       cli::cli_progress_done(.envir = frame)
