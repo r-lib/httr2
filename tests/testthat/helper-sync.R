@@ -14,19 +14,13 @@ sync_req <- function(name, .env = parent.frame()) {
   nanonext::pipe_notify(sock, cv, add = TRUE)
   nanonext::listen(sock, url = sprintf("ipc:///tmp/nanonext%s", name))
 
-  function(
-    expr = {},
-    timeout = 1000L
-  ) {
+  function(resp, timeout = 1000L) {
     if (!connected) {
       nanonext::until(cv, timeout)
       connected <<- TRUE
     }
-    ctx <- nanonext::context(sock)
-    saio <- nanonext::send_aio(ctx, 0L, mode = 2L)
-    expr
-    nanonext::call_aio(nanonext::recv_aio(ctx, mode = 8L, timeout = timeout))
-    nanonext::msleep(50L) # wait, as nanonext messages can return faster than side effects (e.g. stream)
+    nanonext::send(sock, 0L, mode = 2L, block = timeout)
+    wait_for_http_data(resp, timeout / 1000)
   }
 }
 
@@ -44,17 +38,40 @@ sync_rep <- function(name, .env = parent.frame()) {
   nanonext::pipe_notify(sock, cv, add = TRUE)
   nanonext::dial(sock, url = sprintf("ipc:///tmp/nanonext%s", name))
 
-  function(
-    expr = {},
-    timeout = 1000L
-  ) {
+  function(expr = {}, timeout = 1000L) {
     if (!connected) {
       nanonext::until(cv, timeout)
       connected <<- TRUE
     }
-    ctx <- nanonext::context(sock)
-    nanonext::call_aio(nanonext::recv_aio(ctx, mode = 8L, timeout = timeout))
+    nanonext::recv(sock, mode = 8L, block = timeout)
     expr
-    nanonext::send(ctx, 0L, mode = 2L, block = TRUE)
   }
+}
+
+wait_for_http_data <- function(resp, timeout_s) {
+  if (resp$body$is_complete()) {
+    return(invisible(TRUE))
+  }
+
+  deadline <- as.double(Sys.time()) + timeout_s
+  poll_interval <- 0.01
+
+  while (as.double(Sys.time()) < deadline) {
+    chunk <- resp$body$read(256)
+    if (length(chunk) > 0) {
+      resp$cache$push_back <- c(resp$cache$push_back, chunk)
+      return(invisible(TRUE))
+    }
+
+    if (resp$body$is_complete()) {
+      return(invisible(TRUE))
+    }
+
+    remaining <- deadline - as.double(Sys.time())
+    if (remaining > 0) {
+      Sys.sleep(poll_interval)
+    }
+  }
+
+  invisible(FALSE)
 }

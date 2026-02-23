@@ -83,7 +83,7 @@ test_that("can join lines across multiple reads", {
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
 
-  sync()
+  sync(resp1)
   out <- resp_stream_lines(resp1)
   expect_equal(out, "This is a complete sentence.")
 })
@@ -121,7 +121,7 @@ test_that("handles line endings of multiple kinds", {
 
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
-    sync()
+    sync(resp1)
   }
   expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
   expect_equal(out, "eof without line ending")
@@ -233,11 +233,11 @@ test_that("can join sse events across multiple reads", {
   expect_equal(out, NULL)
   expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
 
-  sync()
+  sync(resp1)
   out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
 
-  sync()
+  sync(resp1)
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "1\n2", id = ""))
   expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
