@@ -69,6 +69,17 @@ oauth_client <- function(
           "{.code auth = 'jwt_sig'} requires a claim specification in {.arg auth_params}."
         )
       }
+
+      if (is_list(auth_params$claim)) {
+        auth_params$claim <- exec("jwt_claim", !!!auth_params$claim)
+      } else if (is.function(auth_params$claim)) {
+        auth_params$claim <- auth_params$claim()
+      } else {
+        cli::cli_abort(
+          "{.value claim} in {.arg auth_params} 
+          must be a list or function."
+        )
+      }
     }
 
     auth <- paste0("oauth_client_req_auth_", auth)
