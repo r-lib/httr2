@@ -197,6 +197,13 @@ test_that("form data is unobufcated", {
   expect_equal(rawToChar(req$options$postfields), 'x=x&y=y')
 })
 
+test_that("empty form data gives a valid request", {
+  req <- request_test() |>
+    req_body_form() |>
+    req_body_apply()
+  expect_equal(req$body$data, list())
+})
+
 # req_body_multipart() ---------------------------------------------------------
 
 test_that("can send named elements as multipart", {
