@@ -207,11 +207,11 @@ cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
 #' @export
 oauth_cache_path <- function() {
   path <- Sys.getenv("HTTR2_OAUTH_CACHE")
-  if (path != "") {
+  if (nzchar(path)) {
     return(path)
   }
 
-  rappdirs::user_cache_dir("httr2")
+  tools::R_user_dir("httr2", which = "cache")
 }
 
 
