@@ -48,7 +48,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (<a href="https://github.com/pedrobtz" class="external-link">@pedrobtz</a>, <a href="https://github.com/r-lib/httr2/issues/829" class="external-link">#829</a>).</li>
+<li>
 <code><a href="../reference/last_response.html">last_response_json()</a></code> now works with content-types that end with <code>+json</code>, e.g., <code>application/problem+json</code> (<a href="https://github.com/cgiachalis" class="external-link">@cgiachalis</a>, <a href="https://github.com/r-lib/httr2/issues/782" class="external-link">#782</a>).</li>
+<li>
+<code><a href="../reference/req_body.html">req_body_form()</a></code> now creates a valid empty request body when no parameters are provided (<a href="https://github.com/arcresu" class="external-link">@arcresu</a>, <a href="https://github.com/r-lib/httr2/issues/836" class="external-link">#836</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.2" id="httr2-122">httr2 1.2.2<a class="anchor" aria-label="anchor" href="#httr2-122"></a></h2><p class="text-muted">CRAN release: 2025-12-08</p>

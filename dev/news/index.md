@@ -2,11 +2,20 @@
 
 ## httr2 (development version)
 
+- [`oauth_flow_auth_code()`](https://httr2.r-lib.org/dev/reference/req_oauth_auth_code.md)
+  now correctly uses the same redirect URI for both authorization and
+  token requests when using the default localhost redirect URL
+  ([@pedrobtz](https://github.com/pedrobtz),
+  [\#829](https://github.com/r-lib/httr2/issues/829)).
 - [`last_response_json()`](https://httr2.r-lib.org/dev/reference/last_response.md)
   now works with content-types that end with `+json`, e.g.,
   `application/problem+json`
   ([@cgiachalis](https://github.com/cgiachalis),
   [\#782](https://github.com/r-lib/httr2/issues/782)).
+- [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
+  now creates a valid empty request body when no parameters are provided
+  ([@arcresu](https://github.com/arcresu),
+  [\#836](https://github.com/r-lib/httr2/issues/836)).
 
 ## httr2 1.2.2
 
