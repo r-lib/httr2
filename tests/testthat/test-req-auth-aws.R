@@ -98,6 +98,29 @@ test_that("signing agrees with glacier example", {
   expect_equal(signature$Authorization, expected)
 })
 
+test_that("canonical URI preserves encoded slashes in path segments", {
+  # A URL where %2F is part of a path segment (e.g. an ARN), not a separator
+  url_with_encoded_slash <- paste0(
+    "https://bedrock-runtime.us-east-1.amazonaws.com/model/",
+    "arn%3Aaws%3Abedrock%3Aus-east-1%3A123456%3A",
+    "application-inference-profile%2Fprofile-id",
+    "/converse"
+  )
+
+  signature <- aws_v4_signature(
+    method = "POST",
+    url = url_parse(url_with_encoded_slash),
+    headers = list("x-amz-date" = "20250121T182222Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+
+  # The encoded slash (%2F) in the ARN should be double-encoded to %252F
+  expect_match(signature$CanonicalRequest, "%252F", fixed = TRUE)
+})
+
 test_that("validates its inputs", {
   req <- request("https://sts.amazonaws.com/")
   expect_snapshot(error = TRUE, {
