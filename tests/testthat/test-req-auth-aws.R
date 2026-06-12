@@ -57,7 +57,7 @@ test_that('aws_v4_signature calculates correct signature', {
 
   signature <- aws_v4_signature(
     method = req_get_method(req),
-    url = url_parse(req$url),
+    url = req$url,
     headers = req$headers,
     body_sha256 = body_sha256,
     current_time = current_time,
@@ -75,9 +75,7 @@ test_that("signing agrees with glacier example", {
 
   signature <- aws_v4_signature(
     method = "PUT",
-    url = url_parse(
-      "https://glacier.us-east-1.amazonaws.com/-/vaults/examplevault"
-    ),
+    url = "https://glacier.us-east-1.amazonaws.com/-/vaults/examplevault",
     headers = list(
       "x-amz-date" = "20120525T002453Z",
       "x-amz-glacier-version" = "2012-06-01"
@@ -109,7 +107,7 @@ test_that("canonical URI preserves encoded slashes in path segments", {
 
   signature <- aws_v4_signature(
     method = "POST",
-    url = url_parse(url_with_encoded_slash),
+    url = url_with_encoded_slash,
     headers = list("x-amz-date" = "20250121T182222Z"),
     body_sha256 = openssl::sha256(""),
     current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),

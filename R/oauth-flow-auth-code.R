@@ -199,7 +199,7 @@ normalize_redirect_uri <- function(redirect_uri, error_call = caller_env()) {
         call = error_call
       )
     }
-    
+
     check_installed("httpuv", "for desktop OAuth", call = NULL)
     if (is.null(parsed$port)) {
       parsed$port <- httpuv::randomPort()
