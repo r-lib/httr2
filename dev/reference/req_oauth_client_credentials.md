@@ -47,6 +47,7 @@ use OAuth; `oauth_flow_client_credentials()` returns an
 ## See also
 
 Other OAuth flows:
+[`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md),
 [`req_oauth_auth_code()`](https://httr2.r-lib.org/dev/reference/req_oauth_auth_code.md),
 [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/dev/reference/req_oauth_bearer_jwt.md),
 [`req_oauth_password()`](https://httr2.r-lib.org/dev/reference/req_oauth_password.md),

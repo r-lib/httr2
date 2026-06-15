@@ -76,8 +76,8 @@ last_response_json()
 #> 
 #>   },
 #>   "headers": {
-#>     "Host": "127.0.0.1:46139",
-#>     "User-Agent": "httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0",
+#>     "Host": "127.0.0.1:42691",
+#>     "User-Agent": "httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0",
 #>     "Accept": "*/*",
 #>     "Accept-Encoding": "deflate, gzip, br, zstd",
 #>     "Content-Type": "application/json",
@@ -90,7 +90,7 @@ last_response_json()
 #>   "method": "post",
 #>   "path": "/post",
 #>   "origin": "127.0.0.1",
-#>   "url": "http://127.0.0.1:46139/post"
+#>   "url": "http://127.0.0.1:42691/post"
 #> }
 last_response_json(pretty = FALSE)
 #> {
@@ -99,8 +99,8 @@ last_response_json(pretty = FALSE)
 #>   "files": {},
 #>   "form": {},
 #>   "headers": {
-#>     "Host": "127.0.0.1:46139",
-#>     "User-Agent": "httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0",
+#>     "Host": "127.0.0.1:42691",
+#>     "User-Agent": "httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0",
 #>     "Accept": "*/*",
 #>     "Accept-Encoding": "deflate, gzip, br, zstd",
 #>     "Content-Type": "application/json",
@@ -113,6 +113,6 @@ last_response_json(pretty = FALSE)
 #>   "method": "post",
 #>   "path": "/post",
 #>   "origin": "127.0.0.1",
-#>   "url": "http://127.0.0.1:46139/post"
+#>   "url": "http://127.0.0.1:42691/post"
 #> }
 ```

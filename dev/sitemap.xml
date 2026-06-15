@@ -24,6 +24,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_client_req_auth.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_flow_auth_code_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_redirect_uri.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/oauth_server_metadata.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_token.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_token_cached.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/obfuscate.html</loc></url>

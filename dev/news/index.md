@@ -2,6 +2,11 @@
 
 ## httr2 (development version)
 
+- New
+  [`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md)
+  discovers an OAuth/OpenID Connect issuer’s endpoints from its
+  `.well-known` metadata document
+  ([\#845](https://github.com/r-lib/httr2/issues/845)).
 - [`oauth_flow_auth_code()`](https://httr2.r-lib.org/dev/reference/req_oauth_auth_code.md)
   now correctly uses the same redirect URI for both authorization and
   token requests when using the default localhost redirect URL

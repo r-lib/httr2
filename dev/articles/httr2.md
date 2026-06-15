@@ -9,6 +9,7 @@ HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)” from
 MDN.
 
 ``` r
+
 library(httr2)
 ```
 
@@ -23,10 +24,11 @@ well with the pipe.
 Every request starts with a URL:
 
 ``` r
+
 req <- request(example_url())
 req
 #> <httr2_request>
-#> GET http://127.0.0.1:41139/
+#> GET http://127.0.0.1:45091/
 #> Body: empty
 ```
 
@@ -38,12 +40,13 @@ We can see exactly what this request will send to the server with a dry
 run:
 
 ``` r
+
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
-#> host: 127.0.0.1:41139
-#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
+#> host: 127.0.0.1:45091
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
 ```
 
 The first line of the request contains three important pieces of
@@ -57,7 +60,7 @@ information:
 
 - The **path**, which is the URL stripped of details that the server
   already knows, i.e. the protocol (`http` or `https`), the host
-  (`localhost`), and the port (`41139`).
+  (`localhost`), and the port (`45091`).
 
 - The version of the HTTP protocol. This is unimportant for our purposes
   because it’s handled at a lower level.
@@ -68,6 +71,7 @@ added by httr2, but you can override them or add your own with
 [`req_headers()`](https://httr2.r-lib.org/dev/reference/req_headers.md):
 
 ``` r
+
 req |>
   req_headers(
     Name = "Hadley",
@@ -78,10 +82,10 @@ req |>
 #> GET / HTTP/1.1
 #> accept: application/json
 #> accept-encoding: deflate, gzip, br, zstd
-#> host: 127.0.0.1:41139
+#> host: 127.0.0.1:45091
 #> name: Hadley
 #> shoe-size: 11
-#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
 ```
 
 Header names are case-insensitive, and servers will ignore headers that
@@ -95,6 +99,7 @@ variety of ways to add data to the body. Here we’ll use
 to add some data encoded as JSON:
 
 ``` r
+
 req |>
   req_body_json(list(x = 1, y = "a")) |>
   req_dry_run()
@@ -103,8 +108,8 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 15
 #> content-type: application/json
-#> host: 127.0.0.1:41139
-#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
+#> host: 127.0.0.1:45091
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
 #> 
 #> {
 #>   "x": 1,
@@ -132,6 +137,7 @@ selection of common formats. For example,
 uses the encoding used when you submit a form from a web browser:
 
 ``` r
+
 req |>
   req_body_form(x = "1", y = "a") |>
   req_dry_run()
@@ -140,8 +146,8 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 7
 #> content-type: application/x-www-form-urlencoded
-#> host: 127.0.0.1:41139
-#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
+#> host: 127.0.0.1:45091
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
 #> 
 #> x=1&y=a
 ```
@@ -152,6 +158,7 @@ uses the multipart encoding which is particularly important when you
 need to send larger amounts of data or complete files:
 
 ``` r
+
 req |>
   req_body_multipart(x = "1", y = "a") |>
   req_dry_run()
@@ -159,19 +166,19 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 246
-#> content-type: multipart/form-data; boundary=------------------------Ak21u9UMqC4qTYu0kJq78W
-#> host: 127.0.0.1:41139
-#> user-agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
+#> content-type: multipart/form-data; boundary=------------------------PPRgBxxqKG1obHCZX38BkC
+#> host: 127.0.0.1:45091
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
 #> 
-#> --------------------------Ak21u9UMqC4qTYu0kJq78W
+#> --------------------------PPRgBxxqKG1obHCZX38BkC
 #> Content-Disposition: form-data; name="x"
 #> 
 #> 1
-#> --------------------------Ak21u9UMqC4qTYu0kJq78W
+#> --------------------------PPRgBxxqKG1obHCZX38BkC
 #> Content-Disposition: form-data; name="y"
 #> 
 #> a
-#> --------------------------Ak21u9UMqC4qTYu0kJq78W--
+#> --------------------------PPRgBxxqKG1obHCZX38BkC--
 ```
 
 If you need to send data encoded in a different form, you can use
@@ -185,11 +192,12 @@ server, call
 [`req_perform()`](https://httr2.r-lib.org/dev/reference/req_perform.md):
 
 ``` r
+
 req <- request(example_url()) |> req_url_path("/json")
 resp <- req |> req_perform()
 resp
 #> <httr2_response>
-#> GET http://127.0.0.1:41139/json
+#> GET http://127.0.0.1:45091/json
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (407 bytes)
@@ -199,9 +207,10 @@ You can see a simulation of what httr2 actually received with
 [`resp_raw()`](https://httr2.r-lib.org/dev/reference/resp_raw.md):
 
 ``` r
+
 resp |> resp_raw()
 #> HTTP/1.1 200 OK
-#> Date: Tue, 03 Mar 2026 22:14:05 GMT
+#> Date: Mon, 15 Jun 2026 19:55:17 GMT
 #> Content-Type: application/json
 #> Content-Length: 407
 #> ETag: "de760e6d"
@@ -246,6 +255,7 @@ You can extract data from the response using the `resp_()` functions:
   returns the description:
 
   ``` r
+
   resp |> resp_status()
   #> [1] 200
   resp |> resp_status_desc()
@@ -258,9 +268,10 @@ You can extract data from the response using the `resp_()` functions:
   [`resp_header()`](https://httr2.r-lib.org/dev/reference/resp_headers.md):
 
   ``` r
+
   resp |> resp_headers()
   #> <httr2_headers>
-  #> Date: Tue, 03 Mar 2026 22:14:05 GMT
+  #> Date: Mon, 15 Jun 2026 19:55:17 GMT
   #> Content-Type: application/json
   #> Content-Length: 407
   #> ETag: "de760e6d"
@@ -271,6 +282,7 @@ You can extract data from the response using the `resp_()` functions:
   Headers are case insensitive:
 
   ``` r
+
   resp |> resp_header("ConTEnT-LeNgTH")
   #> [1] "407"
   ```
@@ -280,6 +292,7 @@ You can extract data from the response using the `resp_()` functions:
   [`resp_body_json()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md):
 
   ``` r
+
   resp |> resp_body_json() |> str()
   #> List of 8
   #>  $ firstName   : chr "John"
@@ -306,6 +319,7 @@ Responses with status codes 4xx and 5xx are HTTP errors. httr2
 automatically turns these into R errors:
 
 ``` r
+
 request(example_url()) |>
   req_url_path("/status/404") |>
   req_perform()

@@ -157,6 +157,7 @@ for the components necessary to write your own auth code flow, if the
 API you are wrapping does not adhere closely to the standard.
 
 Other OAuth flows:
+[`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md),
 [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/dev/reference/req_oauth_bearer_jwt.md),
 [`req_oauth_client_credentials()`](https://httr2.r-lib.org/dev/reference/req_oauth_client_credentials.md),
 [`req_oauth_password()`](https://httr2.r-lib.org/dev/reference/req_oauth_password.md),

@@ -220,6 +220,8 @@ These functions implement the low-level components of OAuth.
   : OAuth client authentication
 - [`oauth_redirect_uri()`](https://httr2.r-lib.org/dev/reference/oauth_redirect_uri.md)
   : Default redirect url for OAuth
+- [`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md)
+  : Discover OAuth server metadata
 - [`oauth_token()`](https://httr2.r-lib.org/dev/reference/oauth_token.md)
   : Create an OAuth token
 

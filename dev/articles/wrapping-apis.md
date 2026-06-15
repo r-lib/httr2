@@ -20,6 +20,7 @@ Game](https://r-pkgs.org/whole-game.html)” chapter of [R
 packages](https://r-pkgs.org) first.
 
 ``` r
+
 library(httr2)
 ```
 
@@ -31,6 +32,7 @@ Before we start writing the sort of functions that you might put in a
 package, we’ll perform a request just to see how the basics work:
 
 ``` r
+
 # We start by creating a request that uses the base API url
 req <- request("https://fakerapi.it/api/v1")
 resp <- req |>
@@ -50,8 +52,8 @@ resp |> resp_body_json() |> str()
 #>  $ total : int 1
 #>  $ data  :List of 1
 #>   ..$ :List of 3
-#>   .. ..$ title      : chr "Saepe veritatis velit et."
-#>   .. ..$ description: chr "Doloremque aut autem voluptas. Dolores odit assumenda molestiae magni assumenda sunt. Recusandae culpa id in ma"| __truncated__
+#>   .. ..$ title      : chr "Earum corrupti qui aut fugit."
+#>   .. ..$ description: chr "Et possimus odio nihil itaque est. Pariatur occaecati voluptatem molestiae amet unde temporibus et. Voluptas te"| __truncated__
 #>   .. ..$ url        : chr "https://picsum.photos/380/480"
 ```
 
@@ -63,6 +65,7 @@ because if you retrieve an unsuccessful HTTP response, you automatically
 get an error that prevents you from further inspecting the body:
 
 ``` r
+
 req |>
   req_url_path_append("invalid") |>
   req_perform()
@@ -74,6 +77,7 @@ However, you can access the last response (successful or not) with
 [`last_response()`](https://httr2.r-lib.org/dev/reference/last_response.md):
 
 ``` r
+
 resp <- last_response()
 resp |> resp_body_json()
 #> $message
@@ -84,6 +88,7 @@ It doesn’t look like there’s anything useful there. Sometimes useful
 info is returned in the headers, so let’s check:
 
 ``` r
+
 resp |> resp_headers()
 #> <httr2_headers>
 #> Server: nginx
@@ -92,7 +97,7 @@ resp |> resp_headers()
 #> Connection: keep-alive
 #> X-Powered-By: PHP/8.3.8
 #> Cache-Control: no-cache, private
-#> Date: Tue, 03 Mar 2026 22:14:12 GMT
+#> Date: Mon, 15 Jun 2026 19:55:25 GMT
 #> X-RateLimit-Limit: 60
 #> X-RateLimit-Remaining: 56
 #> Access-Control-Allow-Origin: *
@@ -114,6 +119,7 @@ reach out to. You can do this with the
 function:
 
 ``` r
+
 req |>
   req_user_agent("my_package_name (http://my.package.web.site)") |>
   req_dry_run()
@@ -146,6 +152,7 @@ commonalities:
 This led me to construct the following function:
 
 ``` r
+
 faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
   params <- list(
     ...,
@@ -172,8 +179,8 @@ str(faker("images", width = 300))
 #>  $ total : int 1
 #>  $ data  :List of 1
 #>   ..$ :List of 3
-#>   .. ..$ title      : chr "Et nulla qui rerum."
-#>   .. ..$ description: chr "Voluptates velit magnam quaerat natus quia. Amet doloremque rerum doloremque in et. Quod aut illum autem rerum velit."
+#>   .. ..$ title      : chr "Ea modi nemo voluptatem qui."
+#>   .. ..$ description: chr "Ut dolores aliquid sint officia ipsam. Fugiat officiis voluptas voluptatem. Aliquid officia quos officiis tempo"| __truncated__
 #>   .. ..$ url        : chr "https://picsum.photos/300/480"
 ```
 
@@ -217,6 +224,7 @@ additional parameters: `gender` (male or female), `birthday_start`, and
 `birthday_end`. A simple wrapper would start something like this:
 
 ``` r
+
 faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NULL, quantity = 1, locale = "en_US", seed = NULL) {
   faker(
     "persons",
@@ -238,24 +246,24 @@ str(faker_person("male"))
 #>  $ data  :List of 1
 #>   ..$ :List of 10
 #>   .. ..$ id       : int 1
-#>   .. ..$ firstname: chr "Reinhold"
-#>   .. ..$ lastname : chr "Langosh"
-#>   .. ..$ email    : chr "raegan.gaylord@gmail.com"
-#>   .. ..$ phone    : chr "+14698837412"
-#>   .. ..$ birthday : chr "1985-11-12"
+#>   .. ..$ firstname: chr "Agustin"
+#>   .. ..$ lastname : chr "Franecki"
+#>   .. ..$ email    : chr "vwindler@gmail.com"
+#>   .. ..$ phone    : chr "+16787779042"
+#>   .. ..$ birthday : chr "1937-11-25"
 #>   .. ..$ gender   : chr "male"
 #>   .. ..$ address  :List of 10
 #>   .. .. ..$ id            : int 1
-#>   .. .. ..$ street        : chr "365 Mikel Flat"
-#>   .. .. ..$ streetName    : chr "Ziemann Vista"
-#>   .. .. ..$ buildingNumber: chr "359"
-#>   .. .. ..$ city          : chr "Trompburgh"
-#>   .. .. ..$ zipcode       : chr "62200-5113"
-#>   .. .. ..$ country       : chr "Sudan"
-#>   .. .. ..$ country_code  : chr "SD"
-#>   .. .. ..$ latitude      : num 43
-#>   .. .. ..$ longitude     : num -141
-#>   .. ..$ website  : chr "http://mckenzie.com"
+#>   .. .. ..$ street        : chr "6591 Aliya Summit"
+#>   .. .. ..$ streetName    : chr "Emmitt Spring"
+#>   .. .. ..$ buildingNumber: chr "687"
+#>   .. .. ..$ city          : chr "Jadeland"
+#>   .. .. ..$ zipcode       : chr "34007"
+#>   .. .. ..$ country       : chr "Seychelles"
+#>   .. .. ..$ country_code  : chr "SC"
+#>   .. .. ..$ latitude      : num 54.2
+#>   .. .. ..$ longitude     : num 84.6
+#>   .. ..$ website  : chr "http://hand.com"
 #>   .. ..$ image    : chr "http://placeimg.com/640/480/people"
 ```
 
@@ -265,6 +273,7 @@ using purrr; depending on your needs you could use base R code or
 `tidyr::hoist()`.
 
 ``` r
+
 library(purrr)
 
 faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NULL, quantity = 1, locale = "en_US", seed = NULL) {
@@ -303,13 +312,13 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
 }
 faker_person("male", quantity = 5)
 #> # A tibble: 5 × 4
-#>   firstname lastname  email                   gender
-#>   <chr>     <chr>     <chr>                   <chr> 
-#> 1 Turner    Keebler   zwaelchi@gmail.com      male  
-#> 2 Kaleb     Wiegand   stephany72@lang.org     male  
-#> 3 Conrad    Schoen    kane78@kertzmann.com    male  
-#> 4 Ricky     Kub       hagenes.elisa@gmail.com male  
-#> 5 Dalton    Gleichner akovacek@yahoo.com      male
+#>   firstname lastname   email                        gender
+#>   <chr>     <chr>      <chr>                        <chr> 
+#> 1 Triston   Brown      dwillms@yahoo.com            male  
+#> 2 Jake      Macejkovic jtorphy@gmail.com            male  
+#> 3 Hazel     Raynor     goyette.wade@rogahn.com      male  
+#> 4 Myles     Barton     giovanny.mcdermott@gmail.com male  
+#> 5 Peter     Lubowitz   cquigley@gmail.com           male
 ```
 
 The next steps would be to export and document this function; I’ll leave
@@ -349,9 +358,10 @@ steps to this process:
     cryptography:
 
     ``` r
+
     key <- secret_make_key()
     key
-    #> [1] "WBcyI6gXWNVdUREDWhPXYg"
+    #> [1] "iWLyk8fDsEMr2YWg__LE4Q"
     ```
 
     (Note that
@@ -366,15 +376,17 @@ steps to this process:
     package:
 
     ``` r
+
     secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
     secret_scrambled
-    #> [1] "qP-RRT7loeudu13acJ2yX25VsrUQEJ-VmzrtZX-htO7TRQtsABv38iKjb0ETSrVVtA"
+    #> [1] "gHlBy0gSh68oj3spanc2bvUDHvwONfNeKhMkxx31_RRlVOJxHr_pbDPk79tYHoF5vg"
     ```
 
 3.  When needed, you descramble the secret using
     [`secret_decrypt()`](https://httr2.r-lib.org/dev/reference/secrets.md):
 
     ``` r
+
     secret_decrypt(secret_scrambled, key)
     #> [1] "secret I need to work with an API"
     ```
@@ -403,9 +415,10 @@ instead of the encryption key itself. In fact, this is most natural
 usage.
 
 ``` r
+
 secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
 secret_scrambled
-#> [1] "cmMUR010bLuzSUrZgOnrNeBVi3dG9PQOkrbkfTQs_y-d-IgFPhMVGzlJtJlqUKsUiw"
+#> [1] "KFPBj9DlsznCsi0QupFqf39a9SL94YTfM_XYx5AuCBiZCIINvCQqc31uFuNHmURLeA"
 secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
 #> [1] "secret I need to work with an API"
 ```
@@ -470,6 +483,7 @@ So now you can understand how the following code works to get my NYTimes
 Book API key:
 
 ``` r
+
 my_key <- secret_decrypt("4Nx84VPa83dMt3X6bv0fNBlLbv3U4D1kHM76YisKEfpCarBm1UHJHARwJHCFXQSV", "HTTR2_KEY")
 ```
 
@@ -501,6 +515,7 @@ valuable and it makes teaching APIs so much easier.
 Now let’s perform a test request and look at the response:
 
 ``` r
+
 resp <- request("https://api.nytimes.com/svc/books/v3") |>
   req_url_path_append("/reviews.json") |>
   req_url_query(`api-key` = my_key, isbn = 9780307476463) |>
@@ -511,6 +526,7 @@ resp
 Like most modern APIs, this one returns the results as JSON:
 
 ``` r
+
 resp |>
   resp_body_json() |>
   str()
@@ -525,6 +541,7 @@ What happens if there’s an error? For example, if we deliberately supply
 an invalid key:
 
 ``` r
+
 resp <- request("https://api.nytimes.com/svc/books/v3") |>
   req_url_path_append("/reviews.json") |>
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
@@ -535,6 +552,7 @@ To see if there’s any extra useful information we can again look at
 `last_response():`
 
 ``` r
+
 resp <- last_response()
 resp
 resp |> resp_body_json()
@@ -543,6 +561,7 @@ resp |> resp_body_json()
 It looks like there’s some useful additional info in the `faultstring`:
 
 ``` r
+
 resp |> resp_body_json() |> _$fault |> _$faultstring
 ```
 
@@ -554,6 +573,7 @@ that and re-fetch the request, we see the additional information
 displayed in the R error:
 
 ``` r
+
 nytimes_error_body <- function(resp) {
   resp |> resp_body_json() |> _$fault |> _$faultstring
 }
@@ -590,6 +610,7 @@ Instead, we’ll use
 to ensure we don’t make more than 10 requests every 60 seconds:
 
 ``` r
+
 req <- request("https://api.nytimes.com/svc/books/v3") |>
   req_url_path_append("/reviews.json") |>
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
@@ -604,6 +625,7 @@ per API, you might want to use the `realm` argument to be a bit more
 specific:
 
 ``` r
+
 req <- request("https://api.nytimes.com/svc/books/v3") |>
   req_url_path_append("/reviews.json") |>
   req_url_query(`api-key` = "invalid", isbn = 9780307476463) |>
@@ -616,6 +638,7 @@ Putting together all the pieces above yields a function something like
 this:
 
 ``` r
+
 nytimes_books <- function(api_key, path, ...) {
   request("https://api.nytimes.com/svc/books/v3") |>
     req_url_path_append(path) |>
@@ -651,6 +674,7 @@ automated processes. Then you’d write a function to retrieve the API
 key, returning a helpful message if it’s not found:
 
 ``` r
+
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (identical(key, "")) {
@@ -666,6 +690,7 @@ move it to end of the argument list, since it’ll only be needed in
 exceptional circumstances.
 
 ``` r
+
 nytimes_books <- function(path, ..., api_key = get_api_key()) {
   ...
 }
@@ -675,6 +700,7 @@ You can make this approach a little more user friendly by providing a
 helper that sets the environment variable:
 
 ``` r
+
 set_api_key <- function(key = NULL) {
   if (is.null(key)) {
     key <- askpass::askpass("Please enter your API key")
@@ -691,6 +717,7 @@ It’s a good idea to extend `get_api_key()` to automatically use your
 encrypted key to make it easier to write tests:
 
 ``` r
+
 get_api_key <- function() {
   key <- Sys.getenv("NYTIMES_KEY")
   if (!identical(key, "")) {
@@ -735,6 +762,7 @@ can only access gists, and, as in the last example, stored an encrypted
 version in this vignette:
 
 ``` r
+
 token <- secret_decrypt("Guz59woxKoIO_JVtp2IzU3mFIU3ULtaUEa8xvvpYUBdVthR8jhxzc3bMZFhA9HL-ZK6YZudOI6g", "HTTR2_KEY")
 ```
 
@@ -750,6 +778,7 @@ To authenticate a request with the token, we need to put it in the
 prefix](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#authentication):
 
 ``` r
+
 req <- request("https://api.github.com/gists") |>
   req_headers(Authorization = paste("token", token))
 
@@ -757,9 +786,10 @@ req |> req_perform()
 ```
 
 Because the authorization header usually contains secret information,
-httr2 automatically redacts it[¹](#fn1):
+httr2 automatically redacts it[^1]:
 
 ``` r
+
 req
 req |> req_dry_run()
 ```
@@ -781,6 +811,7 @@ I’m sufficiently distrustful that I still want to construct a
 deliberately malformed query and see what happens:
 
 ``` r
+
 resp <- request("https://api.github.com/gists") |>
   req_url_query(since = "abcdef") |>
   req_headers(Authorization = paste("token", token)) |>
@@ -792,6 +823,7 @@ is rather different to documentation which suggests there should be a
 string `message` and a list of `errors`:
 
 ``` r
+
 resp <- last_response()
 resp
 resp |> resp_body_json()
@@ -801,6 +833,7 @@ I’ll proceed anyway, writing a function that extracts the data and
 formats it for presentation to the user:
 
 ``` r
+
 gist_error_body <- function(resp) {
   body <- resp_body_json(resp)
 
@@ -818,6 +851,7 @@ Now I can pass this function to the `body` argument of
 it will be automatically included in the error when a request fails:
 
 ``` r
+
 request("https://api.github.com/gists") |>
   req_url_query(since = "yesterday") |>
   req_headers(Authorization = paste("token", token)) |>
@@ -836,6 +870,7 @@ response headers to provide information about the remaining [rate
 limits](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting).
 
 ``` r
+
 resp <- req |> req_perform()
 resp |> resp_headers("ratelimit")
 ```
@@ -848,6 +883,7 @@ worth waiting and trying again. For GitHub, when the rate limit is
 the response has a 403 status and a `X-RateLimit-Remaining: 0` header:
 
 ``` r
+
 gist_is_transient <- function(resp) {
   resp_status(resp) == 403 &&
     resp_header(resp, "X-RateLimit-Remaining") == "0"
@@ -863,6 +899,7 @@ strings), then subtract off the current time (in number of seconds since
 1970-01-01):
 
 ``` r
+
 gist_after <- function(resp) {
   time <- as.numeric(resp_header(resp, "X-RateLimit-Reset"))
   time - unclass(Sys.time())
@@ -876,6 +913,7 @@ httr2 has all the information it needs to handle rate-limiting
 automatically:
 
 ``` r
+
 request("http://api.github.com") |>
   req_retry(
     is_transient = gist_is_transient,
@@ -894,6 +932,7 @@ Let’s wrap up everything we’ve learned so far into a single function
 that creates a request:
 
 ``` r
+
 req_gist <- function(token) {
   request("https://api.github.com/gists") |>
     req_headers(Authorization = paste("token", token)) |>
@@ -922,6 +961,7 @@ things:
 [`req_body_json()`](https://httr2.r-lib.org/dev/reference/req_body.md):
 
 ``` r
+
 req <- req_gist(token) |>
   req_body_json(list(
     description = "This is my cool gist!",
@@ -946,6 +986,7 @@ the next examples, culminating with deleting the gist so I don’t end up
 with a bunch of duplicated gists 😃.
 
 ``` r
+
 resp <- req |> req_perform()
 id <- resp |> resp_body_json() |> _$id
 id
@@ -960,6 +1001,7 @@ use the `PATCH` verb. So after adding the data to request, I use
 override the default method:
 
 ``` r
+
 req <- req_gist(token) |>
   req_url_path_append(id) |>
   req_body_json(list(description = "This is a simple gist")) |>
@@ -973,6 +1015,7 @@ Deleting a gist is similar, except we don’t send any data, we just need
 to adjust the default method from `GET` to `DELETE`.
 
 ``` r
+
 req <- req_gist(token) |>
   req_url_path_append(id) |>
   req_method("DELETE")
@@ -980,9 +1023,7 @@ req |> req_dry_run()
 req |> req_perform()
 ```
 
-------------------------------------------------------------------------
-
-1.  Again, it’s still possible to extract it with a little extra work,
+[^1]: Again, it’s still possible to extract it with a little extra work,
     but httr2 tries to help you avoid revealing it by accident. httr2
     protects you from yourself, not from someone deliberately trying to
     find the secret.

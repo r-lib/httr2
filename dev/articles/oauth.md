@@ -1,11 +1,12 @@
 # OAuth
 
 ``` r
+
 library(httr2)
 ```
 
-OAuth[¹](#fn1) is an authorization framework design for performing work
-on the behalf of a user. You’ve probably used it a bunch without knowing
+OAuth[^1] is an authorization framework design for performing work on
+the behalf of a user. You’ve probably used it a bunch without knowing
 what it’s called: you use it when you login to a non-Google website
 using your Google account, when you give your phone access to your
 twitter account, or when you login to a streaming app on your smart TV.
@@ -111,6 +112,7 @@ create a httr2 client with
 e.g.:
 
 ``` r
+
 client <- oauth_client(
   id = "28acfec0674bb3da9f38",
   token_url = "https://github.com/login/oauth/access_token",
@@ -161,14 +163,16 @@ you’d copy and paste `obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")` into
 your client specification.
 
 ``` r
+
 obfuscate("secret")
-#> obfuscated("UXAGttGp08pJbmHZqSIZX8uwGJ9L7g")
+#> obfuscated("_CP6VoptFCUwAbuvGQ66nc3aBKhL0Q")
 ```
 
 Here’s what a complete client specification for GitHub looks like, using
 a real app that I created specifically for this vignette:
 
 ``` r
+
 client <- oauth_client(
   id = "28acfec0674bb3da9f38",
   secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
@@ -187,6 +191,7 @@ I recommend wrapping client creation in a function in your package,
 e.g.:
 
 ``` r
+
 github_client <- function() {
   oauth_client(
     id = "28acfec0674bb3da9f38",
@@ -211,8 +216,8 @@ package](https://googledrive.tidyverse.org/articles/bring-your-own-app.html).
 
 Once you have a client you need to use it with a flow in order to get a
 token. You’ll need to read the docs for your API to figure out which
-flows it supports, but the most common is the **authorization
-code**[²](#fn2) flow, which works something like this:
+flows it supports, but the most common is the **authorization code**[^2]
+flow, which works something like this:
 
 1.  httr2 opens a browser using the **authorization URL** provided by
     the API. The URL includes parameters that identify your app and what
@@ -248,6 +253,7 @@ token to access the GitHub API (using the client defined above) with
 this code:
 
 ``` r
+
 token <- oauth_flow_auth_code(
   client = client,
   auth_url = "https://github.com/login/oauth/authorize"
@@ -259,6 +265,7 @@ specifically for interactive use, but if you do run it and print out the
 `token`, you’ll see something like this:
 
 ``` r
+
 token
 #> <httr2_token>
 #> token_type: bearer
@@ -298,6 +305,7 @@ returns information about the current user. If we make a request to this
 endpoint without authentication, we’ll get an error:
 
 ``` r
+
 req <- request("https://api.github.com/user")
 req |>
   req_perform()
@@ -311,6 +319,7 @@ using the same arguments as our previous call to
 [`oauth_flow_auth_code()`](https://httr2.r-lib.org/dev/reference/req_oauth_auth_code.md):
 
 ``` r
+
 req |>
   req_oauth_auth_code(
     client = github_client(),
@@ -325,6 +334,7 @@ When you run this code, you’ll see something like this, but it will
 obviously contain information about you, not me.
 
 ``` r
+
 #> List of 32
 #>  $ login        : chr "hadley"
 #>  $ id           : int 4196
@@ -372,6 +382,7 @@ You can see which clients have cached tokens by looking in the cache
 directory used by httr2:
 
 ``` r
+
 dir(oauth_cache_path(), recursive = TRUE)
 ```
 
@@ -430,13 +441,11 @@ need to carefully compare this to the API documentation and play “spot
 the difference”. You’re very welcome to file an issue and I’ll do my
 best to help you out.
 
-------------------------------------------------------------------------
-
-1.  Here I’ll only talk about OAuth 2.0 which is the only version in
+[^1]: Here I’ll only talk about OAuth 2.0 which is the only version in
     common use today. OAuth 1.0 is largely only of historical interest.
 
-2.  Confusingly, Github calls this the “web application flow”, but this
-    is not the official name. This is a general problem with OAuth docs;
-    often they use different terms for the same things. In httr2, I’ve
-    tried to stick as closely as possible to the terms used in the
+[^2]: Confusingly, Github calls this the “web application flow”, but
+    this is not the official name. This is a general problem with OAuth
+    docs; often they use different terms for the same things. In httr2,
+    I’ve tried to stick as closely as possible to the terms used in the
     official RFC specifications.

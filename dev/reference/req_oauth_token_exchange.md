@@ -114,6 +114,7 @@ directly.
 ## See also
 
 Other OAuth flows:
+[`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md),
 [`req_oauth_auth_code()`](https://httr2.r-lib.org/dev/reference/req_oauth_auth_code.md),
 [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/dev/reference/req_oauth_bearer_jwt.md),
 [`req_oauth_client_credentials()`](https://httr2.r-lib.org/dev/reference/req_oauth_client_credentials.md),

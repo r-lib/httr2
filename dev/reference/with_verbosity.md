@@ -59,31 +59,31 @@ fun <- function() {
 with_verbosity(fun())
 #> -> GET / HTTP/2
 #> -> Host: httr2.r-lib.org
-#> -> User-Agent: httr2/1.2.2.9000 r-curl/7.0.0 libcurl/8.5.0
+#> -> User-Agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
 #> -> Accept: */*
 #> -> Accept-Encoding: deflate, gzip, br, zstd
 #> -> 
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Wed, 14 Jan 2026 19:32:48 GMT
+#> <- last-modified: Tue, 03 Mar 2026 22:14:50 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6967ef60-4b79"
-#> <- expires: Tue, 03 Mar 2026 16:08:26 GMT
+#> <- etag: W/"69a75d5a-4b79"
+#> <- expires: Mon, 15 Jun 2026 20:04:51 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: B340:2C9EA8:1E18371:20ABDDC:69A70522
+#> <- x-github-request-id: 5FE8:D5CD3:584E2:5A9E2:6A30588B
 #> <- accept-ranges: bytes
-#> <- date: Tue, 03 Mar 2026 22:14:02 GMT
+#> <- date: Mon, 15 Jun 2026 19:55:14 GMT
 #> <- via: 1.1 varnish
-#> <- age: 22
-#> <- x-served-by: cache-dfw-kdfw8210126-DFW
+#> <- age: 23
+#> <- x-served-by: cache-hhr-khhr2060046-HHR
 #> <- x-cache: HIT
 #> <- x-cache-hits: 5
-#> <- x-timer: S1772576043.729108,VS0,VE0
+#> <- x-timer: S1781553315.832896,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 1cd345420c23c1c307fb2ad9528d094bf78ffe77
+#> <- x-fastly-request-id: e92a014e46a1b1cd5f6958c1e53be2f6bd2f0658
 #> <- content-length: 4833
 #> <- 
 #> <httr2_response>

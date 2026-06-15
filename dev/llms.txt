@@ -12,6 +12,7 @@ credentials.
 You can install httr2 from CRAN with:
 
 ``` r
+
 install.packages("httr2")
 ```
 
@@ -20,6 +21,7 @@ install.packages("httr2")
 To use httr2, start by creating a **request**:
 
 ``` r
+
 library(httr2)
 
 req <- request("https://r-project.org")
@@ -32,6 +34,7 @@ req
 You can tailor this request with the `req_` family of functions:
 
 ``` r
+
 # Add custom headers
 req |> req_headers("Accept" = "application/json")
 #> <httr2_request>
@@ -75,6 +78,7 @@ And see exactly what httr2 will send to the server with
 [`req_dry_run()`](https://httr2.r-lib.org/dev/reference/req_dry_run.md):
 
 ``` r
+
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> accept: */*
@@ -88,6 +92,7 @@ Use
 to perform the request, retrieving a **response**:
 
 ``` r
+
 resp <- req_perform(req)
 resp
 #> <httr2_response>
@@ -101,6 +106,7 @@ The `resp_` functions help you extract various useful components of the
 response:
 
 ``` r
+
 resp |> resp_content_type()
 #> [1] "text/html"
 resp |> resp_status_desc()
@@ -383,6 +389,8 @@ These functions implement the low-level components of OAuth.
   : OAuth client authentication
 - [`oauth_redirect_uri()`](https://httr2.r-lib.org/dev/reference/oauth_redirect_uri.md)
   : Default redirect url for OAuth
+- [`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md)
+  : Discover OAuth server metadata
 - [`oauth_token()`](https://httr2.r-lib.org/dev/reference/oauth_token.md)
   : Create an OAuth token
 
