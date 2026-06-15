@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* New `oauth_server_metadata()` discovers an OAuth/OpenID Connect issuer's endpoints from its `.well-known` metadata document (#845).
 * `oauth_flow_auth_code()` now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (@pedrobtz, #829).
 * `last_response_json()` now works with content-types that end with `+json`, 
 e.g., `application/problem+json` (@cgiachalis, #782).

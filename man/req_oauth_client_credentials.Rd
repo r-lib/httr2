@@ -44,6 +44,7 @@ request("https://example.com") |>
 }
 \seealso{
 Other OAuth flows: 
+\code{\link{oauth_server_metadata}()},
 \code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_bearer_jwt}()},
 \code{\link{req_oauth_password}()},
