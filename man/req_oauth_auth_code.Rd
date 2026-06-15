@@ -138,6 +138,7 @@ write your own auth code flow, if the API you are wrapping does not adhere
 closely to the standard.
 
 Other OAuth flows: 
+\code{\link{oauth_server_metadata}()},
 \code{\link{req_oauth_bearer_jwt}()},
 \code{\link{req_oauth_client_credentials}()},
 \code{\link{req_oauth_password}()},

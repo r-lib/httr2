@@ -64,6 +64,7 @@ req |> req_oauth_refresh(client)
 }
 \seealso{
 Other OAuth flows: 
+\code{\link{oauth_server_metadata}()},
 \code{\link{req_oauth_auth_code}()},
 \code{\link{req_oauth_bearer_jwt}()},
 \code{\link{req_oauth_client_credentials}()},
