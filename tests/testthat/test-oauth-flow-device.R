@@ -24,3 +24,11 @@ test_that("auth_url falls back to the client's device_auth_url, explicit wins", 
     "https://other.com/device"
   )
 })
+
+test_that("oauth_flow_device() resolves auth_url from the client", {
+  client <- oauth_client("id", token_url = "https://example.com/token")
+  expect_error(
+    oauth_flow_device(client, open_browser = FALSE),
+    "Must supply"
+  )
+})
