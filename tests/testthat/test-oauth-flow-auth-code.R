@@ -1,3 +1,38 @@
+test_that("auth_url falls back to the client, explicit wins", {
+  metadata <- structure(
+    list(
+      token_endpoint = "https://example.com/token",
+      authorization_endpoint = "https://example.com/auth"
+    ),
+    class = "httr2_oauth_server_metadata"
+  )
+  client <- oauth_client("id", metadata = metadata)
+
+  req <- req_oauth_auth_code(request("https://example.com"), client)
+  expect_equal(
+    req$policies$auth_sign$params$flow_params$auth_url,
+    "https://example.com/auth"
+  )
+
+  req <- req_oauth_auth_code(
+    request("https://example.com"),
+    client,
+    auth_url = "https://other.com/auth"
+  )
+  expect_equal(
+    req$policies$auth_sign$params$flow_params$auth_url,
+    "https://other.com/auth"
+  )
+})
+
+test_that("errors when no auth_url is available", {
+  client <- oauth_client("id", token_url = "https://example.com/token")
+  expect_snapshot(
+    req_oauth_auth_code(request("https://example.com"), client),
+    error = TRUE
+  )
+})
+
 test_that("desktop style can't run in hosted environment", {
   client <- oauth_client("abc", "http://example.com")
 
