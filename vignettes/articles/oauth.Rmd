@@ -2,7 +2,8 @@
 title: "OAuth"
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -71,7 +72,8 @@ Some providers also offer a device authorization URL, used by the device flow.
 Traditionally you had to dig these URLs out of the provider's documentation, but many providers now publish them in a standard discovery document (defined by [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414) and OpenID Connect Discovery).
 `oauth_server_metadata()` fetches and parses that document, so you can look up every endpoint from a single issuer URL:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 metadata <- oauth_server_metadata("https://github.com/login/oauth")
 metadata
 #> <httr2_oauth_server_metadata>
@@ -98,7 +100,8 @@ This process varies from API to API (it's normal to spend some time hunting thro
 Sometimes the client id is all you need, and you can create a httr2 client with `oauth_client()`.
 Pair it with the `metadata` you discovered above and httr2 fills in the endpoints for you:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 client <- oauth_client(
   id = "28acfec0674bb3da9f38",
   metadata = metadata,
@@ -111,7 +114,8 @@ I have a bunch of apps that I've used for testing, so here I've used the name `h
 
 > **Specifying endpoints by hand.** If your provider doesn't publish discovery metadata, supply the `token_url` directly instead of `metadata`:
 >
-> ```{r, eval = FALSE}
+> ```{r}
+> #| eval: false
 > client <- oauth_client(
 >   id = "28acfec0674bb3da9f38",
 >   token_url = "https://github.com/login/oauth/access_token",
@@ -141,7 +145,8 @@ obfuscate("secret")
 
 Here's what a complete client specification for GitHub looks like, using a real app that I created specifically for this vignette:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 client <- oauth_client(
   id = "28acfec0674bb3da9f38",
   secret = obfuscated("J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"),
@@ -156,7 +161,8 @@ You can certainly uncover my client secret if you are an experienced R programme
 
 I recommend wrapping client creation in a function in your package, e.g.:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 github_client <- function() {
   metadata <- oauth_server_metadata("https://github.com/login/oauth")
   oauth_client(
@@ -196,13 +202,15 @@ These two steps are described in the following sections.
 `oauth_flow_auth_code()` is the best way to verify you've correctly specified the parameters to the client, without depending on correctly understanding any other part of the API.
 Because the client was built from `metadata`, it already knows the authorization URL, so you can get a token to access the GitHub API (using the client defined above) with just:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 token <- oauth_flow_auth_code(client)
 ```
 
 > **Specifying the authorization URL by hand.** If you built the client without `metadata`, pass `auth_url` directly:
 >
-> ```{r, eval = FALSE}
+> ```{r}
+> #| eval: false
 > token <- oauth_flow_auth_code(
 >   client = client,
 >   auth_url = "https://github.com/login/oauth/authorize"
@@ -315,7 +323,8 @@ Currently, httr2 supports the following flows:
 
     > **Specifying the device URL by hand.** The device flow needs a separate device authorization URL, which `metadata` doesn't always include (GitHub, for instance, omits it). Pass it to `req_oauth_device()` as `auth_url`:
     >
-    > ```{r, eval = FALSE}
+    > ```{r}
+    > #| eval: false
     > req |>
     >   req_oauth_device(
     >     client = github_client(),
