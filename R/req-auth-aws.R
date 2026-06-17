@@ -143,14 +143,20 @@ aws_v4_signature <- function(
   # 1. Create a canonical request
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html#create-canonical-request
   HTTPMethod <- method
-  # Ensures encoded slashes (%2F) within segments get double-encoded
-  # rather than being treated as path separators.
-  # https://github.com/r-lib/httr2/issues/842
-  raw_path <- curl::curl_parse_url(url, decode = FALSE)$path
-  segments <- strsplit(raw_path, "/", fixed = TRUE)[[1]]
-  CanonicalURI <- paste(curl::curl_escape(segments), collapse = "/")
-  if (grepl("/$", raw_path)) {
-    CanonicalURI <- paste0(CanonicalURI, "/")
+  if (aws_service == "s3") {
+    # S3 uses single-encoding and no path normalization
+    CanonicalURI <- curl::curl_escape(parsed_url$path %||% "/")
+    CanonicalURI <- gsub("%2F", "/", CanonicalURI, fixed = TRUE)
+  } else {
+    # Non-S3 services double-encode: split on real `/` separators and
+    # URI-encode each segment so that e.g. %2F becomes %252F.
+    # https://github.com/r-lib/httr2/issues/842
+    raw_path <- curl::curl_parse_url(url, decode = FALSE)$path
+    segments <- strsplit(raw_path, "/", fixed = TRUE)[[1]]
+    CanonicalURI <- paste(curl::curl_escape(segments), collapse = "/")
+    if (grepl("/$", raw_path)) {
+      CanonicalURI <- paste0(CanonicalURI, "/")
+    }
   }
 
   if (is.null(parsed_url$query)) {

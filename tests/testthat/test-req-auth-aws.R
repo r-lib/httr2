@@ -96,7 +96,33 @@ test_that("signing agrees with glacier example", {
   expect_equal(signature$Authorization, expected)
 })
 
-test_that("canonical URI preserves encoded slashes in path segments", {
+test_that("validates its inputs", {
+  req <- request("https://sts.amazonaws.com/")
+  expect_snapshot(error = TRUE, {
+    req_auth_aws_v4(1)
+    req_auth_aws_v4(req, 1)
+    req_auth_aws_v4(req, "", "", aws_session_token = 1)
+    req_auth_aws_v4(req, "", "", aws_service = 1)
+    req_auth_aws_v4(req, "", "", aws_region = 1)
+  })
+})
+
+test_that("S3 canonical URI uses single-encoding", {
+  signature <- aws_v4_signature(
+    method = "GET",
+    url = "https://s3.us-east-1.amazonaws.com/my-bucket/my%20file.txt",
+    headers = list("x-amz-date" = "20250121T182222Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+
+  canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
+  expect_equal(canonical_uri, "/my-bucket/my%20file.txt")
+})
+
+test_that("non-S3 canonical URI double-encodes path segments", {
   # A URL where %2F is part of a path segment (e.g. an ARN), not a separator
   url_with_encoded_slash <- paste0(
     "https://bedrock-runtime.us-east-1.amazonaws.com/model/",
@@ -126,15 +152,4 @@ test_that("canonical URI preserves encoded slashes in path segments", {
       "/converse"
     )
   )
-})
-
-test_that("validates its inputs", {
-  req <- request("https://sts.amazonaws.com/")
-  expect_snapshot(error = TRUE, {
-    req_auth_aws_v4(1)
-    req_auth_aws_v4(req, 1)
-    req_auth_aws_v4(req, "", "", aws_session_token = 1)
-    req_auth_aws_v4(req, "", "", aws_service = 1)
-    req_auth_aws_v4(req, "", "", aws_region = 1)
-  })
 })
