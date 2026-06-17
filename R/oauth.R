@@ -53,7 +53,6 @@ auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
         token_refresh(
           flow_params$client,
           token$refresh_token,
-          scope = flow_params$scope,
           token_params = flow_params$token_params %||% list()
         ),
         httr2_oauth = function(cnd) {

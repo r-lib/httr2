@@ -1,6 +1,6 @@
 # httr2 (development version)
 
-* OAuth token refresh now forwards the `scope` and `token_params` from the original flow, so servers that vary token contents by scope issue an equivalent token on refresh rather than a narrower one.
+* OAuth token refresh now forwards `token_params` from the original flow, so extra token-endpoint parameters (e.g. a `scope` required on the token exchange) are sent on refresh as well as on the initial token request.
 * New `oauth_server_metadata()` discovers an OAuth/OpenID Connect issuer's endpoints from its `.well-known` metadata document (#845).
 * `oauth_flow_auth_code()` now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (@pedrobtz, #829).
 * `last_response_json()` now works with content-types that end with `+json`, 

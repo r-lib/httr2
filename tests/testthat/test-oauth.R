@@ -55,19 +55,14 @@ test_that("can refresh to get new token", {
   expect_equal(cache$get(), new_token)
 })
 
-test_that("refresh forwards scope and token_params from the flow", {
+test_that("refresh forwards token_params from the flow", {
   client <- oauth_client("test", "http://example.org/test")
   cache <- cache_mem(client)
   cache$set(oauth_token("123", refresh_token = "456", expires_in = -60))
 
   local_mocked_bindings(
-    token_refresh = function(
-      client,
-      refresh_token,
-      scope = NULL,
-      token_params = list()
-    ) {
-      oauth_token("789", scope = scope, token_params = token_params)
+    token_refresh = function(client, refresh_token, token_params = list()) {
+      oauth_token("789", token_params = token_params)
     }
   )
 
@@ -80,7 +75,6 @@ test_that("refresh forwards scope and token_params from the flow", {
       token_params = list(resource = "example")
     )
   )
-  expect_equal(token$scope, "read")
   expect_equal(token$token_params, list(resource = "example"))
 })
 
