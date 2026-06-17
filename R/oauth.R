@@ -50,7 +50,15 @@ auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
       token <- exec(flow, !!!flow_params)
     } else {
       token <- tryCatch(
-        token_refresh(flow_params$client, token$refresh_token),
+        token_refresh(
+          flow_params$client,
+          token$refresh_token,
+          # Forward the scope and token params from the original flow so that
+          # servers which key token contents off scope (rather than the
+          # originally granted scope) issue an equivalent token on refresh.
+          scope = flow_params$scope,
+          token_params = flow_params$token_params %||% list()
+        ),
         httr2_oauth = function(cnd) {
           # If refresh fails, try to auth from scratch
           exec(flow, !!!flow_params)
