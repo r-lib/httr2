@@ -127,6 +127,7 @@ req_verbose_test <- function(req) {
 transform_verbose_response <- function(lines) {
   lines <- gsub(example_url(), "<webfakes>/", lines, fixed = TRUE)
   lines <- lines[!grepl("^<- (Date|ETag|Content-Length):", lines)]
-  lines <- lines[!grepl("\\*  Closing connection", lines)]
+  # Connection-lifecycle notes appear non-deterministically depending on timing
+  lines <- lines[!grepl("\\*  (Closing|shutting down) connection", lines)]
   lines
 }
