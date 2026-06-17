@@ -115,8 +115,17 @@ test_that("canonical URI preserves encoded slashes in path segments", {
     aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
   )
 
-  # The encoded slash (%2F) in the ARN should be double-encoded to %252F
-  expect_match(signature$CanonicalRequest, "%252F", fixed = TRUE)
+  # %2F in the ARN is double-encoded to %252F, not treated as a separator
+  canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
+  expect_equal(
+    canonical_uri,
+    paste0(
+      "/model/",
+      "arn%253Aaws%253Abedrock%253Aus-east-1%253A123456%253A",
+      "application-inference-profile%252Fprofile-id",
+      "/converse"
+    )
+  )
 })
 
 test_that("validates its inputs", {
