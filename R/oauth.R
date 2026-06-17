@@ -53,9 +53,6 @@ auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
         token_refresh(
           flow_params$client,
           token$refresh_token,
-          # Forward the scope and token params from the original flow so that
-          # servers which key token contents off scope (rather than the
-          # originally granted scope) issue an equivalent token on refresh.
           scope = flow_params$scope,
           token_params = flow_params$token_params %||% list()
         ),
