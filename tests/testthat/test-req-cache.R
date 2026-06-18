@@ -81,6 +81,20 @@ test_that("304 retains headers but gets cached body", {
   expect_equal(cached$body, resp$body)
 })
 
+test_that("can re-cache a disk body already in the cache (#840)", {
+  req <- request("http://example.com") |> req_cache(tempfile())
+
+  path <- local_write_lines("Hi there")
+  resp <- response(200, headers = "Etag: ABC", body = new_path(path))
+  cache_set(req, resp)
+
+  # 304 reuses cached body (which lives in the cache), then re-caches it
+  cached <- cache_post_fetch(req, response(304, headers = "X: 2"))
+  body_path <- req_cache_path(req, ".body")
+  expect_equal(cached$body, new_path(body_path))
+  expect_equal(readLines(body_path), "Hi there")
+})
+
 test_that("automatically adds to cache", {
   req <- request("http://example.com") |> req_cache(tempfile())
   expect_true(is.null(cache_get(req)))
