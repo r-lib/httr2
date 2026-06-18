@@ -1,11 +1,5 @@
 # `StreamingBody` class
 
-`StreamingBody` class
-
-`StreamingBody` class
-
-## Details
-
 This R6 class is used to represent the body of a streaming response.
 When using this in mocked responses, you can either create a new
 instance using your own connection or use a subclass for some other
@@ -16,7 +10,7 @@ representation. In either case, you will pass to the `body` argument of
 
 ### Public methods
 
-- [`StreamingBody$new()`](#method-StreamingBody-new)
+- [`StreamingBody$new()`](#method-StreamingBody-initialize)
 
 - [`StreamingBody$read()`](#method-StreamingBody-read)
 
@@ -34,7 +28,7 @@ representation. In either case, you will pass to the `body` argument of
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `StreamingBody$new()`
 
 Create a new object
 
@@ -51,7 +45,7 @@ Create a new object
 
 ------------------------------------------------------------------------
 
-### Method `read()`
+### `StreamingBody$read()`
 
 Read `n` bytes into a raw vector.
 
@@ -67,7 +61,7 @@ Read `n` bytes into a raw vector.
 
 ------------------------------------------------------------------------
 
-### Method `read_all()`
+### `StreamingBody$read_all()`
 
 Read all bytes and close the connection.
 
@@ -83,7 +77,7 @@ Read all bytes and close the connection.
 
 ------------------------------------------------------------------------
 
-### Method `is_open()`
+### `StreamingBody$is_open()`
 
 Is the connection still open?
 
@@ -93,7 +87,7 @@ Is the connection still open?
 
 ------------------------------------------------------------------------
 
-### Method `is_complete()`
+### `StreamingBody$is_complete()`
 
 Is the connection complete? (i.e. is there data remaining to be read?)
 
@@ -103,7 +97,7 @@ Is the connection complete? (i.e. is there data remaining to be read?)
 
 ------------------------------------------------------------------------
 
-### Method `get_fdset()`
+### `StreamingBody$get_fdset()`
 
 Get the active file descriptions and timeout from the handle. Wrapper
 around
@@ -115,7 +109,7 @@ around
 
 ------------------------------------------------------------------------
 
-### Method [`close()`](https://rdrr.io/r/base/connections.html)
+### `StreamingBody$close()`
 
 Close the connection
 
@@ -125,7 +119,7 @@ Close the connection
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `StreamingBody$clone()`
 
 The objects of this class are cloneable with this method.
 
