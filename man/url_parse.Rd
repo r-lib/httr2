@@ -32,8 +32,8 @@ url_parse("foo", "http://google.com/bar/")
 url_parse("..", "http://google.com/bar/")
 }
 \seealso{
-Other URL manipulation: 
-\code{\link{url_build}()},
-\code{\link{url_modify}()}
+Other URL manipulation:
+\code{\link[=url_build]{url_build()}},
+\code{\link[=url_modify]{url_modify()}}
 }
 \concept{URL manipulation}
