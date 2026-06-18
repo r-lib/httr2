@@ -8,7 +8,7 @@
 req_oauth_auth_code(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -20,7 +20,7 @@ req_oauth_auth_code(
 
 oauth_flow_auth_code(
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -34,7 +34,8 @@ oauth_flow_auth_code(
 \item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{auth_url}{Authorization url; you'll need to discover this by reading
-the documentation.}
+the documentation. Not needed if \code{metadata} was supplied to
+\code{\link[=oauth_client]{oauth_client()}}, which sets it from the \code{authorization_endpoint}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 

@@ -3,14 +3,17 @@
 #' @description
 #' `oauth_server_metadata()` fetches and parses an OAuth 2.0 Authorization
 #' Server Metadata document (`r rfc(8414)`) or OpenID Connect Discovery
-#' document, returning the endpoints advertised by an issuer. Use it to
-#' discover values like `authorization_endpoint`, `token_endpoint`, and
-#' `device_authorization_endpoint` rather than hard-coding them:
+#' document, returning the endpoints advertised by an issuer.
+#'
+#' Use it to discover values like `authorization_endpoint`, `token_endpoint`,
+#' and `device_authorization_endpoint` rather than hard-coding them. Pass the
+#' result to [oauth_client()] as `metadata` and the endpoints are wired up for
+#' you:
 #'
 #' ```r
-#' meta <- oauth_server_metadata("https://accounts.google.com")
-#' client <- oauth_client("id", token_url = meta$token_endpoint, secret = "...")
-#' oauth_flow_auth_code(client, auth_url = meta$authorization_endpoint)
+#' metadata <- oauth_server_metadata("https://accounts.google.com")
+#' client <- oauth_client("id", metadata = metadata, secret = "...")
+#' token <- oauth_flow_auth_code(client)
 #' ```
 #'
 #' As a security measure, the `issuer` reported in the returned document is
@@ -85,6 +88,15 @@ oauth_metadata_url <- function(issuer, type) {
     oauth = paste0("/.well-known/oauth-authorization-server", path)
   )
   url_build(parsed)
+}
+
+oauth_metadata_check <- function(metadata, call = caller_env()) {
+  if (!inherits(metadata, "httr2_oauth_server_metadata")) {
+    cli::cli_abort(
+      "{.arg metadata} must be created with {.fn oauth_server_metadata}.",
+      call = call
+    )
+  }
 }
 
 #' @export

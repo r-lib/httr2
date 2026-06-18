@@ -70,3 +70,21 @@
       * token_url: "http://example.com"
       * auth     : <function>
 
+# metadata is validated and token_url must be resolvable
+
+    Code
+      oauth_client("id")
+    Condition
+      Error in `oauth_client()`:
+      ! Must supply `token_url`, or `metadata` that advertises a token_endpoint.
+    Code
+      oauth_client("id", metadata = metadata)
+    Condition
+      Error in `oauth_client()`:
+      ! Must supply `token_url`, or `metadata` that advertises a token_endpoint.
+    Code
+      oauth_client("id", token_url = "https://x.com", metadata = list())
+    Condition
+      Error in `oauth_client()`:
+      ! `metadata` must be created with `oauth_server_metadata()`.
+

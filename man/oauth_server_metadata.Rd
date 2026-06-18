@@ -33,13 +33,16 @@ advertise are simply absent.
 \description{
 \code{oauth_server_metadata()} fetches and parses an OAuth 2.0 Authorization
 Server Metadata document (\href{https://datatracker.ietf.org/doc/html/rfc8414}{RFC 8414}) or OpenID Connect Discovery
-document, returning the endpoints advertised by an issuer. Use it to
-discover values like \code{authorization_endpoint}, \code{token_endpoint}, and
-\code{device_authorization_endpoint} rather than hard-coding them:
+document, returning the endpoints advertised by an issuer.
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{meta <- oauth_server_metadata("https://accounts.google.com")
-client <- oauth_client("id", token_url = meta$token_endpoint, secret = "...")
-oauth_flow_auth_code(client, auth_url = meta$authorization_endpoint)
+Use it to discover values like \code{authorization_endpoint}, \code{token_endpoint},
+and \code{device_authorization_endpoint} rather than hard-coding them. Pass the
+result to \code{\link[=oauth_client]{oauth_client()}} as \code{metadata} and the endpoints are wired up for
+you:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{metadata <- oauth_server_metadata("https://accounts.google.com")
+client <- oauth_client("id", metadata = metadata, secret = "...")
+token <- oauth_flow_auth_code(client)
 }\if{html}{\out{</div>}}
 
 As a security measure, the \code{issuer} reported in the returned document is

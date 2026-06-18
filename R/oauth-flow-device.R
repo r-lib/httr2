@@ -15,6 +15,9 @@
 #'   the URL is printed to the console and the user must open it themselves.
 #' @inheritParams oauth_flow_password
 #' @inheritParams req_oauth_auth_code
+#' @param auth_url Device authorization url; you'll need to discover this by
+#'   reading the documentation. Not needed if `metadata` was supplied to
+#'   [oauth_client()], which sets it from the `device_authorization_endpoint`.
 #' @returns `req_oauth_device()` returns a modified HTTP [request] that will
 #'   use OAuth; `oauth_flow_device()` returns an [oauth_token].
 #' @examples
@@ -31,7 +34,7 @@
 req_oauth_device <- function(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   open_browser = is_interactive(),
   auth_params = list(),
@@ -39,6 +42,7 @@ req_oauth_device <- function(
   cache_disk = FALSE,
   cache_key = NULL
 ) {
+  auth_url <- oauth_flow_url(auth_url, client, "device_auth_url")
   params <- list(
     client = client,
     auth_url = auth_url,
@@ -55,7 +59,7 @@ req_oauth_device <- function(
 #' @rdname req_oauth_device
 oauth_flow_device <- function(
   client,
-  auth_url,
+  auth_url = NULL,
   pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
@@ -63,6 +67,7 @@ oauth_flow_device <- function(
   token_params = list()
 ) {
   oauth_flow_check("device", client, interactive = open_browser)
+  auth_url <- oauth_flow_url(auth_url, client, "device_auth_url")
 
   if (pkce) {
     code <- oauth_flow_auth_code_pkce()
