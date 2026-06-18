@@ -1,3 +1,11 @@
+# applies req_error() to responses from cache (#806)
+
+    Code
+      req_perform(req)
+    Condition
+      Error in `req_perform()`:
+      ! HTTP 200 OK.
+
 # cache emits useful debugging info
 
     Code

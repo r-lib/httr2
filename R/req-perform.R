@@ -87,10 +87,11 @@ req_perform <- function(
 
   req <- req_verbosity(req, verbosity)
 
-  req <- cache_pre_fetch(req, path)
-  if (is_response(req)) {
-    return(req)
+  fetched <- cache_pre_fetch(req, path)
+  if (is_response(fetched)) {
+    return(handle_resp(req, fetched, error_call = error_call))
   }
+  req <- fetched
 
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
