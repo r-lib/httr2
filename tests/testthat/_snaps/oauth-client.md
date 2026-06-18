@@ -30,11 +30,6 @@
       Error in `oauth_client()`:
       ! `auth = 'jwt_sig'` requires a `key`.
     Code
-      oauth_client("abc", "http://x.com", key = "abc", auth = "jwt_sig")
-    Condition
-      Error in `oauth_client()`:
-      ! `auth = 'jwt_sig'` requires a claim specification in `auth_params`.
-    Code
       oauth_client("abc", "http://x.com", auth = 123)
     Condition
       Error in `oauth_client()`:
@@ -87,4 +82,12 @@
     Condition
       Error in `oauth_client()`:
       ! `metadata` must be created with `oauth_server_metadata()`.
+
+# jwt_sig auth requires a claim
+
+    Code
+      oauth_client_req_auth(request("http://example.com"), client)
+    Condition
+      Error in `oauth_client_req_auth_jwt_sig()`:
+      ! `auth = 'jwt_sig'` requires a `claim` in `auth_params`.
 
