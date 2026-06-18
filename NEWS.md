@@ -6,6 +6,7 @@
 * `oauth_flow_auth_code()` now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (@pedrobtz, #829).
 * `last_response_json()` now works with content-types that end with `+json`, 
 e.g., `application/problem+json` (@cgiachalis, #782).
+* `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
 
