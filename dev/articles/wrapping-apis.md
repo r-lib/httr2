@@ -52,8 +52,8 @@ resp |> resp_body_json() |> str()
 #>  $ total : int 1
 #>  $ data  :List of 1
 #>   ..$ :List of 3
-#>   .. ..$ title      : chr "Voluptate eum provident rem."
-#>   .. ..$ description: chr "Doloremque facilis incidunt ea omnis suscipit ipsam sunt fuga. Est voluptatibus ipsa aut ab occaecati. Facilis "| __truncated__
+#>   .. ..$ title      : chr "Eum cum in a dicta pariatur."
+#>   .. ..$ description: chr "Blanditiis voluptas impedit deleniti sit voluptates non suscipit voluptatibus. Sed qui magnam qui ut saepe offi"| __truncated__
 #>   .. ..$ url        : chr "https://picsum.photos/380/480"
 ```
 
@@ -97,7 +97,7 @@ resp |> resp_headers()
 #> Connection: keep-alive
 #> X-Powered-By: PHP/8.3.8
 #> Cache-Control: no-cache, private
-#> Date: Wed, 17 Jun 2026 16:30:12 GMT
+#> Date: Thu, 18 Jun 2026 13:59:12 GMT
 #> X-RateLimit-Limit: 60
 #> X-RateLimit-Remaining: 56
 #> Access-Control-Allow-Origin: *
@@ -179,8 +179,8 @@ str(faker("images", width = 300))
 #>  $ total : int 1
 #>  $ data  :List of 1
 #>   ..$ :List of 3
-#>   .. ..$ title      : chr "Fugit at ex quia assumenda."
-#>   .. ..$ description: chr "Dolor in autem error et ad. Ducimus amet est minima. Libero iste optio fugit nostrum sunt. Praesentium omnis au"| __truncated__
+#>   .. ..$ title      : chr "Eos non ut at est aut vero."
+#>   .. ..$ description: chr "Explicabo dolor dignissimos corrupti voluptatem. Iste autem dolor debitis vel. Sed cum esse quibusdam libero fu"| __truncated__
 #>   .. ..$ url        : chr "https://picsum.photos/300/480"
 ```
 
@@ -246,24 +246,24 @@ str(faker_person("male"))
 #>  $ data  :List of 1
 #>   ..$ :List of 10
 #>   .. ..$ id       : int 1
-#>   .. ..$ firstname: chr "Kim"
-#>   .. ..$ lastname : chr "Hilpert"
-#>   .. ..$ email    : chr "arne.willms@hamill.com"
-#>   .. ..$ phone    : chr "+15868427689"
-#>   .. ..$ birthday : chr "2014-09-22"
+#>   .. ..$ firstname: chr "Bartholome"
+#>   .. ..$ lastname : chr "Sporer"
+#>   .. ..$ email    : chr "kieran60@yahoo.com"
+#>   .. ..$ phone    : chr "+15304528631"
+#>   .. ..$ birthday : chr "1953-02-16"
 #>   .. ..$ gender   : chr "male"
 #>   .. ..$ address  :List of 10
 #>   .. .. ..$ id            : int 1
-#>   .. .. ..$ street        : chr "49975 Hassie Corners Apt. 426"
-#>   .. .. ..$ streetName    : chr "Ari Meadows"
-#>   .. .. ..$ buildingNumber: chr "124"
-#>   .. .. ..$ city          : chr "Olsonberg"
-#>   .. .. ..$ zipcode       : chr "11883"
-#>   .. .. ..$ country       : chr "American Samoa"
-#>   .. .. ..$ country_code  : chr "AS"
-#>   .. .. ..$ latitude      : num 14.9
-#>   .. .. ..$ longitude     : num -144
-#>   .. ..$ website  : chr "http://borer.com"
+#>   .. .. ..$ street        : chr "113 Georgiana Village Apt. 410"
+#>   .. .. ..$ streetName    : chr "Magnus View"
+#>   .. .. ..$ buildingNumber: chr "906"
+#>   .. .. ..$ city          : chr "Rubystad"
+#>   .. .. ..$ zipcode       : chr "54681"
+#>   .. .. ..$ country       : chr "Equatorial Guinea"
+#>   .. .. ..$ country_code  : chr "GQ"
+#>   .. .. ..$ latitude      : num 70
+#>   .. .. ..$ longitude     : num 57.6
+#>   .. ..$ website  : chr "http://durgan.com"
 #>   .. ..$ image    : chr "http://placeimg.com/640/480/people"
 ```
 
@@ -312,13 +312,13 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
 }
 faker_person("male", quantity = 5)
 #> # A tibble: 5 × 4
-#>   firstname lastname   email                    gender
-#>   <chr>     <chr>      <chr>                    <chr> 
-#> 1 Irwin     Littel     garnett.lynch@okon.com   male  
-#> 2 Darrin    Schmeler   jeanne86@gmail.com       male  
-#> 3 Haley     Lang       lgulgowski@auer.com      male  
-#> 4 Ned       Runolfsson beier.thalia@krajcik.com male  
-#> 5 Marques   Nikolaus   fhegmann@gmail.com       male
+#>   firstname lastname    email                        gender
+#>   <chr>     <chr>       <chr>                        <chr> 
+#> 1 Lew       Mohr        skye.schmitt@gmail.com       male  
+#> 2 Alfonso   Cruickshank bechtelar.jarred@hotmail.com male  
+#> 3 Morgan    Stark       qraynor@little.biz           male  
+#> 4 Gregg     VonRueden   emil49@stiedemann.com        male  
+#> 5 Houston   Wilderman   hammes.marjory@yahoo.com     male
 ```
 
 The next steps would be to export and document this function; I’ll leave
@@ -361,7 +361,7 @@ steps to this process:
 
     key <- secret_make_key()
     key
-    #> [1] "WPm0tpPKRj76x3nmGU34UQ"
+    #> [1] "J9j7kpPOgGOqnpExXAEa6Q"
     ```
 
     (Note that
@@ -379,7 +379,7 @@ steps to this process:
 
     secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
     secret_scrambled
-    #> [1] "PMDIgZXm5kAK61DT1vQF4tzZDP-jO-LeoZfj7HG2cFgcz7X_PuXgmel30Sqa67wc-A"
+    #> [1] "TOZ3xv4pV7DyR32vPae77II-IjZIIRC0TMm39Va7-ERr64gPF3ZiQ3m8thV2JNtxCw"
     ```
 
 3.  When needed, you descramble the secret using
@@ -418,7 +418,7 @@ usage.
 
 secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
 secret_scrambled
-#> [1] "9QTCIR-v4G44E78LGEUxk0OnP23Q2Xx2xoJvHlFkwXQKUT0tlFXF5GJPvoh_FSbMnw"
+#> [1] "FncPDfQ59GxSIVNEGEagZZk4XJagH1ci3MXbHH2XFIUe2uCy1Djya9ccXXHQHZDRew"
 secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
 #> [1] "secret I need to work with an API"
 ```

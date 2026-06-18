@@ -47,7 +47,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>New <code><a href="../reference/oauth_server_metadata.html">oauth_server_metadata()</a></code> discovers an OAuth/OpenID Connect issuer’s endpoints from its <code>.well-known</code> metadata document (<a href="https://github.com/r-lib/httr2/issues/845" class="external-link">#845</a>).</li>
+<ul><li>OAuth token refresh now forwards <code>token_params</code> from the original flow, so extra token-endpoint parameters (e.g. a <code>scope</code> required on the token exchange) are sent on refresh as well as on the initial token request.</li>
+<li>New <code><a href="../reference/oauth_server_metadata.html">oauth_server_metadata()</a></code> discovers an OAuth/OpenID Connect issuer’s endpoints from its <code>.well-known</code> metadata document (<a href="https://github.com/r-lib/httr2/issues/845" class="external-link">#845</a>).</li>
 <li>
 <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (<a href="https://github.com/pedrobtz" class="external-link">@pedrobtz</a>, <a href="https://github.com/r-lib/httr2/issues/829" class="external-link">#829</a>).</li>
 <li>
