@@ -55,12 +55,12 @@ oauth_server_metadata("https://accounts.google.com")
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other OAuth flows: 
-\code{\link{req_oauth_auth_code}()},
-\code{\link{req_oauth_bearer_jwt}()},
-\code{\link{req_oauth_client_credentials}()},
-\code{\link{req_oauth_password}()},
-\code{\link{req_oauth_refresh}()},
-\code{\link{req_oauth_token_exchange}()}
+Other OAuth flows:
+\code{\link[=req_oauth_auth_code]{req_oauth_auth_code()}},
+\code{\link[=req_oauth_bearer_jwt]{req_oauth_bearer_jwt()}},
+\code{\link[=req_oauth_client_credentials]{req_oauth_client_credentials()}},
+\code{\link[=req_oauth_password]{req_oauth_password()}},
+\code{\link[=req_oauth_refresh]{req_oauth_refresh()}},
+\code{\link[=req_oauth_token_exchange]{req_oauth_token_exchange()}}
 }
 \concept{OAuth flows}
