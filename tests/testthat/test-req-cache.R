@@ -67,7 +67,7 @@ test_that("applies req_error() to responses from cache (#806)", {
   )
   cache_set(req, resp)
 
-  expect_snapshot(req_perform(req), error = TRUE)
+  expect_error(req_perform(req), class = "httr2_http_200")
 })
 
 test_that("error can use cached value", {
