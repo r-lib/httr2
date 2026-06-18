@@ -70,7 +70,10 @@ The two you'll almost always need are the authorization URL, where the user logs
 Some providers also offer a device authorization URL, used by the device flow.
 
 Traditionally you had to dig these URLs out of the provider's documentation, but many providers now publish them in a standard discovery document (defined by [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414) and OpenID Connect Discovery).
-`oauth_server_metadata()` fetches and parses that document, so you can look up every endpoint from a single issuer URL:
+`oauth_server_metadata()` fetches and parses that document, so you can look up every endpoint from a single **issuer URL**.
+
+You still need to find the issuer URL in the provider's documentation, but that's the only value you need.
+For example, GitHub's issuer is `https://github.com/login/oauth` and Google's is `https://accounts.google.com`.
 
 ```{r}
 #| eval: false
