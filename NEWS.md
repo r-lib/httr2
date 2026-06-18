@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `req_oauth_device()` gains a `pkce` argument to enable Proof Key for Code Exchange, matching `oauth_flow_device()` (#834).
 * OAuth token refresh now forwards `token_params` from the original flow, so extra token-endpoint parameters (e.g. a `scope` required on the token exchange) are sent on refresh as well as on the initial token request.
 * New `oauth_server_metadata()` discovers an OAuth/OpenID Connect issuer's endpoints from its `.well-known` metadata document (#845).
 * `oauth_client()` gains a `metadata` argument: pass the result of `oauth_server_metadata()` and the client carries all of the server's endpoints, so the OAuth flows pick them up automatically instead of threading them into each call (#846).
