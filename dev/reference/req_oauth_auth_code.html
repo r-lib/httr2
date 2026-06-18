@@ -88,7 +88,7 @@ behind this flow in
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_oauth_auth_code</span><span class="op">(</span></span>
 <span>  <span class="va">req</span>,</span>
 <span>  <span class="va">client</span>,</span>
-<span>  <span class="va">auth_url</span>,</span>
+<span>  auth_url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pkce <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -100,7 +100,7 @@ behind this flow in
 <span></span>
 <span><span class="fu">oauth_flow_auth_code</span><span class="op">(</span></span>
 <span>  <span class="va">client</span>,</span>
-<span>  <span class="va">auth_url</span>,</span>
+<span>  auth_url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pkce <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -123,7 +123,8 @@ behind this flow in
 
 <dt id="arg-auth-url">auth_url<a class="anchor" aria-label="anchor" href="#arg-auth-url"></a></dt>
 <dd><p>Authorization url; you'll need to discover this by reading
-the documentation.</p></dd>
+the documentation. Not needed if <code>metadata</code> was supplied to
+<code><a href="oauth_client.html">oauth_client()</a></code>, which sets it from the <code>authorization_endpoint</code>.</p></dd>
 
 
 <dt id="arg-scope">scope<a class="anchor" aria-label="anchor" href="#arg-scope"></a></dt>

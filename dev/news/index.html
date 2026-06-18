@@ -50,6 +50,8 @@
 <ul><li>OAuth token refresh now forwards <code>token_params</code> from the original flow, so extra token-endpoint parameters (e.g. a <code>scope</code> required on the token exchange) are sent on refresh as well as on the initial token request.</li>
 <li>New <code><a href="../reference/oauth_server_metadata.html">oauth_server_metadata()</a></code> discovers an OAuth/OpenID Connect issuer’s endpoints from its <code>.well-known</code> metadata document (<a href="https://github.com/r-lib/httr2/issues/845" class="external-link">#845</a>).</li>
 <li>
+<code><a href="../reference/oauth_client.html">oauth_client()</a></code> gains a <code>metadata</code> argument: pass the result of <code><a href="../reference/oauth_server_metadata.html">oauth_server_metadata()</a></code> and the client carries all of the server’s endpoints, so the OAuth flows pick them up automatically instead of threading them into each call (<a href="https://github.com/r-lib/httr2/issues/846" class="external-link">#846</a>).</li>
+<li>
 <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (<a href="https://github.com/pedrobtz" class="external-link">@pedrobtz</a>, <a href="https://github.com/r-lib/httr2/issues/829" class="external-link">#829</a>).</li>
 <li>
 <code><a href="../reference/last_response.html">last_response_json()</a></code> now works with content-types that end with <code>+json</code>, e.g., <code>application/problem+json</code> (<a href="https://github.com/cgiachalis" class="external-link">@cgiachalis</a>, <a href="https://github.com/r-lib/httr2/issues/782" class="external-link">#782</a>).</li>

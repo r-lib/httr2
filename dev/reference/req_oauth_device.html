@@ -70,7 +70,7 @@ but it also works well from within R.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">req_oauth_device</span><span class="op">(</span></span>
 <span>  <span class="va">req</span>,</span>
 <span>  <span class="va">client</span>,</span>
-<span>  <span class="va">auth_url</span>,</span>
+<span>  auth_url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  open_browser <span class="op">=</span> <span class="fu">is_interactive</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -81,7 +81,7 @@ but it also works well from within R.</p>
 <span></span>
 <span><span class="fu">oauth_flow_device</span><span class="op">(</span></span>
 <span>  <span class="va">client</span>,</span>
-<span>  <span class="va">auth_url</span>,</span>
+<span>  auth_url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pkce <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  open_browser <span class="op">=</span> <span class="fu">is_interactive</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -103,8 +103,9 @@ but it also works well from within R.</p>
 
 
 <dt id="arg-auth-url">auth_url<a class="anchor" aria-label="anchor" href="#arg-auth-url"></a></dt>
-<dd><p>Authorization url; you'll need to discover this by reading
-the documentation.</p></dd>
+<dd><p>Device authorization url; you'll need to discover this by
+reading the documentation. Not needed if <code>metadata</code> was supplied to
+<code><a href="oauth_client.html">oauth_client()</a></code>, which sets it from the <code>device_authorization_endpoint</code>.</p></dd>
 
 
 <dt id="arg-scope">scope<a class="anchor" aria-label="anchor" href="#arg-scope"></a></dt>

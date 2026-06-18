@@ -3,13 +3,17 @@
 `oauth_server_metadata()` fetches and parses an OAuth 2.0 Authorization
 Server Metadata document ([RFC
 8414](https://datatracker.ietf.org/doc/html/rfc8414)) or OpenID Connect
-Discovery document, returning the endpoints advertised by an issuer. Use
-it to discover values like `authorization_endpoint`, `token_endpoint`,
-and `device_authorization_endpoint` rather than hard-coding them:
+Discovery document, returning the endpoints advertised by an issuer.
 
-    meta <- oauth_server_metadata("https://accounts.google.com")
-    client <- oauth_client("id", token_url = meta$token_endpoint, secret = "...")
-    oauth_flow_auth_code(client, auth_url = meta$authorization_endpoint)
+Use it to discover values like `authorization_endpoint`,
+`token_endpoint`, and `device_authorization_endpoint` rather than
+hard-coding them. Pass the result to
+[`oauth_client()`](https://httr2.r-lib.org/dev/reference/oauth_client.md)
+as `metadata` and the endpoints are wired up for you:
+
+    metadata <- oauth_server_metadata("https://accounts.google.com")
+    client <- oauth_client("id", metadata = metadata, secret = "...")
+    token <- oauth_flow_auth_code(client)
 
 As a security measure, the `issuer` reported in the returned document is
 validated against the requested `issuer` ([Section 3.3 of RFC
