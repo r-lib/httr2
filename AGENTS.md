@@ -1,6 +1,6 @@
 ## This package
 
-<!-- Insert package-specific content here. use_tidy_agents() will preserve this section when updating the rest of the file. -->
+* Use markdown formatting when writing git commit messages.
 
 ## Package development
 
