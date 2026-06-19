@@ -2,6 +2,11 @@
 
 ## httr2 (development version)
 
+- [`req_oauth_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
+  gains a `pkce` argument to enable Proof Key for Code Exchange,
+  matching
+  [`oauth_flow_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
+  ([\#834](https://github.com/r-lib/httr2/issues/834)).
 - OAuth token refresh now forwards `token_params` from the original
   flow, so extra token-endpoint parameters (e.g. a `scope` required on
   the token exchange) are sent on refresh as well as on the initial

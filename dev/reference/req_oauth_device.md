@@ -16,6 +16,7 @@ req_oauth_device(
   req,
   client,
   auth_url = NULL,
+  pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
   auth_params = list(),
@@ -54,6 +55,11 @@ oauth_flow_device(
   [`oauth_client()`](https://httr2.r-lib.org/dev/reference/oauth_client.md),
   which sets it from the `device_authorization_endpoint`.
 
+- pkce:
+
+  Use "Proof Key for Code Exchange"? This adds an extra layer of
+  security and should always be used if supported by the server.
+
 - scope:
 
   Scopes to be requested from the resource owner.
@@ -85,11 +91,6 @@ oauth_flow_device(
 
   If you want to cache multiple tokens per app, use this key to
   disambiguate them.
-
-- pkce:
-
-  Use "Proof Key for Code Exchange"? This adds an extra layer of
-  security and should always be used if supported by the server.
 
 ## Value
 
