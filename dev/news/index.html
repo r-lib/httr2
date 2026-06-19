@@ -56,6 +56,8 @@
 <li>
 <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (<a href="https://github.com/pedrobtz" class="external-link">@pedrobtz</a>, <a href="https://github.com/r-lib/httr2/issues/829" class="external-link">#829</a>).</li>
 <li>
+<code><a href="../reference/iterate_with_offset.html">iterate_with_link_url()</a></code> and <code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> no longer error on <code>Link</code> headers that contain a trailing comma (<a href="https://github.com/r-lib/httr2/issues/804" class="external-link">#804</a>).</li>
+<li>
 <code><a href="../reference/last_response.html">last_response_json()</a></code> now works with content-types that end with <code>+json</code>, e.g., <code>application/problem+json</code> (<a href="https://github.com/cgiachalis" class="external-link">@cgiachalis</a>, <a href="https://github.com/r-lib/httr2/issues/782" class="external-link">#782</a>).</li>
 <li>
 <code><a href="../reference/req_body.html">req_body_form()</a></code> and <code><a href="../reference/req_url.html">req_url_query()</a></code> no longer error with “C stack usage is too close to the limit” when given very long string values (<a href="https://github.com/r-lib/httr2/issues/805" class="external-link">#805</a>).</li>

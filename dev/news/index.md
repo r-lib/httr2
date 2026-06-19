@@ -27,6 +27,11 @@
   token requests when using the default localhost redirect URL
   ([@pedrobtz](https://github.com/pedrobtz),
   [\#829](https://github.com/r-lib/httr2/issues/829)).
+- [`iterate_with_link_url()`](https://httr2.r-lib.org/dev/reference/iterate_with_offset.md)
+  and
+  [`resp_link_url()`](https://httr2.r-lib.org/dev/reference/resp_link_url.md)
+  no longer error on `Link` headers that contain a trailing comma
+  ([\#804](https://github.com/r-lib/httr2/issues/804)).
 - [`last_response_json()`](https://httr2.r-lib.org/dev/reference/last_response.md)
   now works with content-types that end with `+json`, e.g.,
   `application/problem+json`
