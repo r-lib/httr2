@@ -176,7 +176,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
     event_bytes <- resp_boundary_pushback(
       resp,
       max_size,
-      find_event_boundary,
+      find_event_boundaries,
       include_trailer = FALSE
     )
     if (is.null(event_bytes)) {
@@ -209,12 +209,31 @@ resp_stream_sse <- function(resp, max_size = Inf) {
 #' @rdname resp_stream_raw
 resp_stream_is_complete <- function(resp) {
   check_response(resp)
-  queue <- resp$cache$stream_lines_queue
-  pos <- resp$cache$stream_lines_pos %||% 1L
-  queued <- length(queue %||% character()) - pos + 1L
-  length(resp$cache$push_back) == 0 &&
-    queued <= 0L &&
-    resp$body$is_complete()
+  !stream_has_buffered(resp) && resp$body$is_complete()
+}
+
+# Is there any data still buffered in the response that hasn't been returned to
+# the user yet? (Either raw bytes, decoded lines, or decoded event blocks.)
+stream_has_buffered <- function(resp) {
+  cache <- resp$cache
+  if (length(cache$push_back %||% raw()) > 0) {
+    return(TRUE)
+  }
+
+  lines_pos <- cache$stream_lines_pos %||% 1L
+  if (length(cache$stream_lines_queue %||% character()) - lines_pos + 1L > 0L) {
+    return(TRUE)
+  }
+
+  boundary_pos <- cache$boundary_pos %||% 1L
+  if (
+    !is.null(cache$boundary_queue) &&
+      boundary_pos <= length(cache$boundary_queue)
+  ) {
+    return(TRUE)
+  }
+
+  FALSE
 }
 
 #' @export
@@ -328,148 +347,163 @@ stop_stream_size <- function(max_size, call = caller_env()) {
   )
 }
 
-# Function to find the first double line ending in a buffer, or NULL if no
-# double line ending is found
+# Find every event boundary in a buffer, returning a vector of split points
+# (the position one past the end of each boundary). Events may be separated by
+# a double LF, a double CR, or a double CRLF.
 #
 # Example:
-#   find_event_boundary(charToRaw("data: 1\n\nid: 12345"))
+#   find_event_boundaries(charToRaw("data: 1\n\nid: 12345"))
 # Returns:
-#   list(
-#     matched = charToRaw("data: 1\n\n"),
-#     remaining = charToRaw("id: 12345")
-#   )
-find_event_boundary <- function(buffer) {
-  if (length(buffer) < 2) {
-    return(NULL)
+#   9L  (so the first event is bytes 1:8, "data: 1\n\n")
+find_event_boundaries <- function(buffer) {
+  nn <- grepRaw("\n\n", buffer, fixed = TRUE, all = TRUE)
+  rr <- grepRaw("\r\r", buffer, fixed = TRUE, all = TRUE)
+  rnrn <- grepRaw("\r\n\r\n", buffer, fixed = TRUE, all = TRUE)
+
+  # Fast paths for the common case of a single, consistent delimiter.
+  if (length(rr) == 0L && length(rnrn) == 0L) {
+    return(nn + 2L)
+  }
+  if (length(nn) == 0L && length(rnrn) == 0L) {
+    return(rr + 2L)
+  }
+  if (length(nn) == 0L && length(rr) == 0L) {
+    return(rnrn + 4L)
   }
 
-  # leftX means look behind by X bytes. For example, left1[2] equals buffer[1].
-  # Any attempt to read past the beginning of the buffer results in 0x00.
-  left1 <- c(0x00, utils::head(buffer, -1))
-  left2 <- c(0x00, utils::head(left1, -1))
-  left3 <- c(0x00, utils::head(left2, -1))
+  # Mixed delimiters: merge candidates and walk them left to right, taking
+  # non-overlapping boundaries.
+  starts <- c(nn, rr, rnrn)
+  ends <- c(nn + 1L, rr + 1L, rnrn + 3L)
+  o <- order(starts)
+  starts <- starts[o]
+  ends <- ends[o]
 
-  boundary_end <- which(
-    (left1 == 0x0A & buffer == 0x0A) | # \n\n
-      (left1 == 0x0D & buffer == 0x0D) | # \r\r
-      (left3 == 0x0D & left2 == 0x0A & left1 == 0x0D & buffer == 0x0A) # \r\n\r\n
-  )
-
-  if (length(boundary_end) == 0) {
-    return(NULL) # No event boundary found
+  keep <- logical(length(starts))
+  consumed <- 0L
+  for (k in seq_along(starts)) {
+    if (starts[k] > consumed) {
+      keep[k] <- TRUE
+      consumed <- ends[k]
+    }
   }
-
-  boundary_end <- boundary_end[1] # Take the first occurrence
-  split_at <- boundary_end + 1 # Split at one after the boundary
-  split_at
+  ends[keep] + 1L
 }
 
-# Splits a buffer into the part before `split_at`, and the part starting at
-# `split_at`. It's possible for either of the returned parts to be zero-length
-# (i.e. if `split_at` is 1 or length(buffer)+1).
-split_buffer <- function(buffer, split_at) {
-  # Return a list with the event data and the remaining buffer
-  list(
-    matched = slice(buffer, end = split_at),
-    remaining = slice(buffer, start = split_at)
-  )
-}
+# How many bytes to read from the connection at a time when streaming events.
+boundary_chunk_bytes <- 64L * 1024L
 
-# @param max_size Maximum number of bytes to look for a boundary before throwing an error
-# @param boundary_func A function that takes a raw vector and returns NULL if no
-#   boundary was detected, or one position PAST the end of the first boundary in
-#   the vector
+# Reads from a streaming response and splits it into "blocks" delimited by
+# boundaries found by `find_boundaries`. Like `resp_stream_lines()`, a whole
+# chunk is split at once and the resulting blocks are held in a queue, so that
+# reading events one at a time doesn't repeatedly rescan and recopy the buffer.
+#
+# @param max_size Maximum number of bytes to buffer before a boundary is found
+#   before throwing an error.
+# @param find_boundaries A function that takes a raw vector and returns an
+#   integer vector of split points: the position one past the end of each
+#   complete block in the buffer.
 # @param include_trailer If TRUE, at the end of the response, if there are
 #   bytes after the last boundary, then return those bytes; if FALSE, then those
 #   bytes are discarded with a warning.
 resp_boundary_pushback <- function(
   resp,
   max_size,
-  boundary_func,
+  find_boundaries,
   include_trailer
 ) {
   check_streaming_response(resp)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
-  chunk_size <- min(max_size + 1, 1024)
+  cache <- resp$cache
 
-  # Grab data left over from last resp_stream_sse() call (if any)
-  buffer <- resp$cache$push_back %||% raw()
-  resp$cache$push_back <- raw()
+  # Serve a previously-decoded block if one is queued.
+  queue <- cache$boundary_queue
+  pos <- cache$boundary_pos %||% 1L
+  if (!is.null(queue) && pos <= length(queue)) {
+    block <- queue[[pos]]
+    if (pos + 1L > length(queue)) {
+      cache$boundary_queue <- NULL
+      cache$boundary_pos <- 1L
+    } else {
+      cache$boundary_pos <- pos + 1L
+    }
+    return(block)
+  }
 
-  if (resp_stream_show_buffer(resp)) {
-    log_stream(cli::rule("Buffer"), prefix = "*  ")
-    print_buffer <- function(buf, label) {
+  repeat {
+    # Don't read more than one byte past the size limit; the extra byte lets us
+    # detect that the limit has been exceeded.
+    cap <- if (is.finite(max_size)) {
+      max(max_size - length(cache$push_back %||% raw()) + 1L, 1L)
+    } else {
+      boundary_chunk_bytes
+    }
+    chunk <- resp$body$read(min(boundary_chunk_bytes, cap))
+    buffer <- c(cache$push_back %||% raw(), chunk)
+    if (length(buffer) == 0L) {
+      return(NULL)
+    }
+
+    if (length(chunk) > 0L && resp_stream_show_buffer(resp)) {
+      log_stream(cli::rule("Buffer"), prefix = "*  ")
       log_stream(
-        label,
-        ": ",
-        paste(as.character(buf), collapse = " "),
+        "Received chunk: ",
+        paste(as.character(chunk), collapse = " "),
         prefix = "*  "
       )
     }
-  } else {
-    print_buffer <- function(buf, label) {}
-  }
 
-  # Read chunks until we find an event or reach the end of input
-  repeat {
-    # Try to find an event boundary using the data we have
-    print_buffer(buffer, "Buffer to parse")
-    split_at <- boundary_func(buffer)
-
-    if (!is.null(split_at)) {
-      result <- split_buffer(buffer, split_at)
-      # We found a complete event
-      print_buffer(result$matched, "Matched data")
-      print_buffer(result$remaining, "Remaining buffer")
-      resp$cache$push_back <- result$remaining
-      return(result$matched)
+    splits <- find_boundaries(buffer)
+    if (length(splits) > 0L) {
+      starts <- c(1L, splits[-length(splits)])
+      blocks <- lapply(seq_along(splits), function(i) {
+        buffer[starts[i]:(splits[i] - 1L)]
+      })
+      last <- splits[length(splits)]
+      cache$push_back <- if (last > length(buffer)) {
+        raw()
+      } else {
+        buffer[last:length(buffer)]
+      }
+      if (length(blocks) > 1L) {
+        cache$boundary_queue <- blocks
+        cache$boundary_pos <- 2L
+      }
+      return(blocks[[1L]])
     }
 
+    # No complete block in the buffer.
     if (length(buffer) > max_size) {
-      # Keep the buffer in place, so that if the user tries resp_stream_sse
-      # again, they'll get the same error rather than reading the stream
-      # having missed a bunch of bytes.
-      resp$cache$push_back <- buffer
+      # Keep the buffer in place, so that if the user tries again they'll get
+      # the same error rather than reading the stream having missed bytes.
+      cache$push_back <- buffer
       cli::cli_abort(
         "Streaming read exceeded size limit of {max_size}",
         class = "httr2_streaming_error"
       )
     }
 
-    # We didn't have enough data. Attempt to read more, but don't let us exceed
-    # the max size by more than one byte; we do allow the one extra byte so we
-    # know to error.
-    chunk <- resp$body$read(min(chunk_size, max_size - length(buffer) + 1))
-    print_buffer(chunk, "Received chunk")
-
     if (length(chunk) == 0) {
       if (resp$body$is_complete()) {
-        # We've truly reached the end of the connection; no more data is coming
-        if (length(buffer) == 0) {
-          return(NULL)
+        # We've truly reached the end of the connection; no more data is coming.
+        if (include_trailer) {
+          cache$push_back <- raw()
+          return(buffer)
         } else {
-          if (include_trailer) {
-            return(buffer)
-          } else {
-            cli::cli_warn(
-              "Premature end of input; ignoring final partial chunk"
-            )
-            return(NULL)
-          }
+          cli::cli_warn("Premature end of input; ignoring final partial chunk")
+          cache$push_back <- raw()
+          return(NULL)
         }
       } else {
-        # More data might come later; store the buffer and return NULL
-        print_buffer(buffer, "Storing incomplete buffer")
-        resp$cache$push_back <- buffer
+        # More data might come later; store the buffer and return NULL.
+        cache$push_back <- buffer
         return(NULL)
       }
     }
 
-    # More data was received; combine it with existing buffer and continue the
-    # loop to try parsing again
-    buffer <- c(buffer, chunk)
-    print_buffer(buffer, "Combined buffer")
+    # More data was received but no complete block yet; loop to read more.
+    cache$push_back <- buffer
   }
 }
 

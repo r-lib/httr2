@@ -245,7 +245,8 @@ test_that("can join sse events across multiple reads", {
   sync(resp1)
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "1\n2", id = ""))
-  expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
+  # The second complete event is decoded in the same read and queued.
+  expect_false(resp_stream_is_complete(resp1))
 
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "3", id = ""))
@@ -417,14 +418,20 @@ test_that("stream_split_lines() enforces max_size", {
   )
 })
 
-test_that("has a working find_event_boundary", {
+test_that("has a working find_event_boundaries", {
+  # Splits the buffer at the first boundary into the matched event and the
+  # remaining bytes.
   boundary_test <- function(x, matched, remaining) {
     buffer <- charToRaw(x)
-    split_at <- find_event_boundary(buffer)
-    result <- if (is.null(split_at)) {
+    splits <- find_event_boundaries(buffer)
+    result <- if (length(splits) == 0) {
       NULL
     } else {
-      split_buffer(buffer, split_at)
+      split_at <- splits[[1]]
+      list(
+        matched = slice(buffer, end = split_at),
+        remaining = slice(buffer, start = split_at)
+      )
     }
     expect_identical(
       result,
@@ -449,13 +456,20 @@ test_that("has a working find_event_boundary", {
   boundary_test("\n\n\r\r", matched = "\n\n", remaining = "\r\r")
   boundary_test("\r\r\n\n", matched = "\r\r", remaining = "\n\n")
 
+  # Finds every boundary in the buffer
+  expect_equal(find_event_boundaries(charToRaw("a\n\nb\n\n")), c(4L, 7L))
+  expect_equal(
+    find_event_boundaries(charToRaw("a\r\n\r\nb\r\n\r\n")),
+    c(6L, 11L)
+  )
+
   # Non-matches
-  expect_null(find_event_boundary(charToRaw("\n\r\n\r")))
-  expect_null(find_event_boundary(charToRaw("hello\ngoodbye\n")))
-  expect_null(find_event_boundary(charToRaw("")))
-  expect_null(find_event_boundary(charToRaw("1")))
-  expect_null(find_event_boundary(charToRaw("12")))
-  expect_null(find_event_boundary(charToRaw("\r\n\r")))
+  expect_length(find_event_boundaries(charToRaw("\n\r\n\r")), 0)
+  expect_length(find_event_boundaries(charToRaw("hello\ngoodbye\n")), 0)
+  expect_length(find_event_boundaries(charToRaw("")), 0)
+  expect_length(find_event_boundaries(charToRaw("1")), 0)
+  expect_length(find_event_boundaries(charToRaw("12")), 0)
+  expect_length(find_event_boundaries(charToRaw("\r\n\r")), 0)
 })
 
 # parse_event ----------------------------------------------------------------

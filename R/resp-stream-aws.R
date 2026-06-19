@@ -5,7 +5,7 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   event_bytes <- resp_boundary_pushback(
     resp = resp,
     max_size = max_size,
-    boundary_func = find_aws_event_boundary,
+    find_boundaries = find_aws_event_boundaries,
     include_trailer = FALSE
   )
 
@@ -26,19 +26,27 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   event
 }
 
-find_aws_event_boundary <- function(buffer) {
-  # No valid AWS event message is less than 16 bytes
-  if (length(buffer) < 16) {
-    return(NULL)
+# Find every complete AWS event in a buffer by walking the 4-byte big-endian
+# length prefix at the start of each event. Returns a vector of split points
+# (the position one past the end of each complete event).
+find_aws_event_boundaries <- function(buffer) {
+  n <- length(buffer)
+  splits <- integer()
+  pos <- 1L
+  repeat {
+    # No valid AWS event message is less than 16 bytes.
+    if (n - pos + 1L < 16L) {
+      break
+    }
+    # Read the first 4 bytes of the event as a big endian number.
+    event_size <- parse_int(buffer[pos:(pos + 3L)])
+    if (event_size > n - pos + 1L) {
+      break
+    }
+    pos <- pos + event_size
+    splits <- c(splits, pos)
   }
-
-  # Read first 4 bytes as a big endian number
-  event_size <- parse_int(buffer[1:4])
-  if (event_size > length(buffer)) {
-    return(NULL)
-  }
-
-  event_size + 1
+  splits
 }
 
 # Implementation from https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.js

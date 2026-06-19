@@ -8,7 +8,7 @@
 e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
-* `resp_stream_lines()` now uses dramatically less memory and is much faster when streaming large responses, because it decodes whole chunks at a time instead of allocating a fresh connection and rescanning the buffer for every line (#704).
+* `resp_stream_lines()`, `resp_stream_sse()`, and `resp_stream_aws()` now use dramatically less memory and are much faster when streaming large responses, because they decode whole chunks at a time and hold the results in a queue instead of rescanning and recopying the buffer for every line or event (#704).
 
 # httr2 1.2.2
 
