@@ -39,17 +39,8 @@
       }
     Output
       *  -- Buffer ----------------------------------------------------------------------
-      *  Buffer to parse: 
       *  Received chunk: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
-      *  Combined buffer: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
-      *  Buffer to parse: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
-      *  Matched data: 6c 69 6e 65 20 31 0a
-      *  Remaining buffer: 6c 69 6e 65 20 32 0a
       << line 1
-      *  -- Buffer ----------------------------------------------------------------------
-      *  Buffer to parse: 6c 69 6e 65 20 32 0a
-      *  Matched data: 6c 69 6e 65 20 32 0a
-      *  Remaining buffer: 
       << line 2
 
 # verbosity = 3 shows raw sse events
@@ -80,4 +71,12 @@
       << data: 1
       << id: 
       
+
+# stream_split_lines() enforces max_size
+
+    Code
+      stream_split_lines(charToRaw("aaaaa"), "UTF-8", eat_lf = FALSE, max_size = 3)
+    Condition
+      Error in `stream_split_lines()`:
+      ! Streaming read exceeded size limit of 3
 

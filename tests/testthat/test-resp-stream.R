@@ -363,6 +363,60 @@ test_that("verbosity = 3 shows raw sse events", {
   )
 })
 
+test_that("stream_split_lines() splits on LF, CR, and CRLF", {
+  split <- function(x, eat_lf = FALSE) {
+    stream_split_lines(charToRaw(x), "UTF-8", eat_lf = eat_lf, max_size = Inf)
+  }
+
+  out <- split("a\nb\r\nc\rd\n")
+  expect_equal(out$lines, c("a", "b", "c", "d"))
+  expect_equal(out$remainder, raw())
+  expect_false(out$eat_lf)
+
+  # blank lines are preserved
+  expect_equal(split("a\n\nb\n")$lines, c("a", "", "b"))
+
+  # trailing bytes without an ending become the remainder
+  out <- split("a\nbcd")
+  expect_equal(out$lines, "a")
+  expect_equal(out$remainder, charToRaw("bcd"))
+})
+
+test_that("stream_split_lines() handles a CRLF split across reads", {
+  # A buffer ending in a bare CR emits the line but flags that a following LF
+  # should be swallowed.
+  out <- stream_split_lines(
+    charToRaw("a\r"),
+    "UTF-8",
+    eat_lf = FALSE,
+    max_size = Inf
+  )
+  expect_equal(out$lines, "a")
+  expect_equal(out$remainder, raw())
+  expect_true(out$eat_lf)
+
+  # ... and on the next read that leading LF is dropped.
+  out <- stream_split_lines(
+    charToRaw("\nb\n"),
+    "UTF-8",
+    eat_lf = TRUE,
+    max_size = Inf
+  )
+  expect_equal(out$lines, "b")
+})
+
+test_that("stream_split_lines() enforces max_size", {
+  expect_snapshot(
+    error = TRUE,
+    stream_split_lines(
+      charToRaw("aaaaa"),
+      "UTF-8",
+      eat_lf = FALSE,
+      max_size = 3
+    )
+  )
+})
+
 test_that("has a working find_event_boundary", {
   boundary_test <- function(x, matched, remaining) {
     buffer <- charToRaw(x)

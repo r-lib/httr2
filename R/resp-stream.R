@@ -73,24 +73,95 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
     return(character())
   }
 
-  encoding <- resp_encoding(resp)
+  cache <- resp$cache
+  # The encoding can't change over the life of a response, so parse it once.
+  encoding <- cache$stream_encoding %||%
+    (cache$stream_encoding <- resp_encoding(resp))
 
-  lines_read <- character(0)
-  while (lines > 0) {
-    line <- resp_stream_oneline(resp, max_size, warn, encoding)
-    if (length(line) == 0) {
-      # No more data, either because EOF or req_perform_connection(blocking=FALSE).
-      # Either way we're done
+  # Lines are decoded a whole chunk at a time and held in a queue, so that
+  # repeated small reads (e.g. `lines = 1`) don't repeatedly rescan and copy
+  # the buffered bytes. `pos` is the index of the next line to return.
+  queue <- cache$stream_lines_queue %||% character()
+  pos <- cache$stream_lines_pos %||% 1L
+
+  serve <- list()
+  n_served <- 0L
+
+  repeat {
+    available <- length(queue) - pos + 1L
+    if (available > 0L) {
+      take <- min(available, lines - n_served)
+      serve[[length(serve) + 1L]] <- queue[pos:(pos + take - 1L)]
+      pos <- pos + take
+      n_served <- n_served + take
+    }
+    if (n_served >= lines) {
       break
     }
-    lines_read <- c(lines_read, line)
-    lines <- lines - 1
+
+    # The queue is exhausted; combine any buffered bytes with a fresh read and
+    # decode the next batch of lines. We always reparse the buffered bytes (not
+    # just freshly read ones), because data may have been buffered by an earlier
+    # call that didn't find a complete line.
+    chunk <- resp$body$read(stream_chunk_bytes)
+    buffer <- c(cache$push_back %||% raw(), chunk)
+    if (length(buffer) == 0L) {
+      break
+    }
+
+    if (length(chunk) > 0L && resp_stream_show_buffer(resp)) {
+      log_stream(cli::rule("Buffer"), prefix = "*  ")
+      log_stream(
+        "Received chunk: ",
+        paste(as.character(chunk), collapse = " "),
+        prefix = "*  "
+      )
+    }
+
+    # Keep the full buffer in place so an over-size error is reproducible.
+    cache$push_back <- buffer
+    parsed <- stream_split_lines(
+      buffer,
+      encoding = encoding,
+      eat_lf = isTRUE(cache$eat_next_lf),
+      max_size = max_size
+    )
+    cache$eat_next_lf <- parsed$eat_lf
+    cache$push_back <- parsed$remainder
+
+    if (length(parsed$lines) > 0L) {
+      queue <- parsed$lines
+      pos <- 1L
+      next
+    }
+
+    # No complete line available from the current buffer.
+    if (length(chunk) == 0L) {
+      if (resp$body$is_complete()) {
+        # The stream has ended; flush any trailing bytes as a final,
+        # unterminated line.
+        trailer <- cache$push_back %||% raw()
+        if (length(trailer) > 0L) {
+          if (warn) {
+            cli::cli_warn("incomplete final line found")
+          }
+          serve[[length(serve) + 1L]] <- stream_decode(trailer, encoding)
+          cache$push_back <- raw()
+        }
+      }
+      # Either EOF, or no data currently available (non-blocking).
+      break
+    }
+    # We read new bytes but still don't have a complete line; loop to read more.
   }
 
+  cache$stream_lines_queue <- queue
+  cache$stream_lines_pos <- pos
+
+  lines_read <- unlist(serve, use.names = FALSE) %||% character()
   if (resp_stream_show_body(resp)) {
     log_stream(lines_read)
   }
-
   lines_read
 }
 
@@ -138,7 +209,12 @@ resp_stream_sse <- function(resp, max_size = Inf) {
 #' @rdname resp_stream_raw
 resp_stream_is_complete <- function(resp) {
   check_response(resp)
-  length(resp$cache$push_back) == 0 && resp$body$is_complete()
+  queue <- resp$cache$stream_lines_queue
+  pos <- resp$cache$stream_lines_pos %||% 1L
+  queued <- length(queue %||% character()) - pos + 1L
+  length(resp$cache$push_back) == 0 &&
+    queued <= 0L &&
+    resp$body$is_complete()
 }
 
 #' @export
@@ -155,70 +231,101 @@ close.httr2_response <- function(con, ...) {
   invisible()
 }
 
-resp_stream_oneline <- function(resp, max_size, warn, encoding) {
-  repeat {
-    line_bytes <- resp_boundary_pushback(
-      resp,
-      max_size,
-      find_line_boundary,
-      include_trailer = TRUE
-    )
-    if (is.null(line_bytes)) {
-      return(character())
-    }
+# How many bytes to read from the connection at a time when streaming lines.
+stream_chunk_bytes <- 64L * 1024L
 
-    eat_next_lf <- resp$cache$resp_stream_oneline_eat_next_lf
-    resp$cache$resp_stream_oneline_eat_next_lf <- FALSE
+# Raw bytes for the line endings we recognise.
+LF <- as.raw(0x0A)
+CR <- as.raw(0x0D)
 
-    if (identical(line_bytes, as.raw(0x0A)) && isTRUE(eat_next_lf)) {
-      # We hit that special edge case, see below
-      next
-    }
-
-    # If ending on \r, there's a special edge case here where if the
-    # next line begins with \n, that byte should be eaten.
-    if (utils::tail(line_bytes, 1) == 0x0D) {
-      resp$cache$resp_stream_oneline_eat_next_lf <- TRUE
-    }
-
-    # Use `resp$body` as the variable name so that if warn=TRUE, you get
-    # "incomplete final line found on 'resp$body'" as the warning message
-    `resp$body` <- line_bytes
-    line_con <- rawConnection(`resp$body`)
-    on.exit(close(line_con))
-
-    # readLines chomps the trailing newline. I assume this is desirable.
-    raw_text <- readLines(line_con, n = 1, warn = warn)
-
-    # Use iconv to convert from whatever encoding is specified in the
-    # response header, to UTF-8
-    return(iconv(raw_text, encoding, "UTF-8"))
-  }
+# Decode a raw vector of bytes into a single string in the response encoding.
+stream_decode <- function(bytes, encoding) {
+  text <- rawToChar(bytes)
+  Encoding(text) <- "bytes"
+  iconv(text, encoding, "UTF-8")
 }
 
-find_line_boundary <- function(buffer) {
-  if (length(buffer) == 0) {
-    return(NULL)
+# Split `buffer` into complete lines plus a trailing remainder of bytes that do
+# not yet form a complete line. Line endings may be LF, CR, or CRLF, matching
+# the behaviour of `readLines()`.
+#
+# A lone CR at the very end of the buffer is treated as a line ending (so the
+# line is emitted immediately), but `eat_lf` is set so that a following LF -
+# which may be the second half of a CRLF split across reads - is dropped on the
+# next call.
+#
+# @param eat_lf Should a leading LF be dropped (because the previous buffer
+#   ended in a bare CR)?
+# @returns A list with components `lines` (a character vector), `remainder`
+#   (a raw vector), and `eat_lf` (a logical).
+stream_split_lines <- function(buffer, encoding, eat_lf, max_size) {
+  if (eat_lf && length(buffer) >= 1L) {
+    if (buffer[[1L]] == LF) {
+      buffer <- buffer[-1L]
+    }
+    eat_lf <- FALSE
+  }
+  if (length(buffer) == 0L) {
+    return(list(lines = character(), remainder = raw(), eat_lf = eat_lf))
   }
 
-  # Look left 1 byte
-  right1 <- c(utils::tail(buffer, -1), 0x00)
-
-  crlf <- buffer == 0x0D & right1 == 0x0A
-  cr <- buffer == 0x0D
-  lf <- buffer == 0x0A
-
-  all <- which(crlf | cr | lf)
-  if (length(all) == 0) {
-    return(NULL)
-  }
-
-  first <- all[[1]]
-  if (crlf[first]) {
-    return(first + 2)
+  lf <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
+  cr <- grepRaw(CR, buffer, fixed = TRUE, all = TRUE)
+  if (length(cr) == 0L) {
+    # Fast path: the common case of LF-delimited text (e.g. ndjson).
+    ends <- lf
+    next_start <- lf + 1L
   } else {
-    return(first + 1)
+    # Drop LFs that are the second half of a CRLF pair.
+    lf_solo <- lf[!((lf - 1L) %in% cr)]
+    ends <- sort(c(cr, lf_solo))
+    next_start <- ends + 1L
+    crlf <- (buffer[ends] == CR) & ((ends + 1L) %in% lf)
+    next_start[crlf] <- ends[crlf] + 2L
   }
+
+  if (length(ends) == 0L) {
+    if (length(buffer) > max_size) {
+      stop_stream_size(max_size)
+    }
+    return(list(lines = character(), remainder = buffer, eat_lf = FALSE))
+  }
+
+  cut <- next_start[length(next_start)]
+  region <- if (cut == 1L) raw() else buffer[seq_len(cut - 1L)]
+  remainder <- if (cut > length(buffer)) raw() else buffer[cut:length(buffer)]
+
+  # Enforce the per-line size limit (the span includes the line ending bytes).
+  if (is.finite(max_size)) {
+    line_starts <- c(1L, next_start[-length(next_start)])
+    spans <- next_start - line_starts
+    if (max(spans, length(remainder)) > max_size) {
+      stop_stream_size(max_size)
+    }
+  }
+
+  # A trailing bare CR may be the first half of a CRLF split across reads.
+  eat_lf <- length(cr) > 0L &&
+    ends[length(ends)] == length(buffer) &&
+    buffer[[length(buffer)]] == CR
+
+  text <- rawToChar(region)
+  Encoding(text) <- "bytes"
+  lines <- strsplit(text, "\r\n|\r|\n", useBytes = TRUE)[[1]]
+
+  list(
+    lines = iconv(lines, encoding, "UTF-8"),
+    remainder = remainder,
+    eat_lf = eat_lf
+  )
+}
+
+stop_stream_size <- function(max_size, call = caller_env()) {
+  cli::cli_abort(
+    "Streaming read exceeded size limit of {max_size}",
+    class = "httr2_streaming_error",
+    call = call
+  )
 }
 
 # Function to find the first double line ending in a buffer, or NULL if no
