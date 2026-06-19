@@ -47,6 +47,10 @@
   now creates a valid empty request body when no parameters are provided
   ([@arcresu](https://github.com/arcresu),
   [\#836](https://github.com/r-lib/httr2/issues/836)).
+- [`req_error()`](https://httr2.r-lib.org/dev/reference/req_error.md) is
+  now applied to responses retrieved from the cache, so a custom
+  `is_error` callback is respected on cache hits
+  ([\#806](https://github.com/r-lib/httr2/issues/806)).
 
 ## httr2 1.2.2
 
