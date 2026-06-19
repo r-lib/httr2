@@ -5,6 +5,7 @@
 * New `oauth_server_metadata()` discovers an OAuth/OpenID Connect issuer's endpoints from its `.well-known` metadata document (#845).
 * `oauth_client()` gains a `metadata` argument: pass the result of `oauth_server_metadata()` and the client carries all of the server's endpoints, so the OAuth flows pick them up automatically instead of threading them into each call (#846).
 * `oauth_flow_auth_code()` now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (@pedrobtz, #829).
+* `iterate_with_link_url()` and `resp_link_url()` no longer error on `Link` headers that contain a trailing comma (#804).
 * `last_response_json()` now works with content-types that end with `+json`, 
 e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
