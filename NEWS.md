@@ -11,6 +11,7 @@ e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
+* `req_error()` is now applied to responses retrieved from the cache, so a custom `is_error` callback is respected on cache hits (#806).
 
 # httr2 1.2.2
 

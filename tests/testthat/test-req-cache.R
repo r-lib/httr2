@@ -56,6 +56,20 @@ test_that("cached cache header added to request", {
   expect_equal(req3$headers$`If-None-Match`, '"abc"')
 })
 
+test_that("applies req_error() to responses from cache (#806)", {
+  req <- request("http://example.com") |>
+    req_cache(tempfile()) |>
+    req_error(is_error = \(resp) TRUE)
+  resp <- response(
+    200,
+    headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
+    body = charToRaw("abc")
+  )
+  cache_set(req, resp)
+
+  expect_error(req_perform(req), class = "httr2_http_200")
+})
+
 test_that("error can use cached value", {
   req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(200, body = charToRaw("OK"))
