@@ -1,6 +1,7 @@
 ## This package
 
-<!-- Insert package-specific content here. use_tidy_agents() will preserve this section when updating the rest of the file. -->
+* Use markdown formatting when writing git commit messages.
+* When a commit fixes a GitHub issue include "Fixes #{num}" in the commit message.
 
 ## Package development
 
