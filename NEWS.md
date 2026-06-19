@@ -5,9 +5,7 @@
 e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
-* `req_auth_aws_v4()` now correctly signs URLs containing encoded slashes
-  (`%2F`) in path segments, such as ARNs in AWS Bedrock API paths
-  (@thisisnic, #842).
+* `req_auth_aws_v4()` now correctly signs URLs containing encoded slashes (`%2F`) in path segments, such as ARNs in AWS Bedrock API paths (@thisisnic, #842).
 
 # httr2 1.2.2
 
