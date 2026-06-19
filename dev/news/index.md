@@ -28,6 +28,12 @@
   ([@cgiachalis](https://github.com/cgiachalis),
   [\#782](https://github.com/r-lib/httr2/issues/782)).
 - [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
+  and
+  [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
+  no longer error with “C stack usage is too close to the limit” when
+  given very long string values
+  ([\#805](https://github.com/r-lib/httr2/issues/805)).
+- [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
   now creates a valid empty request body when no parameters are provided
   ([@arcresu](https://github.com/arcresu),
   [\#836](https://github.com/r-lib/httr2/issues/836)).

@@ -56,6 +56,8 @@
 <li>
 <code><a href="../reference/last_response.html">last_response_json()</a></code> now works with content-types that end with <code>+json</code>, e.g., <code>application/problem+json</code> (<a href="https://github.com/cgiachalis" class="external-link">@cgiachalis</a>, <a href="https://github.com/r-lib/httr2/issues/782" class="external-link">#782</a>).</li>
 <li>
+<code><a href="../reference/req_body.html">req_body_form()</a></code> and <code><a href="../reference/req_url.html">req_url_query()</a></code> no longer error with “C stack usage is too close to the limit” when given very long string values (<a href="https://github.com/r-lib/httr2/issues/805" class="external-link">#805</a>).</li>
+<li>
 <code><a href="../reference/req_body.html">req_body_form()</a></code> now creates a valid empty request body when no parameters are provided (<a href="https://github.com/arcresu" class="external-link">@arcresu</a>, <a href="https://github.com/r-lib/httr2/issues/836" class="external-link">#836</a>).</li>
 </ul></div>
     <div class="section level2">
