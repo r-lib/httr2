@@ -311,12 +311,12 @@ test_that("throttling is limited by deadline", {
   expect_equal(queue$queue_status, "waiting")
   queue$process1(1)
   expect_equal(mock_time, 1)
-  expect_equal(the$throttle[["test"]]$tokens, 1)
+  expect_equal(the$throttle[["test"]][[1]]$tokens, 1)
 
   local_mocked_bindings(throttle_deadline = function(...) mock_time)
   queue$rate_limit_deadline <- mock_time + 2
   expect_equal(mock_time, 1)
-  expect_equal(the$throttle[["test"]]$tokens, 1)
+  expect_equal(the$throttle[["test"]][[1]]$tokens, 1)
 })
 
 

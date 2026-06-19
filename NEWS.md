@@ -8,6 +8,7 @@
 e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
+* `req_throttle()` can now enforce multiple rate limits at once: supply a vector to `capacity` (and `fill_time_s`) to create one token bucket per limit, and each request must satisfy all of them (#555).
 
 # httr2 1.2.2
 
