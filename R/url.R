@@ -364,7 +364,9 @@ format_query_param <- function(
   } else if (is_obfuscated(x)) {
     x
   } else {
-    x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
+    if (!is.character(x)) {
+      x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
+    }
     x <- curl::curl_escape(x)
     if (form) {
       x <- gsub("%20", "+", x, fixed = TRUE)

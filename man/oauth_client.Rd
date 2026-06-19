@@ -6,18 +6,20 @@
 \usage{
 oauth_client(
   id,
-  token_url,
+  token_url = NULL,
   secret = NULL,
   key = NULL,
   auth = c("body", "header", "jwt_sig"),
   auth_params = list(),
-  name = hash(id)
+  name = hash(id),
+  metadata = NULL
 )
 }
 \arguments{
 \item{id}{Client identifier.}
 
-\item{token_url}{Url to retrieve an access token.}
+\item{token_url}{Url to retrieve an access token. Not needed if \code{metadata}
+is supplied, which sets it from the \code{token_endpoint}.}
 
 \item{secret}{Client secret. For most apps, this is technically confidential
 so in principle you should avoid storing it in source code. However, many
@@ -50,16 +52,22 @@ by \code{auth}.}
 directory. If \code{NULL}, generated from hash of \code{client_id}. If you're
 defining a client for use in a package, I recommend that you use
 the package name.}
+
+\item{metadata}{An \code{\link[=oauth_server_metadata]{oauth_server_metadata()}} object. When supplied, the
+client's server endpoints are taken from the discovery document, so the
+OAuth flows can find them without you passing each one. An explicit
+\code{token_url} still wins over \code{metadata}.}
 }
 \value{
 An OAuth client: An S3 list with class \code{httr2_oauth_client}.
 }
 \description{
-An OAuth app is the combination of a client, a set of endpoints
-(i.e. urls where various requests should be sent), and an authentication
-mechanism. A client consists of at least a \code{client_id}, and also often
-a \code{client_secret}. You'll get these values when you create the client on
-the API's website.
+An OAuth client is the combination of a set of credentials (at least a
+\code{client_id}, and often a \code{client_secret} or \code{key}), the server endpoints it
+talks to, and an authentication mechanism. You'll get the credentials when
+you register the client on the API's website. Supply the \code{token_url}
+directly, or pass the result of \code{\link[=oauth_server_metadata]{oauth_server_metadata()}} as \code{metadata} to
+fill in all of the server's endpoints at once.
 }
 \examples{
 oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")

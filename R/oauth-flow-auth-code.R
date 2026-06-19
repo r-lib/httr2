@@ -43,7 +43,8 @@
 #' @inheritParams req_perform
 #' @param client An [oauth_client()].
 #' @param auth_url Authorization url; you'll need to discover this by reading
-#'   the documentation.
+#'   the documentation. Not needed if `metadata` was supplied to
+#'   [oauth_client()], which sets it from the `authorization_endpoint`.
 #' @param scope Scopes to be requested from the resource owner.
 #' @param pkce Use "Proof Key for Code Exchange"? This adds an extra layer of
 #'   security and should always be used if supported by the server.
@@ -98,7 +99,7 @@
 req_oauth_auth_code <- function(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -107,6 +108,7 @@ req_oauth_auth_code <- function(
   cache_disk = FALSE,
   cache_key = NULL
 ) {
+  auth_url <- oauth_flow_url(auth_url, client, "auth_url")
   redirect <- normalize_redirect_uri(redirect_uri = redirect_uri)
 
   params <- list(
@@ -127,7 +129,7 @@ req_oauth_auth_code <- function(
 #' @rdname req_oauth_auth_code
 oauth_flow_auth_code <- function(
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -135,6 +137,7 @@ oauth_flow_auth_code <- function(
   redirect_uri = oauth_redirect_uri()
 ) {
   oauth_flow_check("authorization code", client, interactive = TRUE)
+  auth_url <- oauth_flow_url(auth_url, client, "auth_url")
 
   redirect <- normalize_redirect_uri(redirect_uri = redirect_uri)
 

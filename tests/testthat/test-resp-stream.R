@@ -75,6 +75,7 @@ test_that("can join lines across multiple reads", {
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
+  wait_for_http_data(resp1)
 
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
@@ -83,7 +84,7 @@ test_that("can join lines across multiple reads", {
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
 
-  sync()
+  sync(resp1)
   out <- resp_stream_lines(resp1)
   expect_equal(out, "This is a complete sentence.")
 })
@@ -107,6 +108,7 @@ test_that("handles line endings of multiple kinds", {
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
+  wait_for_http_data(resp1)
 
   expected_values <- list(
     "\u3042",
@@ -121,8 +123,9 @@ test_that("handles line endings of multiple kinds", {
 
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
-    sync()
+    sync(resp1)
   }
+  wait_for_complete(resp1)
   expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
   expect_equal(out, "eof without line ending")
   expect_equal(resp_stream_lines(resp1), character(0))
@@ -173,6 +176,7 @@ test_that("streams the specified number of lines", {
 
   resp2 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp2))
+  wait_for_http_data(resp2)
   expect_equal(resp_stream_lines(resp2, 3), c("a", "b", "c"))
   expect_equal(resp_stream_lines(resp2, 3), c("d", "e"))
   expect_equal(resp_stream_lines(resp2, 3), character())
@@ -228,16 +232,17 @@ test_that("can join sse events across multiple reads", {
   # Non-blocking returns NULL until data is ready
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
+  wait_for_http_data(resp1)
 
   out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
   expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
 
-  sync()
+  sync(resp1)
   out <- resp_stream_sse(resp1)
   expect_equal(out, NULL)
 
-  sync()
+  sync(resp1)
   out <- resp_stream_sse(resp1)
   expect_equal(out, list(type = "message", data = "1\n2", id = ""))
   expect_equal(resp1$cache$push_back, charToRaw("data: 3\n\n"))
@@ -268,6 +273,7 @@ test_that("sse always interprets data as UTF-8", {
   # Non-blocking returns NULL until data is ready
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
+  wait_for_http_data(resp1)
 
   out <- resp_stream_sse(resp1)
 
@@ -287,6 +293,7 @@ test_that("streaming size limits enforced", {
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
+  wait_for_http_data(resp1)
   expect_error(
     out <- resp_stream_sse(resp1, max_size = 999),
     class = "httr2_streaming_error"

@@ -18,7 +18,7 @@ req_perform_promise(
 \item{path}{Optionally, path to save body of the response. This is useful
 for large responses since it avoids storing the response in memory.}
 
-\item{pool}{A pool created by \code{\link[curl:multi]{curl::new_pool()}}.}
+\item{pool}{A pool created by \code{\link[curl:new_pool]{curl::new_pool()}}.}
 
 \item{verbosity}{How much information to print? This is a wrapper
 around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control verbosity:
@@ -50,8 +50,8 @@ is finished. See the
 \href{https://rstudio.github.io/promises/articles/promises_01_motivation.html}{promises package documentation}
 for more details on how to work with the resulting promise object.
 
-If using together with \code{\link[later:create_loop]{later::with_temp_loop()}} or other private event loops,
-a new curl pool made by \code{\link[curl:multi]{curl::new_pool()}} should be created for requests made
+If using together with \code{\link[later:with_temp_loop]{later::with_temp_loop()}} or other private event loops,
+a new curl pool made by \code{\link[curl:new_pool]{curl::new_pool()}} should be created for requests made
 within the loop to ensure that only these requests are being polled by the loop.
 
 Like with \code{\link[=req_perform_parallel]{req_perform_parallel()}}, exercise caution when using this function;
