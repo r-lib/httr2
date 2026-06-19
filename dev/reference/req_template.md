@@ -52,14 +52,14 @@ httpbin <- request(example_url())
 # You can supply template parameters in `...`
 httpbin |> req_template("GET /bytes/{n}", n = 100)
 #> <httr2_request>
-#> GET http://127.0.0.1:33029/bytes/100
+#> GET http://127.0.0.1:37947/bytes/100
 #> Body: empty
 
 # or you retrieve from the current environment
 n <- 200
 httpbin |> req_template("GET /bytes/{n}")
 #> <httr2_request>
-#> GET http://127.0.0.1:33029/bytes/200
+#> GET http://127.0.0.1:37947/bytes/200
 #> Body: empty
 
 # Existing path is preserved:
@@ -68,6 +68,6 @@ name <- "id"
 value <- "a3fWa"
 httpbin_test |> req_template("GET /set/{name}/{value}")
 #> <httr2_request>
-#> GET http://127.0.0.1:33029/test/set/id/a3fWa
+#> GET http://127.0.0.1:37947/test/set/id/a3fWa
 #> Body: empty
 ```

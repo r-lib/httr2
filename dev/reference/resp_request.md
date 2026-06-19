@@ -24,6 +24,6 @@ req <- request(example_url())
 resp <- req_perform(req)
 resp_request(resp)
 #> <httr2_request>
-#> GET http://127.0.0.1:33029/
+#> GET http://127.0.0.1:37947/
 #> Body: empty
 ```

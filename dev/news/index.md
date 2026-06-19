@@ -2,6 +2,9 @@
 
 ## httr2 (development version)
 
+- [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md) no
+  longer errors when a request is first performed with `path` then later
+  without it ([\#840](https://github.com/r-lib/httr2/issues/840)).
 - [`req_oauth_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
   gains a `pkce` argument to enable Proof Key for Code Exchange,
   matching
