@@ -140,24 +140,17 @@ aws_v4_signature <- function(
     aws_region <- aws_region %||% host[[2]]
   }
 
+  # S3 requires a single encoding pass; other services encode existing escapes.
+  if (aws_service == "s3") {
+    path <- parsed_url$path
+  } else {
+    path <- curl::curl_parse_url(url, decode = FALSE)$path
+  }
+
   # 1. Create a canonical request
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html#create-canonical-request
   HTTPMethod <- method
-  if (aws_service == "s3") {
-    # S3 uses single-encoding and no path normalization
-    CanonicalURI <- curl::curl_escape(parsed_url$path %||% "/")
-    CanonicalURI <- gsub("%2F", "/", CanonicalURI, fixed = TRUE)
-  } else {
-    # Non-S3 services double-encode: split on real `/` separators and
-    # URI-encode each segment so that e.g. %2F becomes %252F.
-    # https://github.com/r-lib/httr2/issues/842
-    raw_path <- curl::curl_parse_url(url, decode = FALSE)$path
-    segments <- strsplit(raw_path, "/", fixed = TRUE)[[1]]
-    CanonicalURI <- paste(curl::curl_escape(segments), collapse = "/")
-    if (grepl("/$", raw_path)) {
-      CanonicalURI <- paste0(CanonicalURI, "/")
-    }
-  }
+  CanonicalURI <- aws_escape_path(path)
 
   if (is.null(parsed_url$query)) {
     CanonicalQueryString <- ""
@@ -232,6 +225,18 @@ aws_v4_signature <- function(
     SigningKey = SigningKey,
     Authorization = Authorization
   )
+}
+
+aws_escape_path <- function(path) {
+  path <- path %||% "/"
+  segments <- strsplit(path, "/", fixed = TRUE)[[1]]
+  out <- paste(curl::curl_escape(segments), collapse = "/")
+
+  if (grepl("/$", path)) {
+    out <- paste0(out, "/")
+  }
+
+  out
 }
 
 hmac_sha256 <- function(key, value) {
