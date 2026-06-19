@@ -153,3 +153,20 @@ test_that("non-S3 canonical URI double-encodes path segments", {
     )
   )
 })
+
+test_that("canonical URI preserves trailing slash", {
+  signature <- aws_v4_signature(
+    method = "GET",
+    url = "https://example.execute-api.us-east-1.amazonaws.com/v0/",
+    headers = list("x-amz-date" = "20250121T182222Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),
+    aws_service = "execute-api",
+    aws_region = "us-east-1",
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+
+  canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
+  expect_equal(canonical_uri, "/v0/")
+})
