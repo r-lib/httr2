@@ -138,12 +138,12 @@ request("https://api.github.com/user") |>
 write your own auth code flow, if the API you are wrapping does not adhere
 closely to the standard.
 
-Other OAuth flows: 
-\code{\link{oauth_server_metadata}()},
-\code{\link{req_oauth_bearer_jwt}()},
-\code{\link{req_oauth_client_credentials}()},
-\code{\link{req_oauth_password}()},
-\code{\link{req_oauth_refresh}()},
-\code{\link{req_oauth_token_exchange}()}
+Other OAuth flows:
+\code{\link[=oauth_server_metadata]{oauth_server_metadata()}},
+\code{\link[=req_oauth_bearer_jwt]{req_oauth_bearer_jwt()}},
+\code{\link[=req_oauth_client_credentials]{req_oauth_client_credentials()}},
+\code{\link[=req_oauth_password]{req_oauth_password()}},
+\code{\link[=req_oauth_refresh]{req_oauth_refresh()}},
+\code{\link[=req_oauth_token_exchange]{req_oauth_token_exchange()}}
 }
 \concept{OAuth flows}

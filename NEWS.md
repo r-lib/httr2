@@ -1,14 +1,16 @@
 # httr2 (development version)
 
 * `req_cache()` no longer errors when a request is first performed with `path`
-  and later without it, which could trigger a "file can not be copied both
-  'from' and 'to'" error when re-caching a body already in the cache (#840).
+  then later without it (#840).
+* `req_oauth_device()` gains a `pkce` argument to enable Proof Key for Code Exchange, matching `oauth_flow_device()` (#834).
 * OAuth token refresh now forwards `token_params` from the original flow, so extra token-endpoint parameters (e.g. a `scope` required on the token exchange) are sent on refresh as well as on the initial token request.
 * New `oauth_server_metadata()` discovers an OAuth/OpenID Connect issuer's endpoints from its `.well-known` metadata document (#845).
 * `oauth_client()` gains a `metadata` argument: pass the result of `oauth_server_metadata()` and the client carries all of the server's endpoints, so the OAuth flows pick them up automatically instead of threading them into each call (#846).
 * `oauth_flow_auth_code()` now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (@pedrobtz, #829).
+* `iterate_with_link_url()` and `resp_link_url()` no longer error on `Link` headers that contain a trailing comma (#804).
 * `last_response_json()` now works with content-types that end with `+json`, 
 e.g., `application/problem+json` (@cgiachalis, #782).
+* `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
 

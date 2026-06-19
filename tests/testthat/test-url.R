@@ -266,6 +266,11 @@ test_that("formats numbers nicely", {
   expect_equal(format_query_param(1e9, "x"), "1000000000")
 })
 
+test_that("doesn't format long strings (#805)", {
+  big <- strrep("a", 16e6)
+  expect_equal(format_query_param(big, "x"), big)
+})
+
 test_that("can opt out of escaping", {
   expect_equal(format_query_param(I(","), "x"), ",")
 })

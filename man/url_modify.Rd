@@ -99,8 +99,8 @@ url_modify_relative("http://hadley.nz/a/b/c.html", "d.html")
 url_modify_relative("http://hadley.nz/a/b/c.html", "../d.html")
 }
 \seealso{
-Other URL manipulation: 
-\code{\link{url_build}()},
-\code{\link{url_parse}()}
+Other URL manipulation:
+\code{\link[=url_build]{url_build()}},
+\code{\link[=url_parse]{url_parse()}}
 }
 \concept{URL manipulation}
