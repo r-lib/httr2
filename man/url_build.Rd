@@ -14,8 +14,8 @@ This is the inverse of \code{\link[=url_parse]{url_parse()}}, taking a parsed UR
 turning it back into a string.
 }
 \seealso{
-Other URL manipulation: 
-\code{\link{url_modify}()},
-\code{\link{url_parse}()}
+Other URL manipulation:
+\code{\link[=url_modify]{url_modify()}},
+\code{\link[=url_parse]{url_parse()}}
 }
 \concept{URL manipulation}
