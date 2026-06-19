@@ -35,6 +35,7 @@ req_oauth_device <- function(
   req,
   client,
   auth_url = NULL,
+  pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
   auth_params = list(),
@@ -46,6 +47,7 @@ req_oauth_device <- function(
   params <- list(
     client = client,
     auth_url = auth_url,
+    pkce = pkce,
     scope = scope,
     open_browser = open_browser,
     auth_params = auth_params,
