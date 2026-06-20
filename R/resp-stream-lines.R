@@ -83,21 +83,20 @@ stream_split_lines <- function(buffer, encoding = "UTF-8") {
   }
 
   cut <- ends[length(ends)] + 1L
+  region <- buffer[seq_len(cut - 1L)]
   remainder <- buffer[seq2(cut, length(buffer))]
-  starts <- c(1L, ends[-length(ends)] + 1L)
-  sizes <- ends - starts
-  has_cr <- rep(FALSE, length(sizes))
-  non_empty <- which(sizes > 0L)
-  has_cr[non_empty] <- buffer[ends[non_empty] - 1L] == as.raw(0x0D)
-  sizes[has_cr] <- sizes[has_cr] - 1L
-  blocks <- lapply(seq_along(ends), function(i) {
-    stream_decode(
-      buffer[seq2(starts[[i]], starts[[i]] + sizes[[i]] - 1L)],
-      encoding
-    )
-  })
 
-  list(blocks = blocks, remainder = remainder, sizes = sizes)
+  sizes <- diff(c(0L, ends)) - 1L
+  has_content <- sizes > 0L
+  sizes[has_content] <- sizes[has_content] -
+    (buffer[ends[has_content] - 1L] == as.raw(0x0D))
+
+  text <- stream_decode(region, encoding)
+  list(
+    blocks = as.list(strsplit(text, "\r\n|\n")[[1]]),
+    remainder = remainder,
+    sizes = sizes
+  )
 }
 
 # Decode a raw vector of bytes into a single string in the response encoding.
