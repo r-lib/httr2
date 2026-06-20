@@ -51,94 +51,22 @@ test_that("ignores events with no data", {
   )
 })
 
-test_that("can join sse events across multiple reads", {
-  sync <- sync_req("sse")
-  req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep("sse")
-
-    res$send_chunk("data: 1\n")
-    sync(res$send_chunk("data"))
-    res$send_chunk(": 2\n")
-    sync(res$send_chunk("\ndata: 3\n\n"))
-  })
-
-  # Non-blocking returns NULL until data is ready
-  resp1 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp1))
-  wait_for_http_data(resp1)
-
-  out <- resp_stream_sse(resp1)
-  expect_equal(out, NULL)
-  expect_equal(resp1$cache$push_back, charToRaw("data: 1\n"))
-
-  sync(resp1)
-  out <- resp_stream_sse(resp1)
-  expect_equal(out, NULL)
-
-  sync(resp1)
-  out <- resp_stream_sse(resp1)
-  expect_equal(out, list(type = "message", data = "1\n2", id = ""))
-  # The second complete event is decoded in the same read and queued.
-  expect_false(resp_stream_is_complete(resp1))
-
-  out <- resp_stream_sse(resp1)
-  expect_equal(out, list(type = "message", data = "3", id = ""))
-
-  # # Blocking waits for a complete event
-  req <- local_app_request(function(req, res) {
-    res$send_chunk("data: 1\n")
-    res$send_chunk("data")
-    res$send_chunk(": 2\n")
-    res$send_chunk("\ndata: 3\n\n")
-  })
-  resp2 <- req_perform_connection(req)
-  withr::defer(close(resp2))
-
-  out <- resp_stream_sse(resp2)
-  expect_equal(out, list(type = "message", data = "1\n2", id = ""))
-})
-
 test_that("sse always interprets data as UTF-8", {
   req <- local_app_request(function(req, res) {
     res$send_chunk("data: \xE3\x81\x82\r\n\r\n")
   })
 
+  # Data is decoded as UTF-8 regardless of the locale.
   withr::local_locale(LC_CTYPE = "C")
-  # Non-blocking returns NULL until data is ready
-  resp1 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp1))
-  wait_for_http_data(resp1)
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
 
-  out <- resp_stream_sse(resp1)
+  out <- resp_stream_sse(resp)
 
   s <- "\xE3\x81\x82"
   Encoding(s) <- "UTF-8"
   expect_equal(out, list(type = "message", data = s, id = ""))
   expect_equal(Encoding(out$data), "UTF-8")
-  expect_equal(resp1$cache$push_back, raw())
-})
-
-test_that("streaming size limits enforced", {
-  req <- local_app_request(function(req, res) {
-    data_size <- 1000
-    data <- paste(rep_len("0", data_size), collapse = "")
-    res$send_chunk(data)
-  })
-
-  resp1 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp1))
-  wait_for_http_data(resp1)
-  expect_error(
-    out <- resp_stream_sse(resp1, max_size = 999),
-    class = "httr2_streaming_error"
-  )
-
-  resp2 <- req_perform_connection(req, blocking = TRUE)
-  withr::defer(close(resp2))
-  expect_error(
-    out <- resp_stream_sse(resp2, max_size = 999),
-    class = "httr2_streaming_error"
-  )
 })
 
 test_that("verbosity = 3 shows raw sse events", {

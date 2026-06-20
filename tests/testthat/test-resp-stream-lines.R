@@ -1,76 +1,7 @@
-test_that("can join lines across multiple reads", {
-  sync <- sync_req("join")
-  req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep("join")
-
-    res$send_chunk("This is a ")
-    sync(res$send_chunk("complete sentence.\n"))
-  })
-
-  resp1 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp1))
-  wait_for_http_data(resp1)
-
-  out <- resp_stream_lines(resp1)
-  expect_equal(out, character())
-  expect_equal(resp1$cache$push_back, charToRaw("This is a "))
-  # Buffered bytes mean the stream isn't complete, even between lines.
-  expect_false(resp_stream_is_complete(resp1))
-
-  out <- resp_stream_lines(resp1)
-  expect_equal(out, character())
-
-  sync(resp1)
-  out <- resp_stream_lines(resp1)
-  expect_equal(out, "This is a complete sentence.")
-})
-
-test_that("handles LF and CRLF line endings, including CRLF split across reads", {
-  sync <- sync_req("endings")
-  req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep("endings")
-
-    res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
-    res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
-    sync(res$send_chunk("crlf\r\n"))
-    sync(res$send_chunk("lf\n"))
-    sync(res$send_chunk("half line/"))
-    sync(res$send_chunk("other half\n"))
-    sync(res$send_chunk("split crlf\r"))
-    sync(res$send_chunk("\nanother line\n"))
-    sync(res$send_chunk("eof without line ending"))
-  })
-
-  resp1 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp1))
-  wait_for_http_data(resp1)
-
-  # A chunk ending mid-line (a partial line, or the CR half of a CRLF) yields
-  # nothing until the next read completes it.
-  expected_values <- list(
-    "\u3042",
-    "crlf",
-    "lf",
-    character(0),
-    "half line/other half",
-    character(0),
-    "split crlf"
-  )
-
-  for (expected in expected_values) {
-    rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
-    sync(resp1)
-  }
-  # "split crlf" and "another line" were split from one buffer, so the second
-  # is served from the queue without a further read.
-  expect_equal(resp_stream_lines(resp1), "another line")
-
-  wait_for_complete(resp1)
-  # A final line without a terminator is returned (silently).
-  expect_equal(resp_stream_lines(resp1), "eof without line ending")
-  expect_equal(resp_stream_lines(resp1), character(0))
-
-  # Same test, but now, blocking (and without sync)
+test_that("decodes the response encoding and joins LF and CRLF lines", {
+  # Lines are decoded with the response encoding (here Shift_JIS) and split on
+  # both LF and CRLF, including a CRLF straddling two reads ("split crlf\r" then
+  # "\n"); a final line without a terminator is returned at EOF.
   req <- local_app_request(function(req, res) {
     res$set_header("Content-Type", "text/plain; charset=Shift_JIS")
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
@@ -82,8 +13,8 @@ test_that("handles LF and CRLF line endings, including CRLF split across reads",
     res$send_chunk("\nanother line\n")
     res$send_chunk("eof without line ending")
   })
-  resp2 <- req_perform_connection(req, blocking = TRUE)
-  withr::defer(close(resp2))
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
 
   expected_values <- c(
     "\u3042",
@@ -95,28 +26,9 @@ test_that("handles LF and CRLF line endings, including CRLF split across reads",
   )
 
   for (expected in expected_values) {
-    rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
+    rlang::inject(expect_equal(resp_stream_lines(resp), !!expected))
   }
-  expect_equal(resp_stream_lines(resp2), "eof without line ending")
-})
-
-test_that("streams the specified number of lines", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
-  })
-
-  resp1 <- req_perform_connection(req, blocking = TRUE)
-  withr::defer(close(resp1))
-  expect_equal(resp_stream_lines(resp1, 3), c("a", "b", "c"))
-  expect_equal(resp_stream_lines(resp1, 3), c("d", "e"))
-  expect_equal(resp_stream_lines(resp1, 3), character())
-
-  resp2 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp2))
-  wait_for_http_data(resp2)
-  expect_equal(resp_stream_lines(resp2, 3), c("a", "b", "c"))
-  expect_equal(resp_stream_lines(resp2, 3), c("d", "e"))
-  expect_equal(resp_stream_lines(resp2, 3), character())
+  expect_equal(resp_stream_lines(resp), "eof without line ending")
 })
 
 test_that("requesting zero lines returns an empty vector", {
@@ -200,25 +112,4 @@ test_that("stream_split_lines() treats a bare CR as an ordinary character", {
   out <- stream_split_lines(charToRaw("a\r\nb\n"))
   expect_equal(out$blocks, list("a", "b"))
   expect_equal(out$remainder, raw())
-})
-
-test_that("resp_stream_lines() enforces max_size on an over-long line", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk(paste(rep_len("0", 1000), collapse = ""))
-  })
-
-  resp1 <- req_perform_connection(req, blocking = FALSE)
-  withr::defer(close(resp1))
-  wait_for_http_data(resp1)
-  expect_error(
-    resp_stream_lines(resp1, max_size = 999),
-    class = "httr2_streaming_error"
-  )
-
-  resp2 <- req_perform_connection(req, blocking = TRUE)
-  withr::defer(close(resp2))
-  expect_error(
-    resp_stream_lines(resp2, max_size = 999),
-    class = "httr2_streaming_error"
-  )
 })

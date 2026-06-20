@@ -75,6 +75,74 @@ test_that("BoundarySplitter splits, caps reads, and discards trailers", {
   expect_equal(s$read_cap(0L, Inf), stream_chunk_bytes)
 })
 
+# stream_pull() drives every format (lines, sse, aws); these tests exercise its
+# format-independent behavior through resp_stream_lines() as a convenient
+# vehicle. Format-specific splitting and parsing are tested in the per-format
+# files.
+
+test_that("stream_pull() buffers incomplete blocks across reads (non-blocking)", {
+  sync <- sync_req("pull")
+  req <- local_app_request(function(req, res) {
+    sync <- req$app$locals$sync_rep("pull")
+
+    res$send_chunk("This is a ")
+    sync(res$send_chunk("complete sentence.\n"))
+  })
+
+  resp <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp))
+  wait_for_http_data(resp)
+
+  # An incomplete block is held in push_back and nothing is served yet.
+  expect_equal(resp_stream_lines(resp), character())
+  expect_equal(resp$cache$push_back, charToRaw("This is a "))
+  # Buffered bytes mean the stream isn't complete, even between blocks.
+  expect_false(resp_stream_is_complete(resp))
+
+  expect_equal(resp_stream_lines(resp), character())
+
+  sync(resp)
+  expect_equal(resp_stream_lines(resp), "This is a complete sentence.")
+})
+
+test_that("stream_pull() serves queued blocks from a single read", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
+  })
+
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+
+  # All five blocks are split from one read; `n` limits how many are served and
+  # the rest stay queued, so is_complete() is FALSE while the queue is non-empty.
+  expect_equal(resp_stream_lines(resp, 3), c("a", "b", "c"))
+  expect_false(resp_stream_is_complete(resp))
+  expect_equal(resp_stream_lines(resp, 3), c("d", "e"))
+  expect_equal(resp_stream_lines(resp, 3), character())
+  expect_true(resp_stream_is_complete(resp))
+})
+
+test_that("stream_pull() enforces max_size (blocking and non-blocking)", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(paste(rep_len("0", 1000), collapse = ""))
+  })
+
+  resp1 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp1))
+  wait_for_http_data(resp1)
+  expect_error(
+    resp_stream_lines(resp1, max_size = 999),
+    class = "httr2_streaming_error"
+  )
+
+  resp2 <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp2))
+  expect_error(
+    resp_stream_lines(resp2, max_size = 999),
+    class = "httr2_streaming_error"
+  )
+})
+
 test_that("verbosity = 2 streams request bodies", {
   req <- local_app_request(function(req, res) {
     res$send_chunk("line 1\n")

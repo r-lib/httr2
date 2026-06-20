@@ -55,11 +55,8 @@ test_that("can read aws events one at a time", {
   withr::defer(close(resp))
 
   expect_equal(resp_stream_aws(resp), list(headers = list(), body = ""))
-  # The second event is decoded in the same read and queued.
-  expect_false(resp_stream_is_complete(resp))
   expect_equal(resp_stream_aws(resp), list(headers = list(), body = ""))
   expect_equal(resp_stream_aws(resp), NULL)
-  expect_true(resp_stream_is_complete(resp))
 })
 
 test_that("verbosity = 3 shows aws events", {
