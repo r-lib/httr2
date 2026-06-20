@@ -11,7 +11,7 @@ e.g., `application/problem+json` (@cgiachalis, #782).
 * `resp_stream_aws()` now parses `byte`, `short`, and `integer` headers as signed integers, matching the AWS event-stream specification (previously they were incorrectly read as unsigned).
 * `resp_stream_lines()` no longer treats a bare carriage return (CR) as a line ending; only LF and CRLF terminate lines, which is what every modern streaming source produces.
 * `resp_stream_lines()` no longer warns when the stream ends without a final line terminator (which is routine when streaming), and its `warn` argument is (softly) deprecated.
-* `resp_stream_lines()`, `resp_stream_sse()`, and `resp_stream_aws()` now use dramatically less memory and are much faster when streaming large responses, because they decode whole chunks at a time and hold the results in a queue instead of rescanning and recopying the buffer for every line or event (#704).
+* `resp_stream_lines()`, `resp_stream_sse()`, and `resp_stream_aws()` now decode whole chunks at a time and hold the results in a queue, instead of rescanning and recopying the buffer for every line or event. This makes memory use and run time scale linearly rather than quadratically with the response size, so large streams use dramatically less memory and run much faster (e.g. reading a 1 MB response of short lines is now around 200x faster and allocates around 180x less memory) (#704).
 
 # httr2 1.2.2
 
