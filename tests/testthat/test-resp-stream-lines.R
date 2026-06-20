@@ -25,7 +25,7 @@ test_that("can join lines across multiple reads", {
   expect_equal(out, "This is a complete sentence.")
 })
 
-test_that("handles line endings of multiple kinds", {
+test_that("handles LF and CRLF line endings, including CRLF split across reads", {
   sync <- sync_req("endings")
   req <- local_app_request(function(req, res) {
     sync <- req$app$locals$sync_rep("endings")
@@ -34,10 +34,9 @@ test_that("handles line endings of multiple kinds", {
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
     sync(res$send_chunk("crlf\r\n"))
     sync(res$send_chunk("lf\n"))
-    sync(res$send_chunk("cr\r"))
     sync(res$send_chunk("half line/"))
     sync(res$send_chunk("other half\n"))
-    sync(res$send_chunk("broken crlf\r"))
+    sync(res$send_chunk("split crlf\r"))
     sync(res$send_chunk("\nanother line\n"))
     sync(res$send_chunk("eof without line ending"))
   })
@@ -46,24 +45,23 @@ test_that("handles line endings of multiple kinds", {
   withr::defer(close(resp1))
   wait_for_http_data(resp1)
 
-  # A chunk ending in a bare CR holds that line back for one read, in case the
-  # next chunk begins with the LF half of a CRLF (see `stream_split_lines()`).
+  # A chunk ending mid-line (a partial line, or the CR half of a CRLF) yields
+  # nothing until the next read completes it.
   expected_values <- list(
     "\u3042",
     "crlf",
     "lf",
     character(0),
-    "cr",
     "half line/other half",
     character(0),
-    "broken crlf"
+    "split crlf"
   )
 
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
     sync(resp1)
   }
-  # "broken crlf" and "another line" were split from one buffer, so the second
+  # "split crlf" and "another line" were split from one buffer, so the second
   # is served from the queue without a further read.
   expect_equal(resp_stream_lines(resp1), "another line")
 
@@ -78,10 +76,9 @@ test_that("handles line endings of multiple kinds", {
     res$send_chunk(as.raw(c(0x82, 0xA0, 0x0A)))
     res$send_chunk("crlf\r\n")
     res$send_chunk("lf\n")
-    res$send_chunk("cr\r")
     res$send_chunk("half line/")
     res$send_chunk("other half\n")
-    res$send_chunk("broken crlf\r")
+    res$send_chunk("split crlf\r")
     res$send_chunk("\nanother line\n")
     res$send_chunk("eof without line ending")
   })
@@ -92,9 +89,8 @@ test_that("handles line endings of multiple kinds", {
     "\u3042",
     "crlf",
     "lf",
-    "cr",
     "half line/other half",
-    "broken crlf",
+    "split crlf",
     "another line"
   )
 
@@ -167,17 +163,17 @@ test_that("LineSplitter flushes a trailing line", {
   expect_equal(s$finish(raw()), list())
   # Trailing bytes are emitted as a final line.
   expect_equal(s$finish(charToRaw("tail")), list("tail"))
-  # A trailing bare CR is a line ending at end-of-stream.
+  # A CRLF truncated at end-of-stream drops the dangling CR.
   expect_equal(s$finish(charToRaw("tail\r")), list("tail"))
 })
 
-test_that("stream_split_lines() splits on LF, CR, and CRLF", {
+test_that("stream_split_lines() splits on LF and CRLF", {
   split <- function(x) {
     stream_split_lines(charToRaw(x), "UTF-8", max_size = Inf)
   }
 
-  out <- split("a\nb\r\nc\rd\n")
-  expect_equal(out$lines, c("a", "b", "c", "d"))
+  out <- split("a\nb\r\nc\n")
+  expect_equal(out$lines, c("a", "b", "c"))
   expect_equal(out$remainder, raw())
 
   # blank lines are preserved
@@ -189,20 +185,24 @@ test_that("stream_split_lines() splits on LF, CR, and CRLF", {
   expect_equal(out$remainder, charToRaw("bcd"))
 })
 
-test_that("stream_split_lines() holds a trailing bare CR for the next read", {
-  # A buffer ending in a bare CR keeps the CR in the remainder, in case the
-  # next read begins with the LF half of a CRLF split across reads.
-  out <- stream_split_lines(charToRaw("a\r"), "UTF-8", max_size = Inf)
+test_that("stream_split_lines() treats a bare CR as an ordinary character", {
+  split <- function(x) {
+    stream_split_lines(charToRaw(x), "UTF-8", max_size = Inf)
+  }
+
+  # A CR not followed by LF is kept in the line, not used as a separator.
+  out <- split("a\rb\n")
+  expect_equal(out$lines, "a\rb")
+  expect_equal(out$remainder, raw())
+
+  # A CRLF split across reads needs no special handling: the trailing CR is
+  # just unfinished content in the remainder until the next read supplies the
+  # LF.
+  out <- split("a\r")
   expect_equal(out$lines, character())
   expect_equal(out$remainder, charToRaw("a\r"))
 
-  # Once the remainder is fed back, a following LF completes the CRLF.
-  out <- stream_split_lines(charToRaw("a\r\nb\n"), "UTF-8", max_size = Inf)
-  expect_equal(out$lines, c("a", "b"))
-  expect_equal(out$remainder, raw())
-
-  # ... while a following non-LF byte makes the CR a lone line ending.
-  out <- stream_split_lines(charToRaw("a\rb\n"), "UTF-8", max_size = Inf)
+  out <- split("a\r\nb\n")
   expect_equal(out$lines, c("a", "b"))
   expect_equal(out$remainder, raw())
 })

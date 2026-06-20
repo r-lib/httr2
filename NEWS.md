@@ -9,6 +9,7 @@ e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
 * `resp_stream_aws()` now parses `byte`, `short`, and `integer` headers as signed integers, matching the AWS event-stream specification (previously they were incorrectly read as unsigned).
+* `resp_stream_lines()` no longer treats a bare carriage return (CR) as a line ending; only LF and CRLF terminate lines, which is what every modern streaming source produces.
 * `resp_stream_lines()` no longer warns when the stream ends without a final line terminator (which is routine when streaming), and its `warn` argument is (softly) deprecated.
 * `resp_stream_lines()`, `resp_stream_sse()`, and `resp_stream_aws()` now use dramatically less memory and are much faster when streaming large responses, because they decode whole chunks at a time and hold the results in a queue instead of rescanning and recopying the buffer for every line or event (#704).
 

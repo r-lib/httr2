@@ -38,9 +38,8 @@ resp_stream_lines <- function(
   lines_read
 }
 
-# Splits a stream into lines of text, with line endings of LF, CR, or CRLF
-# (matching `readLines()`). A trailing bare CR is held in the remainder in case
-# it's the first half of a CRLF split across reads (see `stream_split_lines()`).
+# Splits a stream into lines of text terminated by LF or CRLF. A bare CR is not
+# treated as a line ending (see `stream_split_lines()`).
 LineSplitter <- R6::R6Class(
   "LineSplitter",
   inherit = StreamSplitter,
@@ -57,7 +56,7 @@ LineSplitter <- R6::R6Class(
       if (length(remainder) == 0L) {
         return(list())
       }
-      # A trailing bare CR is a line ending now that the stream has ended.
+      # Tolerate a CRLF truncated at end-of-stream by stripping a trailing CR.
       if (remainder[[length(remainder)]] == as.raw(0x0D)) {
         remainder <- remainder[-length(remainder)]
       }
@@ -67,43 +66,19 @@ LineSplitter <- R6::R6Class(
 )
 
 # Split `buffer` into complete lines plus a trailing remainder of bytes that do
-# not yet form a complete line. Line endings may be LF, CR, or CRLF, matching
-# the behaviour of `readLines()`.
+# not yet form a complete line. Lines are terminated by LF or CRLF; a bare CR is
+# treated as an ordinary character, not a line ending.
 #
-# A bare CR at the very end of the buffer is left in the remainder, because it
-# may be the first half of a CRLF split across reads. It resolves on the next
-# read (or is treated as a line ending by `finish()` at end-of-stream).
+# We only ever split on LF, so a CRLF split across reads needs no special
+# handling: the trailing CR is just unfinished line content that stays in the
+# remainder until the next read supplies its LF.
 #
 # @returns A list with components `lines` (a character vector) and `remainder`
 #   (a raw vector).
 stream_split_lines <- function(buffer, encoding, max_size) {
   LF <- as.raw(0x0A)
-  CR <- as.raw(0x0D)
 
-  if (length(buffer) == 0L) {
-    return(list(lines = character(), remainder = raw()))
-  }
-
-  lf <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
-  cr <- grepRaw(CR, buffer, fixed = TRUE, all = TRUE)
-  # A trailing bare CR may be the first half of a CRLF split across reads, so
-  # leave it in the remainder to resolve on the next read.
-  if (length(cr) > 0L && cr[length(cr)] == length(buffer)) {
-    cr <- cr[-length(cr)]
-  }
-  if (length(cr) == 0L) {
-    # Fast path: the common case of LF-delimited text (e.g. ndjson).
-    ends <- lf
-    next_start <- lf + 1L
-  } else {
-    # Drop LFs that are the second half of a CRLF pair.
-    lf_solo <- lf[!((lf - 1L) %in% cr)]
-    ends <- sort(c(cr, lf_solo))
-    next_start <- ends + 1L
-    crlf <- (buffer[ends] == CR) & ((ends + 1L) %in% lf)
-    next_start[crlf] <- ends[crlf] + 2L
-  }
-
+  ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
   if (length(ends) == 0L) {
     if (length(buffer) > max_size) {
       stop_stream_size(max_size)
@@ -111,14 +86,14 @@ stream_split_lines <- function(buffer, encoding, max_size) {
     return(list(lines = character(), remainder = buffer))
   }
 
-  cut <- next_start[length(next_start)]
-  region <- if (cut == 1L) raw() else buffer[seq_len(cut - 1L)]
+  cut <- ends[length(ends)] + 1L
+  region <- buffer[seq_len(cut - 1L)]
   remainder <- if (cut > length(buffer)) raw() else buffer[cut:length(buffer)]
 
   # Enforce the per-line size limit (the span includes the line ending bytes).
   if (is.finite(max_size)) {
-    line_starts <- c(1L, next_start[-length(next_start)])
-    spans <- next_start - line_starts
+    line_starts <- c(1L, ends[-length(ends)] + 1L)
+    spans <- (ends + 1L) - line_starts
     if (max(spans, length(remainder)) > max_size) {
       stop_stream_size(max_size)
     }
@@ -126,7 +101,7 @@ stream_split_lines <- function(buffer, encoding, max_size) {
 
   text <- rawToChar(region)
   Encoding(text) <- "bytes"
-  lines <- strsplit(text, "\r\n|\r|\n", useBytes = TRUE)[[1]]
+  lines <- strsplit(text, "\r\n|\n", useBytes = TRUE)[[1]]
 
   list(
     lines = iconv(lines, encoding, "UTF-8"),
