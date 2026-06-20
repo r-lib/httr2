@@ -58,6 +58,11 @@ test_that("BoundarySplitter splits, caps reads, and discards trailers", {
   expect_equal(out$blocks, list(charToRaw("a\n\n")))
   expect_equal(out$remainder, charToRaw("b"))
 
+  # A buffer ending exactly on a boundary leaves an empty remainder.
+  out <- s$split(charToRaw("a\n\n"))
+  expect_equal(out$blocks, list(charToRaw("a\n\n")))
+  expect_equal(out$remainder, raw())
+
   # No boundary: the whole buffer is the remainder (size limits are enforced by
   # stream_pull(), not split()).
   out <- s$split(charToRaw("abcdef"))
@@ -140,6 +145,40 @@ test_that("stream_pull() enforces max_size (blocking and non-blocking)", {
   expect_error(
     resp_stream_lines(resp2, max_size = 999),
     class = "httr2_streaming_error"
+  )
+})
+
+test_that("stream_pull() flushes a trailing block at end of stream", {
+  req <- local_app_request(function(req, res) {
+    # "b" has no trailing line ending, so it can't be served until EOF.
+    res$send_chunk("a\nb")
+  })
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+
+  expect_equal(resp_stream_lines(resp, 1), "a")
+  # At end of stream the splitter flushes its buffered remainder as a block.
+  expect_equal(resp_stream_lines(resp, 1), "b")
+  expect_equal(resp_stream_lines(resp, 1), character())
+})
+
+test_that("verbosity = 3 logs the buffered chunk", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk("line 1\n")
+    res$send_chunk("line 2\n")
+  })
+
+  expect_output(
+    con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
+  )
+  on.exit(close(con))
+  expect_snapshot(
+    {
+      while (!resp_stream_is_complete(con)) {
+        resp_stream_lines(con, 1)
+      }
+    },
+    transform = transform_verbose_response
   )
 })
 

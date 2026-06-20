@@ -49,26 +49,6 @@ test_that("resp_stream_lines(warn) is deprecated unless FALSE", {
   expect_snapshot(. <- resp_stream_lines(resp, warn = TRUE))
 })
 
-test_that("verbosity = 3 shows buffer info", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk("line 1\n")
-    res$send_chunk("line 2\n")
-  })
-
-  expect_output(
-    con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
-  )
-  on.exit(close(con))
-  expect_snapshot(
-    {
-      while (!resp_stream_is_complete(con)) {
-        resp_stream_lines(con, 1)
-      }
-    },
-    transform = transform_verbose_response
-  )
-})
-
 test_that("LineSplitter flushes a trailing line", {
   s <- LineSplitter$new("UTF-8")
   # Nothing buffered: nothing to flush.

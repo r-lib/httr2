@@ -22,6 +22,18 @@
       Warning:
       Premature end of input; ignoring final partial chunk
 
+# verbosity = 3 logs the buffered chunk
+
+    Code
+      while (!resp_stream_is_complete(con)) {
+        resp_stream_lines(con, 1)
+      }
+    Output
+      *  -- Buffer ----------------------------------------------------------------------
+      *  Received chunk: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
+      << line 1
+      << line 2
+
 # verbosity = 2 streams request bodies
 
     Code

@@ -199,6 +199,7 @@ StreamSplitter <- R6::R6Class(
     # Divide `buffer` into a list of complete `blocks` plus a raw `remainder`
     # of trailing bytes that don't yet form a complete block. Size limits are
     # enforced by `stream_pull()`, so `split()` itself never throws.
+    # nocov start: abstract defaults, always overridden by a subclass.
     split = function(buffer) {
       cli::cli_abort("Not implemented.", .internal = TRUE)
     },
@@ -207,6 +208,7 @@ StreamSplitter <- R6::R6Class(
     finish = function(remainder) {
       list()
     },
+    # nocov end
     # How many bytes to read from the connection next, given the number of
     # bytes already buffered in `push_back`. Don't read more than one byte past
     # the size limit; the extra byte lets us detect that a single block has
