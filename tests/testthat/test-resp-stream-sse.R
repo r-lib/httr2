@@ -225,3 +225,10 @@ test_that("examples from spec work", {
   expect_equal(event$type, "message")
   expect_equal(event$data, "YHOO\n+2\n10")
 })
+
+test_that("event and id fields are parsed", {
+  event <- parse_event("event: ping\ndata: x\nid: 42")
+  expect_equal(event$type, "ping")
+  expect_equal(event$data, "x")
+  expect_equal(event$id, "42")
+})

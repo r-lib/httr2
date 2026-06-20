@@ -42,6 +42,16 @@ test_that("can return various types of header", {
   )
   expect_equal(parse_aws_event(bytes)$headers, list(foo = as.raw(1:5)))
 
+  # timestamp (hand-built: prelude + "foo" name + type 8 + 8-byte value; the
+  # CRCs aren't validated, only the prelude length is)
+  bytes <- hex_to_raw(
+    "0000001d0000000d0000000003666f6f08000000000000000000000000"
+  )
+  expect_equal(
+    parse_aws_event(bytes)$headers,
+    list(foo = structure(0, class = "integer64"))
+  )
+
   # character
   bytes <- hex_to_raw("0000001a00000001387560dc03666f6f0700036261725bb3cecf")
   expect_equal(parse_aws_event(bytes)$headers, list(foo = "bar"))
@@ -61,6 +71,86 @@ test_that("can return various types of header", {
 test_that("unknown header triggers error", {
   bytes <- hex_to_raw("0000001500000001ba25f70d03666f6fff60a63fcd")
   expect_snapshot(parse_aws_event(bytes), error = TRUE)
+})
+
+test_that("parse_aws_event() checks the prelude length", {
+  expect_snapshot(parse_aws_event(as.raw(1:10)), error = TRUE)
+})
+
+test_that("can read aws events one at a time", {
+  # Two empty-object events back to back (16 bytes each).
+  req <- local_app_request(function(req, res) {
+    event <- as.raw(c(
+      0x00,
+      0x00,
+      0x00,
+      0x10,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x05,
+      0xc2,
+      0x48,
+      0xeb,
+      0x7d,
+      0x98,
+      0xc8,
+      0xff
+    ))
+    res$send_chunk(event)
+    res$send_chunk(event)
+  })
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+
+  expect_equal(resp_stream_aws(resp), list(headers = list(), body = ""))
+  # The second event is decoded in the same read and queued.
+  expect_false(resp_stream_is_complete(resp))
+  expect_equal(resp_stream_aws(resp), list(headers = list(), body = ""))
+  expect_equal(resp_stream_aws(resp), NULL)
+  expect_true(resp_stream_is_complete(resp))
+})
+
+test_that("verbosity = 3 shows aws events", {
+  # A single event with a "foo: bar" header and empty body.
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(as.raw(c(
+      0x00,
+      0x00,
+      0x00,
+      0x1a,
+      0x00,
+      0x00,
+      0x00,
+      0x01,
+      0x38,
+      0x75,
+      0x60,
+      0xdc,
+      0x03,
+      0x66,
+      0x6f,
+      0x6f,
+      0x07,
+      0x00,
+      0x03,
+      0x62,
+      0x61,
+      0x72,
+      0x5b,
+      0xb3,
+      0xce,
+      0xcf
+    )))
+  })
+
+  expect_output(resp <- req_perform_connection(req, verbosity = 3))
+  withr::defer(close(resp))
+  expect_snapshot(
+    . <- resp_stream_aws(resp),
+    transform = transform_verbose_response
+  )
 })
 
 test_that("find_aws_event_boundaries splits a buffer into complete events", {

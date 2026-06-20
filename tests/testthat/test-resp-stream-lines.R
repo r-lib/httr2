@@ -14,6 +14,8 @@ test_that("can join lines across multiple reads", {
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
   expect_equal(resp1$cache$push_back, charToRaw("This is a "))
+  # Buffered bytes mean the stream isn't complete, even between lines.
+  expect_false(resp_stream_is_complete(resp1))
 
   out <- resp_stream_lines(resp1)
   expect_equal(out, character())
@@ -116,6 +118,13 @@ test_that("streams the specified number of lines", {
   expect_equal(resp_stream_lines(resp2, 3), character())
 })
 
+test_that("requesting zero lines returns an empty vector", {
+  req <- local_app_request(function(req, res) res$send_chunk("a\n"))
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+  expect_equal(resp_stream_lines(resp, 0), character())
+})
+
 test_that("verbosity = 3 shows buffer info", {
   req <- local_app_request(function(req, res) {
     res$send_chunk("line 1\n")
@@ -134,6 +143,20 @@ test_that("verbosity = 3 shows buffer info", {
     },
     transform = transform_verbose_response
   )
+})
+
+test_that("LineSplitter flushes a trailing line and warns", {
+  s <- LineSplitter$new("UTF-8")
+  # Nothing buffered: nothing to flush.
+  expect_equal(s$finish(raw()), list())
+  # Trailing bytes are emitted as a final line, with a warning by default.
+  expect_snapshot(out <- s$finish(charToRaw("tail")))
+  expect_equal(out, list("tail"))
+
+  # warn = FALSE suppresses the warning.
+  s2 <- LineSplitter$new("UTF-8", warn = FALSE)
+  expect_no_warning(out <- s2$finish(charToRaw("tail")))
+  expect_equal(out, list("tail"))
 })
 
 test_that("stream_split_lines() splits on LF, CR, and CRLF", {
@@ -176,13 +199,36 @@ test_that("stream_split_lines() handles a CRLF split across reads", {
     max_size = Inf
   )
   expect_equal(out$lines, "b")
+
+  # ... even when that LF is the entire buffer.
+  out <- stream_split_lines(
+    charToRaw("\n"),
+    "UTF-8",
+    eat_lf = TRUE,
+    max_size = Inf
+  )
+  expect_equal(out$lines, character())
+  expect_equal(out$remainder, raw())
+  expect_false(out$eat_lf)
 })
 
 test_that("stream_split_lines() enforces max_size", {
+  # Buffer with no line ending yet.
   expect_snapshot(
     error = TRUE,
     stream_split_lines(
       charToRaw("aaaaa"),
+      "UTF-8",
+      eat_lf = FALSE,
+      max_size = 3
+    )
+  )
+
+  # A complete line that is itself too long.
+  expect_snapshot(
+    error = TRUE,
+    stream_split_lines(
+      charToRaw("aaaaa\n"),
       "UTF-8",
       eat_lf = FALSE,
       max_size = 3

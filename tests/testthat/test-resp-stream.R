@@ -47,6 +47,31 @@ test_that("can't read from a closed connection", {
   expect_no_error(close(resp))
 })
 
+test_that("streaming functions require a streaming response", {
+  expect_snapshot(resp_stream_raw(response()), error = TRUE)
+})
+
+test_that("BoundarySplitter splits, caps reads, and discards trailers", {
+  s <- BoundarySplitter$new(find_event_boundaries)
+
+  out <- s$split(charToRaw("a\n\nb"), Inf)
+  expect_equal(out$blocks, list(charToRaw("a\n\n")))
+  expect_equal(out$remainder, charToRaw("b"))
+
+  # An over-long block with no boundary errors.
+  expect_snapshot(s$split(charToRaw("abcdef"), max_size = 3), error = TRUE)
+
+  # finish() drops nothing for an empty remainder but warns about a trailer.
+  expect_equal(s$finish(raw()), list())
+  expect_snapshot(out <- s$finish(charToRaw("b")))
+  expect_equal(out, list())
+
+  # read_cap() never reads more than one byte past the size limit.
+  expect_equal(s$read_cap(0L, 10), 11)
+  expect_equal(s$read_cap(4L, 10), 7)
+  expect_equal(s$read_cap(0L, Inf), stream_chunk_bytes)
+})
+
 test_that("verbosity = 2 streams request bodies", {
   req <- local_app_request(function(req, res) {
     res$send_chunk("line 1\n")

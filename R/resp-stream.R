@@ -219,12 +219,8 @@ BoundarySplitter <- R6::R6Class(
   inherit = StreamSplitter,
   public = list(
     find_boundaries = NULL,
-    # If TRUE, bytes after the last boundary at the end of the stream are
-    # returned as a final block; if FALSE, they're discarded with a warning.
-    include_trailer = FALSE,
-    initialize = function(find_boundaries, include_trailer = FALSE) {
+    initialize = function(find_boundaries) {
       self$find_boundaries <- find_boundaries
-      self$include_trailer <- include_trailer
     },
     split = function(buffer, max_size) {
       splits <- self$find_boundaries(buffer)
@@ -250,12 +246,8 @@ BoundarySplitter <- R6::R6Class(
       if (length(remainder) == 0L) {
         return(list())
       }
-      if (self$include_trailer) {
-        list(remainder)
-      } else {
-        cli::cli_warn("Premature end of input; ignoring final partial chunk")
-        list()
-      }
+      cli::cli_warn("Premature end of input; ignoring final partial chunk")
+      list()
     },
     read_cap = function(push_back, max_size) {
       # Don't read more than one byte past the size limit; the extra byte lets
