@@ -99,12 +99,9 @@ stream_split_lines <- function(buffer, encoding, max_size) {
     }
   }
 
-  text <- rawToChar(region)
-  Encoding(text) <- "bytes"
-  lines <- strsplit(text, "\r\n|\n", useBytes = TRUE)[[1]]
-
+  text <- stream_decode(region, encoding)
   list(
-    lines = iconv(lines, encoding, "UTF-8"),
+    lines = strsplit(text, "\r\n|\n")[[1]],
     remainder = remainder
   )
 }
