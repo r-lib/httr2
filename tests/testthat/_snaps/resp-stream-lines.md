@@ -18,11 +18,3 @@
       << line 1
       << line 2
 
-# stream_split_lines() errors when no line ending fits in max_size
-
-    Code
-      stream_split_lines(charToRaw("aaaaa"), "UTF-8", max_size = 3)
-    Condition
-      Error in `stream_split_lines()`:
-      ! Streaming read exceeded size limit of 3
-

@@ -17,14 +17,6 @@
 # BoundarySplitter splits, caps reads, and discards trailers
 
     Code
-      s$split(charToRaw("abcdef"), max_size = 3)
-    Condition
-      Error in `s$split()`:
-      ! Streaming read exceeded size limit of 3
-
----
-
-    Code
       out <- s$finish(charToRaw("b"))
     Condition
       Warning:

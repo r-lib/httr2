@@ -48,8 +48,8 @@ LineSplitter <- R6::R6Class(
     initialize = function(encoding) {
       self$encoding <- encoding
     },
-    split = function(buffer, max_size) {
-      stream_split_lines(buffer, self$encoding, max_size)
+    split = function(buffer) {
+      stream_split_lines(buffer, self$encoding)
     },
     finish = function(remainder) {
       if (length(remainder) == 0L) {
@@ -71,16 +71,12 @@ LineSplitter <- R6::R6Class(
 #
 # @returns A list matching the `StreamSplitter$split()` contract: `blocks` (a
 #   list of decoded lines) and `remainder` (a raw vector).
-stream_split_lines <- function(buffer, encoding, max_size) {
+stream_split_lines <- function(buffer, encoding = "UTF-8") {
   LF <- as.raw(0x0A)
   ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
 
   if (length(ends) == 0L) {
-    if (length(buffer) > max_size) {
-      stop_stream_size(max_size)
-    } else {
-      return(list(blocks = list(), remainder = buffer))
-    }
+    return(list(blocks = list(), remainder = buffer))
   }
 
   cut <- ends[length(ends)] + 1L

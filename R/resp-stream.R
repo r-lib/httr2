@@ -147,10 +147,15 @@ stream_pull <- function(resp, n, splitter, max_size) {
       )
     }
 
-    # Keep the full buffer in place so an over-size error is reproducible.
-    cache$push_back <- buffer
-    parsed <- splitter$split(buffer, max_size)
+    parsed <- splitter$split(buffer)
     cache$push_back <- parsed$remainder
+
+    # The remainder holds bytes still waiting for a block boundary; if it grows
+    # past the size limit, error (leaving it in `push_back` so the error
+    # reproduces on retry).
+    if (length(parsed$remainder) > max_size) {
+      stop_stream_size(max_size)
+    }
 
     if (length(parsed$blocks) > 0L) {
       queue <- parsed$blocks
@@ -192,9 +197,9 @@ StreamSplitter <- R6::R6Class(
   "StreamSplitter",
   public = list(
     # Divide `buffer` into a list of complete `blocks` plus a raw `remainder`
-    # of trailing bytes that don't yet form a complete block. May throw if a
-    # block would exceed `max_size`.
-    split = function(buffer, max_size) {
+    # of trailing bytes that don't yet form a complete block. Size limits are
+    # enforced by `stream_pull()`, so `split()` itself never throws.
+    split = function(buffer) {
       cli::cli_abort("Not implemented.", .internal = TRUE)
     },
     # Emit any final blocks once the stream has ended with `remainder` bytes
@@ -228,14 +233,10 @@ BoundarySplitter <- R6::R6Class(
     initialize = function(find_boundaries) {
       self$find_boundaries <- find_boundaries
     },
-    split = function(buffer, max_size) {
+    split = function(buffer) {
       splits <- self$find_boundaries(buffer)
       if (length(splits) == 0L) {
-        if (length(buffer) > max_size) {
-          stop_stream_size(max_size)
-        } else {
-          return(list(blocks = list(), remainder = buffer))
-        }
+        return(list(blocks = list(), remainder = buffer))
       }
       starts <- c(1L, splits[-length(splits)])
       blocks <- lapply(seq_along(splits), function(i) {

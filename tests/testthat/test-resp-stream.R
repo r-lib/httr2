@@ -54,12 +54,15 @@ test_that("streaming functions require a streaming response", {
 test_that("BoundarySplitter splits, caps reads, and discards trailers", {
   s <- BoundarySplitter$new(find_event_boundaries)
 
-  out <- s$split(charToRaw("a\n\nb"), Inf)
+  out <- s$split(charToRaw("a\n\nb"))
   expect_equal(out$blocks, list(charToRaw("a\n\n")))
   expect_equal(out$remainder, charToRaw("b"))
 
-  # An over-long block with no boundary errors.
-  expect_snapshot(s$split(charToRaw("abcdef"), max_size = 3), error = TRUE)
+  # No boundary: the whole buffer is the remainder (size limits are enforced by
+  # stream_pull(), not split()).
+  out <- s$split(charToRaw("abcdef"))
+  expect_equal(out$blocks, list())
+  expect_equal(out$remainder, charToRaw("abcdef"))
 
   # finish() drops nothing for an empty remainder but warns about a trailer.
   expect_equal(s$finish(raw()), list())
