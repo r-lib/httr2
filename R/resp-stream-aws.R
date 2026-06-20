@@ -1,6 +1,6 @@
 #' @export
 #' @rdname resp_stream_raw
-#' @order 2
+#' @order 4
 resp_stream_aws <- function(resp, max_size = Inf) {
   check_streaming_response(resp)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)

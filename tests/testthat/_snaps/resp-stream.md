@@ -1,11 +1,3 @@
-# can determine if incomplete data is complete
-
-    Code
-      expect_equal(resp_stream_sse(con), NULL)
-    Condition
-      Warning:
-      Premature end of input; ignoring final partial chunk
-
 # can't read from a closed connection
 
     Code
@@ -30,44 +22,4 @@
       
       << Streamed 4 bytes
       
-
-# verbosity = 3 shows buffer info
-
-    Code
-      while (!resp_stream_is_complete(con)) {
-        resp_stream_lines(con, 1)
-      }
-    Output
-      *  -- Buffer ----------------------------------------------------------------------
-      *  Received chunk: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
-      << line 1
-      << line 2
-
-# verbosity = 3 shows raw sse events
-
-    Code
-      . <- resp_stream_sse(resp)
-    Output
-      *  -- Buffer ----------------------------------------------------------------------
-      *  Received chunk: 3a 20 63 6f 6d 6d 65 6e 74 0a 0a 64 61 74 61 3a 20 31 0a 0a
-      *  -- Raw server sent event -------------------------------------------------------
-      *  : comment
-      *  
-      *  
-      *  -- Raw server sent event -------------------------------------------------------
-      *  data: 1
-      *  
-      *  
-      << type: message
-      << data: 1
-      << id: 
-      
-
-# stream_split_lines() enforces max_size
-
-    Code
-      stream_split_lines(charToRaw("aaaaa"), "UTF-8", eat_lf = FALSE, max_size = 3)
-    Condition
-      Error in `stream_split_lines()`:
-      ! Streaming read exceeded size limit of 3
 

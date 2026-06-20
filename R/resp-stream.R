@@ -58,85 +58,7 @@ resp_stream_raw <- function(resp, kb = 32) {
 
 #' @export
 #' @rdname resp_stream_raw
-#' @param lines The maximum number of lines to return at once.
-#' @param warn Like [readLines()]: warn if the connection ends without a final
-#'   EOL.
-#' @order 1
-resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
-  check_streaming_response(resp)
-  check_number_whole(lines, min = 0, allow_infinite = TRUE)
-  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
-  check_logical(warn)
-
-  if (lines == 0) {
-    # If you want to do that, who am I to judge?
-    return(character())
-  }
-
-  cache <- resp$cache
-  # The encoding can't change over the life of a response, so parse it once.
-  encoding <- env_cache(cache, "stream_encoding", resp_encoding(resp))
-  # The splitter persists across calls because it remembers whether a CRLF was
-  # split across reads (see `LineSplitter`). `warn` may change between calls.
-  splitter <- env_cache(cache, "line_splitter", LineSplitter$new(encoding))
-  splitter$warn <- warn
-
-  serve <- stream_pull(resp, lines, splitter, max_size)
-
-  lines_read <- unlist(serve, use.names = FALSE) %||% character()
-  if (resp_stream_show_body(resp)) {
-    log_stream(lines_read)
-  }
-  lines_read
-}
-
-
-#' @param max_size The maximum number of bytes to buffer; once this number of
-#'   bytes has been exceeded without a line/event boundary, an error is thrown.
-#' @export
-#' @rdname resp_stream_raw
-#' @order 1
-resp_stream_sse <- function(resp, max_size = Inf) {
-  check_streaming_response(resp)
-  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
-
-  splitter <- env_cache(
-    resp$cache,
-    "boundary_splitter",
-    BoundarySplitter$new(find_event_boundaries)
-  )
-
-  repeat {
-    blocks <- stream_pull(resp, 1, splitter, max_size)
-    if (length(blocks) == 0L) {
-      return()
-    }
-    event_bytes <- blocks[[1L]]
-
-    if (resp_stream_show_buffer(resp)) {
-      log_stream(
-        cli::rule("Raw server sent event"),
-        "\n",
-        rawToChar(event_bytes),
-        prefix = "*  "
-      )
-    }
-
-    event <- parse_event(event_bytes)
-    if (!is.null(event)) break
-  }
-
-  if (resp_stream_show_body(resp)) {
-    for (key in names(event)) {
-      log_stream(cli::style_bold(key), ": ", pretty_json(event[[key]]))
-    }
-    cli::cat_line()
-  }
-  event
-}
-
-#' @export
-#' @rdname resp_stream_raw
+#' @order 6
 resp_stream_is_complete <- function(resp) {
   check_response(resp)
   !stream_has_buffered(resp) && resp$body$is_complete()
@@ -157,7 +79,7 @@ stream_has_buffered <- function(resp) {
 #' @export
 #' @param ... Not used; included for compatibility with generic.
 #' @rdname resp_stream_raw
-#' @order 3
+#' @order 5
 close.httr2_response <- function(con, ...) {
   check_response(con)
 
@@ -168,145 +90,10 @@ close.httr2_response <- function(con, ...) {
   invisible()
 }
 
-# How many bytes to read from the connection at a time when streaming lines.
+# Streaming engine ------------------------------------------------------------
+
+# How many bytes to read from the connection at a time when streaming.
 stream_chunk_bytes <- 64L * 1024L
-
-# Raw bytes for the line endings we recognise.
-LF <- as.raw(0x0A)
-CR <- as.raw(0x0D)
-
-# Decode a raw vector of bytes into a single string in the response encoding.
-stream_decode <- function(bytes, encoding) {
-  text <- rawToChar(bytes)
-  Encoding(text) <- "bytes"
-  iconv(text, encoding, "UTF-8")
-}
-
-# Split `buffer` into complete lines plus a trailing remainder of bytes that do
-# not yet form a complete line. Line endings may be LF, CR, or CRLF, matching
-# the behaviour of `readLines()`.
-#
-# A lone CR at the very end of the buffer is treated as a line ending (so the
-# line is emitted immediately), but `eat_lf` is set so that a following LF -
-# which may be the second half of a CRLF split across reads - is dropped on the
-# next call.
-#
-# @param eat_lf Should a leading LF be dropped (because the previous buffer
-#   ended in a bare CR)?
-# @returns A list with components `lines` (a character vector), `remainder`
-#   (a raw vector), and `eat_lf` (a logical).
-stream_split_lines <- function(buffer, encoding, eat_lf, max_size) {
-  if (eat_lf && length(buffer) >= 1L) {
-    if (buffer[[1L]] == LF) {
-      buffer <- buffer[-1L]
-    }
-    eat_lf <- FALSE
-  }
-  if (length(buffer) == 0L) {
-    return(list(lines = character(), remainder = raw(), eat_lf = eat_lf))
-  }
-
-  lf <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
-  cr <- grepRaw(CR, buffer, fixed = TRUE, all = TRUE)
-  if (length(cr) == 0L) {
-    # Fast path: the common case of LF-delimited text (e.g. ndjson).
-    ends <- lf
-    next_start <- lf + 1L
-  } else {
-    # Drop LFs that are the second half of a CRLF pair.
-    lf_solo <- lf[!((lf - 1L) %in% cr)]
-    ends <- sort(c(cr, lf_solo))
-    next_start <- ends + 1L
-    crlf <- (buffer[ends] == CR) & ((ends + 1L) %in% lf)
-    next_start[crlf] <- ends[crlf] + 2L
-  }
-
-  if (length(ends) == 0L) {
-    if (length(buffer) > max_size) {
-      stop_stream_size(max_size)
-    }
-    return(list(lines = character(), remainder = buffer, eat_lf = FALSE))
-  }
-
-  cut <- next_start[length(next_start)]
-  region <- if (cut == 1L) raw() else buffer[seq_len(cut - 1L)]
-  remainder <- if (cut > length(buffer)) raw() else buffer[cut:length(buffer)]
-
-  # Enforce the per-line size limit (the span includes the line ending bytes).
-  if (is.finite(max_size)) {
-    line_starts <- c(1L, next_start[-length(next_start)])
-    spans <- next_start - line_starts
-    if (max(spans, length(remainder)) > max_size) {
-      stop_stream_size(max_size)
-    }
-  }
-
-  # A trailing bare CR may be the first half of a CRLF split across reads.
-  eat_lf <- length(cr) > 0L &&
-    ends[length(ends)] == length(buffer) &&
-    buffer[[length(buffer)]] == CR
-
-  text <- rawToChar(region)
-  Encoding(text) <- "bytes"
-  lines <- strsplit(text, "\r\n|\r|\n", useBytes = TRUE)[[1]]
-
-  list(
-    lines = iconv(lines, encoding, "UTF-8"),
-    remainder = remainder,
-    eat_lf = eat_lf
-  )
-}
-
-stop_stream_size <- function(max_size, call = caller_env()) {
-  cli::cli_abort(
-    "Streaming read exceeded size limit of {max_size}",
-    class = "httr2_streaming_error",
-    call = call
-  )
-}
-
-# Find every event boundary in a buffer, returning a vector of split points
-# (the position one past the end of each boundary). Events may be separated by
-# a double LF, a double CR, or a double CRLF.
-#
-# Example:
-#   find_event_boundaries(charToRaw("data: 1\n\nid: 12345"))
-# Returns:
-#   9L  (so the first event is bytes 1:8, "data: 1\n\n")
-find_event_boundaries <- function(buffer) {
-  nn <- grepRaw("\n\n", buffer, fixed = TRUE, all = TRUE)
-  rr <- grepRaw("\r\r", buffer, fixed = TRUE, all = TRUE)
-  rnrn <- grepRaw("\r\n\r\n", buffer, fixed = TRUE, all = TRUE)
-
-  # Fast paths for the common case of a single, consistent delimiter.
-  if (length(rr) == 0L && length(rnrn) == 0L) {
-    return(nn + 2L)
-  }
-  if (length(nn) == 0L && length(rnrn) == 0L) {
-    return(rr + 2L)
-  }
-  if (length(nn) == 0L && length(rr) == 0L) {
-    return(rnrn + 4L)
-  }
-
-  # Mixed delimiters: merge candidates and walk them left to right, taking
-  # non-overlapping boundaries.
-  starts <- c(nn, rr, rnrn)
-  ends <- c(nn + 1L, rr + 1L, rnrn + 3L)
-  o <- order(starts)
-  starts <- starts[o]
-  ends <- ends[o]
-
-  keep <- logical(length(starts))
-  consumed <- 0L
-  for (k in seq_along(starts)) {
-    if (starts[k] > consumed) {
-      keep[k] <- TRUE
-      consumed <- ends[k]
-    }
-  }
-  ends[keep] + 1L
-}
 
 # Reads from a streaming response and uses `splitter` to divide the byte stream
 # into blocks, returning up to `n` of them in a list. The byte-level details -
@@ -425,7 +212,8 @@ StreamSplitter <- R6::R6Class(
 
 # Splits a stream into blocks separated by boundaries located by
 # `find_boundaries()`, which takes a raw vector and returns an integer vector
-# of split points: the position one past the end of each complete block.
+# of split points: the position one past the end of each complete block. Used
+# by both server-sent events and AWS events.
 BoundarySplitter <- R6::R6Class(
   "BoundarySplitter",
   inherit = StreamSplitter,
@@ -481,122 +269,11 @@ BoundarySplitter <- R6::R6Class(
   )
 )
 
-# Splits a stream into lines of text. Unlike `BoundarySplitter`, this carries
-# state across calls: a trailing bare CR may be the first half of a CRLF split
-# across reads, so `eat_lf` records that a leading LF should be dropped next
-# time (see `stream_split_lines()`).
-LineSplitter <- R6::R6Class(
-  "LineSplitter",
-  inherit = StreamSplitter,
-  public = list(
-    encoding = NULL,
-    warn = TRUE,
-    initialize = function(encoding, warn = TRUE) {
-      self$encoding <- encoding
-      self$warn <- warn
-    },
-    split = function(buffer, max_size) {
-      parsed <- stream_split_lines(
-        buffer,
-        encoding = self$encoding,
-        eat_lf = private$eat_lf,
-        max_size = max_size
-      )
-      private$eat_lf <- parsed$eat_lf
-      list(blocks = as.list(parsed$lines), remainder = parsed$remainder)
-    },
-    finish = function(remainder) {
-      if (length(remainder) == 0L) {
-        return(list())
-      }
-      if (self$warn) {
-        cli::cli_warn("incomplete final line found")
-      }
-      list(stream_decode(remainder, self$encoding))
-    }
-  ),
-  private = list(
-    eat_lf = FALSE
-  )
-)
-
-# https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation
-parse_event <- function(event_data) {
-  if (is.raw(event_data)) {
-    # Streams must be decoded using the UTF-8 decode algorithm.
-    str_data <- rawToChar(event_data)
-    Encoding(str_data) <- "UTF-8"
-  } else {
-    # for testing
-    str_data <- event_data
-  }
-
-  # The stream must then be parsed by reading everything line by line, with a
-  # U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair, a single
-  # U+000A LINE FEED (LF) character not preceded by a U+000D CARRIAGE RETURN
-  # (CR) character, and a single U+000D CARRIAGE RETURN (CR) character not
-  # followed by a U+000A LINE FEED (LF) character being the ways in
-  # which a line can end.
-  lines <- strsplit(str_data, "\r\n|\r|\n")[[1]]
-
-  # When a stream is parsed, a data buffer, an event type buffer, and a
-  # last event ID buffer must be associated with it. They must be initialized
-  # to the empty string.
-  data <- ""
-  type <- ""
-  last_id <- ""
-
-  # If the line starts with a U+003A COLON character (:) - Ignore the line.
-  lines <- lines[!grepl("^:", lines)]
-
-  # If the line contains a U+003A COLON character (:)
-  # * Collect the characters on the line before the first U+003A COLON
-  #  character (:), and let field be that string.
-  # * Collect the characters on the line after the first U+003A COLON character
-  #  (:), and let value be that string. If value starts with a U+0020 SPACE
-  #  character, remove it from value.
-  m <- regexec("([^:]*)(: ?)?(.*)", lines)
-  matches <- regmatches(lines, m)
-  keys <- c("event", vapply(matches, function(x) x[2], character(1)))
-  values <- c("message", vapply(matches, function(x) x[4], character(1)))
-
-  for (i in seq_along(matches)) {
-    key <- matches[[i]][2]
-    value <- matches[[i]][4]
-
-    if (key == "event") {
-      # Set the event type buffer to field value.
-      type <- value
-    } else if (key == "data") {
-      # Append the field value to the data buffer, then append a single
-      # U+000A LINE FEED (LF) character to the data buffer.
-      data <- paste0(data, value, "\n")
-    } else if (key == "id") {
-      # If the field value does not contain U+0000 NULL, then set the last
-      # event ID buffer to the field value. Otherwise, ignore the field.
-      last_id <- value
-    }
-  }
-
-  # If the data buffer is an empty string, set the data buffer and the event
-  # type buffer to the empty string and return.
-  if (data == "") {
-    return()
-  }
-
-  # If the data buffer's last character is a U+000A LINE FEED (LF) character,
-  # then remove the last character from the data buffer.
-  if (grepl("\n$", data)) {
-    data <- substr(data, 1, nchar(data) - 1)
-  }
-  if (type == "") {
-    type <- "message"
-  }
-
-  list(
-    type = type,
-    data = data,
-    id = last_id
+stop_stream_size <- function(max_size, call = caller_env()) {
+  cli::cli_abort(
+    "Streaming read exceeded size limit of {max_size}",
+    class = "httr2_streaming_error",
+    call = call
   )
 }
 
