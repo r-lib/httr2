@@ -62,8 +62,8 @@ test_that("handles line endings of multiple kinds", {
     sync(resp1)
   }
   wait_for_complete(resp1)
-  expect_warning(out <- resp_stream_lines(resp1), "incomplete final line")
-  expect_equal(out, "eof without line ending")
+  # A final line without a terminator is returned (silently).
+  expect_equal(resp_stream_lines(resp1), "eof without line ending")
   expect_equal(resp_stream_lines(resp1), character(0))
 
   # Same test, but now, blocking (and without sync)
@@ -95,8 +95,7 @@ test_that("handles line endings of multiple kinds", {
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp2), !!expected))
   }
-  expect_warning(out <- resp_stream_lines(resp2), "incomplete final line")
-  expect_equal(out, "eof without line ending")
+  expect_equal(resp_stream_lines(resp2), "eof without line ending")
 })
 
 test_that("streams the specified number of lines", {
@@ -125,6 +124,17 @@ test_that("requesting zero lines returns an empty vector", {
   expect_equal(resp_stream_lines(resp, 0), character())
 })
 
+test_that("resp_stream_lines(warn) is deprecated unless FALSE", {
+  req <- local_app_request(function(req, res) res$send_chunk("a\n"))
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+
+  # warn = FALSE already requested silence, so it's accepted quietly.
+  expect_no_warning(. <- resp_stream_lines(resp, warn = FALSE))
+  # Any other value is deprecated.
+  expect_snapshot(. <- resp_stream_lines(resp, warn = TRUE))
+})
+
 test_that("verbosity = 3 shows buffer info", {
   req <- local_app_request(function(req, res) {
     res$send_chunk("line 1\n")
@@ -145,18 +155,12 @@ test_that("verbosity = 3 shows buffer info", {
   )
 })
 
-test_that("LineSplitter flushes a trailing line and warns", {
+test_that("LineSplitter flushes a trailing line", {
   s <- LineSplitter$new("UTF-8")
   # Nothing buffered: nothing to flush.
   expect_equal(s$finish(raw()), list())
-  # Trailing bytes are emitted as a final line, with a warning by default.
-  expect_snapshot(out <- s$finish(charToRaw("tail")))
-  expect_equal(out, list("tail"))
-
-  # warn = FALSE suppresses the warning.
-  s2 <- LineSplitter$new("UTF-8", warn = FALSE)
-  expect_no_warning(out <- s2$finish(charToRaw("tail")))
-  expect_equal(out, list("tail"))
+  # Trailing bytes are emitted as a final line.
+  expect_equal(s$finish(charToRaw("tail")), list("tail"))
 })
 
 test_that("stream_split_lines() splits on LF, CR, and CRLF", {

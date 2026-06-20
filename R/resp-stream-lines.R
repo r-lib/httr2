@@ -1,14 +1,22 @@
 #' @export
 #' @rdname resp_stream_raw
 #' @param lines The maximum number of lines to return at once.
-#' @param warn Like [readLines()]: warn if the connection ends without a final
-#'   EOL.
+#' @param warn `r lifecycle::badge("deprecated")` `resp_stream_lines()` no longer
+#'   warns when the connection ends without a final EOL, so this argument is
+#'   ignored.
 #' @order 2
-resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
+resp_stream_lines <- function(
+  resp,
+  lines = 1,
+  max_size = Inf,
+  warn = deprecated()
+) {
   check_streaming_response(resp)
   check_number_whole(lines, min = 0, allow_infinite = TRUE)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
-  check_logical(warn)
+  if (lifecycle::is_present(warn) && !isFALSE(warn)) {
+    lifecycle::deprecate_warn("1.2.3", "resp_stream_lines(warn)")
+  }
 
   if (lines == 0) {
     # If you want to do that, who am I to judge?
@@ -19,9 +27,8 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   # The encoding can't change over the life of a response, so parse it once.
   encoding <- env_cache(cache, "stream_encoding", resp_encoding(resp))
   # The splitter persists across calls because it remembers whether a CRLF was
-  # split across reads (see `LineSplitter`). `warn` may change between calls.
+  # split across reads (see `LineSplitter`).
   splitter <- env_cache(cache, "line_splitter", LineSplitter$new(encoding))
-  splitter$warn <- warn
 
   serve <- stream_pull(resp, lines, splitter, max_size)
 
@@ -127,10 +134,8 @@ LineSplitter <- R6::R6Class(
   inherit = StreamSplitter,
   public = list(
     encoding = NULL,
-    warn = TRUE,
-    initialize = function(encoding, warn = TRUE) {
+    initialize = function(encoding) {
       self$encoding <- encoding
-      self$warn <- warn
     },
     split = function(buffer, max_size) {
       parsed <- stream_split_lines(
@@ -145,9 +150,6 @@ LineSplitter <- R6::R6Class(
     finish = function(remainder) {
       if (length(remainder) == 0L) {
         return(list())
-      }
-      if (self$warn) {
-        cli::cli_warn("incomplete final line found")
       }
       list(stream_decode(remainder, self$encoding))
     }

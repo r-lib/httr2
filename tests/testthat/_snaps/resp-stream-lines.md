@@ -1,3 +1,11 @@
+# resp_stream_lines(warn) is deprecated unless FALSE
+
+    Code
+      . <- resp_stream_lines(resp, warn = TRUE)
+    Condition
+      Warning:
+      The `warn` argument of `resp_stream_lines()` is deprecated as of httr2 1.2.3.
+
 # verbosity = 3 shows buffer info
 
     Code
@@ -9,14 +17,6 @@
       *  Received chunk: 6c 69 6e 65 20 31 0a 6c 69 6e 65 20 32 0a
       << line 1
       << line 2
-
-# LineSplitter flushes a trailing line and warns
-
-    Code
-      out <- s$finish(charToRaw("tail"))
-    Condition
-      Warning:
-      incomplete final line found
 
 # stream_split_lines() enforces max_size
 
