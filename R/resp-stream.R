@@ -46,7 +46,8 @@
 #' }
 #' close(con)
 resp_stream_raw <- function(resp, kb = 32) {
-  check_streaming_response(resp)
+  check_streaming_response(resp, reader = "raw")
+  check_number_decimal(kb, min = 0, allow_infinite = FALSE)
 
   out <- resp$body$read(kb * 1024)
   if (resp_stream_show_body(resp)) {
@@ -60,7 +61,7 @@ resp_stream_raw <- function(resp, kb = 32) {
 #' @rdname resp_stream_raw
 #' @order 6
 resp_stream_is_complete <- function(resp) {
-  check_response(resp)
+  check_streaming_response(resp)
   !stream_has_buffered(resp) && resp$body$is_complete()
 }
 
@@ -274,6 +275,7 @@ stop_stream_size <- function(max_size, call = caller_env()) {
 
 check_streaming_response <- function(
   resp,
+  reader = NULL,
   arg = caller_arg(resp),
   call = caller_env()
 ) {
@@ -291,6 +293,21 @@ check_streaming_response <- function(
 
   if (!resp$body$is_open()) {
     cli::cli_abort("{.arg {arg}} has already been closed.", call = call)
+  }
+
+  if (!is.null(reader)) {
+    previous <- resp$cache$stream_reader
+    if (is.null(previous)) {
+      resp$cache$stream_reader <- reader
+    } else if (!identical(previous, reader)) {
+      current_fun <- paste0("resp_stream_", reader, "()")
+      previous_fun <- paste0("resp_stream_", previous, "()")
+      cli::cli_abort(
+        "Can't use {current_fun} after {previous_fun} on the same response.",
+        class = "httr2_streaming_error",
+        call = call
+      )
+    }
   }
 }
 

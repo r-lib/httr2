@@ -51,6 +51,37 @@ test_that("streaming functions require a streaming response", {
   expect_snapshot(resp_stream_raw(response()), error = TRUE)
 })
 
+test_that("resp_stream_raw() validates kb", {
+  resp <- response(
+    body = StreamingBody$new(rawConnection(charToRaw("abc"), "rb"))
+  )
+  withr::defer(close(resp))
+
+  expect_length(resp_stream_raw(resp, kb = 1 / 1024), 1)
+  expect_snapshot(resp_stream_raw(resp, kb = -1), error = TRUE)
+  expect_snapshot(resp_stream_raw(resp, kb = Inf), error = TRUE)
+})
+
+test_that("resp_stream_is_complete() requires an open streaming response", {
+  expect_snapshot(resp_stream_is_complete(response()), error = TRUE)
+
+  resp <- response(
+    body = StreamingBody$new(rawConnection(charToRaw("abc"), "rb"))
+  )
+  close(resp)
+  expect_snapshot(resp_stream_is_complete(resp), error = TRUE)
+})
+
+test_that("streaming responses use only one reader", {
+  resp <- response(
+    body = StreamingBody$new(rawConnection(charToRaw("a\n"), "rb"))
+  )
+  withr::defer(close(resp))
+
+  expect_equal(resp_stream_lines(resp), "a")
+  expect_snapshot(resp_stream_raw(resp), error = TRUE)
+})
+
 test_that("BoundarySplitter splits, caps reads, and discards trailers", {
   s <- BoundarySplitter$new(find_event_boundaries)
 

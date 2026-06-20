@@ -11,7 +11,7 @@ resp_stream_lines <- function(
   max_size = Inf,
   warn = deprecated()
 ) {
-  check_streaming_response(resp)
+  check_streaming_response(resp, reader = "lines")
   check_number_whole(lines, min = 0, allow_infinite = TRUE)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
   if (lifecycle::is_present(warn) && !isFALSE(warn)) {

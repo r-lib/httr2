@@ -4,7 +4,7 @@
 #' @rdname resp_stream_raw
 #' @order 3
 resp_stream_sse <- function(resp, max_size = Inf) {
-  check_streaming_response(resp)
+  check_streaming_response(resp, reader = "sse")
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
   splitter <- env_cache(

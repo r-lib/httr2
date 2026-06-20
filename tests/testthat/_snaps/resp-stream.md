@@ -14,6 +14,46 @@
       Error in `resp_stream_raw()`:
       ! `resp` must be a streaming HTTP response object, not a <httr2_response> object.
 
+# resp_stream_raw() validates kb
+
+    Code
+      resp_stream_raw(resp, kb = -1)
+    Condition
+      Error in `resp_stream_raw()`:
+      ! `kb` must be a number larger than or equal to 0, not the number -1.
+
+---
+
+    Code
+      resp_stream_raw(resp, kb = Inf)
+    Condition
+      Error in `resp_stream_raw()`:
+      ! `kb` must be a number, not `Inf`.
+
+# resp_stream_is_complete() requires an open streaming response
+
+    Code
+      resp_stream_is_complete(response())
+    Condition
+      Error in `resp_stream_is_complete()`:
+      ! `resp` must be a streaming HTTP response object, not a <httr2_response> object.
+
+---
+
+    Code
+      resp_stream_is_complete(resp)
+    Condition
+      Error in `resp_stream_is_complete()`:
+      ! `resp` has already been closed.
+
+# streaming responses use only one reader
+
+    Code
+      resp_stream_raw(resp)
+    Condition
+      Error in `resp_stream_raw()`:
+      ! Can't use resp_stream_raw() after resp_stream_lines() on the same response.
+
 # BoundarySplitter splits, caps reads, and discards trailers
 
     Code
