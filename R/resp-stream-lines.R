@@ -23,11 +23,12 @@ resp_stream_lines <- function(
     return(character())
   }
 
-  cache <- resp$cache
-  # The encoding can't change over the life of a response, so parse it once.
-  encoding <- env_cache(cache, "stream_encoding", resp_encoding(resp))
   # The splitter is created once and reused across calls.
-  splitter <- env_cache(cache, "line_splitter", LineSplitter$new(encoding))
+  splitter <- env_cache(
+    resp$cache,
+    "line_splitter",
+    LineSplitter$new(resp_encoding(resp))
+  )
 
   serve <- stream_pull(resp, lines, splitter, max_size)
 
