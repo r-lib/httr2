@@ -59,6 +59,22 @@ test_that("can read aws events one at a time", {
   expect_equal(resp_stream_aws(resp), NULL)
 })
 
+test_that("max_size includes the complete AWS event", {
+  data <- aws_event()
+  resp1 <- local_streaming_response(data)
+
+  expect_equal(
+    resp_stream_aws(resp1, max_size = length(data)),
+    list(headers = list(), body = "")
+  )
+
+  resp2 <- local_streaming_response(data)
+  expect_error(
+    resp_stream_aws(resp2, max_size = length(data) - 1L),
+    class = "httr2_streaming_error"
+  )
+})
+
 test_that("verbosity = 3 shows aws events", {
   # A single event with a "foo: bar" header and empty body.
   event <- aws_event(aws_header("foo", "string", "bar"))

@@ -10,7 +10,11 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   splitter <- env_cache(
     resp$cache,
     "boundary_splitter",
-    BoundarySplitter$new(find_event_boundaries)
+    BoundarySplitter$new(
+      find_event_boundaries,
+      block_size = sse_block_size,
+      delimiter_size = 4L
+    )
   )
 
   repeat {
@@ -40,6 +44,18 @@ resp_stream_sse <- function(resp, max_size = Inf) {
     cli::cat_line()
   }
   event
+}
+
+sse_block_size <- function(block) {
+  n <- length(block)
+  if (
+    n >= 4L &&
+      identical(block[(n - 3L):n], as.raw(c(0x0D, 0x0A, 0x0D, 0x0A)))
+  ) {
+    n - 4L
+  } else {
+    n - 2L
+  }
 }
 
 # Find every event boundary in a buffer, returning a vector of split points

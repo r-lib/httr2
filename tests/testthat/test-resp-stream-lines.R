@@ -38,6 +38,22 @@ test_that("requesting zero lines returns an empty vector", {
   expect_equal(resp_stream_lines(resp, 0), character())
 })
 
+test_that("max_size allows the complete line delimiter", {
+  data <- c(rep(as.raw(0x61), 10), as.raw(c(0x0D, 0x0A)))
+  resp <- local_streaming_response(data)
+
+  expect_equal(resp_stream_lines(resp, max_size = 10), strrep("a", 10))
+})
+
+test_that("max_size counts an incomplete delimiter at EOF as content", {
+  resp <- local_streaming_response(c(rep(as.raw(0x61), 10), as.raw(0x0D)))
+
+  expect_error(
+    resp_stream_lines(resp, max_size = 10),
+    class = "httr2_streaming_error"
+  )
+})
+
 test_that("resp_stream_lines(warn) is deprecated unless FALSE", {
   req <- local_app_request(function(req, res) res$send_chunk("a\n"))
   resp <- req_perform_connection(req, blocking = TRUE)

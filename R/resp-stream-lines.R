@@ -46,6 +46,7 @@ LineSplitter <- R6::R6Class(
   inherit = StreamSplitter,
   public = list(
     encoding = NULL,
+    delimiter_size = 2L,
     initialize = function(encoding) {
       self$encoding <- encoding
     },
@@ -71,24 +72,32 @@ LineSplitter <- R6::R6Class(
 # remainder until the next read supplies its LF.
 #
 # @returns A list matching the `StreamSplitter$split()` contract: `blocks` (a
-#   list of decoded lines) and `remainder` (a raw vector).
+#   list of decoded lines), `sizes` (their wire sizes without delimiters), and
+#   `remainder` (a raw vector).
 stream_split_lines <- function(buffer, encoding = "UTF-8") {
   LF <- as.raw(0x0A)
   ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
 
   if (length(ends) == 0L) {
-    return(list(blocks = list(), remainder = buffer))
+    return(list(blocks = list(), remainder = buffer, sizes = numeric()))
   }
 
   cut <- ends[length(ends)] + 1L
-  region <- buffer[seq_len(cut - 1L)]
   remainder <- buffer[seq2(cut, length(buffer))]
+  starts <- c(1L, ends[-length(ends)] + 1L)
+  sizes <- ends - starts
+  has_cr <- rep(FALSE, length(sizes))
+  non_empty <- which(sizes > 0L)
+  has_cr[non_empty] <- buffer[ends[non_empty] - 1L] == as.raw(0x0D)
+  sizes[has_cr] <- sizes[has_cr] - 1L
+  blocks <- lapply(seq_along(ends), function(i) {
+    stream_decode(
+      buffer[seq2(starts[[i]], starts[[i]] + sizes[[i]] - 1L)],
+      encoding
+    )
+  })
 
-  text <- stream_decode(region, encoding)
-  list(
-    blocks = as.list(strsplit(text, "\r\n|\n")[[1]]),
-    remainder = remainder
-  )
+  list(blocks = blocks, remainder = remainder, sizes = sizes)
 }
 
 # Decode a raw vector of bytes into a single string in the response encoding.

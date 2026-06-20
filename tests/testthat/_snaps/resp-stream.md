@@ -62,6 +62,22 @@
       Warning:
       Premature end of input; ignoring final partial chunk
 
+# stream_pull() preserves state when splitting fails
+
+    Code
+      stream_pull(resp, 1, splitter, Inf)
+    Condition
+      Error in `splitter$split()`:
+      ! Failed to split.
+
+# stream_pull() preserves queued blocks when a later split fails
+
+    Code
+      stream_pull(resp, Inf, splitter, Inf)
+    Condition
+      Error in `splitter$split()`:
+      ! Failed to split.
+
 # verbosity = 3 logs the buffered chunk
 
     Code
