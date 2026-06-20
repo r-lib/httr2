@@ -75,14 +75,13 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
 
   cache <- resp$cache
   # The encoding can't change over the life of a response, so parse it once.
-  encoding <- cache$stream_encoding %||%
-    (cache$stream_encoding <- resp_encoding(resp))
+  encoding <- env_cache(cache, "stream_encoding", resp_encoding(resp))
 
   # Lines are decoded a whole chunk at a time and held in a queue, so that
   # repeated small reads (e.g. `lines = 1`) don't repeatedly rescan and copy
   # the buffered bytes. `pos` is the index of the next line to return.
-  queue <- cache$stream_lines_queue %||% character()
-  pos <- cache$stream_lines_pos %||% 1L
+  queue <- env_cache(cache, "stream_lines_queue", character())
+  pos <- env_cache(cache, "stream_lines_pos", 1L)
 
   serve <- list()
   n_served <- 0L
