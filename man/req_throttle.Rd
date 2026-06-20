@@ -15,7 +15,9 @@ However, we recommend using \code{capacity} and \code{fill_time_s} as it gives m
 control.}
 
 \item{capacity}{The size of the bucket, i.e. the maximum number of
-tokens that can accumulate.}
+tokens that can accumulate. To enforce multiple rate limits at once,
+supply a vector of capacities (one per limit); \code{capacity} and
+\code{fill_time_s} are recycled to a common length.}
 
 \item{fill_time_s}{Time in seconds to fill the capacity. Defaults to 60s.}
 
@@ -40,6 +42,13 @@ requests more quickly if the bucket is full. For example, if you have
 without waiting, but the next request will wait 60 seconds. This gives the
 same average throttling rate as the previous approach, but gives you much
 better performance if you're only making a small number of requests.
+
+Some APIs enforce multiple rate limits simultaneously, e.g. no more than
+4 requests per second \emph{and} no more than 200 requests per hour. You can
+handle this by supplying a vector to \code{capacity} and \code{fill_time_s}: this
+creates one token bucket per limit, and each request must satisfy all of
+them. This lets you make quick bursts of requests while still respecting
+longer term limits.
 }
 \examples{
 # Ensure we never send more than 30 requests a minute
@@ -50,7 +59,12 @@ resp <- req_perform(req)
 throttle_status()
 resp <- req_perform(req)
 throttle_status()
+\dontshow{httr2:::throttle_reset()}
 
+# Enforce multiple limits at once: no more than 10 requests every 10s
+# and no more than 50 requests every 60s
+req <- request(example_url()) |>
+  req_throttle(capacity = c(10, 50), fill_time_s = c(10, 60))
 \dontshow{httr2:::throttle_reset()}
 }
 \seealso{
