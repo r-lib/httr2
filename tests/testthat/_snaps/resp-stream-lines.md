@@ -21,7 +21,7 @@
 # stream_split_lines() enforces max_size
 
     Code
-      stream_split_lines(charToRaw("aaaaa"), "UTF-8", eat_lf = FALSE, max_size = 3)
+      stream_split_lines(charToRaw("aaaaa"), "UTF-8", max_size = 3)
     Condition
       Error in `stream_split_lines()`:
       ! Streaming read exceeded size limit of 3
@@ -29,7 +29,7 @@
 ---
 
     Code
-      stream_split_lines(charToRaw("aaaaa\n"), "UTF-8", eat_lf = FALSE, max_size = 3)
+      stream_split_lines(charToRaw("aaaaa\n"), "UTF-8", max_size = 3)
     Condition
       Error in `stream_split_lines()`:
       ! Streaming read exceeded size limit of 3

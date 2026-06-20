@@ -46,21 +46,27 @@ test_that("handles line endings of multiple kinds", {
   withr::defer(close(resp1))
   wait_for_http_data(resp1)
 
+  # A chunk ending in a bare CR holds that line back for one read, in case the
+  # next chunk begins with the LF half of a CRLF (see `stream_split_lines()`).
   expected_values <- list(
     "\u3042",
     "crlf",
     "lf",
-    "cr",
     character(0),
+    "cr",
     "half line/other half",
-    "broken crlf",
-    "another line"
+    character(0),
+    "broken crlf"
   )
 
   for (expected in expected_values) {
     rlang::inject(expect_equal(resp_stream_lines(resp1), !!expected))
     sync(resp1)
   }
+  # "broken crlf" and "another line" were split from one buffer, so the second
+  # is served from the queue without a further read.
+  expect_equal(resp_stream_lines(resp1), "another line")
+
   wait_for_complete(resp1)
   # A final line without a terminator is returned (silently).
   expect_equal(resp_stream_lines(resp1), "eof without line ending")
@@ -161,17 +167,18 @@ test_that("LineSplitter flushes a trailing line", {
   expect_equal(s$finish(raw()), list())
   # Trailing bytes are emitted as a final line.
   expect_equal(s$finish(charToRaw("tail")), list("tail"))
+  # A trailing bare CR is a line ending at end-of-stream.
+  expect_equal(s$finish(charToRaw("tail\r")), list("tail"))
 })
 
 test_that("stream_split_lines() splits on LF, CR, and CRLF", {
-  split <- function(x, eat_lf = FALSE) {
-    stream_split_lines(charToRaw(x), "UTF-8", eat_lf = eat_lf, max_size = Inf)
+  split <- function(x) {
+    stream_split_lines(charToRaw(x), "UTF-8", max_size = Inf)
   }
 
   out <- split("a\nb\r\nc\rd\n")
   expect_equal(out$lines, c("a", "b", "c", "d"))
   expect_equal(out$remainder, raw())
-  expect_false(out$eat_lf)
 
   # blank lines are preserved
   expect_equal(split("a\n\nb\n")$lines, c("a", "", "b"))
@@ -182,60 +189,34 @@ test_that("stream_split_lines() splits on LF, CR, and CRLF", {
   expect_equal(out$remainder, charToRaw("bcd"))
 })
 
-test_that("stream_split_lines() handles a CRLF split across reads", {
-  # A buffer ending in a bare CR emits the line but flags that a following LF
-  # should be swallowed.
-  out <- stream_split_lines(
-    charToRaw("a\r"),
-    "UTF-8",
-    eat_lf = FALSE,
-    max_size = Inf
-  )
-  expect_equal(out$lines, "a")
-  expect_equal(out$remainder, raw())
-  expect_true(out$eat_lf)
-
-  # ... and on the next read that leading LF is dropped.
-  out <- stream_split_lines(
-    charToRaw("\nb\n"),
-    "UTF-8",
-    eat_lf = TRUE,
-    max_size = Inf
-  )
-  expect_equal(out$lines, "b")
-
-  # ... even when that LF is the entire buffer.
-  out <- stream_split_lines(
-    charToRaw("\n"),
-    "UTF-8",
-    eat_lf = TRUE,
-    max_size = Inf
-  )
+test_that("stream_split_lines() holds a trailing bare CR for the next read", {
+  # A buffer ending in a bare CR keeps the CR in the remainder, in case the
+  # next read begins with the LF half of a CRLF split across reads.
+  out <- stream_split_lines(charToRaw("a\r"), "UTF-8", max_size = Inf)
   expect_equal(out$lines, character())
+  expect_equal(out$remainder, charToRaw("a\r"))
+
+  # Once the remainder is fed back, a following LF completes the CRLF.
+  out <- stream_split_lines(charToRaw("a\r\nb\n"), "UTF-8", max_size = Inf)
+  expect_equal(out$lines, c("a", "b"))
   expect_equal(out$remainder, raw())
-  expect_false(out$eat_lf)
+
+  # ... while a following non-LF byte makes the CR a lone line ending.
+  out <- stream_split_lines(charToRaw("a\rb\n"), "UTF-8", max_size = Inf)
+  expect_equal(out$lines, c("a", "b"))
+  expect_equal(out$remainder, raw())
 })
 
 test_that("stream_split_lines() enforces max_size", {
   # Buffer with no line ending yet.
   expect_snapshot(
     error = TRUE,
-    stream_split_lines(
-      charToRaw("aaaaa"),
-      "UTF-8",
-      eat_lf = FALSE,
-      max_size = 3
-    )
+    stream_split_lines(charToRaw("aaaaa"), "UTF-8", max_size = 3)
   )
 
   # A complete line that is itself too long.
   expect_snapshot(
     error = TRUE,
-    stream_split_lines(
-      charToRaw("aaaaa\n"),
-      "UTF-8",
-      eat_lf = FALSE,
-      max_size = 3
-    )
+    stream_split_lines(charToRaw("aaaaa\n"), "UTF-8", max_size = 3)
   )
 })
