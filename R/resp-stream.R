@@ -292,20 +292,6 @@ check_streaming_response <- function(
   }
 }
 
-# isOpen doesn't work for two reasons:
-# 1. It errors if con has been closed, rather than returning FALSE
-# 2. If returns TRUE if con has been closed and a new connection opened
-#
-# So instead we retrieve the connection from its number and compare to the
-# original connection. This works because connections have an undocumented
-# external pointer.
-isValid <- function(con) {
-  tryCatch(
-    identical(getConnection(con), con),
-    error = function(cnd) FALSE
-  )
-}
-
 resp_stream_show_body <- function(resp) {
   resp$request$policies$show_streaming_body %||% FALSE
 }
