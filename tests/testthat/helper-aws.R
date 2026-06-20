@@ -20,11 +20,6 @@ aws_uint <- function(x, size) {
   out
 }
 
-# An 8-byte big-endian IEEE double, as read back by parse_int64().
-aws_double <- function(x) {
-  writeBin(as.double(x), raw(), size = 8L, endian = "big")
-}
-
 # CRC32 of `bytes` as 4 big-endian raw bytes, matching the AWS event-stream
 # framing.
 aws_crc <- function(bytes) {
@@ -42,13 +37,13 @@ aws_header <- function(name, type, value = NULL) {
     byte = list(tag = 2L, bytes = aws_uint(value, 1L)),
     short = list(tag = 3L, bytes = aws_uint(value, 2L)),
     integer = list(tag = 4L, bytes = aws_uint(value, 4L)),
-    long = list(tag = 5L, bytes = aws_double(value)),
+    long = list(tag = 5L, bytes = aws_uint(value, 8L)),
     bytes = list(tag = 6L, bytes = c(aws_uint(length(value), 2L), value)),
     string = list(
       tag = 7L,
       bytes = c(aws_uint(nchar(value), 2L), charToRaw(value))
     ),
-    timestamp = list(tag = 8L, bytes = aws_double(value)),
+    timestamp = list(tag = 8L, bytes = aws_uint(value, 8L)),
     uuid = list(tag = 9L, bytes = value),
     unknown = list(tag = 255L, bytes = raw()),
     cli::cli_abort("Unknown header type {.val {type}}.")

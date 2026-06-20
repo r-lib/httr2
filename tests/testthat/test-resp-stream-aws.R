@@ -17,11 +17,8 @@ test_that("can return various types of header", {
   expect_equal(headers("foo", "bytes", as.raw(1:5)), list(foo = as.raw(1:5)))
   expect_equal(headers("foo", "string", "bar"), list(foo = "bar"))
 
-  # long and timestamp are read back as 8-byte doubles classed as integer64
-  expect_equal(
-    headers("foo", "long", 1),
-    list(foo = structure(1, class = "integer64"))
-  )
+  # long and timestamp are 64-bit integers, returned as bit64::integer64 (see
+  # the reference test below for a non-trivial long value)
   expect_equal(
     headers("foo", "timestamp", 0),
     list(foo = structure(0, class = "integer64"))
@@ -155,6 +152,10 @@ test_that("aws_event() agrees with the reference implementation", {
   agrees(
     "00000019000000017fd51a0c03666f6f04ffffffff853b65dd",
     aws_header("foo", "integer", 4294967295)
+  )
+  agrees(
+    "0000001d000000018a55bccc03666f6f050000ffffffffffff6b03c255",
+    aws_header("foo", "long", 281474976710655) # 0x0000ffffffffffff
   )
   agrees(
     "0000001a00000001387560dc03666f6f0700036261725bb3cecf",
