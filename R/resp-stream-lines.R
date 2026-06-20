@@ -49,18 +49,14 @@ LineSplitter <- R6::R6Class(
       self$encoding <- encoding
     },
     split = function(buffer, max_size) {
-      parsed <- stream_split_lines(buffer, self$encoding, max_size)
-      list(blocks = as.list(parsed$lines), remainder = parsed$remainder)
+      stream_split_lines(buffer, self$encoding, max_size)
     },
     finish = function(remainder) {
       if (length(remainder) == 0L) {
-        return(list())
+        list()
+      } else {
+        list(stream_decode(remainder, self$encoding))
       }
-      # Tolerate a CRLF truncated at end-of-stream by stripping a trailing CR.
-      if (remainder[[length(remainder)]] == as.raw(0x0D)) {
-        remainder <- remainder[-length(remainder)]
-      }
-      list(stream_decode(remainder, self$encoding))
     }
   )
 )
@@ -73,22 +69,23 @@ LineSplitter <- R6::R6Class(
 # handling: the trailing CR is just unfinished line content that stays in the
 # remainder until the next read supplies its LF.
 #
-# @returns A list with components `lines` (a character vector) and `remainder`
-#   (a raw vector).
+# @returns A list matching the `StreamSplitter$split()` contract: `blocks` (a
+#   list of decoded lines) and `remainder` (a raw vector).
 stream_split_lines <- function(buffer, encoding, max_size) {
   LF <- as.raw(0x0A)
-
   ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
+
   if (length(ends) == 0L) {
     if (length(buffer) > max_size) {
       stop_stream_size(max_size)
+    } else {
+      return(list(blocks = list(), remainder = buffer))
     }
-    return(list(lines = character(), remainder = buffer))
   }
 
   cut <- ends[length(ends)] + 1L
   region <- buffer[seq_len(cut - 1L)]
-  remainder <- if (cut > length(buffer)) raw() else buffer[cut:length(buffer)]
+  remainder <- buffer[seq2(cut, length(buffer))]
 
   # Enforce the per-line size limit (the span includes the line ending bytes).
   if (is.finite(max_size)) {
@@ -101,7 +98,7 @@ stream_split_lines <- function(buffer, encoding, max_size) {
 
   text <- stream_decode(region, encoding)
   list(
-    lines = strsplit(text, "\r\n|\n")[[1]],
+    blocks = as.list(strsplit(text, "\r\n|\n")[[1]]),
     remainder = remainder
   )
 }

@@ -163,8 +163,8 @@ test_that("LineSplitter flushes a trailing line", {
   expect_equal(s$finish(raw()), list())
   # Trailing bytes are emitted as a final line.
   expect_equal(s$finish(charToRaw("tail")), list("tail"))
-  # A CRLF truncated at end-of-stream drops the dangling CR.
-  expect_equal(s$finish(charToRaw("tail\r")), list("tail"))
+  # A bare CR is ordinary content, even at end-of-stream.
+  expect_equal(s$finish(charToRaw("tail\r")), list("tail\r"))
 })
 
 test_that("stream_split_lines() splits on LF and CRLF", {
@@ -173,15 +173,15 @@ test_that("stream_split_lines() splits on LF and CRLF", {
   }
 
   out <- split("a\nb\r\nc\n")
-  expect_equal(out$lines, c("a", "b", "c"))
+  expect_equal(out$blocks, list("a", "b", "c"))
   expect_equal(out$remainder, raw())
 
   # blank lines are preserved
-  expect_equal(split("a\n\nb\n")$lines, c("a", "", "b"))
+  expect_equal(split("a\n\nb\n")$blocks, list("a", "", "b"))
 
   # trailing bytes without an ending become the remainder
   out <- split("a\nbcd")
-  expect_equal(out$lines, "a")
+  expect_equal(out$blocks, list("a"))
   expect_equal(out$remainder, charToRaw("bcd"))
 })
 
@@ -192,18 +192,18 @@ test_that("stream_split_lines() treats a bare CR as an ordinary character", {
 
   # A CR not followed by LF is kept in the line, not used as a separator.
   out <- split("a\rb\n")
-  expect_equal(out$lines, "a\rb")
+  expect_equal(out$blocks, list("a\rb"))
   expect_equal(out$remainder, raw())
 
   # A CRLF split across reads needs no special handling: the trailing CR is
   # just unfinished content in the remainder until the next read supplies the
   # LF.
   out <- split("a\r")
-  expect_equal(out$lines, character())
+  expect_equal(out$blocks, list())
   expect_equal(out$remainder, charToRaw("a\r"))
 
   out <- split("a\r\nb\n")
-  expect_equal(out$lines, c("a", "b"))
+  expect_equal(out$blocks, list("a", "b"))
   expect_equal(out$remainder, raw())
 })
 

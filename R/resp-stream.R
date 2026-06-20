@@ -227,8 +227,9 @@ BoundarySplitter <- R6::R6Class(
       if (length(splits) == 0L) {
         if (length(buffer) > max_size) {
           stop_stream_size(max_size)
+        } else {
+          return(list(blocks = list(), remainder = buffer))
         }
-        return(list(blocks = list(), remainder = buffer))
       }
       starts <- c(1L, splits[-length(splits)])
       blocks <- lapply(seq_along(splits), function(i) {
