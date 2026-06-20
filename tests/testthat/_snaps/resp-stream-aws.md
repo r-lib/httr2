@@ -1,7 +1,7 @@
 # unknown header triggers error
 
     Code
-      parse_aws_event(bytes)
+      parse_aws_event(aws_event(aws_header("foo", "unknown")))
     Condition
       Error in `type_enum()`:
       ! Unsupported type 255.
@@ -24,7 +24,7 @@
       . <- resp_stream_aws(resp)
     Output
       *  -- Buffer ----------------------------------------------------------------------
-      *  Received chunk: 00 00 00 1a 00 00 00 01 38 75 60 dc 03 66 6f 6f 07 00 03 62 61 72 5b b3 ce cf
+      *  Received chunk: 00 00 00 1a 00 00 00 0a af a7 b9 54 03 66 6f 6f 07 00 03 62 61 72 c0 c0 6d f5
       << foo: bar
       << ""
       

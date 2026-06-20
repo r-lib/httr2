@@ -149,13 +149,6 @@ type_enum <- function(value) {
   )
 }
 
-hex_to_raw <- function(x) {
-  x <- gsub("(\\s|\n)+", "", x)
-
-  pairs <- substring(x, seq(1, nchar(x), by = 2), seq(2, nchar(x), by = 2))
-  as.raw(strtoi(pairs, 16L))
-}
-
 raw_to_hex <- function(x) {
   paste(as.character(x), collapse = "")
 }
