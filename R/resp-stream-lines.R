@@ -39,16 +39,37 @@ resp_stream_lines <- function(
   lines_read
 }
 
-# Raw bytes for the line endings we recognise.
-LF <- as.raw(0x0A)
-CR <- as.raw(0x0D)
-
-# Decode a raw vector of bytes into a single string in the response encoding.
-stream_decode <- function(bytes, encoding) {
-  text <- rawToChar(bytes)
-  Encoding(text) <- "bytes"
-  iconv(text, encoding, "UTF-8")
-}
+# Splits a stream into lines of text. Unlike `BoundarySplitter`, this carries
+# state across calls: a trailing bare CR may be the first half of a CRLF split
+# across reads, so `eat_lf` records that a leading LF should be dropped next
+# time (see `stream_split_lines()`).
+LineSplitter <- R6::R6Class(
+  "LineSplitter",
+  inherit = StreamSplitter,
+  public = list(
+    encoding = NULL,
+    eat_lf = FALSE,
+    initialize = function(encoding) {
+      self$encoding <- encoding
+    },
+    split = function(buffer, max_size) {
+      parsed <- stream_split_lines(
+        buffer,
+        encoding = self$encoding,
+        eat_lf = self$eat_lf,
+        max_size = max_size
+      )
+      self$eat_lf <- parsed$eat_lf
+      list(blocks = as.list(parsed$lines), remainder = parsed$remainder)
+    },
+    finish = function(remainder) {
+      if (length(remainder) == 0L) {
+        return(list())
+      }
+      list(stream_decode(remainder, self$encoding))
+    }
+  )
+)
 
 # Split `buffer` into complete lines plus a trailing remainder of bytes that do
 # not yet form a complete line. Line endings may be LF, CR, or CRLF, matching
@@ -64,6 +85,9 @@ stream_decode <- function(bytes, encoding) {
 # @returns A list with components `lines` (a character vector), `remainder`
 #   (a raw vector), and `eat_lf` (a logical).
 stream_split_lines <- function(buffer, encoding, eat_lf, max_size) {
+  LF <- as.raw(0x0A)
+  CR <- as.raw(0x0D)
+
   if (eat_lf && length(buffer) >= 1L) {
     if (buffer[[1L]] == LF) {
       buffer <- buffer[-1L]
@@ -125,36 +149,9 @@ stream_split_lines <- function(buffer, encoding, eat_lf, max_size) {
   )
 }
 
-# Splits a stream into lines of text. Unlike `BoundarySplitter`, this carries
-# state across calls: a trailing bare CR may be the first half of a CRLF split
-# across reads, so `eat_lf` records that a leading LF should be dropped next
-# time (see `stream_split_lines()`).
-LineSplitter <- R6::R6Class(
-  "LineSplitter",
-  inherit = StreamSplitter,
-  public = list(
-    encoding = NULL,
-    initialize = function(encoding) {
-      self$encoding <- encoding
-    },
-    split = function(buffer, max_size) {
-      parsed <- stream_split_lines(
-        buffer,
-        encoding = self$encoding,
-        eat_lf = private$eat_lf,
-        max_size = max_size
-      )
-      private$eat_lf <- parsed$eat_lf
-      list(blocks = as.list(parsed$lines), remainder = parsed$remainder)
-    },
-    finish = function(remainder) {
-      if (length(remainder) == 0L) {
-        return(list())
-      }
-      list(stream_decode(remainder, self$encoding))
-    }
-  ),
-  private = list(
-    eat_lf = FALSE
-  )
-)
+# Decode a raw vector of bytes into a single string in the response encoding.
+stream_decode <- function(bytes, encoding) {
+  text <- rawToChar(bytes)
+  Encoding(text) <- "bytes"
+  iconv(text, encoding, "UTF-8")
+}
