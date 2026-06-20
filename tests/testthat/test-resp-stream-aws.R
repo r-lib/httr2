@@ -63,6 +63,32 @@ test_that("unknown header triggers error", {
   expect_snapshot(parse_aws_event(bytes), error = TRUE)
 })
 
+test_that("find_aws_event_boundaries splits a buffer into complete events", {
+  event <- hex_to_raw("000000100000000005c248eb7d98c8ff")
+
+  expect_equal(find_aws_event_boundaries(event), 17)
+  expect_equal(find_aws_event_boundaries(c(event, event)), c(17, 33))
+  expect_equal(
+    find_aws_event_boundaries(c(event, event, event)),
+    c(17, 33, 49)
+  )
+})
+
+test_that("find_aws_event_boundaries ignores incomplete trailing events", {
+  event <- hex_to_raw("000000100000000005c248eb7d98c8ff")
+
+  # Nothing to split
+  expect_equal(find_aws_event_boundaries(raw()), double())
+  # Fewer than 16 bytes can't be a complete event
+  expect_equal(find_aws_event_boundaries(event[1:10]), double())
+  # Trailing partial event is excluded
+  expect_equal(find_aws_event_boundaries(c(event, event[1:8])), 17)
+  # Event claiming more bytes than are available is excluded
+  big <- event
+  big[1:4] <- hex_to_raw("00000100")
+  expect_equal(find_aws_event_boundaries(c(event, big)), 17)
+})
+
 test_that("json content type automatically parsed", {
   bytes <- hex_to_raw(
     "

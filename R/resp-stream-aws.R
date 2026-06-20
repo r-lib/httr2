@@ -31,8 +31,8 @@ resp_stream_aws <- function(resp, max_size = Inf) {
 # (the position one past the end of each complete event).
 find_aws_event_boundaries <- function(buffer) {
   n <- length(buffer)
-  splits <- integer()
-  pos <- 1L
+  splits <- double()
+  pos <- 1
   repeat {
     # No valid AWS event message is less than 16 bytes.
     if (n - pos + 1L < 16L) {
@@ -44,7 +44,7 @@ find_aws_event_boundaries <- function(buffer) {
       break
     }
     pos <- pos + event_size
-    splits <- c(splits, pos)
+    splits[[length(splits) + 1L]] <- pos
   }
   splits
 }
