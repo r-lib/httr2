@@ -154,6 +154,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
     cnd <- resp_failure_cnd(req, resp, error_call = error_call)
     cnd_signal(cnd)
   } else {
+    resp$request <- req
     resp
   }
 }

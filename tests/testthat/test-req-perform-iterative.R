@@ -95,7 +95,7 @@ test_that("mocking works", {
     \(resp, req) req_404,
     on_error = "return"
   )
-  expect_equal(resps[[1]], response())
+  expect_equal(resps[[1]]$status_code, 200)
   expect_s3_class(resps[[2]], "httr2_http_404")
 })
 

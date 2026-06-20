@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* Mocked and cached responses now include the originating request in `resp$request`, just like real responses (@jonthegeek, #841).
 * `req_cache()` no longer errors when a request is first performed with `path`
   then later without it (#840).
 * `req_oauth_device()` gains a `pkce` argument to enable Proof Key for Code Exchange, matching `oauth_flow_device()` (#834).

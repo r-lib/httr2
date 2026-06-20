@@ -101,6 +101,18 @@ test_that("mocking works", {
   expect_error(req_perform_connection(req_404), class = "httr2_http_404")
 })
 
+test_that("mocked responses include the request", {
+  mocked_req <- NULL
+  local_mocked_responses(function(req) {
+    mocked_req <<- req
+    response()
+  })
+
+  resp <- req_perform_connection(request("https://example.com"))
+  expect_equal(resp$request, mocked_req)
+  close(resp)
+})
+
 
 # StreamingBody --------------------------------------------------------------
 

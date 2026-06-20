@@ -136,6 +136,7 @@ PooledRequest <- R6Class(
         cnd <- resp_failure_cnd(req, resp, error_call = private$error_call)
         private$on_failure(cnd)
       } else {
+        resp$request <- req
         private$on_success(resp)
       }
     },

@@ -64,6 +64,7 @@ test_that("promises can retrieve from cache", {
   p <- req_perform_promise(req)
   expect_s3_class(p, "promise")
   p_value <- extract_promise(p)
+  resp$request <- req
   expect_equal(p_value, resp)
 })
 
@@ -161,8 +162,8 @@ test_that("mocking works", {
     }
   })
   expect_equal(
-    extract_promise(req_perform_promise(req_200)),
-    response()
+    extract_promise(req_perform_promise(req_200))$request,
+    req_200
   )
   expect_error(
     extract_promise(req_perform_promise(req_404)),
