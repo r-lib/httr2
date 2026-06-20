@@ -280,6 +280,9 @@ req_completed <- function(req) {
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
+same_path <- function(x, y) {
+  normalizePath(x, mustWork = FALSE) == normalizePath(y, mustWork = FALSE)
+}
 
 resp_show_body <- function(resp) {
   resp$request$policies$show_body %||% FALSE

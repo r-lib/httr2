@@ -86,11 +86,6 @@ oauth_client <- function(
       if (is.null(key)) {
         cli::cli_abort("{.code auth = 'jwt_sig'} requires a {.arg key}.")
       }
-      if (!has_name(auth_params, "claim")) {
-        cli::cli_abort(
-          "{.code auth = 'jwt_sig'} requires a claim specification in {.arg auth_params}."
-        )
-      }
     }
 
     auth <- paste0("oauth_client_req_auth_", auth)
@@ -215,11 +210,16 @@ oauth_client_req_auth_body <- function(req, client) {
 oauth_client_req_auth_jwt_sig <- function(
   req,
   client,
-  claim,
+  claim = NULL,
   size = 256,
   header = list()
 ) {
-  claim <- exec("jwt_claim", !!!claim)
+  if (is.null(claim)) {
+    cli::cli_abort(
+      "{.code auth = 'jwt_sig'} requires a {.arg claim} in {.arg auth_params}."
+    )
+  }
+  claim <- as_jwt_claim(claim)
   jwt <- jwt_encode_sig(claim, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
