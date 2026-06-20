@@ -52,9 +52,18 @@ find_aws_event_boundaries <- function(buffer) {
   splits
 }
 
-# Implementation from https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.js
-# This is technically buggy because it takes the header_length as a lower bound
-# but this shouldn't cause problems in practive
+# Parse a single AWS event-stream message (content type
+# application/vnd.amazon.eventstream). The binary format is documented by AWS:
+# * https://smithy.io/2.0/aws/amazon-eventstream.html (canonical protocol spec)
+# * https://docs.aws.amazon.com/lexv2/latest/dg/event-stream-encoding.html
+# Reference implementation: https://github.com/awslabs/aws-eventstream-java
+#
+# Key details: all integers are big-endian; the prelude (total + header lengths)
+# and the whole message each end in a GZIP/zlib CRC32; header value types
+# byte/short/integer/long are signed; timestamp is an int64 of epoch millis.
+#
+# We treat header_length as a lower bound rather than an exact count; this is
+# lenient but harmless and matches some reference implementations.
 parse_aws_event <- function(bytes) {
   i <- 1
   read_bytes <- function(n) {
@@ -91,9 +100,9 @@ parse_aws_event <- function(bytes) {
       type_enum(type),
       "TRUE" = TRUE,
       "FALSE" = FALSE,
-      BYTE = parse_int(read_bytes(1)),
-      SHORT = parse_int(read_bytes(2)),
-      INTEGER = parse_int(read_bytes(4)),
+      BYTE = parse_int(read_bytes(1), signed = TRUE),
+      SHORT = parse_int(read_bytes(2), signed = TRUE),
+      INTEGER = parse_int(read_bytes(4), signed = TRUE),
       LONG = parse_int64(read_bytes(8)),
       BYTE_ARRAY = read_bytes(length),
       CHARACTER = rawToChar(read_bytes(length)),
@@ -119,8 +128,13 @@ parse_aws_event <- function(bytes) {
 
 # Helpers ----------------------------------------------------------------
 
-parse_int <- function(x) {
-  sum(as.integer(x) * 256^rev(seq_along(x) - 1))
+parse_int <- function(x, signed = FALSE) {
+  v <- sum(as.integer(x) * 256^rev(seq_along(x) - 1))
+  if (signed && v >= 2^(8 * length(x) - 1)) {
+    # Interpret as two's complement.
+    v <- v - 2^(8 * length(x))
+  }
+  v
 }
 
 parse_int64 <- function(x) {
@@ -130,7 +144,7 @@ parse_int64 <- function(x) {
 }
 
 type_enum <- function(value) {
-  if (value < 0 || value > 10) {
+  if (value < 0 || value > 9) {
     cli::cli_abort("Unsupported type {value}.", .internal = TRUE)
   }
 

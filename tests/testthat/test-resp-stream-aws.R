@@ -11,11 +11,14 @@ test_that("can return various types of header", {
 
   expect_equal(headers("foo", "false"), list(foo = FALSE))
   expect_equal(headers("foo", "true"), list(foo = TRUE))
-  expect_equal(headers("foo", "byte", 255), list(foo = 255))
-  expect_equal(headers("foo", "short", 65535), list(foo = 65535))
-  expect_equal(headers("foo", "integer", 4294967295), list(foo = 4294967295))
   expect_equal(headers("foo", "bytes", as.raw(1:5)), list(foo = as.raw(1:5)))
   expect_equal(headers("foo", "string", "bar"), list(foo = "bar"))
+
+  # byte, short, and integer are signed (two's complement)
+  expect_equal(headers("foo", "byte", 127), list(foo = 127))
+  expect_equal(headers("foo", "byte", -1), list(foo = -1))
+  expect_equal(headers("foo", "short", -2), list(foo = -2))
+  expect_equal(headers("foo", "integer", -3), list(foo = -3))
 
   # long and timestamp are 64-bit integers, returned as bit64::integer64 (see
   # the reference test below for a non-trivial long value)
@@ -143,15 +146,15 @@ test_that("aws_event() agrees with the reference implementation", {
   )
   agrees(
     "0000001600000001fd858ddd03666f6f02ffa44bfd93",
-    aws_header("foo", "byte", 255)
+    aws_header("foo", "byte", -1) # 0xff
   )
   agrees(
     "0000001700000001c0e5a46d03666f6f03fffff3b59291",
-    aws_header("foo", "short", 65535)
+    aws_header("foo", "short", -1) # 0xffff
   )
   agrees(
     "00000019000000017fd51a0c03666f6f04ffffffff853b65dd",
-    aws_header("foo", "integer", 4294967295)
+    aws_header("foo", "integer", -1) # 0xffffffff
   )
   agrees(
     "0000001d000000018a55bccc03666f6f050000ffffffffffff6b03c255",

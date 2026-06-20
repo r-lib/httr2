@@ -8,8 +8,9 @@ hex_to_raw <- function(x) {
   as.raw(strtoi(pairs, 16L))
 }
 
-# A big-endian unsigned integer in `size` raw bytes (handles values beyond
-# .Machine$integer.max, unlike writeBin()).
+# A big-endian integer in `size` raw bytes. Handles values beyond
+# .Machine$integer.max (unlike writeBin()) and encodes negatives as two's
+# complement, so it serves both unsigned lengths and signed header values.
 aws_uint <- function(x, size) {
   x <- as.numeric(x)
   out <- raw(size)
