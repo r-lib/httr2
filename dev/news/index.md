@@ -50,6 +50,11 @@
   now creates a valid empty request body when no parameters are provided
   ([@arcresu](https://github.com/arcresu),
   [\#836](https://github.com/r-lib/httr2/issues/836)).
+- [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
+  can now enforce multiple rate limits at once: supply a vector to
+  `capacity` (and `fill_time_s`) to create one token bucket per limit,
+  and each request must satisfy all of them
+  ([\#555](https://github.com/r-lib/httr2/issues/555)).
 - [`req_auth_aws_v4()`](https://httr2.r-lib.org/dev/reference/req_auth_aws_v4.md)
   now correctly signs URLs containing encoded slashes (`%2F`) in path
   segments, such as ARNs in AWS Bedrock API paths

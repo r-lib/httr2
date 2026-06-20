@@ -16,6 +16,13 @@ This gives the same average throttling rate as the previous approach,
 but gives you much better performance if you're only making a small
 number of requests.
 
+Some APIs enforce multiple rate limits simultaneously, e.g. no more than
+4 requests per second *and* no more than 200 requests per hour. You can
+handle this by supplying a vector to `capacity` and `fill_time_s`: this
+creates one token bucket per limit, and each request must satisfy all of
+them. This lets you make quick bursts of requests while still respecting
+longer term limits.
+
 ## Usage
 
 ``` r
@@ -39,7 +46,9 @@ req_throttle(req, rate, capacity, fill_time_s = 60, realm = NULL)
 - capacity:
 
   The size of the bucket, i.e. the maximum number of tokens that can
-  accumulate.
+  accumulate. To enforce multiple rate limits at once, supply a vector
+  of capacities (one per limit); `capacity` and `fill_time_s` are
+  recycled to a common length.
 
 - fill_time_s:
 
@@ -70,10 +79,15 @@ req <- request(example_url()) |>
 
 resp <- req_perform(req)
 throttle_status()
-#>       realm tokens to_wait
-#> 1 127.0.0.1     29       0
+#>       realm capacity tokens to_wait
+#> 1 127.0.0.1       30     29       0
 resp <- req_perform(req)
 throttle_status()
-#>       realm tokens to_wait
-#> 1 127.0.0.1     28       0
+#>       realm capacity tokens to_wait
+#> 1 127.0.0.1       30     28       0
+
+# Enforce multiple limits at once: no more than 10 requests every 10s
+# and no more than 50 requests every 60s
+req <- request(example_url()) |>
+  req_throttle(capacity = c(10, 50), fill_time_s = c(10, 60))
 ```
