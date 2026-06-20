@@ -25,6 +25,18 @@ test_that("auth_url falls back to the client's device_auth_url, explicit wins", 
   )
 })
 
+test_that("req_oauth_device() passes pkce through to the flow", {
+  client <- oauth_client("id", token_url = "https://example.com/token")
+
+  req <- req_oauth_device(
+    request("https://example.com"),
+    client,
+    auth_url = "https://example.com/device",
+    pkce = TRUE
+  )
+  expect_equal(req$policies$auth_sign$params$flow_params$pkce, TRUE)
+})
+
 test_that("oauth_flow_device() resolves auth_url from the client", {
   client <- oauth_client("id", token_url = "https://example.com/token")
   expect_error(

@@ -57,7 +57,7 @@ test_that('aws_v4_signature calculates correct signature', {
 
   signature <- aws_v4_signature(
     method = req_get_method(req),
-    url = url_parse(req$url),
+    url = req$url,
     headers = req$headers,
     body_sha256 = body_sha256,
     current_time = current_time,
@@ -75,9 +75,7 @@ test_that("signing agrees with glacier example", {
 
   signature <- aws_v4_signature(
     method = "PUT",
-    url = url_parse(
-      "https://glacier.us-east-1.amazonaws.com/-/vaults/examplevault"
-    ),
+    url = "https://glacier.us-east-1.amazonaws.com/-/vaults/examplevault",
     headers = list(
       "x-amz-date" = "20120525T002453Z",
       "x-amz-glacier-version" = "2012-06-01"
@@ -107,4 +105,68 @@ test_that("validates its inputs", {
     req_auth_aws_v4(req, "", "", aws_service = 1)
     req_auth_aws_v4(req, "", "", aws_region = 1)
   })
+})
+
+test_that("S3 canonical URI uses single-encoding", {
+  signature <- aws_v4_signature(
+    method = "GET",
+    url = "https://s3.us-east-1.amazonaws.com/my-bucket/my%20file.txt",
+    headers = list("x-amz-date" = "20250121T182222Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+
+  canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
+  expect_equal(canonical_uri, "/my-bucket/my%20file.txt")
+})
+
+test_that("non-S3 canonical URI double-encodes path segments", {
+  # A URL where %2F is part of a path segment (e.g. an ARN), not a separator
+  url_with_encoded_slash <- paste0(
+    "https://bedrock-runtime.us-east-1.amazonaws.com/model/",
+    "arn%3Aaws%3Abedrock%3Aus-east-1%3A123456%3A",
+    "application-inference-profile%2Fprofile-id",
+    "/converse"
+  )
+
+  signature <- aws_v4_signature(
+    method = "POST",
+    url = url_with_encoded_slash,
+    headers = list("x-amz-date" = "20250121T182222Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+
+  # %2F in the ARN is double-encoded to %252F, not treated as a separator
+  canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
+  expect_equal(
+    canonical_uri,
+    paste0(
+      "/model/",
+      "arn%253Aaws%253Abedrock%253Aus-east-1%253A123456%253A",
+      "application-inference-profile%252Fprofile-id",
+      "/converse"
+    )
+  )
+})
+
+test_that("canonical URI preserves trailing slash", {
+  signature <- aws_v4_signature(
+    method = "GET",
+    url = "https://example.execute-api.us-east-1.amazonaws.com/v0/",
+    headers = list("x-amz-date" = "20250121T182222Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2025-01-21 18:22:22", tz = "UTC"),
+    aws_service = "execute-api",
+    aws_region = "us-east-1",
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+
+  canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
+  expect_equal(canonical_uri, "/v0/")
 })
