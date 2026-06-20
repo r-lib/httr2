@@ -18,6 +18,11 @@
 #'   [jwt_claim()] will automatically fill in the dynamic components.
 #'   If other components need to vary, you can instead provide a zero-argument
 #'   callback function which should call `jwt_claim()`.
+#'
+#'   If `client` authenticates itself with `auth = "jwt_sig"`, this `claim` is
+#'   used as the basis for a separate client assertion unless the client
+#'   supplies its own `claim` in `auth_params`. The client assertion claim uses
+#'   `client$id` as its `sub`.
 #' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
 #'   `size`, `header`.
@@ -71,12 +76,17 @@ oauth_flow_bearer_jwt <- function(
     cli::cli_abort("JWT flow requires {.arg client} with a key.")
   }
 
-  if (is_list(claim)) {
-    claim <- exec("jwt_claim", !!!claim)
-  } else if (is.function(claim)) {
-    claim <- claim()
-  } else {
-    cli::cli_abort("{.arg claim} must be a list or function.")
+  claim_spec <- claim
+  claim <- as_jwt_claim(claim)
+
+  # If the client also authenticates itself with a signed JWT (RFC 7523 §2.2),
+  # derive a client assertion claim so it doesn't have to be specified twice
+  # (#825).
+  if (
+    identical(client$auth, "oauth_client_req_auth_jwt_sig") &&
+      !has_name(client$auth_params, "claim")
+  ) {
+    client$auth_params$claim <- as_jwt_client_claim(claim_spec, client$id)
   }
 
   jwt <- exec(signature, claim = claim, key = client$key, !!!signature_params)
