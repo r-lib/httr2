@@ -76,86 +76,12 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
   cache <- resp$cache
   # The encoding can't change over the life of a response, so parse it once.
   encoding <- env_cache(cache, "stream_encoding", resp_encoding(resp))
+  # The splitter persists across calls because it remembers whether a CRLF was
+  # split across reads (see `LineSplitter`). `warn` may change between calls.
+  splitter <- env_cache(cache, "line_splitter", LineSplitter$new(encoding))
+  splitter$warn <- warn
 
-  # Lines are decoded a whole chunk at a time and held in a queue, so that
-  # repeated small reads (e.g. `lines = 1`) don't repeatedly rescan and copy
-  # the buffered bytes. `pos` is the index of the next line to return.
-  queue <- env_cache(cache, "stream_lines_queue", character())
-  pos <- env_cache(cache, "stream_lines_pos", 1L)
-
-  serve <- list()
-  n_served <- 0L
-
-  repeat {
-    available <- length(queue) - pos + 1L
-    if (available > 0L) {
-      take <- min(available, lines - n_served)
-      serve[[length(serve) + 1L]] <- queue[pos:(pos + take - 1L)]
-      pos <- pos + take
-      n_served <- n_served + take
-    }
-    if (n_served >= lines) {
-      break
-    }
-
-    # The queue is exhausted; combine any buffered bytes with a fresh read and
-    # decode the next batch of lines. We always reparse the buffered bytes (not
-    # just freshly read ones), because data may have been buffered by an earlier
-    # call that didn't find a complete line.
-    chunk <- resp$body$read(stream_chunk_bytes)
-    buffer <- c(cache$push_back %||% raw(), chunk)
-    if (length(buffer) == 0L) {
-      break
-    }
-
-    if (length(chunk) > 0L && resp_stream_show_buffer(resp)) {
-      log_stream(cli::rule("Buffer"), prefix = "*  ")
-      log_stream(
-        "Received chunk: ",
-        paste(as.character(chunk), collapse = " "),
-        prefix = "*  "
-      )
-    }
-
-    # Keep the full buffer in place so an over-size error is reproducible.
-    cache$push_back <- buffer
-    parsed <- stream_split_lines(
-      buffer,
-      encoding = encoding,
-      eat_lf = isTRUE(cache$eat_next_lf),
-      max_size = max_size
-    )
-    cache$eat_next_lf <- parsed$eat_lf
-    cache$push_back <- parsed$remainder
-
-    if (length(parsed$lines) > 0L) {
-      queue <- parsed$lines
-      pos <- 1L
-      next
-    }
-
-    # No complete line available from the current buffer.
-    if (length(chunk) == 0L) {
-      if (resp$body$is_complete()) {
-        # The stream has ended; flush any trailing bytes as a final,
-        # unterminated line.
-        trailer <- cache$push_back %||% raw()
-        if (length(trailer) > 0L) {
-          if (warn) {
-            cli::cli_warn("incomplete final line found")
-          }
-          serve[[length(serve) + 1L]] <- stream_decode(trailer, encoding)
-          cache$push_back <- raw()
-        }
-      }
-      # Either EOF, or no data currently available (non-blocking).
-      break
-    }
-    # We read new bytes but still don't have a complete line; loop to read more.
-  }
-
-  cache$stream_lines_queue <- queue
-  cache$stream_lines_pos <- pos
+  serve <- stream_pull(resp, lines, splitter, max_size)
 
   lines_read <- unlist(serve, use.names = FALSE) %||% character()
   if (resp_stream_show_body(resp)) {
@@ -171,16 +97,21 @@ resp_stream_lines <- function(resp, lines = 1, max_size = Inf, warn = TRUE) {
 #' @rdname resp_stream_raw
 #' @order 1
 resp_stream_sse <- function(resp, max_size = Inf) {
+  check_streaming_response(resp)
+  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
+
+  splitter <- env_cache(
+    resp$cache,
+    "boundary_splitter",
+    BoundarySplitter$new(find_event_boundaries)
+  )
+
   repeat {
-    event_bytes <- resp_boundary_pushback(
-      resp,
-      max_size,
-      find_event_boundaries,
-      include_trailer = FALSE
-    )
-    if (is.null(event_bytes)) {
+    blocks <- stream_pull(resp, 1, splitter, max_size)
+    if (length(blocks) == 0L) {
       return()
     }
+    event_bytes <- blocks[[1L]]
 
     if (resp_stream_show_buffer(resp)) {
       log_stream(
@@ -212,27 +143,15 @@ resp_stream_is_complete <- function(resp) {
 }
 
 # Is there any data still buffered in the response that hasn't been returned to
-# the user yet? (Either raw bytes, decoded lines, or decoded event blocks.)
+# the user yet? (Either raw bytes or decoded-but-unserved blocks.)
 stream_has_buffered <- function(resp) {
   cache <- resp$cache
   if (length(cache$push_back %||% raw()) > 0) {
     return(TRUE)
   }
 
-  lines_pos <- cache$stream_lines_pos %||% 1L
-  if (length(cache$stream_lines_queue %||% character()) - lines_pos + 1L > 0L) {
-    return(TRUE)
-  }
-
-  boundary_pos <- cache$boundary_pos %||% 1L
-  if (
-    !is.null(cache$boundary_queue) &&
-      boundary_pos <= length(cache$boundary_queue)
-  ) {
-    return(TRUE)
-  }
-
-  FALSE
+  pos <- cache$block_pos %||% 1L
+  pos <= length(cache$block_queue %||% list())
 }
 
 #' @export
@@ -389,59 +308,47 @@ find_event_boundaries <- function(buffer) {
   ends[keep] + 1L
 }
 
-# How many bytes to read from the connection at a time when streaming events.
-boundary_chunk_bytes <- 64L * 1024L
-
-# Reads from a streaming response and splits it into "blocks" delimited by
-# boundaries found by `find_boundaries`. Like `resp_stream_lines()`, a whole
-# chunk is split at once and the resulting blocks are held in a queue, so that
-# reading events one at a time doesn't repeatedly rescan and recopy the buffer.
+# Reads from a streaming response and uses `splitter` to divide the byte stream
+# into blocks, returning up to `n` of them in a list. The byte-level details -
+# where blocks begin and end, how trailing bytes are handled at the end of the
+# stream, and how many bytes to read at a time - all live in the `splitter`
+# (a `StreamSplitter`), so that this loop can be shared by lines, server-sent
+# events, and AWS events.
 #
-# @param max_size Maximum number of bytes to buffer before a boundary is found
-#   before throwing an error.
-# @param find_boundaries A function that takes a raw vector and returns an
-#   integer vector of split points: the position one past the end of each
-#   complete block in the buffer.
-# @param include_trailer If TRUE, at the end of the response, if there are
-#   bytes after the last boundary, then return those bytes; if FALSE, then those
-#   bytes are discarded with a warning.
-resp_boundary_pushback <- function(
-  resp,
-  max_size,
-  find_boundaries,
-  include_trailer
-) {
-  check_streaming_response(resp)
-  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
-
+# A whole chunk is split at once and the resulting blocks are held in a queue
+# served by an index pointer, so that reading a few blocks at a time doesn't
+# repeatedly rescan and recopy the buffered bytes.
+stream_pull <- function(resp, n, splitter, max_size) {
   cache <- resp$cache
+  queue <- cache$block_queue %||% list()
+  pos <- cache$block_pos %||% 1L
 
-  # Serve a previously-decoded block if one is queued.
-  queue <- cache$boundary_queue
-  pos <- cache$boundary_pos %||% 1L
-  if (!is.null(queue) && pos <= length(queue)) {
-    block <- queue[[pos]]
-    if (pos + 1L > length(queue)) {
-      cache$boundary_queue <- NULL
-      cache$boundary_pos <- 1L
-    } else {
-      cache$boundary_pos <- pos + 1L
-    }
-    return(block)
-  }
-
+  # Accumulate served slices in a list and flatten once at the end, so serving
+  # many blocks (e.g. `lines = Inf`) doesn't repeatedly recopy a growing vector.
+  serve <- list()
+  n_out <- 0L
   repeat {
-    # Don't read more than one byte past the size limit; the extra byte lets us
-    # detect that the limit has been exceeded.
-    cap <- if (is.finite(max_size)) {
-      max(max_size - length(cache$push_back %||% raw()) + 1L, 1L)
-    } else {
-      boundary_chunk_bytes
+    # Serve whatever is already queued.
+    available <- length(queue) - pos + 1L
+    if (available > 0L) {
+      take <- min(available, n - n_out)
+      serve[[length(serve) + 1L]] <- queue[pos:(pos + take - 1L)]
+      pos <- pos + take
+      n_out <- n_out + take
     }
-    chunk <- resp$body$read(min(boundary_chunk_bytes, cap))
-    buffer <- c(cache$push_back %||% raw(), chunk)
+    if (n_out >= n) {
+      break
+    }
+
+    # The queue is exhausted; combine any buffered bytes with a fresh read and
+    # split the next batch of blocks. We always reparse the buffered bytes (not
+    # just freshly read ones), because data may have been buffered by an earlier
+    # call that didn't find a complete block.
+    push_back <- cache$push_back %||% raw()
+    chunk <- resp$body$read(splitter$read_cap(length(push_back), max_size))
+    buffer <- c(push_back, chunk)
     if (length(buffer) == 0L) {
-      return(NULL)
+      break
     }
 
     if (length(chunk) > 0L && resp_stream_show_buffer(resp)) {
@@ -453,58 +360,165 @@ resp_boundary_pushback <- function(
       )
     }
 
-    splits <- find_boundaries(buffer)
-    if (length(splits) > 0L) {
+    # Keep the full buffer in place so an over-size error is reproducible.
+    cache$push_back <- buffer
+    parsed <- splitter$split(buffer, max_size)
+    cache$push_back <- parsed$remainder
+
+    if (length(parsed$blocks) > 0L) {
+      queue <- parsed$blocks
+      pos <- 1L
+      next
+    }
+
+    # No complete block available from the current buffer.
+    if (length(chunk) == 0L) {
+      if (resp$body$is_complete()) {
+        # The stream has ended; let the splitter flush any trailing bytes.
+        final <- splitter$finish(cache$push_back %||% raw())
+        if (length(final) > 0L) {
+          serve[[length(serve) + 1L]] <- final
+        }
+        cache$push_back <- raw()
+      }
+      # Either EOF, or no data currently available (non-blocking).
+      break
+    }
+    # We read new bytes but still don't have a complete block; loop to read more.
+  }
+
+  # Drop the queue once it's been fully served, so its blocks can be freed.
+  if (pos > length(queue)) {
+    queue <- list()
+    pos <- 1L
+  }
+  cache$block_queue <- queue
+  cache$block_pos <- pos
+
+  unlist(serve, recursive = FALSE, use.names = FALSE)
+}
+
+# A `StreamSplitter` knows how to divide the byte stream of a particular format
+# into blocks. `stream_pull()` handles the connection reads and queueing and
+# delegates the format-specific decisions to a subclass.
+StreamSplitter <- R6::R6Class(
+  "StreamSplitter",
+  public = list(
+    # Divide `buffer` into a list of complete `blocks` plus a raw `remainder`
+    # of trailing bytes that don't yet form a complete block. May throw if a
+    # block would exceed `max_size`.
+    split = function(buffer, max_size) {
+      cli::cli_abort("Not implemented.", .internal = TRUE)
+    },
+    # Emit any final blocks once the stream has ended with `remainder` bytes
+    # left over after the last complete block.
+    finish = function(remainder) {
+      list()
+    },
+    # How many bytes to read from the connection next, given the number of
+    # bytes already buffered in `push_back`.
+    read_cap = function(push_back, max_size) {
+      stream_chunk_bytes
+    }
+  )
+)
+
+# Splits a stream into blocks separated by boundaries located by
+# `find_boundaries()`, which takes a raw vector and returns an integer vector
+# of split points: the position one past the end of each complete block.
+BoundarySplitter <- R6::R6Class(
+  "BoundarySplitter",
+  inherit = StreamSplitter,
+  public = list(
+    find_boundaries = NULL,
+    # If TRUE, bytes after the last boundary at the end of the stream are
+    # returned as a final block; if FALSE, they're discarded with a warning.
+    include_trailer = FALSE,
+    initialize = function(find_boundaries, include_trailer = FALSE) {
+      self$find_boundaries <- find_boundaries
+      self$include_trailer <- include_trailer
+    },
+    split = function(buffer, max_size) {
+      splits <- self$find_boundaries(buffer)
+      if (length(splits) == 0L) {
+        if (length(buffer) > max_size) {
+          stop_stream_size(max_size)
+        }
+        return(list(blocks = list(), remainder = buffer))
+      }
       starts <- c(1L, splits[-length(splits)])
       blocks <- lapply(seq_along(splits), function(i) {
         buffer[starts[i]:(splits[i] - 1L)]
       })
       last <- splits[length(splits)]
-      cache$push_back <- if (last > length(buffer)) {
+      remainder <- if (last > length(buffer)) {
         raw()
       } else {
         buffer[last:length(buffer)]
       }
-      if (length(blocks) > 1L) {
-        cache$boundary_queue <- blocks
-        cache$boundary_pos <- 2L
+      list(blocks = blocks, remainder = remainder)
+    },
+    finish = function(remainder) {
+      if (length(remainder) == 0L) {
+        return(list())
       }
-      return(blocks[[1L]])
-    }
-
-    # No complete block in the buffer.
-    if (length(buffer) > max_size) {
-      # Keep the buffer in place, so that if the user tries again they'll get
-      # the same error rather than reading the stream having missed bytes.
-      cache$push_back <- buffer
-      cli::cli_abort(
-        "Streaming read exceeded size limit of {max_size}",
-        class = "httr2_streaming_error"
-      )
-    }
-
-    if (length(chunk) == 0) {
-      if (resp$body$is_complete()) {
-        # We've truly reached the end of the connection; no more data is coming.
-        if (include_trailer) {
-          cache$push_back <- raw()
-          return(buffer)
-        } else {
-          cli::cli_warn("Premature end of input; ignoring final partial chunk")
-          cache$push_back <- raw()
-          return(NULL)
-        }
+      if (self$include_trailer) {
+        list(remainder)
       } else {
-        # More data might come later; store the buffer and return NULL.
-        cache$push_back <- buffer
-        return(NULL)
+        cli::cli_warn("Premature end of input; ignoring final partial chunk")
+        list()
+      }
+    },
+    read_cap = function(push_back, max_size) {
+      # Don't read more than one byte past the size limit; the extra byte lets
+      # us detect that a single block has exceeded the limit.
+      if (is.finite(max_size)) {
+        min(stream_chunk_bytes, max(max_size - push_back + 1L, 1L))
+      } else {
+        stream_chunk_bytes
       }
     }
+  )
+)
 
-    # More data was received but no complete block yet; loop to read more.
-    cache$push_back <- buffer
-  }
-}
+# Splits a stream into lines of text. Unlike `BoundarySplitter`, this carries
+# state across calls: a trailing bare CR may be the first half of a CRLF split
+# across reads, so `eat_lf` records that a leading LF should be dropped next
+# time (see `stream_split_lines()`).
+LineSplitter <- R6::R6Class(
+  "LineSplitter",
+  inherit = StreamSplitter,
+  public = list(
+    encoding = NULL,
+    warn = TRUE,
+    initialize = function(encoding, warn = TRUE) {
+      self$encoding <- encoding
+      self$warn <- warn
+    },
+    split = function(buffer, max_size) {
+      parsed <- stream_split_lines(
+        buffer,
+        encoding = self$encoding,
+        eat_lf = private$eat_lf,
+        max_size = max_size
+      )
+      private$eat_lf <- parsed$eat_lf
+      list(blocks = as.list(parsed$lines), remainder = parsed$remainder)
+    },
+    finish = function(remainder) {
+      if (length(remainder) == 0L) {
+        return(list())
+      }
+      if (self$warn) {
+        cli::cli_warn("incomplete final line found")
+      }
+      list(stream_decode(remainder, self$encoding))
+    }
+  ),
+  private = list(
+    eat_lf = FALSE
+  )
+)
 
 # https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation
 parse_event <- function(event_data) {

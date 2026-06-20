@@ -2,16 +2,19 @@
 #' @rdname resp_stream_raw
 #' @order 2
 resp_stream_aws <- function(resp, max_size = Inf) {
-  event_bytes <- resp_boundary_pushback(
-    resp = resp,
-    max_size = max_size,
-    find_boundaries = find_aws_event_boundaries,
-    include_trailer = FALSE
-  )
+  check_streaming_response(resp)
+  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
-  if (is.null(event_bytes)) {
+  splitter <- env_cache(
+    resp$cache,
+    "boundary_splitter",
+    BoundarySplitter$new(find_aws_event_boundaries)
+  )
+  blocks <- stream_pull(resp, 1, splitter, max_size)
+  if (length(blocks) == 0L) {
     return()
   }
+  event_bytes <- blocks[[1L]]
 
   event <- parse_aws_event(event_bytes)
   if (resp_stream_show_body(resp)) {
