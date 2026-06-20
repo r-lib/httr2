@@ -185,25 +185,6 @@ test_that("stream_pull() keeps size errors reproducible on retry", {
 })
 
 test_that("stream_pull() preserves state when splitting fails", {
-  FlakySplitter <- R6::R6Class(
-    "FlakySplitter",
-    inherit = StreamSplitter,
-    public = list(
-      failed = FALSE,
-      split = function(buffer) {
-        if (!self$failed) {
-          self$failed <- TRUE
-          cli::cli_abort("Failed to split.")
-        }
-        list(
-          blocks = list(buffer),
-          remainder = raw(),
-          sizes = length(buffer)
-        )
-      }
-    )
-  )
-
   resp <- local_streaming_response(charToRaw("abc"))
   splitter <- FlakySplitter$new()
 
@@ -213,50 +194,8 @@ test_that("stream_pull() preserves state when splitting fails", {
 })
 
 test_that("stream_pull() preserves queued blocks when a later split fails", {
-  ByteBody <- R6::R6Class(
-    "ByteBody",
-    inherit = StreamingBody,
-    public = list(
-      initialize = function(bytes) {
-        private$bytes <- bytes
-      },
-      read = function(n) {
-        if (length(private$bytes) == 0L) {
-          return(raw())
-        }
-        out <- private$bytes[[1L]]
-        private$bytes <- private$bytes[-1L]
-        out
-      },
-      is_open = function() TRUE,
-      is_complete = function() length(private$bytes) == 0L,
-      close = function() invisible()
-    ),
-    private = list(
-      bytes = NULL
-    )
-  )
-  FlakySplitter <- R6::R6Class(
-    "FlakyQueuedSplitter",
-    inherit = StreamSplitter,
-    public = list(
-      failed = FALSE,
-      split = function(buffer) {
-        if (identical(buffer, charToRaw("b")) && !self$failed) {
-          self$failed <- TRUE
-          cli::cli_abort("Failed to split.")
-        }
-        list(
-          blocks = list(buffer),
-          remainder = raw(),
-          sizes = length(buffer)
-        )
-      }
-    )
-  )
-
   resp <- response(body = ByteBody$new(charToRaw("ab")))
-  splitter <- FlakySplitter$new()
+  splitter <- FlakySplitter$new(charToRaw("b"))
 
   expect_snapshot(stream_pull(resp, Inf, splitter, Inf), error = TRUE)
   expect_equal(
