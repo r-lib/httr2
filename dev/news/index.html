@@ -47,7 +47,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="httr2-development-version">httr2 (development version)<a class="anchor" aria-label="anchor" href="#httr2-development-version"></a></h2>
-<ul><li>
+<ul><li>Mocked and cached responses now include the originating request in <code>resp$request</code>, just like real responses (<a href="https://github.com/jonthegeek" class="external-link">@jonthegeek</a>, <a href="https://github.com/r-lib/httr2/issues/841" class="external-link">#841</a>).</li>
+<li>
 <code><a href="../reference/req_cache.html">req_cache()</a></code> no longer errors when a request is first performed with <code>path</code> then later without it (<a href="https://github.com/r-lib/httr2/issues/840" class="external-link">#840</a>).</li>
 <li>
 <code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> gains a <code>pkce</code> argument to enable Proof Key for Code Exchange, matching <code><a href="../reference/req_oauth_device.html">oauth_flow_device()</a></code> (<a href="https://github.com/r-lib/httr2/issues/834" class="external-link">#834</a>).</li>

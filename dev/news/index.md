@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+- Mocked and cached responses now include the originating request in
+  `resp$request`, just like real responses
+  ([@jonthegeek](https://github.com/jonthegeek),
+  [\#841](https://github.com/r-lib/httr2/issues/841)).
 - [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md) no
   longer errors when a request is first performed with `path` then later
   without it ([\#840](https://github.com/r-lib/httr2/issues/840)).
