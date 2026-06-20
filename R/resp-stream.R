@@ -133,7 +133,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
     # just freshly read ones), because data may have been buffered by an earlier
     # call that didn't find a complete block.
     push_back <- cache$push_back %||% raw()
-    if (length(push_back) > splitter$max_remainder_size(max_size)) {
+    if (length(push_back) > splitter$max_buffer_size(max_size)) {
       stop_stream_size(max_size)
     }
     chunk <- resp$body$read(splitter$read_cap(push_back, max_size))
@@ -159,7 +159,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
     if (any(parsed$sizes > max_size)) {
       stop_stream_size(max_size)
     }
-    if (length(parsed$remainder) > splitter$max_remainder_size(max_size)) {
+    if (length(parsed$remainder) > splitter$max_buffer_size(max_size)) {
       stop_stream_size(max_size)
     }
     cache$push_back <- parsed$remainder
@@ -211,7 +211,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
 StreamSplitter <- R6::R6Class(
   "StreamSplitter",
   public = list(
-    delimiter_size = 0L,
+    max_delimiter_size = 0L,
     # Divide `buffer` into complete `blocks`, their wire `sizes`, and a raw
     # `remainder` of trailing bytes that don't yet form a complete block. Size
     # limits are enforced by `stream_pull()`.
@@ -221,8 +221,8 @@ StreamSplitter <- R6::R6Class(
     },
     # Maximum size of an incomplete block, including the longest possible
     # partial delimiter.
-    max_remainder_size = function(max_size) {
-      max_size + max(self$delimiter_size - 1L, 0L)
+    max_buffer_size = function(max_size) {
+      max_size + max(self$max_delimiter_size - 1L, 0L)
     },
     # Emit any final blocks once the stream has ended with `remainder` bytes
     # left over after the last complete block.
@@ -236,7 +236,7 @@ StreamSplitter <- R6::R6Class(
     # a format-specific delimiter prefix.
     read_cap = function(push_back, max_size) {
       if (is.finite(max_size)) {
-        remaining <- self$max_remainder_size(max_size) - length(push_back)
+        remaining <- self$max_buffer_size(max_size) - length(push_back)
         min(stream_chunk_bytes, max(remaining + 1L, 1L))
       } else {
         stream_chunk_bytes
@@ -258,11 +258,11 @@ BoundarySplitter <- R6::R6Class(
     initialize = function(
       find_boundaries,
       block_size = length,
-      delimiter_size = 0L
+      max_delimiter_size = 0L
     ) {
       self$find_boundaries <- find_boundaries
       self$block_size <- block_size
-      self$delimiter_size <- delimiter_size
+      self$max_delimiter_size <- max_delimiter_size
     },
     split = function(buffer) {
       splits <- self$find_boundaries(buffer)

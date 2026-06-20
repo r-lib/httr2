@@ -46,7 +46,7 @@ LineSplitter <- R6::R6Class(
   inherit = StreamSplitter,
   public = list(
     encoding = NULL,
-    delimiter_size = 2L,
+    max_delimiter_size = 2L,
     initialize = function(encoding) {
       self$encoding <- encoding
     },

@@ -13,7 +13,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
     BoundarySplitter$new(
       find_event_boundaries,
       block_size = sse_block_size,
-      delimiter_size = 4L
+      max_delimiter_size = 4L
     )
   )
 
