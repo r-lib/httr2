@@ -58,6 +58,8 @@
 <li>
 <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (<a href="https://github.com/pedrobtz" class="external-link">@pedrobtz</a>, <a href="https://github.com/r-lib/httr2/issues/829" class="external-link">#829</a>).</li>
 <li>
+<code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> now uses its <code>claim</code> as the basis for a separate client assertion when the <code>client</code> also authenticates with <code>auth = "jwt_sig"</code>, so you no longer need to supply the claim twice. As a result, <code>oauth_client(auth = "jwt_sig")</code> no longer requires a <code>claim</code> in <code>auth_params</code> at creation time (<a href="https://github.com/r-lib/httr2/issues/825" class="external-link">#825</a>).</li>
+<li>
 <code><a href="../reference/iterate_with_offset.html">iterate_with_link_url()</a></code> and <code><a href="../reference/resp_link_url.html">resp_link_url()</a></code> no longer error on <code>Link</code> headers that contain a trailing comma (<a href="https://github.com/r-lib/httr2/issues/804" class="external-link">#804</a>).</li>
 <li>
 <code><a href="../reference/last_response.html">last_response_json()</a></code> now works with content-types that end with <code>+json</code>, e.g., <code>application/problem+json</code> (<a href="https://github.com/cgiachalis" class="external-link">@cgiachalis</a>, <a href="https://github.com/r-lib/httr2/issues/782" class="external-link">#782</a>).</li>

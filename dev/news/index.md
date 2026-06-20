@@ -30,6 +30,13 @@
   token requests when using the default localhost redirect URL
   ([@pedrobtz](https://github.com/pedrobtz),
   [\#829](https://github.com/r-lib/httr2/issues/829)).
+- [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/dev/reference/req_oauth_bearer_jwt.md)
+  now uses its `claim` as the basis for a separate client assertion when
+  the `client` also authenticates with `auth = "jwt_sig"`, so you no
+  longer need to supply the claim twice. As a result,
+  `oauth_client(auth = "jwt_sig")` no longer requires a `claim` in
+  `auth_params` at creation time
+  ([\#825](https://github.com/r-lib/httr2/issues/825)).
 - [`iterate_with_link_url()`](https://httr2.r-lib.org/dev/reference/iterate_with_offset.md)
   and
   [`resp_link_url()`](https://httr2.r-lib.org/dev/reference/resp_link_url.md)

@@ -54,6 +54,11 @@ oauth_flow_bearer_jwt(
   function which should call
   [`jwt_claim()`](https://httr2.r-lib.org/dev/reference/jwt_claim.md).
 
+  If `client` authenticates itself with `auth = "jwt_sig"`, this `claim`
+  is used as the basis for a separate client assertion unless the client
+  supplies its own `claim` in `auth_params`. The client assertion claim
+  uses `client$id` as its `sub`.
+
 - signature:
 
   Function use to sign `claim`, e.g.

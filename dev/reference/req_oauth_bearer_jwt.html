@@ -104,7 +104,11 @@ automated environments.</p>
 apart from <code>iat</code>, <code>nbf</code>, <code>exp</code>, or <code>jti</code>, provide a list and
 <code><a href="jwt_claim.html">jwt_claim()</a></code> will automatically fill in the dynamic components.
 If other components need to vary, you can instead provide a zero-argument
-callback function which should call <code><a href="jwt_claim.html">jwt_claim()</a></code>.</p></dd>
+callback function which should call <code><a href="jwt_claim.html">jwt_claim()</a></code>.</p>
+<p>If <code>client</code> authenticates itself with <code>auth = "jwt_sig"</code>, this <code>claim</code> is
+used as the basis for a separate client assertion unless the client
+supplies its own <code>claim</code> in <code>auth_params</code>. The client assertion claim uses
+<code>client$id</code> as its <code>sub</code>.</p></dd>
 
 
 <dt id="arg-signature">signature<a class="anchor" aria-label="anchor" href="#arg-signature"></a></dt>
