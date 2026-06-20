@@ -51,8 +51,14 @@ test_that("reuses claim for jwt_sig client auth (#825)", {
     oauth_client_get_token = function(client, ...) captured <<- client
   )
 
-  oauth_flow_bearer_jwt(client, claim = jwt_claim())
+  claim <- jwt_claim(iss = "issuer", sub = "user", aud = "audience")
+  oauth_flow_bearer_jwt(client, claim = claim)
+
   expect_s3_class(captured$auth_params$claim, "jwt_claim")
+  expect_equal(captured$auth_params$claim$iss, "issuer")
+  expect_equal(captured$auth_params$claim$sub, "id")
+  expect_equal(captured$auth_params$claim$aud, "audience")
+  expect_equal(captured$auth_params$claim$jti == claim$jti, FALSE)
 })
 
 test_that("validates inputs", {

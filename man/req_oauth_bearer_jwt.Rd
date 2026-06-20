@@ -36,8 +36,9 @@ If other components need to vary, you can instead provide a zero-argument
 callback function which should call \code{jwt_claim()}.
 
 If \code{client} authenticates itself with \code{auth = "jwt_sig"}, this \code{claim} is
-reused for the client assertion unless the client supplies its own \code{claim}
-in \code{auth_params}.}
+used as the basis for a separate client assertion unless the client
+supplies its own \code{claim} in \code{auth_params}. The client assertion claim uses
+\code{client$id} as its \code{sub}.}
 
 \item{signature}{Function use to sign \code{claim}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
 

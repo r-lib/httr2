@@ -89,3 +89,12 @@ as_jwt_claim <- function(claim, error_call = caller_env()) {
     )
   }
 }
+
+as_jwt_client_claim <- function(claim, client_id, error_call = caller_env()) {
+  claim <- as_jwt_claim(claim, error_call = error_call)
+  claim <- unclass(claim)
+  claim$sub <- client_id
+  claim$jti <- NULL
+
+  exec("jwt_claim", !!!claim)
+}
