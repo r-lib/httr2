@@ -49,6 +49,15 @@ test_that("can parse links", {
   )
 })
 
+test_that("parse_link() tolerates a trailing comma", {
+  header <- '<https://example.com/1>; rel="next",'
+
+  expect_equal(
+    parse_link(header),
+    list(list(url = "https://example.com/1", rel = "next"))
+  )
+})
+
 # Helpers -----------------------------------------------------------------
 
 test_that("parse_in_half handles common cases", {
