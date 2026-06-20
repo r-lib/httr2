@@ -207,16 +207,30 @@ test_that("stream_split_lines() treats a bare CR as an ordinary character", {
   expect_equal(out$remainder, raw())
 })
 
-test_that("stream_split_lines() enforces max_size", {
-  # Buffer with no line ending yet.
+test_that("stream_split_lines() errors when no line ending fits in max_size", {
   expect_snapshot(
     error = TRUE,
     stream_split_lines(charToRaw("aaaaa"), "UTF-8", max_size = 3)
   )
+})
 
-  # A complete line that is itself too long.
-  expect_snapshot(
-    error = TRUE,
-    stream_split_lines(charToRaw("aaaaa\n"), "UTF-8", max_size = 3)
+test_that("resp_stream_lines() enforces max_size on an over-long line", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(paste(rep_len("0", 1000), collapse = ""))
+  })
+
+  resp1 <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp1))
+  wait_for_http_data(resp1)
+  expect_error(
+    resp_stream_lines(resp1, max_size = 999),
+    class = "httr2_streaming_error"
+  )
+
+  resp2 <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp2))
+  expect_error(
+    resp_stream_lines(resp2, max_size = 999),
+    class = "httr2_streaming_error"
   )
 })

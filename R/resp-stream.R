@@ -203,9 +203,15 @@ StreamSplitter <- R6::R6Class(
       list()
     },
     # How many bytes to read from the connection next, given the number of
-    # bytes already buffered in `push_back`.
+    # bytes already buffered in `push_back`. Don't read more than one byte past
+    # the size limit; the extra byte lets us detect that a single block has
+    # exceeded the limit before it would otherwise complete.
     read_cap = function(push_back, max_size) {
-      stream_chunk_bytes
+      if (is.finite(max_size)) {
+        min(stream_chunk_bytes, max(max_size - push_back + 1L, 1L))
+      } else {
+        stream_chunk_bytes
+      }
     }
   )
 )
@@ -249,15 +255,6 @@ BoundarySplitter <- R6::R6Class(
       }
       cli::cli_warn("Premature end of input; ignoring final partial chunk")
       list()
-    },
-    read_cap = function(push_back, max_size) {
-      # Don't read more than one byte past the size limit; the extra byte lets
-      # us detect that a single block has exceeded the limit.
-      if (is.finite(max_size)) {
-        min(stream_chunk_bytes, max(max_size - push_back + 1L, 1L))
-      } else {
-        stream_chunk_bytes
-      }
     }
   )
 )

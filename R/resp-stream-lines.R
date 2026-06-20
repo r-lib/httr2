@@ -87,15 +87,6 @@ stream_split_lines <- function(buffer, encoding, max_size) {
   region <- buffer[seq_len(cut - 1L)]
   remainder <- buffer[seq2(cut, length(buffer))]
 
-  # Enforce the per-line size limit (the span includes the line ending bytes).
-  if (is.finite(max_size)) {
-    line_starts <- c(1L, ends[-length(ends)] + 1L)
-    spans <- (ends + 1L) - line_starts
-    if (max(spans, length(remainder)) > max_size) {
-      stop_stream_size(max_size)
-    }
-  }
-
   text <- stream_decode(region, encoding)
   list(
     blocks = as.list(strsplit(text, "\r\n|\n")[[1]]),
