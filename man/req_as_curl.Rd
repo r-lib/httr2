@@ -4,20 +4,25 @@
 \alias{req_as_curl}
 \title{Translate an httr2 request to a curl command}
 \usage{
-req_as_curl(req)
+req_as_curl(req, obfuscated = c("redact", "reveal"))
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
+
+\item{obfuscated}{Form and JSON bodies can contain \link{obfuscated} values.
+This argument control what happens to them: should they be removed,
+redacted, or revealed.}
 }
 \value{
-A character string containing the curl command.
+A string containing the curl command, with class \code{httr2_cmd} so
+it prints nicely.
 }
 \description{
-Convert an httr2 request object to equivalent curl command line syntax.
-This is useful for debugging, sharing requests, or converting to other tools.
+Convert an httr2 request object to the equivalent curl command line call.
+This is useful for debugging, for sharing a request with someone who doesn't
+use R, or for handing off to another tool.
 }
 \examples{
-\dontrun{
 # Basic GET request
 request("https://httpbin.org/get") |>
   req_as_curl()
@@ -27,11 +32,10 @@ request("https://httpbin.org/post") |>
   req_body_json(list(name = "value")) |>
   req_as_curl()
 
-# POST with form data
-request("https://httpbin.org/post") |>
-  req_body_form(name = "value") |>
-  req_as_curl()
-}
+# Secrets are redacted by default, but can be revealed
+request("https://example.com") |>
+  req_headers_redacted(Authorization = "secret") |>
+  req_as_curl(obfuscated = "reveal")
 }
 \seealso{
 \code{\link[=curl_translate]{curl_translate()}} to translate in the other direction.

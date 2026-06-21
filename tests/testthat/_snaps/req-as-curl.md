@@ -93,8 +93,9 @@
     Code
       req_as_curl(req_options(request("https://hb.cran.dev/get"), timeout = 30,
       verbose = TRUE, ssl_verifypeer = FALSE))
-    Message
-      ! Unable to translate option "ssl_verifypeer"
+    Condition
+      Warning:
+      Can't translate option "ssl_verifypeer".
     Output
       curl --max-time 30 \
         --verbose \
@@ -116,7 +117,16 @@
       req_as_curl(req_headers(request("https://hb.cran.dev/get"), Authorization = obfuscated(
         "ZdYJeG8zwISodg0nu4UxBhs")))
     Output
-      curl -H "Authorization: ZdYJeG8zwISodg0nu4UxBhs" \
+      curl -H "Authorization: <REDACTED>" \
+        "https://hb.cran.dev/get"
+
+# req_as_curl() can reveal obfuscated values
+
+    Code
+      req_as_curl(req_headers_redacted(request("https://hb.cran.dev/get"),
+      Authorization = "secret-token"), obfuscated = "reveal")
+    Output
+      curl -H "Authorization: secret-token" \
         "https://hb.cran.dev/get"
 
 # req_as_curl() works with obfuscated values in JSON body
@@ -127,7 +137,7 @@
     Output
       curl -X POST \
         -H "Content-Type: application/json" \
-        -d '{"username":"test","password":"y"}' \
+        -d '{"username":"test","password":"<REDACTED>"}' \
         "https://hb.cran.dev/post"
 
 # req_as_curl() works with obfuscated values in form body
@@ -138,7 +148,7 @@
     Output
       curl -X POST \
         -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "username=test&password=y" \
+        -d "username=test&password=<REDACTED>" \
         "https://hb.cran.dev/post"
 
 # req_as_curl() works with complex requests
@@ -152,7 +162,7 @@
     Output
       curl -X POST \
         -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: ZdYJeG8zwISodg0nu4UxBhs" \
+        -H "Authorization: <REDACTED>" \
         -H "User-Agent: MyApp/1.0" \
         --max-time 60 \
         -H "Content-Type: application/json" \
@@ -174,10 +184,58 @@
       Error in `req_as_curl()`:
       ! `req` must be an HTTP request object, not the string "not a request".
 
-# req_options_as_curl() translates known options and warns about others
+# req_as_curl() reads raw bodies from stdin
+
+    Code
+      req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), charToRaw(
+        "test data"), type = "text/plain"))
+    Output
+      curl -X POST \
+        -H "Content-Type: text/plain" \
+        --data-binary "@-" \
+        "https://hb.cran.dev/post"
+
+# an explicit Content-Type header isn't duplicated by the body
+
+    Code
+      req_as_curl(req_body_raw(req_headers(request("https://hb.cran.dev/post"),
+      `Content-Type` = "application/json"), "{}"))
+    Output
+      curl -X POST \
+        -H "Content-Type: application/json" \
+        -d "{}" \
+        "https://hb.cran.dev/post"
+
+# req_options_as_curl() translates each known option
+
+    Code
+      cat(req_options_as_curl(req), sep = "\n")
+    Output
+      --max-time 30
+      --connect-timeout 5
+      --proxy http://proxy.example.com
+      --user-agent "agent"
+      --referer "http://referer.example.com"
+      --location
+      --verbose
+      --cookie-jar "jar.txt"
+      --cookie "file.txt"
+
+# req_options_as_curl() warns about untranslatable options
 
     Code
       out <- req_options_as_curl(req)
-    Message
-      ! Unable to translate option "ssl_verifypeer"
+    Condition
+      Warning:
+      Can't translate option "ssl_verifypeer".
+
+# curl_command() formats zero, one, and many arguments
+
+    Code
+      cat(curl_command(c("-X POST", "-H \"Accept: text/plain\""),
+      "https://example.com"))
+    Output
+      curl -X POST \
+        -H "Accept: text/plain" \
+        "https://example.com"
 

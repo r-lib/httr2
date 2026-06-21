@@ -1,14 +1,16 @@
 #' Translate an httr2 request to a curl command
 #'
-#' Convert an httr2 request object to equivalent curl command line syntax.
-#' This is useful for debugging, sharing requests, or converting to other tools.
+#' Convert an httr2 request object to the equivalent curl command line call.
+#' This is useful for debugging, for sharing a request with someone who doesn't
+#' use R, or for handing off to another tool.
 #'
 #' @inheritParams req_perform
-#' @return A character string containing the curl command.
+#' @inheritParams req_get_body
+#' @return A string containing the curl command, with class `httr2_cmd` so
+#'   it prints nicely.
 #' @seealso [curl_translate()] to translate in the other direction.
 #' @export
 #' @examples
-#' \dontrun{
 #' # Basic GET request
 #' request("https://httpbin.org/get") |>
 #'   req_as_curl()
@@ -18,83 +20,50 @@
 #'   req_body_json(list(name = "value")) |>
 #'   req_as_curl()
 #'
-#' # POST with form data
-#' request("https://httpbin.org/post") |>
-#'   req_body_form(name = "value") |>
-#'   req_as_curl()
-#' }
-req_as_curl <- function(req) {
-  # validate the request
+#' # Secrets are redacted by default, but can be revealed
+#' request("https://example.com") |>
+#'   req_headers_redacted(Authorization = "secret") |>
+#'   req_as_curl(obfuscated = "reveal")
+req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   check_request(req)
+  obfuscated <- arg_match(obfuscated)
 
-  # Extract URL
-  url <- req_get_url(req)
-
-  # use the request's method if it is set, otherwise infer
-  method <- req$method %||%
-    {
-      if (!is.null(req$body$data)) {
-        "POST"
-      } else {
-        "GET"
-      }
-    }
-
-  # we will append to cmd_args to build up the request
-  cmd_args <- c()
-
-  # if the method isn't GET, it needs to be specified with `-X`
-  if (method != "GET") {
-    cmd_args <- c(cmd_args, paste0("-X ", method))
-  }
-
-  # add headers using -H flag, revealing obfuscated values
-  headers <- req_get_headers(req, redacted = "reveal")
-  for (name in names(headers)) {
-    value <- headers[[name]]
-    cmd_args <- c(cmd_args, paste0('-H "', name, ': ', value, '"'))
-  }
-
-  cmd_args <- req_options_as_curl(req, cmd_args)
-  cmd_args <- req_body_as_curl(req, cmd_args)
-
-  # quote the url
-  url_quoted <- sprintf('"%s"', url)
-
-  # if we have no arguments we just paste curl and the url together
-  res <- if (length(cmd_args) == 0) {
-    paste0("curl ", url_quoted)
-  } else {
-    cmd_lines <- paste0(cmd_args, " \\")
-
-    # indent all args except the first
-    cmd_lines[-1] <- paste0("  ", cmd_lines[-1])
-
-    # append the url
-    cmd_lines <- c(cmd_lines, paste0("  ", url_quoted))
-
-    # combine with new line separation for all but first argument
-    res <- paste0(
-      "curl ",
-      cmd_lines[1],
-      "\n",
-      paste0(cmd_lines[-1], collapse = "\n")
-    )
-  }
-
-  structure(res, class = "httr2_cmd")
+  args <- c(
+    req_method_as_curl(req),
+    req_headers_as_curl(req, obfuscated),
+    req_options_as_curl(req),
+    req_body_as_curl(req, obfuscated)
+  )
+  out <- curl_command(args, req_get_url(req))
+  structure(out, class = "httr2_cmd")
 }
 
+req_method_as_curl <- function(req) {
+  method <- req_get_method(req)
+  # curl uses GET by default, so it only needs to be requested explicitly
+  if (method == "GET") {
+    return(NULL)
+  }
+  paste0("-X ", method)
+}
 
-req_options_as_curl <- function(req, cmd_args = c()) {
-  # TODO make introspection function for options
+req_headers_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
+  obfuscated <- arg_match(obfuscated)
+
+  headers <- req_get_headers(req, redacted = obfuscated)
+  if (is_empty(headers)) {
+    return(NULL)
+  }
+  paste0("-H ", dquote(paste0(names(headers), ": ", unlist(headers))))
+}
+
+req_options_as_curl <- function(req) {
   options <- req$options
-  used_opts <- names(options)
 
-  # There's no programmatic mapping between curl's option names (as exposed by
-  # libcurl and stored in the request) and the command line flags, so each
-  # supported option has a hand-written translation. Warn about any others.
-  known_curl_opts <- c(
+  # There's no programmatic mapping between libcurl's option names and the
+  # curl command line flags, so each supported option is translated by hand.
+  # TODO: replace with a `req_get_options()` introspection helper.
+  known_options <- c(
     "timeout",
     "connecttimeout",
     "proxy",
@@ -105,113 +74,90 @@ req_options_as_curl <- function(req, cmd_args = c()) {
     "cookiejar",
     "cookiefile"
   )
-  unknown_opts <- setdiff(used_opts, known_curl_opts)
-  if (length(unknown_opts) > 0) {
-    cli::cli_alert_warning(
-      "Unable to translate option{?s} {.val {unknown_opts}}"
-    )
+  unknown <- setdiff(names(options), known_options)
+  if (length(unknown) > 0) {
+    cli::cli_warn("Can't translate option{?s} {.val {unknown}}.")
   }
 
-  for (name in used_opts) {
+  args <- lapply(names(options), function(name) {
     value <- options[[name]]
-    curl_flag <- switch(
+    switch(
       name,
-      # req_timeout()
-      "timeout" = paste0("--max-time ", value),
-      "connecttimeout" = paste0("--connect-timeout ", value),
-      # req_proxy()
-      "proxy" = paste0("--proxy ", value),
-      # req_user_agent()
-      "useragent" = paste0('--user-agent "', value, '"'),
-      "referer" = paste0('--referer "', value, '"'),
-      # default behaviour of httr2 following redirects rather than
-      # returning a 302 status
-      "followlocation" = if (value) "--location" else NULL,
-      # req_verbose()
-      "verbose" = if (value) "--verbose" else NULL,
+      timeout = paste0("--max-time ", value), # req_timeout()
+      connecttimeout = paste0("--connect-timeout ", value),
+      proxy = paste0("--proxy ", value), # req_proxy()
+      useragent = paste0("--user-agent ", dquote(value)), # req_user_agent()
+      referer = paste0("--referer ", dquote(value)),
+      followlocation = if (value) "--location", # httr2 follows redirects
+      verbose = if (value) "--verbose", # req_verbose()
       # req_cookie_preserve() and req_cookies_set()
-      "cookiejar" = paste0('--cookie-jar "', value, '"'),
-      "cookiefile" = paste0('--cookie "', value, '"')
+      cookiejar = paste0("--cookie-jar ", dquote(value)),
+      cookiefile = paste0("--cookie ", dquote(value))
     )
-    cmd_args <- c(cmd_args, curl_flag)
-  }
-
-  cmd_args
+  })
+  unlist(args)
 }
 
+req_body_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
+  obfuscated <- arg_match(obfuscated)
 
-req_body_as_curl <- function(req, cmd_args) {
-  # extract the body and reveal obfuscated values
-  body <- req_get_body(req, obfuscated = "reveal")
+  body <- req_get_body(req, obfuscated = obfuscated)
+  if (is.null(body)) {
+    return(NULL)
+  }
+  type <- req_get_body_type(req)
 
-  if (rlang::is_null(body)) {
-    return(cmd_args)
+  c(curl_content_type(req, type), curl_body_data(body, type))
+}
+
+# Emit a `Content-Type` header for the body, unless one is already set as a
+# request header (in which case it's emitted by `req_headers_as_curl()`).
+curl_content_type <- function(req, type) {
+  if ("content-type" %in% tolower(names(req_get_headers(req)))) {
+    return(NULL)
   }
 
-  body_type <- req$body$type %||% "empty"
-
-  # if content_type set here we use it
-  content_type <- req$body$content_type
-
-  # if content_type not set we need to infer from body type
-  if (rlang::is_null(content_type) || !nzchar(content_type)) {
-    content_type <- switch(
-      body_type,
-      "json" = "application/json",
-      "form" = "application/x-www-form-urlencoded"
+  content_type <- req$body$content_type %||%
+    switch(
+      type,
+      json = "application/json",
+      form = "application/x-www-form-urlencoded"
     )
+  if (is.null(content_type) || !nzchar(content_type)) {
+    return(NULL)
   }
+  paste0("-H ", dquote(paste0("Content-Type: ", content_type)))
+}
 
-  # if the content-type header is set, use it instead of the type inferred
-  # from the request object
-  headers <- req_get_headers(req)
-  if ("content-type" %in% tolower(names(headers))) {
-    content_type <- headers[["content-type"]]
-  }
-
-  if (!rlang::is_null(content_type)) {
-    cmd_args <- c(
-      cmd_args,
-      paste0('-H "Content-Type: ', content_type, '"')
-    )
-  }
-
-  # add body data
+curl_body_data <- function(body, type) {
   switch(
-    body_type,
-    "string" = {
-      cmd_args <- c(
-        cmd_args,
-        paste0('-d "', gsub('"', '\\"', body), '"')
-      )
-    },
-    "raw" = {
-      # TODO: should the raw bytes be written to a temp file
-      # and be hanlded similarly to file?
-      cmd_args <- c(cmd_args, '--data-binary "@-"')
-    },
-    "file" = {
-      cmd_args <- c(cmd_args, paste0('--data-binary "@', body, '"'))
-    },
-    "json" = {
-      json_data <- jsonlite::toJSON(body, auto_unbox = TRUE)
-      cmd_args <- c(cmd_args, paste0('-d \'', json_data, '\''))
-    },
-    "form" = {
-      form_string <- paste(
-        names(body),
-        body,
-        sep = "=",
-        collapse = "&"
-      )
-      cmd_args <- c(cmd_args, paste0('-d "', form_string, '"'))
-    },
-    "multipart" = {
-      for (name in names(body)) {
-        value <- body[[name]]
-        cmd_args <- c(cmd_args, paste0('-F "', name, '=', value, '"'))
-      }
-    }
+    type,
+    string = paste0("-d ", dquote(gsub('"', '\\"', body))),
+    # raw bodies come from a connection, so read the data from stdin
+    raw = paste0("--data-binary ", dquote("@-")),
+    file = paste0("--data-binary ", dquote(paste0("@", body))),
+    json = paste0("-d '", jsonlite::toJSON(body, auto_unbox = TRUE), "'"),
+    form = paste0(
+      "-d ",
+      dquote(paste(names(body), unlist(body), sep = "=", collapse = "&"))
+    ),
+    multipart = paste0("-F ", dquote(paste0(names(body), "=", unlist(body))))
   )
-  cmd_args
+}
+
+# Assemble curl arguments into a command, placing each argument on its own
+# line continued with a trailing backslash, e.g.
+#   curl -X POST \
+#     -H "Accept: application/json" \
+#     "https://example.com"
+curl_command <- function(args, url) {
+  args <- c(args, dquote(url))
+
+  indent <- c("", rep("  ", length(args) - 1))
+  backslash <- c(rep(" \\", length(args) - 1), "")
+  paste0("curl ", paste0(indent, args, backslash, collapse = "\n"))
+}
+
+dquote <- function(x) {
+  paste0('"', x, '"')
 }

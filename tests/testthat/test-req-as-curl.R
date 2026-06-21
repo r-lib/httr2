@@ -123,6 +123,14 @@ test_that("req_as_curl() works with obfuscated values in headers", {
   })
 })
 
+test_that("req_as_curl() can reveal obfuscated values", {
+  expect_snapshot({
+    request("https://hb.cran.dev/get") |>
+      req_headers_redacted(Authorization = "secret-token") |>
+      req_as_curl(obfuscated = "reveal")
+  })
+})
+
 test_that("req_as_curl() works with obfuscated values in JSON body", {
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
@@ -177,21 +185,84 @@ test_that("req_as_curl() validates input", {
   })
 })
 
-test_that("req_options_as_curl() translates known options and warns about others", {
+test_that("req_as_curl() reads raw bodies from stdin", {
+  expect_snapshot({
+    request("https://hb.cran.dev/post") |>
+      req_body_raw(charToRaw("test data"), type = "text/plain") |>
+      req_as_curl()
+  })
+})
+
+test_that("an explicit Content-Type header isn't duplicated by the body", {
+  expect_snapshot({
+    request("https://hb.cran.dev/post") |>
+      req_headers("Content-Type" = "application/json") |>
+      req_body_raw("{}") |>
+      req_as_curl()
+  })
+})
+
+test_that("req_method_as_curl() only sets the method when it's not GET", {
+  expect_null(req_method_as_curl(request("https://example.com")))
+  expect_equal(
+    req_method_as_curl(req_method(request("https://example.com"), "DELETE")),
+    "-X DELETE"
+  )
+})
+
+test_that("req_headers_as_curl() drops missing headers and reveals secrets", {
+  expect_null(req_headers_as_curl(request("https://example.com")))
+
+  req <- request("https://example.com") |>
+    req_headers_redacted(Authorization = "secret")
+  expect_equal(
+    req_headers_as_curl(req, "redact"),
+    '-H "Authorization: <REDACTED>"'
+  )
+  expect_equal(
+    req_headers_as_curl(req, "reveal"),
+    '-H "Authorization: secret"'
+  )
+})
+
+test_that("req_options_as_curl() translates each known option", {
   req <- request("https://example.com") |>
     req_options(
       timeout = 30,
+      connecttimeout = 5,
+      proxy = "http://proxy.example.com",
+      useragent = "agent",
+      referer = "http://referer.example.com",
       followlocation = TRUE,
-      verbose = FALSE
+      verbose = TRUE,
+      cookiejar = "jar.txt",
+      cookiefile = "file.txt"
     )
-  # followlocation = TRUE produces a flag; verbose = FALSE produces nothing
-  expect_equal(
-    req_options_as_curl(req),
-    c("--max-time 30", "--location")
-  )
+  expect_snapshot(cat(req_options_as_curl(req), sep = "\n"))
+})
 
+test_that("req_options_as_curl() drops disabled flags", {
+  req <- request("https://example.com") |>
+    req_options(followlocation = FALSE, verbose = FALSE)
+  expect_null(req_options_as_curl(req))
+})
+
+test_that("req_options_as_curl() warns about untranslatable options", {
   req <- request("https://example.com") |>
     req_options(ssl_verifypeer = FALSE)
   expect_snapshot(out <- req_options_as_curl(req))
   expect_null(out)
+})
+
+test_that("curl_command() formats zero, one, and many arguments", {
+  expect_equal(
+    curl_command(NULL, "https://example.com"),
+    'curl "https://example.com"'
+  )
+  expect_snapshot(
+    cat(curl_command(
+      c("-X POST", '-H "Accept: text/plain"'),
+      "https://example.com"
+    ))
+  )
 })
