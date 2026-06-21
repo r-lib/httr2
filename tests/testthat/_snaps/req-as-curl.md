@@ -174,3 +174,10 @@
       Error in `req_as_curl()`:
       ! `req` must be an HTTP request object, not the string "not a request".
 
+# req_options_as_curl() translates known options and warns about others
+
+    Code
+      out <- req_options_as_curl(req)
+    Message
+      ! Unable to translate option "ssl_verifypeer"
+

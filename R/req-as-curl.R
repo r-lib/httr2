@@ -5,9 +5,9 @@
 #'
 #' @inheritParams req_perform
 #' @return A character string containing the curl command.
+#' @seealso [curl_translate()] to translate in the other direction.
 #' @export
 #' @examples
-#' @seealso [curl_translate()]
 #' \dontrun{
 #' # Basic GET request
 #' request("https://httpbin.org/get") |>
@@ -48,71 +48,14 @@ req_as_curl <- function(req) {
     cmd_args <- c(cmd_args, paste0("-X ", method))
   }
 
-  # get headers and reveal obfuscated values
+  # add headers using -H flag, revealing obfuscated values
   headers <- req_get_headers(req, redacted = "reveal")
-
-  # if headers are present, add them using -H flag
-  if (!rlang::is_empty(headers)) {
-    for (name in names(headers)) {
-      value <- headers[[name]]
-      cmd_args <- c(cmd_args, paste0('-H "', name, ': ', value, '"'))
-    }
+  for (name in names(headers)) {
+    value <- headers[[name]]
+    cmd_args <- c(cmd_args, paste0('-H "', name, ': ', value, '"'))
   }
 
-  known_curl_opts <- c(
-    "timeout",
-    "connecttimeout",
-    "proxy",
-    "useragent",
-    "referer",
-    "followlocation",
-    "verbose",
-    "cookiejar",
-    "cookiefile"
-  )
-
-  # manage options
-  # TODO make introspection function for options
-  options <- req$options
-
-  # extract names of request's options
-  used_opts <- names(options)
-
-  # identify options that are not known / handled
-  unknown_opts <- !used_opts %in% known_curl_opts
-
-  # if any options are found that are not handled below, emit a message
-  if (any(unknown_opts)) {
-    cli::cli_alert_warning(
-      "Unable to translate option{?s} {.val {used_opts[unknown_opts]}}"
-    )
-  }
-
-  for (name in used_opts) {
-    value <- options[[name]]
-    # convert known options to curl flags other values are ignored
-    curl_flag <- switch(
-      name,
-      # supports req_timeout()
-      "timeout" = paste0("--max-time ", value),
-      "connecttimeout" = paste0("--connect-timeout ", value),
-      # supports req_proxy()
-      "proxy" = paste0("--proxy ", value),
-      # supports req_user_agent()
-      "useragent" = paste0('--user-agent "', value, '"'),
-      "referer" = paste0('--referer "', value, '"'),
-      # supports defualt behavior or httr2 following redirects
-      # rather than returning 302 status
-      "followlocation" = if (value) "--location" else NULL,
-      # support req_verbose()
-      "verbose" = if (value) "--verbose" else NULL,
-      # support req_cookie_preserve() and req_cookies_set()
-      "cookiejar" = paste0('--cookie-jar "', value, '"'),
-      "cookiefile" = paste0('--cookie "', value, '"')
-    )
-    cmd_args <- c(cmd_args, curl_flag)
-  }
-
+  cmd_args <- req_options_as_curl(req, cmd_args)
   cmd_args <- req_body_as_curl(req, cmd_args)
 
   # quote the url
@@ -143,6 +86,60 @@ req_as_curl <- function(req) {
 }
 
 
+req_options_as_curl <- function(req, cmd_args = c()) {
+  # TODO make introspection function for options
+  options <- req$options
+  used_opts <- names(options)
+
+  # There's no programmatic mapping between curl's option names (as exposed by
+  # libcurl and stored in the request) and the command line flags, so each
+  # supported option has a hand-written translation. Warn about any others.
+  known_curl_opts <- c(
+    "timeout",
+    "connecttimeout",
+    "proxy",
+    "useragent",
+    "referer",
+    "followlocation",
+    "verbose",
+    "cookiejar",
+    "cookiefile"
+  )
+  unknown_opts <- setdiff(used_opts, known_curl_opts)
+  if (length(unknown_opts) > 0) {
+    cli::cli_alert_warning(
+      "Unable to translate option{?s} {.val {unknown_opts}}"
+    )
+  }
+
+  for (name in used_opts) {
+    value <- options[[name]]
+    curl_flag <- switch(
+      name,
+      # req_timeout()
+      "timeout" = paste0("--max-time ", value),
+      "connecttimeout" = paste0("--connect-timeout ", value),
+      # req_proxy()
+      "proxy" = paste0("--proxy ", value),
+      # req_user_agent()
+      "useragent" = paste0('--user-agent "', value, '"'),
+      "referer" = paste0('--referer "', value, '"'),
+      # default behaviour of httr2 following redirects rather than
+      # returning a 302 status
+      "followlocation" = if (value) "--location" else NULL,
+      # req_verbose()
+      "verbose" = if (value) "--verbose" else NULL,
+      # req_cookie_preserve() and req_cookies_set()
+      "cookiejar" = paste0('--cookie-jar "', value, '"'),
+      "cookiefile" = paste0('--cookie "', value, '"')
+    )
+    cmd_args <- c(cmd_args, curl_flag)
+  }
+
+  cmd_args
+}
+
+
 req_body_as_curl <- function(req, cmd_args) {
   # extract the body and reveal obfuscated values
   body <- req_get_body(req, obfuscated = "reveal")
@@ -165,14 +162,10 @@ req_body_as_curl <- function(req, cmd_args) {
     )
   }
 
-  # fetch headers for content-type check
+  # if the content-type header is set, use it instead of the type inferred
+  # from the request object
   headers <- req_get_headers(req)
-
-  # if the headers aren't empty AND the content-type header is set
-  # we use that instead of what is inferred from the request object
-  if (
-    !rlang::is_empty(headers) && ("content-type" %in% tolower(names(headers)))
-  ) {
+  if ("content-type" %in% tolower(names(headers))) {
     content_type <- headers[["content-type"]]
   }
 

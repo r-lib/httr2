@@ -2,9 +2,12 @@
 % Please edit documentation in R/req-as-curl.R
 \name{req_as_curl}
 \alias{req_as_curl}
-\title{Translate httr2 request to curl command}
+\title{Translate an httr2 request to a curl command}
 \usage{
-req_as_curl(.req)
+req_as_curl(req)
+}
+\arguments{
+\item{req}{A httr2 \link{request} object.}
 }
 \value{
 A character string containing the curl command.
@@ -13,8 +16,7 @@ A character string containing the curl command.
 Convert an httr2 request object to equivalent curl command line syntax.
 This is useful for debugging, sharing requests, or converting to other tools.
 }
-\seealso{
-\code{\link[=curl_translate]{curl_translate()}}
+\examples{
 \dontrun{
 # Basic GET request
 request("https://httpbin.org/get") |>
@@ -30,4 +32,7 @@ request("https://httpbin.org/post") |>
   req_body_form(name = "value") |>
   req_as_curl()
 }
+}
+\seealso{
+\code{\link[=curl_translate]{curl_translate()}} to translate in the other direction.
 }

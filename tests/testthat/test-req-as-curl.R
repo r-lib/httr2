@@ -176,3 +176,22 @@ test_that("req_as_curl() validates input", {
     req_as_curl("not a request")
   })
 })
+
+test_that("req_options_as_curl() translates known options and warns about others", {
+  req <- request("https://example.com") |>
+    req_options(
+      timeout = 30,
+      followlocation = TRUE,
+      verbose = FALSE
+    )
+  # followlocation = TRUE produces a flag; verbose = FALSE produces nothing
+  expect_equal(
+    req_options_as_curl(req),
+    c("--max-time 30", "--location")
+  )
+
+  req <- request("https://example.com") |>
+    req_options(ssl_verifypeer = FALSE)
+  expect_snapshot(out <- req_options_as_curl(req))
+  expect_null(out)
+})
