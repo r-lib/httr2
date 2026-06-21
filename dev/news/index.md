@@ -4,25 +4,17 @@
 
 - Mocked and cached responses now include the originating request in
   `resp$request`, just like real responses
-  ([@jonthegeek](https://github.com/jonthegeek),
-  [\#841](https://github.com/r-lib/httr2/issues/841)).
-- [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md) no
-  longer errors when a request is first performed with `path` then later
-  without it ([\#840](https://github.com/r-lib/httr2/issues/840)).
-- [`req_oauth_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
-  gains a `pkce` argument to enable Proof Key for Code Exchange,
-  matching
-  [`oauth_flow_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
-  ([\#834](https://github.com/r-lib/httr2/issues/834)).
-- OAuth token refresh now forwards `token_params` from the original
-  flow, so extra token-endpoint parameters (e.g. a `scope` required on
-  the token exchange) are sent on refresh as well as on the initial
-  token request.
-- New
-  [`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md)
-  discovers an OAuth/OpenID Connect issuer’s endpoints from its
-  `.well-known` metadata document
-  ([\#845](https://github.com/r-lib/httr2/issues/845)).
+  ([\#841](https://github.com/r-lib/httr2/issues/841)).
+- [`last_response_json()`](https://httr2.r-lib.org/dev/reference/last_response.md)
+  now works with content-types that end with `+json`,
+  e.g. `application/problem+json`
+  ([@cgiachalis](https://github.com/cgiachalis),
+  [\#782](https://github.com/r-lib/httr2/issues/782)).
+- `oauth_*()` token refresh now forwards `token_params` from the
+  original flow, so extra token-endpoint parameters (e.g. a `scope`
+  required on the token exchange) are sent on refresh as well as on the
+  initial token request
+  ([@simonpcouch](https://github.com/simonpcouch)).
 - [`oauth_client()`](https://httr2.r-lib.org/dev/reference/oauth_client.md)
   gains a `metadata` argument: pass the result of
   [`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md)
@@ -34,6 +26,33 @@
   token requests when using the default localhost redirect URL
   ([@pedrobtz](https://github.com/pedrobtz),
   [\#829](https://github.com/r-lib/httr2/issues/829)).
+- New
+  [`oauth_server_metadata()`](https://httr2.r-lib.org/dev/reference/oauth_server_metadata.md)
+  discovers an OAuth/OpenID Connect issuer’s endpoints from its
+  `.well-known` metadata document
+  ([\#845](https://github.com/r-lib/httr2/issues/845)).
+- [`req_auth_aws_v4()`](https://httr2.r-lib.org/dev/reference/req_auth_aws_v4.md)
+  now correctly signs URLs containing encoded slashes (`%2F`) in path
+  segments, such as ARNs in AWS Bedrock API paths
+  ([@thisisnic](https://github.com/thisisnic),
+  [\#842](https://github.com/r-lib/httr2/issues/842)).
+- [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
+  now creates a valid empty request body when no parameters are provided
+  ([@arcresu](https://github.com/arcresu),
+  [\#836](https://github.com/r-lib/httr2/issues/836)).
+- [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
+  and
+  [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
+  no longer error with “C stack usage is too close to the limit” when
+  given very long string values
+  ([\#805](https://github.com/r-lib/httr2/issues/805)).
+- [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md) no
+  longer errors when a request is first performed with `path` then later
+  without it ([\#840](https://github.com/r-lib/httr2/issues/840)).
+- [`req_error()`](https://httr2.r-lib.org/dev/reference/req_error.md) is
+  now applied to responses retrieved from the cache, so a custom
+  `is_error` callback is respected on cache hits
+  ([\#806](https://github.com/r-lib/httr2/issues/806)).
 - [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/dev/reference/req_oauth_bearer_jwt.md)
   now uses its `claim` as the basis for a separate client assertion when
   the `client` also authenticates with `auth = "jwt_sig"`, so you no
@@ -41,26 +60,21 @@
   `oauth_client(auth = "jwt_sig")` no longer requires a `claim` in
   `auth_params` at creation time
   ([\#825](https://github.com/r-lib/httr2/issues/825)).
-- [`iterate_with_link_url()`](https://httr2.r-lib.org/dev/reference/iterate_with_offset.md)
+- [`req_oauth_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
+  gains a `pkce` argument to enable Proof Key for Code Exchange,
+  matching
+  [`oauth_flow_device()`](https://httr2.r-lib.org/dev/reference/req_oauth_device.md)
+  ([\#834](https://github.com/r-lib/httr2/issues/834)).
+- [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
+  can now enforce multiple rate limits at once: supply a vector to
+  `capacity` (and `fill_time_s`) to create one token bucket per limit,
+  and each request must satisfy all of them
+  ([\#555](https://github.com/r-lib/httr2/issues/555)).
+- [`resp_link_url()`](https://httr2.r-lib.org/dev/reference/resp_link_url.md)
   and
-  [`resp_link_url()`](https://httr2.r-lib.org/dev/reference/resp_link_url.md)
+  [`iterate_with_link_url()`](https://httr2.r-lib.org/dev/reference/iterate_with_offset.md)
   no longer error on `Link` headers that contain a trailing comma
   ([\#804](https://github.com/r-lib/httr2/issues/804)).
-- [`last_response_json()`](https://httr2.r-lib.org/dev/reference/last_response.md)
-  now works with content-types that end with `+json`, e.g.,
-  `application/problem+json`
-  ([@cgiachalis](https://github.com/cgiachalis),
-  [\#782](https://github.com/r-lib/httr2/issues/782)).
-- [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
-  and
-  [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
-  no longer error with “C stack usage is too close to the limit” when
-  given very long string values
-  ([\#805](https://github.com/r-lib/httr2/issues/805)).
-- [`req_body_form()`](https://httr2.r-lib.org/dev/reference/req_body.md)
-  now creates a valid empty request body when no parameters are provided
-  ([@arcresu](https://github.com/arcresu),
-  [\#836](https://github.com/r-lib/httr2/issues/836)).
 - [`resp_stream_aws()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
   now parses `byte`, `short`, and `integer` headers as signed integers,
   matching the AWS event-stream specification (previously they were
@@ -85,20 +99,6 @@
   response of short lines is now around 200x faster and allocates around
   180x less memory)
   ([\#704](https://github.com/r-lib/httr2/issues/704)).
-- [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
-  can now enforce multiple rate limits at once: supply a vector to
-  `capacity` (and `fill_time_s`) to create one token bucket per limit,
-  and each request must satisfy all of them
-  ([\#555](https://github.com/r-lib/httr2/issues/555)).
-- [`req_auth_aws_v4()`](https://httr2.r-lib.org/dev/reference/req_auth_aws_v4.md)
-  now correctly signs URLs containing encoded slashes (`%2F`) in path
-  segments, such as ARNs in AWS Bedrock API paths
-  ([@thisisnic](https://github.com/thisisnic),
-  [\#842](https://github.com/r-lib/httr2/issues/842)).
-- [`req_error()`](https://httr2.r-lib.org/dev/reference/req_error.md) is
-  now applied to responses retrieved from the cache, so a custom
-  `is_error` callback is respected on cache hits
-  ([\#806](https://github.com/r-lib/httr2/issues/806)).
 
 ## httr2 1.2.2
 
