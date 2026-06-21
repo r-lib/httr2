@@ -30,7 +30,6 @@
         value = 123)))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: application/json" \
         -d '{"name":"test","value":123}'
 
@@ -41,7 +40,6 @@
       value = "123"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: application/x-www-form-urlencoded" \
         -d "name=test&value=123"
 
@@ -52,7 +50,6 @@
       value = "123"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -F name=test \
         -F value=123
 
@@ -63,7 +60,6 @@
       type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: text/plain" \
         -d "test data"
 
@@ -73,7 +69,6 @@
       req_as_curl(req_body_file(request("https://hb.cran.dev/post"), path, type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: text/plain" \
         --data-binary @<tempfile>
 
@@ -84,7 +79,6 @@
       type = "application/vnd.api+json"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: application/vnd.api+json" \
         -d '{"test":"data"}'
 
@@ -136,7 +130,6 @@
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: application/json" \
         -d '{"username":"test","password":"<REDACTED>"}'
 
@@ -147,7 +140,6 @@
       password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: application/x-www-form-urlencoded" \
         -d "username=test&password=<REDACTED>"
 
@@ -161,7 +153,6 @@
       timeout = 60))
     Output
       curl https://api.github.com/user/repos \
-        -X POST \
         -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: <REDACTED>" \
         -H "User-Agent: MyApp/1.0" \
@@ -191,7 +182,6 @@
         "test data"), type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: text/plain" \
         --data-binary @-
 
@@ -202,7 +192,6 @@
       `Content-Type` = "application/json"), "{}"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
         -H "Content-Type: application/json" \
         -d "{}"
 

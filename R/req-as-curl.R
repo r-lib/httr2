@@ -28,12 +28,13 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   check_request(req)
   obfuscated <- arg_match(obfuscated)
 
+  body <- req_body_as_curl(req, obfuscated)
   args <- c(
     dquote(req_get_url(req)),
-    req_method_as_curl(req),
+    req_method_as_curl(req, has_body = !is.null(body)),
     req_headers_as_curl(req, obfuscated),
     req_options_as_curl(req),
-    req_body_as_curl(req, obfuscated)
+    body
   )
   indent <- c("", rep("  ", length(args) - 1))
   backslash <- c(rep(" \\", length(args) - 1), "")
@@ -42,12 +43,13 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   structure(out, class = "httr2_cmd")
 }
 
-req_method_as_curl <- function(req) {
+req_method_as_curl <- function(req, has_body = FALSE) {
   method <- req_get_method(req)
-  if (method == "GET") {
-    return(NULL)
+  if (method == "GET" || (method == "POST" && has_body)) {
+    NULL
+  } else {
+    paste0("-X ", method)
   }
-  paste0("-X ", method)
 }
 
 req_headers_as_curl <- function(req, obfuscated = c("redact", "reveal")) {

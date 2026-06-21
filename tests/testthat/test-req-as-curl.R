@@ -215,11 +215,20 @@ test_that("req_as_curl() quotes the URL only when needed", {
   )
 })
 
-test_that("req_method_as_curl() only sets the method when it's not GET", {
-  expect_null(req_method_as_curl(request("https://example.com")))
+test_that("req_method_as_curl() only sets the method when curl can't infer it", {
+  req <- request("https://example.com")
+
+  # GET is the default, and curl infers POST from a body
+  expect_null(req_method_as_curl(req))
+  expect_null(req_method_as_curl(req_method(req, "POST"), has_body = TRUE))
+
+  # a body-less POST and other methods need -X
+  expect_equal(req_method_as_curl(req_method(req, "POST")), "-X POST")
+  expect_equal(req_method_as_curl(req_method(req, "DELETE")), "-X DELETE")
+  # a body alone implies POST, but not PUT/DELETE/etc.
   expect_equal(
-    req_method_as_curl(req_method(request("https://example.com"), "DELETE")),
-    "-X DELETE"
+    req_method_as_curl(req_method(req, "PUT"), has_body = TRUE),
+    "-X PUT"
   )
 })
 
