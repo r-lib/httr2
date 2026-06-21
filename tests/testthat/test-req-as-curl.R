@@ -202,6 +202,19 @@ test_that("an explicit Content-Type header isn't duplicated by the body", {
   })
 })
 
+test_that("req_as_curl() quotes the URL only when needed", {
+  # a plain URL is left unquoted
+  expect_equal(
+    as.character(req_as_curl(request("https://example.com/get"))),
+    "curl https://example.com/get"
+  )
+  # a query string contains shell metacharacters, so it's quoted
+  expect_equal(
+    as.character(req_as_curl(request("https://example.com?a=1&b=2"))),
+    'curl "https://example.com?a=1&b=2"'
+  )
+})
+
 test_that("req_method_as_curl() only sets the method when it's not GET", {
   expect_null(req_method_as_curl(request("https://example.com")))
   expect_equal(
@@ -252,17 +265,4 @@ test_that("req_options_as_curl() warns about untranslatable options", {
     req_options(ssl_verifypeer = FALSE)
   expect_snapshot(out <- req_options_as_curl(req))
   expect_null(out)
-})
-
-test_that("curl_command() formats zero, one, and many arguments", {
-  expect_equal(
-    curl_command(NULL, "https://example.com"),
-    'curl "https://example.com"'
-  )
-  expect_snapshot(
-    cat(curl_command(
-      c("-X POST", '-H "Accept: text/plain"'),
-      "https://example.com"
-    ))
-  )
 })

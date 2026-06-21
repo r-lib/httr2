@@ -29,18 +29,21 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   obfuscated <- arg_match(obfuscated)
 
   args <- c(
+    dquote(req_get_url(req)),
     req_method_as_curl(req),
     req_headers_as_curl(req, obfuscated),
     req_options_as_curl(req),
     req_body_as_curl(req, obfuscated)
   )
-  out <- curl_command(args, req_get_url(req))
+  indent <- c("", rep("  ", length(args) - 1))
+  backslash <- c(rep(" \\", length(args) - 1), "")
+  out <- paste0("curl ", paste0(indent, args, backslash, collapse = "\n"))
+
   structure(out, class = "httr2_cmd")
 }
 
 req_method_as_curl <- function(req) {
   method <- req_get_method(req)
-  # curl uses GET by default, so it only needs to be requested explicitly
   if (method == "GET") {
     return(NULL)
   }
@@ -145,19 +148,9 @@ curl_body_data <- function(body, type) {
   )
 }
 
-# Assemble curl arguments into a command, placing each argument on its own
-# line continued with a trailing backslash, e.g.
-#   curl -X POST \
-#     -H "Accept: application/json" \
-#     "https://example.com"
-curl_command <- function(args, url) {
-  args <- c(args, dquote(url))
-
-  indent <- c("", rep("  ", length(args) - 1))
-  backslash <- c(rep(" \\", length(args) - 1), "")
-  paste0("curl ", paste0(indent, args, backslash, collapse = "\n"))
-}
-
+# Wrap a string in double quotes, but only when it contains a character that
+# the shell would otherwise interpret, like a space or the `?` and `&` of a
+# query string.
 dquote <- function(x) {
-  paste0('"', x, '"')
+  ifelse(grepl("[^A-Za-z0-9._~:/@%+=,-]", x), paste0('"', x, '"'), x)
 }

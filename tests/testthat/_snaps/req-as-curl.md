@@ -3,15 +3,15 @@
     Code
       req_as_curl(request("https://hb.cran.dev/get"))
     Output
-      curl "https://hb.cran.dev/get"
+      curl https://hb.cran.dev/get
 
 # req_as_curl() works with POST methods
 
     Code
       req_as_curl(req_method(request("https://hb.cran.dev/post"), "POST"))
     Output
-      curl -X POST \
-        "https://hb.cran.dev/post"
+      curl https://hb.cran.dev/post \
+        -X POST
 
 # req_as_curl() works with headers
 
@@ -19,9 +19,9 @@
       req_as_curl(req_headers(request("https://hb.cran.dev/get"), Accept = "application/json",
       `User-Agent` = "httr2/1.0"))
     Output
-      curl -H "Accept: application/json" \
-        -H "User-Agent: httr2/1.0" \
-        "https://hb.cran.dev/get"
+      curl https://hb.cran.dev/get \
+        -H "Accept: application/json" \
+        -H "User-Agent: httr2/1.0"
 
 # req_as_curl() works with JSON bodies
 
@@ -29,10 +29,10 @@
       req_as_curl(req_body_json(request("https://hb.cran.dev/post"), list(name = "test",
         value = 123)))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: application/json" \
-        -d '{"name":"test","value":123}' \
-        "https://hb.cran.dev/post"
+        -d '{"name":"test","value":123}'
 
 # req_as_curl() works with form bodies
 
@@ -40,10 +40,10 @@
       req_as_curl(req_body_form(request("https://hb.cran.dev/post"), name = "test",
       value = "123"))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "name=test&value=123" \
-        "https://hb.cran.dev/post"
+        -d "name=test&value=123"
 
 # req_as_curl() works with multipart bodies
 
@@ -51,10 +51,10 @@
       req_as_curl(req_body_multipart(request("https://hb.cran.dev/post"), name = "test",
       value = "123"))
     Output
-      curl -X POST \
-        -F "name=test" \
-        -F "value=123" \
-        "https://hb.cran.dev/post"
+      curl https://hb.cran.dev/post \
+        -X POST \
+        -F name=test \
+        -F value=123
 
 # req_as_curl() works with string bodies
 
@@ -62,20 +62,20 @@
       req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), "test data",
       type = "text/plain"))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: text/plain" \
-        -d "test data" \
-        "https://hb.cran.dev/post"
+        -d "test data"
 
 # req_as_curl() works with file bodies
 
     Code
       req_as_curl(req_body_file(request("https://hb.cran.dev/post"), path, type = "text/plain"))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: text/plain" \
-        --data-binary "@<tempfile>" \
-        "https://hb.cran.dev/post"
+        --data-binary @<tempfile>
 
 # req_as_curl() works with custom content types
 
@@ -83,10 +83,10 @@
       req_as_curl(req_body_json(request("https://hb.cran.dev/post"), list(test = "data"),
       type = "application/vnd.api+json"))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: application/vnd.api+json" \
-        -d '{"test":"data"}' \
-        "https://hb.cran.dev/post"
+        -d '{"test":"data"}'
 
 # req_as_curl() works with options
 
@@ -97,9 +97,9 @@
       Warning:
       Can't translate option "ssl_verifypeer".
     Output
-      curl --max-time 30 \
-        --verbose \
-        "https://hb.cran.dev/get"
+      curl https://hb.cran.dev/get \
+        --max-time 30 \
+        --verbose
 
 # req_as_curl() works with cookies
 
@@ -107,9 +107,9 @@
       req_as_curl(req_options(request("https://hb.cran.dev/cookies"), cookiejar = cookie_file,
       cookiefile = cookie_file))
     Output
-      curl --cookie-jar "<cookie-file>" \
-        --cookie "<cookie-file>" \
-        "https://hb.cran.dev/cookies"
+      curl https://hb.cran.dev/cookies \
+        --cookie-jar <cookie-file> \
+        --cookie <cookie-file>
 
 # req_as_curl() works with obfuscated values in headers
 
@@ -117,8 +117,8 @@
       req_as_curl(req_headers(request("https://hb.cran.dev/get"), Authorization = obfuscated(
         "ZdYJeG8zwISodg0nu4UxBhs")))
     Output
-      curl -H "Authorization: <REDACTED>" \
-        "https://hb.cran.dev/get"
+      curl https://hb.cran.dev/get \
+        -H "Authorization: <REDACTED>"
 
 # req_as_curl() can reveal obfuscated values
 
@@ -126,8 +126,8 @@
       req_as_curl(req_headers_redacted(request("https://hb.cran.dev/get"),
       Authorization = "secret-token"), obfuscated = "reveal")
     Output
-      curl -H "Authorization: secret-token" \
-        "https://hb.cran.dev/get"
+      curl https://hb.cran.dev/get \
+        -H "Authorization: secret-token"
 
 # req_as_curl() works with obfuscated values in JSON body
 
@@ -135,10 +135,10 @@
       req_as_curl(req_body_json(request("https://hb.cran.dev/post"), list(username = "test",
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: application/json" \
-        -d '{"username":"test","password":"<REDACTED>"}' \
-        "https://hb.cran.dev/post"
+        -d '{"username":"test","password":"<REDACTED>"}'
 
 # req_as_curl() works with obfuscated values in form body
 
@@ -146,10 +146,10 @@
       req_as_curl(req_body_form(request("https://hb.cran.dev/post"), username = "test",
       password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "username=test&password=<REDACTED>" \
-        "https://hb.cran.dev/post"
+        -d "username=test&password=<REDACTED>"
 
 # req_as_curl() works with complex requests
 
@@ -160,21 +160,21 @@
       list(name = "test-repo", description = "A test repository", private = TRUE)),
       timeout = 60))
     Output
-      curl -X POST \
+      curl https://api.github.com/user/repos \
+        -X POST \
         -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: <REDACTED>" \
         -H "User-Agent: MyApp/1.0" \
         --max-time 60 \
         -H "Content-Type: application/json" \
-        -d '{"name":"test-repo","description":"A test repository","private":true}' \
-        "https://api.github.com/user/repos"
+        -d '{"name":"test-repo","description":"A test repository","private":true}'
 
 # req_as_curl() works with simple requests (single line)
 
     Code
       req_as_curl(request("https://hb.cran.dev/get"))
     Output
-      curl "https://hb.cran.dev/get"
+      curl https://hb.cran.dev/get
 
 # req_as_curl() validates input
 
@@ -190,10 +190,10 @@
       req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), charToRaw(
         "test data"), type = "text/plain"))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: text/plain" \
-        --data-binary "@-" \
-        "https://hb.cran.dev/post"
+        --data-binary @-
 
 # an explicit Content-Type header isn't duplicated by the body
 
@@ -201,10 +201,10 @@
       req_as_curl(req_body_raw(req_headers(request("https://hb.cran.dev/post"),
       `Content-Type` = "application/json"), "{}"))
     Output
-      curl -X POST \
+      curl https://hb.cran.dev/post \
+        -X POST \
         -H "Content-Type: application/json" \
-        -d "{}" \
-        "https://hb.cran.dev/post"
+        -d "{}"
 
 # req_options_as_curl() translates each known option
 
@@ -214,12 +214,12 @@
       --max-time 30
       --connect-timeout 5
       --proxy http://proxy.example.com
-      --user-agent "agent"
-      --referer "http://referer.example.com"
+      --user-agent agent
+      --referer http://referer.example.com
       --location
       --verbose
-      --cookie-jar "jar.txt"
-      --cookie "file.txt"
+      --cookie-jar jar.txt
+      --cookie file.txt
 
 # req_options_as_curl() warns about untranslatable options
 
@@ -228,14 +228,4 @@
     Condition
       Warning:
       Can't translate option "ssl_verifypeer".
-
-# curl_command() formats zero, one, and many arguments
-
-    Code
-      cat(curl_command(c("-X POST", "-H \"Accept: text/plain\""),
-      "https://example.com"))
-    Output
-      curl -X POST \
-        -H "Accept: text/plain" \
-        "https://example.com"
 
