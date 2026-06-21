@@ -22,28 +22,21 @@ resp_stream_lines <- function(
     return(character())
   }
 
+  encoding <- env_cache(resp$cache, "encoding", resp_encoding(resp))
   blocks <- stream_pull(resp, lines, splitter, max_size)
-  lines_read <- stream_parse_lines(blocks, splitter$encoding)
+  lines_read <- stream_parse_lines(blocks, encoding)
   if (resp_stream_show_body(resp)) {
     log_stream(lines_read)
   }
   lines_read
 }
 
-# Splits a stream into lines terminated by LF or CRLF. Like the other splitters
-# it emits raw blocks - here each line plus its terminator - which
-# resp_stream_lines() decodes via stream_parse_lines(). A bare CR is ordinary
-# content: we only split on LF, so a CRLF straddling two reads needs no special
-# handling (the trailing CR stays in the remainder until its LF arrives).
+# Splits a stream into lines terminated by LF (and hence CRLF)
 LineSplitter <- R6::R6Class(
   "LineSplitter",
   inherit = StreamSplitter,
   public = list(
     name = "resp_stream_lines()",
-    encoding = NULL,
-    initialize = function(resp) {
-      self$encoding <- resp_encoding(resp)
-    },
     find_boundaries = function(buffer) {
       grepRaw(as.raw(0x0A), buffer, fixed = TRUE, all = TRUE) + 1L
     },

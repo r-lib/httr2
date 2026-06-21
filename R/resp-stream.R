@@ -202,9 +202,6 @@ StreamSplitter <- R6::R6Class(
     # The full name of the public reader (e.g. "resp_stream_lines()") this
     # splitter backs. Used to detect mixing readers on one response.
     name = NULL,
-    # Constructed once per response by init_streaming_response(). Subclasses
-    # that need to inspect the response (e.g. for its encoding) override this.
-    initialize = function(resp = NULL) {},
     # nocov start: abstract, always overridden by a subclass.
     find_boundaries = function(buffer) {
       cli::cli_abort("Not implemented.", .internal = TRUE)
@@ -251,13 +248,10 @@ StreamSplitter <- R6::R6Class(
 # resp_stream_raw() reads bytes straight off the connection, so it never goes
 # through stream_pull() and needs no splitting behavior. It's duck-typed rather
 # than a StreamSplitter subclass: init_streaming_response() only needs a `name`
-# (for reader tracking) and a constructor that accepts `resp`.
+# (for reader tracking).
 RawSplitter <- R6::R6Class(
   "RawSplitter",
-  public = list(
-    name = "resp_stream_raw()",
-    initialize = function(resp = NULL) {}
-  )
+  public = list(name = "resp_stream_raw()")
 )
 
 stop_stream_size <- function(max_size, call = caller_env()) {
@@ -312,11 +306,11 @@ init_streaming_response <- function(
   # Construct the splitter once per response and cache it.
   cached <- cache$splitter
   if (is.null(cached)) {
-    cache$splitter <- splitter$new(resp)
+    cache$splitter <- splitter$new()
     return(invisible(cache$splitter))
   }
   if (!inherits(cached, splitter$classname)) {
-    used <- splitter$new(resp)$name
+    used <- splitter$new()$name
     cli::cli_abort(
       "Can't use {used} after {cached$name} on the same response.",
       class = "httr2_streaming_error",

@@ -76,7 +76,7 @@ test_that("resp_stream_lines(warn) is deprecated unless FALSE", {
 })
 
 test_that("LineSplitter flushes a trailing line as a raw block", {
-  s <- LineSplitter$new(response())
+  s <- LineSplitter$new()
   # Nothing buffered: nothing to flush.
   expect_equal(s$finish(raw()), list())
   # Trailing bytes are emitted as a final block.
@@ -86,7 +86,7 @@ test_that("LineSplitter flushes a trailing line as a raw block", {
 })
 
 test_that("LineSplitter splits on LF and CRLF, keeping the terminator", {
-  s <- LineSplitter$new(response())
+  s <- LineSplitter$new()
 
   out <- s$split(charToRaw("a\nb\r\nc\n"))
   expect_equal(
