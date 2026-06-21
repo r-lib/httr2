@@ -254,16 +254,12 @@ BoundarySplitter <- R6::R6Class(
       if (length(splits) == 0L) {
         return(list(blocks = list(), remainder = buffer))
       }
+      
       starts <- c(1L, splits[-length(splits)])
       blocks <- lapply(seq_along(splits), function(i) {
         buffer[starts[i]:(splits[i] - 1L)]
       })
-      last <- splits[length(splits)]
-      remainder <- if (last > length(buffer)) {
-        raw()
-      } else {
-        buffer[last:length(buffer)]
-      }
+      remainder <- buffer[seq2(splits[[length(splits)]], length(buffer))]
       list(blocks = blocks, remainder = remainder)
     },
     finish = function(remainder) {
