@@ -203,7 +203,12 @@ cache_disk <- function(client, key = NULL) {
         read_path <<- modern_path
       }
     },
-    clear = function() unlink(unique(c(modern_path, read_path)))
+    clear = function() {
+      unlink(modern_path)
+      if (!oauth_cache_is_manual()) {
+        unlink(legacy_path)
+      }
+    }
   )
 }
 

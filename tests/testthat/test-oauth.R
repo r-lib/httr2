@@ -177,6 +177,38 @@ test_that("reads, migrates, and clears tokens cached in the legacy location", {
   expect_equal(cache$get(), NULL)
 })
 
+test_that("clearing disk cache only clears legacy tokens without an override", {
+  modern_path <- withr::local_tempdir()
+  legacy_path <- withr::local_tempdir()
+  manual_path <- withr::local_tempdir()
+  local_mocked_bindings(
+    oauth_cache_path_modern = function() modern_path,
+    oauth_cache_path_legacy = function() legacy_path
+  )
+
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
+  token_path <- file.path(client$name, paste0(hash(NULL), "-token.rds.enc"))
+  legacy_token <- file.path(legacy_path, token_path)
+  manual_token <- file.path(manual_path, token_path)
+  dir.create(dirname(legacy_token), recursive = TRUE)
+  dir.create(dirname(manual_token), recursive = TRUE)
+
+  touch(legacy_token)
+  oauth_cache_clear(client, cache_disk = TRUE)
+  expect_equal(file.exists(legacy_token), FALSE)
+
+  touch(legacy_token)
+  touch(manual_token)
+  withr::local_envvar("HTTR2_OAUTH_CACHE" = manual_path)
+  oauth_cache_clear(client, cache_disk = TRUE)
+  expect_equal(file.exists(manual_token), FALSE)
+  expect_equal(file.exists(legacy_token), TRUE)
+})
+
 test_that("oauth_cache_paths() drops the legacy location when overridden", {
   withr::local_envvar("HTTR2_OAUTH_CACHE" = NA)
   expect_length(oauth_cache_paths(), 2)
