@@ -11,7 +11,7 @@ resp_stream_lines <- function(
   max_size = Inf,
   warn = deprecated()
 ) {
-  check_streaming_response(resp, reader = "lines")
+  splitter <- init_streaming_response(resp, LineSplitter)
   check_number_whole(lines, min = 0, allow_infinite = TRUE)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
   if (lifecycle::is_present(warn) && !isFALSE(warn)) {
@@ -21,13 +21,6 @@ resp_stream_lines <- function(
   if (lines == 0) {
     return(character())
   }
-
-  # The splitter is created once and reused across calls.
-  splitter <- env_cache(
-    resp$cache,
-    "line_splitter",
-    LineSplitter$new(resp_encoding(resp))
-  )
 
   serve <- stream_pull(resp, lines, splitter, max_size)
   lines_read <- unlist(serve, use.names = FALSE) %||% character()
@@ -43,9 +36,10 @@ LineSplitter <- R6::R6Class(
   "LineSplitter",
   inherit = StreamSplitter,
   public = list(
+    name = "resp_stream_lines()",
     encoding = NULL,
-    initialize = function(encoding) {
-      self$encoding <- encoding
+    initialize = function(resp) {
+      self$encoding <- resp_encoding(resp)
     },
     split = function(buffer) {
       stream_split_lines(buffer, self$encoding)

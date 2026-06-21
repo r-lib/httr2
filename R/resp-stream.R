@@ -46,7 +46,7 @@
 #' }
 #' close(con)
 resp_stream_raw <- function(resp, kb = 32) {
-  check_streaming_response(resp, reader = "raw")
+  init_streaming_response(resp, RawSplitter)
   check_number_decimal(kb, min = 0, allow_infinite = FALSE)
 
   out <- resp$body$read(kb * 1024)
@@ -61,7 +61,7 @@ resp_stream_raw <- function(resp, kb = 32) {
 #' @rdname resp_stream_raw
 #' @order 6
 resp_stream_is_complete <- function(resp) {
-  check_streaming_response(resp)
+  init_streaming_response(resp)
   !stream_has_buffered(resp) && resp$body$is_complete()
 }
 
@@ -69,12 +69,10 @@ resp_stream_is_complete <- function(resp) {
 # the user yet? (Either raw bytes or decoded-but-unserved blocks.)
 stream_has_buffered <- function(resp) {
   cache <- resp$cache
-  if (length(cache$push_back %||% raw()) > 0) {
+  if (length(cache$push_back) > 0) {
     return(TRUE)
   }
-
-  pos <- cache$block_pos %||% 1L
-  pos <= length(cache$block_queue %||% list())
+  cache$block_pos <= length(cache$block_queue)
 }
 
 #' @export
@@ -108,8 +106,8 @@ stream_chunk_bytes <- 64L * 1024L
 # repeatedly rescan and recopy the buffered bytes.
 stream_pull <- function(resp, n, splitter, max_size) {
   cache <- resp$cache
-  queue <- cache$block_queue %||% list()
-  pos <- cache$block_pos %||% 1L
+  queue <- cache$block_queue
+  pos <- cache$block_pos
 
   # Accumulate served slices in a list and flatten once at the end, so serving
   # many blocks (e.g. `lines = Inf`) doesn't repeatedly recopy a growing vector.
@@ -133,7 +131,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
     # just freshly read ones), because data may have been buffered by an earlier
     # call that didn't find a complete block.
 
-    push_back <- cache$push_back %||% raw()
+    push_back <- cache$push_back
     if (length(push_back) > max_size) {
       stop_stream_size(max_size)
     }
@@ -199,6 +197,12 @@ stream_pull <- function(resp, n, splitter, max_size) {
 StreamSplitter <- R6::R6Class(
   "StreamSplitter",
   public = list(
+    # The full name of the public reader (e.g. "resp_stream_lines()") this
+    # splitter backs. Used to detect mixing readers on one response.
+    name = NULL,
+    # Constructed once per response by init_streaming_response(). Subclasses
+    # that need to inspect the response (e.g. for its encoding) override this.
+    initialize = function(resp = NULL) {},
     # Divide `buffer` into a list of complete `blocks` plus a raw `remainder`
     # of trailing bytes that don't yet form a complete block. The size limit is
     # enforced by `stream_pull()`, so `split()` itself never throws.
@@ -225,18 +229,26 @@ StreamSplitter <- R6::R6Class(
   )
 )
 
+RawSplitter <- R6::R6Class(
+  "RawSplitter",
+  inherit = StreamSplitter,
+  public = list(name = "resp_stream_raw()")
+)
+
 # Splits a stream into blocks separated by boundaries located by
 # `find_boundaries()`, which takes a raw vector and returns an integer vector
-# of split points: the position one past the end of each complete block. Used
-# by both server-sent events and AWS events.
+# of split points: the position one past the end of each complete block.
+# Subclasses (server-sent events, AWS events) supply `find_boundaries()` and a
+# `name`.
 BoundarySplitter <- R6::R6Class(
   "BoundarySplitter",
   inherit = StreamSplitter,
   public = list(
-    find_boundaries = NULL,
-    initialize = function(find_boundaries) {
-      self$find_boundaries <- find_boundaries
+    # nocov start: abstract, always overridden by a subclass.
+    find_boundaries = function(buffer) {
+      cli::cli_abort("Not implemented.", .internal = TRUE)
     },
+    # nocov end
     split = function(buffer) {
       splits <- self$find_boundaries(buffer)
       if (length(splits) == 0L) {
@@ -274,9 +286,14 @@ stop_stream_size <- function(max_size, call = caller_env()) {
 
 # Helpers ----------------------------------------------------
 
-check_streaming_response <- function(
+# Validate a streaming response, initialize its cache, and (when a `splitter`
+# generator is supplied) construct and cache the splitter. The cached splitter
+# both drives the reads and records which reader is in use, so attempting a
+# second, different reader on the same response errors. Returns the splitter,
+# so callers can write `splitter <- init_streaming_response(resp, SseSplitter)`.
+init_streaming_response <- function(
   resp,
-  reader = NULL,
+  splitter = NULL,
   arg = caller_arg(resp),
   call = caller_env()
 ) {
@@ -296,20 +313,33 @@ check_streaming_response <- function(
     cli::cli_abort("{.arg {arg}} has already been closed.", call = call)
   }
 
-  if (!is.null(reader)) {
-    previous <- resp$cache$stream_reader
-    if (is.null(previous)) {
-      resp$cache$stream_reader <- reader
-    } else if (!identical(previous, reader)) {
-      current_fun <- paste0("resp_stream_", reader, "()")
-      previous_fun <- paste0("resp_stream_", previous, "()")
-      cli::cli_abort(
-        "Can't use {current_fun} after {previous_fun} on the same response.",
-        class = "httr2_streaming_error",
-        call = call
-      )
-    }
+  # Initialize the streaming cache so the read loop and stream_has_buffered()
+  # can read these fields without `%||%` guards. Only fills missing fields, so
+  # it preserves any bytes a caller has already pushed back.
+  cache <- resp$cache
+  cache$push_back <- cache$push_back %||% raw()
+  cache$block_queue <- cache$block_queue %||% list()
+  cache$block_pos <- cache$block_pos %||% 1L
+
+  if (is.null(splitter)) {
+    return(invisible(NULL))
   }
+
+  # Construct the splitter once per response and cache it.
+  cached <- cache$splitter
+  if (is.null(cached)) {
+    cache$splitter <- splitter$new(resp)
+    return(invisible(cache$splitter))
+  }
+  if (!inherits(cached, splitter$classname)) {
+    used <- splitter$new(resp)$name
+    cli::cli_abort(
+      "Can't use {used} after {cached$name} on the same response.",
+      class = "httr2_streaming_error",
+      call = call
+    )
+  }
+  invisible(cached)
 }
 
 resp_stream_show_body <- function(resp) {

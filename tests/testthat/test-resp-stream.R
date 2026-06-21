@@ -75,7 +75,8 @@ test_that("streaming responses use only one reader", {
 })
 
 test_that("BoundarySplitter splits, caps reads, and discards trailers", {
-  s <- BoundarySplitter$new(find_event_boundaries)
+  # SseSplitter is a concrete BoundarySplitter; the shared behavior lives here.
+  s <- SseSplitter$new()
 
   out <- s$split(charToRaw("a\n\nb"))
   expect_equal(out$blocks, list(charToRaw("a\n\n")))

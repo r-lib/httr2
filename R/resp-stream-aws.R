@@ -2,14 +2,9 @@
 #' @rdname resp_stream_raw
 #' @order 4
 resp_stream_aws <- function(resp, max_size = Inf) {
-  check_streaming_response(resp, reader = "aws")
+  splitter <- init_streaming_response(resp, AwsSplitter)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
-  splitter <- env_cache(
-    resp$cache,
-    "boundary_splitter",
-    BoundarySplitter$new(find_aws_event_boundaries)
-  )
   blocks <- stream_pull(resp, 1, splitter, max_size)
   if (length(blocks) == 0L) {
     return()
@@ -28,6 +23,15 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   }
   event
 }
+
+AwsSplitter <- R6::R6Class(
+  "AwsSplitter",
+  inherit = BoundarySplitter,
+  public = list(
+    name = "resp_stream_aws()",
+    find_boundaries = function(buffer) find_aws_event_boundaries(buffer)
+  )
+)
 
 # Find every complete AWS event in a buffer by walking the 4-byte big-endian
 # length prefix at the start of each event. Returns a vector of split points

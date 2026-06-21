@@ -76,7 +76,7 @@ test_that("resp_stream_lines(warn) is deprecated unless FALSE", {
 })
 
 test_that("LineSplitter flushes a trailing line", {
-  s <- LineSplitter$new("UTF-8")
+  s <- LineSplitter$new(response())
   # Nothing buffered: nothing to flush.
   expect_equal(s$finish(raw()), list())
   # Trailing bytes are emitted as a final line.

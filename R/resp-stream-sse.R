@@ -6,14 +6,8 @@
 #' @rdname resp_stream_raw
 #' @order 3
 resp_stream_sse <- function(resp, max_size = Inf) {
-  check_streaming_response(resp, reader = "sse")
+  splitter <- init_streaming_response(resp, SseSplitter)
   check_number_whole(max_size, min = 1, allow_infinite = TRUE)
-
-  splitter <- env_cache(
-    resp$cache,
-    "boundary_splitter",
-    BoundarySplitter$new(find_event_boundaries)
-  )
 
   repeat {
     blocks <- stream_pull(resp, 1, splitter, max_size)
@@ -43,6 +37,16 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   }
   event
 }
+
+# Splits a server-sent event stream into events at their boundaries.
+SseSplitter <- R6::R6Class(
+  "SseSplitter",
+  inherit = BoundarySplitter,
+  public = list(
+    name = "resp_stream_sse()",
+    find_boundaries = function(buffer) find_event_boundaries(buffer)
+  )
+)
 
 # Find every event boundary in a buffer, returning a vector of split points
 # (the position one past the end of each boundary). Events may be separated by
