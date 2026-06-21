@@ -15,6 +15,10 @@ e.g., `application/problem+json` (@cgiachalis, #782).
 * `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
 * `req_body_form()` now creates a valid empty request body when no parameters
   are provided (@arcresu, #836).
+* `resp_stream_aws()` now parses `byte`, `short`, and `integer` headers as signed integers, matching the AWS event-stream specification (previously they were incorrectly read as unsigned).
+* `resp_stream_lines()` no longer treats a bare carriage return (CR) as a line ending; only LF and CRLF terminate lines, which is what every modern streaming source produces.
+* `resp_stream_lines()` no longer warns when the stream ends without a final line terminator (which is routine when streaming), and its `warn` argument is (softly) deprecated.
+* `resp_stream_lines()`, `resp_stream_sse()`, and `resp_stream_aws()` now decode whole chunks at a time and hold the results in a queue, instead of rescanning and recopying the buffer for every line or event. This makes memory use and run time scale linearly rather than quadratically with the response size, so large streams use dramatically less memory and run much faster (e.g. reading a 1 MB response of short lines is now around 200x faster and allocates around 180x less memory) (#704).
 * `req_throttle()` can now enforce multiple rate limits at once: supply a vector to `capacity` (and `fill_time_s`) to create one token bucket per limit, and each request must satisfy all of them (#555).
 * `req_auth_aws_v4()` now correctly signs URLs containing encoded slashes (`%2F`) in path segments, such as ARNs in AWS Bedrock API paths (@thisisnic, #842).
 * `req_error()` is now applied to responses retrieved from the cache, so a custom `is_error` callback is respected on cache hits (#806).

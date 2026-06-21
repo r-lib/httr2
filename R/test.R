@@ -20,9 +20,6 @@ request_test <- function(template = "/get", ...) {
 #' @export
 example_url <- function(path = "/") {
   check_installed("webfakes")
-  if (is_testing() && !interactive()) {
-    testthat::skip_on_covr()
-  }
   env_cache(the, "test_app", example_app())
   the$test_app$url(path)
 }

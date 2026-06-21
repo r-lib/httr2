@@ -64,7 +64,7 @@ wait_for_http_data <- function(resp, timeout_s = 5) {
   while (as.double(Sys.time()) < deadline) {
     chunk <- resp$body$read(256)
     if (length(chunk) > 0) {
-      resp$cache$push_back <- c(resp$cache$push_back, chunk)
+      resp$cache$stream_buffer <- c(resp$cache$stream_buffer, chunk)
       return(invisible(TRUE))
     }
 
@@ -92,7 +92,7 @@ wait_for_complete <- function(resp, timeout_s = 5) {
   repeat {
     chunk <- resp$body$read(256)
     if (length(chunk) > 0) {
-      resp$cache$push_back <- c(resp$cache$push_back, chunk)
+      resp$cache$stream_buffer <- c(resp$cache$stream_buffer, chunk)
     }
 
     if (resp$body$is_complete()) {
