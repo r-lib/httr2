@@ -22,6 +22,7 @@ parse_www_authenticate <- function(x) {
 
 parse_link <- function(x) {
   links <- parse_delim(x, ",")
+  links <- links[links != ""]
 
   parse_one <- function(x) {
     pieces <- parse_delim(x, ";")

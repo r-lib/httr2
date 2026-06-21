@@ -96,6 +96,7 @@ test_that("immutable objects retrieved from cache", {
     resps <- req_perform_parallel(list(req)),
     class = "httr2_cache_cached"
   )
+  resp$request <- req
   expect_equal(resps[[1]], resp)
 })
 
@@ -311,12 +312,12 @@ test_that("throttling is limited by deadline", {
   expect_equal(queue$queue_status, "waiting")
   queue$process1(1)
   expect_equal(mock_time, 1)
-  expect_equal(the$throttle[["test"]]$tokens, 1)
+  expect_equal(the$throttle[["test"]][[1]]$tokens, 1)
 
   local_mocked_bindings(throttle_deadline = function(...) mock_time)
   queue$rate_limit_deadline <- mock_time + 2
   expect_equal(mock_time, 1)
-  expect_equal(the$throttle[["test"]]$tokens, 1)
+  expect_equal(the$throttle[["test"]][[1]]$tokens, 1)
 })
 
 
@@ -333,7 +334,7 @@ test_that("mocking works", {
   })
 
   resps <- req_perform_parallel(list(req_200, req_404), on_error = "continue")
-  expect_equal(resps[[1]], response())
+  expect_equal(resps[[1]]$request, req_200)
   expect_s3_class(resps[[2]], "httr2_http_404")
 })
 

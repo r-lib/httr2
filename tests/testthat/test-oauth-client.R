@@ -11,7 +11,6 @@ test_that("checks auth types have needed args", {
   expect_snapshot(error = TRUE, {
     oauth_client("abc", "http://x.com", auth = "header")
     oauth_client("abc", "http://x.com", auth = "jwt_sig")
-    oauth_client("abc", "http://x.com", key = "abc", auth = "jwt_sig")
     oauth_client("abc", "http://x.com", auth = 123)
   })
 })
@@ -103,5 +102,35 @@ test_that("can authenticate using header or body", {
   expect_equal(
     req_b$body$data,
     list(client_id = I("id"), client_secret = I("secret"))
+  )
+})
+
+test_that("can authenticate using a signed jwt", {
+  skip_if_not_installed("jose")
+  skip_if_not_installed("openssl")
+
+  client <- oauth_client(
+    "id",
+    "http://example.com",
+    key = openssl::rsa_keygen(),
+    auth = "jwt_sig",
+    auth_params = list(claim = jwt_claim())
+  )
+  req <- oauth_client_req_auth(request("http://example.com"), client)
+  expect_named(req$body$data, c("client_assertion", "client_assertion_type"))
+})
+
+test_that("jwt_sig auth requires a claim", {
+  skip_if_not_installed("openssl")
+
+  client <- oauth_client(
+    "id",
+    "http://example.com",
+    key = openssl::rsa_keygen(),
+    auth = "jwt_sig"
+  )
+  expect_snapshot(
+    oauth_client_req_auth(request("http://example.com"), client),
+    error = TRUE
   )
 })

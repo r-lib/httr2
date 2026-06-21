@@ -7,9 +7,10 @@
 throttle_status()
 }
 \value{
-A data frame with three columns:
+A data frame with one row per token bucket and four columns:
 \itemize{
 \item The \code{realm}.
+\item The \code{capacity} of the bucket.
 \item Number of \code{tokens} remaining in the bucket.
 \item Time \code{to_wait} in seconds for next token.
 }

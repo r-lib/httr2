@@ -87,10 +87,11 @@ req_perform <- function(
 
   req <- req_verbosity(req, verbosity)
 
-  req <- cache_pre_fetch(req, path)
-  if (is_response(req)) {
-    return(req)
+  fetched <- cache_pre_fetch(req, path)
+  if (is_response(fetched)) {
+    return(handle_resp(req, fetched, error_call = error_call))
   }
+  req <- fetched
 
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
@@ -153,6 +154,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
     cnd <- resp_failure_cnd(req, resp, error_call = error_call)
     cnd_signal(cnd)
   } else {
+    resp$request <- req
     resp
   }
 }
@@ -278,6 +280,9 @@ req_completed <- function(req) {
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
+same_path <- function(x, y) {
+  normalizePath(x, mustWork = FALSE) == normalizePath(y, mustWork = FALSE)
+}
 
 resp_show_body <- function(resp) {
   resp$request$policies$show_body %||% FALSE

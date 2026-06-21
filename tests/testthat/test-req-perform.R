@@ -207,7 +207,7 @@ test_that("mocking works", {
     }
   })
 
-  expect_equal(req_perform(req_200), response())
+  expect_equal(req_perform(req_200)$status_code, 200)
   expect_error(req_perform(req_404), class = "httr2_http_404")
 })
 

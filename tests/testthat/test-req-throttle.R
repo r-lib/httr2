@@ -66,6 +66,73 @@ test_that("realm defaults to hostname but can be overridden", {
   expect_named(the$throttle, "custom")
 })
 
+test_that("can enforce multiple limits in a single realm", {
+  on.exit(throttle_reset())
+
+  mock_time <- 0
+  local_mocked_bindings(unix_time = function() mock_time)
+
+  # 10 requests/second and 2 requests/minute
+  req <- request_test() |>
+    req_throttle(capacity = c(10, 2), fill_time_s = c(1, 60))
+  expect_length(the$throttle[["127.0.0.1"]], 2)
+
+  # first two are free
+  expect_equal(throttle_delay(req), 0)
+  expect_equal(throttle_delay(req), 0)
+
+  # third must wait for the slow (minute) bucket, even though the fast
+  # (second) bucket still has plenty of tokens
+  expect_equal(throttle_delay(req), 30)
+})
+
+test_that("multiple limits recycle and accept rate", {
+  on.exit(throttle_reset())
+
+  request_test() |> req_throttle(capacity = c(4, 200), fill_time_s = c(1, 3600))
+  buckets <- the$throttle[["127.0.0.1"]]
+  expect_equal(map_dbl(buckets, function(b) b$capacity), c(4, 200))
+  expect_equal(map_dbl(buckets, function(b) b$fill_rate), c(4, 200 / 3600))
+
+  throttle_reset()
+  request_test() |>
+    req_throttle(rate = c(4, 200 / 3600), fill_time_s = c(1, 3600))
+  buckets <- the$throttle[["127.0.0.1"]]
+  expect_equal(map_dbl(buckets, function(b) b$capacity), c(4, 200))
+})
+
+test_that("throttle reset when number of limits changes", {
+  on.exit(throttle_reset())
+
+  mock_time <- 0
+  local_mocked_bindings(unix_time = function() mock_time)
+
+  request_test() |> req_throttle(capacity = 2, fill_time_s = 1)
+  expect_length(the$throttle[["127.0.0.1"]], 1)
+
+  request_test() |> req_throttle(capacity = c(2, 3), fill_time_s = c(1, 60))
+  expect_length(the$throttle[["127.0.0.1"]], 2)
+})
+
+test_that("req_throttle checks its inputs", {
+  expect_snapshot(error = TRUE, {
+    request_test() |> req_throttle(capacity = "x")
+    request_test() |> req_throttle(capacity = -1)
+    request_test() |> req_throttle(capacity = 1.5)
+    request_test() |> req_throttle(capacity = c(1, 2), fill_time_s = c(1, 2, 3))
+  })
+})
+
+test_that("throttle_status reports each bucket", {
+  on.exit(throttle_reset())
+  local_mocked_bindings(unix_time = function() 0)
+
+  request_test() |> req_throttle(capacity = c(2, 3), fill_time_s = c(1, 60))
+  status <- throttle_status()
+  expect_equal(status$realm, c("127.0.0.1", "127.0.0.1"))
+  expect_equal(status$capacity, c(2, 3))
+})
+
 # token bucket ----------------------------------------------------------------
 
 test_that("token bucket respects capacity limits", {
