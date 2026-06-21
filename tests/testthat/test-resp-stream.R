@@ -132,6 +132,20 @@ test_that("stream_pull() serves queued blocks from a single read", {
   expect_true(resp_stream_is_complete(resp))
 })
 
+test_that("stream_pull() serves every block when n is Inf", {
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
+  })
+
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+
+  # n = Inf keeps serving past the queue and reads on until the stream ends.
+  expect_equal(resp_stream_lines(resp, Inf), letters[1:5])
+  expect_equal(resp_stream_lines(resp, Inf), character())
+  expect_true(resp_stream_is_complete(resp))
+})
+
 test_that("stream_pull() enforces max_size (blocking and non-blocking)", {
   req <- local_app_request(function(req, res) {
     res$send_chunk(paste(rep_len("0", 1000), collapse = ""))
