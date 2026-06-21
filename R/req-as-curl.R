@@ -47,6 +47,8 @@ req_method_as_curl <- function(req, has_body = FALSE) {
   method <- req_get_method(req)
   if (method == "GET" || (method == "POST" && has_body)) {
     NULL
+  } else if (method == "HEAD") {
+    "--head"
   } else {
     paste0("-X ", method)
   }

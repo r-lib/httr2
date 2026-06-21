@@ -222,6 +222,9 @@ test_that("req_method_as_curl() only sets the method when curl can't infer it", 
   expect_null(req_method_as_curl(req))
   expect_null(req_method_as_curl(req_method(req, "POST"), has_body = TRUE))
 
+  # HEAD has its own flag
+  expect_equal(req_method_as_curl(req_method(req, "HEAD")), "--head")
+
   # a body-less POST and other methods need -X
   expect_equal(req_method_as_curl(req_method(req, "POST")), "-X POST")
   expect_equal(req_method_as_curl(req_method(req, "DELETE")), "-X DELETE")
