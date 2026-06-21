@@ -1,3 +1,12 @@
+# errors when no auth_url is available
+
+    Code
+      req_oauth_auth_code(request("https://example.com"), client)
+    Condition
+      Error in `req_oauth_auth_code()`:
+      ! Must supply `auth_url`.
+      i Either pass it directly or set it on the `client`, e.g. with `oauth_server_metadata()`.
+
 # desktop style can't run in hosted environment
 
     Code

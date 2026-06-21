@@ -24,6 +24,8 @@ test_that("can perform a single request", {
 })
 
 test_that("requests happen in parallel", {
+  skip_on_cran()
+
   # test works best if webfakes has ample threads and keepalive
   reqs <- list2(
     request_test("/delay/:secs", secs = 0),
@@ -94,6 +96,7 @@ test_that("immutable objects retrieved from cache", {
     resps <- req_perform_parallel(list(req)),
     class = "httr2_cache_cached"
   )
+  resp$request <- req
   expect_equal(resps[[1]], resp)
 })
 
@@ -309,12 +312,12 @@ test_that("throttling is limited by deadline", {
   expect_equal(queue$queue_status, "waiting")
   queue$process1(1)
   expect_equal(mock_time, 1)
-  expect_equal(the$throttle[["test"]]$tokens, 1)
+  expect_equal(the$throttle[["test"]][[1]]$tokens, 1)
 
   local_mocked_bindings(throttle_deadline = function(...) mock_time)
   queue$rate_limit_deadline <- mock_time + 2
   expect_equal(mock_time, 1)
-  expect_equal(the$throttle[["test"]]$tokens, 1)
+  expect_equal(the$throttle[["test"]][[1]]$tokens, 1)
 })
 
 
@@ -331,8 +334,69 @@ test_that("mocking works", {
   })
 
   resps <- req_perform_parallel(list(req_200, req_404), on_error = "continue")
-  expect_equal(resps[[1]], response())
+  expect_equal(resps[[1]]$request, req_200)
   expect_s3_class(resps[[2]], "httr2_http_404")
+})
+
+# otel -----------------------------------------------------------------------
+
+test_that("tracing works as expected", {
+  skip_if_not_installed("otelsdk")
+
+  spans <- with_otel_record({
+    # A request with no URL (which shouldn't create a span).
+    try(req_perform_parallel(list(request(""))), silent = TRUE)
+
+    # A request with an HTTP error.
+    try(
+      req_perform_parallel(list(request_test("/status/:status", status = 404))),
+      silent = TRUE
+    )
+
+    # A request with a curl error.
+    with_mocked_bindings(
+      try(req_perform(request("http://127.0.0.1")), silent = TRUE),
+      curl_fetch = function(...) abort("Failed to connect")
+    )
+
+    # Three regular requests, nested inside a parent span.
+    parent <- otel::start_span("parent", tracer = "test")
+    otel::with_active_span(parent, {
+      resp <- req_perform_parallel(list(
+        request_test("/headers"),
+        request_test("/headers"),
+        request_test("/headers")
+      ))
+    })
+    parent$end()
+
+    # Verify that context propagation works as expected.
+    expect_true(
+      "traceparent" %in% names(resp_body_json(resp[[1]])[["headers"]])
+    )
+  })[["traces"]]
+
+  expect_length(spans, 6L)
+
+  # And for requests with HTTP errors.
+  expect_equal(spans[[1]]$status, "error")
+  expect_equal(spans[[1]]$description, "Not Found")
+  expect_equal(spans[[1]]$attributes$http.response.status_code, 404L)
+  expect_equal(spans[[1]]$attributes$error.type, "404")
+
+  # And for spans with curl errors.
+  expect_equal(spans[[2]]$status, "error")
+  expect_equal(spans[[2]]$attributes$error.type, "rlang_error")
+
+  # We should have attached the curl error as an event.
+  expect_length(spans[[2]]$events, 1L)
+  expect_equal(spans[[2]]$events[[1]]$name, "exception")
+
+  # Verify that the parent span is the same for parallel requests (that is,
+  # they are siblings).
+  expect_equal(spans[[3]]$parent, spans[[6]]$span_id)
+  expect_equal(spans[[4]]$parent, spans[[6]]$span_id)
+  expect_equal(spans[[5]]$parent, spans[[6]]$span_id)
 })
 
 # Pool helpers ----------------------------------------------------------------

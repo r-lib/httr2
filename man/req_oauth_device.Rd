@@ -8,7 +8,8 @@
 req_oauth_device(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
+  pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
   auth_params = list(),
@@ -19,7 +20,7 @@ req_oauth_device(
 
 oauth_flow_device(
   client,
-  auth_url,
+  auth_url = NULL,
   pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
@@ -32,8 +33,12 @@ oauth_flow_device(
 
 \item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
-\item{auth_url}{Authorization url; you'll need to discover this by reading
-the documentation.}
+\item{auth_url}{Device authorization url; you'll need to discover this by
+reading the documentation. Not needed if \code{metadata} was supplied to
+\code{\link[=oauth_client]{oauth_client()}}, which sets it from the \code{device_authorization_endpoint}.}
+
+\item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
+security and should always be used if supported by the server.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
@@ -55,9 +60,6 @@ Learn more in \url{https://httr2.r-lib.org/articles/oauth.html}.}
 
 \item{cache_key}{If you want to cache multiple tokens per app, use this
 key to disambiguate them.}
-
-\item{pkce}{Use "Proof Key for Code Exchange"? This adds an extra layer of
-security and should always be used if supported by the server.}
 }
 \value{
 \code{req_oauth_device()} returns a modified HTTP \link{request} that will

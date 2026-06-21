@@ -1,17 +1,15 @@
 #' @export
 #' @rdname resp_stream_raw
-#' @order 2
+#' @order 4
 resp_stream_aws <- function(resp, max_size = Inf) {
-  event_bytes <- resp_boundary_pushback(
-    resp = resp,
-    max_size = max_size,
-    boundary_func = find_aws_event_boundary,
-    include_trailer = FALSE
-  )
+  splitter <- init_streaming_response(resp, AwsSplitter)
+  check_number_whole(max_size, min = 1, allow_infinite = TRUE)
 
-  if (is.null(event_bytes)) {
+  blocks <- stream_pull(resp, 1, splitter, max_size)
+  if (length(blocks) == 0L) {
     return()
   }
+  event_bytes <- blocks[[1L]]
 
   event <- parse_aws_event(event_bytes)
   if (resp_stream_show_body(resp)) {
@@ -26,24 +24,50 @@ resp_stream_aws <- function(resp, max_size = Inf) {
   event
 }
 
-find_aws_event_boundary <- function(buffer) {
-  # No valid AWS event message is less than 16 bytes
-  if (length(buffer) < 16) {
-    return(NULL)
-  }
+AwsSplitter <- R6::R6Class(
+  "AwsSplitter",
+  inherit = StreamSplitter,
+  public = list(
+    name = "resp_stream_aws()",
+    find_boundaries = function(buffer) find_aws_event_boundaries(buffer)
+  )
+)
 
-  # Read first 4 bytes as a big endian number
-  event_size <- parse_int(buffer[1:4])
-  if (event_size > length(buffer)) {
-    return(NULL)
+# Find every complete AWS event in a buffer by walking the 4-byte big-endian
+# length prefix at the start of each event. Returns a vector of split points
+# (the position one past the end of each complete event).
+find_aws_event_boundaries <- function(buffer) {
+  n <- length(buffer)
+  splits <- double()
+  pos <- 1
+  repeat {
+    # No valid AWS event message is less than 16 bytes.
+    if (n - pos + 1L < 16L) {
+      break
+    }
+    # Read the first 4 bytes of the event as a big endian number.
+    event_size <- parse_int(buffer[pos:(pos + 3L)])
+    if (event_size > n - pos + 1L) {
+      break
+    }
+    pos <- pos + event_size
+    splits[[length(splits) + 1L]] <- pos
   }
-
-  event_size + 1
+  splits
 }
 
-# Implementation from https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.js
-# This is technically buggy because it takes the header_length as a lower bound
-# but this shouldn't cause problems in practive
+# Parse a single AWS event-stream message (content type
+# application/vnd.amazon.eventstream). The binary format is documented by AWS:
+# * https://smithy.io/2.0/aws/amazon-eventstream.html (canonical protocol spec)
+# * https://docs.aws.amazon.com/lexv2/latest/dg/event-stream-encoding.html
+# Reference implementation: https://github.com/awslabs/aws-eventstream-java
+#
+# Key details: all integers are big-endian; the prelude (total + header lengths)
+# and the whole message each end in a GZIP/zlib CRC32; header value types
+# byte/short/integer/long are signed; timestamp is an int64 of epoch millis.
+#
+# We treat header_length as a lower bound rather than an exact count; this is
+# lenient but harmless and matches some reference implementations.
 parse_aws_event <- function(bytes) {
   i <- 1
   read_bytes <- function(n) {
@@ -80,9 +104,9 @@ parse_aws_event <- function(bytes) {
       type_enum(type),
       "TRUE" = TRUE,
       "FALSE" = FALSE,
-      BYTE = parse_int(read_bytes(1)),
-      SHORT = parse_int(read_bytes(2)),
-      INTEGER = parse_int(read_bytes(4)),
+      BYTE = parse_int(read_bytes(1), signed = TRUE),
+      SHORT = parse_int(read_bytes(2), signed = TRUE),
+      INTEGER = parse_int(read_bytes(4), signed = TRUE),
       LONG = parse_int64(read_bytes(8)),
       BYTE_ARRAY = read_bytes(length),
       CHARACTER = rawToChar(read_bytes(length)),
@@ -108,8 +132,13 @@ parse_aws_event <- function(bytes) {
 
 # Helpers ----------------------------------------------------------------
 
-parse_int <- function(x) {
-  sum(as.integer(x) * 256^rev(seq_along(x) - 1))
+parse_int <- function(x, signed = FALSE) {
+  v <- sum(as.integer(x) * 256^rev(seq_along(x) - 1))
+  if (signed && v >= 2^(8 * length(x) - 1)) {
+    # Interpret as two's complement.
+    v <- v - 2^(8 * length(x))
+  }
+  v
 }
 
 parse_int64 <- function(x) {
@@ -119,7 +148,7 @@ parse_int64 <- function(x) {
 }
 
 type_enum <- function(value) {
-  if (value < 0 || value > 10) {
+  if (value < 0 || value > 9) {
     cli::cli_abort("Unsupported type {value}.", .internal = TRUE)
   }
 
@@ -136,13 +165,6 @@ type_enum <- function(value) {
     "TIMESTAMP",
     "UUID"
   )
-}
-
-hex_to_raw <- function(x) {
-  x <- gsub("(\\s|\n)+", "", x)
-
-  pairs <- substring(x, seq(1, nchar(x), by = 2), seq(2, nchar(x), by = 2))
-  as.raw(strtoi(pairs, 16L))
 }
 
 raw_to_hex <- function(x) {

@@ -56,6 +56,20 @@ test_that("cached cache header added to request", {
   expect_equal(req3$headers$`If-None-Match`, '"abc"')
 })
 
+test_that("applies req_error() to responses from cache (#806)", {
+  req <- request("http://example.com") |>
+    req_cache(tempfile()) |>
+    req_error(is_error = \(resp) TRUE)
+  resp <- response(
+    200,
+    headers = "Expires: Wed, 01 Jan 3000 00:00:00 GMT",
+    body = charToRaw("abc")
+  )
+  cache_set(req, resp)
+
+  expect_error(req_perform(req), class = "httr2_http_200")
+})
+
 test_that("error can use cached value", {
   req <- request("http://example.com") |> req_cache(tempfile())
   resp <- response(200, body = charToRaw("OK"))
@@ -79,6 +93,20 @@ test_that("304 retains headers but gets cached body", {
   cached <- cache_post_fetch(req, response(304, headers = "X: 3"))
   expect_equal(cached$headers$x, "3")
   expect_equal(cached$body, resp$body)
+})
+
+test_that("can re-cache a disk body already in the cache (#840)", {
+  req <- request("http://example.com") |> req_cache(tempfile())
+
+  path <- local_write_lines("Hi there")
+  resp <- response(200, headers = "Etag: ABC", body = new_path(path))
+  cache_set(req, resp)
+
+  # 304 reuses cached body (which lives in the cache), then re-caches it
+  cached <- cache_post_fetch(req, response(304, headers = "X: 2"))
+  body_path <- req_cache_path(req, ".body")
+  expect_equal(cached$body, new_path(body_path))
+  expect_equal(readLines(body_path), "Hi there")
 })
 
 test_that("automatically adds to cache", {

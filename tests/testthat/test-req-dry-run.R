@@ -29,7 +29,7 @@ test_that("authorization headers are redacted", {
   expect_equal(out$headers$authorization, redacted_sentinel())
 
   # unless specifically requested
-  req <- request("http://example.com") %>% req_auth_basic("user", "password")
+  req <- request("http://example.com") |> req_auth_basic("user", "password")
   expect_snapshot(out <- req_dry_run(req, redact_headers = FALSE))
   expect_equal(out$headers$authorization, "Basic dXNlcjpwYXNzd29yZA==")
 })

@@ -30,11 +30,6 @@
       Error in `oauth_client()`:
       ! `auth = 'jwt_sig'` requires a `key`.
     Code
-      oauth_client("abc", "http://x.com", key = "abc", auth = "jwt_sig")
-    Condition
-      Error in `oauth_client()`:
-      ! `auth = 'jwt_sig'` requires a claim specification in `auth_params`.
-    Code
       oauth_client("abc", "http://x.com", auth = 123)
     Condition
       Error in `oauth_client()`:
@@ -69,4 +64,30 @@
       * id       : "x"
       * token_url: "http://example.com"
       * auth     : <function>
+
+# metadata is validated and token_url must be resolvable
+
+    Code
+      oauth_client("id")
+    Condition
+      Error in `oauth_client()`:
+      ! Must supply `token_url`, or `metadata` that advertises a token_endpoint.
+    Code
+      oauth_client("id", metadata = metadata)
+    Condition
+      Error in `oauth_client()`:
+      ! Must supply `token_url`, or `metadata` that advertises a token_endpoint.
+    Code
+      oauth_client("id", token_url = "https://x.com", metadata = list())
+    Condition
+      Error in `oauth_client()`:
+      ! `metadata` must be created with `oauth_server_metadata()`.
+
+# jwt_sig auth requires a claim
+
+    Code
+      oauth_client_req_auth(request("http://example.com"), client)
+    Condition
+      Error in `oauth_client_req_auth_jwt_sig()`:
+      ! `auth = 'jwt_sig'` requires a `claim` in `auth_params`.
 

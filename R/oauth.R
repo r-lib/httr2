@@ -50,7 +50,11 @@ auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
       token <- exec(flow, !!!flow_params)
     } else {
       token <- tryCatch(
-        token_refresh(flow_params$client, token$refresh_token),
+        token_refresh(
+          flow_params$client,
+          token$refresh_token,
+          token_params = flow_params$token_params %||% list()
+        ),
         httr2_oauth = function(cnd) {
           # If refresh fails, try to auth from scratch
           exec(flow, !!!flow_params)

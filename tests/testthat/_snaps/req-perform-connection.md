@@ -21,6 +21,16 @@
       Caused by error in `open()`:
       ! Failed to connect
 
+# correclty reports curl error with retries (#817)
+
+    Code
+      req_perform_connection(req)
+    Condition
+      Error in `req_perform_connection()`:
+      ! Failed to perform HTTP request.
+      Caused by error in `open()`:
+      ! Failed to connect
+
 # validates its input
 
     Code

@@ -73,7 +73,7 @@ test_that("can send file with redirect", {
   path <- tempfile()
   writeChar(str, path)
 
-  resp <- request_test("/redirect-to") %>%
+  resp <- request_test("/redirect-to") |>
     req_url_query(url = "/post", status_code = "307") |>
     req_body_file(path, type = "text/plain") |>
     req_perform()
@@ -195,6 +195,13 @@ test_that("form data is unobufcated", {
     req_body_form(x = "x", y = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")) |>
     req_body_apply()
   expect_equal(rawToChar(req$options$postfields), 'x=x&y=y')
+})
+
+test_that("empty form data gives a valid request", {
+  req <- request_test() |>
+    req_body_form() |>
+    req_body_apply()
+  expect_equal(req$body$data, list())
 })
 
 # req_body_multipart() ---------------------------------------------------------

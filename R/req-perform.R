@@ -87,10 +87,11 @@ req_perform <- function(
 
   req <- req_verbosity(req, verbosity)
 
-  req <- cache_pre_fetch(req, path)
-  if (is_response(req)) {
-    return(req)
+  fetched <- cache_pre_fetch(req, path)
+  if (is_response(fetched)) {
+    return(handle_resp(req, fetched, error_call = error_call))
   }
+  req <- fetched
 
   req_prep <- req_prepare(req)
   handle <- req_handle(req_prep)
@@ -109,7 +110,13 @@ req_perform <- function(
     sys_sleep(delay, "for retry backoff")
     n <- n + 1
 
-    resp <- req_perform1(req, path = path, handle = handle)
+    resp <- req_perform1(
+      req,
+      req_prep,
+      path = path,
+      handle = handle,
+      resend_count = n
+    )
     req_completed(req_prep)
 
     if (retry_is_transient(req, resp)) {
@@ -147,6 +154,7 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
     cnd <- resp_failure_cnd(req, resp, error_call = error_call)
     cnd_signal(cnd)
   } else {
+    resp$request <- req
     resp
   }
 }
@@ -174,15 +182,26 @@ resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
   ))
 }
 
-req_perform1 <- function(req, path = NULL, handle = NULL) {
+req_perform1 <- function(
+  req,
+  req_prep,
+  path = NULL,
+  handle = NULL,
+  resend_count = 0
+) {
   the$last_request <- req
   the$last_response <- NULL
   signal(class = "httr2_perform")
+  # Note: we need to do this before we call handle_preflight() so that request
+  # signing works correctly with the added headers.
+  req_prep <- req_with_span(req_prep, resend_count = resend_count)
+  handle_preflight(req_prep, handle)
 
   err <- capture_curl_error({
     fetch <- curl_fetch(handle, req$url, path)
   })
   if (is_error(err)) {
+    req_record_span_status(req, err)
     return(err)
   }
 
@@ -190,7 +209,9 @@ req_perform1 <- function(req, path = NULL, handle = NULL) {
   curl::handle_setopt(handle, cookielist = "FLUSH")
   curl::handle_setopt(handle, cookiefile = NULL, cookiejar = NULL)
 
-  create_response(req, fetch$curl_data, fetch$body)
+  resp <- create_response(req, fetch$curl_data, fetch$body)
+  req_record_span_status(req_prep, resp)
+  resp
 }
 
 curl_fetch <- function(handle, url, path) {
@@ -222,26 +243,17 @@ req_verbosity <- function(req, verbosity, error_call = caller_env()) {
 # Must call req_prepare(), then req_handle(), then after the request has been
 # performed, req_completed() (on the prepared requests)
 req_prepare <- function(req) {
-  req <- auth_sign(req)
   req <- req_method_apply(req)
   req <- req_body_apply(req)
-
-  # Save actually request headers so that req_verbose() can use them
-  req$state$headers <- req$headers
-
-  req
-}
-req_handle <- function(req) {
   if (!req_has_user_agent(req)) {
     req <- req_user_agent(req)
   }
+  req
+}
 
+req_handle <- function(req) {
   handle <- curl::new_handle()
   curl::handle_setopt(handle, url = req$url)
-  curl::handle_setheaders(
-    handle,
-    .list = headers_flatten(req$headers, redact = FALSE)
-  )
   curl::handle_setopt(handle, .list = req$options)
   if (length(req$fields) > 0) {
     curl::handle_setform(handle, .list = req$fields)
@@ -249,12 +261,28 @@ req_handle <- function(req) {
 
   handle
 }
+
+# Called right before the request is sent, when the final headers are in place.
+handle_preflight <- function(req, handle) {
+  req <- auth_sign(req)
+  curl::handle_setheaders(
+    handle,
+    .list = headers_flatten(req$headers, redact = FALSE)
+  )
+  # Save final request headers so that req_verbose() can use them
+  req$state$headers <- req$headers
+  invisible(handle)
+}
+
 req_completed <- function(req) {
   req_policy_call(req, "done", list(), NULL)
 }
 
 new_path <- function(x) structure(x, class = "httr2_path")
 is_path <- function(x) inherits(x, "httr2_path")
+same_path <- function(x, y) {
+  normalizePath(x, mustWork = FALSE) == normalizePath(y, mustWork = FALSE)
+}
 
 resp_show_body <- function(resp) {
   resp$request$policies$show_body %||% FALSE

@@ -1,6 +1,6 @@
 Package: httr2
 Title: Perform HTTP Requests and Process the Responses
-Version: 1.2.1.9000
+Version: 1.2.2.9000
 Authors@R: c(
     person("Hadley", "Wickham", , "hadley@posit.co", role = c("aut", "cre")),
     person("Posit Software, PBC", role = c("cph", "fnd")),
@@ -32,6 +32,7 @@ Suggests:
     bench,
     clipr,
     covr,
+    digest,
     docopt,
     httpuv,
     jose,
@@ -39,7 +40,9 @@ Suggests:
     knitr,
     later (>= 1.4.0),
     nanonext,
-    paws.common,
+    otel (>= 0.2.0),
+    otelsdk (>= 0.2.0),
+    paws.common (>= 0.8.0),
     promises,
     rmarkdown,
     testthat (>= 3.1.8),
@@ -49,9 +52,9 @@ Suggests:
 VignetteBuilder:
     knitr
 Config/Needs/website: tidyverse/tidytemplate
+Config/roxygen2/version: 8.0.0
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: resp-stream, req-perform
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2

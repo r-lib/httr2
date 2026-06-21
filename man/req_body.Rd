@@ -57,13 +57,13 @@ data in the body.
 coerced to strings). Vectors are converted to strings using the
 value of \code{.multi}.
 \item For \code{req_body_multipart()} the values must be strings or objects
-produced by \code{\link[curl:multipart]{curl::form_file()}}/\code{\link[curl:multipart]{curl::form_data()}}.
+produced by \code{\link[curl:form_file]{curl::form_file()}}/\code{\link[curl:form_data]{curl::form_data()}}.
 \item For \code{req_body_json_modify()}, any simple data made from atomic vectors
 and lists.
 }
 
 \code{req_body_json()} uses this argument differently; it takes additional
-arguments passed on to  \code{\link[jsonlite:fromJSON]{jsonlite::toJSON()}}.}
+arguments passed on to  \code{\link[jsonlite:toJSON]{jsonlite::toJSON()}}.}
 
 \item{.multi}{Controls what happens when a value is a vector:
 \itemize{

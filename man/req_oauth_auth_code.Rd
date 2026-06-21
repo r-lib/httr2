@@ -8,7 +8,7 @@
 req_oauth_auth_code(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -20,7 +20,7 @@ req_oauth_auth_code(
 
 oauth_flow_auth_code(
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -34,7 +34,8 @@ oauth_flow_auth_code(
 \item{client}{An \code{\link[=oauth_client]{oauth_client()}}.}
 
 \item{auth_url}{Authorization url; you'll need to discover this by reading
-the documentation.}
+the documentation. Not needed if \code{metadata} was supplied to
+\code{\link[=oauth_client]{oauth_client()}}, which sets it from the \code{authorization_endpoint}.}
 
 \item{scope}{Scopes to be requested from the resource owner.}
 
@@ -59,7 +60,7 @@ works well when you are working on your own computer.
 
 Secondly, you can provide a URL to a website that uses Javascript to
 give the user a code to copy and paste back into the R session (see
-\url{https://www.tidyverse.org/google-callback/} and
+\url{https://tidyverse.org/google-callback/} and
 \url{https://github.com/r-lib/gargle/blob/main/inst/pseudo-oob/google-callback/index.html}
 for examples). This is less convenient (because it requires more
 user interaction) but also works in hosted environments like RStudio
@@ -137,11 +138,12 @@ request("https://api.github.com/user") |>
 write your own auth code flow, if the API you are wrapping does not adhere
 closely to the standard.
 
-Other OAuth flows: 
-\code{\link{req_oauth_bearer_jwt}()},
-\code{\link{req_oauth_client_credentials}()},
-\code{\link{req_oauth_password}()},
-\code{\link{req_oauth_refresh}()},
-\code{\link{req_oauth_token_exchange}()}
+Other OAuth flows:
+\code{\link[=oauth_server_metadata]{oauth_server_metadata()}},
+\code{\link[=req_oauth_bearer_jwt]{req_oauth_bearer_jwt()}},
+\code{\link[=req_oauth_client_credentials]{req_oauth_client_credentials()}},
+\code{\link[=req_oauth_password]{req_oauth_password()}},
+\code{\link[=req_oauth_refresh]{req_oauth_refresh()}},
+\code{\link[=req_oauth_token_exchange]{req_oauth_token_exchange()}}
 }
 \concept{OAuth flows}

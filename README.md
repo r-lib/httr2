@@ -47,7 +47,7 @@ req |> req_headers("Accept" = "application/json")
 #> <httr2_request>
 #> GET https://r-project.org
 #> Headers:
-#> • Accept: "application/json"
+#> * Accept: "application/json"
 #> Body: empty
 
 # Add a body, turning it into a POST
@@ -68,11 +68,11 @@ req |> req_retry(max_tries = 5)
 #> GET https://r-project.org
 #> Body: empty
 #> Policies:
-#> • retry_max_tries        : 5
-#> • retry_on_failure       : FALSE
-#> • retry_failure_threshold: Inf
-#> • retry_failure_timeout  : 30
-#> • retry_realm            : "r-project.org"
+#> * retry_max_tries        : 5
+#> * retry_on_failure       : FALSE
+#> * retry_failure_threshold: Inf
+#> * retry_failure_timeout  : 30
+#> * retry_realm            : "r-project.org"
 
 # Change the HTTP method
 req |> req_method("PATCH")
@@ -89,7 +89,7 @@ req |> req_dry_run()
 #> accept: */*
 #> accept-encoding: deflate, gzip
 #> host: r-project.org
-#> user-agent: httr2/1.1.2.9000 r-curl/6.4.0 libcurl/8.14.1
+#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.14.1
 ```
 
 Use `req_perform()` to perform the request, retrieving a **response**:
@@ -101,7 +101,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6740 bytes)
+#> Body: In memory (6238 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the

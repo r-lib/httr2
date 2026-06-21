@@ -1,7 +1,7 @@
 #' Automatically cache requests
 #'
 #' @description
-#' Use `req_perform()` to automatically cache HTTP requests. Most API requests
+#' Use `req_cache()` to automatically cache HTTP requests. Most API requests
 #' are not cacheable, but static files often are.
 #'
 #' `req_cache()` caches responses to GET requests that have status code 200 and
@@ -125,7 +125,11 @@ cache_set <- function(req, resp) {
 
   if (resp_body_type(resp) == "disk") {
     body_path <- req_cache_path(req, ".body")
-    file.copy(resp$body, body_path, overwrite = TRUE)
+    # Body might already be in the cache (e.g. after a 304), in which case
+    # there's no need to copy it (and doing so would error)
+    if (!same_path(resp$body, body_path)) {
+      file.copy(resp$body, body_path, overwrite = TRUE)
+    }
     resp$body <- new_path(body_path)
   }
 

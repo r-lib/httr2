@@ -71,3 +71,30 @@ jwt_encode_hmac <- function(claim, secret, size = 256, header = list()) {
   check_installed("jose")
   jose::jwt_encode_hmac(claim, secret, size = size, header = header)
 }
+
+# Resolve the various ways of specifying a claim (a list of arguments to
+# `jwt_claim()`, a zero-argument callback, or an already-built claim set) into
+# a single `jwt_claim` object.
+as_jwt_claim <- function(claim, error_call = caller_env()) {
+  if (inherits(claim, "jwt_claim")) {
+    claim
+  } else if (is_list(claim)) {
+    exec("jwt_claim", !!!claim)
+  } else if (is.function(claim)) {
+    claim()
+  } else {
+    cli::cli_abort(
+      "{.arg claim} must be a list or function.",
+      call = error_call
+    )
+  }
+}
+
+as_jwt_client_claim <- function(claim, client_id, error_call = caller_env()) {
+  claim <- as_jwt_claim(claim, error_call = error_call)
+  claim <- unclass(claim)
+  claim$sub <- client_id
+  claim$jti <- NULL
+
+  exec("jwt_claim", !!!claim)
+}
