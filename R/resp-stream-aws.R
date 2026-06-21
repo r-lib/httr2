@@ -26,7 +26,7 @@ resp_stream_aws <- function(resp, max_size = Inf) {
 
 AwsSplitter <- R6::R6Class(
   "AwsSplitter",
-  inherit = BoundarySplitter,
+  inherit = StreamSplitter,
   public = list(
     name = "resp_stream_aws()",
     find_boundaries = function(buffer) find_aws_event_boundaries(buffer)

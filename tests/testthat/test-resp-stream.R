@@ -74,8 +74,8 @@ test_that("streaming responses use only one reader", {
   expect_snapshot(resp_stream_raw(resp), error = TRUE)
 })
 
-test_that("BoundarySplitter splits, caps reads, and discards trailers", {
-  # SseSplitter is a concrete BoundarySplitter; the shared behavior lives here.
+test_that("StreamSplitter splits, caps reads, and discards trailers", {
+  # SseSplitter is a concrete StreamSplitter; the shared behavior lives here.
   s <- SseSplitter$new()
 
   out <- s$split(charToRaw("a\n\nb"))

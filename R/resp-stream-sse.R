@@ -41,7 +41,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
 # Splits a server-sent event stream into events at their boundaries.
 SseSplitter <- R6::R6Class(
   "SseSplitter",
-  inherit = BoundarySplitter,
+  inherit = StreamSplitter,
   public = list(
     name = "resp_stream_sse()",
     find_boundaries = function(buffer) find_event_boundaries(buffer)

@@ -37,7 +37,7 @@ resp_stream_lines <- function(
 # handling (the trailing CR stays in the remainder until its LF arrives).
 LineSplitter <- R6::R6Class(
   "LineSplitter",
-  inherit = BoundarySplitter,
+  inherit = StreamSplitter,
   public = list(
     name = "resp_stream_lines()",
     encoding = NULL,

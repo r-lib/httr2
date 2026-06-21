@@ -191,9 +191,11 @@ stream_pull <- function(resp, n, splitter, max_size) {
   unlist(serve, recursive = FALSE, use.names = FALSE)
 }
 
-# A `StreamSplitter` knows how to divide the byte stream of a particular format
-# into blocks. `stream_pull()` handles the connection reads and queueing and
-# delegates the format-specific decisions to a subclass.
+# A `StreamSplitter` divides a byte stream into blocks at boundaries located by
+# `find_boundaries()`, which takes a raw vector and returns an integer vector of
+# split points: the position one past the end of each complete block. Subclasses
+# (lines, server-sent events, AWS events) supply `find_boundaries()` and a
+# `name`. `stream_pull()` handles the connection reads and queueing.
 StreamSplitter <- R6::R6Class(
   "StreamSplitter",
   public = list(
@@ -203,52 +205,14 @@ StreamSplitter <- R6::R6Class(
     # Constructed once per response by init_streaming_response(). Subclasses
     # that need to inspect the response (e.g. for its encoding) override this.
     initialize = function(resp = NULL) {},
-    # Divide `buffer` into a list of complete `blocks` plus a raw `remainder`
-    # of trailing bytes that don't yet form a complete block. The size limit is
-    # enforced by `stream_pull()`, so `split()` itself never throws.
-    # nocov start: abstract defaults, always overridden by a subclass.
-    split = function(buffer) {
-      cli::cli_abort("Not implemented.", .internal = TRUE)
-    },
-    # Emit any final blocks once the stream has ended with `remainder` bytes
-    # left over after the last complete block.
-    finish = function(remainder) {
-      list()
-    },
-    # nocov end
-    # How many bytes to read from the connection next, given the bytes already
-    # buffered in `push_back`. Don't read more than one byte past the size
-    # limit; the extra byte lets us detect that the buffer has overflowed.
-    read_cap = function(push_back, max_size) {
-      if (is.finite(max_size)) {
-        min(stream_chunk_bytes, max(max_size - length(push_back) + 1L, 1L))
-      } else {
-        stream_chunk_bytes
-      }
-    }
-  )
-)
-
-RawSplitter <- R6::R6Class(
-  "RawSplitter",
-  inherit = StreamSplitter,
-  public = list(name = "resp_stream_raw()")
-)
-
-# Splits a stream into blocks separated by boundaries located by
-# `find_boundaries()`, which takes a raw vector and returns an integer vector
-# of split points: the position one past the end of each complete block.
-# Subclasses (server-sent events, AWS events) supply `find_boundaries()` and a
-# `name`.
-BoundarySplitter <- R6::R6Class(
-  "BoundarySplitter",
-  inherit = StreamSplitter,
-  public = list(
     # nocov start: abstract, always overridden by a subclass.
     find_boundaries = function(buffer) {
       cli::cli_abort("Not implemented.", .internal = TRUE)
     },
     # nocov end
+    # Divide `buffer` into a list of complete `blocks` plus a raw `remainder` of
+    # trailing bytes that don't yet form a complete block. The size limit is
+    # enforced by `stream_pull()`, so `split()` itself never throws.
     split = function(buffer) {
       splits <- self$find_boundaries(buffer)
       if (length(splits) == 0L) {
@@ -262,12 +226,37 @@ BoundarySplitter <- R6::R6Class(
       remainder <- buffer[seq2(splits[[length(splits)]], length(buffer))]
       list(blocks = blocks, remainder = remainder)
     },
+    # Emit any final blocks once the stream has ended with `remainder` bytes
+    # left over after the last complete block. The default discards a trailing
+    # partial block; line splitting overrides this to keep it.
     finish = function(remainder) {
       if (length(remainder) != 0L) {
         cli::cli_warn("Premature end of input; ignoring final partial chunk")
       }
       list()
+    },
+    # How many bytes to read from the connection next, given the bytes already
+    # buffered in `push_back`. Don't read more than one byte past the size
+    # limit; the extra byte lets us detect that the buffer has overflowed.
+    read_cap = function(push_back, max_size) {
+      if (is.finite(max_size)) {
+        min(stream_chunk_bytes, max(max_size - length(push_back) + 1L, 1L))
+      } else {
+        stream_chunk_bytes
+      }
     }
+  )
+)
+
+# resp_stream_raw() reads bytes straight off the connection, so it never goes
+# through stream_pull() and needs no splitting behavior. It's duck-typed rather
+# than a StreamSplitter subclass: init_streaming_response() only needs a `name`
+# (for reader tracking) and a constructor that accepts `resp`.
+RawSplitter <- R6::R6Class(
+  "RawSplitter",
+  public = list(
+    name = "resp_stream_raw()",
+    initialize = function(resp = NULL) {}
   )
 )
 
