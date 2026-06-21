@@ -22,63 +22,43 @@ resp_stream_lines <- function(
     return(character())
   }
 
-  serve <- stream_pull(resp, lines, splitter, max_size)
-  lines_read <- unlist(serve, use.names = FALSE) %||% character()
+  blocks <- stream_pull(resp, lines, splitter, max_size)
+  lines_read <- stream_parse_lines(blocks, splitter$encoding)
   if (resp_stream_show_body(resp)) {
     log_stream(lines_read)
   }
   lines_read
 }
 
-# Splits a stream into lines of text terminated by LF or CRLF. A bare CR is not
-# treated as a line ending (see `stream_split_lines()`).
+# Splits a stream into lines terminated by LF or CRLF. Like the other splitters
+# it emits raw blocks - here each line plus its terminator - which
+# resp_stream_lines() decodes via stream_parse_lines(). A bare CR is ordinary
+# content: we only split on LF, so a CRLF straddling two reads needs no special
+# handling (the trailing CR stays in the remainder until its LF arrives).
 LineSplitter <- R6::R6Class(
   "LineSplitter",
-  inherit = StreamSplitter,
+  inherit = BoundarySplitter,
   public = list(
     name = "resp_stream_lines()",
     encoding = NULL,
     initialize = function(resp) {
       self$encoding <- resp_encoding(resp)
     },
-    split = function(buffer) {
-      stream_split_lines(buffer, self$encoding)
+    find_boundaries = function(buffer) {
+      grepRaw(as.raw(0x0A), buffer, fixed = TRUE, all = TRUE) + 1L
     },
+    # At end of stream, a trailing line without a terminator is still a line.
     finish = function(remainder) {
-      if (length(remainder) == 0L) {
-        list()
-      } else {
-        list(stream_decode(remainder, self$encoding))
-      }
+      if (length(remainder) == 0L) list() else list(remainder)
     }
   )
 )
 
-# Split `buffer` into complete lines plus a trailing remainder of bytes that do
-# not yet form a complete line. Lines are terminated by LF or CRLF; a bare CR is
-# treated as an ordinary character, not a line ending.
-stream_split_lines <- function(buffer, encoding = "UTF-8") {
-  LF <- as.raw(0x0A)
-  ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
-
-  if (length(ends) == 0L) {
-    return(list(blocks = list(), remainder = buffer))
-  }
-
-  cut <- ends[length(ends)] + 1L
-  region <- buffer[seq_len(cut - 1L)]
-  remainder <- buffer[seq2(cut, length(buffer))]
-
-  text <- stream_decode(region, encoding)
-  list(
-    blocks = as.list(strsplit(text, "\r\n|\n")[[1]]),
-    remainder = remainder
-  )
-}
-
-# Decode a raw vector of bytes into a single string in the response encoding.
-stream_decode <- function(bytes, encoding) {
-  text <- rawToChar(bytes)
+# Decode raw line blocks (each a line plus its trailing LF or CRLF) into a
+# character vector in `encoding`, dropping the terminators.
+stream_parse_lines <- function(blocks, encoding) {
+  text <- vapply(blocks, rawToChar, character(1))
   Encoding(text) <- "bytes"
-  iconv(text, encoding, "UTF-8")
+  text <- iconv(text, encoding, "UTF-8")
+  sub("\r?\n$", "", text)
 }

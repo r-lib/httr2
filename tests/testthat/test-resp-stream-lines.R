@@ -75,47 +75,62 @@ test_that("resp_stream_lines(warn) is deprecated unless FALSE", {
   expect_snapshot(. <- resp_stream_lines(resp, warn = TRUE))
 })
 
-test_that("LineSplitter flushes a trailing line", {
+test_that("LineSplitter flushes a trailing line as a raw block", {
   s <- LineSplitter$new(response())
   # Nothing buffered: nothing to flush.
   expect_equal(s$finish(raw()), list())
-  # Trailing bytes are emitted as a final line.
-  expect_equal(s$finish(charToRaw("tail")), list("tail"))
+  # Trailing bytes are emitted as a final block.
+  expect_equal(s$finish(charToRaw("tail")), list(charToRaw("tail")))
   # A bare CR is ordinary content, even at end-of-stream.
-  expect_equal(s$finish(charToRaw("tail\r")), list("tail\r"))
+  expect_equal(s$finish(charToRaw("tail\r")), list(charToRaw("tail\r")))
 })
 
-test_that("stream_split_lines() splits on LF and CRLF", {
-  out <- stream_split_lines(charToRaw("a\nb\r\nc\n"))
-  expect_equal(out$blocks, list("a", "b", "c"))
+test_that("LineSplitter splits on LF and CRLF, keeping the terminator", {
+  s <- LineSplitter$new(response())
+
+  out <- s$split(charToRaw("a\nb\r\nc\n"))
+  expect_equal(
+    out$blocks,
+    list(charToRaw("a\n"), charToRaw("b\r\n"), charToRaw("c\n"))
+  )
   expect_equal(out$remainder, raw())
 
   # blank lines are preserved
   expect_equal(
-    stream_split_lines(charToRaw("a\n\nb\n"))$blocks,
-    list("a", "", "b")
+    s$split(charToRaw("a\n\nb\n"))$blocks,
+    list(charToRaw("a\n"), charToRaw("\n"), charToRaw("b\n"))
   )
 
   # trailing bytes without an ending become the remainder
-  out <- stream_split_lines(charToRaw("a\nbcd"))
-  expect_equal(out$blocks, list("a"))
+  out <- s$split(charToRaw("a\nbcd"))
+  expect_equal(out$blocks, list(charToRaw("a\n")))
   expect_equal(out$remainder, charToRaw("bcd"))
-})
 
-test_that("stream_split_lines() treats a bare CR as an ordinary character", {
-  # A CR not followed by LF is kept in the line, not used as a separator.
-  out <- stream_split_lines(charToRaw("a\rb\n"))
-  expect_equal(out$blocks, list("a\rb"))
-  expect_equal(out$remainder, raw())
-
-  # A CRLF split across reads needs no special handling: the trailing CR is
-  # just unfinished content in the remainder until the next read supplies the
-  # LF.
-  out <- stream_split_lines(charToRaw("a\r"))
+  # A bare CR is not a terminator; a CRLF split across reads needs no special
+  # handling (the trailing CR stays in the remainder until its LF arrives).
+  out <- s$split(charToRaw("a\rb\n"))
+  expect_equal(out$blocks, list(charToRaw("a\rb\n")))
+  out <- s$split(charToRaw("a\r"))
   expect_equal(out$blocks, list())
   expect_equal(out$remainder, charToRaw("a\r"))
+})
 
-  out <- stream_split_lines(charToRaw("a\r\nb\n"))
-  expect_equal(out$blocks, list("a", "b"))
-  expect_equal(out$remainder, raw())
+test_that("stream_parse_lines() decodes blocks and strips LF/CRLF terminators", {
+  blocks <- list(
+    charToRaw("a\n"),
+    charToRaw("b\r\n"),
+    charToRaw("\n"),
+    charToRaw("tail")
+  )
+  expect_equal(stream_parse_lines(blocks, "UTF-8"), c("a", "b", "", "tail"))
+
+  # honors the encoding, and a bare CR stays as content
+  expect_equal(
+    stream_parse_lines(list(as.raw(c(0x82, 0xA0, 0x0A))), "Shift_JIS"),
+    "あ"
+  )
+  expect_equal(stream_parse_lines(list(charToRaw("a\rb\n")), "UTF-8"), "a\rb")
+
+  # no blocks gives an empty vector
+  expect_equal(stream_parse_lines(list(), "UTF-8"), character())
 })

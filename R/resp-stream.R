@@ -254,7 +254,7 @@ BoundarySplitter <- R6::R6Class(
       if (length(splits) == 0L) {
         return(list(blocks = list(), remainder = buffer))
       }
-      
+
       starts <- c(1L, splits[-length(splits)])
       blocks <- lapply(seq_along(splits), function(i) {
         buffer[starts[i]:(splits[i] - 1L)]
@@ -263,10 +263,9 @@ BoundarySplitter <- R6::R6Class(
       list(blocks = blocks, remainder = remainder)
     },
     finish = function(remainder) {
-      if (length(remainder) == 0L) {
-        return(list())
+      if (length(remainder) != 0L) {
+        cli::cli_warn("Premature end of input; ignoring final partial chunk")
       }
-      cli::cli_warn("Premature end of input; ignoring final partial chunk")
       list()
     }
   )
