@@ -85,34 +85,16 @@ test_that("LineSplitter flushes a trailing line as a raw block", {
   expect_equal(s$finish(charToRaw("tail\r")), list(charToRaw("tail\r")))
 })
 
-test_that("LineSplitter splits on LF and CRLF, keeping the terminator", {
+test_that("LineSplitter boundaries fall one past each LF", {
+  # The block-splitting itself lives in stream_pull(); here we just check where
+  # lines end. We only split on LF, so CRLF and bare CR need no special casing.
   s <- LineSplitter$new()
 
-  out <- s$split(charToRaw("a\nb\r\nc\n"))
-  expect_equal(
-    out$blocks,
-    list(charToRaw("a\n"), charToRaw("b\r\n"), charToRaw("c\n"))
-  )
-  expect_equal(out$remainder, raw())
-
-  # blank lines are preserved
-  expect_equal(
-    s$split(charToRaw("a\n\nb\n"))$blocks,
-    list(charToRaw("a\n"), charToRaw("\n"), charToRaw("b\n"))
-  )
-
-  # trailing bytes without an ending become the remainder
-  out <- s$split(charToRaw("a\nbcd"))
-  expect_equal(out$blocks, list(charToRaw("a\n")))
-  expect_equal(out$remainder, charToRaw("bcd"))
-
-  # A bare CR is not a terminator; a CRLF split across reads needs no special
-  # handling (the trailing CR stays in the remainder until its LF arrives).
-  out <- s$split(charToRaw("a\rb\n"))
-  expect_equal(out$blocks, list(charToRaw("a\rb\n")))
-  out <- s$split(charToRaw("a\r"))
-  expect_equal(out$blocks, list())
-  expect_equal(out$remainder, charToRaw("a\r"))
+  expect_equal(s$find_boundaries(charToRaw("a\nb\r\nc\n")), c(3L, 6L, 8L))
+  # blank lines produce adjacent boundaries
+  expect_equal(s$find_boundaries(charToRaw("a\n\nb\n")), c(3L, 4L, 6L))
+  # a bare CR (not followed by LF) is not a terminator
+  expect_equal(s$find_boundaries(charToRaw("a\rbcd")), integer())
 })
 
 test_that("stream_parse_lines() decodes blocks and strips LF/CRLF terminators", {

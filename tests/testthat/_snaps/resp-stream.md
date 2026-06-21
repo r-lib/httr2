@@ -54,7 +54,7 @@
       Error in `resp_stream_raw()`:
       ! Can't use resp_stream_raw() after resp_stream_lines() on the same response.
 
-# StreamSplitter splits, caps reads, and discards trailers
+# StreamSplitter$finish() discards a trailing partial block with a warning
 
     Code
       out <- s$finish(charToRaw("b"))

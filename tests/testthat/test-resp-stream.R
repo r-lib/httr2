@@ -74,34 +74,15 @@ test_that("streaming responses use only one reader", {
   expect_snapshot(resp_stream_raw(resp), error = TRUE)
 })
 
-test_that("StreamSplitter splits, caps reads, and discards trailers", {
-  # SseSplitter is a concrete StreamSplitter; the shared behavior lives here.
+test_that("StreamSplitter$finish() discards a trailing partial block with a warning", {
+  # The block-splitting and read sizing live in stream_pull() and are covered by
+  # its integration tests; finish() is the one behavior that stays on the class.
   s <- SseSplitter$new()
-
-  out <- s$split(charToRaw("a\n\nb"))
-  expect_equal(out$blocks, list(charToRaw("a\n\n")))
-  expect_equal(out$remainder, charToRaw("b"))
-
-  # A buffer ending exactly on a boundary leaves an empty remainder.
-  out <- s$split(charToRaw("a\n\n"))
-  expect_equal(out$blocks, list(charToRaw("a\n\n")))
-  expect_equal(out$remainder, raw())
-
-  # No boundary: the whole buffer is the remainder (size limits are enforced by
-  # stream_pull(), not split()).
-  out <- s$split(charToRaw("abcdef"))
-  expect_equal(out$blocks, list())
-  expect_equal(out$remainder, charToRaw("abcdef"))
-
-  # finish() drops nothing for an empty remainder but warns about a trailer.
+  # Nothing buffered: nothing to flush, no warning.
   expect_equal(s$finish(raw()), list())
+  # A trailing partial block is dropped with a warning.
   expect_snapshot(out <- s$finish(charToRaw("b")))
   expect_equal(out, list())
-
-  # read_cap() never reads more than one byte past the size limit.
-  expect_equal(s$read_cap(raw(), 10), 11)
-  expect_equal(s$read_cap(raw(4), 10), 7)
-  expect_equal(s$read_cap(raw(), Inf), stream_chunk_bytes)
 })
 
 # stream_pull() drives every format (lines, sse, aws); these tests exercise its
