@@ -22,7 +22,7 @@ resp_stream_lines <- function(
     return(character())
   }
 
-  encoding <- env_cache(resp$cache, "encoding", resp_encoding(resp))
+  encoding <- env_cache(resp$cache, "stream_encoding", resp_encoding(resp))
   blocks <- stream_pull(resp, lines, splitter, max_size)
   lines_read <- stream_parse_lines(blocks, encoding)
   if (resp_stream_show_body(resp)) {

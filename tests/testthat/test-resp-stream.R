@@ -103,9 +103,9 @@ test_that("stream_pull() buffers incomplete blocks across reads (non-blocking)",
   withr::defer(close(resp))
   wait_for_http_data(resp)
 
-  # An incomplete block is held in push_back and nothing is served yet.
+  # An incomplete block is held in stream_buffer and nothing is served yet.
   expect_equal(resp_stream_lines(resp), character())
-  expect_equal(resp$cache$push_back, charToRaw("This is a "))
+  expect_equal(resp$cache$stream_buffer, charToRaw("This is a "))
   # Buffered bytes mean the stream isn't complete, even between blocks.
   expect_false(resp_stream_is_complete(resp))
 

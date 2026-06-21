@@ -69,10 +69,10 @@ resp_stream_is_complete <- function(resp) {
 # the user yet? (Either raw bytes or decoded-but-unserved blocks.)
 stream_has_buffered <- function(resp) {
   cache <- resp$cache
-  if (length(cache$push_back) > 0) {
+  if (length(cache$stream_buffer) > 0) {
     return(TRUE)
   }
-  cache$block_pos <= length(cache$block_queue)
+  cache$stream_pos <= length(cache$stream_queue)
 }
 
 #' @export
@@ -106,8 +106,8 @@ stream_chunk_bytes <- 64L * 1024L
 # repeatedly rescan and recopy the buffered bytes.
 stream_pull <- function(resp, n, splitter, max_size) {
   cache <- resp$cache
-  queue <- cache$block_queue
-  pos <- cache$block_pos
+  queue <- cache$stream_queue
+  pos <- cache$stream_pos
 
   # Accumulate served slices in a list and flatten once at the end, so serving
   # many blocks (e.g. `lines = Inf`) doesn't repeatedly recopy a growing vector.
@@ -131,8 +131,8 @@ stream_pull <- function(resp, n, splitter, max_size) {
     # just freshly read ones), because data may have been buffered by an earlier
     # call that didn't find a complete block.
 
-    push_back <- cache$push_back
-    if (length(push_back) > max_size) {
+    stream_buffer <- cache$stream_buffer
+    if (length(stream_buffer) > max_size) {
       stop_stream_size(max_size)
     }
     # Read up to one byte past the size limit - the extra byte lets us detect a
@@ -140,13 +140,13 @@ stream_pull <- function(resp, n, splitter, max_size) {
     if (is.finite(max_size)) {
       read_size <- min(
         stream_chunk_bytes,
-        max(max_size - length(push_back) + 1L, 1L)
+        max(max_size - length(stream_buffer) + 1L, 1L)
       )
     } else {
       read_size <- stream_chunk_bytes
     }
     chunk <- resp$body$read(read_size)
-    buffer <- c(push_back, chunk)
+    buffer <- c(stream_buffer, chunk)
     if (length(buffer) == 0L) {
       break
     }
@@ -169,17 +169,20 @@ stream_pull <- function(resp, n, splitter, max_size) {
       })
       pos <- 1L
       # Trailing bytes after the last boundary stay buffered for the next read.
-      cache$push_back <- buffer[seq2(splits[[length(splits)]], length(buffer))]
+      cache$stream_buffer <- buffer[seq2(
+        splits[[length(splits)]],
+        length(buffer)
+      )]
       # Checkpoint the freshly parsed queue before serving from it: if a later
       # read trips the size limit, the errored call is retried and these blocks
       # are served again rather than lost (their bytes are already consumed).
-      cache$block_queue <- queue
-      cache$block_pos <- pos
+      cache$stream_queue <- queue
+      cache$stream_pos <- pos
       next
     }
 
     # No complete block in the buffer; keep it buffered for the next read.
-    cache$push_back <- buffer
+    cache$stream_buffer <- buffer
     if (length(chunk) == 0L) {
       if (resp$body$is_complete()) {
         # The stream has ended; let the splitter flush any trailing bytes.
@@ -187,7 +190,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
         if (length(final) > 0L) {
           serve[[length(serve) + 1L]] <- final
         }
-        cache$push_back <- raw()
+        cache$stream_buffer <- raw()
       }
       # Either EOF, or no data currently available (non-blocking).
       break
@@ -200,8 +203,8 @@ stream_pull <- function(resp, n, splitter, max_size) {
     queue <- list()
     pos <- 1L
   }
-  cache$block_queue <- queue
-  cache$block_pos <- pos
+  cache$stream_queue <- queue
+  cache$stream_pos <- pos
 
   unlist(serve, recursive = FALSE, use.names = FALSE)
 }
@@ -284,19 +287,19 @@ init_streaming_response <- function(
   # can read these fields without `%||%` guards. Only fills missing fields, so
   # it preserves any bytes a caller has already pushed back.
   cache <- resp$cache
-  cache$push_back <- cache$push_back %||% raw()
-  cache$block_queue <- cache$block_queue %||% list()
-  cache$block_pos <- cache$block_pos %||% 1L
+  cache$stream_buffer <- cache$stream_buffer %||% raw()
+  cache$stream_queue <- cache$stream_queue %||% list()
+  cache$stream_pos <- cache$stream_pos %||% 1L
 
   if (is.null(splitter)) {
     return(invisible(NULL))
   }
 
   # Construct the splitter once per response and cache it.
-  cached <- cache$splitter
+  cached <- cache$stream_splitter
   if (is.null(cached)) {
-    cache$splitter <- splitter$new()
-    return(invisible(cache$splitter))
+    cache$stream_splitter <- splitter$new()
+    return(invisible(cache$stream_splitter))
   }
   if (!inherits(cached, splitter$classname)) {
     used <- splitter$new()$name
