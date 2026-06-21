@@ -1,13 +1,15 @@
 #' Create an OAuth client
 #'
-#' An OAuth app is the combination of a client, a set of endpoints
-#' (i.e. urls where various requests should be sent), and an authentication
-#' mechanism. A client consists of at least a `client_id`, and also often
-#' a `client_secret`. You'll get these values when you create the client on
-#' the API's website.
+#' An OAuth client is the combination of a set of credentials (at least a
+#' `client_id`, and often a `client_secret` or `key`), the server endpoints it
+#' talks to, and an authentication mechanism. You'll get the credentials when
+#' you register the client on the API's website. Supply the `token_url`
+#' directly, or pass the result of [oauth_server_metadata()] as `metadata` to
+#' fill in all of the server's endpoints at once.
 #'
 #' @param id Client identifier.
-#' @param token_url Url to retrieve an access token.
+#' @param token_url Url to retrieve an access token. Not needed if `metadata`
+#'   is supplied, which sets it from the `token_endpoint`.
 #' @param secret Client secret. For most apps, this is technically confidential
 #'   so in principle you should avoid storing it in source code. However, many
 #'   APIs require it in order to provide a user friendly authentication
@@ -35,20 +37,40 @@
 #'   directory. If `NULL`, generated from hash of `client_id`. If you're
 #'   defining a client for use in a package, I recommend that you use
 #'   the package name.
+#' @param metadata An [oauth_server_metadata()] object. When supplied, the
+#'   client's server endpoints are taken from the discovery document, so the
+#'   OAuth flows can find them without you passing each one. An explicit
+#'   `token_url` still wins over `metadata`.
 #' @return An OAuth client: An S3 list with class `httr2_oauth_client`.
 #' @export
 #' @examples
 #' oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")
 oauth_client <- function(
   id,
-  token_url,
+  token_url = NULL,
   secret = NULL,
   key = NULL,
   auth = c("body", "header", "jwt_sig"),
   auth_params = list(),
-  name = hash(id)
+  name = hash(id),
+  metadata = NULL
 ) {
   check_string(id)
+
+  auth_url <- NULL
+  device_auth_url <- NULL
+  if (!is.null(metadata)) {
+    oauth_metadata_check(metadata)
+    token_url <- token_url %||% metadata$token_endpoint
+    auth_url <- metadata$authorization_endpoint
+    device_auth_url <- metadata$device_authorization_endpoint
+  }
+
+  if (is.null(token_url)) {
+    cli::cli_abort(
+      "Must supply {.arg token_url}, or {.arg metadata} that advertises a {.field token_endpoint}."
+    )
+  }
   check_string(token_url)
   check_string(secret, allow_null = TRUE)
 
@@ -64,11 +86,6 @@ oauth_client <- function(
       if (is.null(key)) {
         cli::cli_abort("{.code auth = 'jwt_sig'} requires a {.arg key}.")
       }
-      if (!has_name(auth_params, "claim")) {
-        cli::cli_abort(
-          "{.code auth = 'jwt_sig'} requires a claim specification in {.arg auth_params}."
-        )
-      }
     }
 
     auth <- paste0("oauth_client_req_auth_", auth)
@@ -83,6 +100,8 @@ oauth_client <- function(
       secret = secret,
       key = key,
       token_url = token_url,
+      auth_url = auth_url,
+      device_auth_url = device_auth_url,
       auth = auth,
       auth_params = auth_params
     ),
@@ -191,11 +210,16 @@ oauth_client_req_auth_body <- function(req, client) {
 oauth_client_req_auth_jwt_sig <- function(
   req,
   client,
-  claim,
+  claim = NULL,
   size = 256,
   header = list()
 ) {
-  claim <- exec("jwt_claim", !!!claim)
+  if (is.null(claim)) {
+    cli::cli_abort(
+      "{.code auth = 'jwt_sig'} requires a {.arg claim} in {.arg auth_params}."
+    )
+  }
+  claim <- as_jwt_claim(claim)
   jwt <- jwt_encode_sig(claim, key = client$key, size = size, header = header)
 
   # https://datatracker.ietf.org/doc/html/rfc7523#section-2.2
@@ -207,6 +231,20 @@ oauth_client_req_auth_jwt_sig <- function(
 }
 
 # Helpers -----------------------------------------------------------------
+
+oauth_flow_url <- function(url, client, field, call = caller_env()) {
+  url <- url %||% client[[field]]
+  if (is.null(url)) {
+    cli::cli_abort(
+      c(
+        "Must supply {.arg auth_url}.",
+        i = "Either pass it directly or set it on the {.arg client}, e.g. with {.fn oauth_server_metadata}."
+      ),
+      call = call
+    )
+  }
+  url
+}
 
 oauth_flow_check <- function(
   flow,

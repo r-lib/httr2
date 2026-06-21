@@ -55,6 +55,29 @@ test_that("can refresh to get new token", {
   expect_equal(cache$get(), new_token)
 })
 
+test_that("refresh forwards token_params from the flow", {
+  client <- oauth_client("test", "http://example.org/test")
+  cache <- cache_mem(client)
+  cache$set(oauth_token("123", refresh_token = "456", expires_in = -60))
+
+  local_mocked_bindings(
+    token_refresh = function(client, refresh_token, token_params = list()) {
+      oauth_token("789", token_params = token_params)
+    }
+  )
+
+  token <- auth_oauth_token_get(
+    cache,
+    function(...) NULL,
+    flow_params = list(
+      client = client,
+      scope = "read",
+      token_params = list(resource = "example")
+    )
+  )
+  expect_equal(token$token_params, list(resource = "example"))
+})
+
 test_that("can reflow if refresh fails", {
   client <- oauth_client("test", "http://example.org/test")
   cache <- cache_mem(client)

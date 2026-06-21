@@ -98,10 +98,10 @@ req_url_path_append <- function(req, ...) {
   check_request(req)
   path <- dots_to_path(...)
 
-  url <- url_parse(req$url)
-  url$path <- paste0(sub("/$", "", url$path), path)
-
-  req_url(req, url_build(url))
+  # Keep verbatim url-encoding of input path
+  input <- curl::curl_parse_url(req$url, decode = FALSE)$path
+  path <- paste0(sub("/$", "", input), path)
+  req_url(req, curl::curl_modify_url(req$url, path = I(path)))
 }
 
 #' Get request URL

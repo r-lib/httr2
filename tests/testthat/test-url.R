@@ -130,7 +130,19 @@ test_that("path always starts with /", {
 test_that("only modifies specified components", {
   url <- "http://x.com/a%2Fb/"
   expect_equal(url_modify(url), url)
-  expect_equal(url_modify(url, query = list(x=1)), "http://x.com/a%2Fb/?x=1")
+  expect_equal(url_modify(url, query = list(x = 1)), "http://x.com/a%2Fb/?x=1")
+})
+
+test_that("appending to path does not normalise encoding", {
+  req <- request("http://x.com/a%2Fb/")
+  expect_equal(
+    req_url_path_append(req, "foo/bar")$url,
+    "http://x.com/a%2Fb/foo/bar"
+  )
+  expect_equal(
+    req_url_path_append(req, "foo%2Fbar")$url,
+    "http://x.com/a%2Fb/foo%2Fbar"
+  )
 })
 
 # relative url ------------------------------------------------------------
@@ -252,6 +264,11 @@ test_that("doesn't add extra spaces", {
 
 test_that("formats numbers nicely", {
   expect_equal(format_query_param(1e9, "x"), "1000000000")
+})
+
+test_that("doesn't format long strings (#805)", {
+  big <- strrep("a", 16e6)
+  expect_equal(format_query_param(big, "x"), big)
 })
 
 test_that("can opt out of escaping", {

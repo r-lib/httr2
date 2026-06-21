@@ -35,7 +35,8 @@
       last_response_json()
     Condition
       Error in `last_response_json()`:
-      ! Last response doesn't have a JSON body.
+      ! Unexpected content type "application/xml".
+      * Expecting type "application/json" or suffix "json".
 
 # useful errors if no last request/response
 

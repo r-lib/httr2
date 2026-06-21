@@ -33,7 +33,12 @@ oauth_flow_bearer_jwt(
 apart from \code{iat}, \code{nbf}, \code{exp}, or \code{jti}, provide a list and
 \code{\link[=jwt_claim]{jwt_claim()}} will automatically fill in the dynamic components.
 If other components need to vary, you can instead provide a zero-argument
-callback function which should call \code{jwt_claim()}.}
+callback function which should call \code{jwt_claim()}.
+
+If \code{client} authenticates itself with \code{auth = "jwt_sig"}, this \code{claim} is
+used as the basis for a separate client assertion unless the client
+supplies its own \code{claim} in \code{auth_params}. The client assertion claim uses
+\code{client$id} as its \code{sub}.}
 
 \item{signature}{Function use to sign \code{claim}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
 
@@ -71,11 +76,12 @@ request("https://example.com") |>
  req_auth()
 }
 \seealso{
-Other OAuth flows: 
-\code{\link{req_oauth_auth_code}()},
-\code{\link{req_oauth_client_credentials}()},
-\code{\link{req_oauth_password}()},
-\code{\link{req_oauth_refresh}()},
-\code{\link{req_oauth_token_exchange}()}
+Other OAuth flows:
+\code{\link[=oauth_server_metadata]{oauth_server_metadata()}},
+\code{\link[=req_oauth_auth_code]{req_oauth_auth_code()}},
+\code{\link[=req_oauth_client_credentials]{req_oauth_client_credentials()}},
+\code{\link[=req_oauth_password]{req_oauth_password()}},
+\code{\link[=req_oauth_refresh]{req_oauth_refresh()}},
+\code{\link[=req_oauth_token_exchange]{req_oauth_token_exchange()}}
 }
 \concept{OAuth flows}

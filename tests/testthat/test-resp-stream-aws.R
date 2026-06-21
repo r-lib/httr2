@@ -1,85 +1,188 @@
-# Tests copied from
-# https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.test.js
-# https://github.com/lifion/lifion-aws-event-stream/blob/develop/lib/index.test.json
-
 test_that("can parse empty object", {
-  bytes <- hex_to_raw("000000100000000005c248eb7d98c8ff")
   expect_equal(
-    parse_aws_event(bytes),
+    parse_aws_event(aws_event()),
     list(headers = list(), body = "")
   )
 })
 
+
 test_that("can return various types of header", {
-  bytes <- hex_to_raw("0000001500000001ba25f70d03666f6f013aa3e0d6")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = FALSE))
+  headers <- function(...) parse_aws_event(aws_event(aws_header(...)))$headers
 
-  bytes <- hex_to_raw("0000001500000001ba25f70d03666f6f004da4d040")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = TRUE))
+  expect_equal(headers("foo", "false"), list(foo = FALSE))
+  expect_equal(headers("foo", "true"), list(foo = TRUE))
+  expect_equal(headers("foo", "bytes", as.raw(1:5)), list(foo = as.raw(1:5)))
+  expect_equal(headers("foo", "string", "bar"), list(foo = "bar"))
 
-  # byte
-  bytes <- hex_to_raw("0000001600000001fd858ddd03666f6f02ffa44bfd93")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = 255))
+  # byte, short, and integer are signed (two's complement)
+  expect_equal(headers("foo", "byte", 127), list(foo = 127))
+  expect_equal(headers("foo", "byte", -1), list(foo = -1))
+  expect_equal(headers("foo", "short", -2), list(foo = -2))
+  expect_equal(headers("foo", "integer", -3), list(foo = -3))
 
-  # short
-  bytes <- hex_to_raw("0000001700000001c0e5a46d03666f6f03fffff3b59291")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = 65535))
-
-  # integer
-  bytes <- hex_to_raw("00000019000000017fd51a0c03666f6f04ffffffff853b65dd")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = 4294967295))
-
-  # long
-  bytes <- hex_to_raw(
-    "0000001d000000018a55bccc03666f6f050000ffffffffffff6b03c255"
-  )
-  expected <- structure(1.390671161567e-309, class = "integer64")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = expected))
-
-  # byte array
-  bytes <- hex_to_raw(
-    "0000001c00000001b735957c03666f6f0600050102030405cdda4038"
-  )
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = as.raw(1:5)))
-
-  # character
-  bytes <- hex_to_raw("0000001a00000001387560dc03666f6f0700036261725bb3cecf")
-  expect_equal(parse_aws_event(bytes)$headers, list(foo = "bar"))
-
-  # UUID
-  bytes <- hex_to_raw(
-    "00000025000000011b044f8b03666f6f093bfdac5cfe6c402983bfc1de7819f5316056148a"
-  )
+  # long and timestamp are 64-bit integers, returned as bit64::integer64 (see
+  # the reference test below for a non-trivial long value)
   expect_equal(
-    parse_aws_event(
-      bytes
-    )$headers,
-    list(foo = "3bfdac5cfe6c402983bfc1de7819f531")
+    headers("foo", "timestamp", 0),
+    list(foo = structure(0, class = "integer64"))
+  )
+
+  # UUID is returned as a hex string
+  uuid <- as.raw(1:16)
+  expect_equal(headers("foo", "uuid", uuid), list(foo = raw_to_hex(uuid)))
+})
+
+
+test_that("unknown header triggers error", {
+  expect_snapshot(
+    parse_aws_event(aws_event(aws_header("foo", "unknown"))),
+    error = TRUE
   )
 })
 
-test_that("unknown header triggers error", {
-  bytes <- hex_to_raw("0000001500000001ba25f70d03666f6fff60a63fcd")
-  expect_snapshot(parse_aws_event(bytes), error = TRUE)
+test_that("parse_aws_event() checks the prelude length", {
+  expect_snapshot(parse_aws_event(as.raw(1:10)), error = TRUE)
+})
+
+test_that("can read aws events one at a time", {
+  # Two empty-object events back to back.
+  event <- aws_event()
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(event)
+    res$send_chunk(event)
+  })
+  resp <- req_perform_connection(req, blocking = TRUE)
+  withr::defer(close(resp))
+
+  expect_equal(resp_stream_aws(resp), list(headers = list(), body = ""))
+  expect_equal(resp_stream_aws(resp), list(headers = list(), body = ""))
+  expect_equal(resp_stream_aws(resp), NULL)
+})
+
+test_that("max_size counts the buffered event bytes, approximately", {
+  data <- aws_event()
+  resp1 <- local_streaming_response(data)
+
+  expect_equal(
+    resp_stream_aws(resp1, max_size = length(data)),
+    list(headers = list(), body = "")
+  )
+
+  resp2 <- local_streaming_response(data)
+  expect_error(
+    resp_stream_aws(resp2, max_size = length(data) - 2L),
+    class = "httr2_streaming_error"
+  )
+})
+
+test_that("verbosity = 3 shows aws events", {
+  # A single event with a "foo: bar" header and empty body.
+  event <- aws_event(aws_header("foo", "string", "bar"))
+  req <- local_app_request(function(req, res) {
+    res$send_chunk(event)
+  })
+
+  expect_output(resp <- req_perform_connection(req, verbosity = 3))
+  withr::defer(close(resp))
+  expect_snapshot(
+    . <- resp_stream_aws(resp),
+    transform = transform_verbose_response
+  )
+})
+
+test_that("find_aws_event_boundaries splits a buffer into complete events", {
+  event <- aws_event()
+
+  expect_equal(find_aws_event_boundaries(event), 17)
+  expect_equal(find_aws_event_boundaries(c(event, event)), c(17, 33))
+  expect_equal(
+    find_aws_event_boundaries(c(event, event, event)),
+    c(17, 33, 49)
+  )
+})
+
+test_that("find_aws_event_boundaries ignores incomplete trailing events", {
+  event <- aws_event()
+
+  # Nothing to split
+  expect_equal(find_aws_event_boundaries(raw()), double())
+  # Fewer than 16 bytes can't be a complete event
+  expect_equal(find_aws_event_boundaries(event[1:10]), double())
+  # Trailing partial event is excluded
+  expect_equal(find_aws_event_boundaries(c(event, event[1:8])), 17)
+  # Event claiming more bytes than are available is excluded
+  big <- event
+  big[1:4] <- aws_uint(256, 4L)
+  expect_equal(find_aws_event_boundaries(c(event, big)), 17)
 })
 
 test_that("json content type automatically parsed", {
-  bytes <- hex_to_raw(
-    "
-    000001c20000005bc1123f0b0b3a6576656e742d74797065070015537562736372696265546f
-    53686172644576656e740d3a636f6e74656e742d747970650700106170706c69636174696f6e
-    2f6a736f6e0d3a6d6573736167652d747970650700056576656e747b22436f6e74696e756174
-    696f6e53657175656e63654e756d626572223a22343935383836333037393634323435313235
-    3936363136333437353239313133373435393934373336323937343734373039373832353330
-    222c224d696c6c6973426568696e644c6174657374223a302c225265636f726473223a5b7b22
-    417070726f78696d6174654172726976616c54696d657374616d70223a312e35333831363032
-    313936333645392c2244617461223a225632567a62475635222c22456e6372797074696f6e54
-    797065223a6e756c6c2c22506172746974696f6e4b6579223a2231306463633930322d633839
-    632d343036372d623433362d303566383863306662356566222c2253657175656e63654e756d
-    626572223a223439353838363330373936343234353132353936363136333437353239313133
-    373435393934373336323937343734373039373832353330227d5d7dd84c02f3
-  "
+  event <- aws_event(
+    c(
+      aws_header(":event-type", "string", "SubscribeToShardEvent"),
+      aws_header(":content-type", "string", "application/json"),
+      aws_header(":message-type", "string", "event")
+    ),
+    body = charToRaw('{"records": []}')
   )
-  parsed <- parse_aws_event(bytes)
-  expect_type(parsed$body, "list")
+  parsed <- parse_aws_event(event)
+  expect_equal(parsed$body, list(records = list()))
+})
+
+# aws_event() ------------------------------------------------------------------
+
+test_that("aws_event() produces spec-valid bytes, including CRCs", {
+  # Using values from a reference implementation at
+  # https://github.com/lifion/lifion-aws-event-stream
+  expect_equal(aws_event(), hex_to_raw("000000100000000005c248eb7d98c8ff"))
+})
+
+test_that("aws_event() agrees with the reference implementation", {
+  # Messages captured from the lifion JS reference implementation:
+  # https://github.com/lifion/lifion-aws-event-stream. These vectors encode a
+  # non-spec header length (always 1), so their bytes differ from aws_event()'s,
+  # but a reference message and the equivalent aws_event() must decode the same.
+  agrees <- function(reference, header) {
+    expect_equal(
+      parse_aws_event(hex_to_raw(reference)),
+      parse_aws_event(aws_event(header))
+    )
+  }
+
+  agrees(
+    "0000001500000001ba25f70d03666f6f013aa3e0d6",
+    aws_header("foo", "false")
+  )
+  agrees(
+    "0000001500000001ba25f70d03666f6f004da4d040",
+    aws_header("foo", "true")
+  )
+  agrees(
+    "0000001600000001fd858ddd03666f6f02ffa44bfd93",
+    aws_header("foo", "byte", -1) # 0xff
+  )
+  agrees(
+    "0000001700000001c0e5a46d03666f6f03fffff3b59291",
+    aws_header("foo", "short", -1) # 0xffff
+  )
+  agrees(
+    "00000019000000017fd51a0c03666f6f04ffffffff853b65dd",
+    aws_header("foo", "integer", -1) # 0xffffffff
+  )
+  agrees(
+    "0000001d000000018a55bccc03666f6f050000ffffffffffff6b03c255",
+    aws_header("foo", "long", 281474976710655) # 0x0000ffffffffffff
+  )
+  agrees(
+    "0000001a00000001387560dc03666f6f0700036261725bb3cecf",
+    aws_header("foo", "string", "bar")
+  )
+  agrees(
+    "0000001c00000001b735957c03666f6f0600050102030405cdda4038",
+    aws_header("foo", "bytes", as.raw(1:5))
+  )
+  agrees(
+    "00000025000000011b044f8b03666f6f093bfdac5cfe6c402983bfc1de7819f5316056148a",
+    aws_header("foo", "uuid", hex_to_raw("3bfdac5cfe6c402983bfc1de7819f531"))
+  )
 })

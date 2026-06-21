@@ -156,7 +156,7 @@ req_body_form <- function(
   check_request(.req)
 
   dots <- multi_dots(..., .multi = .multi)
-  data <- modify_list(.req$body$data, !!!dots)
+  data <- modify_list(.req$body$data %||% list(), !!!dots)
   req_body(.req, data = data, type = "form")
 }
 

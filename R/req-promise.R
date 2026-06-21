@@ -106,18 +106,18 @@ req_perform_promise <- function(
       mock = mock
     )
     pooled_req$submit(pool)
-    ensure_pool_poller(pool, reject)
+    ensure_pool_poller(pool)
   })
 }
 
-ensure_pool_poller <- function(pool, reject) {
+ensure_pool_poller <- function(pool) {
   monitor <- pool_poller_monitor(pool)
   if (monitor$already_going()) {
     return()
   }
 
   poll_pool <- function(ready) {
-    tryCatch(
+    withCallingHandlers(
       {
         status <- curl::multi_run(0, pool = pool)
         if (status$pending > 0) {
@@ -135,7 +135,6 @@ ensure_pool_poller <- function(pool, reject) {
       },
       error = function(cnd) {
         monitor$ending()
-        reject(cnd)
       }
     )
   }

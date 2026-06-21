@@ -14,7 +14,6 @@ test_that("response has basic print method", {
     response(200, body = new_path("path-content"))
     response(200, body = streaming)
   })
-
 })
 
 test_that("response adds date if not provided by server", {

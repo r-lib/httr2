@@ -95,7 +95,7 @@ auth_aws_sign <- function(
 
   signature <- aws_v4_signature(
     method = req_get_method(req),
-    url = url_parse(req$url),
+    url = req$url,
     headers = as.list(req_get_headers(req, "reveal")),
     body_sha256 = body_sha256,
     current_time = current_time,
@@ -131,28 +131,35 @@ aws_v4_signature <- function(
   aws_service = NULL,
   aws_region = NULL
 ) {
+  parsed_url <- url_parse(url)
+
   if (is.null(aws_service) || is.null(aws_region)) {
-    host <- strsplit(url$hostname, ".", fixed = TRUE)[[1]]
+    host <- strsplit(parsed_url$hostname, ".", fixed = TRUE)[[1]]
     aws_service <- aws_service %||%
       strsplit(host[[1]], "-", fixed = TRUE)[[1]][[1]]
     aws_region <- aws_region %||% host[[2]]
   }
 
+  # S3 requires a single encoding pass; other services encode existing escapes.
+  if (aws_service == "s3") {
+    path <- parsed_url$path
+  } else {
+    path <- curl::curl_parse_url(url, decode = FALSE)$path
+  }
+
   # 1. Create a canonical request
   # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv-create-signed-request.html#create-canonical-request
   HTTPMethod <- method
-  CanonicalURI <- curl::curl_escape(url$path %||% "/")
-  # AWS does not want / to be encoded here
-  CanonicalURI <- gsub("%2F", "/", CanonicalURI, fixed = TRUE)
+  CanonicalURI <- aws_escape_path(path)
 
-  if (is.null(url$query)) {
+  if (is.null(parsed_url$query)) {
     CanonicalQueryString <- ""
   } else {
-    sorted_query <- url$query[order(names(url$query))]
+    sorted_query <- parsed_url$query[order(names(parsed_url$query))]
     CanonicalQueryString <- url_query_build(sorted_query)
   }
 
-  headers$host <- url$hostname
+  headers$host <- parsed_url$hostname
   names(headers) <- tolower(names(headers))
   headers <- headers[order(names(headers))]
   headers[] <- trimws(headers)
@@ -218,6 +225,18 @@ aws_v4_signature <- function(
     SigningKey = SigningKey,
     Authorization = Authorization
   )
+}
+
+aws_escape_path <- function(path) {
+  path <- path %||% "/"
+  segments <- strsplit(path, "/", fixed = TRUE)[[1]]
+  out <- paste(curl::curl_escape(segments), collapse = "/")
+
+  if (grepl("/$", path)) {
+    out <- paste0(out, "/")
+  }
+
+  out
 }
 
 hmac_sha256 <- function(key, value) {

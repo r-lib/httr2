@@ -13,7 +13,13 @@ oauth_client_req_auth_header(req, client)
 
 oauth_client_req_auth_body(req, client)
 
-oauth_client_req_auth_jwt_sig(req, client, claim, size = 256, header = list())
+oauth_client_req_auth_jwt_sig(
+  req,
+  client,
+  claim = NULL,
+  size = 256,
+  header = list()
+)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
