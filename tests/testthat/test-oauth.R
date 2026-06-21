@@ -143,6 +143,48 @@ test_that("can store on disk", {
   expect_equal(cache$get(), NULL)
 })
 
+test_that("reads, migrates, and clears tokens cached in the legacy location", {
+  new_path <- withr::local_tempdir()
+  legacy_path <- withr::local_tempdir()
+
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
+
+  # Plant a token in the legacy location
+  local_mocked_bindings(oauth_cache_path_modern = function() legacy_path)
+  suppressMessages(cache_disk(client, NULL)$set(1))
+  token_file <- dir(legacy_path, recursive = TRUE)
+
+  # With a separate new location, the token is read from the legacy location...
+  local_mocked_bindings(
+    oauth_cache_path_modern = function() new_path,
+    oauth_cache_path_legacy = function() legacy_path
+  )
+  cache <- cache_disk(client, NULL)
+  expect_equal(cache$get(), 1)
+
+  # ...writing migrates it to the new location...
+  suppressMessages(cache$set(2))
+  expect_equal(dir(new_path, recursive = TRUE), token_file)
+  expect_equal(dir(legacy_path, recursive = TRUE), character())
+  expect_equal(cache$get(), 2)
+
+  # ...and clearing removes it
+  cache$clear()
+  expect_equal(cache$get(), NULL)
+})
+
+test_that("oauth_cache_paths() drops the legacy location when overridden", {
+  withr::local_envvar("HTTR2_OAUTH_CACHE" = NA)
+  expect_length(oauth_cache_paths(), 2)
+
+  withr::local_envvar("HTTR2_OAUTH_CACHE" = "/tmp")
+  expect_equal(oauth_cache_paths(), "/tmp")
+})
+
 test_that("can explicitly clear cached value", {
   client <- oauth_client(
     id = "x",
@@ -162,6 +204,25 @@ test_that("can prune old files", {
   touch(file.path(path, "b-token.rds"), Sys.time() - 86400 * 2)
   cache_disk_prune(2, path)
   expect_equal(dir(path), "a-token.rds")
+})
+
+test_that("prunes old files from both new and legacy locations", {
+  new_path <- withr::local_tempdir()
+  legacy_path <- withr::local_tempdir()
+  local_mocked_bindings(
+    oauth_cache_path_modern = function() new_path,
+    oauth_cache_path_legacy = function() legacy_path
+  )
+
+  touch(file.path(new_path, "a-token.rds"), Sys.time() - 86400 * 1)
+  touch(file.path(new_path, "b-token.rds"), Sys.time() - 86400 * 2)
+  touch(file.path(legacy_path, "a-token.rds"), Sys.time() - 86400 * 1)
+  touch(file.path(legacy_path, "b-token.rds"), Sys.time() - 86400 * 2)
+
+  cache_disk_prune(2)
+
+  expect_equal(dir(new_path), "a-token.rds")
+  expect_equal(dir(legacy_path), "a-token.rds")
 })
 
 # cache_path --------------------------------------------------------------
