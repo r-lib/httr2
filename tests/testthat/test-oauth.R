@@ -231,3 +231,7 @@ test_that("can override path with env var", {
   withr::local_envvar("HTTR2_OAUTH_CACHE" = "/tmp")
   expect_equal(oauth_cache_path(), "/tmp")
 })
+
+test_that("inlined legacy path matches rappdirs", {
+  expect_equal(oauth_cache_path_legacy(), rappdirs::user_cache_dir("httr2"))
+})

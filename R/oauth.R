@@ -245,8 +245,19 @@ oauth_cache_path_manual <- function() {
 oauth_cache_path_modern <- function() {
   tools::R_user_dir("httr2", which = "cache")
 }
+# Equivalent to rappdirs::user_cache_dir("httr2"), inlined so httr2 doesn't
+# depend on rappdirs solely to find tokens cached by older versions. The
+# appname is nested twice and gains a "Cache" subdir on Windows because that's
+# what rappdirs did with its default `appauthor` and `opinion` arguments.
 oauth_cache_path_legacy <- function() {
-  rappdirs::user_cache_dir("httr2")
+  if (.Platform$OS.type == "windows") {
+    base <- Sys.getenv("LOCALAPPDATA", Sys.getenv("APPDATA"))
+    file.path(base, "httr2", "httr2", "Cache")
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
+    "~/Library/Caches/httr2"
+  } else {
+    file.path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), "httr2")
+  }
 }
 
 # All locations that might contain cached tokens, newest first. The legacy

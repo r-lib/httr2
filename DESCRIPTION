@@ -23,7 +23,6 @@ Imports:
     magrittr,
     openssl,
     R6,
-    rappdirs,
     rlang (>= 1.1.0),
     vctrs (>= 0.6.3),
     withr
@@ -44,6 +43,7 @@ Suggests:
     otelsdk (>= 0.2.0),
     paws.common (>= 0.8.0),
     promises,
+    rappdirs,
     rmarkdown,
     testthat (>= 3.1.8),
     tibble,
