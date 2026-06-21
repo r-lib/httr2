@@ -19,7 +19,6 @@ resp_stream_lines <- function(
   }
 
   if (lines == 0) {
-    # If you want to do that, who am I to judge?
     return(character())
   }
 
@@ -31,7 +30,6 @@ resp_stream_lines <- function(
   )
 
   serve <- stream_pull(resp, lines, splitter, max_size)
-
   lines_read <- unlist(serve, use.names = FALSE) %||% character()
   if (resp_stream_show_body(resp)) {
     log_stream(lines_read)
@@ -66,14 +64,6 @@ LineSplitter <- R6::R6Class(
 # Split `buffer` into complete lines plus a trailing remainder of bytes that do
 # not yet form a complete line. Lines are terminated by LF or CRLF; a bare CR is
 # treated as an ordinary character, not a line ending.
-#
-# We only ever split on LF, so a CRLF split across reads needs no special
-# handling: the trailing CR is just unfinished line content that stays in the
-# remainder until the next read supplies its LF.
-#
-# @returns A list matching the `StreamSplitter$split()` contract: `blocks` (a
-#   list of decoded lines), `sizes` (their wire sizes without delimiters), and
-#   `remainder` (a raw vector).
 stream_split_lines <- function(buffer, encoding = "UTF-8") {
   LF <- as.raw(0x0A)
   ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
