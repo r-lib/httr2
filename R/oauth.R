@@ -250,6 +250,15 @@ oauth_cache_path_modern <- function() {
 # appname is nested twice and gains a "Cache" subdir on Windows because that's
 # what rappdirs did with its default `appauthor` and `opinion` arguments.
 oauth_cache_path_legacy <- function() {
+  base <- Sys.getenv("R_USER_CACHE_DIR")
+  if (nzchar(base)) {
+    if (.Platform$OS.type == "windows") {
+      return(file.path(base, "httr2", "httr2", "Cache"))
+    } else {
+      return(file.path(base, "httr2"))
+    }
+  }
+
   if (.Platform$OS.type == "windows") {
     base <- Sys.getenv("LOCALAPPDATA", Sys.getenv("APPDATA"))
     file.path(base, "httr2", "httr2", "Cache")
