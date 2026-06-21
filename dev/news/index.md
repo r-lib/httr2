@@ -61,6 +61,30 @@
   now creates a valid empty request body when no parameters are provided
   ([@arcresu](https://github.com/arcresu),
   [\#836](https://github.com/r-lib/httr2/issues/836)).
+- [`resp_stream_aws()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
+  now parses `byte`, `short`, and `integer` headers as signed integers,
+  matching the AWS event-stream specification (previously they were
+  incorrectly read as unsigned).
+- [`resp_stream_lines()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
+  no longer treats a bare carriage return (CR) as a line ending; only LF
+  and CRLF terminate lines, which is what every modern streaming source
+  produces.
+- [`resp_stream_lines()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
+  no longer warns when the stream ends without a final line terminator
+  (which is routine when streaming), and its `warn` argument is (softly)
+  deprecated.
+- [`resp_stream_lines()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md),
+  [`resp_stream_sse()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md),
+  and
+  [`resp_stream_aws()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
+  now decode whole chunks at a time and hold the results in a queue,
+  instead of rescanning and recopying the buffer for every line or
+  event. This makes memory use and run time scale linearly rather than
+  quadratically with the response size, so large streams use
+  dramatically less memory and run much faster (e.g. reading a 1 MB
+  response of short lines is now around 200x faster and allocates around
+  180x less memory)
+  ([\#704](https://github.com/r-lib/httr2/issues/704)).
 - [`req_throttle()`](https://httr2.r-lib.org/dev/reference/req_throttle.md)
   can now enforce multiple rate limits at once: supply a vector to
   `capacity` (and `fill_time_s`) to create one token bucket per limit,

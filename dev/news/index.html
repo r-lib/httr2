@@ -69,6 +69,14 @@
 <li>
 <code><a href="../reference/req_body.html">req_body_form()</a></code> now creates a valid empty request body when no parameters are provided (<a href="https://github.com/arcresu" class="external-link">@arcresu</a>, <a href="https://github.com/r-lib/httr2/issues/836" class="external-link">#836</a>).</li>
 <li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_aws()</a></code> now parses <code>byte</code>, <code>short</code>, and <code>integer</code> headers as signed integers, matching the AWS event-stream specification (previously they were incorrectly read as unsigned).</li>
+<li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_lines()</a></code> no longer treats a bare carriage return (CR) as a line ending; only LF and CRLF terminate lines, which is what every modern streaming source produces.</li>
+<li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_lines()</a></code> no longer warns when the stream ends without a final line terminator (which is routine when streaming), and its <code>warn</code> argument is (softly) deprecated.</li>
+<li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_lines()</a></code>, <code><a href="../reference/resp_stream_raw.html">resp_stream_sse()</a></code>, and <code><a href="../reference/resp_stream_raw.html">resp_stream_aws()</a></code> now decode whole chunks at a time and hold the results in a queue, instead of rescanning and recopying the buffer for every line or event. This makes memory use and run time scale linearly rather than quadratically with the response size, so large streams use dramatically less memory and run much faster (e.g. reading a 1 MB response of short lines is now around 200x faster and allocates around 180x less memory) (<a href="https://github.com/r-lib/httr2/issues/704" class="external-link">#704</a>).</li>
+<li>
 <code><a href="../reference/req_throttle.html">req_throttle()</a></code> can now enforce multiple rate limits at once: supply a vector to <code>capacity</code> (and <code>fill_time_s</code>) to create one token bucket per limit, and each request must satisfy all of them (<a href="https://github.com/r-lib/httr2/issues/555" class="external-link">#555</a>).</li>
 <li>
 <code><a href="../reference/req_auth_aws_v4.html">req_auth_aws_v4()</a></code> now correctly signs URLs containing encoded slashes (<code>%2F</code>) in path segments, such as ARNs in AWS Bedrock API paths (<a href="https://github.com/thisisnic" class="external-link">@thisisnic</a>, <a href="https://github.com/r-lib/httr2/issues/842" class="external-link">#842</a>).</li>
