@@ -59,7 +59,7 @@ test_that("can read aws events one at a time", {
   expect_equal(resp_stream_aws(resp), NULL)
 })
 
-test_that("max_size includes the complete AWS event", {
+test_that("max_size counts the buffered event bytes, approximately", {
   data <- aws_event()
   resp1 <- local_streaming_response(data)
 
@@ -70,7 +70,7 @@ test_that("max_size includes the complete AWS event", {
 
   resp2 <- local_streaming_response(data)
   expect_error(
-    resp_stream_aws(resp2, max_size = length(data) - 1L),
+    resp_stream_aws(resp2, max_size = length(data) - 2L),
     class = "httr2_streaming_error"
   )
 })

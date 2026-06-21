@@ -132,8 +132,9 @@ stream_pull <- function(resp, n, splitter, max_size) {
     # split the next batch of blocks. We always reparse the buffered bytes (not
     # just freshly read ones), because data may have been buffered by an earlier
     # call that didn't find a complete block.
+
     push_back <- cache$push_back %||% raw()
-    if (length(push_back) > splitter$max_buffer_size(max_size)) {
+    if (length(push_back) > max_size) {
       stop_stream_size(max_size)
     }
     chunk <- resp$body$read(splitter$read_cap(push_back, max_size))
@@ -151,24 +152,15 @@ stream_pull <- function(resp, n, splitter, max_size) {
       )
     }
 
-    # Preserve newly read bytes if splitting fails, so retrying sees the same
-    # input rather than silently losing bytes already consumed from the body.
-    cache$push_back <- buffer
     parsed <- splitter$split(buffer)
-
-    if (any(parsed$sizes > max_size)) {
-      stop_stream_size(max_size)
-    }
-    if (length(parsed$remainder) > splitter$max_buffer_size(max_size)) {
-      stop_stream_size(max_size)
-    }
     cache$push_back <- parsed$remainder
 
     if (length(parsed$blocks) > 0L) {
       queue <- parsed$blocks
       pos <- 1L
-      # Keep the newly parsed queue recoverable until this call returns. If a
-      # later read or split fails, retrying will serve these blocks again.
+      # Checkpoint the freshly parsed queue before serving from it: if a later
+      # read trips the size limit, the errored call is retried and these blocks
+      # are served again rather than lost (their bytes are already consumed).
       cache$block_queue <- queue
       cache$block_pos <- pos
       next
@@ -178,11 +170,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
     if (length(chunk) == 0L) {
       if (resp$body$is_complete()) {
         # The stream has ended; let the splitter flush any trailing bytes.
-        remainder <- cache$push_back %||% raw()
-        if (length(remainder) > max_size) {
-          stop_stream_size(max_size)
-        }
-        final <- splitter$finish(remainder)
+        final <- splitter$finish(parsed$remainder)
         if (length(final) > 0L) {
           serve[[length(serve) + 1L]] <- final
         }
@@ -211,18 +199,12 @@ stream_pull <- function(resp, n, splitter, max_size) {
 StreamSplitter <- R6::R6Class(
   "StreamSplitter",
   public = list(
-    max_delimiter_size = 0L,
-    # Divide `buffer` into complete `blocks`, their wire `sizes`, and a raw
-    # `remainder` of trailing bytes that don't yet form a complete block. Size
-    # limits are enforced by `stream_pull()`.
+    # Divide `buffer` into a list of complete `blocks` plus a raw `remainder`
+    # of trailing bytes that don't yet form a complete block. The size limit is
+    # enforced by `stream_pull()`, so `split()` itself never throws.
     # nocov start: abstract defaults, always overridden by a subclass.
     split = function(buffer) {
       cli::cli_abort("Not implemented.", .internal = TRUE)
-    },
-    # Maximum size of an incomplete block, including the longest possible
-    # partial delimiter.
-    max_buffer_size = function(max_size) {
-      max_size + max(self$max_delimiter_size - 1L, 0L)
     },
     # Emit any final blocks once the stream has ended with `remainder` bytes
     # left over after the last complete block.
@@ -231,13 +213,11 @@ StreamSplitter <- R6::R6Class(
     },
     # nocov end
     # How many bytes to read from the connection next, given the bytes already
-    # buffered in `push_back`. Don't read more than one content byte past the
-    # size limit; the extra byte lets us detect an oversized block or complete
-    # a format-specific delimiter prefix.
+    # buffered in `push_back`. Don't read more than one byte past the size
+    # limit; the extra byte lets us detect that the buffer has overflowed.
     read_cap = function(push_back, max_size) {
       if (is.finite(max_size)) {
-        remaining <- self$max_buffer_size(max_size) - length(push_back)
-        min(stream_chunk_bytes, max(remaining + 1L, 1L))
+        min(stream_chunk_bytes, max(max_size - length(push_back) + 1L, 1L))
       } else {
         stream_chunk_bytes
       }
@@ -254,20 +234,13 @@ BoundarySplitter <- R6::R6Class(
   inherit = StreamSplitter,
   public = list(
     find_boundaries = NULL,
-    block_size = NULL,
-    initialize = function(
-      find_boundaries,
-      block_size = length,
-      max_delimiter_size = 0L
-    ) {
+    initialize = function(find_boundaries) {
       self$find_boundaries <- find_boundaries
-      self$block_size <- block_size
-      self$max_delimiter_size <- max_delimiter_size
     },
     split = function(buffer) {
       splits <- self$find_boundaries(buffer)
       if (length(splits) == 0L) {
-        return(list(blocks = list(), remainder = buffer, sizes = numeric()))
+        return(list(blocks = list(), remainder = buffer))
       }
       starts <- c(1L, splits[-length(splits)])
       blocks <- lapply(seq_along(splits), function(i) {
@@ -279,8 +252,7 @@ BoundarySplitter <- R6::R6Class(
       } else {
         buffer[last:length(buffer)]
       }
-      sizes <- vapply(blocks, self$block_size, numeric(1))
-      list(blocks = blocks, remainder = remainder, sizes = sizes)
+      list(blocks = blocks, remainder = remainder)
     },
     finish = function(remainder) {
       if (length(remainder) == 0L) {

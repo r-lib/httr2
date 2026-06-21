@@ -37,18 +37,20 @@ test_that("can feed sse events one at a time", {
   expect_equal(resp_stream_sse(resp), NULL)
 })
 
-test_that("max_size allows the complete event delimiter", {
+test_that("max_size counts the buffered event bytes, delimiter included", {
+  # The event with its "\r\n\r\n" delimiter is 11 bytes; max_size limits the
+  # buffered bytes (delimiter included), approximately.
   data <- charToRaw("data: 1\r\n\r\n")
   resp1 <- local_streaming_response(data)
 
   expect_equal(
-    resp_stream_sse(resp1, max_size = 7),
+    resp_stream_sse(resp1, max_size = 10),
     list(type = "message", data = "1", id = "")
   )
 
   resp2 <- local_streaming_response(data)
   expect_error(
-    resp_stream_sse(resp2, max_size = 6),
+    resp_stream_sse(resp2, max_size = 9),
     class = "httr2_streaming_error"
   )
 })

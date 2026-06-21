@@ -44,7 +44,6 @@ LineSplitter <- R6::R6Class(
   inherit = StreamSplitter,
   public = list(
     encoding = NULL,
-    max_delimiter_size = 2L,
     initialize = function(encoding) {
       self$encoding <- encoding
     },
@@ -69,23 +68,17 @@ stream_split_lines <- function(buffer, encoding = "UTF-8") {
   ends <- grepRaw(LF, buffer, fixed = TRUE, all = TRUE)
 
   if (length(ends) == 0L) {
-    return(list(blocks = list(), remainder = buffer, sizes = numeric()))
+    return(list(blocks = list(), remainder = buffer))
   }
 
   cut <- ends[length(ends)] + 1L
   region <- buffer[seq_len(cut - 1L)]
   remainder <- buffer[seq2(cut, length(buffer))]
 
-  sizes <- diff(c(0L, ends)) - 1L
-  has_content <- sizes > 0L
-  sizes[has_content] <- sizes[has_content] -
-    (buffer[ends[has_content] - 1L] == as.raw(0x0D))
-
   text <- stream_decode(region, encoding)
   list(
     blocks = as.list(strsplit(text, "\r\n|\n")[[1]]),
-    remainder = remainder,
-    sizes = sizes
+    remainder = remainder
   )
 }
 

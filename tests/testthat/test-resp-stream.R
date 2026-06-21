@@ -184,23 +184,19 @@ test_that("stream_pull() keeps size errors reproducible on retry", {
   )
 })
 
-test_that("stream_pull() preserves state when splitting fails", {
-  resp <- local_streaming_response(charToRaw("abc"))
-  splitter <- FlakySplitter$new()
+test_that("stream_pull() re-serves queued blocks after a failed call", {
+  # "a" splits off cleanly, but the long second line trips max_size, so the
+  # call errors *after* queueing "a". The queue is checkpointed, so retrying
+  # (here with a larger limit) still yields "a" rather than dropping it.
+  resp <- local_streaming_response(c(charToRaw("a\n"), rep(as.raw(0x30), 13)))
 
-  expect_snapshot(stream_pull(resp, 1, splitter, Inf), error = TRUE)
-  expect_equal(resp$cache$push_back, charToRaw("abc"))
-  expect_equal(stream_pull(resp, 1, splitter, Inf), list(charToRaw("abc")))
-})
-
-test_that("stream_pull() preserves queued blocks when a later split fails", {
-  resp <- response(body = ByteBody$new(charToRaw("ab")))
-  splitter <- FlakySplitter$new(charToRaw("b"))
-
-  expect_snapshot(stream_pull(resp, Inf, splitter, Inf), error = TRUE)
+  expect_error(
+    resp_stream_lines(resp, lines = 2, max_size = 10),
+    class = "httr2_streaming_error"
+  )
   expect_equal(
-    stream_pull(resp, Inf, splitter, Inf),
-    list(charToRaw("a"), charToRaw("b"))
+    resp_stream_lines(resp, lines = 2, max_size = 100),
+    c("a", strrep("0", 13))
   )
 })
 

@@ -29,8 +29,10 @@ resp_stream_is_complete(resp)
 
 \item{lines}{The maximum number of lines to return at once.}
 
-\item{max_size}{The maximum number of bytes to buffer; once this number of
-bytes has been exceeded without a line/event boundary, an error is thrown.}
+\item{max_size}{The maximum number of bytes to buffer while waiting for a
+line or event boundary; if exceeded, an error is thrown. This limit is
+approximate: to spot a boundary httr2 may buffer a handful of bytes beyond
+\code{max_size} (e.g. the bytes of the delimiter itself).}
 
 \item{warn}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} \code{resp_stream_lines()} no longer
 warns when the connection ends without a final EOL, so this argument is

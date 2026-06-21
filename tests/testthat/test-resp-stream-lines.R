@@ -38,11 +38,21 @@ test_that("requesting zero lines returns an empty vector", {
   expect_equal(resp_stream_lines(resp, 0), character())
 })
 
-test_that("max_size allows the complete line delimiter", {
-  data <- c(rep(as.raw(0x61), 10), as.raw(c(0x0D, 0x0A)))
-  resp <- local_streaming_response(data)
-
+test_that("max_size is approximate, counting the buffered delimiter bytes", {
+  # A line whose content is exactly max_size is returned: we read one byte past
+  # max_size, enough to capture a single LF terminator.
+  resp <- local_streaming_response(c(rep(as.raw(0x61), 10), as.raw(0x0A)))
   expect_equal(resp_stream_lines(resp, max_size = 10), strrep("a", 10))
+
+  # A two-byte CRLF tips the buffer one byte over, so the same line needs a
+  # slightly larger max_size.
+  crlf <- c(rep(as.raw(0x61), 10), as.raw(c(0x0D, 0x0A)))
+  resp <- local_streaming_response(crlf)
+  expect_error(
+    resp_stream_lines(resp, max_size = 10),
+    class = "httr2_streaming_error"
+  )
+  expect_equal(resp_stream_lines(resp, max_size = 11), strrep("a", 10))
 })
 
 test_that("max_size counts an incomplete delimiter at EOF as content", {

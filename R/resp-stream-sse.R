@@ -1,5 +1,7 @@
-#' @param max_size The maximum number of bytes to buffer; once this number of
-#'   bytes has been exceeded without a line/event boundary, an error is thrown.
+#' @param max_size The maximum number of bytes to buffer while waiting for a
+#'   line or event boundary; if exceeded, an error is thrown. This limit is
+#'   approximate: to spot a boundary httr2 may buffer a handful of bytes beyond
+#'   `max_size` (e.g. the bytes of the delimiter itself).
 #' @export
 #' @rdname resp_stream_raw
 #' @order 3
@@ -10,11 +12,7 @@ resp_stream_sse <- function(resp, max_size = Inf) {
   splitter <- env_cache(
     resp$cache,
     "boundary_splitter",
-    BoundarySplitter$new(
-      find_event_boundaries,
-      block_size = sse_block_size,
-      max_delimiter_size = 4L
-    )
+    BoundarySplitter$new(find_event_boundaries)
   )
 
   repeat {
@@ -44,18 +42,6 @@ resp_stream_sse <- function(resp, max_size = Inf) {
     cli::cat_line()
   }
   event
-}
-
-sse_block_size <- function(block) {
-  n <- length(block)
-  if (
-    n >= 4L &&
-      identical(block[(n - 3L):n], as.raw(c(0x0D, 0x0A, 0x0D, 0x0A)))
-  ) {
-    n - 4L
-  } else {
-    n - 2L
-  }
 }
 
 # Find every event boundary in a buffer, returning a vector of split points
