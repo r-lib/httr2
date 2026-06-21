@@ -152,9 +152,6 @@ curl_body_data <- function(body, type) {
   )
 }
 
-# Wrap a string in double quotes, but only when it contains a character that
-# the shell would otherwise interpret, like a space or the `?` and `&` of a
-# query string.
 dquote <- function(x) {
   ifelse(grepl("[^A-Za-z0-9._~:/@%+=,-]", x), paste0('"', x, '"'), x)
 }
