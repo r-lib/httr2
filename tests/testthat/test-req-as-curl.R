@@ -185,10 +185,13 @@ test_that("req_as_curl() validates input", {
   })
 })
 
-test_that("req_as_curl() reads raw bodies from stdin", {
+test_that("req_as_curl() encodes raw bodies as binary", {
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
-      req_body_raw(charToRaw("test data"), type = "text/plain") |>
+      req_body_raw(
+        as.raw(c(0x00, 0x68, 0x69, 0xff)),
+        type = "application/octet-stream"
+      ) |>
       req_as_curl()
   })
 })
@@ -211,6 +214,13 @@ test_that("dquote() quotes only when needed", {
     dquote("https://example.com?a=1&b=2"),
     '"https://example.com?a=1&b=2"'
   )
+})
+
+test_that("escape_bytes() keeps printable ascii but hex-escapes the rest", {
+  expect_equal(escape_bytes(charToRaw("ok")), "$'ok'")
+  expect_equal(escape_bytes(as.raw(c(0x00, 0x41, 0xff))), "$'\\x00A\\xff'")
+  # quotes and backslashes are hex-escaped so they're safe inside $'...'
+  expect_equal(escape_bytes(charToRaw("a'b\\c")), "$'a\\x27b\\x5cc'")
 })
 
 test_that("curl_method() only sets the method when curl can't infer it", {

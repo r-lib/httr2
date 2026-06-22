@@ -155,8 +155,7 @@ curl_body_data <- function(body, type) {
   switch(
     type,
     string = paste0("--data ", dquote(gsub('"', '\\"', body))),
-    # raw bodies are read from stdin
-    raw = paste0("--data-binary ", dquote("@-")),
+    raw = paste0("--data-raw ", escape_bytes(body)),
     file = paste0("--data-binary ", dquote(paste0("@", body))),
     json = paste0("--data '", jsonlite::toJSON(body, auto_unbox = TRUE), "'"),
     form = paste0(
@@ -172,4 +171,20 @@ curl_body_data <- function(body, type) {
 
 dquote <- function(x) {
   ifelse(grepl("[^A-Za-z0-9._~:/@%+=,-]", x), paste0('"', x, '"'), x)
+}
+
+# Encode raw bytes as an ANSI-C quoted string ($'...'), which the shell decodes
+# to the exact bytes; printable ASCII stays readable, the rest becomes \xNN
+escape_bytes <- function(bytes) {
+  ints <- as.integer(bytes)
+  out <- sprintf("\\x%02x", ints)
+  printable <- ints >= 0x20 & ints <= 0x7e & ints != 0x27 & ints != 0x5c
+  out[printable] <- vapply(
+    ints[printable],
+    function(i) {
+      rawToChar(as.raw(i))
+    },
+    character(1)
+  )
+  paste0("$'", paste(out, collapse = ""), "'")
 }

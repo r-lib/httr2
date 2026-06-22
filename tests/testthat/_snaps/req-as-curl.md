@@ -188,16 +188,16 @@
       Error in `req_as_curl()`:
       ! `req` must be an HTTP request object, not the string "not a request".
 
-# req_as_curl() reads raw bodies from stdin
+# req_as_curl() encodes raw bodies as binary
 
     Code
-      req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), charToRaw(
-        "test data"), type = "text/plain"))
+      req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), as.raw(c(0, 104,
+        105, 255)), type = "application/octet-stream"))
     Output
       curl https://hb.cran.dev/post \
         --location \
-        --header "Content-Type: text/plain" \
-        --data-binary @-
+        --header "Content-Type: application/octet-stream" \
+        --data-raw $'\x00hi\xff'
 
 # an explicit Content-Type header isn't duplicated by the body
 
