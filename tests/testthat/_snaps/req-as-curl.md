@@ -205,17 +205,13 @@
       Error in `req_as_curl()`:
       ! `req` must be an HTTP request object, not the string "not a request".
 
-# req_as_curl() encodes raw bodies as binary
+# req_as_curl() errors for raw bodies
 
     Code
-      req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), as.raw(c(0, 104,
-        105, 255)), type = "application/octet-stream"))
-    Output
-      printf %s AGhp/w== | base64 --decode | curl https://hb.cran.dev/post \
-        --header 'Content-Type: application/octet-stream' \
-        --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
-        --data-binary @-
+      req_as_curl(req)
+    Condition
+      Error:
+      ! Can't translate a request with a raw body.
 
 # an explicit Content-Type header isn't duplicated by the body
 

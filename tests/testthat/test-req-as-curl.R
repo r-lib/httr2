@@ -208,15 +208,10 @@ test_that("req_as_curl() signs AWS requests", {
   expect_match(command, "--header 'x-amz-date: [0-9]{8}T[0-9]{6}Z'")
 })
 
-test_that("req_as_curl() encodes raw bodies as binary", {
-  expect_snapshot({
-    request("https://hb.cran.dev/post") |>
-      req_body_raw(
-        as.raw(c(0x00, 0x68, 0x69, 0xff)),
-        type = "application/octet-stream"
-      ) |>
-      req_as_curl()
-  })
+test_that("req_as_curl() errors for raw bodies", {
+  req <- request("https://hb.cran.dev/post") |>
+    req_body_raw(as.raw(c(0x00, 0x68, 0x69, 0xff)))
+  expect_snapshot(req_as_curl(req), error = TRUE)
 })
 
 test_that("an explicit Content-Type header isn't duplicated by the body", {
@@ -295,17 +290,6 @@ test_that("curl_body_data() translates multipart values", {
       "--form 'data=\"a b\";type=text/plain'"
     )
   )
-})
-
-test_that("curl_body_input() base64 encodes raw bodies", {
-  req <- request("https://example.com") |>
-    req_body_raw(as.raw(c(0x00, 0x41, 0xff)))
-
-  expect_equal(
-    curl_body_input(req),
-    "printf %s AEH/ | base64 --decode | "
-  )
-  expect_equal(curl_body_data(req_get_body(req), "raw"), "--data-binary @-")
 })
 
 test_that("curl_method() only sets the method when curl can't infer it", {

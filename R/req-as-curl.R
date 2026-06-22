@@ -41,11 +41,7 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   )
   indent <- c("", rep("  ", length(args) - 1))
   backslash <- c(rep(" \\", length(args) - 1), "")
-  out <- paste0(
-    curl_body_input(req),
-    "curl ",
-    paste0(indent, args, backslash, collapse = "\n")
-  )
+  out <- paste0("curl ", paste0(indent, args, backslash, collapse = "\n"))
 
   structure(out, class = "httr2_cmd")
 }
@@ -141,6 +137,9 @@ curl_body <- function(req, obfuscated = c("redact", "reveal")) {
     return(NULL)
   }
   type <- req_get_body_type(req)
+  if (type == "raw") {
+    cli::cli_abort("Can't translate a request with a raw body.", call = NULL)
+  }
 
   c(
     curl_content_type(req, type),
@@ -170,7 +169,6 @@ curl_body_data <- function(body, type, params = list(auto_unbox = TRUE)) {
   switch(
     type,
     string = paste0("--data ", dquote(body)),
-    raw = "--data-binary @-",
     file = paste0("--data-binary ", dquote(paste0("@", body))),
     json = paste0("--data ", dquote(exec(jsonlite::toJSON, body, !!!params))),
     form = paste0("--data ", dquote(url_query_build(body))),
@@ -208,15 +206,6 @@ curl_body_multipart_field <- function(name, value) {
 
 curl_form_quote <- function(x) {
   paste0('"', gsub('(["\\\\])', "\\\\\\1", x), '"')
-}
-
-curl_body_input <- function(req) {
-  if (req_get_body_type(req) != "raw") {
-    return("")
-  }
-
-  encoded <- openssl::base64_encode(req_get_body(req))
-  paste0("printf %s ", dquote(encoded), " | base64 --decode | ")
 }
 
 dquote <- function(x) {
