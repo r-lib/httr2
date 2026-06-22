@@ -56,8 +56,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        --form name=test \
-        --form value=123
+        --form-string name=test \
+        --form-string value=123
 
 # req_as_curl() works with string bodies
 
@@ -155,7 +155,7 @@
       curl https://hb.cran.dev/post \
         --location \
         --header 'Content-Type: application/x-www-form-urlencoded' \
-        --data 'username=test&password=<REDACTED>'
+        --data 'username=test&password=%3CREDACTED%3E'
 
 # req_as_curl() works with complex requests
 

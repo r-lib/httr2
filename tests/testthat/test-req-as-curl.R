@@ -233,6 +233,47 @@ test_that("curl_body_data() safely quotes strings and JSON", {
   )
 })
 
+test_that("curl_body_data() uses the request's JSON parameters", {
+  expect_equal(
+    curl_body_data(
+      list(x = 1.23456, y = NULL),
+      "json",
+      params = list(auto_unbox = TRUE, digits = 2, null = "list")
+    ),
+    "--data '{\"x\":1.23,\"y\":{}}'"
+  )
+})
+
+test_that("curl_body_data() URL encodes form data", {
+  expect_equal(
+    curl_body_data(list(x = "a b&c=d", y = "x+y", z = "é"), "form"),
+    "--data 'x=a%20b%26c%3Dd&y=x%2By&z=%C3%A9'"
+  )
+})
+
+test_that("curl_body_data() translates multipart values", {
+  path <- tempfile()
+  writeLines("contents", path)
+
+  body <- list(
+    text = "@literal;value",
+    file = curl::form_file(path, type = "text/plain", name = "name.txt"),
+    data = curl::form_data("a b", type = "text/plain")
+  )
+  expect_equal(
+    curl_body_data(body, "multipart"),
+    c(
+      "--form-string 'text=@literal;value'",
+      paste0(
+        "--form 'file=@\"",
+        body$file$path,
+        "\";type=text/plain;filename=\"name.txt\"'"
+      ),
+      "--form 'data=\"a b\";type=text/plain'"
+    )
+  )
+})
+
 test_that("escape_bytes() keeps printable ascii but hex-escapes the rest", {
   expect_equal(escape_bytes(charToRaw("ok")), "$'ok'")
   expect_equal(escape_bytes(as.raw(c(0x00, 0x41, 0xff))), "$'\\x00A\\xff'")

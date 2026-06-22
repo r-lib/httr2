@@ -130,7 +130,10 @@ curl_body <- function(req, obfuscated = c("redact", "reveal")) {
   }
   type <- req_get_body_type(req)
 
-  c(curl_content_type(req, type), curl_body_data(body, type))
+  c(
+    curl_content_type(req, type),
+    curl_body_data(body, type, params = req$body$params)
+  )
 }
 
 # Skip if Content-Type is already set as a header
@@ -151,7 +154,7 @@ curl_content_type <- function(req, type) {
   paste0("--header ", dquote(paste0("Content-Type: ", content_type)))
 }
 
-curl_body_data <- function(body, type) {
+curl_body_data <- function(body, type, params = list(auto_unbox = TRUE)) {
   switch(
     type,
     string = paste0("--data ", dquote(body)),
@@ -159,17 +162,46 @@ curl_body_data <- function(body, type) {
     file = paste0("--data-binary ", dquote(paste0("@", body))),
     json = paste0(
       "--data ",
-      dquote(jsonlite::toJSON(body, auto_unbox = TRUE))
+      dquote(exec(jsonlite::toJSON, body, !!!params))
     ),
     form = paste0(
       "--data ",
-      dquote(paste(names(body), unlist(body), sep = "=", collapse = "&"))
+      dquote(url_query_build(body))
     ),
-    multipart = paste0(
-      "--form ",
-      dquote(paste0(names(body), "=", unlist(body)))
-    )
+    multipart = curl_body_multipart(body)
   )
+}
+
+curl_body_multipart <- function(body) {
+  unlist(Map(curl_body_multipart_field, names(body), body), use.names = FALSE)
+}
+
+curl_body_multipart_field <- function(name, value) {
+  if (inherits(value, "form_file")) {
+    spec <- paste0(name, "=@", curl_form_quote(value$path))
+    if (!is.null(value$type)) {
+      spec <- paste0(spec, ";type=", value$type)
+    }
+    if (!is.null(value$name)) {
+      spec <- paste0(spec, ";filename=", curl_form_quote(value$name))
+    }
+    paste0("--form ", dquote(spec))
+  } else if (inherits(value, "form_data")) {
+    type <- value$type
+    value <- rawToChar(value$value)
+    if (is.null(type)) {
+      paste0("--form-string ", dquote(paste0(name, "=", value)))
+    } else {
+      spec <- paste0(name, "=", curl_form_quote(value), ";type=", type)
+      paste0("--form ", dquote(spec))
+    }
+  } else {
+    paste0("--form-string ", dquote(paste0(name, "=", value)))
+  }
+}
+
+curl_form_quote <- function(x) {
+  paste0('"', gsub('(["\\\\])', "\\\\\\1", x), '"')
 }
 
 dquote <- function(x) {
