@@ -209,10 +209,27 @@ test_that("dquote() quotes only when needed", {
   # plain values are left alone
   expect_equal(dquote("https://example.com/get"), "https://example.com/get")
   # spaces and query-string metacharacters force quoting
-  expect_equal(dquote("a b"), '"a b"')
+  expect_equal(dquote("a b"), "'a b'")
   expect_equal(
     dquote("https://example.com?a=1&b=2"),
-    '"https://example.com?a=1&b=2"'
+    "'https://example.com?a=1&b=2'"
+  )
+})
+
+test_that("dquote() protects shell metacharacters", {
+  expect_equal(dquote('a"b'), "'a\"b'")
+  expect_equal(dquote("a'b"), "'a'\"'\"'b'")
+  expect_equal(dquote("a$b`c`\\d"), "'a$b`c`\\d'")
+})
+
+test_that("curl_body_data() safely quotes strings and JSON", {
+  expect_equal(
+    curl_body_data("a'b$HOME", "string"),
+    "--data 'a'\"'\"'b$HOME'"
+  )
+  expect_equal(
+    curl_body_data(list(value = "a'b$HOME"), "json"),
+    "--data '{\"value\":\"a'\"'\"'b$HOME\"}'"
   )
 })
 
@@ -253,11 +270,11 @@ test_that("curl_headers() drops missing headers and reveals secrets", {
     req_headers_redacted(Authorization = "secret")
   expect_equal(
     curl_headers(req, "redact"),
-    '--header "Authorization: <REDACTED>"'
+    "--header 'Authorization: <REDACTED>'"
   )
   expect_equal(
     curl_headers(req, "reveal"),
-    '--header "Authorization: secret"'
+    "--header 'Authorization: secret'"
   )
 })
 

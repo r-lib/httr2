@@ -154,10 +154,13 @@ curl_content_type <- function(req, type) {
 curl_body_data <- function(body, type) {
   switch(
     type,
-    string = paste0("--data ", dquote(gsub('"', '\\"', body))),
+    string = paste0("--data ", dquote(body)),
     raw = paste0("--data-raw ", escape_bytes(body)),
     file = paste0("--data-binary ", dquote(paste0("@", body))),
-    json = paste0("--data '", jsonlite::toJSON(body, auto_unbox = TRUE), "'"),
+    json = paste0(
+      "--data ",
+      dquote(jsonlite::toJSON(body, auto_unbox = TRUE))
+    ),
     form = paste0(
       "--data ",
       dquote(paste(names(body), unlist(body), sep = "=", collapse = "&"))
@@ -170,7 +173,11 @@ curl_body_data <- function(body, type) {
 }
 
 dquote <- function(x) {
-  ifelse(grepl("[^A-Za-z0-9._~:/@%+=,-]", x), paste0('"', x, '"'), x)
+  ifelse(
+    grepl("[^A-Za-z0-9._~:/@%+=,-]", x),
+    paste0("'", gsub("'", "'\"'\"'", x, fixed = TRUE), "'"),
+    x
+  )
 }
 
 # Encode raw bytes as an ANSI-C quoted string ($'...'), which the shell decodes
