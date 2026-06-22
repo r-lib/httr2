@@ -4,7 +4,8 @@
       req_as_curl(request("https://hb.cran.dev/get"))
     Output
       curl https://hb.cran.dev/get \
-        --location
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() works with POST methods
 
@@ -13,7 +14,8 @@
     Output
       curl https://hb.cran.dev/post \
         --request POST \
-        --location
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() works with headers
 
@@ -24,7 +26,8 @@
       curl https://hb.cran.dev/get \
         --header 'Accept: application/json' \
         --header 'User-Agent: httr2/1.0' \
-        --location
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() works with JSON bodies
 
@@ -33,8 +36,9 @@
         value = 123)))
     Output
       curl https://hb.cran.dev/post \
-        --location \
         --header 'Content-Type: application/json' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data '{"name":"test","value":123}'
 
 # req_as_curl() works with form bodies
@@ -45,6 +49,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data 'name=test&value=123'
 
@@ -56,6 +61,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --form-string name=test \
         --form-string value=123
 
@@ -66,8 +72,9 @@
       type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
-        --location \
         --header 'Content-Type: text/plain' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data 'test data'
 
 # req_as_curl() works with file bodies
@@ -76,8 +83,9 @@
       req_as_curl(req_body_file(request("https://hb.cran.dev/post"), path, type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
-        --location \
         --header 'Content-Type: text/plain' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data-binary @<tempfile>
 
 # req_as_curl() works with custom content types
@@ -87,8 +95,9 @@
       type = "application/vnd.api+json"))
     Output
       curl https://hb.cran.dev/post \
-        --location \
         --header 'Content-Type: application/vnd.api+json' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data '{"test":"data"}'
 
 # req_as_curl() works with options
@@ -102,7 +111,8 @@
     Output
       curl https://hb.cran.dev/get \
         --location \
-        --verbose
+        --verbose \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() works with cookies
 
@@ -113,7 +123,8 @@
       curl https://hb.cran.dev/cookies \
         --location \
         --cookie-jar <cookie-file> \
-        --cookie <cookie-file>
+        --cookie <cookie-file> \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() works with obfuscated values in headers
 
@@ -123,7 +134,8 @@
     Output
       curl https://hb.cran.dev/get \
         --header 'Authorization: <REDACTED>' \
-        --location
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() can reveal obfuscated values
 
@@ -133,7 +145,8 @@
     Output
       curl https://hb.cran.dev/get \
         --header 'Authorization: secret-token' \
-        --location
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() works with obfuscated values in JSON body
 
@@ -142,8 +155,9 @@
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))))
     Output
       curl https://hb.cran.dev/post \
-        --location \
         --header 'Content-Type: application/json' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data '{"username":"test","password":"<REDACTED>"}'
 
 # req_as_curl() works with obfuscated values in form body
@@ -154,6 +168,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data 'username=test&password=%3CREDACTED%3E'
 
@@ -169,8 +184,9 @@
         --header 'Accept: application/vnd.github.v3+json' \
         --header 'Authorization: <REDACTED>' \
         --header 'User-Agent: MyApp/1.0' \
-        --location \
         --header 'Content-Type: application/json' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data '{"name":"test-repo","description":"A test repository","private":true}'
 
 # req_as_curl() puts a request with no arguments on a single line
@@ -178,7 +194,8 @@
     Code
       req_as_curl(req_options(request("https://hb.cran.dev/get"), followlocation = FALSE))
     Output
-      curl https://hb.cran.dev/get
+      curl https://hb.cran.dev/get \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
 # req_as_curl() validates input
 
@@ -195,8 +212,9 @@
         105, 255)), type = "application/octet-stream"))
     Output
       printf %s AGhp/w== | base64 --decode | curl https://hb.cran.dev/post \
-        --location \
         --header 'Content-Type: application/octet-stream' \
+        --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data-binary @-
 
 # an explicit Content-Type header isn't duplicated by the body
@@ -208,6 +226,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: application/json' \
         --location \
+        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
         --data '{}'
 
 # curl_options() translates each known option

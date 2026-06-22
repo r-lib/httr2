@@ -185,6 +185,28 @@ test_that("req_as_curl() validates input", {
   })
 })
 
+test_that("req_as_curl() prepares and signs requests", {
+  req <- request("https://example.com") |>
+    req_auth_sign(
+      function(req, cache) {
+        req_headers_redacted(req, Authorization = "signed")
+      },
+      params = list(),
+      cache = NULL
+    )
+
+  expect_equal(
+    as.character(req_as_curl(req)),
+    paste(
+      "curl https://example.com \\",
+      "  --header 'Authorization: <REDACTED>' \\",
+      "  --location \\",
+      paste0("  --user-agent ", dquote(default_user_agent())),
+      sep = "\n"
+    )
+  )
+})
+
 test_that("req_as_curl() encodes raw bodies as binary", {
   expect_snapshot({
     request("https://hb.cran.dev/post") |>

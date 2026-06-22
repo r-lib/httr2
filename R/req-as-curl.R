@@ -28,6 +28,9 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   check_request(req)
   obfuscated <- arg_match(obfuscated)
 
+  req <- req_prepare(req)
+  req <- auth_sign(req)
+
   body <- curl_body(req, obfuscated)
   args <- c(
     dquote(req_get_url(req)),
@@ -90,7 +93,15 @@ curl_options <- function(req) {
     "xferinfofunction", # req_progress()
     "noprogress", # req_progress()
     "proxyauth", # req_proxy()
-    "forbid_reuse" # req_verbose_test()
+    "forbid_reuse", # req_verbose_test()
+    "nobody", # req_method_apply()
+    "customrequest", # req_method_apply()
+    "post", # req_body_apply()
+    "postfieldsize", # req_body_apply()
+    "postfields", # req_body_apply()
+    "readfunction", # req_body_apply()
+    "seekfunction", # req_body_apply()
+    "postfieldsize_large" # req_body_apply()
   )
   unknown <- setdiff(names(options), c(known_options, ignored_options))
   if (length(unknown) > 0) {
