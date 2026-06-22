@@ -85,14 +85,13 @@
 # req_as_curl() works with options
 
     Code
-      req_as_curl(req_options(request("https://hb.cran.dev/get"), timeout = 30,
-      verbose = TRUE, ssl_verifypeer = FALSE))
+      req_as_curl(req_options(request("https://hb.cran.dev/get"), verbose = TRUE,
+      ssl_verifypeer = FALSE))
     Condition
       Warning:
       Can't translate option "ssl_verifypeer".
     Output
       curl https://hb.cran.dev/get \
-        --max-time 30 \
         --verbose
 
 # req_as_curl() works with cookies
@@ -146,17 +145,15 @@
 # req_as_curl() works with complex requests
 
     Code
-      req_as_curl(req_options(req_body_json(req_headers(req_method(request(
+      req_as_curl(req_body_json(req_headers(req_method(request(
         "https://api.github.com/user/repos"), "POST"), Accept = "application/vnd.github.v3+json",
       Authorization = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"), `User-Agent` = "MyApp/1.0"),
-      list(name = "test-repo", description = "A test repository", private = TRUE)),
-      timeout = 60))
+      list(name = "test-repo", description = "A test repository", private = TRUE)))
     Output
       curl https://api.github.com/user/repos \
         -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: <REDACTED>" \
         -H "User-Agent: MyApp/1.0" \
-        --max-time 60 \
         -H "Content-Type: application/json" \
         -d '{"name":"test-repo","description":"A test repository","private":true}'
 
@@ -204,11 +201,24 @@
       --connect-timeout 5
       --proxy http://proxy.example.com
       --user-agent agent
-      --referer http://referer.example.com
       --location
       --verbose
       --cookie-jar jar.txt
       --cookie file.txt
+
+# req_options_as_curl() translates options set by httr2 functions
+
+    Code
+      cat(req_options_as_curl(req), sep = "\n")
+    Output
+      --max-time 30
+      --connect-timeout 0
+      --proxy proxy.example.com:8080
+      --proxy-user u:p
+      --user-agent agent
+      --cookie-jar cookies.txt
+      --cookie cookies.txt
+      --cookie session=abc
 
 # req_options_as_curl() warns about untranslatable options
 

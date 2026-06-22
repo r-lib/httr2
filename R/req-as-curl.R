@@ -67,21 +67,28 @@ req_headers_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
 req_options_as_curl <- function(req) {
   options <- req$options
 
-  # There's no programmatic mapping between libcurl's option names and the
-  # curl command line flags, so each supported option is translated by hand.
-  # TODO: replace with a `req_get_options()` introspection helper.
   known_options <- c(
-    "timeout",
-    "connecttimeout",
-    "proxy",
-    "useragent",
-    "referer",
+    "timeout_ms", # req_timeout()
+    "connecttimeout", # req_timeout()
+    "proxy", # req_proxy()
+    "proxyport", # req_proxy()
+    "proxyuserpwd", # req_proxy()
+    "useragent", # req_user_agent()
     "followlocation",
-    "verbose",
-    "cookiejar",
-    "cookiefile"
+    "verbose", # req_verbose()
+    "cookiejar", # req_cookie_preserve()
+    "cookiefile", # req_cookie_preserve()
+    "cookie" # req_cookies_set()
   )
-  unknown <- setdiff(names(options), known_options)
+  # R callbacks and the like, with no command line equivalent
+  ignored_options <- c(
+    "debugfunction", # req_verbose()
+    "xferinfofunction", # req_progress()
+    "noprogress", # req_progress()
+    "proxyauth", # req_proxy()
+    "forbid_reuse" # req_verbose_test()
+  )
+  unknown <- setdiff(names(options), c(known_options, ignored_options))
   if (length(unknown) > 0) {
     cli::cli_warn("Can't translate option{?s} {.val {unknown}}.")
   }
@@ -90,16 +97,22 @@ req_options_as_curl <- function(req) {
     value <- options[[name]]
     switch(
       name,
-      timeout = paste0("--max-time ", value), # req_timeout()
+      timeout_ms = paste0("--max-time ", value / 1000),
       connecttimeout = paste0("--connect-timeout ", value),
-      proxy = paste0("--proxy ", value), # req_proxy()
-      useragent = paste0("--user-agent ", dquote(value)), # req_user_agent()
-      referer = paste0("--referer ", dquote(value)),
-      followlocation = if (value) "--location", # httr2 follows redirects
-      verbose = if (value) "--verbose", # req_verbose()
-      # req_cookie_preserve() and req_cookies_set()
+      proxy = {
+        host <- value
+        if (!is.null(options$proxyport)) {
+          host <- paste0(host, ":", options$proxyport)
+        }
+        paste0("--proxy ", dquote(host))
+      },
+      proxyuserpwd = paste0("--proxy-user ", dquote(value)),
+      useragent = paste0("--user-agent ", dquote(value)),
+      followlocation = if (value) "--location",
+      verbose = if (value) "--verbose",
       cookiejar = paste0("--cookie-jar ", dquote(value)),
-      cookiefile = paste0("--cookie ", dquote(value))
+      cookiefile = paste0("--cookie ", dquote(value)),
+      cookie = paste0("--cookie ", dquote(value))
     )
   })
   unlist(args)
@@ -117,8 +130,7 @@ req_body_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   c(curl_content_type(req, type), curl_body_data(body, type))
 }
 
-# Emit a `Content-Type` header for the body, unless one is already set as a
-# request header (in which case it's emitted by `req_headers_as_curl()`).
+# Skip if Content-Type is already set as a header
 curl_content_type <- function(req, type) {
   if ("content-type" %in% tolower(names(req_get_headers(req)))) {
     return(NULL)
@@ -140,7 +152,7 @@ curl_body_data <- function(body, type) {
   switch(
     type,
     string = paste0("-d ", dquote(gsub('"', '\\"', body))),
-    # raw bodies come from a connection, so read the data from stdin
+    # raw bodies are read from stdin
     raw = paste0("--data-binary ", dquote("@-")),
     file = paste0("--data-binary ", dquote(paste0("@", body))),
     json = paste0("-d '", jsonlite::toJSON(body, auto_unbox = TRUE), "'"),

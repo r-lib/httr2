@@ -89,7 +89,7 @@ test_that("req_as_curl() works with custom content types", {
 test_that("req_as_curl() works with options", {
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
-      req_options(timeout = 30, verbose = TRUE, ssl_verifypeer = FALSE) |>
+      req_options(verbose = TRUE, ssl_verifypeer = FALSE) |>
       req_as_curl()
   })
 })
@@ -167,7 +167,6 @@ test_that("req_as_curl() works with complex requests", {
         description = "A test repository",
         private = TRUE
       )) |>
-      req_options(timeout = 60) |>
       req_as_curl()
   })
 })
@@ -253,17 +252,40 @@ test_that("req_headers_as_curl() drops missing headers and reveals secrets", {
 test_that("req_options_as_curl() translates each known option", {
   req <- request("https://example.com") |>
     req_options(
-      timeout = 30,
+      timeout_ms = 30000,
       connecttimeout = 5,
       proxy = "http://proxy.example.com",
       useragent = "agent",
-      referer = "http://referer.example.com",
       followlocation = TRUE,
       verbose = TRUE,
       cookiejar = "jar.txt",
       cookiefile = "file.txt"
     )
   expect_snapshot(cat(req_options_as_curl(req), sep = "\n"))
+})
+
+test_that("req_options_as_curl() translates options set by httr2 functions", {
+  req <- request("https://example.com") |>
+    req_timeout(30) |>
+    req_proxy(
+      "proxy.example.com",
+      port = 8080,
+      username = "u",
+      password = "p"
+    ) |>
+    req_user_agent("agent") |>
+    req_cookie_preserve("cookies.txt") |>
+    req_cookies_set(session = "abc")
+  expect_snapshot(cat(req_options_as_curl(req), sep = "\n"))
+})
+
+test_that("req_options_as_curl() ignores options with no curl equivalent", {
+  # req_verbose() also sets a debugfunction; req_progress() sets callbacks
+  req <- request("https://example.com") |>
+    req_verbose() |>
+    req_progress()
+  expect_no_warning(out <- req_options_as_curl(req))
+  expect_equal(out, "--verbose")
 })
 
 test_that("req_options_as_curl() drops disabled flags", {
