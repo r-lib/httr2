@@ -84,7 +84,7 @@ req |> req_dry_run()
 #> accept: */*
 #> accept-encoding: deflate, gzip
 #> host: r-project.org
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.14.1
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1
 ```
 
 Use
@@ -99,7 +99,7 @@ resp
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6238 bytes)
+#> Body: In memory (6520 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
@@ -158,9 +158,10 @@ resp |> resp_body_html()
 
 ## Acknowledgements
 
-httr2 wouldn’t be possible without [curl](https://cran.dev/curl/),
-[openssl](https://cran.dev/openssl/),
-[jsonlite](https://cran.dev/jsonlite/), and
+httr2 wouldn’t be possible without
+[curl](https://jeroen.r-universe.dev//curl/),
+[openssl](https://jeroen.r-universe.dev/openssl/),
+[jsonlite](https://jeroen.r-universe.dev/jsonlite), and
 [jose](https://github.com/r-lib/jose/), which are all maintained by
 [Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
 Bryan](https://jennybryan.org) and [Craig

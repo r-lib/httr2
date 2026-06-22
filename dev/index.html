@@ -148,7 +148,7 @@
 <span><span class="co">#&gt; accept: */*</span></span>
 <span><span class="co">#&gt; accept-encoding: deflate, gzip</span></span>
 <span><span class="co">#&gt; host: r-project.org</span></span>
-<span><span class="co">#&gt; user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.14.1</span></span></code></pre></div>
+<span><span class="co">#&gt; user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1</span></span></code></pre></div>
 <p>Use <code><a href="reference/req_perform.html">req_perform()</a></code> to perform the request, retrieving a <strong>response</strong>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="va">req</span><span class="op">)</span></span>
@@ -157,7 +157,7 @@
 <span><span class="co">#&gt; GET https://www.r-project.org/</span></span>
 <span><span class="co">#&gt; Status: 200 OK</span></span>
 <span><span class="co">#&gt; Content-Type: text/html</span></span>
-<span><span class="co">#&gt; Body: In memory (6238 bytes)</span></span></code></pre></div>
+<span><span class="co">#&gt; Body: In memory (6520 bytes)</span></span></code></pre></div>
 <p>The <code>resp_</code> functions help you extract various useful components of the response:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/resp_content_type.html">resp_content_type</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -185,7 +185,7 @@
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
-<p>httr2 wouldn’t be possible without <a href="https://cran.dev/curl/" class="external-link">curl</a>, <a href="https://cran.dev/openssl/" class="external-link">openssl</a>, <a href="https://cran.dev/jsonlite/" class="external-link">jsonlite</a>, and <a href="https://github.com/r-lib/jose/" class="external-link">jose</a>, which are all maintained by <a href="https://github.com/jeroen" class="external-link">Jeroen Ooms</a>. A big thanks also go to <a href="https://jennybryan.org" class="external-link">Jenny Bryan</a> and <a href="https://www.craigcitro.org" class="external-link">Craig Citro</a> who have given me much useful feedback on both the design of the internals and the user facing API.</p>
+<p>httr2 wouldn’t be possible without <a href="https://jeroen.r-universe.dev//curl/" class="external-link">curl</a>, <a href="https://jeroen.r-universe.dev/openssl/" class="external-link">openssl</a>, <a href="https://jeroen.r-universe.dev/jsonlite" class="external-link">jsonlite</a>, and <a href="https://github.com/r-lib/jose/" class="external-link">jose</a>, which are all maintained by <a href="https://github.com/jeroen" class="external-link">Jeroen Ooms</a>. A big thanks also go to <a href="https://jennybryan.org" class="external-link">Jenny Bryan</a> and <a href="https://www.craigcitro.org" class="external-link">Craig Citro</a> who have given me much useful feedback on both the design of the internals and the user facing API.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -228,7 +228,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/r-lib/httr2/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/r-lib/httr2/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/r-lib/httr2?branch=main" class="external-link"><img src="https://codecov.io/gh/r-lib/httr2/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/r-lib/httr2" class="external-link"><img src="https://codecov.io/gh/r-lib/httr2/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
