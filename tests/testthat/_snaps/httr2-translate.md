@@ -151,8 +151,8 @@
 # httr2_translate() works with obfuscated values in JSON body
 
     Code
-      httr2_translate(req_body_json(request("https://hb.cran.dev/post"), list(username = "test",
-        password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))))
+      httr2_translate(req_body_json(request("https://hb.cran.dev/post"), list(
+        username = "test", password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))))
     Output
       curl https://hb.cran.dev/post \
         --header 'Content-Type: application/json' \
