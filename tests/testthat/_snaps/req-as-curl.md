@@ -5,7 +5,7 @@
     Output
       curl https://hb.cran.dev/get \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() works with POST methods
 
@@ -15,7 +15,7 @@
       curl https://hb.cran.dev/post \
         --request POST \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() works with headers
 
@@ -27,7 +27,7 @@
         --header 'Accept: application/json' \
         --header 'User-Agent: httr2/1.0' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() works with JSON bodies
 
@@ -38,7 +38,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: application/json' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data '{"name":"test","value":123}'
 
 # req_as_curl() works with form bodies
@@ -49,7 +49,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data 'name=test&value=123'
 
@@ -61,7 +61,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --form-string name=test \
         --form-string value=123
 
@@ -74,7 +74,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: text/plain' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data 'test data'
 
 # req_as_curl() works with file bodies
@@ -85,7 +85,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: text/plain' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data-binary @<tempfile>
 
 # req_as_curl() works with custom content types
@@ -97,7 +97,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: application/vnd.api+json' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data '{"test":"data"}'
 
 # req_as_curl() works with options
@@ -112,7 +112,7 @@
       curl https://hb.cran.dev/get \
         --location \
         --verbose \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() works with cookies
 
@@ -124,7 +124,7 @@
         --location \
         --cookie-jar <cookie-file> \
         --cookie <cookie-file> \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() works with obfuscated values in headers
 
@@ -135,7 +135,7 @@
       curl https://hb.cran.dev/get \
         --header 'Authorization: <REDACTED>' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() can reveal obfuscated values
 
@@ -146,7 +146,7 @@
       curl https://hb.cran.dev/get \
         --header 'Authorization: secret-token' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() works with obfuscated values in JSON body
 
@@ -157,7 +157,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: application/json' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data '{"username":"test","password":"<REDACTED>"}'
 
 # req_as_curl() works with obfuscated values in form body
@@ -168,7 +168,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data 'username=test&password=%3CREDACTED%3E'
 
@@ -186,7 +186,7 @@
         --header 'User-Agent: MyApp/1.0' \
         --header 'Content-Type: application/json' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data '{"name":"test-repo","description":"A test repository","private":true}'
 
 # req_as_curl() puts a request with no arguments on a single line
@@ -195,7 +195,7 @@
       req_as_curl(req_options(request("https://hb.cran.dev/get"), followlocation = FALSE))
     Output
       curl https://hb.cran.dev/get \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
+        --user-agent httr2
 
 # req_as_curl() validates input
 
@@ -222,7 +222,7 @@
       curl https://hb.cran.dev/post \
         --header 'Content-Type: application/json' \
         --location \
-        --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1' \
+        --user-agent httr2 \
         --data '{}'
 
 # curl_options() translates each known option

@@ -1,4 +1,5 @@
 test_that("req_as_curl() works with basic GET requests", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_as_curl()
@@ -6,6 +7,7 @@ test_that("req_as_curl() works with basic GET requests", {
 })
 
 test_that("req_as_curl() works with POST methods", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_method("POST") |>
@@ -14,6 +16,7 @@ test_that("req_as_curl() works with POST methods", {
 })
 
 test_that("req_as_curl() works with headers", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_headers(
@@ -25,6 +28,7 @@ test_that("req_as_curl() works with headers", {
 })
 
 test_that("req_as_curl() works with JSON bodies", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_json(list(name = "test", value = 123)) |>
@@ -33,6 +37,7 @@ test_that("req_as_curl() works with JSON bodies", {
 })
 
 test_that("req_as_curl() works with form bodies", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_form(name = "test", value = "123") |>
@@ -41,6 +46,7 @@ test_that("req_as_curl() works with form bodies", {
 })
 
 test_that("req_as_curl() works with multipart bodies", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_multipart(name = "test", value = "123") |>
@@ -49,6 +55,7 @@ test_that("req_as_curl() works with multipart bodies", {
 })
 
 test_that("req_as_curl() works with string bodies", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_raw("test data", type = "text/plain") |>
@@ -57,6 +64,7 @@ test_that("req_as_curl() works with string bodies", {
 })
 
 test_that("req_as_curl() works with file bodies", {
+  local_mocked_user_agent()
   path <- tempfile()
   writeLines("test content", path)
 
@@ -76,6 +84,7 @@ test_that("req_as_curl() works with file bodies", {
 })
 
 test_that("req_as_curl() works with custom content types", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_json(
@@ -87,6 +96,7 @@ test_that("req_as_curl() works with custom content types", {
 })
 
 test_that("req_as_curl() works with options", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_options(verbose = TRUE, ssl_verifypeer = FALSE) |>
@@ -95,6 +105,7 @@ test_that("req_as_curl() works with options", {
 })
 
 test_that("req_as_curl() works with cookies", {
+  local_mocked_user_agent()
   cookie_file <- tempfile()
 
   # create the tempfile
@@ -116,6 +127,7 @@ test_that("req_as_curl() works with cookies", {
 })
 
 test_that("req_as_curl() works with obfuscated values in headers", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_headers("Authorization" = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")) |>
@@ -124,6 +136,7 @@ test_that("req_as_curl() works with obfuscated values in headers", {
 })
 
 test_that("req_as_curl() can reveal obfuscated values", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_headers_redacted(Authorization = "secret-token") |>
@@ -132,6 +145,7 @@ test_that("req_as_curl() can reveal obfuscated values", {
 })
 
 test_that("req_as_curl() works with obfuscated values in JSON body", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_json(list(
@@ -143,6 +157,7 @@ test_that("req_as_curl() works with obfuscated values in JSON body", {
 })
 
 test_that("req_as_curl() works with obfuscated values in form body", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_form(
@@ -154,6 +169,7 @@ test_that("req_as_curl() works with obfuscated values in form body", {
 })
 
 test_that("req_as_curl() works with complex requests", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://api.github.com/user/repos") |>
       req_method("POST") |>
@@ -172,6 +188,7 @@ test_that("req_as_curl() works with complex requests", {
 })
 
 test_that("req_as_curl() puts a request with no arguments on a single line", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_options(followlocation = FALSE) |>
@@ -215,6 +232,7 @@ test_that("req_as_curl() errors for raw bodies", {
 })
 
 test_that("an explicit Content-Type header isn't duplicated by the body", {
+  local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_headers("Content-Type" = "application/json") |>
