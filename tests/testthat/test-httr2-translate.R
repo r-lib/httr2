@@ -1,21 +1,21 @@
-test_that("req_as_curl() works with basic GET requests", {
+test_that("httr2_translate() works with basic GET requests", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with POST methods", {
+test_that("httr2_translate() works with POST methods", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_method("POST") |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with headers", {
+test_that("httr2_translate() works with headers", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
@@ -23,47 +23,47 @@ test_that("req_as_curl() works with headers", {
         "Accept" = "application/json",
         "User-Agent" = "httr2/1.0"
       ) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with JSON bodies", {
+test_that("httr2_translate() works with JSON bodies", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_json(list(name = "test", value = 123)) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with form bodies", {
+test_that("httr2_translate() works with form bodies", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_form(name = "test", value = "123") |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with multipart bodies", {
+test_that("httr2_translate() works with multipart bodies", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_multipart(name = "test", value = "123") |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with string bodies", {
+test_that("httr2_translate() works with string bodies", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
       req_body_raw("test data", type = "text/plain") |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with file bodies", {
+test_that("httr2_translate() works with file bodies", {
   local_mocked_user_agent()
   path <- tempfile()
   writeLines("test content", path)
@@ -75,7 +75,7 @@ test_that("req_as_curl() works with file bodies", {
     {
       request("https://hb.cran.dev/post") |>
         req_body_file(path, type = "text/plain") |>
-        req_as_curl()
+        httr2_translate()
     },
     transform = function(x) {
       gsub(path, "<tempfile>", x, fixed = TRUE)
@@ -83,7 +83,7 @@ test_that("req_as_curl() works with file bodies", {
   )
 })
 
-test_that("req_as_curl() works with custom content types", {
+test_that("httr2_translate() works with custom content types", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
@@ -91,20 +91,20 @@ test_that("req_as_curl() works with custom content types", {
         list(test = "data"),
         type = "application/vnd.api+json"
       ) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with options", {
+test_that("httr2_translate() works with options", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_options(verbose = TRUE, ssl_verifypeer = FALSE) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with cookies", {
+test_that("httr2_translate() works with cookies", {
   local_mocked_user_agent()
   cookie_file <- tempfile()
 
@@ -118,7 +118,7 @@ test_that("req_as_curl() works with cookies", {
     {
       request("https://hb.cran.dev/cookies") |>
         req_options(cookiejar = cookie_file, cookiefile = cookie_file) |>
-        req_as_curl()
+        httr2_translate()
     },
     transform = function(x) {
       gsub(cookie_file, "<cookie-file>", x, fixed = TRUE)
@@ -126,25 +126,25 @@ test_that("req_as_curl() works with cookies", {
   )
 })
 
-test_that("req_as_curl() works with obfuscated values in headers", {
+test_that("httr2_translate() works with obfuscated values in headers", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_headers("Authorization" = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() can reveal obfuscated values", {
+test_that("httr2_translate() can reveal obfuscated values", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_headers_redacted(Authorization = "secret-token") |>
-      req_as_curl(obfuscated = "reveal")
+      httr2_translate(obfuscated = "reveal")
   })
 })
 
-test_that("req_as_curl() works with obfuscated values in JSON body", {
+test_that("httr2_translate() works with obfuscated values in JSON body", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
@@ -152,11 +152,11 @@ test_that("req_as_curl() works with obfuscated values in JSON body", {
         username = "test",
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
       )) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with obfuscated values in form body", {
+test_that("httr2_translate() works with obfuscated values in form body", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/post") |>
@@ -164,11 +164,11 @@ test_that("req_as_curl() works with obfuscated values in form body", {
         username = "test",
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
       ) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() works with complex requests", {
+test_that("httr2_translate() works with complex requests", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://api.github.com/user/repos") |>
@@ -183,26 +183,26 @@ test_that("req_as_curl() works with complex requests", {
         description = "A test repository",
         private = TRUE
       )) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() puts a request with no arguments on a single line", {
+test_that("httr2_translate() puts a request with no arguments on a single line", {
   local_mocked_user_agent()
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_options(followlocation = FALSE) |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 
-test_that("req_as_curl() validates input", {
+test_that("httr2_translate() validates input", {
   expect_snapshot(error = TRUE, {
-    req_as_curl("not a request")
+    httr2_translate("not a request")
   })
 })
 
-test_that("req_as_curl() signs AWS requests", {
+test_that("httr2_translate() signs AWS requests", {
   req <- request("https://sts.us-east-1.amazonaws.com/") |>
     req_body_form(
       Action = "GetCallerIdentity",
@@ -213,7 +213,7 @@ test_that("req_as_curl() signs AWS requests", {
       aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     )
 
-  command <- as.character(req_as_curl(req, obfuscated = "reveal"))
+  command <- as.character(httr2_translate(req, obfuscated = "reveal"))
   expect_match(
     command,
     "Authorization: AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/"
@@ -225,10 +225,10 @@ test_that("req_as_curl() signs AWS requests", {
   expect_match(command, "--header 'x-amz-date: [0-9]{8}T[0-9]{6}Z'")
 })
 
-test_that("req_as_curl() errors for raw bodies", {
+test_that("httr2_translate() errors for raw bodies", {
   req <- request("https://hb.cran.dev/post") |>
     req_body_raw(as.raw(c(0x00, 0x68, 0x69, 0xff)))
-  expect_snapshot(req_as_curl(req), error = TRUE)
+  expect_snapshot(httr2_translate(req), error = TRUE)
 })
 
 test_that("an explicit Content-Type header isn't duplicated by the body", {
@@ -237,7 +237,7 @@ test_that("an explicit Content-Type header isn't duplicated by the body", {
     request("https://hb.cran.dev/post") |>
       req_headers("Content-Type" = "application/json") |>
       req_body_raw("{}") |>
-      req_as_curl()
+      httr2_translate()
   })
 })
 

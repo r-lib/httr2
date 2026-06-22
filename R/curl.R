@@ -1,4 +1,4 @@
-#' Translate curl syntax to httr2
+#' Translate a curl command to a httr2 request
 #'
 #' @description
 #' The curl command line tool is commonly used to demonstrate HTTP APIs and can
@@ -24,7 +24,7 @@
 #'   was copied from the clipboard, the translation will be copied back
 #'   to the clipboard.
 #' @export
-#' @seealso [req_as_curl()]
+#' @seealso [httr2_translate()]
 #' @examples
 #' curl_translate("curl http://example.com")
 #' curl_translate("curl http://example.com -X DELETE")

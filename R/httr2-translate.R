@@ -1,30 +1,29 @@
-#' Translate an httr2 request to a curl command
+#' Translate a httr2 request to a curl command
 #'
-#' Convert an httr2 request object to an approximate curl command line call.
+#' Convert a httr2 request object to an approximate curl command line call.
 #' This is useful for debugging, for sharing a request with someone who doesn't
 #' use R, or for handing off to another tool.
 #'
 #' @inheritParams req_perform
 #' @inheritParams req_get_body
-#' @return A string containing the curl command, with class `httr2_cmd` so
-#'   it prints nicely.
+#' @return A string containing the curl command.
 #' @seealso [curl_translate()] to translate in the other direction.
 #' @export
 #' @examples
 #' # Basic GET request
 #' request("https://httpbin.org/get") |>
-#'   req_as_curl()
+#'   httr2_translate()
 #'
 #' # POST with JSON body
 #' request("https://httpbin.org/post") |>
 #'   req_body_json(list(name = "value")) |>
-#'   req_as_curl()
+#'   httr2_translate()
 #'
 #' # Secrets are redacted by default, but can be revealed
 #' request("https://example.com") |>
 #'   req_headers_redacted(Authorization = "secret") |>
-#'   req_as_curl(obfuscated = "reveal")
-req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
+#'   httr2_translate(obfuscated = "reveal")
+httr2_translate <- function(req, obfuscated = c("redact", "reveal")) {
   check_request(req)
   obfuscated <- arg_match(obfuscated)
 

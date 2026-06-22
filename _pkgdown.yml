@@ -77,7 +77,7 @@ reference:
 - title: Miscellaneous helpers
   contents:
   - curl_translate
-  - req_as_curl
+  - httr2_translate
   - is_online
 
 - title: OAuth

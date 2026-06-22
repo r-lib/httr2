@@ -3,7 +3,7 @@
 \name{curl_translate}
 \alias{curl_translate}
 \alias{curl_help}
-\title{Translate curl syntax to httr2}
+\title{Translate a curl command to a httr2 request}
 \usage{
 curl_translate(cmd, simplify_headers = TRUE)
 
@@ -45,5 +45,5 @@ curl_translate("curl http://example.com --header A:1 --header B:2")
 curl_translate("curl http://example.com --verbose")
 }
 \seealso{
-\code{\link[=req_as_curl]{req_as_curl()}}
+\code{\link[=httr2_translate]{httr2_translate()}}
 }
