@@ -1,6 +1,6 @@
 #' Translate an httr2 request to a curl command
 #'
-#' Convert an httr2 request object to the equivalent curl command line call.
+#' Convert an httr2 request object to an approximate curl command line call.
 #' This is useful for debugging, for sharing a request with someone who doesn't
 #' use R, or for handing off to another tool.
 #'
