@@ -1,4 +1,4 @@
-# httr2 (development version)
+# httr2 1.2.3
 
 * Mocked and cached responses now include the originating request in `resp$request`, just like real responses (#841).
 * New `httr2_translate()` translates an httr2 request into the equivalent curl command (#795).
