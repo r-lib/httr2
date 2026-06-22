@@ -3,7 +3,8 @@
     Code
       req_as_curl(request("https://hb.cran.dev/get"))
     Output
-      curl https://hb.cran.dev/get
+      curl https://hb.cran.dev/get \
+        --location
 
 # req_as_curl() works with POST methods
 
@@ -11,7 +12,8 @@
       req_as_curl(req_method(request("https://hb.cran.dev/post"), "POST"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST
+        -X POST \
+        --location
 
 # req_as_curl() works with headers
 
@@ -21,7 +23,8 @@
     Output
       curl https://hb.cran.dev/get \
         -H "Accept: application/json" \
-        -H "User-Agent: httr2/1.0"
+        -H "User-Agent: httr2/1.0" \
+        --location
 
 # req_as_curl() works with JSON bodies
 
@@ -30,6 +33,7 @@
         value = 123)))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: application/json" \
         -d '{"name":"test","value":123}'
 
@@ -40,6 +44,7 @@
       value = "123"))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: application/x-www-form-urlencoded" \
         -d "name=test&value=123"
 
@@ -50,6 +55,7 @@
       value = "123"))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -F name=test \
         -F value=123
 
@@ -60,6 +66,7 @@
       type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: text/plain" \
         -d "test data"
 
@@ -69,6 +76,7 @@
       req_as_curl(req_body_file(request("https://hb.cran.dev/post"), path, type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: text/plain" \
         --data-binary @<tempfile>
 
@@ -79,6 +87,7 @@
       type = "application/vnd.api+json"))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: application/vnd.api+json" \
         -d '{"test":"data"}'
 
@@ -92,6 +101,7 @@
       Can't translate option "ssl_verifypeer".
     Output
       curl https://hb.cran.dev/get \
+        --location \
         --verbose
 
 # req_as_curl() works with cookies
@@ -101,6 +111,7 @@
       cookiefile = cookie_file))
     Output
       curl https://hb.cran.dev/cookies \
+        --location \
         --cookie-jar <cookie-file> \
         --cookie <cookie-file>
 
@@ -111,7 +122,8 @@
         "ZdYJeG8zwISodg0nu4UxBhs")))
     Output
       curl https://hb.cran.dev/get \
-        -H "Authorization: <REDACTED>"
+        -H "Authorization: <REDACTED>" \
+        --location
 
 # req_as_curl() can reveal obfuscated values
 
@@ -120,7 +132,8 @@
       Authorization = "secret-token"), obfuscated = "reveal")
     Output
       curl https://hb.cran.dev/get \
-        -H "Authorization: secret-token"
+        -H "Authorization: secret-token" \
+        --location
 
 # req_as_curl() works with obfuscated values in JSON body
 
@@ -129,6 +142,7 @@
         password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: application/json" \
         -d '{"username":"test","password":"<REDACTED>"}'
 
@@ -139,6 +153,7 @@
       password = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: application/x-www-form-urlencoded" \
         -d "username=test&password=<REDACTED>"
 
@@ -154,13 +169,14 @@
         -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: <REDACTED>" \
         -H "User-Agent: MyApp/1.0" \
+        --location \
         -H "Content-Type: application/json" \
         -d '{"name":"test-repo","description":"A test repository","private":true}'
 
-# req_as_curl() works with simple requests (single line)
+# req_as_curl() puts a request with no arguments on a single line
 
     Code
-      req_as_curl(request("https://hb.cran.dev/get"))
+      req_as_curl(req_options(request("https://hb.cran.dev/get"), followlocation = FALSE))
     Output
       curl https://hb.cran.dev/get
 
@@ -179,6 +195,7 @@
         "test data"), type = "text/plain"))
     Output
       curl https://hb.cran.dev/post \
+        --location \
         -H "Content-Type: text/plain" \
         --data-binary @-
 
@@ -190,6 +207,7 @@
     Output
       curl https://hb.cran.dev/post \
         -H "Content-Type: application/json" \
+        --location \
         -d "{}"
 
 # req_options_as_curl() translates each known option
@@ -197,11 +215,11 @@
     Code
       cat(req_options_as_curl(req), sep = "\n")
     Output
+      --location
       --max-time 30
       --connect-timeout 5
       --proxy http://proxy.example.com
       --user-agent agent
-      --location
       --verbose
       --cookie-jar jar.txt
       --cookie file.txt
@@ -211,6 +229,7 @@
     Code
       cat(req_options_as_curl(req), sep = "\n")
     Output
+      --location
       --max-time 30
       --connect-timeout 0
       --proxy proxy.example.com:8080

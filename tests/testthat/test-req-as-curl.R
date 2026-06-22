@@ -171,9 +171,10 @@ test_that("req_as_curl() works with complex requests", {
   })
 })
 
-test_that("req_as_curl() works with simple requests (single line)", {
+test_that("req_as_curl() puts a request with no arguments on a single line", {
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
+      req_options(followlocation = FALSE) |>
       req_as_curl()
   })
 })
@@ -201,16 +202,14 @@ test_that("an explicit Content-Type header isn't duplicated by the body", {
   })
 })
 
-test_that("req_as_curl() quotes the URL only when needed", {
-  # a plain URL is left unquoted
+test_that("dquote() quotes only when needed", {
+  # plain values are left alone
+  expect_equal(dquote("https://example.com/get"), "https://example.com/get")
+  # spaces and query-string metacharacters force quoting
+  expect_equal(dquote("a b"), '"a b"')
   expect_equal(
-    as.character(req_as_curl(request("https://example.com/get"))),
-    "curl https://example.com/get"
-  )
-  # a query string contains shell metacharacters, so it's quoted
-  expect_equal(
-    as.character(req_as_curl(request("https://example.com?a=1&b=2"))),
-    'curl "https://example.com?a=1&b=2"'
+    dquote("https://example.com?a=1&b=2"),
+    '"https://example.com?a=1&b=2"'
   )
 })
 
@@ -279,9 +278,21 @@ test_that("req_options_as_curl() translates options set by httr2 functions", {
   expect_snapshot(cat(req_options_as_curl(req), sep = "\n"))
 })
 
+test_that("req_options_as_curl() follows redirects by default, unlike curl", {
+  expect_equal(
+    req_options_as_curl(request("https://example.com")),
+    "--location"
+  )
+
+  req <- request("https://example.com") |>
+    req_options(followlocation = FALSE)
+  expect_null(req_options_as_curl(req))
+})
+
 test_that("req_options_as_curl() ignores options with no curl equivalent", {
   # req_verbose() also sets a debugfunction; req_progress() sets callbacks
   req <- request("https://example.com") |>
+    req_options(followlocation = FALSE) |>
     req_verbose() |>
     req_progress()
   expect_no_warning(out <- req_options_as_curl(req))
@@ -296,7 +307,7 @@ test_that("req_options_as_curl() drops disabled flags", {
 
 test_that("req_options_as_curl() warns about untranslatable options", {
   req <- request("https://example.com") |>
-    req_options(ssl_verifypeer = FALSE)
+    req_options(followlocation = FALSE, ssl_verifypeer = FALSE)
   expect_snapshot(out <- req_options_as_curl(req))
   expect_null(out)
 })

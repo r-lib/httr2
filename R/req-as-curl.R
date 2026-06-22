@@ -108,14 +108,17 @@ req_options_as_curl <- function(req) {
       },
       proxyuserpwd = paste0("--proxy-user ", dquote(value)),
       useragent = paste0("--user-agent ", dquote(value)),
-      followlocation = if (value) "--location",
       verbose = if (value) "--verbose",
       cookiejar = paste0("--cookie-jar ", dquote(value)),
       cookiefile = paste0("--cookie ", dquote(value)),
       cookie = paste0("--cookie ", dquote(value))
     )
   })
-  unlist(args)
+
+  # httr2 follows redirects by default, but command line curl doesn't
+  follow <- if (!isFALSE(options$followlocation)) "--location"
+
+  c(follow, unlist(args))
 }
 
 req_body_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
