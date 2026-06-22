@@ -114,13 +114,10 @@ curl_options <- function(req) {
       name,
       timeout_ms = paste0("--max-time ", value / 1000),
       connecttimeout = paste0("--connect-timeout ", value),
-      proxy = {
-        host <- value
-        if (!is.null(options$proxyport)) {
-          host <- paste0(host, ":", options$proxyport)
-        }
-        paste0("--proxy ", dquote(host))
-      },
+      proxy = paste0(
+        "--proxy ",
+        dquote(paste0(c(value, options$proxyport), collapse = ":"))
+      ),
       proxyuserpwd = paste0("--proxy-user ", dquote(value)),
       useragent = paste0("--user-agent ", dquote(value)),
       verbose = if (value) "--verbose",
@@ -175,14 +172,8 @@ curl_body_data <- function(body, type, params = list(auto_unbox = TRUE)) {
     string = paste0("--data ", dquote(body)),
     raw = "--data-binary @-",
     file = paste0("--data-binary ", dquote(paste0("@", body))),
-    json = paste0(
-      "--data ",
-      dquote(exec(jsonlite::toJSON, body, !!!params))
-    ),
-    form = paste0(
-      "--data ",
-      dquote(url_query_build(body))
-    ),
+    json = paste0("--data ", dquote(exec(jsonlite::toJSON, body, !!!params))),
+    form = paste0("--data ", dquote(url_query_build(body))),
     multipart = curl_body_multipart(body)
   )
 }
