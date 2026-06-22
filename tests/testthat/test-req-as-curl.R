@@ -185,26 +185,27 @@ test_that("req_as_curl() validates input", {
   })
 })
 
-test_that("req_as_curl() prepares and signs requests", {
-  req <- request("https://example.com") |>
-    req_auth_sign(
-      function(req, cache) {
-        req_headers_redacted(req, Authorization = "signed")
-      },
-      params = list(),
-      cache = NULL
+test_that("req_as_curl() signs AWS requests", {
+  req <- request("https://sts.us-east-1.amazonaws.com/") |>
+    req_body_form(
+      Action = "GetCallerIdentity",
+      Version = "2011-06-15"
+    ) |>
+    req_auth_aws_v4(
+      aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+      aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     )
 
-  expect_equal(
-    as.character(req_as_curl(req)),
-    paste(
-      "curl https://example.com \\",
-      "  --header 'Authorization: <REDACTED>' \\",
-      "  --location \\",
-      paste0("  --user-agent ", dquote(default_user_agent())),
-      sep = "\n"
-    )
+  command <- as.character(req_as_curl(req, obfuscated = "reveal"))
+  expect_match(
+    command,
+    "Authorization: AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/"
   )
+  expect_match(
+    command,
+    "SignedHeaders=host;x-amz-date"
+  )
+  expect_match(command, "--header 'x-amz-date: [0-9]{8}T[0-9]{6}Z'")
 })
 
 test_that("req_as_curl() encodes raw bodies as binary", {
@@ -355,23 +356,7 @@ test_that("curl_options() translates each known option", {
       followlocation = TRUE,
       verbose = TRUE,
       cookiejar = "jar.txt",
-      cookiefile = "file.txt",
-      ssl_verifypeer = FALSE,
-      ssl_verifystatus = TRUE,
-      cainfo = "ca.pem",
-      capath = "certs",
-      sslcert = "client.pem",
-      sslkey = "client.key",
-      keypasswd = "secret",
-      pinnedpublickey = "sha256//key",
-      userpwd = "user:password",
-      httpauth = auth_flags("digest"),
-      failonerror = TRUE,
-      maxredirs = 5,
-      interface = "eth0",
-      low_speed_limit = 100,
-      low_speed_time = 10,
-      accept_encoding = "gzip"
+      cookiefile = "file.txt"
     )
   expect_snapshot(cat(curl_options(req), sep = "\n"))
 })
@@ -420,22 +405,7 @@ test_that("curl_options() drops disabled flags", {
 
 test_that("curl_options() warns about untranslatable options", {
   req <- request("https://example.com") |>
-    req_options(followlocation = FALSE, fresh_connect = TRUE)
+    req_options(followlocation = FALSE, ssl_verifypeer = FALSE)
   expect_snapshot(out <- curl_options(req))
   expect_null(out)
-})
-
-test_that("curl_options() translates authentication options", {
-  req <- request("https://example.com") |>
-    req_proxy(
-      "proxy.example.com",
-      username = "user",
-      password = "password",
-      auth = "digest"
-    ) |>
-    req_options(userpwd = "user:password", httpauth = auth_flags("ntlm"))
-
-  options <- paste(curl_options(req), collapse = "\n")
-  expect_match(options, "--proxy-digest", fixed = TRUE)
-  expect_match(options, "--ntlm", fixed = TRUE)
 })

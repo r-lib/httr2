@@ -85,31 +85,14 @@ curl_options <- function(req) {
     "verbose", # req_verbose()
     "cookiejar", # req_cookie_preserve()
     "cookiefile", # req_cookie_preserve()
-    "cookie", # req_cookies_set()
-    "proxyauth",
-    "ssl_verifypeer",
-    "ssl_verifyhost",
-    "ssl_verifystatus",
-    "cainfo",
-    "capath",
-    "sslcert",
-    "sslkey",
-    "keypasswd",
-    "pinnedpublickey",
-    "userpwd",
-    "httpauth",
-    "failonerror",
-    "maxredirs",
-    "interface",
-    "low_speed_limit",
-    "low_speed_time",
-    "accept_encoding"
+    "cookie" # req_cookies_set()
   )
   # R callbacks and the like, with no command line equivalent
   ignored_options <- c(
     "debugfunction", # req_verbose()
     "xferinfofunction", # req_progress()
     "noprogress", # req_progress()
+    "proxyauth", # req_proxy()
     "forbid_reuse", # req_verbose_test()
     "nobody", # req_method_apply()
     "customrequest", # req_method_apply()
@@ -139,72 +122,18 @@ curl_options <- function(req) {
         paste0("--proxy ", dquote(host))
       },
       proxyuserpwd = paste0("--proxy-user ", dquote(value)),
-      proxyauth = curl_auth_option(value, proxy = TRUE),
       useragent = paste0("--user-agent ", dquote(value)),
       verbose = if (value) "--verbose",
       cookiejar = paste0("--cookie-jar ", dquote(value)),
       cookiefile = paste0("--cookie ", dquote(value)),
-      cookie = paste0("--cookie ", dquote(value)),
-      ssl_verifypeer = ,
-      ssl_verifyhost = NULL,
-      ssl_verifystatus = if (value) "--cert-status",
-      cainfo = paste0("--cacert ", dquote(value)),
-      capath = paste0("--capath ", dquote(value)),
-      sslcert = paste0("--cert ", dquote(value)),
-      sslkey = paste0("--key ", dquote(value)),
-      keypasswd = paste0("--pass ", dquote(value)),
-      pinnedpublickey = paste0("--pinnedpubkey ", dquote(value)),
-      userpwd = paste0("--user ", dquote(value)),
-      httpauth = curl_auth_option(value),
-      failonerror = if (value) "--fail",
-      maxredirs = paste0("--max-redirs ", value),
-      interface = paste0("--interface ", dquote(value)),
-      low_speed_limit = paste0("--speed-limit ", value),
-      low_speed_time = paste0("--speed-time ", value),
-      accept_encoding = c(
-        if (nzchar(value)) {
-          paste0("--header ", dquote(paste0("Accept-Encoding: ", value)))
-        },
-        "--compressed"
-      )
+      cookie = paste0("--cookie ", dquote(value))
     )
   })
 
   # httr2 follows redirects by default, but command line curl doesn't
   follow <- if (!isFALSE(options$followlocation)) "--location"
-  insecure <- if (
-    curl_option_false(options$ssl_verifypeer) ||
-      curl_option_false(options$ssl_verifyhost)
-  ) {
-    "--insecure"
-  }
 
-  c(follow, insecure, unlist(args))
-}
-
-curl_option_false <- function(value) {
-  !is.null(value) &&
-    length(value) == 1 &&
-    !is.na(value) &&
-    !as.logical(value)
-}
-
-curl_auth_option <- function(value, proxy = FALSE) {
-  flags <- c(
-    `1` = "basic",
-    `2` = "digest",
-    `4` = "negotiate",
-    `8` = "ntlm",
-    `16` = "digest",
-    `-17` = "anyauth"
-  )
-  auth <- unname(flags[as.character(value)])
-  if (length(auth) != 1 || is.na(auth)) {
-    cli::cli_warn("Can't translate authentication bitmask {.val {value}}.")
-    return(NULL)
-  }
-
-  paste0("--", if (proxy) "proxy-", auth)
+  c(follow, unlist(args))
 }
 
 curl_body <- function(req, obfuscated = c("redact", "reveal")) {

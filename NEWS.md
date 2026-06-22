@@ -7,7 +7,7 @@
 * `oauth_flow_auth_code()` now correctly uses the same redirect URI for both authorization and token requests when using the default localhost redirect URL (@pedrobtz, #829).
 * New `oauth_server_metadata()` discovers an OAuth/OpenID Connect issuer's endpoints from its `.well-known` metadata document (#845).
 * `req_auth_aws_v4()` now correctly signs URLs containing encoded slashes (`%2F`) in path segments, such as ARNs in AWS Bedrock API paths (@thisisnic, #842).
-* New `req_as_curl()` translates an httr2 request into an approximate curl command, with safe shell quoting and support for structured and binary bodies, request preparation and signing, and common curl options.
+* New `req_as_curl()` translates an httr2 request into an approximate curl command, with safe shell quoting and support for structured and binary bodies, request preparation, and signing.
 * `req_body_form()` now creates a valid empty request body when no parameters are provided (@arcresu, #836).
 * `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
 * `req_cache()` no longer errors when a request is first performed with `path` then later without it (#840).
