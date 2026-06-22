@@ -223,13 +223,16 @@ test_that("req_method_as_curl() only sets the method when curl can't infer it", 
   # HEAD has its own flag
   expect_equal(req_method_as_curl(req_method(req, "HEAD")), "--head")
 
-  # a body-less POST and other methods need -X
-  expect_equal(req_method_as_curl(req_method(req, "POST")), "-X POST")
-  expect_equal(req_method_as_curl(req_method(req, "DELETE")), "-X DELETE")
+  # a body-less POST and other methods need --request
+  expect_equal(req_method_as_curl(req_method(req, "POST")), "--request POST")
+  expect_equal(
+    req_method_as_curl(req_method(req, "DELETE")),
+    "--request DELETE"
+  )
   # a body alone implies POST, but not PUT/DELETE/etc.
   expect_equal(
     req_method_as_curl(req_method(req, "PUT"), has_body = TRUE),
-    "-X PUT"
+    "--request PUT"
   )
 })
 
@@ -240,11 +243,11 @@ test_that("req_headers_as_curl() drops missing headers and reveals secrets", {
     req_headers_redacted(Authorization = "secret")
   expect_equal(
     req_headers_as_curl(req, "redact"),
-    '-H "Authorization: <REDACTED>"'
+    '--header "Authorization: <REDACTED>"'
   )
   expect_equal(
     req_headers_as_curl(req, "reveal"),
-    '-H "Authorization: secret"'
+    '--header "Authorization: secret"'
   )
 })
 

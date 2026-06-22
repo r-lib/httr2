@@ -12,7 +12,7 @@
       req_as_curl(req_method(request("https://hb.cran.dev/post"), "POST"))
     Output
       curl https://hb.cran.dev/post \
-        -X POST \
+        --request POST \
         --location
 
 # req_as_curl() works with headers
@@ -22,8 +22,8 @@
       `User-Agent` = "httr2/1.0"))
     Output
       curl https://hb.cran.dev/get \
-        -H "Accept: application/json" \
-        -H "User-Agent: httr2/1.0" \
+        --header "Accept: application/json" \
+        --header "User-Agent: httr2/1.0" \
         --location
 
 # req_as_curl() works with JSON bodies
@@ -34,8 +34,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: application/json" \
-        -d '{"name":"test","value":123}'
+        --header "Content-Type: application/json" \
+        --data '{"name":"test","value":123}'
 
 # req_as_curl() works with form bodies
 
@@ -45,8 +45,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "name=test&value=123"
+        --header "Content-Type: application/x-www-form-urlencoded" \
+        --data "name=test&value=123"
 
 # req_as_curl() works with multipart bodies
 
@@ -56,8 +56,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -F name=test \
-        -F value=123
+        --form name=test \
+        --form value=123
 
 # req_as_curl() works with string bodies
 
@@ -67,8 +67,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: text/plain" \
-        -d "test data"
+        --header "Content-Type: text/plain" \
+        --data "test data"
 
 # req_as_curl() works with file bodies
 
@@ -77,7 +77,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: text/plain" \
+        --header "Content-Type: text/plain" \
         --data-binary @<tempfile>
 
 # req_as_curl() works with custom content types
@@ -88,8 +88,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: application/vnd.api+json" \
-        -d '{"test":"data"}'
+        --header "Content-Type: application/vnd.api+json" \
+        --data '{"test":"data"}'
 
 # req_as_curl() works with options
 
@@ -122,7 +122,7 @@
         "ZdYJeG8zwISodg0nu4UxBhs")))
     Output
       curl https://hb.cran.dev/get \
-        -H "Authorization: <REDACTED>" \
+        --header "Authorization: <REDACTED>" \
         --location
 
 # req_as_curl() can reveal obfuscated values
@@ -132,7 +132,7 @@
       Authorization = "secret-token"), obfuscated = "reveal")
     Output
       curl https://hb.cran.dev/get \
-        -H "Authorization: secret-token" \
+        --header "Authorization: secret-token" \
         --location
 
 # req_as_curl() works with obfuscated values in JSON body
@@ -143,8 +143,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: application/json" \
-        -d '{"username":"test","password":"<REDACTED>"}'
+        --header "Content-Type: application/json" \
+        --data '{"username":"test","password":"<REDACTED>"}'
 
 # req_as_curl() works with obfuscated values in form body
 
@@ -154,8 +154,8 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "username=test&password=<REDACTED>"
+        --header "Content-Type: application/x-www-form-urlencoded" \
+        --data "username=test&password=<REDACTED>"
 
 # req_as_curl() works with complex requests
 
@@ -166,12 +166,12 @@
       list(name = "test-repo", description = "A test repository", private = TRUE)))
     Output
       curl https://api.github.com/user/repos \
-        -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: <REDACTED>" \
-        -H "User-Agent: MyApp/1.0" \
+        --header "Accept: application/vnd.github.v3+json" \
+        --header "Authorization: <REDACTED>" \
+        --header "User-Agent: MyApp/1.0" \
         --location \
-        -H "Content-Type: application/json" \
-        -d '{"name":"test-repo","description":"A test repository","private":true}'
+        --header "Content-Type: application/json" \
+        --data '{"name":"test-repo","description":"A test repository","private":true}'
 
 # req_as_curl() puts a request with no arguments on a single line
 
@@ -196,7 +196,7 @@
     Output
       curl https://hb.cran.dev/post \
         --location \
-        -H "Content-Type: text/plain" \
+        --header "Content-Type: text/plain" \
         --data-binary @-
 
 # an explicit Content-Type header isn't duplicated by the body
@@ -206,9 +206,9 @@
       `Content-Type` = "application/json"), "{}"))
     Output
       curl https://hb.cran.dev/post \
-        -H "Content-Type: application/json" \
+        --header "Content-Type: application/json" \
         --location \
-        -d "{}"
+        --data "{}"
 
 # req_options_as_curl() translates each known option
 

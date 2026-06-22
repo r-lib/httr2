@@ -50,7 +50,7 @@ req_method_as_curl <- function(req, has_body = FALSE) {
   } else if (method == "HEAD") {
     "--head"
   } else {
-    paste0("-X ", method)
+    paste0("--request ", method)
   }
 }
 
@@ -61,7 +61,7 @@ req_headers_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   if (is_empty(headers)) {
     return(NULL)
   }
-  paste0("-H ", dquote(paste0(names(headers), ": ", unlist(headers))))
+  paste0("--header ", dquote(paste0(names(headers), ": ", unlist(headers))))
 }
 
 req_options_as_curl <- function(req) {
@@ -148,22 +148,25 @@ curl_content_type <- function(req, type) {
   if (is.null(content_type) || !nzchar(content_type)) {
     return(NULL)
   }
-  paste0("-H ", dquote(paste0("Content-Type: ", content_type)))
+  paste0("--header ", dquote(paste0("Content-Type: ", content_type)))
 }
 
 curl_body_data <- function(body, type) {
   switch(
     type,
-    string = paste0("-d ", dquote(gsub('"', '\\"', body))),
+    string = paste0("--data ", dquote(gsub('"', '\\"', body))),
     # raw bodies are read from stdin
     raw = paste0("--data-binary ", dquote("@-")),
     file = paste0("--data-binary ", dquote(paste0("@", body))),
-    json = paste0("-d '", jsonlite::toJSON(body, auto_unbox = TRUE), "'"),
+    json = paste0("--data '", jsonlite::toJSON(body, auto_unbox = TRUE), "'"),
     form = paste0(
-      "-d ",
+      "--data ",
       dquote(paste(names(body), unlist(body), sep = "=", collapse = "&"))
     ),
-    multipart = paste0("-F ", dquote(paste0(names(body), "=", unlist(body))))
+    multipart = paste0(
+      "--form ",
+      dquote(paste0(names(body), "=", unlist(body)))
+    )
   )
 }
 
