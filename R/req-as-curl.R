@@ -38,7 +38,11 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   )
   indent <- c("", rep("  ", length(args) - 1))
   backslash <- c(rep(" \\", length(args) - 1), "")
-  out <- paste0("curl ", paste0(indent, args, backslash, collapse = "\n"))
+  out <- paste0(
+    curl_body_input(req),
+    "curl ",
+    paste0(indent, args, backslash, collapse = "\n")
+  )
 
   structure(out, class = "httr2_cmd")
 }
@@ -158,7 +162,7 @@ curl_body_data <- function(body, type, params = list(auto_unbox = TRUE)) {
   switch(
     type,
     string = paste0("--data ", dquote(body)),
-    raw = paste0("--data-raw ", escape_bytes(body)),
+    raw = "--data-binary @-",
     file = paste0("--data-binary ", dquote(paste0("@", body))),
     json = paste0(
       "--data ",
@@ -204,26 +208,19 @@ curl_form_quote <- function(x) {
   paste0('"', gsub('(["\\\\])', "\\\\\\1", x), '"')
 }
 
+curl_body_input <- function(req) {
+  if (req_get_body_type(req) != "raw") {
+    return("")
+  }
+
+  encoded <- openssl::base64_encode(req_get_body(req))
+  paste0("printf %s ", dquote(encoded), " | base64 --decode | ")
+}
+
 dquote <- function(x) {
   ifelse(
     grepl("[^A-Za-z0-9._~:/@%+=,-]", x),
     paste0("'", gsub("'", "'\"'\"'", x, fixed = TRUE), "'"),
     x
   )
-}
-
-# Encode raw bytes as an ANSI-C quoted string ($'...'), which the shell decodes
-# to the exact bytes; printable ASCII stays readable, the rest becomes \xNN
-escape_bytes <- function(bytes) {
-  ints <- as.integer(bytes)
-  out <- sprintf("\\x%02x", ints)
-  printable <- ints >= 0x20 & ints <= 0x7e & ints != 0x27 & ints != 0x5c
-  out[printable] <- vapply(
-    ints[printable],
-    function(i) {
-      rawToChar(as.raw(i))
-    },
-    character(1)
-  )
-  paste0("$'", paste(out, collapse = ""), "'")
 }

@@ -274,11 +274,15 @@ test_that("curl_body_data() translates multipart values", {
   )
 })
 
-test_that("escape_bytes() keeps printable ascii but hex-escapes the rest", {
-  expect_equal(escape_bytes(charToRaw("ok")), "$'ok'")
-  expect_equal(escape_bytes(as.raw(c(0x00, 0x41, 0xff))), "$'\\x00A\\xff'")
-  # quotes and backslashes are hex-escaped so they're safe inside $'...'
-  expect_equal(escape_bytes(charToRaw("a'b\\c")), "$'a\\x27b\\x5cc'")
+test_that("curl_body_input() base64 encodes raw bodies", {
+  req <- request("https://example.com") |>
+    req_body_raw(as.raw(c(0x00, 0x41, 0xff)))
+
+  expect_equal(
+    curl_body_input(req),
+    "printf %s AEH/ | base64 --decode | "
+  )
+  expect_equal(curl_body_data(req_get_body(req), "raw"), "--data-binary @-")
 })
 
 test_that("curl_method() only sets the method when curl can't infer it", {

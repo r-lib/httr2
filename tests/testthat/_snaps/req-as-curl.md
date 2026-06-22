@@ -194,10 +194,10 @@
       req_as_curl(req_body_raw(request("https://hb.cran.dev/post"), as.raw(c(0, 104,
         105, 255)), type = "application/octet-stream"))
     Output
-      curl https://hb.cran.dev/post \
+      printf %s AGhp/w== | base64 --decode | curl https://hb.cran.dev/post \
         --location \
         --header 'Content-Type: application/octet-stream' \
-        --data-raw $'\x00hi\xff'
+        --data-binary @-
 
 # an explicit Content-Type header isn't duplicated by the body
 
