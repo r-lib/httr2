@@ -213,45 +213,45 @@ test_that("dquote() quotes only when needed", {
   )
 })
 
-test_that("req_method_as_curl() only sets the method when curl can't infer it", {
+test_that("curl_method() only sets the method when curl can't infer it", {
   req <- request("https://example.com")
 
   # GET is the default, and curl infers POST from a body
-  expect_null(req_method_as_curl(req))
-  expect_null(req_method_as_curl(req_method(req, "POST"), has_body = TRUE))
+  expect_null(curl_method(req))
+  expect_null(curl_method(req_method(req, "POST"), has_body = TRUE))
 
   # HEAD has its own flag
-  expect_equal(req_method_as_curl(req_method(req, "HEAD")), "--head")
+  expect_equal(curl_method(req_method(req, "HEAD")), "--head")
 
   # a body-less POST and other methods need --request
-  expect_equal(req_method_as_curl(req_method(req, "POST")), "--request POST")
+  expect_equal(curl_method(req_method(req, "POST")), "--request POST")
   expect_equal(
-    req_method_as_curl(req_method(req, "DELETE")),
+    curl_method(req_method(req, "DELETE")),
     "--request DELETE"
   )
   # a body alone implies POST, but not PUT/DELETE/etc.
   expect_equal(
-    req_method_as_curl(req_method(req, "PUT"), has_body = TRUE),
+    curl_method(req_method(req, "PUT"), has_body = TRUE),
     "--request PUT"
   )
 })
 
-test_that("req_headers_as_curl() drops missing headers and reveals secrets", {
-  expect_null(req_headers_as_curl(request("https://example.com")))
+test_that("curl_headers() drops missing headers and reveals secrets", {
+  expect_null(curl_headers(request("https://example.com")))
 
   req <- request("https://example.com") |>
     req_headers_redacted(Authorization = "secret")
   expect_equal(
-    req_headers_as_curl(req, "redact"),
+    curl_headers(req, "redact"),
     '--header "Authorization: <REDACTED>"'
   )
   expect_equal(
-    req_headers_as_curl(req, "reveal"),
+    curl_headers(req, "reveal"),
     '--header "Authorization: secret"'
   )
 })
 
-test_that("req_options_as_curl() translates each known option", {
+test_that("curl_options() translates each known option", {
   req <- request("https://example.com") |>
     req_options(
       timeout_ms = 30000,
@@ -263,10 +263,10 @@ test_that("req_options_as_curl() translates each known option", {
       cookiejar = "jar.txt",
       cookiefile = "file.txt"
     )
-  expect_snapshot(cat(req_options_as_curl(req), sep = "\n"))
+  expect_snapshot(cat(curl_options(req), sep = "\n"))
 })
 
-test_that("req_options_as_curl() translates options set by httr2 functions", {
+test_that("curl_options() translates options set by httr2 functions", {
   req <- request("https://example.com") |>
     req_timeout(30) |>
     req_proxy(
@@ -278,39 +278,39 @@ test_that("req_options_as_curl() translates options set by httr2 functions", {
     req_user_agent("agent") |>
     req_cookie_preserve("cookies.txt") |>
     req_cookies_set(session = "abc")
-  expect_snapshot(cat(req_options_as_curl(req), sep = "\n"))
+  expect_snapshot(cat(curl_options(req), sep = "\n"))
 })
 
-test_that("req_options_as_curl() follows redirects by default, unlike curl", {
+test_that("curl_options() follows redirects by default, unlike curl", {
   expect_equal(
-    req_options_as_curl(request("https://example.com")),
+    curl_options(request("https://example.com")),
     "--location"
   )
 
   req <- request("https://example.com") |>
     req_options(followlocation = FALSE)
-  expect_null(req_options_as_curl(req))
+  expect_null(curl_options(req))
 })
 
-test_that("req_options_as_curl() ignores options with no curl equivalent", {
+test_that("curl_options() ignores options with no curl equivalent", {
   # req_verbose() also sets a debugfunction; req_progress() sets callbacks
   req <- request("https://example.com") |>
     req_options(followlocation = FALSE) |>
     req_verbose() |>
     req_progress()
-  expect_no_warning(out <- req_options_as_curl(req))
+  expect_no_warning(out <- curl_options(req))
   expect_equal(out, "--verbose")
 })
 
-test_that("req_options_as_curl() drops disabled flags", {
+test_that("curl_options() drops disabled flags", {
   req <- request("https://example.com") |>
     req_options(followlocation = FALSE, verbose = FALSE)
-  expect_null(req_options_as_curl(req))
+  expect_null(curl_options(req))
 })
 
-test_that("req_options_as_curl() warns about untranslatable options", {
+test_that("curl_options() warns about untranslatable options", {
   req <- request("https://example.com") |>
     req_options(followlocation = FALSE, ssl_verifypeer = FALSE)
-  expect_snapshot(out <- req_options_as_curl(req))
+  expect_snapshot(out <- curl_options(req))
   expect_null(out)
 })

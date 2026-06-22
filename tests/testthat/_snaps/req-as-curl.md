@@ -210,10 +210,10 @@
         --location \
         --data "{}"
 
-# req_options_as_curl() translates each known option
+# curl_options() translates each known option
 
     Code
-      cat(req_options_as_curl(req), sep = "\n")
+      cat(curl_options(req), sep = "\n")
     Output
       --location
       --max-time 30
@@ -224,10 +224,10 @@
       --cookie-jar jar.txt
       --cookie file.txt
 
-# req_options_as_curl() translates options set by httr2 functions
+# curl_options() translates options set by httr2 functions
 
     Code
-      cat(req_options_as_curl(req), sep = "\n")
+      cat(curl_options(req), sep = "\n")
     Output
       --location
       --max-time 30
@@ -239,10 +239,10 @@
       --cookie cookies.txt
       --cookie session=abc
 
-# req_options_as_curl() warns about untranslatable options
+# curl_options() warns about untranslatable options
 
     Code
-      out <- req_options_as_curl(req)
+      out <- curl_options(req)
     Condition
       Warning:
       Can't translate option "ssl_verifypeer".

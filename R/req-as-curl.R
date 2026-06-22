@@ -28,12 +28,12 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   check_request(req)
   obfuscated <- arg_match(obfuscated)
 
-  body <- req_body_as_curl(req, obfuscated)
+  body <- curl_body(req, obfuscated)
   args <- c(
     dquote(req_get_url(req)),
-    req_method_as_curl(req, has_body = !is.null(body)),
-    req_headers_as_curl(req, obfuscated),
-    req_options_as_curl(req),
+    curl_method(req, has_body = !is.null(body)),
+    curl_headers(req, obfuscated),
+    curl_options(req),
     body
   )
   indent <- c("", rep("  ", length(args) - 1))
@@ -43,7 +43,7 @@ req_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   structure(out, class = "httr2_cmd")
 }
 
-req_method_as_curl <- function(req, has_body = FALSE) {
+curl_method <- function(req, has_body = FALSE) {
   method <- req_get_method(req)
   if (method == "GET" || (method == "POST" && has_body)) {
     NULL
@@ -54,7 +54,7 @@ req_method_as_curl <- function(req, has_body = FALSE) {
   }
 }
 
-req_headers_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
+curl_headers <- function(req, obfuscated = c("redact", "reveal")) {
   obfuscated <- arg_match(obfuscated)
 
   headers <- req_get_headers(req, redacted = obfuscated)
@@ -64,7 +64,7 @@ req_headers_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
   paste0("--header ", dquote(paste0(names(headers), ": ", unlist(headers))))
 }
 
-req_options_as_curl <- function(req) {
+curl_options <- function(req) {
   options <- req$options
 
   known_options <- c(
@@ -121,7 +121,7 @@ req_options_as_curl <- function(req) {
   c(follow, unlist(args))
 }
 
-req_body_as_curl <- function(req, obfuscated = c("redact", "reveal")) {
+curl_body <- function(req, obfuscated = c("redact", "reveal")) {
   obfuscated <- arg_match(obfuscated)
 
   body <- req_get_body(req, obfuscated = obfuscated)
