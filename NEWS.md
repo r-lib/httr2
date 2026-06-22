@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * Mocked and cached responses now include the originating request in `resp$request`, just like real responses (#841).
+* New `httr2_translate()` translates an httr2 request into the equivalent curl command (#795).
 * `last_response_json()` now works with content-types that end with `+json`, e.g. `application/problem+json` (@cgiachalis, #782).
 * `oauth_*()` token refresh now forwards `token_params` from the original flow, so extra token-endpoint parameters (e.g. a `scope` required on the token exchange) are sent on refresh as well as on the initial token request (@simonpcouch).
 * `oauth_client()` gains a `metadata` argument: pass the result of `oauth_server_metadata()` and the client carries all of the server's endpoints, so the OAuth flows pick them up automatically instead of threading them into each call (#846).
