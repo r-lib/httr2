@@ -225,6 +225,15 @@
         --user-agent httr2 \
         --data '{}'
 
+# curl_body_data() translates multipart values
+
+    Code
+      writeLines(curl_body_data(body, "multipart"))
+    Output
+      --form-string 'text=@literal;value'
+      --form 'file=@"<tmppath>";type=text/plain;filename="name.txt"'
+      --form 'data="a b";type=text/plain'
+
 # curl_options() translates each known option
 
     Code

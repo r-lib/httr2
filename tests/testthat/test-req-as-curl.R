@@ -288,7 +288,7 @@ test_that("curl_body_data() URL encodes form data", {
 })
 
 test_that("curl_body_data() translates multipart values", {
-  path <- tempfile()
+  path <- file.path(withr::local_tempdir(), "contents")
   writeLines("contents", path)
 
   body <- list(
@@ -296,17 +296,10 @@ test_that("curl_body_data() translates multipart values", {
     file = curl::form_file(path, type = "text/plain", name = "name.txt"),
     data = curl::form_data("a b", type = "text/plain")
   )
-  expect_equal(
-    curl_body_data(body, "multipart"),
-    c(
-      "--form-string 'text=@literal;value'",
-      paste0(
-        "--form 'file=@\"",
-        body$file$path,
-        "\";type=text/plain;filename=\"name.txt\"'"
-      ),
-      "--form 'data=\"a b\";type=text/plain'"
-    )
+  expect_snapshot(
+    writeLines(curl_body_data(body, "multipart")),
+    # the temp file path varies and uses (escaped) \ on Windows
+    transform = function(x) gsub('@"[^"]+"', '@"<tmppath>"', x)
   )
 })
 
