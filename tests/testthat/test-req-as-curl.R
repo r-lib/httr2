@@ -355,7 +355,23 @@ test_that("curl_options() translates each known option", {
       followlocation = TRUE,
       verbose = TRUE,
       cookiejar = "jar.txt",
-      cookiefile = "file.txt"
+      cookiefile = "file.txt",
+      ssl_verifypeer = FALSE,
+      ssl_verifystatus = TRUE,
+      cainfo = "ca.pem",
+      capath = "certs",
+      sslcert = "client.pem",
+      sslkey = "client.key",
+      keypasswd = "secret",
+      pinnedpublickey = "sha256//key",
+      userpwd = "user:password",
+      httpauth = auth_flags("digest"),
+      failonerror = TRUE,
+      maxredirs = 5,
+      interface = "eth0",
+      low_speed_limit = 100,
+      low_speed_time = 10,
+      accept_encoding = "gzip"
     )
   expect_snapshot(cat(curl_options(req), sep = "\n"))
 })
@@ -404,7 +420,22 @@ test_that("curl_options() drops disabled flags", {
 
 test_that("curl_options() warns about untranslatable options", {
   req <- request("https://example.com") |>
-    req_options(followlocation = FALSE, ssl_verifypeer = FALSE)
+    req_options(followlocation = FALSE, fresh_connect = TRUE)
   expect_snapshot(out <- curl_options(req))
   expect_null(out)
+})
+
+test_that("curl_options() translates authentication options", {
+  req <- request("https://example.com") |>
+    req_proxy(
+      "proxy.example.com",
+      username = "user",
+      password = "password",
+      auth = "digest"
+    ) |>
+    req_options(userpwd = "user:password", httpauth = auth_flags("ntlm"))
+
+  options <- paste(curl_options(req), collapse = "\n")
+  expect_match(options, "--proxy-digest", fixed = TRUE)
+  expect_match(options, "--ntlm", fixed = TRUE)
 })

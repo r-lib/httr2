@@ -105,12 +105,10 @@
     Code
       req_as_curl(req_options(request("https://hb.cran.dev/get"), verbose = TRUE,
       ssl_verifypeer = FALSE))
-    Condition
-      Warning:
-      Can't translate option "ssl_verifypeer".
     Output
       curl https://hb.cran.dev/get \
         --location \
+        --insecure \
         --verbose \
         --user-agent 'httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1'
 
@@ -235,6 +233,7 @@
       cat(curl_options(req), sep = "\n")
     Output
       --location
+      --insecure
       --max-time 30
       --connect-timeout 5
       --proxy http://proxy.example.com
@@ -242,6 +241,22 @@
       --verbose
       --cookie-jar jar.txt
       --cookie file.txt
+      --cert-status
+      --cacert ca.pem
+      --capath certs
+      --cert client.pem
+      --key client.key
+      --pass secret
+      --pinnedpubkey sha256//key
+      --user user:password
+      --digest
+      --fail
+      --max-redirs 5
+      --interface eth0
+      --speed-limit 100
+      --speed-time 10
+      --header 'Accept-Encoding: gzip'
+      --compressed
 
 # curl_options() translates options set by httr2 functions
 
@@ -253,6 +268,7 @@
       --connect-timeout 0
       --proxy proxy.example.com:8080
       --proxy-user u:p
+      --proxy-basic
       --user-agent agent
       --cookie-jar cookies.txt
       --cookie cookies.txt
@@ -264,5 +280,5 @@
       out <- curl_options(req)
     Condition
       Warning:
-      Can't translate option "ssl_verifypeer".
+      Can't translate option "fresh_connect".
 
