@@ -1,4 +1,4 @@
-# Translate curl syntax to httr2
+# Translate a curl command to a httr2 request
 
 The curl command line tool is commonly used to demonstrate HTTP APIs and
 can easily be generated from [browser developer
@@ -43,6 +43,10 @@ curl_help()
 A string containing the translated httr2 code. If the input was copied
 from the clipboard, the translation will be copied back to the
 clipboard.
+
+## See also
+
+[`httr2_translate()`](https://httr2.r-lib.org/dev/reference/httr2_translate.md)
 
 ## Examples
 

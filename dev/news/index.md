@@ -5,6 +5,10 @@
 - Mocked and cached responses now include the originating request in
   `resp$request`, just like real responses
   ([\#841](https://github.com/r-lib/httr2/issues/841)).
+- New
+  [`httr2_translate()`](https://httr2.r-lib.org/dev/reference/httr2_translate.md)
+  translates an httr2 request into the equivalent curl command
+  ([\#795](https://github.com/r-lib/httr2/issues/795)).
 - [`last_response_json()`](https://httr2.r-lib.org/dev/reference/last_response.md)
   now works with content-types that end with `+json`,
   e.g. `application/problem+json`

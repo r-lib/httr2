@@ -86,8 +86,13 @@ throttle_status()
 #>       realm capacity tokens to_wait
 #> 1 127.0.0.1       30     28       0
 
-# Enforce multiple limits at once: no more than 10 requests every 10s
-# and no more than 50 requests every 60s
+# Enforce multiple limits at once: no more than 10 requests every 1s
+# and no more than 100 requests every 60s
 req <- request(example_url()) |>
-  req_throttle(capacity = c(10, 50), fill_time_s = c(10, 60))
+  req_throttle(capacity = c(10, 100), fill_time_s = c(1, 60))
+resp <- req_perform(req)
+throttle_status()
+#>       realm capacity tokens to_wait
+#> 1 127.0.0.1       10      9       0
+#> 2 127.0.0.1      100     99       0
 ```
