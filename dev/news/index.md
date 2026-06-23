@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+## httr2 1.2.3
+
+CRAN release: 2026-06-23
+
 - Mocked and cached responses now include the originating request in
   `resp$request`, just like real responses
   ([\#841](https://github.com/r-lib/httr2/issues/841)).

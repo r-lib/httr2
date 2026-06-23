@@ -28,7 +28,7 @@ Every request starts with a URL:
 req <- request(example_url())
 req
 #> <httr2_request>
-#> GET http://127.0.0.1:34759/
+#> GET http://127.0.0.1:33033/
 #> Body: empty
 ```
 
@@ -45,8 +45,8 @@ req |> req_dry_run()
 #> GET / HTTP/1.1
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
-#> host: 127.0.0.1:34759
-#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
+#> host: 127.0.0.1:33033
+#> user-agent: httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0
 ```
 
 The first line of the request contains three important pieces of
@@ -60,7 +60,7 @@ information:
 
 - The **path**, which is the URL stripped of details that the server
   already knows, i.e. the protocol (`http` or `https`), the host
-  (`localhost`), and the port (`34759`).
+  (`localhost`), and the port (`33033`).
 
 - The version of the HTTP protocol. This is unimportant for our purposes
   because it’s handled at a lower level.
@@ -82,10 +82,10 @@ req |>
 #> GET / HTTP/1.1
 #> accept: application/json
 #> accept-encoding: deflate, gzip, br, zstd
-#> host: 127.0.0.1:34759
+#> host: 127.0.0.1:33033
 #> name: Hadley
 #> shoe-size: 11
-#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0
 ```
 
 Header names are case-insensitive, and servers will ignore headers that
@@ -108,8 +108,8 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 15
 #> content-type: application/json
-#> host: 127.0.0.1:34759
-#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
+#> host: 127.0.0.1:33033
+#> user-agent: httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0
 #> 
 #> {
 #>   "x": 1,
@@ -146,8 +146,8 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 7
 #> content-type: application/x-www-form-urlencoded
-#> host: 127.0.0.1:34759
-#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
+#> host: 127.0.0.1:33033
+#> user-agent: httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0
 #> 
 #> x=1&y=a
 ```
@@ -166,19 +166,19 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 246
-#> content-type: multipart/form-data; boundary=------------------------aaS6eXHHgKteVbnYs9zSj9
-#> host: 127.0.0.1:34759
-#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.5.0
+#> content-type: multipart/form-data; boundary=------------------------Vvl44SMlVS3Htgy6F5yxeW
+#> host: 127.0.0.1:33033
+#> user-agent: httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0
 #> 
-#> --------------------------aaS6eXHHgKteVbnYs9zSj9
+#> --------------------------Vvl44SMlVS3Htgy6F5yxeW
 #> Content-Disposition: form-data; name="x"
 #> 
 #> 1
-#> --------------------------aaS6eXHHgKteVbnYs9zSj9
+#> --------------------------Vvl44SMlVS3Htgy6F5yxeW
 #> Content-Disposition: form-data; name="y"
 #> 
 #> a
-#> --------------------------aaS6eXHHgKteVbnYs9zSj9--
+#> --------------------------Vvl44SMlVS3Htgy6F5yxeW--
 ```
 
 If you need to send data encoded in a different form, you can use
@@ -197,7 +197,7 @@ req <- request(example_url()) |> req_url_path("/json")
 resp <- req |> req_perform()
 resp
 #> <httr2_response>
-#> GET http://127.0.0.1:34759/json
+#> GET http://127.0.0.1:33033/json
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (407 bytes)
@@ -210,7 +210,7 @@ You can see a simulation of what httr2 actually received with
 
 resp |> resp_raw()
 #> HTTP/1.1 200 OK
-#> Date: Mon, 22 Jun 2026 22:13:36 GMT
+#> Date: Tue, 23 Jun 2026 12:30:34 GMT
 #> Content-Type: application/json
 #> Content-Length: 407
 #> ETag: "de760e6d"
@@ -271,7 +271,7 @@ You can extract data from the response using the `resp_()` functions:
 
   resp |> resp_headers()
   #> <httr2_headers>
-  #> Date: Mon, 22 Jun 2026 22:13:36 GMT
+  #> Date: Tue, 23 Jun 2026 12:30:34 GMT
   #> Content-Type: application/json
   #> Content-Length: 407
   #> ETag: "de760e6d"
