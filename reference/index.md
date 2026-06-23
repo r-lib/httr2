@@ -199,7 +199,9 @@ server, but affect the overall process of
 
 - [`curl_translate()`](https://httr2.r-lib.org/reference/curl_translate.md)
   [`curl_help()`](https://httr2.r-lib.org/reference/curl_translate.md) :
-  Translate curl syntax to httr2
+  Translate a curl command to a httr2 request
+- [`httr2_translate()`](https://httr2.r-lib.org/reference/httr2_translate.md)
+  : Translate a httr2 request to a curl command
 - [`is_online()`](https://httr2.r-lib.org/reference/is_online.md) : Is
   your computer currently online?
 
@@ -220,6 +222,8 @@ These functions implement the low-level components of OAuth.
   : OAuth client authentication
 - [`oauth_redirect_uri()`](https://httr2.r-lib.org/reference/oauth_redirect_uri.md)
   : Default redirect url for OAuth
+- [`oauth_server_metadata()`](https://httr2.r-lib.org/reference/oauth_server_metadata.md)
+  : Discover OAuth server metadata
 - [`oauth_token()`](https://httr2.r-lib.org/reference/oauth_token.md) :
   Create an OAuth token
 

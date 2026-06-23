@@ -30,14 +30,14 @@ A modified HTTP [request](https://httr2.r-lib.org/reference/request.md).
 ``` r
 request(example_url()) |> req_method("PATCH")
 #> <httr2_request>
-#> PATCH http://127.0.0.1:41151/
+#> PATCH http://127.0.0.1:41437/
 #> Body: empty
 request(example_url()) |> req_method("PUT")
 #> <httr2_request>
-#> PUT http://127.0.0.1:41151/
+#> PUT http://127.0.0.1:41437/
 #> Body: empty
 request(example_url()) |> req_method("HEAD")
 #> <httr2_request>
-#> HEAD http://127.0.0.1:41151/
+#> HEAD http://127.0.0.1:41437/
 #> Body: empty
 ```

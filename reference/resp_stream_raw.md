@@ -18,7 +18,7 @@ waiting on the stream.
 ``` r
 resp_stream_raw(resp, kb = 32)
 
-resp_stream_lines(resp, lines = 1, max_size = Inf, warn = TRUE)
+resp_stream_lines(resp, lines = 1, max_size = Inf, warn = deprecated())
 
 resp_stream_sse(resp, max_size = Inf)
 
@@ -48,13 +48,15 @@ resp_stream_is_complete(resp)
 
 - max_size:
 
-  The maximum number of bytes to buffer; once this number of bytes has
-  been exceeded without a line/event boundary, an error is thrown.
+  The maximum number of bytes to buffer while waiting for a line or
+  event boundary; if exceeded, an error is thrown. This limit is
+  approximate: to spot a boundary httr2 may buffer a handful of bytes
+  beyond `max_size` (e.g. the bytes of the delimiter itself).
 
 - warn:
 
-  Like [`readLines()`](https://rdrr.io/r/base/readLines.html): warn if
-  the connection ends without a final EOL.
+  **\[deprecated\]** `resp_stream_lines()` no longer warns when the
+  connection ends without a final EOL, so this argument is ignored.
 
 - ...:
 
@@ -97,21 +99,21 @@ close(con)
 # You can also see what's happening by setting verbosity
 con <- req |> req_perform_connection(verbosity = 2)
 #> -> GET /stream/5 HTTP/1.1
-#> -> Host: 127.0.0.1:41151
-#> -> User-Agent: httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0
+#> -> Host: 127.0.0.1:41437
+#> -> User-Agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
 #> -> Accept: */*
 #> -> Accept-Encoding: deflate, gzip, br, zstd
 #> -> 
 #> <- HTTP/1.1 200 OK
-#> <- Date: Mon, 08 Dec 2025 15:00:56 GMT
+#> <- Date: Tue, 23 Jun 2026 12:27:55 GMT
 #> <- Content-Type: application/json
 #> <- Transfer-Encoding: chunked
 #> <- 
 while (!resp_stream_is_complete(con)) {
   lines <- con |> resp_stream_lines(2)
 }
-#> << {"url":"http://127.0.0.1:41151/stream/5","args":{},"headers":{"Host":"127.0.0.1:41151","User-Agent":"httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":0}<< {"url":"http://127.0.0.1:41151/stream/5","args":{},"headers":{"Host":"127.0.0.1:41151","User-Agent":"httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":1}
-#> << {"url":"http://127.0.0.1:41151/stream/5","args":{},"headers":{"Host":"127.0.0.1:41151","User-Agent":"httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":2}<< {"url":"http://127.0.0.1:41151/stream/5","args":{},"headers":{"Host":"127.0.0.1:41151","User-Agent":"httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":3}
-#> << {"url":"http://127.0.0.1:41151/stream/5","args":{},"headers":{"Host":"127.0.0.1:41151","User-Agent":"httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":4}
+#> << {"url":"http://127.0.0.1:41437/stream/5","args":{},"headers":{"Host":"127.0.0.1:41437","User-Agent":"httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":0}<< {"url":"http://127.0.0.1:41437/stream/5","args":{},"headers":{"Host":"127.0.0.1:41437","User-Agent":"httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":1}
+#> << {"url":"http://127.0.0.1:41437/stream/5","args":{},"headers":{"Host":"127.0.0.1:41437","User-Agent":"httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":2}<< {"url":"http://127.0.0.1:41437/stream/5","args":{},"headers":{"Host":"127.0.0.1:41437","User-Agent":"httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":3}
+#> << {"url":"http://127.0.0.1:41437/stream/5","args":{},"headers":{"Host":"127.0.0.1:41437","User-Agent":"httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":4}
 close(con)
 ```

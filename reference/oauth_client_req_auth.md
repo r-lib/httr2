@@ -38,7 +38,13 @@ oauth_client_req_auth_header(req, client)
 
 oauth_client_req_auth_body(req, client)
 
-oauth_client_req_auth_jwt_sig(req, client, claim, size = 256, header = list())
+oauth_client_req_auth_jwt_sig(
+  req,
+  client,
+  claim = NULL,
+  size = 256,
+  header = list()
+)
 ```
 
 ## Arguments
@@ -91,7 +97,7 @@ req_dry_run(oauth_client_req_auth(req, client1))
 #> content-length: 35
 #> content-type: application/x-www-form-urlencoded
 #> host: example.com
-#> user-agent: httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
 #> 
 #> client_id=12345&client_secret=56789
 
@@ -109,7 +115,7 @@ req_dry_run(oauth_client_req_auth(req, client2))
 #> accept-encoding: deflate, gzip, br, zstd
 #> authorization: <REDACTED>
 #> host: example.com
-#> user-agent: httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
 #> 
 
 client3 <- oauth_client(
@@ -128,7 +134,7 @@ req_dry_run(oauth_client_req_auth(req, client3))
 #> content-length: 623
 #> content-type: application/x-www-form-urlencoded
 #> host: example.com
-#> user-agent: httr2/1.2.2 r-curl/7.0.0 libcurl/8.5.0
+#> user-agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
 #> 
-#> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3NjUyMDYzMzgsIm5iZiI6MTc2NTIwNjAzOCwiaWF0IjoxNzY1MjA2MDM4LCJqdGkiOiJmRzRSTlZTNXQ3SEdJdVJlam9rbEYzYThvaDE2VzRKb3ptSkhnN2VlSlB3In0.XrSQf9zXf9up3litvstYyB5AZINBYzplOePu_SHK5T4weK-SaFySObSUMFYIrLLlQmkOSS9X46QP43a_-isjEux5iGOK8L0fa0J-urAIqkPH_MTeV2ZHASpiVGFGynyq1ufoujjKfhDVesDh38Gwk6ZWHDeGd2fstXQAI97V3024RqmZBjzhWwl9jSg5m_J2zriLqOqzX02udAukTP4Uq5p_7ErVMyHQwHFqWJ0EDeeF5Fi7hm3A-AdXAhYj3PPq2_KHvdm55sQPdm5jaq5NiyBIki-6y7W8xfTdRjGFWvDZxLIs71pTCHDudnyRWq1Yo_pTR3jesmZWf9em3KWp1w&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer
+#> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3ODIyMTc5NTcsIm5iZiI6MTc4MjIxNzY1NywiaWF0IjoxNzgyMjE3NjU3LCJqdGkiOiJLQ1NvdURLM2tuZ2xhY2xGMGp4dWJGTG54U0hZVjNoc2NUaFk3Qi1MLWhJIn0.dYqPcdgSurSBvGH9B-gRN09oDxH1VahdNHyqrjnB9mk3WfgiUJ_-0GiwRB-NkVbEUHJuiNjTyOLMGVh54UYg_PTGnpb4s9L6D-7NAmYJQIA11zqRO7r-6z-AEDWKsD4xI1PPsM2EcGCLV-MzLUpptngwjkTpyATftHKdPUImQF_W_INJhOmeGyM0LXVEReqUqbJt5LroC67h8569Suv2DESZ8VJz2GHi_z04B2BEFDkfoWa1yM40JFudRSU-pwmFU5zHHMBJgx2E_pjY4UnijEVJaGiKeBooSLsxSoGFxEH3NW5N68zQgMcF2wAo_OatA-7bhU4kNXCzdG3IQ2t1HQ&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer
 ```

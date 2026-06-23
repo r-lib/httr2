@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://httr2.r-lib.org/404.html</loc></url>
+<url><loc>https://httr2.r-lib.org/AGENTS.html</loc></url>
 <url><loc>https://httr2.r-lib.org/LICENSE-text.html</loc></url>
 <url><loc>https://httr2.r-lib.org/LICENSE.html</loc></url>
 <url><loc>https://httr2.r-lib.org/articles/httr2.html</loc></url>
@@ -13,6 +14,7 @@
 <url><loc>https://httr2.r-lib.org/reference/curl_translate.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/example_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/httr2-package.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/httr2_translate.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/index.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/is_online.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/iterate_with_offset.html</loc></url>
@@ -25,6 +27,7 @@
 <url><loc>https://httr2.r-lib.org/reference/oauth_client_req_auth.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_flow_auth_code_url.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_redirect_uri.html</loc></url>
+<url><loc>https://httr2.r-lib.org/reference/oauth_server_metadata.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_token.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/oauth_token_cached.html</loc></url>
 <url><loc>https://httr2.r-lib.org/reference/obfuscate.html</loc></url>

@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>OAuth</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/vignettes/articles/oauth.Rmd" class="external-link"><code>vignettes/articles/oauth.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.2.3/vignettes/articles/oauth.Rmd" class="external-link"><code>vignettes/articles/oauth.Rmd</code></a></small>
       <div class="d-none name"><code>oauth.Rmd</code></div>
     </div>
 
@@ -170,10 +170,44 @@ should never touch them!</li>
 details.</p>
 </div>
 <div class="section level2">
+<h2 id="server-metadata">Server metadata<a class="anchor" aria-label="anchor" href="#server-metadata"></a>
+</h2>
+<p>Most OAuth providers expose a handful of <strong>endpoints</strong>:
+URLs where httr2 sends the various OAuth requests. The two you’ll almost
+always need are the authorization URL, where the user logs in and grants
+access, and the token URL, where httr2 exchanges that grant for an
+access token. Some providers also offer a device authorization URL, used
+by the device flow.</p>
+<p>Traditionally you had to dig these URLs out of the provider’s
+documentation, but many providers now publish them in a standard
+discovery document (defined by <a href="https://datatracker.ietf.org/doc/html/rfc8414" class="external-link">RFC 8414</a> and
+OpenID Connect Discovery). <code><a href="../reference/oauth_server_metadata.html">oauth_server_metadata()</a></code> fetches
+and parses that document, so you can look up every endpoint from a
+single <strong>issuer URL</strong>.</p>
+<p>You still need to find the issuer URL in the provider’s
+documentation, but that’s the only value you need. For example, GitHub’s
+issuer is <code>https://github.com/login/oauth</code> and Google’s is
+<code>https://accounts.google.com</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_server_metadata.html">oauth_server_metadata</a></span><span class="op">(</span><span class="st">"https://github.com/login/oauth"</span><span class="op">)</span></span>
+<span><span class="va">metadata</span></span>
+<span><span class="co">#&gt; &lt;httr2_oauth_server_metadata&gt;</span></span>
+<span><span class="co">#&gt; * issuer                : "https://github.com/login/oauth"</span></span>
+<span><span class="co">#&gt; * jwks_uri              : "https://github.com/login/oauth/.well-known/jwks"</span></span>
+<span><span class="co">#&gt; * authorization_endpoint: "https://github.com/login/oauth/authorize"</span></span>
+<span><span class="co">#&gt; * token_endpoint        : "https://github.com/login/oauth/access_token"</span></span>
+<span><span class="co">#&gt; * and 6 more fields.</span></span></code></pre></div>
+<p>You’ll hand this <code>metadata</code> to <code><a href="../reference/oauth_client.html">oauth_client()</a></code>
+and to the flow functions, and httr2 picks out the endpoint each one
+needs. Discovery isn’t universal though: if your provider doesn’t
+publish a metadata document, you can specify the URLs by hand instead,
+as we’ll show in this vignette.</p>
+</div>
+<div class="section level2">
 <h2 id="clients">Clients<a class="anchor" aria-label="anchor" href="#clients"></a>
 </h2>
-<p>The first step in working with any OAuth API is to create an
-<strong>application</strong> <strong>client</strong>. It’s called an
+<p>After discovering the server’s endpoints, you’ll first need to create
+an <strong>application</strong> <strong>client</strong>. It’s called an
 application client because in the wider world OAuth is usually used with
 a web, phone, or tv app, but here your “app” is going to be your R
 package. For this reason, httr2 calls the application client a
@@ -187,29 +221,38 @@ new OAuth app (aka a client). This process varies from API to API (it’s
 normal to spend some time hunting through the docs and settings), but at
 the end of it you’ll get a client id (another random string of numbers
 and letters). Sometimes the client id is all you need, and you can
-create a httr2 client with <code><a href="../reference/oauth_client.html">oauth_client()</a></code>, e.g.:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+create a httr2 client with <code><a href="../reference/oauth_client.html">oauth_client()</a></code>. Pair it with the
+<code>metadata</code> you discovered above and httr2 fills in the
+endpoints for you:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
+<span>  metadata <span class="op">=</span> <span class="va">metadata</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"hadley-oauth-test-2"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The <code>name</code> is human-facing, and should typically be the
+same as your package (the thing that prompted you to create the client).
+I have a bunch of apps that I’ve used for testing, so here I’ve used the
+name <code>hadley-oauth-test-2</code> to remind me which app this client
+corresponds to.</p>
+<blockquote>
+<p><strong>Specifying endpoints by hand.</strong> If your provider
+doesn’t publish discovery metadata, supply the <code>token_url</code>
+directly instead of <code>metadata</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
 <span>  token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"hadley-oauth-test-2"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The call to <code><a href="../reference/oauth_client.html">oauth_client()</a></code> also includes a
-<code>name</code> and a <code>token_url</code>.</p>
-<ul>
-<li>The <code>name</code> is human-facing, and should typically be the
-same as your package (the thing that prompted you to create the client).
-I have a bunch of apps that I’ve used for testing, so here I’ve used the
-name <code>hadley-oauth-test-2</code> to remind me which app this client
-corresponds to.</li>
-<li>The <code>token_url</code> points to the URL that’s used to obtain
-an access token. You’ll need to find this from the documentation for the
+<p>The <code>token_url</code> points to the URL that’s used to obtain an
+access token. You’ll need to find this from the documentation for the
 API you’re wrapping; it will typically be found in the section that
 describes the OAuth process and will be an endpoint that returns an
 access token. Don’t be surprised if this endpoint feels very different
 to the rest of the API; auth is often implemented by a third-party
-package with slightly different conventions to the rest of the API.</li>
-</ul>
+package with slightly different conventions to the rest of the API.</p>
+</blockquote>
 <div class="section level3">
 <h3 id="client-secret">Client secret<a class="anchor" aria-label="anchor" href="#client-secret"></a>
 </h3>
@@ -232,16 +275,16 @@ paste the result into your package. For example, if your client secret
 was “secret”, you’d call <code><a href="../reference/obfuscate.html">obfuscate()</a></code> then you’d copy and
 paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
 your client specification.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("PuFzsnARUHnH4x2jmWdoatZzAhsPAQ")</span></span></code></pre></div>
+<span><span class="co">#&gt; obfuscated("pWr6RbHYBc65MBAgttlUDpPmpfe1TQ")</span></span></code></pre></div>
 <p>Here’s what a complete client specification for GitHub looks like,
 using a real app that I created specifically for this vignette:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
 <span>  secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,</span>
-<span>  token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
+<span>  metadata <span class="op">=</span> <span class="va">metadata</span>,</span>
 <span>  name <span class="op">=</span> <span class="st">"hadley-oauth-test"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You can certainly uncover my client secret if you are an experienced
@@ -254,12 +297,13 @@ GitHub.</p>
 </h3>
 <p>I recommend wrapping client creation in a function in your package,
 e.g.:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">github_client</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oauth_server_metadata.html">oauth_server_metadata</a></span><span class="op">(</span><span class="st">"https://github.com/login/oauth"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/oauth_client.html">oauth_client</a></span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="st">"28acfec0674bb3da9f38"</span>,</span>
 <span>    secret <span class="op">=</span> <span class="fu"><a href="../reference/obfuscate.html">obfuscated</a></span><span class="op">(</span><span class="st">"J9iiGmyelHltyxqrHXW41ZZPZamyUNxSX1_uKnvPeinhhxET_7FfUs2X0LLKotXY2bpgOMoHRCo"</span><span class="op">)</span>,</span>
-<span>    token_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/access_token"</span>,</span>
+<span>    metadata <span class="op">=</span> <span class="va">metadata</span>,</span>
 <span>    name <span class="op">=</span> <span class="st">"hadley-oauth-test"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -309,19 +353,27 @@ steps are described in the following sections.</p>
 <h3 id="creating-a-token">Creating a token<a class="anchor" aria-label="anchor" href="#creating-a-token"></a>
 </h3>
 <p><code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code> is the best way to verify you’ve
-correctly specified the parameters to the client and the
-<code>auth_url</code>, without depending on correctly understanding any
-other part of the API. For example, you could get a token to access the
-GitHub API (using the client defined above) with this code:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+correctly specified the parameters to the client, without depending on
+correctly understanding any other part of the API. Because the client
+was built from <code>metadata</code>, it already knows the authorization
+URL, so you can get a token to access the GitHub API (using the client
+defined above) with just:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span><span class="va">client</span><span class="op">)</span></span></code></pre></div>
+<blockquote>
+<p><strong>Specifying the authorization URL by hand.</strong> If you
+built the client without <code>metadata</code>, pass
+<code>auth_url</code> directly:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code</a></span><span class="op">(</span></span>
 <span>  client <span class="op">=</span> <span class="va">client</span>,</span>
 <span>  auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+</blockquote>
 <p>This flow can’t be used inside a vignette because it’s designed
 specifically for interactive use, but if you do run it and print out the
 <code>token</code>, you’ll see something like this:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">token</span></span>
 <span><span class="co">#&gt; &lt;httr2_token&gt;</span></span>
 <span><span class="co">#&gt; token_type: bearer</span></span>
@@ -336,10 +388,11 @@ step. Otherwise, you’ll get an HTTP error. If you’re very lucky, that
 error will be informative and will help you figure out want went wrong.
 However, in most cases, you’ll need to carefully double check that
 you’ve correctly copied and pasted the client id and secret, and check
-that you’ve supplied the correct authorization and token urls
-(<code>auth_url</code> and <code>token_url</code>). If the docs have
-multiple candidates for each and you’re unclear about which is which,
-you’ll need to do some systematic experimentation.</p>
+that you discovered the right endpoints (or, if you supplied
+<code>auth_url</code> and <code>token_url</code> by hand, that they’re
+correct). If the docs have multiple candidates for each and you’re
+unclear about which is which, you’ll need to do some systematic
+experimentation.</p>
 </div>
 <div class="section level3">
 <h3 id="authenticating-a-request">Authenticating a request<a class="anchor" aria-label="anchor" href="#authenticating-a-request"></a>
@@ -355,27 +408,24 @@ information about the “current” user, if your API provides one.</p>
 <code>/user</code> that returns information about the current user. If
 we make a request to this endpoint without authentication, we’ll get an
 error:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/request.html">request</a></span><span class="op">(</span><span class="st">"https://api.github.com/user"</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 401 Unauthorized.</span></span></code></pre></div>
 <p>We can authenticate this request with
-<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>, using the same arguments as our
-previous call to <code><a href="../reference/req_oauth_auth_code.html">oauth_flow_auth_code()</a></code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>, passing the client (which carries
+its endpoints from <code>metadata</code>):</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span></span>
-<span>    client <span class="op">=</span> <span class="fu">github_client</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    auth_url <span class="op">=</span> <span class="st">"https://github.com/login/oauth/authorize"</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code</a></span><span class="op">(</span>client <span class="op">=</span> <span class="fu">github_client</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>When you run this code, you’ll see something like this, but it will
 obviously contain information about you, not me.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#&gt; List of 32</span></span>
 <span><span class="co">#&gt;  $ login        : chr "hadley"</span></span>
 <span><span class="co">#&gt;  $ id           : int 4196</span></span>
@@ -417,7 +467,7 @@ need to re-auth at least once a month, but prevents tokens from hanging
 around on disk long after you’ve forgotten you created them.</p>
 <p>You can see which clients have cached tokens by looking in the cache
 directory used by httr2:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu"><a href="../reference/oauth_cache_path.html">oauth_cache_path</a></span><span class="op">(</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Each client gets its own subdirectory named using the client
 <code>name</code>, so if you turn caching on, it’s particularly
@@ -432,11 +482,28 @@ tell which package the tokens belong to.</p>
 to figure out which flows it provides. If possible you’ll want to use
 the authorization code flow since it generally provides the best
 experience, but if it’s not available you’ll need to carefully consider
-the others. Currently, httr2 supports the following flows:</p>
+the others. All of these flows reuse the same <code>client</code>, so
+once you’ve built it from <code>metadata</code> they pick up the
+<code>token_url</code> automatically. Currently, httr2 supports the
+following flows:</p>
 <ul>
-<li><p><code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> uses the “device” flow which is
+<li>
+<p><code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> uses the “device” flow which is
 designed for devices like TVs that don’t have an easy way to enter data.
-It also works well from the console.</p></li>
+It also works well from the console.</p>
+<blockquote>
+<p><strong>Specifying the device URL by hand.</strong> The device flow
+needs a separate device authorization URL, which <code>metadata</code>
+doesn’t always include (GitHub, for instance, omits it). Pass it to
+<code><a href="../reference/req_oauth_device.html">req_oauth_device()</a></code> as <code>auth_url</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/req_oauth_device.html">req_oauth_device</a></span><span class="op">(</span></span>
+<span>    client <span class="op">=</span> <span class="fu">github_client</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    auth_url <span class="op">=</span> <span class="st">"https://github.com/login/device/code"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</blockquote>
+</li>
 <li><p><code><a href="../reference/req_oauth_client_credentials.html">req_oauth_client_credentials()</a></code> and
 <code><a href="../reference/req_oauth_bearer_jwt.html">req_oauth_bearer_jwt()</a></code> are often needed for <strong>service
 accounts</strong>, accounts that represent automated services, not

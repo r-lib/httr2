@@ -23,7 +23,7 @@ motivations behind this flow in
 req_oauth_auth_code(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -35,7 +35,7 @@ req_oauth_auth_code(
 
 oauth_flow_auth_code(
   client,
-  auth_url,
+  auth_url = NULL,
   scope = NULL,
   pkce = TRUE,
   auth_params = list(),
@@ -59,7 +59,9 @@ oauth_flow_auth_code(
 - auth_url:
 
   Authorization url; you'll need to discover this by reading the
-  documentation.
+  documentation. Not needed if `metadata` was supplied to
+  [`oauth_client()`](https://httr2.r-lib.org/reference/oauth_client.md),
+  which sets it from the `authorization_endpoint`.
 
 - scope:
 
@@ -157,6 +159,7 @@ for the components necessary to write your own auth code flow, if the
 API you are wrapping does not adhere closely to the standard.
 
 Other OAuth flows:
+[`oauth_server_metadata()`](https://httr2.r-lib.org/reference/oauth_server_metadata.md),
 [`req_oauth_bearer_jwt()`](https://httr2.r-lib.org/reference/req_oauth_bearer_jwt.md),
 [`req_oauth_client_credentials()`](https://httr2.r-lib.org/reference/req_oauth_client_credentials.md),
 [`req_oauth_password()`](https://httr2.r-lib.org/reference/req_oauth_password.md),

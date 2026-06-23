@@ -10,9 +10,11 @@ throttle_status()
 
 ## Value
 
-A data frame with three columns:
+A data frame with one row per token bucket and four columns:
 
 - The `realm`.
+
+- The `capacity` of the bucket.
 
 - Number of `tokens` remaining in the bucket.
 

@@ -34,7 +34,7 @@ req <- request(example_url())
 resp <- req_perform(req)
 resp_timing(resp)
 #>      redirect    namelookup       connect   pretransfer starttransfer 
-#>      0.000000      0.000106      0.000190      0.000215      0.002892 
+#>      0.000000      0.000031      0.000000      0.000085      0.002588 
 #>         total 
-#>      0.003325 
+#>      0.002759 
 ```

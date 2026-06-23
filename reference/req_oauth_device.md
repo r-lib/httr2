@@ -15,7 +15,8 @@ Learn more about the overall OAuth authentication flow in
 req_oauth_device(
   req,
   client,
-  auth_url,
+  auth_url = NULL,
+  pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
   auth_params = list(),
@@ -26,7 +27,7 @@ req_oauth_device(
 
 oauth_flow_device(
   client,
-  auth_url,
+  auth_url = NULL,
   pkce = FALSE,
   scope = NULL,
   open_browser = is_interactive(),
@@ -49,8 +50,15 @@ oauth_flow_device(
 
 - auth_url:
 
-  Authorization url; you'll need to discover this by reading the
-  documentation.
+  Device authorization url; you'll need to discover this by reading the
+  documentation. Not needed if `metadata` was supplied to
+  [`oauth_client()`](https://httr2.r-lib.org/reference/oauth_client.md),
+  which sets it from the `device_authorization_endpoint`.
+
+- pkce:
+
+  Use "Proof Key for Code Exchange"? This adds an extra layer of
+  security and should always be used if supported by the server.
 
 - scope:
 
@@ -83,11 +91,6 @@ oauth_flow_device(
 
   If you want to cache multiple tokens per app, use this key to
   disambiguate them.
-
-- pkce:
-
-  Use "Proof Key for Code Exchange"? This adds an extra layer of
-  security and should always be used if supported by the server.
 
 ## Value
 

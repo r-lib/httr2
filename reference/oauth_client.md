@@ -1,22 +1,25 @@
 # Create an OAuth client
 
-An OAuth app is the combination of a client, a set of endpoints (i.e.
-urls where various requests should be sent), and an authentication
-mechanism. A client consists of at least a `client_id`, and also often a
-`client_secret`. You'll get these values when you create the client on
-the API's website.
+An OAuth client is the combination of a set of credentials (at least a
+`client_id`, and often a `client_secret` or `key`), the server endpoints
+it talks to, and an authentication mechanism. You'll get the credentials
+when you register the client on the API's website. Supply the
+`token_url` directly, or pass the result of
+[`oauth_server_metadata()`](https://httr2.r-lib.org/reference/oauth_server_metadata.md)
+as `metadata` to fill in all of the server's endpoints at once.
 
 ## Usage
 
 ``` r
 oauth_client(
   id,
-  token_url,
+  token_url = NULL,
   secret = NULL,
   key = NULL,
   auth = c("body", "header", "jwt_sig"),
   auth_params = list(),
-  name = hash(id)
+  name = hash(id),
+  metadata = NULL
 )
 ```
 
@@ -28,7 +31,8 @@ oauth_client(
 
 - token_url:
 
-  Url to retrieve an access token.
+  Url to retrieve an access token. Not needed if `metadata` is supplied,
+  which sets it from the `token_endpoint`.
 
 - secret:
 
@@ -73,6 +77,14 @@ oauth_client(
   directory. If `NULL`, generated from hash of `client_id`. If you're
   defining a client for use in a package, I recommend that you use the
   package name.
+
+- metadata:
+
+  An
+  [`oauth_server_metadata()`](https://httr2.r-lib.org/reference/oauth_server_metadata.md)
+  object. When supplied, the client's server endpoints are taken from
+  the discovery document, so the OAuth flows can find them without you
+  passing each one. An explicit `token_url` still wins over `metadata`.
 
 ## Value
 

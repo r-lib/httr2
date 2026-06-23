@@ -12,6 +12,7 @@ credentials.
 You can install httr2 from CRAN with:
 
 ``` r
+
 install.packages("httr2")
 ```
 
@@ -20,6 +21,7 @@ install.packages("httr2")
 To use httr2, start by creating a **request**:
 
 ``` r
+
 library(httr2)
 
 req <- request("https://r-project.org")
@@ -32,6 +34,7 @@ req
 You can tailor this request with the `req_` family of functions:
 
 ``` r
+
 # Add custom headers
 req |> req_headers("Accept" = "application/json")
 #> <httr2_request>
@@ -75,31 +78,34 @@ And see exactly what httr2 will send to the server with
 [`req_dry_run()`](https://httr2.r-lib.org/reference/req_dry_run.md):
 
 ``` r
+
 req |> req_dry_run()
 #> GET / HTTP/1.1
 #> accept: */*
 #> accept-encoding: deflate, gzip
 #> host: r-project.org
-#> user-agent: httr2/1.2.1.9000 r-curl/7.0.0 libcurl/8.14.1
+#> user-agent: httr2/1.2.2.9000 r-curl/7.1.0 libcurl/8.14.1
 ```
 
 Use [`req_perform()`](https://httr2.r-lib.org/reference/req_perform.md)
 to perform the request, retrieving a **response**:
 
 ``` r
+
 resp <- req_perform(req)
 resp
 #> <httr2_response>
 #> GET https://www.r-project.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (6238 bytes)
+#> Body: In memory (6520 bytes)
 ```
 
 The `resp_` functions help you extract various useful components of the
 response:
 
 ``` r
+
 resp |> resp_content_type()
 #> [1] "text/html"
 resp |> resp_status_desc()
@@ -151,9 +157,10 @@ resp |> resp_body_html()
 
 ## Acknowledgements
 
-httr2 wouldn’t be possible without [curl](https://cran.dev/curl/),
-[openssl](https://cran.dev/openssl/),
-[jsonlite](https://cran.dev/jsonlite/), and
+httr2 wouldn’t be possible without
+[curl](https://jeroen.r-universe.dev//curl/),
+[openssl](https://jeroen.r-universe.dev/openssl/),
+[jsonlite](https://jeroen.r-universe.dev/jsonlite), and
 [jose](https://github.com/r-lib/jose/), which are all maintained by
 [Jeroen Ooms](https://github.com/jeroen). A big thanks also go to [Jenny
 Bryan](https://jennybryan.org) and [Craig
