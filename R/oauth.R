@@ -172,26 +172,50 @@ cache_mem <- function(client, key = NULL) {
   )
 }
 cache_disk <- function(client, key = NULL) {
-  app_path <- file.path(oauth_cache_path(), client$name)
-  dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
+  token_path <- file.path(client$name, paste0(hash(key), "-token.rds.enc"))
+  modern_path <- file.path(oauth_cache_path(), token_path)
+  dir.create(dirname(modern_path), showWarnings = FALSE, recursive = TRUE)
 
-  path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
+  # Read from legacy path, but never write to it
+  legacy_path <- file.path(oauth_cache_path_legacy(), token_path)
+  has_legacy_token <-
+    !oauth_cache_is_manual() &&
+    !file.exists(modern_path) &&
+    file.exists(legacy_path)
+  read_path <- if (has_legacy_token) legacy_path else modern_path
+
   list(
     get = function() {
-      if (file.exists(path)) secret_read_rds(path, obfuscate_key()) else NULL
+      if (file.exists(read_path)) {
+        secret_read_rds(read_path, obfuscate_key())
+      } else {
+        NULL
+      }
     },
     set = function(token) {
-      cli::cli_inform("Caching httr2 token in {.path {path}}.")
-      secret_write_rds(token, path, obfuscate_key())
+      cli::cli_inform("Caching httr2 token in {.path {modern_path}}.")
+      secret_write_rds(token, modern_path, obfuscate_key())
+
+      # Migrate a legacy token by deleting the old copy
+      if (has_legacy_token) {
+        unlink(read_path)
+        has_legacy_token <<- FALSE
+        read_path <<- modern_path
+      }
     },
-    clear = function() if (file.exists(path)) file.remove(path)
+    clear = function() {
+      unlink(modern_path)
+      if (!oauth_cache_is_manual()) {
+        unlink(legacy_path)
+      }
+    }
   )
 }
 
 # Update req_oauth_auth_code() docs if change default from 30
-cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
+cache_disk_prune <- function(days = 30, paths = oauth_cache_paths()) {
   files <- dir(
-    path,
+    paths,
     recursive = TRUE,
     full.names = TRUE,
     pattern = "-token\\.rds$"
@@ -210,12 +234,54 @@ cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
 #'
 #' @export
 oauth_cache_path <- function() {
-  path <- Sys.getenv("HTTR2_OAUTH_CACHE")
-  if (path != "") {
-    return(path)
+  if (oauth_cache_is_manual()) {
+    oauth_cache_path_manual()
+  } else {
+    oauth_cache_path_modern()
+  }
+}
+oauth_cache_is_manual <- function() {
+  nzchar(Sys.getenv("HTTR2_OAUTH_CACHE"))
+}
+
+oauth_cache_path_manual <- function() {
+  Sys.getenv("HTTR2_OAUTH_CACHE")
+}
+oauth_cache_path_modern <- function() {
+  tools::R_user_dir("httr2", which = "cache")
+}
+# Equivalent to rappdirs::user_cache_dir("httr2"), inlined so httr2 doesn't
+# depend on rappdirs solely to find tokens cached by older versions. The
+# appname is nested twice and gains a "Cache" subdir on Windows because that's
+# what rappdirs did with its default `appauthor` and `opinion` arguments.
+oauth_cache_path_legacy <- function() {
+  base <- Sys.getenv("R_USER_CACHE_DIR")
+  if (nzchar(base)) {
+    if (.Platform$OS.type == "windows") {
+      return(file.path(base, "httr2", "httr2", "Cache"))
+    } else {
+      return(file.path(base, "httr2"))
+    }
   }
 
-  rappdirs::user_cache_dir("httr2")
+  if (.Platform$OS.type == "windows") {
+    base <- Sys.getenv("LOCALAPPDATA", Sys.getenv("APPDATA"))
+    file.path(base, "httr2", "httr2", "Cache")
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
+    "~/Library/Caches/httr2"
+  } else {
+    file.path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), "httr2")
+  }
+}
+
+# All locations that might contain cached tokens, newest first. The legacy
+# location is dropped when the user sets an explicit path, which has no legacy.
+oauth_cache_paths <- function() {
+  if (oauth_cache_is_manual()) {
+    oauth_cache_path_manual()
+  } else {
+    c(oauth_cache_path_modern(), oauth_cache_path_legacy())
+  }
 }
 
 
