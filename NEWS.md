@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_cache()` pruning no longer errors if a cache file is deleted while the cache is being pruned.
+
 # httr2 1.2.3
 
 * Mocked and cached responses now include the originating request in `resp$request`, just like real responses (#841).

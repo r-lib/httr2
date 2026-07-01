@@ -191,6 +191,8 @@ cache_info <- function(path, pattern = "\\.rds$") {
 }
 
 cache_prune_files <- function(info, to_remove, why, debug = TRUE) {
+  to_remove[is.na(to_remove)] <- FALSE
+
   if (any(to_remove)) {
     if (debug) {
       cli::cli_text("Deleted {sum(to_remove)} file{?s} that {?is/are} {why}")

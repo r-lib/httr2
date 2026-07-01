@@ -286,6 +286,11 @@ test_that("can prune by size", {
   expect_equal(dir(path), "c.rds")
 })
 
+test_that("cache_prune_files ignores NAs in to_remove", {
+  info <- data.frame(name = c("a", "b"), size = 1, mtime = Sys.time())
+  expect_equal(cache_prune_files(info, c(NA, FALSE), "x", debug = FALSE), info)
+})
+
 # headers -----------------------------------------------------------------
 
 test_that("correctly determines if response is cacheable", {
