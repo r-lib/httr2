@@ -14,6 +14,7 @@
 * `req_body_form()` and `req_url_query()` no longer error with "C stack usage is too close to the limit" when given very long string values (#805).
 * `req_cache()` no longer errors when a request is first performed with `path` then later without it (#840).
 * `req_error()` is now applied to responses retrieved from the cache, so a custom `is_error` callback is respected on cache hits (#806).
+* `req_oauth_*()` gains an `expiry_margin` argument to control how early cached OAuth tokens are treated as expired; the default margin increases from 5 to 30 seconds (@zacdav-db, #860).
 * `req_oauth_bearer_jwt()` now uses its `claim` as the basis for a separate client assertion when the `client` also authenticates with `auth = "jwt_sig"`, so you no longer need to supply the claim twice. As a result, `oauth_client(auth = "jwt_sig")` no longer requires a `claim` in `auth_params` at creation time (#825).
 * `req_oauth_device()` gains a `pkce` argument to enable Proof Key for Code Exchange, matching `oauth_flow_device()` (#834).
 * `req_throttle()` can now enforce multiple rate limits at once: supply a vector to `capacity` (and `fill_time_s`) to create one token bucket per limit, and each request must satisfy all of them (#555).

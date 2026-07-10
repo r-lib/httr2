@@ -41,7 +41,8 @@ req_oauth_device <- function(
   auth_params = list(),
   token_params = list(),
   cache_disk = FALSE,
-  cache_key = NULL
+  cache_key = NULL,
+  expiry_margin = 30
 ) {
   auth_url <- oauth_flow_url(auth_url, client, "device_auth_url")
   params <- list(
@@ -54,7 +55,13 @@ req_oauth_device <- function(
     token_params = token_params
   )
   cache <- cache_choose(client, cache_disk, cache_key)
-  req_oauth(req, "oauth_flow_device", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_device",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export

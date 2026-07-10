@@ -66,7 +66,7 @@ print.httr2_token <- function(x, ...) {
   invisible(x)
 }
 
-token_has_expired <- function(token, delay = 5) {
+token_has_expired <- function(token, delay = 30) {
   if (is.null(token$expires_at)) {
     FALSE
   } else {
