@@ -214,5 +214,7 @@ test_that("inlined legacy path matches rappdirs", {
 test_that("legacy path respects R_USER_CACHE_DIR", {
   path <- withr::local_tempdir()
   withr::local_envvar("R_USER_CACHE_DIR" = path)
-  expect_equal(oauth_cache_path_legacy(), file.path(path, "httr2"))
+
+  expected <- rappdirs::user_cache_dir("httr2")
+  expect_equal(oauth_cache_path_legacy(), expected)
 })
