@@ -1,6 +1,9 @@
 # httr2 (development version)
 
+# httr2 1.2.3
+
 * Mocked and cached responses now include the originating request in `resp$request`, just like real responses (#841).
+* New `httr2_translate()` translates an httr2 request into the equivalent curl command (#795).
 * `last_response_json()` now works with content-types that end with `+json`, e.g. `application/problem+json` (@cgiachalis, #782).
 * `oauth_*()` token refresh now forwards `token_params` from the original flow, so extra token-endpoint parameters (e.g. a `scope` required on the token exchange) are sent on refresh as well as on the initial token request (@simonpcouch).
 * `oauth_cache_path()` now defaults to a standard R cache directory (via `tools::R_user_dir()`). Tokens cached by older versions of httr2 in the previous location are still read (and migrated to the new location the next time they're written), so you won't have to re-authenticate. httr2 no longer requires the rappdirs package (#800).
