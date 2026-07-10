@@ -194,7 +194,7 @@ cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
     path,
     recursive = TRUE,
     full.names = TRUE,
-    pattern = "-token\\.rds$"
+    pattern = "-token\\.rds\\.enc$"
   )
   mtime <- file.mtime(files)
 

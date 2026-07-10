@@ -158,10 +158,10 @@ test_that("can explicitly clear cached value", {
 
 test_that("can prune old files", {
   path <- withr::local_tempdir()
-  touch(file.path(path, "a-token.rds"), Sys.time() - 86400 * 1)
-  touch(file.path(path, "b-token.rds"), Sys.time() - 86400 * 2)
+  touch(file.path(path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
   cache_disk_prune(2, path)
-  expect_equal(dir(path), "a-token.rds")
+  expect_equal(dir(path), "a-token.rds.enc")
 })
 
 # cache_path --------------------------------------------------------------
