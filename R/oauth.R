@@ -172,48 +172,32 @@ cache_mem <- function(client, key = NULL) {
   )
 }
 cache_disk <- function(client, key = NULL) {
-  token_path <- file.path(client$name, paste0(hash(key), "-token.rds.enc"))
-  modern_path <- file.path(oauth_cache_path(), token_path)
-  dir.create(dirname(modern_path), showWarnings = FALSE, recursive = TRUE)
+  app_path <- file.path(oauth_cache_path(), client$name)
+  dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
-  # Read from legacy path, but never write to it
-  legacy_path <- file.path(oauth_cache_path_legacy(), token_path)
-  has_legacy_token <-
-    !oauth_cache_is_manual() &&
-    !file.exists(modern_path) &&
-    file.exists(legacy_path)
-  read_path <- if (has_legacy_token) legacy_path else modern_path
+  path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
 
   list(
     get = function() {
-      if (file.exists(read_path)) {
-        secret_read_rds(read_path, obfuscate_key())
+      if (file.exists(path)) {
+        secret_read_rds(path, obfuscate_key())
       } else {
         NULL
       }
     },
     set = function(token) {
-      cli::cli_inform("Caching httr2 token in {.path {modern_path}}.")
-      secret_write_rds(token, modern_path, obfuscate_key())
-
-      # Migrate a legacy token by deleting the old copy
-      if (has_legacy_token) {
-        unlink(read_path)
-        has_legacy_token <<- FALSE
-        read_path <<- modern_path
-      }
+      cli::cli_inform("Caching httr2 token in {.path {path}}.")
+      secret_write_rds(token, path, obfuscate_key())
     },
-    clear = function() {
-      unlink(modern_path)
-      if (!oauth_cache_is_manual()) {
-        unlink(legacy_path)
-      }
-    }
+    clear = function() unlink(path)
   )
 }
 
 # Update req_oauth_auth_code() docs if change default from 30
-cache_disk_prune <- function(days = 30, paths = oauth_cache_paths()) {
+cache_disk_prune <- function(
+  days = 30,
+  paths = c(oauth_cache_path(), oauth_cache_path_legacy())
+) {
   files <- dir(
     paths,
     recursive = TRUE,
@@ -234,21 +218,12 @@ cache_disk_prune <- function(days = 30, paths = oauth_cache_paths()) {
 #'
 #' @export
 oauth_cache_path <- function() {
-  if (oauth_cache_is_manual()) {
-    oauth_cache_path_manual()
+  path <- Sys.getenv("HTTR2_OAUTH_CACHE")
+  if (nzchar(path)) {
+    path
   } else {
-    oauth_cache_path_modern()
+    tools::R_user_dir("httr2", which = "cache")
   }
-}
-oauth_cache_is_manual <- function() {
-  nzchar(Sys.getenv("HTTR2_OAUTH_CACHE"))
-}
-
-oauth_cache_path_manual <- function() {
-  Sys.getenv("HTTR2_OAUTH_CACHE")
-}
-oauth_cache_path_modern <- function() {
-  tools::R_user_dir("httr2", which = "cache")
 }
 # Equivalent to rappdirs::user_cache_dir("httr2"), inlined so httr2 doesn't
 # depend on rappdirs solely to find tokens cached by older versions. The
@@ -273,17 +248,6 @@ oauth_cache_path_legacy <- function() {
     file.path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), "httr2")
   }
 }
-
-# All locations that might contain cached tokens, newest first. The legacy
-# location is dropped when the user sets an explicit path, which has no legacy.
-oauth_cache_paths <- function() {
-  if (oauth_cache_is_manual()) {
-    oauth_cache_path_manual()
-  } else {
-    c(oauth_cache_path_modern(), oauth_cache_path_legacy())
-  }
-}
-
 
 #' Clear OAuth cache
 #'
