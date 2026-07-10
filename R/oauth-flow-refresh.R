@@ -36,7 +36,8 @@ req_oauth_refresh <- function(
   client,
   refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 ) {
   params <- list(
     client = client,
@@ -46,7 +47,13 @@ req_oauth_refresh <- function(
   )
   cache <- cache_mem(client, refresh_token)
 
-  req_oauth(req, "oauth_flow_refresh", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_refresh",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export

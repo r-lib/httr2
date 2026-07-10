@@ -28,7 +28,8 @@ req_oauth_client_credentials <- function(
   req,
   client,
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 ) {
   params <- list(
     client = client,
@@ -37,7 +38,13 @@ req_oauth_client_credentials <- function(
   )
 
   cache <- cache_mem(client, NULL)
-  req_oauth(req, "oauth_flow_client_credentials", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_client_credentials",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export

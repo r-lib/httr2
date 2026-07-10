@@ -34,18 +34,22 @@ library(httr2)
 ## Faker API
 
 ```{r, include = FALSE}
-# Seems to return 500s from time-to-time, so avoid any problems
-# by only evaluating other chunks if a simple request succeeds.
-faker_status_images <- request("https://fakerapi.it/api/v1") |>
-  req_url_path_append("images") |>
-  req_error(is_error = \(resp) FALSE) |>
-  req_perform() |>
-  resp_status()
-faker_status_persons <- request("https://fakerapi.it/api/v1") |>
-  req_url_path_append("persons") |>
-  req_error(is_error = \(resp) FALSE) |>
-  req_perform() |>
-  resp_status()
+# Seems to return 500s (or become entirely unreachable) from time-to-time,
+# so avoid any problems by only evaluating other chunks if a simple
+# request succeeds.
+faker_status <- function(path) {
+  tryCatch(
+    request("https://fakerapi.it/api/v1") |>
+      req_url_path_append(path) |>
+      req_error(is_error = \(resp) FALSE) |>
+      req_timeout(2) |>
+      req_perform() |>
+      resp_status(),
+    error = function(err) 500
+  )
+}
+faker_status_images <- faker_status("images")
+faker_status_persons <- faker_status("persons")
 
 faker_ok <- faker_status_images < 400 && faker_status_persons < 400
 ```

@@ -16,7 +16,8 @@ req_oauth_token_exchange(
   requested_token_type = NULL,
   actor_token = NULL,
   actor_token_type = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 )
 
 oauth_flow_token_exchange(
@@ -65,6 +66,10 @@ one of the options in \href{https://datatracker.ietf.org/doc/html/rfc8693#sectio
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
+
+\item{expiry_margin}{Number of seconds before a token's stated expiry that
+it should be treated as expired. Increase this for servers that reject
+tokens shortly before they expire. Defaults to 30 seconds.}
 }
 \value{
 \code{req_oauth_token_exchange()} returns a modified HTTP \link{request} that

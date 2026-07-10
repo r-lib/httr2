@@ -4,7 +4,7 @@
 \alias{req_oauth}
 \title{OAuth authentication}
 \usage{
-req_oauth(req, flow, flow_params, cache)
+req_oauth(req, flow, flow_params, cache, expiry_margin = 30)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
@@ -22,6 +22,10 @@ cached yet.
 \item \code{set()} saves the token to the cache.
 \item \code{clear()} removes the token from the cache
 }}
+
+\item{expiry_margin}{Number of seconds before a token's stated expiry that
+it should be treated as expired. Increase this for servers that reject
+tokens shortly before they expire. Defaults to 30 seconds.}
 }
 \value{
 An \link{oauth_token}.

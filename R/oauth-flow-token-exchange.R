@@ -65,7 +65,8 @@ req_oauth_token_exchange <- function(
   requested_token_type = NULL,
   actor_token = NULL,
   actor_token_type = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 ) {
   params <- list(
     client = client,
@@ -80,7 +81,13 @@ req_oauth_token_exchange <- function(
     token_params = token_params
   )
   cache <- cache_mem(client, NULL)
-  req_oauth(req, "oauth_flow_token_exchange", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_token_exchange",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export

@@ -101,6 +101,58 @@ test_that("can retrieve non-expired token from cache", {
   expect_equal(auth_oauth_token_get(cache, oauth_flow_refresh), token)
 })
 
+test_that("expiry margin controls when cached tokens are refreshed", {
+  client <- oauth_client("test", "http://example.org/test")
+  cache <- cache_mem(client)
+  cached <- oauth_token("cached", expires_in = 60)
+  refreshed <- oauth_token("refreshed")
+  cache$set(cached)
+
+  expect_equal(
+    auth_oauth_token_get(cache, function(...) refreshed, expiry_margin = 30),
+    cached
+  )
+  expect_equal(
+    auth_oauth_token_get(cache, function(...) refreshed, expiry_margin = 90),
+    refreshed
+  )
+  expect_equal(cache$get(), refreshed)
+})
+
+test_that("expiry margin preserves refresh token behavior", {
+  client <- oauth_client("test", "http://example.org/test")
+  cache <- cache_mem(client)
+  cache$set(
+    oauth_token("cached", refresh_token = "refresh", expires_in = 60)
+  )
+
+  local_mocked_bindings(
+    token_refresh = function(client, refresh_token, token_params = list()) {
+      oauth_token("refreshed", used_refresh_token = refresh_token)
+    }
+  )
+
+  token <- auth_oauth_token_get(
+    cache,
+    function(...) NULL,
+    flow_params = list(client = client),
+    expiry_margin = 90
+  )
+  expect_equal(token$access_token, "refreshed")
+  expect_equal(token$used_refresh_token, "refresh")
+})
+
+test_that("req_oauth validates and stores expiry margin", {
+  req <- request("https://example.com")
+  req <- req_oauth(req, "", list(), NULL, expiry_margin = 40)
+
+  expect_equal(req$policies$auth_sign$params$expiry_margin, 40)
+  expect_snapshot(
+    req_oauth(req, "", list(), NULL, expiry_margin = -1),
+    error = TRUE
+  )
+})
+
 
 # Cache -------------------------------------------------------------------
 

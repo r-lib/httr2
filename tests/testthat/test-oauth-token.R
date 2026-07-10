@@ -22,10 +22,10 @@ test_that("can compute token expiry", {
   token <- oauth_token("xyz")
   expect_equal(token_has_expired(token), FALSE)
 
-  # Respects delay
-  token <- oauth_token("xyz", expires_in = 8, .date = Sys.time() - 10)
+  token <- oauth_token("xyz", expires_in = 20, .date = Sys.time())
   expect_equal(token_has_expired(token), TRUE)
+  expect_equal(token_has_expired(token, delay = 0), FALSE)
 
-  token <- oauth_token("xyz", expires_in = 10, .date = Sys.time())
+  token <- oauth_token("xyz", expires_in = 60, .date = Sys.time())
   expect_equal(token_has_expired(token), FALSE)
 })

@@ -33,7 +33,8 @@ req_oauth_password <- function(
   scope = NULL,
   token_params = list(),
   cache_disk = FALSE,
-  cache_key = username
+  cache_key = username,
+  expiry_margin = 30
 ) {
   params <- list(
     client = client,
@@ -43,7 +44,13 @@ req_oauth_password <- function(
     token_params = token_params
   )
   cache <- cache_choose(client, cache_disk = cache_disk, cache_key = cache_key)
-  req_oauth(req, "oauth_flow_password", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_password",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export
