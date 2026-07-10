@@ -23,7 +23,7 @@ Imports:
     magrittr,
     openssl,
     R6,
-    rlang (>= 1.1.0),
+    rlang (>= 1.3.0),
     vctrs (>= 0.6.3),
     withr
 Suggests:

@@ -232,10 +232,10 @@ test_that("can explicitly clear cached value", {
 
 test_that("can prune old files", {
   path <- withr::local_tempdir()
-  touch(file.path(path, "a-token.rds"), Sys.time() - 86400 * 1)
-  touch(file.path(path, "b-token.rds"), Sys.time() - 86400 * 2)
+  touch(file.path(path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
   cache_disk_prune(2, path)
-  expect_equal(dir(path), "a-token.rds")
+  expect_equal(dir(path), "a-token.rds.enc")
 })
 
 test_that("prunes old files from both new and legacy locations", {
@@ -246,15 +246,15 @@ test_that("prunes old files from both new and legacy locations", {
     oauth_cache_path_legacy = function() legacy_path
   )
 
-  touch(file.path(new_path, "a-token.rds"), Sys.time() - 86400 * 1)
-  touch(file.path(new_path, "b-token.rds"), Sys.time() - 86400 * 2)
-  touch(file.path(legacy_path, "a-token.rds"), Sys.time() - 86400 * 1)
-  touch(file.path(legacy_path, "b-token.rds"), Sys.time() - 86400 * 2)
+  touch(file.path(new_path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(new_path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
+  touch(file.path(legacy_path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(legacy_path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
 
   cache_disk_prune(2)
 
-  expect_equal(dir(new_path), "a-token.rds")
-  expect_equal(dir(legacy_path), "a-token.rds")
+  expect_equal(dir(new_path), "a-token.rds.enc")
+  expect_equal(dir(legacy_path), "a-token.rds.enc")
 })
 
 # cache_path --------------------------------------------------------------
@@ -275,7 +275,10 @@ test_that("inlined legacy path matches rappdirs", {
   withr::defer(unlink(path, recursive = TRUE))
   writeLines("x", file.path(path, "probe"))
 
-  expect_true(file.exists(file.path(rappdirs::user_cache_dir("httr2"), "probe")))
+  expect_true(file.exists(file.path(
+    rappdirs::user_cache_dir("httr2"),
+    "probe"
+  )))
 })
 
 test_that("legacy path respects R_USER_CACHE_DIR", {

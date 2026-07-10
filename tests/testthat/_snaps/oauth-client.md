@@ -41,7 +41,7 @@
       oauth_client("x", url)
     Output
       <httr2_oauth_client>
-      * name     : "bf27508f7925b06bf28a10f3805351ab"
+      * name     : "9758a2659d8a24b1be8a873ab9e4da84"
       * id       : "x"
       * token_url: "http://example.com"
       * auth     : "oauth_client_req_auth_body"
@@ -49,7 +49,7 @@
       oauth_client("x", url, secret = "SECRET")
     Output
       <httr2_oauth_client>
-      * name     : "bf27508f7925b06bf28a10f3805351ab"
+      * name     : "9758a2659d8a24b1be8a873ab9e4da84"
       * id       : "x"
       * secret   : <REDACTED>
       * token_url: "http://example.com"
@@ -60,7 +60,7 @@
       })
     Output
       <httr2_oauth_client>
-      * name     : "bf27508f7925b06bf28a10f3805351ab"
+      * name     : "9758a2659d8a24b1be8a873ab9e4da84"
       * id       : "x"
       * token_url: "http://example.com"
       * auth     : <function>
