@@ -8,11 +8,11 @@
     Code
       invisible(cache_post_fetch(req, resp))
     Message
-      Saving response to cache "f3805db63ff822b4743f247cfdde10a3"
+      Saving response to cache "076ab9e79f298c15d4444b2eb6fffa84"
     Code
       invisible(cache_pre_fetch(req))
     Message
-      Found url in cache "f3805db63ff822b4743f247cfdde10a3"
+      Found url in cache "076ab9e79f298c15d4444b2eb6fffa84"
       Cached value is fresh; using response from cache
 
 ---
@@ -22,7 +22,7 @@
       invisible(cache_pre_fetch(req))
     Message
       Pruning cache
-      Found url in cache "f3805db63ff822b4743f247cfdde10a3"
+      Found url in cache "076ab9e79f298c15d4444b2eb6fffa84"
       Cached value is stale; checking for updates
     Code
       invisible(cache_post_fetch(req, response(304)))
