@@ -27,7 +27,8 @@ req_oauth_refresh(
   client,
   refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 )
 
 oauth_flow_refresh(
@@ -64,6 +65,12 @@ oauth_flow_refresh(
 - token_params:
 
   List containing additional parameters passed to the `token_url`.
+
+- expiry_margin:
+
+  Number of seconds before a token's stated expiry that it should be
+  treated as expired. Increase this for servers that reject tokens
+  shortly before they expire. Defaults to 30 seconds.
 
 ## Value
 

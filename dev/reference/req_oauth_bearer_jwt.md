@@ -19,7 +19,8 @@ req_oauth_bearer_jwt(
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 )
 
 oauth_flow_bearer_jwt(
@@ -75,6 +76,12 @@ oauth_flow_bearer_jwt(
 - token_params:
 
   List containing additional parameters passed to the `token_url`.
+
+- expiry_margin:
+
+  Number of seconds before a token's stated expiry that it should be
+  treated as expired. Increase this for servers that reject tokens
+  shortly before they expire. Defaults to 30 seconds.
 
 ## Value
 

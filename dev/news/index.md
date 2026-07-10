@@ -15,6 +15,11 @@
   match the new hash, so they’ll be silently ignored (triggering a
   normal cache miss/re-authentication) and cleaned up over time by the
   usual pruning rules; you can also delete them manually.
+- `req_oauth_*()` gains an `expiry_margin` argument to control how early
+  cached OAuth tokens are treated as expired; the default margin
+  increases from 5 to 30 seconds
+  ([@zacdav-db](https://github.com/zacdav-db),
+  [\#860](https://github.com/r-lib/httr2/issues/860)).
 
 ## httr2 1.2.3
 

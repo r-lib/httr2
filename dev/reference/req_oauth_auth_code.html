@@ -95,7 +95,8 @@ behind this flow in
 <span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  redirect_uri <span class="op">=</span> <span class="fu"><a href="oauth_redirect_uri.html">oauth_redirect_uri</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cache_disk <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  cache_key <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  cache_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  expiry_margin <span class="op">=</span> <span class="fl">30</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">oauth_flow_auth_code</span><span class="op">(</span></span>
@@ -180,6 +181,12 @@ storing access credentials on disk.</p>
 <dt id="arg-cache-key">cache_key<a class="anchor" aria-label="anchor" href="#arg-cache-key"></a></dt>
 <dd><p>If you want to cache multiple tokens per app, use this
 key to disambiguate them.</p></dd>
+
+
+<dt id="arg-expiry-margin">expiry_margin<a class="anchor" aria-label="anchor" href="#arg-expiry-margin"></a></dt>
+<dd><p>Number of seconds before a token's stated expiry that
+it should be treated as expired. Increase this for servers that reject
+tokens shortly before they expire. Defaults to 30 seconds.</p></dd>
 
 </dl></div>
     <div class="section level2">

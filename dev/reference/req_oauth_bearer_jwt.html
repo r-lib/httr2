@@ -74,7 +74,8 @@ automated environments.</p>
 <span>  signature <span class="op">=</span> <span class="st">"jwt_encode_sig"</span>,</span>
 <span>  signature_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  scope <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  token_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  expiry_margin <span class="op">=</span> <span class="fl">30</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">oauth_flow_bearer_jwt</span><span class="op">(</span></span>
@@ -127,6 +128,12 @@ supplies its own <code>claim</code> in <code>auth_params</code>. The client asse
 <dt id="arg-token-params">token_params<a class="anchor" aria-label="anchor" href="#arg-token-params"></a></dt>
 <dd><p>List containing additional parameters passed to the
 <code>token_url</code>.</p></dd>
+
+
+<dt id="arg-expiry-margin">expiry_margin<a class="anchor" aria-label="anchor" href="#arg-expiry-margin"></a></dt>
+<dd><p>Number of seconds before a token's stated expiry that
+it should be treated as expired. Increase this for servers that reject
+tokens shortly before they expire. Defaults to 30 seconds.</p></dd>
 
 </dl></div>
     <div class="section level2">

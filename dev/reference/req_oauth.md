@@ -8,7 +8,7 @@ implementing your own OAuth flow.
 ## Usage
 
 ``` r
-req_oauth(req, flow, flow_params, cache)
+req_oauth(req, flow, flow_params, cache, expiry_margin = 30)
 ```
 
 ## Arguments
@@ -38,6 +38,12 @@ req_oauth(req, flow, flow_params, cache)
   - `set()` saves the token to the cache.
 
   - `clear()` removes the token from the cache
+
+- expiry_margin:
+
+  Number of seconds before a token's stated expiry that it should be
+  treated as expired. Increase this for servers that reject tokens
+  shortly before they expire. Defaults to 30 seconds.
 
 ## Value
 
