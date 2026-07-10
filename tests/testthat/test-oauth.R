@@ -265,20 +265,24 @@ test_that("can override path with env var", {
 })
 
 test_that("inlined legacy path matches rappdirs", {
-  # Compare by actually creating a file rather than comparing path strings:
-  # on Windows, rappdirs uses the CSIDL API which can return an 8.3 short
-  # form of the user's home directory, while our env-var based approach
-  # returns the long form. Both point to the same directory on disk, but
-  # aren't string-equal, so we verify equivalence via the filesystem.
   path <- oauth_cache_path_legacy()
-  dir.create(path, recursive = TRUE, showWarnings = FALSE)
-  withr::defer(unlink(path, recursive = TRUE))
-  writeLines("x", file.path(path, "probe"))
+  rappdirs_path <- rappdirs::user_cache_dir("httr2")
 
-  expect_true(file.exists(file.path(
-    rappdirs::user_cache_dir("httr2"),
-    "probe"
-  )))
+  if (.Platform$OS.type == "windows") {
+    # rappdirs uses the CSIDL API, which can return an 8.3 short form of
+    # the user's home directory, while our env-var based path uses the
+    # long form. Both refer to the same directory, so convert to the
+    # (existing) directory's canonical short form before comparing.
+    dir.create(path, recursive = TRUE, showWarnings = FALSE)
+    withr::defer(unlink(path, recursive = TRUE))
+    path <- utils::shortPathName(path)
+    rappdirs_path <- utils::shortPathName(rappdirs_path)
+  }
+
+  expect_equal(
+    normalizePath(path, mustWork = FALSE),
+    normalizePath(rappdirs_path, mustWork = FALSE)
+  )
 })
 
 test_that("legacy path respects R_USER_CACHE_DIR", {
