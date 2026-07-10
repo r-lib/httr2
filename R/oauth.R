@@ -197,20 +197,15 @@ cache_disk <- function(client, key = NULL) {
   dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
 
   path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
-
   list(
     get = function() {
-      if (file.exists(path)) {
-        secret_read_rds(path, obfuscate_key())
-      } else {
-        NULL
-      }
+      if (file.exists(path)) secret_read_rds(path, obfuscate_key()) else NULL
     },
     set = function(token) {
       cli::cli_inform("Caching httr2 token in {.path {path}}.")
       secret_write_rds(token, path, obfuscate_key())
     },
-    clear = function() unlink(path)
+    clear = function() if (file.exists(path)) file.remove(path)
   )
 }
 
