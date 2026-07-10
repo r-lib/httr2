@@ -2,6 +2,20 @@
 
 ## httr2 (development version)
 
+- Fixed OAuth token cache pruning so that it actually matches the
+  encrypted `.rds.enc` files written to disk; previously the pruning
+  pattern only matched an unencrypted `.rds` file that was never
+  created, so cached tokens were never automatically deleted regardless
+  of age.
+- httr2 now requires rlang \>= 1.3.0, which changes the hash used to
+  name files cached by
+  [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md)
+  and on-disk OAuth token caches (e.g. from
+  `req_oauth_auth_code(cache_disk = TRUE)`). Existing cached files won’t
+  match the new hash, so they’ll be silently ignored (triggering a
+  normal cache miss/re-authentication) and cleaned up over time by the
+  usual pruning rules; you can also delete them manually.
+
 ## httr2 1.2.3
 
 CRAN release: 2026-06-23
