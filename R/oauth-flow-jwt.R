@@ -46,7 +46,8 @@ req_oauth_bearer_jwt <- function(
   signature = "jwt_encode_sig",
   signature_params = list(),
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 ) {
   params <- list(
     client = client,
@@ -58,7 +59,13 @@ req_oauth_bearer_jwt <- function(
   )
 
   cache <- cache_mem(client, claim)
-  req_oauth(req, "oauth_flow_bearer_jwt", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_bearer_jwt",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export

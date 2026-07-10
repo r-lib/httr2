@@ -83,6 +83,9 @@
 #'   Learn more in <https://httr2.r-lib.org/articles/oauth.html>.
 #' @param cache_key If you want to cache multiple tokens per app, use this
 #'   key to disambiguate them.
+#' @param expiry_margin Number of seconds before a token's stated expiry that
+#'   it should be treated as expired. Increase this for servers that reject
+#'   tokens shortly before they expire. Defaults to 30 seconds.
 #' @returns `req_oauth_auth_code()` returns a modified HTTP [request] that will
 #'   use OAuth; `oauth_flow_auth_code()` returns an [oauth_token].
 #' @examples
@@ -106,7 +109,8 @@ req_oauth_auth_code <- function(
   token_params = list(),
   redirect_uri = oauth_redirect_uri(),
   cache_disk = FALSE,
-  cache_key = NULL
+  cache_key = NULL,
+  expiry_margin = 30
 ) {
   auth_url <- oauth_flow_url(auth_url, client, "auth_url")
   redirect <- normalize_redirect_uri(redirect_uri = redirect_uri)
@@ -122,7 +126,13 @@ req_oauth_auth_code <- function(
   )
 
   cache <- cache_choose(client, cache_disk, cache_key)
-  req_oauth(req, "oauth_flow_auth_code", params, cache = cache)
+  req_oauth(
+    req,
+    "oauth_flow_auth_code",
+    params,
+    cache = cache,
+    expiry_margin = expiry_margin
+  )
 }
 
 #' @export

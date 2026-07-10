@@ -1,3 +1,11 @@
+# req_oauth validates and stores expiry margin
+
+    Code
+      req_oauth(req, "", list(), NULL, expiry_margin = -1)
+    Condition
+      Error in `req_oauth()`:
+      ! `expiry_margin` must be a whole number larger than or equal to 0, not the number -1.
+
 # can store on disk
 
     Code

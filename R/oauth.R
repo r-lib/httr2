@@ -15,36 +15,57 @@
 #' @param flow An `oauth_flow_` function used to generate the access token.
 #' @param flow_params Parameters for the flow. This should be a named list
 #'   whose names match the argument names of `flow`.
+#' @param expiry_margin Number of seconds before a token's stated expiry that
+#'   it should be treated as expired. Increase this for servers that reject
+#'   tokens shortly before they expire. Defaults to 30 seconds.
 #' @returns An [oauth_token].
 #' @keywords internal
 #' @export
-req_oauth <- function(req, flow, flow_params, cache) {
+req_oauth <- function(req, flow, flow_params, cache, expiry_margin = 30) {
+  check_number_whole(expiry_margin, min = 0)
+
   # Want req object to contain meaningful objects, not just a closure
   req <- req_auth_sign(
     req,
     fun = auth_oauth_sign,
-    params = list(flow = flow, flow_params = flow_params),
+    params = list(
+      flow = flow,
+      flow_params = flow_params,
+      expiry_margin = expiry_margin
+    ),
     cache = cache
   )
   req <- req_policies(req, auth_oauth = TRUE)
   req
 }
 
-auth_oauth_sign <- function(req, cache, flow, flow_params) {
+auth_oauth_sign <- function(
+  req,
+  cache,
+  flow,
+  flow_params,
+  expiry_margin = 30
+) {
   token <- auth_oauth_token_get(
     cache = cache,
     flow = flow,
-    flow_params = flow_params
+    flow_params = flow_params,
+    expiry_margin = expiry_margin
   )
   req_auth_bearer_token(req, token$access_token)
 }
 
-auth_oauth_token_get <- function(cache, flow, flow_params = list()) {
+auth_oauth_token_get <- function(
+  cache,
+  flow,
+  flow_params = list(),
+  expiry_margin = 30
+) {
   token <- cache$get()
   if (is.null(token)) {
     token <- exec(flow, !!!flow_params)
     cache$set(token)
-  } else if (token_has_expired(token)) {
+  } else if (token_has_expired(token, delay = expiry_margin)) {
     cache$clear()
     if (is.null(token$refresh_token)) {
       token <- exec(flow, !!!flow_params)

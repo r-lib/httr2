@@ -10,7 +10,8 @@ req_oauth_refresh(
   client,
   refresh_token = Sys.getenv("HTTR2_REFRESH_TOKEN"),
   scope = NULL,
-  token_params = list()
+  token_params = list(),
+  expiry_margin = 30
 )
 
 oauth_flow_refresh(
@@ -34,6 +35,10 @@ is to look in \code{HTTR2_REFRESH_TOKEN}.}
 
 \item{token_params}{List containing additional parameters passed to the
 \code{token_url}.}
+
+\item{expiry_margin}{Number of seconds before a token's stated expiry that
+it should be treated as expired. Increase this for servers that reject
+tokens shortly before they expire. Defaults to 30 seconds.}
 }
 \value{
 \code{req_oauth_refresh()} returns a modified HTTP \link{request} that will
