@@ -210,9 +210,12 @@ cache_disk <- function(client, key = NULL) {
 }
 
 # Update req_oauth_auth_code() docs if change default from 30
-cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
+cache_disk_prune <- function(
+  days = 30,
+  paths = c(oauth_cache_path(), oauth_cache_path_legacy())
+) {
   files <- dir(
-    path,
+    paths,
     recursive = TRUE,
     full.names = TRUE,
     pattern = "-token\\.rds\\.enc$"
@@ -232,13 +235,35 @@ cache_disk_prune <- function(days = 30, path = oauth_cache_path()) {
 #' @export
 oauth_cache_path <- function() {
   path <- Sys.getenv("HTTR2_OAUTH_CACHE")
-  if (path != "") {
-    return(path)
+  if (nzchar(path)) {
+    path
+  } else {
+    tools::R_user_dir("httr2", which = "cache")
+  }
+}
+# Equivalent to rappdirs::user_cache_dir("httr2"), inlined so httr2 doesn't
+# depend on rappdirs solely to find tokens cached by older versions. The
+# appname is nested twice and gains a "Cache" subdir on Windows because that's
+# what rappdirs did with its default `appauthor` and `opinion` arguments.
+oauth_cache_path_legacy <- function() {
+  base <- Sys.getenv("R_USER_CACHE_DIR")
+  if (nzchar(base)) {
+    if (.Platform$OS.type == "windows") {
+      return(file.path(base, "httr2", "httr2", "Cache"))
+    } else {
+      return(file.path(base, "httr2"))
+    }
   }
 
-  rappdirs::user_cache_dir("httr2")
+  if (.Platform$OS.type == "windows") {
+    base <- Sys.getenv("LOCALAPPDATA", Sys.getenv("APPDATA"))
+    file.path(base, "httr2", "httr2", "Cache")
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
+    "~/Library/Caches/httr2"
+  } else {
+    file.path(Sys.getenv("XDG_CACHE_HOME", "~/.cache"), "httr2")
+  }
 }
-
 
 #' Clear OAuth cache
 #'

@@ -216,9 +216,57 @@ test_that("can prune old files", {
   expect_equal(dir(path), "a-token.rds.enc")
 })
 
+test_that("prunes old files from both new and legacy locations", {
+  new_path <- withr::local_tempdir()
+  legacy_path <- withr::local_tempdir()
+  local_mocked_bindings(
+    oauth_cache_path = function() new_path,
+    oauth_cache_path_legacy = function() legacy_path
+  )
+
+  touch(file.path(new_path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(new_path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
+  touch(file.path(legacy_path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(legacy_path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
+
+  cache_disk_prune(2)
+
+  expect_equal(dir(new_path), "a-token.rds.enc")
+  expect_equal(dir(legacy_path), "a-token.rds.enc")
+})
+
 # cache_path --------------------------------------------------------------
 
 test_that("can override path with env var", {
   withr::local_envvar("HTTR2_OAUTH_CACHE" = "/tmp")
   expect_equal(oauth_cache_path(), "/tmp")
+})
+
+test_that("inlined legacy path matches rappdirs", {
+  path <- oauth_cache_path_legacy()
+  rappdirs_path <- rappdirs::user_cache_dir("httr2")
+
+  if (.Platform$OS.type == "windows") {
+    # rappdirs uses the CSIDL API, which can return an 8.3 short form of
+    # the user's home directory, while our env-var based path uses the
+    # long form. Both refer to the same directory, so convert to the
+    # (existing) directory's canonical short form before comparing.
+    dir.create(path, recursive = TRUE, showWarnings = FALSE)
+    withr::defer(unlink(path, recursive = TRUE))
+    path <- utils::shortPathName(path)
+    rappdirs_path <- utils::shortPathName(rappdirs_path)
+  }
+
+  expect_equal(
+    normalizePath(path, mustWork = FALSE),
+    normalizePath(rappdirs_path, mustWork = FALSE)
+  )
+})
+
+test_that("legacy path respects R_USER_CACHE_DIR", {
+  path <- withr::local_tempdir()
+  withr::local_envvar("R_USER_CACHE_DIR" = path)
+
+  expected <- rappdirs::user_cache_dir("httr2")
+  expect_equal(oauth_cache_path_legacy(), expected)
 })
