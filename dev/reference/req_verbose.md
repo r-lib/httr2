@@ -85,24 +85,24 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 10 Jul 2026 20:07:32 GMT
+#> <- last-modified: Fri, 10 Jul 2026 22:31:19 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6a515104-4ba0"
-#> <- expires: Fri, 10 Jul 2026 20:22:12 GMT
+#> <- etag: W/"6a5172b7-4ba0"
+#> <- expires: Sat, 11 Jul 2026 13:18:22 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 9142:35DC8B:AE3FC:B57BD:6A51521C
+#> <- x-github-request-id: 3F5C:29244:DCA2C0:F00E3C:6A524045
 #> <- accept-ranges: bytes
-#> <- date: Fri, 10 Jul 2026 22:30:25 GMT
+#> <- date: Sat, 11 Jul 2026 13:32:27 GMT
 #> <- via: 1.1 varnish
-#> <- age: 17
-#> <- x-served-by: cache-sjc1000132-SJC
+#> <- age: 16
+#> <- x-served-by: cache-iad-kiad7000125-IAD
 #> <- x-cache: HIT
 #> <- x-cache-hits: 1
-#> <- x-timer: S1783722625.383493,VS0,VE2
+#> <- x-timer: S1783776747.008869,VS0,VE10
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 4a2b520142846598b36302870f56a0f1a0f2e9ee
+#> <- x-fastly-request-id: fa0a9d12fcf34c28aebe3558c9f897b10cd42ce6
 #> <- content-length: 4831
 #> <- 
 
@@ -118,24 +118,24 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 10 Jul 2026 20:07:32 GMT
+#> <- last-modified: Fri, 10 Jul 2026 22:31:19 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6a515104-4ba0"
-#> <- expires: Fri, 10 Jul 2026 20:22:12 GMT
+#> <- etag: W/"6a5172b7-4ba0"
+#> <- expires: Sat, 11 Jul 2026 13:18:22 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 9142:35DC8B:AE3FC:B57BD:6A51521C
+#> <- x-github-request-id: 3F5C:29244:DCA2C0:F00E3C:6A524045
 #> <- accept-ranges: bytes
-#> <- date: Fri, 10 Jul 2026 22:30:25 GMT
+#> <- date: Sat, 11 Jul 2026 13:32:27 GMT
 #> <- via: 1.1 varnish
-#> <- age: 17
-#> <- x-served-by: cache-sjc1000132-SJC
+#> <- age: 16
+#> <- x-served-by: cache-iad-kiad7000125-IAD
 #> <- x-cache: HIT
 #> <- x-cache-hits: 2
-#> <- x-timer: S1783722625.397463,VS0,VE0
+#> <- x-timer: S1783776747.031278,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: ed2a63dbd54cedde0964e4e33eca93ada6f80906
+#> <- x-fastly-request-id: 77e6f1b0b86c39073eb78f24b0449b5ebcd62df7
 #> <- content-length: 4831
 #> <- 
 ```
