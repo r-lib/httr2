@@ -15,6 +15,15 @@
   match the new hash, so they’ll be silently ignored (triggering a
   normal cache miss/re-authentication) and cleaned up over time by the
   usual pruning rules; you can also delete them manually.
+- [`oauth_cache_path()`](https://httr2.r-lib.org/dev/reference/oauth_cache_path.md)
+  now defaults to a standard R cache directory (via
+  [`tools::R_user_dir()`](https://rdrr.io/r/tools/userdir.html)).
+  Because this release also changes the hash used for cache filenames,
+  existing OAuth tokens will generally not be reused and you may need to
+  authenticate once after upgrading. New tokens are written to the new
+  location, and obsolete tokens in both the old and new locations are
+  removed by the usual pruning rules. httr2 no longer requires the
+  rappdirs package ([\#800](https://github.com/r-lib/httr2/issues/800)).
 - `req_oauth_*()` gains an `expiry_margin` argument to control how early
   cached OAuth tokens are treated as expired; the default margin
   increases from 5 to 30 seconds
