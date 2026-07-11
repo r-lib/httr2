@@ -306,7 +306,7 @@ req_body_apply_data <- function(req, data) {
   if (is_string(data)) {
     data <- charToRaw(enc2utf8(data))
   }
-  req_options(req, post = TRUE, postfieldsize = length(data), postfields = data)
+  req_options(req, post = TRUE, postfieldsize_large = length(data), postfields = data)
 }
 req_body_apply_stream <- function(req, data) {
   size <- file.info(data)$size
