@@ -3,6 +3,7 @@
 * Fixed OAuth token cache pruning so that it actually matches the encrypted `.rds.enc` files written to disk; previously the pruning pattern only matched an unencrypted `.rds` file that was never created, so cached tokens were never automatically deleted regardless of age.
 * httr2 now requires rlang >= 1.3.0, which changes the hash used to name files cached by `req_cache()` and on-disk OAuth token caches (e.g. from `req_oauth_auth_code(cache_disk = TRUE)`). Existing cached files won't match the new hash, so they'll be silently ignored (triggering a normal cache miss/re-authentication) and cleaned up over time by the usual pruning rules; you can also delete them manually.
 * `oauth_cache_path()` now defaults to a standard R cache directory (via `tools::R_user_dir()`). Because this release also changes the hash used for cache filenames, existing OAuth tokens will generally not be reused and you may need to authenticate once after upgrading. New tokens are written to the new location, and obsolete tokens in both the old and new locations are removed by the usual pruning rules. httr2 no longer requires the rappdirs package (#800).
+* New `oauth_cache_prune()` lets you manually delete cached OAuth tokens older than a given number of days, exposing the pruning that httr2 already performs automatically on load.
 * `req_oauth_*()` gains an `expiry_margin` argument to control how early cached OAuth tokens are treated as expired; the default margin increases from 5 to 30 seconds (@zacdav-db, #860).
 
 # httr2 1.2.3

@@ -209,9 +209,27 @@ cache_disk <- function(client, key = NULL) {
   )
 }
 
+#' Prune the OAuth token cache
+#'
+#' Deletes cached OAuth tokens (from both the current and legacy cache
+#' directories, see [oauth_cache_path()]) that are older than
+#' `max_age_days`. This is called automatically when httr2 is loaded, so
+#' you should only need to call it yourself if you want to prune the cache
+#' immediately.
+#'
+#' @param max_age_days Delete cached tokens that haven't been modified in
+#'   this many days.
+#' @export
+oauth_cache_prune <- function(max_age_days = 30) {
+  check_number_whole(max_age_days, min = 0)
+
+  cache_disk_prune(max_age_days)
+  invisible()
+}
+
 # Update req_oauth_auth_code() docs if change default from 30
 cache_disk_prune <- function(
-  days = 30,
+  max_age_days = 30,
   paths = c(oauth_cache_path(), oauth_cache_path_legacy())
 ) {
   files <- dir(
@@ -222,7 +240,7 @@ cache_disk_prune <- function(
   )
   mtime <- file.mtime(files)
 
-  old <- mtime < (Sys.time() - days * 86400)
+  old <- mtime < (Sys.time() - max_age_days * 86400)
   unlink(files[old])
 }
 
