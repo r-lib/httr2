@@ -78,7 +78,7 @@ PooledRequest <- R6Class(
       )
       handle_preflight(private$req_prep, private$handle)
 
-      curl::multi_add(
+      multi_add(
         handle = private$handle,
         pool = pool,
         data = private$path,
@@ -155,3 +155,15 @@ PooledRequest <- R6Class(
     }
   )
 )
+
+# Wrapper around curl::multi_add() so that the pooled (async) request pathway
+# has a mockable seam, mirroring curl_fetch() for the synchronous pathway.
+multi_add <- function(handle, pool, data, done, fail) {
+  curl::multi_add(
+    handle = handle,
+    pool = pool,
+    data = data,
+    done = done,
+    fail = fail
+  )
+}
