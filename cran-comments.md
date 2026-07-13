@@ -4,4 +4,7 @@
 
 ## revdepcheck results
 
-I did not check revdeps; this should not affect existing code.
+We checked 468 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 2 packages (arcgisplaces, libipldr)
