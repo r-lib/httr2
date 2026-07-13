@@ -22,6 +22,7 @@
 <url><loc>https://httr2.r-lib.org/dev/reference/new_response.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_cache_clear.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_cache_path.html</loc></url>
+<url><loc>https://httr2.r-lib.org/dev/reference/oauth_cache_prune.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_client.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_client_req_auth.html</loc></url>
 <url><loc>https://httr2.r-lib.org/dev/reference/oauth_flow_auth_code_url.html</loc></url>

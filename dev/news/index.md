@@ -24,6 +24,11 @@
   location, and obsolete tokens in both the old and new locations are
   removed by the usual pruning rules. httr2 no longer requires the
   rappdirs package ([\#800](https://github.com/r-lib/httr2/issues/800)).
+- New
+  [`oauth_cache_prune()`](https://httr2.r-lib.org/dev/reference/oauth_cache_prune.md)
+  lets you manually delete cached OAuth tokens older than a given number
+  of days, exposing the pruning that httr2 already performs
+  automatically on load.
 - `req_oauth_*()` gains an `expiry_margin` argument to control how early
   cached OAuth tokens are treated as expired; the default margin
   increases from 5 to 30 seconds
