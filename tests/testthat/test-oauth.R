@@ -235,6 +235,26 @@ test_that("prunes old files from both new and legacy locations", {
   expect_equal(dir(legacy_path), "a-token.rds.enc")
 })
 
+test_that("oauth_cache_prune() prunes the default cache locations", {
+  new_path <- withr::local_tempdir()
+  legacy_path <- withr::local_tempdir()
+  local_mocked_bindings(
+    oauth_cache_path = function() new_path,
+    oauth_cache_path_legacy = function() legacy_path
+  )
+
+  touch(file.path(new_path, "a-token.rds.enc"), Sys.time() - 86400 * 1)
+  touch(file.path(new_path, "b-token.rds.enc"), Sys.time() - 86400 * 2)
+
+  oauth_cache_prune(2)
+
+  expect_equal(dir(new_path), "a-token.rds.enc")
+})
+
+test_that("oauth_cache_prune() validates its input", {
+  expect_snapshot(oauth_cache_prune("x"), error = TRUE)
+})
+
 # cache_path --------------------------------------------------------------
 
 test_that("can override path with env var", {
