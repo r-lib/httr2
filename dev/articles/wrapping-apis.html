@@ -325,7 +325,7 @@ secrets using symmetric cryptography:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">key</span></span>
-<span><span class="co">#&gt; [1] "3uTo01ZF3ZNoqo47Ar0aHw"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Io2qh7_SNo3V5JhpD7-smg"</span></span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically
 secure random number generator provided by OpenSSL; it is not affected
 by R’s RNG settings, and there’s no way to make it
@@ -338,7 +338,7 @@ package:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "ZzF5UpkWMoCtD2ehGbaSvofMy72FPIhq8evbCZzyDb1i--Jaz_0dlwHEo6OlufwxdQ"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "TtaQg1_0rIhXFiqpLSW1K6960_hGupPXQ_9UltFG2jXUGZMwQkqqK4lFAepRLPiDsQ"</span></span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the secret using
@@ -371,7 +371,7 @@ natural usage.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "GZmAMFS4Z0L7Iw4JnYYgJ8CqTEyTFi5WvubrkFW_OT2vcY0YSM2Ht8NJw_9ck_mLDg"</span></span>
+<span><span class="co">#&gt; [1] "JqccIIMIq1VP5TblBaMfSjh4jdbvf3hREnxiJUSTjQHN2TS_tKDcdPBCUH-MuVD-Mg"</span></span>
 <span><span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "secret I need to work with an API"</span></span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions
