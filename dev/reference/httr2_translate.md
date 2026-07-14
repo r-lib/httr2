@@ -41,7 +41,7 @@ request("https://httpbin.org/get") |>
   httr2_translate()
 #> curl https://httpbin.org/get \
 #>   --location \
-#>   --user-agent 'httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0'
+#>   --user-agent 'httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0'
 
 # POST with JSON body
 request("https://httpbin.org/post") |>
@@ -50,7 +50,7 @@ request("https://httpbin.org/post") |>
 #> curl https://httpbin.org/post \
 #>   --header 'Content-Type: application/json' \
 #>   --location \
-#>   --user-agent 'httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0' \
+#>   --user-agent 'httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0' \
 #>   --data '{"name":"value"}'
 
 # Secrets are redacted by default, but can be revealed
@@ -60,5 +60,5 @@ request("https://example.com") |>
 #> curl https://example.com \
 #>   --header 'Authorization: secret' \
 #>   --location \
-#>   --user-agent 'httr2/1.2.3.9000 r-curl/7.1.0 libcurl/8.5.0'
+#>   --user-agent 'httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0'
 ```

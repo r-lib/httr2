@@ -2,6 +2,10 @@
 
 ## httr2 (development version)
 
+## httr2 1.3.0
+
+CRAN release: 2026-07-13
+
 - Fixed OAuth token cache pruning so that it actually matches the
   encrypted `.rds.enc` files written to disk; previously the pruning
   pattern only matched an unencrypted `.rds` file that was never
