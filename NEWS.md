@@ -1,3 +1,5 @@
+# httr2 (development version)
+
 # httr2 1.3.0
 
 * Fixed OAuth token cache pruning so that it actually matches the encrypted `.rds.enc` files written to disk; previously the pruning pattern only matched an unencrypted `.rds` file that was never created, so cached tokens were never automatically deleted regardless of age.
