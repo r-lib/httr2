@@ -92,10 +92,10 @@ req <- request(url) |> req_cache(tempdir(), debug = TRUE)
 # First request downloads the data
 resp <- req |> req_perform()
 #> Pruning cache
-#> Saving response to cache "d5d1ddd7f99f55dbc920c63f942804c0"
+#> Saving response to cache "90a81b1bad3886370a74c225197d1319"
 
 # Second request retrieves it from the cache
 resp <- req |> req_perform()
-#> Found url in cache "d5d1ddd7f99f55dbc920c63f942804c0"
+#> Found url in cache "90a81b1bad3886370a74c225197d1319"
 #> Cached value is fresh; using response from cache
 ```

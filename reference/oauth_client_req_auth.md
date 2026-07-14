@@ -97,7 +97,7 @@ req_dry_run(oauth_client_req_auth(req, client1))
 #> content-length: 35
 #> content-type: application/x-www-form-urlencoded
 #> host: example.com
-#> user-agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.3.0 r-curl/7.1.0 libcurl/8.5.0
 #> 
 #> client_id=12345&client_secret=56789
 
@@ -115,7 +115,7 @@ req_dry_run(oauth_client_req_auth(req, client2))
 #> accept-encoding: deflate, gzip, br, zstd
 #> authorization: <REDACTED>
 #> host: example.com
-#> user-agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.3.0 r-curl/7.1.0 libcurl/8.5.0
 #> 
 
 client3 <- oauth_client(
@@ -134,7 +134,7 @@ req_dry_run(oauth_client_req_auth(req, client3))
 #> content-length: 623
 #> content-type: application/x-www-form-urlencoded
 #> host: example.com
-#> user-agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.3.0 r-curl/7.1.0 libcurl/8.5.0
 #> 
-#> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3ODIyMTc5NTcsIm5iZiI6MTc4MjIxNzY1NywiaWF0IjoxNzgyMjE3NjU3LCJqdGkiOiJLQ1NvdURLM2tuZ2xhY2xGMGp4dWJGTG54U0hZVjNoc2NUaFk3Qi1MLWhJIn0.dYqPcdgSurSBvGH9B-gRN09oDxH1VahdNHyqrjnB9mk3WfgiUJ_-0GiwRB-NkVbEUHJuiNjTyOLMGVh54UYg_PTGnpb4s9L6D-7NAmYJQIA11zqRO7r-6z-AEDWKsD4xI1PPsM2EcGCLV-MzLUpptngwjkTpyATftHKdPUImQF_W_INJhOmeGyM0LXVEReqUqbJt5LroC67h8569Suv2DESZ8VJz2GHi_z04B2BEFDkfoWa1yM40JFudRSU-pwmFU5zHHMBJgx2E_pjY4UnijEVJaGiKeBooSLsxSoGFxEH3NW5N68zQgMcF2wAo_OatA-7bhU4kNXCzdG3IQ2t1HQ&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer
+#> client_assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE3ODQwMzU4MzEsIm5iZiI6MTc4NDAzNTUzMSwiaWF0IjoxNzg0MDM1NTMxLCJqdGkiOiJ6dDNwRmFva3RFczl1UkdZRW5EbmFySnhJM0xLNnVCWXdtSldrN0NWcTZBIn0.vwxHeROKJrhhUn-28IHhFLFV91gsCy7W3cqO9RSqLPpARoowOk9iniMSp0twyNf6zgshzy-mwOgDXzUTHtf4Kwp2vayv9I6ZILRIxUxB2chG4fmbymVmLJVE6jBduEYxLXdSIcJSwzjcbg58zKt90NEjvRJz8paeBrNF4BFJncYv2dWCRioafYl9OrOSJn_rP1w4GK_lkkw3YHwzZHmkZCGpwAZFakB0cWVigMHfknDttbSGHs_MC8B8T6pEQFp2cAbpe2imYBtSkZmdm59LRza0gGZ20txlRFnMW5XkbHEF1Znv-V-geGmVxOkpK2TsRqr_LqHAEqRvcawjYxFStA&client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer
 ```

@@ -59,38 +59,38 @@ fun <- function() {
 with_verbosity(fun())
 #> -> GET / HTTP/2
 #> -> Host: httr2.r-lib.org
-#> -> User-Agent: httr2/1.2.3 r-curl/7.1.0 libcurl/8.5.0
+#> -> User-Agent: httr2/1.3.0 r-curl/7.1.0 libcurl/8.5.0
 #> -> Accept: */*
 #> -> Accept-Encoding: deflate, gzip, br, zstd
 #> -> 
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Mon, 22 Jun 2026 22:14:26 GMT
+#> <- last-modified: Mon, 13 Jul 2026 19:57:01 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6a39b3c2-4b79"
-#> <- expires: Tue, 23 Jun 2026 10:12:12 GMT
+#> <- etag: W/"6a55430d-4ba0"
+#> <- expires: Tue, 14 Jul 2026 08:41:24 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: E5FC:2FEF0E:3FA85A:41E0F1:6A3A59A3
+#> <- x-github-request-id: 130C:2308F9:2CFC12:2EC791:6A55F3DC
 #> <- accept-ranges: bytes
-#> <- date: Tue, 23 Jun 2026 12:27:58 GMT
+#> <- date: Tue, 14 Jul 2026 13:25:54 GMT
 #> <- via: 1.1 varnish
-#> <- age: 22
-#> <- x-served-by: cache-pao-kpao1770072-PAO
+#> <- age: 25
+#> <- x-served-by: cache-bur-kbur8200051-BUR
 #> <- x-cache: HIT
 #> <- x-cache-hits: 5
-#> <- x-timer: S1782217679.733100,VS0,VE0
+#> <- x-timer: S1784035554.431034,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: bf8f43bf9ec1478817d17550e916983f622de838
-#> <- content-length: 4833
+#> <- x-fastly-request-id: 7b26e046ecc3e3958463e2b30388c0f17c6b7000
+#> <- content-length: 4831
 #> <- 
 #> <httr2_response>
 #> GET https://httr2.r-lib.org/
 #> Status: 200 OK
 #> Content-Type: text/html
-#> Body: In memory (19321 bytes)
+#> Body: In memory (19360 bytes)
 
 fun <- function() {
   local_verbosity(2)

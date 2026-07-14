@@ -12,7 +12,13 @@ Learn more about the overall OAuth authentication flow in
 ## Usage
 
 ``` r
-req_oauth_client_credentials(req, client, scope = NULL, token_params = list())
+req_oauth_client_credentials(
+  req,
+  client,
+  scope = NULL,
+  token_params = list(),
+  expiry_margin = 30
+)
 
 oauth_flow_client_credentials(client, scope = NULL, token_params = list())
 ```
@@ -36,6 +42,12 @@ oauth_flow_client_credentials(client, scope = NULL, token_params = list())
 - token_params:
 
   List containing additional parameters passed to the `token_url`.
+
+- expiry_margin:
+
+  Number of seconds before a token's stated expiry that it should be
+  treated as expired. Increase this for servers that reject tokens
+  shortly before they expire. Defaults to 30 seconds.
 
 ## Value
 

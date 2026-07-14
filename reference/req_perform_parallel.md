@@ -123,7 +123,7 @@ system.time(resps <- req_perform_parallel(reqs))
 #> [working] (0 + 0) -> 2 -> 2 | ■■■■■■■■■■■■■■■■                  50%
 #> [working] (0 + 0) -> 0 -> 4 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
 #>    user  system elapsed 
-#>   0.052   0.001   1.066 
+#>   0.042   0.000   1.052 
 
 # req_perform_parallel() will fail on error
 reqs <- list(
@@ -141,7 +141,7 @@ resps <- req_perform_parallel(reqs, on_error = "continue")
 resps |> resps_successes()
 #> [[1]]
 #> <httr2_response>
-#> GET http://127.0.0.1:41437/status/200
+#> GET http://127.0.0.1:36437/status/200
 #> Status: 200 OK
 #> Content-Type: text/plain
 #> Body: None
@@ -151,7 +151,7 @@ resps |> resps_successes()
 resps |> resps_failures() |> resps_requests()
 #> [[1]]
 #> <httr2_request>
-#> GET http://127.0.0.1:41437/status/400
+#> GET http://127.0.0.1:36437/status/400
 #> Body: empty
 #> Policies:
 #> * throttle_realm: "127.0.0.1"

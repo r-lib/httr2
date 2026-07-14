@@ -30,7 +30,8 @@ req_oauth_auth_code(
   token_params = list(),
   redirect_uri = oauth_redirect_uri(),
   cache_disk = FALSE,
-  cache_key = NULL
+  cache_key = NULL,
+  expiry_margin = 30
 )
 
 oauth_flow_auth_code(
@@ -122,6 +123,12 @@ oauth_flow_auth_code(
 
   If you want to cache multiple tokens per app, use this key to
   disambiguate them.
+
+- expiry_margin:
+
+  Number of seconds before a token's stated expiry that it should be
+  treated as expired. Increase this for servers that reject tokens
+  shortly before they expire. Defaults to 30 seconds.
 
 ## Value
 

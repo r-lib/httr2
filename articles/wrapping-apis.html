@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +50,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://opensource.posit.co/blog/2026-07-14_httr2-1-3-0/">httr2 1.3.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/07/httr2-1-2-0/">httr2 1.2.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
@@ -78,7 +79,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Wrapping APIs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/v1.2.3/vignettes/articles/wrapping-apis.Rmd" class="external-link"><code>vignettes/articles/wrapping-apis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/httr2/blob/main/vignettes/articles/wrapping-apis.Rmd" class="external-link"><code>vignettes/articles/wrapping-apis.Rmd</code></a></small>
       <div class="d-none name"><code>wrapping-apis.Rmd</code></div>
     </div>
 
@@ -119,18 +120,7 @@ basics work:</p>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The result comes back as JSON</span></span>
-<span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 6</span></span>
-<span><span class="co">#&gt;  $ status: chr "OK"</span></span>
-<span><span class="co">#&gt;  $ code  : int 200</span></span>
-<span><span class="co">#&gt;  $ locale: chr "en_US"</span></span>
-<span><span class="co">#&gt;  $ seed  : NULL</span></span>
-<span><span class="co">#&gt;  $ total : int 1</span></span>
-<span><span class="co">#&gt;  $ data  :List of 1</span></span>
-<span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Culpa odit laudantium harum."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Quisquam aut qui enim omnis in ea. Et quam at qui temporibus ut repellendus."</span></span>
-<span><span class="co">#&gt;   .. ..$ url        : chr "https://picsum.photos/380/480"</span></span></code></pre></div>
+<span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a>
 </h3>
@@ -141,31 +131,16 @@ get an error that prevents you from further inspecting the body:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_url.html">req_url_path_append</a></span><span class="op">(</span><span class="st">"invalid"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 400 Bad Request.</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>However, you can access the last response (successful or not) with
 <code><a href="../reference/last_response.html">last_response()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/last_response.html">last_response</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $message</span></span>
-<span><span class="co">#&gt; [1] "Resource invalid not supported in version v1"</span></span></code></pre></div>
+<span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>It doesn’t look like there’s anything useful there. Sometimes useful
 info is returned in the headers, so let’s check:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;httr2_headers&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Server</span>: nginx</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Content-Type</span>: application/json</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Transfer-Encoding</span>: chunked</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Connection</span>: keep-alive</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">X-Powered-By</span>: PHP/8.3.8</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Cache-Control</span>: no-cache, private</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Date</span>: Tue, 23 Jun 2026 12:28:10 GMT</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">X-RateLimit-Limit</span>: 60</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">X-RateLimit-Remaining</span>: 56</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Access-Control-Allow-Origin</span>: *</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/resp_headers.html">resp_headers</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>It doesn’t look like we’re getting any more useful information, so we
 can leave the <code><a href="../reference/req_error.html">req_error()</a></code> default as is. We’ll have another
 go later with an API that does provide more details.</p>
@@ -181,12 +156,7 @@ who to reach out to. You can do this with the
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">req</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_user_agent.html">req_user_agent</a></span><span class="op">(</span><span class="st">"my_package_name (http://my.package.web.site)"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; GET /api/v1 HTTP/1.1</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">accept</span>: */*</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">accept-encoding</span>: deflate, gzip, br, zstd</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">host</span>: fakerapi.it</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">user-agent</span>: my_package_name (http://my.package.web.site)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/req_dry_run.html">req_dry_run</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="core-request-function">Core request function<a class="anchor" aria-label="anchor" href="#core-request-function"></a>
@@ -225,18 +195,7 @@ to the resource with query parameters. All parameters start with
 <span>    <span class="fu"><a href="../reference/resp_body_raw.html">resp_body_json</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 6</span></span>
-<span><span class="co">#&gt;  $ status: chr "OK"</span></span>
-<span><span class="co">#&gt;  $ code  : int 200</span></span>
-<span><span class="co">#&gt;  $ locale: chr "en_US"</span></span>
-<span><span class="co">#&gt;  $ seed  : NULL</span></span>
-<span><span class="co">#&gt;  $ total : int 1</span></span>
-<span><span class="co">#&gt;  $ data  :List of 1</span></span>
-<span><span class="co">#&gt;   ..$ :List of 3</span></span>
-<span><span class="co">#&gt;   .. ..$ title      : chr "Maiores ut ut temporibus."</span></span>
-<span><span class="co">#&gt;   .. ..$ description: chr "Sit ratione fugiat aut perspiciatis enim esse explicabo. Deleniti iste quia molestias odio sapiente fugiat. Qui"| __truncated__</span></span>
-<span><span class="co">#&gt;   .. ..$ url        : chr "https://picsum.photos/300/480"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker</span><span class="op">(</span><span class="st">"images"</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>I’ve made a few important choices here:</p>
 <ul>
 <li><p>I’ve decided to supply default values for the
@@ -287,35 +246,7 @@ wrapper would start something like this:</p>
 <span>    seed <span class="op">=</span> <span class="va">seed</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 6</span></span>
-<span><span class="co">#&gt;  $ status: chr "OK"</span></span>
-<span><span class="co">#&gt;  $ code  : int 200</span></span>
-<span><span class="co">#&gt;  $ locale: chr "en_US"</span></span>
-<span><span class="co">#&gt;  $ seed  : NULL</span></span>
-<span><span class="co">#&gt;  $ total : int 1</span></span>
-<span><span class="co">#&gt;  $ data  :List of 1</span></span>
-<span><span class="co">#&gt;   ..$ :List of 10</span></span>
-<span><span class="co">#&gt;   .. ..$ id       : int 1</span></span>
-<span><span class="co">#&gt;   .. ..$ firstname: chr "Chelsey"</span></span>
-<span><span class="co">#&gt;   .. ..$ lastname : chr "Waters"</span></span>
-<span><span class="co">#&gt;   .. ..$ email    : chr "vaughn65@hotmail.com"</span></span>
-<span><span class="co">#&gt;   .. ..$ phone    : chr "+14256165417"</span></span>
-<span><span class="co">#&gt;   .. ..$ birthday : chr "1941-08-26"</span></span>
-<span><span class="co">#&gt;   .. ..$ gender   : chr "male"</span></span>
-<span><span class="co">#&gt;   .. ..$ address  :List of 10</span></span>
-<span><span class="co">#&gt;   .. .. ..$ id            : int 1</span></span>
-<span><span class="co">#&gt;   .. .. ..$ street        : chr "7571 Audie Loaf Suite 552"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ streetName    : chr "Nader Ranch"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ buildingNumber: chr "281"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ city          : chr "Mohrland"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ zipcode       : chr "04741"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ country       : chr "Palestinian Territories"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ country_code  : chr "PS"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ latitude      : num -0.223</span></span>
-<span><span class="co">#&gt;   .. .. ..$ longitude     : num 61.1</span></span>
-<span><span class="co">#&gt;   .. ..$ website  : chr "http://schumm.com"</span></span>
-<span><span class="co">#&gt;   .. ..$ image    : chr "http://placeimg.com/640/480/people"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We could make it more user friendly by checking the input types, and
 returning the result as a tibble. I did a quick and dirty conversion
 using purrr; depending on your needs you could use base R code or
@@ -357,15 +288,7 @@ using purrr; depending on your needs you could use base R code or
 <span>    gender <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">json</span><span class="op">$</span><span class="va">data</span>, <span class="st">"gender"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span></span>
-<span><span class="co">#&gt;   firstname lastname email                   gender</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Otis      Durgan   hans.ritchie@jast.com   male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Rickie    Watsica  elvie41@yahoo.com       male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Enid      Kunze    eldon28@parker.net      male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Orin      Turner   herbert.grant@gmail.com male  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Dejon     Huel     xzavier69@hoppe.biz     male</span></span></code></pre></div>
+<span><span class="fu">faker_person</span><span class="op">(</span><span class="st">"male"</span>, quantity <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <p>The next steps would be to export and document this function; I’ll
 leave that up to you.</p>
 </div>
@@ -402,7 +325,7 @@ secrets using symmetric cryptography:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_make_key</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">key</span></span>
-<span><span class="co">#&gt; [1] "_iKYQmapN9xVLrkEOPauOw"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "RpucEL-KqohNeSTzrN3QuQ"</span></span></code></pre></div>
 <p>(Note that <code><a href="../reference/secrets.html">secret_make_key()</a></code> uses a cryptographically
 secure random number generator provided by OpenSSL; it is not affected
 by R’s RNG settings, and there’s no way to make it
@@ -415,7 +338,7 @@ package:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="va">key</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "Le4fx7A7LpavAJR2Xa3yypQpv2bw2HlI96Pe-z4_CBtwmluNu0AIljlqElaUzmmFEw"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "lkwyTiyF_x9uit5F7bzW27giyo_r4I38iyEXlfY-gTbd8iZEw0SYZ3pkDNfNK347jA"</span></span></code></pre></div>
 </li>
 <li>
 <p>When needed, you descramble the secret using
@@ -448,7 +371,7 @@ natural usage.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secret_scrambled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/secrets.html">secret_encrypt</a></span><span class="op">(</span><span class="st">"secret I need to work with an API"</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="va">secret_scrambled</span></span>
-<span><span class="co">#&gt; [1] "8schd6nWT38pfqUlr3vfTY6ZMn5N6Uy-TD6TG76bTYwmz026Y-FiaqbBHPOm4C6VJA"</span></span>
+<span><span class="co">#&gt; [1] "Mpq9rSxRhWwilSYHfYNaJDZZBeofOdjIO2WeLMrwia7MwkggzzcWE4uWlGEm4DM4mg"</span></span>
 <span><span class="fu"><a href="../reference/secrets.html">secret_decrypt</a></span><span class="op">(</span><span class="va">secret_scrambled</span>, <span class="st">"YOURPACKAGE_KEY"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "secret I need to work with an API"</span></span></code></pre></div>
 <p>You’ll also need to make the key available in your GitHub Actions
@@ -952,7 +875,7 @@ need to adjust the default method from <code>GET</code> to
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
   </div></footer>

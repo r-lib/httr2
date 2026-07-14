@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">httr2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://opensource.posit.co/blog/2026-07-14_httr2-1-3-0/">httr2 1.3.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/07/httr2-1-2-0/">httr2 1.2.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2025/01/httr2-1-1-0/">httr2 1.1.0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.tidyverse.org/blog/2023/11/httr2-1-0-0/">httr2 1.0.0</a></li>
@@ -42,9 +43,19 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/r-lib/httr2/blob/v1.2.3/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/r-lib/httr2/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.0" id="httr2-130">httr2 1.3.0<a class="anchor" aria-label="anchor" href="#httr2-130"></a></h2><p class="text-muted">CRAN release: 2026-07-13</p>
+<ul><li>Fixed OAuth token cache pruning so that it actually matches the encrypted <code>.rds.enc</code> files written to disk; previously the pruning pattern only matched an unencrypted <code>.rds</code> file that was never created, so cached tokens were never automatically deleted regardless of age.</li>
+<li>httr2 now requires rlang &gt;= 1.3.0, which changes the hash used to name files cached by <code><a href="../reference/req_cache.html">req_cache()</a></code> and on-disk OAuth token caches (e.g. from <code>req_oauth_auth_code(cache_disk = TRUE)</code>). Existing cached files won’t match the new hash, so they’ll be silently ignored (triggering a normal cache miss/re-authentication) and cleaned up over time by the usual pruning rules; you can also delete them manually.</li>
+<li>
+<code><a href="../reference/oauth_cache_path.html">oauth_cache_path()</a></code> now defaults to a standard R cache directory (via <code><a href="https://rdrr.io/r/tools/userdir.html" class="external-link">tools::R_user_dir()</a></code>). Because this release also changes the hash used for cache filenames, existing OAuth tokens will generally not be reused and you may need to authenticate once after upgrading. New tokens are written to the new location, and obsolete tokens in both the old and new locations are removed by the usual pruning rules. httr2 no longer requires the rappdirs package (<a href="https://github.com/r-lib/httr2/issues/800" class="external-link">#800</a>).</li>
+<li>New <code><a href="../reference/oauth_cache_prune.html">oauth_cache_prune()</a></code> lets you manually delete cached OAuth tokens older than a given number of days, exposing the pruning that httr2 already performs automatically on load.</li>
+<li>
+<code>req_oauth_*()</code> gains an <code>expiry_margin</code> argument to control how early cached OAuth tokens are treated as expired; the default margin increases from 5 to 30 seconds (<a href="https://github.com/zacdav-db" class="external-link">@zacdav-db</a>, <a href="https://github.com/r-lib/httr2/issues/860" class="external-link">#860</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.3" id="httr2-123">httr2 1.2.3<a class="anchor" aria-label="anchor" href="#httr2-123"></a></h2><p class="text-muted">CRAN release: 2026-06-23</p>
 <ul><li>Mocked and cached responses now include the originating request in <code>resp$request</code>, just like real responses (<a href="https://github.com/r-lib/httr2/issues/841" class="external-link">#841</a>).</li>
@@ -398,7 +409,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
   </div></footer></body></html>

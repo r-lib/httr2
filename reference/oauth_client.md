@@ -95,7 +95,7 @@ An OAuth client: An S3 list with class `httr2_oauth_client`.
 ``` r
 oauth_client("myclient", "http://example.com/token_url", secret = "DONTLOOK")
 #> <httr2_oauth_client>
-#> * name     : "920903ca1274bc747bb367c6b5abe4a4"
+#> * name     : "5016cbebb2e82b0558517005e36efdf0"
 #> * id       : "myclient"
 #> * secret   : <REDACTED>
 #> * token_url: "http://example.com/token_url"

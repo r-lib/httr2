@@ -12,15 +12,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-lib/httr2/blob/v1.2.3/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-lib/httr2/blob/main/DESCRIPTION)
 
 Wickham H (2026). *httr2: Perform HTTP Requests and Process the
-Responses*. R package version 1.2.3, <https://httr2.r-lib.org>.
+Responses*. R package version 1.3.0, <https://httr2.r-lib.org>.
 
     @Manual{,
       title = {httr2: Perform HTTP Requests and Process the Responses},
       author = {Hadley Wickham},
       year = {2026},
-      note = {R package version 1.2.3},
+      note = {R package version 1.3.0},
       url = {https://httr2.r-lib.org},
     }

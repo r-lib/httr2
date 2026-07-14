@@ -213,6 +213,8 @@ These functions implement the low-level components of OAuth.
   : Clear OAuth cache
 - [`oauth_cache_path()`](https://httr2.r-lib.org/reference/oauth_cache_path.md)
   : httr2 OAuth cache location
+- [`oauth_cache_prune()`](https://httr2.r-lib.org/reference/oauth_cache_prune.md)
+  : Prune the OAuth token cache
 - [`oauth_client()`](https://httr2.r-lib.org/reference/oauth_client.md)
   : Create an OAuth client
 - [`oauth_client_req_auth()`](https://httr2.r-lib.org/reference/oauth_client_req_auth.md)
