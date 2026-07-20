@@ -8,7 +8,7 @@
 #' While running, you'll get a progress bar that looks like:
 #' `[working] (1 + 4) -> 5 -> 5`. The string tells you the current status of
 #' the queue (e.g. working, waiting, errored) followed by (the
-#' number of pending requests + pending retried requests) -> the number of
+#' number of pending requests + pending retries) -> the number of
 #' active requests -> the number of complete requests.
 #'
 #' ## Limitations
@@ -22,10 +22,9 @@
 #' these limitation, but it's enough work that I'm unlikely to do it unless
 #' I know that people would fine it useful: so please let me know!
 #'
-#' Additionally, it does not respect the `max_tries` argument to `req_retry()`
-#' because if you have five requests in flight and the first one gets rate
-#' limited, it's likely that all the others do too. This also means that
-#' the circuit breaker is never triggered.
+#' Additionally, while `req_perform_parallel()` respects the `max_tries`
+#' argument to `req_retry()`, it does not currently respect `max_seconds`.
+#' Additionally, it does not trigger or respect the circuit breaker.
 #'
 #' @inherit req_perform_sequential params return
 #' @param max_active Maximum number of concurrent requests.
@@ -124,7 +123,7 @@ RequestQueue <- R6::R6Class(
     n_pending = 0,
     n_active = 0,
     n_complete = 0,
-    n_retries = 0,
+    n_retrying = 0,
     on_error = "stop",
     mock = NULL,
     progress = NULL,
@@ -155,8 +154,8 @@ RequestQueue <- R6::R6Class(
         progress,
         total = n,
         format = paste0(
-          "[{self$queue_status}] ",
-          "({self$n_pending} + {self$n_retries}) -> {self$n_active} -> {self$n_complete} | ",
+          "[{self$queue_status} {cli::pb_spin}] ",
+          "({self$n_pending} + {self$n_retrying}) -> {self$n_active} -> {self$n_complete} | ",
           "{cli::pb_bar} {cli::pb_percent}"
         ),
         frame = frame
@@ -176,6 +175,7 @@ RequestQueue <- R6::R6Class(
 
       self$queue_status <- "working"
       self$n_pending <- n
+      self$n_retrying <- 0
       self$n_active <- 0
       self$n_complete <- 0
 
@@ -236,9 +236,11 @@ RequestQueue <- R6::R6Class(
         )
         NULL
       } else if (self$queue_status == "working") {
-        if (self$n_pending == 0 && self$n_active == 0) {
+        to_do <- self$n_pending + self$n_retrying
+
+        if (to_do == 0 && self$n_active == 0) {
           self$queue_status <- "done"
-        } else if (self$n_pending > 0 && self$n_active <= self$max_active) {
+        } else if (to_do > 0 && self$n_active <= self$max_active) {
           if (!self$submit_next(deadline)) {
             self$queue_status <- "waiting"
           }
@@ -258,7 +260,7 @@ RequestQueue <- R6::R6Class(
     },
 
     submit_next = function(deadline) {
-      i <- which(self$status == "pending")[[1]]
+      i <- which(self$status %in% c("pending", "retrying"))[[1]]
 
       self$token_deadline <- throttle_deadline(self$reqs[[i]])
       if (self$token_deadline > unix_time()) {
@@ -293,24 +295,29 @@ RequestQueue <- R6::R6Class(
       req <- self$reqs[[i]]
       resp <- error$resp
       self$resps[[i]] <- error
-      tries <- self$tries[[i]]
 
       if (retry_is_transient(req, resp) && self$can_retry(i)) {
-        delay <- retry_after(req, resp, tries)
-        self$rate_limit_deadline <- unix_time() + delay
-
-        self$set_status(i, "pending")
-        self$n_retries <- self$n_retries + 1
+        self$set_status(i, "retrying")
         self$queue_status <- "waiting"
+
+        delay <- retry_after(req, resp, self$tries[[i]])
+        signal(class = "httr2_retry", tries = self$tries[[i]], delay = delay)
+
+        self$rate_limit_deadline <- max(
+          self$rate_limit_deadline,
+          unix_time() + delay
+        )
       } else if (resp_is_invalid_oauth_token(req, resp) && self$can_reauth(i)) {
+        self$set_status(i, "retrying")
+
         # This isn't quite right, because if there are (e.g.) four requests in
         # the queue and the first one fails, we'll clear the cache for all four,
         # causing a token refresh more often than necessary. This shouldn't
         # affect correctness, but it does make it slower than necessary.
         self$oauth_failed <- c(self$oauth_failed, i)
         req_auth_clear_cache(self$reqs[[i]])
-        self$set_status(i, "pending")
-        self$n_retries <- self$n_retries + 1
+        # Don't count this as a retry for the purpose of limiting retries
+        self$tries[[i]] <- self$tries[[i]] - 1
       } else {
         self$set_status(i, "complete")
         if (self$on_error != "continue") {
@@ -323,21 +330,22 @@ RequestQueue <- R6::R6Class(
       switch(
         self$status[[i]], # old status
         pending = self$n_pending <- self$n_pending - 1,
-        active = self$n_active <- self$n_active - 1
+        active = self$n_active <- self$n_active - 1,
+        retrying = self$n_retrying <- self$n_retrying - 1
       )
       switch(
         status, # new status
         pending = self$n_pending <- self$n_pending + 1,
         active = self$n_active <- self$n_active + 1,
-        complete = self$n_complete <- self$n_complete + 1
+        complete = self$n_complete <- self$n_complete + 1,
+        retrying = self$n_retrying <- self$n_retrying + 1
       )
 
       self$status[[i]] <- status
     },
 
     can_retry = function(i) {
-      TRUE
-      # self$tries[[i]] < retry_max_tries(self$reqs[[i]])
+      self$tries[[i]] < retry_max_tries(self$reqs[[i]])
     },
     can_reauth = function(i) {
       !i %in% self$oauth_failed
