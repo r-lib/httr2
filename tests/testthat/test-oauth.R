@@ -196,8 +196,6 @@ test_that("can store on disk", {
 })
 
 test_that("disk cache is only accessible to current user", {
-  skip_on_os("windows")
-
   client <- oauth_client(
     id = "x",
     token_url = "http://example.com",
@@ -206,7 +204,10 @@ test_that("disk cache is only accessible to current user", {
   cache <- cache_disk(client, NULL)
   withr::defer(cache$clear())
   suppressMessages(cache$set(1))
+  expect_equal(cache$get(), 1)
 
+  # On Windows Sys.chmod() only affects the read-only attribute
+  skip_on_os("windows")
   app_path <- file.path(oauth_cache_path(), client$name)
   token_path <- dir(
     app_path,
