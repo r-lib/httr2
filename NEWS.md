@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* The on-disk OAuth token cache (used by `req_oauth_*(cache_disk = TRUE)`) now creates its directories with mode `700` and token files with mode `600` so that cached tokens are not readable by other users on the same machine.
+
 # httr2 1.3.0
 
 * Fixed OAuth token cache pruning so that it actually matches the encrypted `.rds.enc` files written to disk; previously the pruning pattern only matched an unencrypted `.rds` file that was never created, so cached tokens were never automatically deleted regardless of age.
