@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `req_dry_run()` now shows the URL's query string in the printed request line and returns it in the `query` element of its result; previously both omitted it (@wikisqueaks, #868).
+
 # httr2 1.3.0
 
 * Fixed OAuth token cache pruning so that it actually matches the encrypted `.rds.enc` files written to disk; previously the pruning pattern only matched an unencrypted `.rds` file that was never created, so cached tokens were never automatically deleted regardless of age.

@@ -38,3 +38,15 @@ test_that("doen't add space to urls (#567)", {
   req <- request("https://example.com/test:1:2")
   expect_output(req_dry_run(req), "test:1:2")
 })
+
+test_that("query strings are shown (#868)", {
+  req <- request("http://example.com") |>
+    req_url_path_append("example-path") |>
+    req_url_query(a = "1", b = "2", c = "3")
+  expect_snapshot(out <- req_dry_run(req))
+  expect_equal(out$path, "/example-path")
+  expect_equal(out$query, "?a=1&b=2&c=3")
+
+  out <- req_dry_run(request("http://example.com"), quiet = TRUE)
+  expect_equal(out$query, "")
+})
