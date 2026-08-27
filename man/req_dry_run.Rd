@@ -39,7 +39,7 @@ built.
 }
 \value{
 Invisibly, a list containing information about the request,
-including \code{method}, \code{path}, and \code{headers}.
+including \code{method}, \code{path}, \code{query}, and \code{headers}.
 }
 \description{
 This shows you exactly what httr2 will send to the server, without

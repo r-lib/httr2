@@ -26,7 +26,7 @@
 #'     built.
 #' @param pretty_json If `TRUE`, automatically prettify JSON bodies.
 #' @returns Invisibly, a list containing information about the request,
-#'   including `method`, `path`, and `headers`.
+#'   including `method`, `path`, `query`, and `headers`.
 #' @export
 #' @examples
 #' # httr2 adds default User-Agent, Accept, and Accept-Encoding headers
@@ -70,7 +70,7 @@ req_dry_run <- function(
   )
 
   if (!quiet) {
-    cli::cat_line(resp$method, " ", resp$path, " HTTP/1.1")
+    cli::cat_line(resp$method, " ", resp$path, resp$query, " HTTP/1.1")
 
     if (testing_headers) {
       # curl::curl_echo() overrides
@@ -85,6 +85,7 @@ req_dry_run <- function(
   invisible(list(
     method = resp$method,
     path = resp$path,
+    query = resp$query,
     body = resp$body,
     headers = headers_flatten(headers, redact = redact_headers)
   ))
