@@ -2,6 +2,12 @@
 
 ## httr2 (development version)
 
+- [`req_dry_run()`](https://httr2.r-lib.org/dev/reference/req_dry_run.md)
+  now shows the URL’s query string in the printed request line and
+  returns it in the `query` element of its result; previously both
+  omitted it ([@wikisqueaks](https://github.com/wikisqueaks),
+  [\#868](https://github.com/r-lib/httr2/issues/868)).
+
 ## httr2 1.3.0
 
 CRAN release: 2026-07-13

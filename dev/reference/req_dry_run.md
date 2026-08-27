@@ -60,7 +60,7 @@ req_dry_run(
 ## Value
 
 Invisibly, a list containing information about the request, including
-`method`, `path`, and `headers`.
+`method`, `path`, `query`, and `headers`.
 
 ## Details
 
@@ -78,7 +78,7 @@ request("http://example.com") |> req_dry_run()
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> host: example.com
-#> user-agent: httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> 
 
 # the Authorization header is automatically redacted to avoid leaking
@@ -90,7 +90,7 @@ req |> req_dry_run()
 #> accept-encoding: deflate, gzip, br, zstd
 #> authorization: <REDACTED>
 #> host: example.com
-#> user-agent: httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> 
 
 # if you need to see it, use redact_headers = FALSE
@@ -100,6 +100,6 @@ req |> req_dry_run(redact_headers = FALSE)
 #> accept-encoding: deflate, gzip, br, zstd
 #> authorization: Basic dXNlcjpwYXNzd29yZA==
 #> host: example.com
-#> user-agent: httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0
+#> user-agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> 
 ```

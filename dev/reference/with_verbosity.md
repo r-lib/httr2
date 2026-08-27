@@ -59,31 +59,32 @@ fun <- function() {
 with_verbosity(fun())
 #> -> GET / HTTP/2
 #> -> Host: httr2.r-lib.org
-#> -> User-Agent: httr2/1.3.0.9000 r-curl/7.1.0 libcurl/8.5.0
+#> -> User-Agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> -> Accept: */*
 #> -> Accept-Encoding: deflate, gzip, br, zstd
 #> -> 
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Tue, 14 Jul 2026 13:26:45 GMT
+#> <- last-modified: Tue, 14 Jul 2026 13:29:20 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6a563915-4c24"
-#> <- expires: Tue, 14 Jul 2026 13:36:45 GMT
+#> <- etag: W/"6a5639b0-4c24"
+#> <- expires: Thu, 27 Aug 2026 18:11:50 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: AC3E:344B64:B3CBE9:CD72B3:6A563915
+#> <- x-github-request-id: 18BE:1527DD:B3FD4:CD834:6A907B8E
+#> <- x-github-edge-region: westus3
 #> <- accept-ranges: bytes
-#> <- date: Tue, 14 Jul 2026 13:28:26 GMT
+#> <- date: Thu, 27 Aug 2026 18:04:06 GMT
 #> <- via: 1.1 varnish
-#> <- age: 21
-#> <- x-served-by: cache-iad-kiad7000033-IAD
+#> <- age: 24
+#> <- x-served-by: cache-pao-kpao1770026-PAO
 #> <- x-cache: HIT
 #> <- x-cache-hits: 5
-#> <- x-timer: S1784035707.969682,VS0,VE0
+#> <- x-timer: S1787853846.189017,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 80131db3be7883780a5b4487565a992964fb6f7b
+#> <- x-fastly-request-id: 7d7c09d4e2d322c4fcf7e6ff4373daabc7a54b5e
 #> <- content-length: 4860
 #> <- 
 #> <httr2_response>

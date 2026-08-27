@@ -103,9 +103,9 @@ An S3 list with class `jwt_claim`.
 claim <- jwt_claim()
 str(claim)
 #> List of 4
-#>  $ exp: num 1.78e+09
-#>  $ nbf: num 1.78e+09
-#>  $ iat: num 1.78e+09
-#>  $ jti: chr "QUTQoAQFuIR7vTIQGznTFrmCAimKHnjaX7egieq01ag"
+#>  $ exp: num 1.79e+09
+#>  $ nbf: num 1.79e+09
+#>  $ iat: num 1.79e+09
+#>  $ jti: chr "df3qSBxT6oRx4ozTZt5IU53tVbFhGiw7-lLdMi-_C7M"
 #>  - attr(*, "class")= chr [1:2] "jwt_claim" "list"
 ```
