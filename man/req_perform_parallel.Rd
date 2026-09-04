@@ -59,7 +59,7 @@ pummel a server with a very large number of simultaneous requests.
 While running, you'll get a progress bar that looks like:
 \verb{[working] (1 + 4) -> 5 -> 5}. The string tells you the current status of
 the queue (e.g. working, waiting, errored) followed by (the
-number of pending requests + pending retried requests) -> the number of
+number of pending requests + pending retries) -> the number of
 active requests -> the number of complete requests.
 \subsection{Limitations}{
 
@@ -72,10 +72,9 @@ host, rather than a mix of different hosts. It's probably possible to remove
 these limitation, but it's enough work that I'm unlikely to do it unless
 I know that people would fine it useful: so please let me know!
 
-Additionally, it does not respect the \code{max_tries} argument to \code{req_retry()}
-because if you have five requests in flight and the first one gets rate
-limited, it's likely that all the others do too. This also means that
-the circuit breaker is never triggered.
+Additionally, while \code{req_perform_parallel()} respects the \code{max_tries}
+argument to \code{req_retry()}, it does not currently respect \code{max_seconds}.
+Additionally, it does not trigger or respect the circuit breaker.
 }
 }
 \examples{
