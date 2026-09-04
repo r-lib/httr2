@@ -71,6 +71,8 @@ parse_content_type <- function(x) {
   # unclass(regex)
   # ```
   stopifnot(length(x) == 1)
+  # https://datatracker.ietf.org/doc/html/rfc9110#section-8.3.1
+  x <- tolower(x)
   regex <- "^(?<type>application|audio|font|example|image|message|model|multipart|text|video)/(?<subtype>(?:(?:vnd|prs|x)\\.)?(?:[^+;])+)(?:\\+(?<suffix>(?:[^;])+))?(?:;(?<parameters>(?:.)+))?$"
   if (!grepl(regex, x, perl = TRUE)) {
     out <- list(

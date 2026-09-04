@@ -46,6 +46,26 @@ test_that("can parse content type", {
   )
 })
 
+test_that("media types are case insensitive", {
+  expect_equal(
+    parse_content_type("Application/JSON"),
+    list(type = "application", subtype = "json", suffix = "")
+  )
+  expect_equal(
+    parse_content_type("TEXT/HTML+XML;charset=UTF-8"),
+    list(type = "text", subtype = "html", suffix = "xml")
+  )
+
+  resp <- response(headers = c("Content-type: Application/JSON"))
+  expect_no_error(resp_check_content_type(resp, "application/json"))
+  expect_no_error(resp_check_content_type(
+    response(headers = c("Content-type: Application/Test+JSON")),
+    "application/xml",
+    "json"
+  ))
+  expect_equal(is_text_type("Text/Plain"), TRUE)
+})
+
 test_that("invalid type returns empty strings", {
   expect_equal(
     parse_content_type(""),
