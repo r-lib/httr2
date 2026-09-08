@@ -46,7 +46,7 @@ request(example_url()) |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> cookie: a=1;b=1
-#> host: 127.0.0.1:45089
+#> host: 127.0.0.1:45525
 #> user-agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> 
 
