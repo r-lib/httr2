@@ -7,6 +7,13 @@
   returns it in the `query` element of its result; previously both
   omitted it ([@wikisqueaks](https://github.com/wikisqueaks),
   [\#868](https://github.com/r-lib/httr2/issues/868)).
+- [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
+  now treats media types as case insensitive, as required by RFC 9110,
+  so
+  [`resp_body_json()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
+  no longer errors on a response with `Content-Type: Application/JSON`
+  ([@dylanpulver](https://github.com/dylanpulver),
+  [\#871](https://github.com/r-lib/httr2/issues/871)).
 
 ## httr2 1.3.0
 
