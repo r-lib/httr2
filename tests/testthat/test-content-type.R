@@ -46,6 +46,17 @@ test_that("can parse content type", {
   )
 })
 
+test_that("media types are case insensitive", {
+  expect_equal(
+    parse_content_type("Application/JSON"),
+    list(type = "application", subtype = "json", suffix = "")
+  )
+  expect_equal(
+    parse_content_type("TEXT/HTML+XML;charset=UTF-8"),
+    list(type = "text", subtype = "html", suffix = "xml")
+  )
+})
+
 test_that("invalid type returns empty strings", {
   expect_equal(
     parse_content_type(""),

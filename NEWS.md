@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * `req_dry_run()` now shows the URL's query string in the printed request line and returns it in the `query` element of its result; previously both omitted it (@wikisqueaks, #868).
+* `resp_check_content_type()` now treats media types as case insensitive, as required by RFC 9110, so `resp_body_json()` no longer errors on a response with `Content-Type: Application/JSON` (@dylanpulver, #871).
 
 # httr2 1.3.0
 
