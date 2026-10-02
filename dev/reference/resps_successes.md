@@ -66,14 +66,14 @@ resps <- req_perform_parallel(reqs, on_error = "continue")
 resps |> resps_successes()
 #> [[1]]
 #> <httr2_response>
-#> GET http://127.0.0.1:45007/ip
+#> GET http://127.0.0.1:39725/ip
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (27 bytes)
 #> 
 #> [[2]]
 #> <httr2_response>
-#> GET http://127.0.0.1:45007/user-agent
+#> GET http://127.0.0.1:39725/user-agent
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (65 bytes)
@@ -96,7 +96,7 @@ resps |>
   resps_requests()
 #> [[1]]
 #> <httr2_request>
-#> GET http://127.0.0.1:45007/status/404
+#> GET http://127.0.0.1:39725/status/404
 #> Body: empty
 #> 
 #> [[2]]
