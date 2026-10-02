@@ -300,6 +300,17 @@ test_that("correctly determines if response is cacheable", {
     is_cacheable(200, headers = c("Etag: ABC", "Cache-Control: no-store")),
     FALSE
   )
+  expect_equal(
+    is_cacheable(
+      200,
+      headers = c("Etag: ABC", "Cache-Control: private, no-store")
+    ),
+    FALSE
+  )
+  expect_equal(
+    is_cacheable(200, headers = "Cache-Control: max-age=0, no-cache, no-store"),
+    FALSE
+  )
   expect_equal(is_cacheable(200), FALSE)
   expect_equal(is_cacheable(404), FALSE)
   expect_equal(is_cacheable(method = "POST"), FALSE)
