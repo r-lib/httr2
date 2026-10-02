@@ -191,7 +191,12 @@ test_that("tracing works as expected", {
         p <- req_perform_promise(request("http://127.0.0.1"))
         try(extract_promise(p), silent = TRUE)
       },
-      curl_fetch = function(...) abort("Failed to connect")
+      multi_add = function(handle, pool, data, done, fail) {
+        fail(structure(
+          "Failed to connect",
+          class = c("curl_error_couldnt_connect", "curl_error", "character")
+        ))
+      }
     )
 
     # A request with no parent context.
