@@ -34,6 +34,14 @@ test_that("authorization headers are redacted", {
   expect_equal(out$headers$authorization, "Basic dXNlcjpwYXNzd29yZA==")
 })
 
+test_that("headers added when signing are redacted", {
+  req <- request("http://example.com") |>
+    req_auth_aws_v4("id", "secret", aws_session_token = "token")
+  out <- req_dry_run(req, quiet = TRUE)
+  expect_equal(out$headers$authorization, redacted_sentinel())
+  expect_equal(out$headers$`x-amz-security-token`, redacted_sentinel())
+})
+
 test_that("doen't add space to urls (#567)", {
   req <- request("https://example.com/test:1:2")
   expect_output(req_dry_run(req), "test:1:2")
