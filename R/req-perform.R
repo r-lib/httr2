@@ -159,15 +159,20 @@ handle_resp <- function(req, resp, error_call = caller_env()) {
   }
 }
 
-resp_failure_cnd <- function(req, resp, error_call = caller_env()) {
+resp_failure_cnd <- function(
+  req,
+  resp,
+  info = NULL,
+  error_call = caller_env()
+) {
   status <- resp_status(resp)
   desc <- resp_status_desc(resp)
   message <- paste0("HTTP ", status, if (!is.na(desc)) paste0(" ", desc), ".")
 
-  info <- error_body(req, resp, error_call)
+  body <- error_body(req, resp, error_call)
 
   catch_cnd(abort(
-    c(message, resp_auth_message(resp), i = info),
+    c(message, resp_auth_message(resp), i = body, info),
     status = status,
     resp = resp,
     request = req,

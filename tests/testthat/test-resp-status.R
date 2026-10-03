@@ -22,3 +22,11 @@ test_that("WWW-Authenticate header without extra fields has no empty bullet", {
   )
   expect_snapshot(resp_check_status(resp), error = TRUE)
 })
+
+test_that("resp_check_status() includes info in error message", {
+  resp <- response(404)
+  expect_snapshot(
+    resp_check_status(resp, info = c("Extra context.", i = "A hint.")),
+    error = TRUE
+  )
+})

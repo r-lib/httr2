@@ -29,3 +29,13 @@
       ! HTTP 401 Unauthorized.
       * OAuth error: invalid_token
 
+# resp_check_status() includes info in error message
+
+    Code
+      resp_check_status(resp, info = c("Extra context.", i = "A hint."))
+    Condition
+      Error:
+      ! HTTP 404 Not Found.
+      Extra context.
+      i A hint.
+
