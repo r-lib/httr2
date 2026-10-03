@@ -11,3 +11,13 @@
     * realm: https://accounts.google.com/
     * scope: https://www.googleapis.com/auth/iam https://www.googleapis.com/auth/cloud-platform
 
+# resp_check_status() includes info in error message
+
+    Code
+      resp_check_status(resp, info = c("Extra context.", i = "A hint."))
+    Condition
+      Error:
+      ! HTTP 404 Not Found.
+      Extra context.
+      i A hint.
+

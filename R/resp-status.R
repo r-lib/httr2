@@ -66,7 +66,12 @@ resp_check_status <- function(resp, info = NULL, error_call = caller_env()) {
   if (!resp_is_error(resp)) {
     invisible(resp)
   } else {
-    cnd <- resp_failure_cnd(resp$request, resp, error_call = error_call)
+    cnd <- resp_failure_cnd(
+      resp$request,
+      resp,
+      info = info,
+      error_call = error_call
+    )
     cnd_signal(cnd)
   }
 }
