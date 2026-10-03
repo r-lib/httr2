@@ -271,7 +271,7 @@ handle_preflight <- function(req, handle) {
   )
   # Save final request headers so that req_verbose() can use them
   req$state$headers <- req$headers
-  invisible(handle)
+  req
 }
 
 req_completed <- function(req) {
