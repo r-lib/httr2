@@ -10,6 +10,9 @@
   returns it in the `query` element of its result; previously both
   omitted it ([@wikisqueaks](https://github.com/wikisqueaks),
   [\#868](https://github.com/r-lib/httr2/issues/868)).
+- [`req_dry_run()`](https://httr2.r-lib.org/dev/reference/req_dry_run.md)
+  once again redacts credentials added by `req_oauth_*()` and
+  [`req_auth_aws_v4()`](https://httr2.r-lib.org/dev/reference/req_auth_aws_v4.md).
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   now treats media types as case insensitive, as required by RFC 9110,
   so
