@@ -2,6 +2,9 @@
 
 ## httr2 (development version)
 
+- [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md)
+  now respects `Cache-Control: no-store` when it isn’t the first
+  directive ([\#874](https://github.com/r-lib/httr2/issues/874)).
 - [`req_dry_run()`](https://httr2.r-lib.org/dev/reference/req_dry_run.md)
   now shows the URL’s query string in the printed request line and
   returns it in the `query` element of its result; previously both
