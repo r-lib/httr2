@@ -274,6 +274,7 @@ cache_post_fetch <- function(req, resp, path = NULL) {
       cli::cli_text("Cached value still ok; retrieving body from cache")
     }
 
+    resp$status_code <- cached_resp$status_code
     # Combine headers
     resp$headers <- cache_headers(cached_resp, resp)
     # Replace body with cached result
