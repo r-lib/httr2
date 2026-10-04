@@ -393,5 +393,5 @@ resp_cache_control <- function(resp) {
   keys <- map_chr(keyvalues, \(x) x[[1]])
   values <- map(keyvalues, \(x) x[[2]])
 
-  c(list(flags = flags), stats::setNames(values, keys))
+  c(list(flags = flags), set_names(values, keys))
 }
