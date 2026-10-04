@@ -20,6 +20,8 @@
   no longer errors on a response with `Content-Type: Application/JSON`
   ([@dylanpulver](https://github.com/dylanpulver),
   [\#871](https://github.com/r-lib/httr2/issues/871)).
+- [`secret_decrypt_file()`](https://httr2.r-lib.org/dev/reference/secrets.md)
+  now makes the decrypted file read-only, as intended.
 
 ## httr2 1.3.0
 
