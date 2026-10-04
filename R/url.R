@@ -365,7 +365,13 @@ format_query_param <- function(
     x
   } else {
     if (!is.character(x)) {
-      x <- format(x, scientific = FALSE, trim = TRUE, justify = "none")
+      x <- format(
+        x,
+        scientific = FALSE,
+        digits = 15,
+        trim = TRUE,
+        justify = "none"
+      )
     }
     x <- curl::curl_escape(x)
     if (form) {
