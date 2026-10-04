@@ -44,6 +44,23 @@
       Status: 200 OK
       Body: Streaming connection
 
+# resp_raw() shows the raw response
+
+    Code
+      resp_raw(response(200, headers = "X: 1", body = charToRaw("abc")))
+    Output
+      HTTP/1.1 200 OK
+      X: 1
+      Date: Wed, 01 Jan 2020 00:00:00 UTC
+      
+      abc
+    Code
+      resp_raw(response(204))
+    Output
+      HTTP/1.1 204 No Content
+      Date: Wed, 01 Jan 2020 00:00:00 UTC
+      
+
 # check_response produces helpful error
 
     Code
