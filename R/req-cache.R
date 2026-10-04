@@ -390,8 +390,8 @@ resp_cache_control <- function(resp) {
   flags <- pieces[!is_value]
 
   keyvalues <- strsplit(pieces[is_value], "\\s*=\\s*")
-  keys <- c(rep("flags", length(flags)), lapply(keyvalues, "[[", 1))
-  values <- c(flags, lapply(keyvalues, "[[", 2))
+  keys <- map_chr(keyvalues, \(x) x[[1]])
+  values <- map(keyvalues, \(x) x[[2]])
 
-  stats::setNames(values, keys)
+  c(list(flags = flags), stats::setNames(values, keys))
 }

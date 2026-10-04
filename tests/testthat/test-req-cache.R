@@ -288,6 +288,25 @@ test_that("can prune by size", {
 
 # headers -----------------------------------------------------------------
 
+test_that("can parse Cache-Control header", {
+  cache_control <- function(header) {
+    resp_cache_control(response(headers = paste0("Cache-Control: ", header)))
+  }
+
+  expect_equal(
+    cache_control("no-cache, no-store, max-age=0, must-revalidate"),
+    list(
+      flags = c("no-cache", "no-store", "must-revalidate"),
+      `max-age` = "0"
+    )
+  )
+  expect_equal(
+    cache_control("max-age=3600"),
+    list(flags = character(), `max-age` = "3600")
+  )
+  expect_null(resp_cache_control(response()))
+})
+
 test_that("correctly determines if response is cacheable", {
   is_cacheable <- function(...) {
     resp_is_cacheable(response(...))
@@ -298,6 +317,17 @@ test_that("correctly determines if response is cacheable", {
   expect_equal(is_cacheable(200, headers = "Etag: ABC"), TRUE)
   expect_equal(
     is_cacheable(200, headers = c("Etag: ABC", "Cache-Control: no-store")),
+    FALSE
+  )
+  expect_equal(
+    is_cacheable(
+      200,
+      headers = c("Etag: ABC", "Cache-Control: private, no-store")
+    ),
+    FALSE
+  )
+  expect_equal(
+    is_cacheable(200, headers = "Cache-Control: max-age=0, no-cache, no-store"),
     FALSE
   )
   expect_equal(is_cacheable(200), FALSE)
