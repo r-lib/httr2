@@ -14,10 +14,9 @@
 # resp_check_status() includes info in error message
 
     Code
-      resp_check_status(resp, info = c("Extra context.", i = "A hint."))
+      resp_check_status(resp, info = "Extra context.")
     Condition
       Error:
       ! HTTP 404 Not Found.
-      Extra context.
-      i A hint.
+      i Extra context.
 

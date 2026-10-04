@@ -15,7 +15,7 @@ test_that("get some useful output from WWW-Authenticate header", {
 test_that("resp_check_status() includes info in error message", {
   resp <- response(404)
   expect_snapshot(
-    resp_check_status(resp, info = c("Extra context.", i = "A hint.")),
+    resp_check_status(resp, info = "Extra context."),
     error = TRUE
   )
 })

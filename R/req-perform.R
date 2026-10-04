@@ -172,7 +172,7 @@ resp_failure_cnd <- function(
   body <- error_body(req, resp, error_call)
 
   catch_cnd(abort(
-    c(message, resp_auth_message(resp), i = body, info),
+    c(message, resp_auth_message(resp), i = body, i = info),
     status = status,
     resp = resp,
     request = req,
