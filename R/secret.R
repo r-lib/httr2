@@ -137,7 +137,7 @@ secret_decrypt_file <- function(path, key, envir = parent.frame()) {
   path <- tempfile()
   withr::defer(unlink(path), envir)
   writeBin(dec, path)
-  Sys.chmod(path, 400)
+  Sys.chmod(path, "400")
   path
 }
 
