@@ -13,6 +13,10 @@
 - [`req_dry_run()`](https://httr2.r-lib.org/dev/reference/req_dry_run.md)
   once again redacts credentials added by `req_oauth_*()` and
   [`req_auth_aws_v4()`](https://httr2.r-lib.org/dev/reference/req_auth_aws_v4.md).
+- [`req_error()`](https://httr2.r-lib.org/dev/reference/req_error.md)
+  and
+  [`req_retry()`](https://httr2.r-lib.org/dev/reference/req_retry.md)
+  now name the callback in arity errors.
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   now treats media types as case insensitive, as required by RFC 9110,
   so

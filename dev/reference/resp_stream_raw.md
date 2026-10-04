@@ -100,21 +100,21 @@ close(con)
 # You can also see what's happening by setting verbosity
 con <- req |> req_perform_connection(verbosity = 2)
 #> -> GET /stream/5 HTTP/1.1
-#> -> Host: 127.0.0.1:38229
+#> -> Host: 127.0.0.1:39543
 #> -> User-Agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> -> Accept: */*
 #> -> Accept-Encoding: deflate, gzip, br, zstd
 #> -> 
 #> <- HTTP/1.1 200 OK
-#> <- Date: Sun, 04 Oct 2026 15:49:41 GMT
+#> <- Date: Sun, 04 Oct 2026 21:33:33 GMT
 #> <- Content-Type: application/json
 #> <- Transfer-Encoding: chunked
 #> <- 
 while (!resp_stream_is_complete(con)) {
   lines <- con |> resp_stream_lines(2)
 }
-#> << {"url":"http://127.0.0.1:38229/stream/5","args":{},"headers":{"Host":"127.0.0.1:38229","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":0}<< {"url":"http://127.0.0.1:38229/stream/5","args":{},"headers":{"Host":"127.0.0.1:38229","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":1}
-#> << {"url":"http://127.0.0.1:38229/stream/5","args":{},"headers":{"Host":"127.0.0.1:38229","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":2}<< {"url":"http://127.0.0.1:38229/stream/5","args":{},"headers":{"Host":"127.0.0.1:38229","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":3}
-#> << {"url":"http://127.0.0.1:38229/stream/5","args":{},"headers":{"Host":"127.0.0.1:38229","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":4}
+#> << {"url":"http://127.0.0.1:39543/stream/5","args":{},"headers":{"Host":"127.0.0.1:39543","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":0}<< {"url":"http://127.0.0.1:39543/stream/5","args":{},"headers":{"Host":"127.0.0.1:39543","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":1}
+#> << {"url":"http://127.0.0.1:39543/stream/5","args":{},"headers":{"Host":"127.0.0.1:39543","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":2}<< {"url":"http://127.0.0.1:39543/stream/5","args":{},"headers":{"Host":"127.0.0.1:39543","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":3}
+#> << {"url":"http://127.0.0.1:39543/stream/5","args":{},"headers":{"Host":"127.0.0.1:39543","User-Agent":"httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0","Accept":"*/*","Accept-Encoding":"deflate, gzip, br, zstd"},"origin":"127.0.0.1","id":4}
 close(con)
 ```
