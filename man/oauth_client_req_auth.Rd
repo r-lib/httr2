@@ -39,20 +39,20 @@ A modified HTTP \link{request}.
 }
 \description{
 \code{oauth_client_req_auth()} authenticates a request using the authentication
-strategy defined by the \code{auth} and \code{auth_param} arguments to \code{\link[=oauth_client]{oauth_client()}}.
-This is used to authenticate the client as part of the OAuth flow, \strong{not}
-to authenticate a request on behalf of a user.
+strategy defined by the \code{auth} and \code{auth_params} arguments to
+\code{\link[=oauth_client]{oauth_client()}}. This is used to authenticate the client as part of the
+OAuth flow, \strong{not} to authenticate a request on behalf of a user.
 
 There are three built-in strategies:
 \itemize{
-\item \code{oauth_client_req_body()} adds the client id and (optionally) the secret
-to the request body, as described in \href{https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1}{Section 2.3.1 of RFC 6749}.
-\item \code{oauth_client_req_header()} adds the client id and secret using HTTP
+\item \code{oauth_client_req_auth_body()} adds the client id and (optionally) the
+secret to the request body, as described in \href{https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1}{Section 2.3.1 of RFC 6749}.
+\item \code{oauth_client_req_auth_header()} adds the client id and secret using HTTP
 basic authentication with the \code{Authorization} header, as described
 in \href{https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1}{Section 2.3.1 of RFC 6749}.
-\item \code{oauth_client_jwt_rs256()} adds a client assertion to the body using a
-JWT signed with \code{jwt_sign_rs256()} using a private key, as described
-in \href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.2}{Section 2.2 of RFC 7523}.
+\item \code{oauth_client_req_auth_jwt_sig()} adds a client assertion to the body
+using a JWT signed with \code{\link[=jwt_encode_sig]{jwt_encode_sig()}} using a private key, as
+described in \href{https://datatracker.ietf.org/doc/html/rfc7523#section-2.2}{Section 2.2 of RFC 7523}.
 }
 
 You will generally not call these functions directly but will instead
@@ -92,6 +92,6 @@ client3 <- oauth_client(
   auth = "jwt_sig",
   auth_params = list(claim = jwt_claim())
 )
-# calls oauth_client_req_auth_header_jwt_sig()
+# calls oauth_client_req_auth_jwt_sig()
 req_dry_run(oauth_client_req_auth(req, client3))
 }

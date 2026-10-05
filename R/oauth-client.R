@@ -20,9 +20,9 @@
 #'   instead supply a confidential private key. This should never be included
 #'   in a package.
 #' @param auth Authentication mechanism used by the client to prove itself to
-#'   the API. Can be one of three built-in methods ("body", "header", or "jwt"),
-#'   or a function that will be called with arguments `req`, `client`, and
-#'   the contents of `auth_params`.
+#'   the API. Can be one of three built-in methods (`"body"`, `"header"`, or
+#'   `"jwt_sig"`), or a function that will be called with arguments `req`,
+#'   `client`, and the contents of `auth_params`.
 #'
 #'   The most common mechanism in the wild is `"body"` where the `client_id` and
 #'   (optionally) `client_secret` are added to the body. `"header"` sends the
@@ -121,22 +121,22 @@ print.httr2_oauth_client <- function(x, ...) {
 #'
 #' @description
 #' `oauth_client_req_auth()` authenticates a request using the authentication
-#' strategy defined by the `auth` and `auth_param` arguments to [oauth_client()].
-#' This is used to authenticate the client as part of the OAuth flow, **not**
-#' to authenticate a request on behalf of a user.
+#' strategy defined by the `auth` and `auth_params` arguments to
+#' [oauth_client()]. This is used to authenticate the client as part of the
+#' OAuth flow, **not** to authenticate a request on behalf of a user.
 #'
 #' There are three built-in strategies:
 #'
-#' * `oauth_client_req_body()` adds the client id and (optionally) the secret
-#'   to the request body, as described in `r rfc(6749, "2.3.1")`.
+#' * `oauth_client_req_auth_body()` adds the client id and (optionally) the
+#'   secret to the request body, as described in `r rfc(6749, "2.3.1")`.
 #'
-#' * `oauth_client_req_header()` adds the client id and secret using HTTP
+#' * `oauth_client_req_auth_header()` adds the client id and secret using HTTP
 #'   basic authentication with the `Authorization` header, as described
 #'   in `r rfc(6749, "2.3.1")`.
 #'
-#' * `oauth_client_jwt_rs256()` adds a client assertion to the body using a
-#'   JWT signed with `jwt_sign_rs256()` using a private key, as described
-#'   in `r rfc(7523, 2.2)`.
+#' * `oauth_client_req_auth_jwt_sig()` adds a client assertion to the body
+#'   using a JWT signed with [jwt_encode_sig()] using a private key, as
+#'   described in `r rfc(7523, 2.2)`.
 #'
 #' You will generally not call these functions directly but will instead
 #' specify them through the `auth` argument to [oauth_client()]. The `req` and
@@ -178,7 +178,7 @@ print.httr2_oauth_client <- function(x, ...) {
 #'   auth = "jwt_sig",
 #'   auth_params = list(claim = jwt_claim())
 #' )
-#' # calls oauth_client_req_auth_header_jwt_sig()
+#' # calls oauth_client_req_auth_jwt_sig()
 #' req_dry_run(oauth_client_req_auth(req, client3))
 oauth_client_req_auth <- function(req, client) {
   exec(client$auth, req = req, client = client, !!!client$auth_params)
