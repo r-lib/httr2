@@ -59,6 +59,8 @@
 <li>
 <code><a href="../reference/resp_check_content_type.html">resp_check_content_type()</a></code> now treats media types as case insensitive, as required by RFC 9110, so <code><a href="../reference/resp_body_raw.html">resp_body_json()</a></code> no longer errors on a response with <code>Content-Type: Application/JSON</code> (<a href="https://github.com/dylanpulver" class="external-link">@dylanpulver</a>, <a href="https://github.com/r-lib/httr2/issues/871" class="external-link">#871</a>).</li>
 <li>
+<code><a href="../reference/resp_raw.html">resp_raw()</a></code> no longer errors on responses without a body.</li>
+<li>
 <code><a href="../reference/secrets.html">secret_decrypt_file()</a></code> now makes the decrypted file read-only, as intended.</li>
 </ul></div>
     <div class="section level2">

@@ -85,25 +85,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Sun, 04 Oct 2026 21:35:30 GMT
+#> <- last-modified: Mon, 05 Oct 2026 18:07:08 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6ac2c6a2-4c24"
-#> <- expires: Mon, 05 Oct 2026 18:16:06 GMT
+#> <- etag: W/"6ac3e74c-4c24"
+#> <- expires: Mon, 05 Oct 2026 19:53:53 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: DF68:1BD8EF:4499AC:498E9A:6AC3E70E
+#> <- x-github-request-id: CD9E:54A8:7CE8F3:83729C:6AC3FDF6
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Mon, 05 Oct 2026 18:06:20 GMT
+#> <- date: Mon, 05 Oct 2026 21:11:26 GMT
 #> <- via: 1.1 varnish
-#> <- age: 14
-#> <- x-served-by: cache-dfw-kdfw8210089-DFW
+#> <- age: 17
+#> <- x-served-by: cache-dfw-kdfw8210163-DFW
 #> <- x-cache: HIT
 #> <- x-cache-hits: 1
-#> <- x-timer: S1791223580.448237,VS0,VE2
+#> <- x-timer: S1791234686.325972,VS0,VE3
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 41401a99604dd10ff9e64e80117f7f73a287c8c1
+#> <- x-fastly-request-id: 9adda75148880a087866010e9210bd3ade8e7c23
 #> <- content-length: 4860
 #> <- 
 
@@ -119,25 +119,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Sun, 04 Oct 2026 21:35:30 GMT
+#> <- last-modified: Mon, 05 Oct 2026 18:07:08 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6ac2c6a2-4c24"
-#> <- expires: Mon, 05 Oct 2026 18:16:06 GMT
+#> <- etag: W/"6ac3e74c-4c24"
+#> <- expires: Mon, 05 Oct 2026 19:53:53 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: DF68:1BD8EF:4499AC:498E9A:6AC3E70E
+#> <- x-github-request-id: CD9E:54A8:7CE8F3:83729C:6AC3FDF6
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Mon, 05 Oct 2026 18:06:20 GMT
+#> <- date: Mon, 05 Oct 2026 21:11:26 GMT
 #> <- via: 1.1 varnish
-#> <- age: 14
-#> <- x-served-by: cache-dfw-kdfw8210089-DFW
+#> <- age: 17
+#> <- x-served-by: cache-dfw-kdfw8210163-DFW
 #> <- x-cache: HIT
 #> <- x-cache-hits: 2
-#> <- x-timer: S1791223580.472014,VS0,VE1
+#> <- x-timer: S1791234686.357461,VS0,VE3
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: e69052e2335c83267ab7cebe74dc847a51d3adf4
+#> <- x-fastly-request-id: d56e619e464ceeea7329d1a3b0c8aca329bea786
 #> <- content-length: 4860
 #> <- 
 ```
