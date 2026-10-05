@@ -6,6 +6,7 @@
 * `req_error()` and `req_retry()` now name the callback in arity errors.
 * `resp_check_content_type()` now treats media types as case insensitive, as required by RFC 9110, so `resp_body_json()` no longer errors on a response with `Content-Type: Application/JSON` (@dylanpulver, #871).
 * `resp_check_status()` once again includes `info` in the error message.
+* `resp_raw()` no longer errors on responses without a body.
 * `secret_decrypt_file()` now makes the decrypted file read-only, as intended.
 
 # httr2 1.3.0
