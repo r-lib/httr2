@@ -96,7 +96,7 @@ explode <- function(x) {
       map(seq_along(x), function(i) x[i])
     }
   })
-  stats::setNames(
+  set_names(
     unlist(expanded, recursive = FALSE, use.names = FALSE),
     rep(names(x), lengths(expanded))
   )

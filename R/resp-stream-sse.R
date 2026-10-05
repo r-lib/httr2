@@ -128,8 +128,8 @@ parse_event <- function(event_data) {
   #  character, remove it from value.
   m <- regexec("([^:]*)(: ?)?(.*)", lines)
   matches <- regmatches(lines, m)
-  keys <- c("event", vapply(matches, function(x) x[2], character(1)))
-  values <- c("message", vapply(matches, function(x) x[4], character(1)))
+  keys <- c("event", map_chr(matches, \(x) x[2]))
+  values <- c("message", map_chr(matches, \(x) x[4]))
 
   for (i in seq_along(matches)) {
     key <- matches[[i]][2]

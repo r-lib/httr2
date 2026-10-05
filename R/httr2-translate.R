@@ -176,7 +176,7 @@ curl_body_data <- function(body, type, params = list(auto_unbox = TRUE)) {
 }
 
 curl_body_multipart <- function(body) {
-  unlist(Map(curl_body_multipart_field, names(body), body), use.names = FALSE)
+  unlist(map2(names(body), body, curl_body_multipart_field), use.names = FALSE)
 }
 
 curl_body_multipart_field <- function(name, value) {
