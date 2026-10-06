@@ -82,7 +82,7 @@ req_perform_sequential <- function(
             httr2_error = function(err) err
           )
         } else {
-          resps[[i]] <- req_perform(reqs[[i]], path = paths[[i]])
+          resps[[i]] <- req_perform(reqs[[i]], path = paths[[i]], mock = mock)
         }
         if (err_return && is_error(resps[[i]])) {
           break
