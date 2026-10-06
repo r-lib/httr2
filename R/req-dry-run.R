@@ -18,7 +18,7 @@
 #'
 #'   * The default `User-Agent`, which varies based on libcurl, curl, and
 #'     httr2 versions.
-#'   * The `Host`` header, which is often set to a testing server.
+#'   * The `Host` header, which is often set to a testing server.
 #'   * The `Content-Length` header, which will often vary by platform because
 #'     of varying newline encodings. (And is also not correct if you have
 #'     `pretty_json = TRUE`.)
