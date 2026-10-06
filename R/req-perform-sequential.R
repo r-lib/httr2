@@ -74,7 +74,7 @@ req_perform_sequential <- function(
   tryCatch(
     {
       for (i in seq_along(reqs)) {
-        check_request(reqs[[i]], arg = glue::glue("req[[{i}]]"))
+        check_request(reqs[[i]], arg = glue::glue("reqs[[{i}]]"))
 
         if (err_catch) {
           resps[[i]] <- tryCatch(
@@ -109,7 +109,7 @@ check_paths <- function(paths, reqs, error_call = caller_env()) {
     check_character(paths)
     if (length(reqs) != length(paths)) {
       cli::cli_abort(
-        "If supplied, {.arg paths} must be the same length as {.arg req}.",
+        "If supplied, {.arg paths} must be the same length as {.arg reqs}.",
         call = error_call
       )
     }
