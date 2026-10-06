@@ -27,7 +27,7 @@ currently includes:
 \itemize{
 \item The default \code{User-Agent}, which varies based on libcurl, curl, and
 httr2 versions.
-\item The `Host`` header, which is often set to a testing server.
+\item The \code{Host} header, which is often set to a testing server.
 \item The \code{Content-Length} header, which will often vary by platform because
 of varying newline encodings. (And is also not correct if you have
 \code{pretty_json = TRUE}.)
