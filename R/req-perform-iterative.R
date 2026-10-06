@@ -119,7 +119,7 @@ req_perform_iterative <- function(
   check_number_whole(max_reqs, allow_infinite = TRUE, min = 1)
   check_string(path, allow_empty = FALSE, allow_null = TRUE)
   on_error <- arg_match(on_error)
-  mock <- as_mock_function(mock, error_call)
+  mock <- as_mock_function(mock)
 
   get_path <- function(i) {
     if (is.null(path)) {
