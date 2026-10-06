@@ -94,7 +94,7 @@ accidentally leaking credentials when debugging/reprexing.</p></dd>
 be automatically added, which are likely to change across test runs. This
 currently includes:</p><ul><li><p>The default <code>User-Agent</code>, which varies based on libcurl, curl, and
 httr2 versions.</p></li>
-<li><p>The `Host“ header, which is often set to a testing server.</p></li>
+<li><p>The <code>Host</code> header, which is often set to a testing server.</p></li>
 <li><p>The <code>Content-Length</code> header, which will often vary by platform because
 of varying newline encodings. (And is also not correct if you have
 <code>pretty_json = TRUE</code>.)</p></li>

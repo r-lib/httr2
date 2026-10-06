@@ -110,9 +110,9 @@ in a package.</p></dd>
 
 <dt id="arg-auth">auth<a class="anchor" aria-label="anchor" href="#arg-auth"></a></dt>
 <dd><p>Authentication mechanism used by the client to prove itself to
-the API. Can be one of three built-in methods ("body", "header", or "jwt"),
-or a function that will be called with arguments <code>req</code>, <code>client</code>, and
-the contents of <code>auth_params</code>.</p>
+the API. Can be one of three built-in methods (<code>"body"</code>, <code>"header"</code>, or
+<code>"jwt_sig"</code>), or a function that will be called with arguments <code>req</code>,
+<code>client</code>, and the contents of <code>auth_params</code>.</p>
 <p>The most common mechanism in the wild is <code>"body"</code> where the <code>client_id</code> and
 (optionally) <code>client_secret</code> are added to the body. <code>"header"</code> sends the
 <code>client_id</code> and <code>client_secret</code> in HTTP Authorization header. <code>"jwt_sig"</code>

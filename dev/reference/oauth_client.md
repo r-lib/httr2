@@ -53,8 +53,8 @@ oauth_client(
 - auth:
 
   Authentication mechanism used by the client to prove itself to the
-  API. Can be one of three built-in methods ("body", "header", or
-  "jwt"), or a function that will be called with arguments `req`,
+  API. Can be one of three built-in methods (`"body"`, `"header"`, or
+  `"jwt_sig"`), or a function that will be called with arguments `req`,
   `client`, and the contents of `auth_params`.
 
   The most common mechanism in the wild is `"body"` where the

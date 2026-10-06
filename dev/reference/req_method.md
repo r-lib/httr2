@@ -31,14 +31,14 @@ A modified HTTP
 ``` r
 request(example_url()) |> req_method("PATCH")
 #> <httr2_request>
-#> PATCH http://127.0.0.1:33263/
+#> PATCH http://127.0.0.1:37617/
 #> Body: empty
 request(example_url()) |> req_method("PUT")
 #> <httr2_request>
-#> PUT http://127.0.0.1:33263/
+#> PUT http://127.0.0.1:37617/
 #> Body: empty
 request(example_url()) |> req_method("HEAD")
 #> <httr2_request>
-#> HEAD http://127.0.0.1:33263/
+#> HEAD http://127.0.0.1:37617/
 #> Body: empty
 ```
