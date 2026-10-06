@@ -9,8 +9,8 @@
       oauth_flow_check("test", client, is_confidential = TRUE)
     Condition
       Error:
-      ! Can't use this `app` with OAuth 2.0 test flow.
-      i `app` must have a confidential client (i.e. `client_secret` is required).
+      ! Can't use this `client` with OAuth 2.0 test flow.
+      i `client` must be a confidential client (i.e. `secret` or `key` is required).
     Code
       oauth_flow_check("test", client, interactive = TRUE)
     Condition

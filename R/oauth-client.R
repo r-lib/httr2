@@ -263,8 +263,8 @@ oauth_flow_check <- function(
   if (is_confidential && is.null(client$secret) && is.null(client$key)) {
     cli::cli_abort(
       c(
-        "Can't use this {.arg app} with OAuth 2.0 {flow} flow.",
-        i = "{.arg app} must have a confidential client (i.e. {.arg client_secret} is required)."
+        "Can't use this {.arg client} with OAuth 2.0 {flow} flow.",
+        i = "{.arg client} must be a confidential client (i.e. {.arg secret} or {.arg key} is required)."
       ),
       call = error_call
     )
