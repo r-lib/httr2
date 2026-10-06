@@ -17,6 +17,8 @@
   and
   [`req_retry()`](https://httr2.r-lib.org/dev/reference/req_retry.md)
   now name the callback in arity errors.
+- [`req_perform_sequential()`](https://httr2.r-lib.org/dev/reference/req_perform_sequential.md)
+  no longer ignores `mock` when `on_error = "stop"`.
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   now treats media types as case insensitive, as required by RFC 9110,
   so
