@@ -6,7 +6,7 @@
 #' * `resp_stream_sse()` retrieves a single [server-sent
 #'   event](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
 #' * `resp_stream_aws()` retrieves a single event from an AWS stream
-#'   (i.e. mime type `application/vnd.amazon.eventstream``).
+#'   (i.e. mime type `application/vnd.amazon.eventstream`).
 #'
 #' Use `resp_stream_is_complete()` to determine if there is further data
 #' waiting on the stream.
