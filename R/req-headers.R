@@ -54,7 +54,7 @@
 #'   req_headers(!!!headers, HeaderThree = "three") |>
 #'   req_dry_run()
 #'
-#' # Use `req_headers_redacted()`` to hide a header in the output
+#' # Use `req_headers_redacted()` to hide a header in the output
 #' req_secret <- req |>
 #'   req_headers_redacted(Secret = "this-is-private") |>
 #'   req_headers(Public = "but-this-is-not")

@@ -62,7 +62,7 @@ no event is currently available.
 \item \code{resp_stream_lines()} retrieves lines of text (\code{character} vectors).
 \item \code{resp_stream_sse()} retrieves a single \href{https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events}{server-sent event}.
 \item \code{resp_stream_aws()} retrieves a single event from an AWS stream
-(i.e. mime type `application/vnd.amazon.eventstream``).
+(i.e. mime type \code{application/vnd.amazon.eventstream}).
 }
 
 Use \code{resp_stream_is_complete()} to determine if there is further data
