@@ -25,7 +25,7 @@ multi_dots <- function(
     )
   }
 
-  type_ok <- map_lgl(dots, function(x) is_atomic(x) || is.null(x))
+  type_ok <- map_lgl(dots, \(x) is_atomic(x) || is.null(x))
   if (any(!type_ok)) {
     cli::cli_abort(
       "All elements of {.arg {error_arg}} must be either an atomic vector or NULL.",
@@ -93,7 +93,7 @@ explode <- function(x) {
     if (is.null(x)) {
       list(NULL)
     } else {
-      map(seq_along(x), function(i) x[i])
+      map(seq_along(x), \(i) x[i])
     }
   })
   set_names(
