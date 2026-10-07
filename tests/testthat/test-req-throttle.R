@@ -91,14 +91,14 @@ test_that("multiple limits recycle and accept rate", {
 
   request_test() |> req_throttle(capacity = c(4, 200), fill_time_s = c(1, 3600))
   buckets <- the$throttle[["127.0.0.1"]]
-  expect_equal(map_dbl(buckets, function(b) b$capacity), c(4, 200))
-  expect_equal(map_dbl(buckets, function(b) b$fill_rate), c(4, 200 / 3600))
+  expect_equal(map_dbl(buckets, \(b) b$capacity), c(4, 200))
+  expect_equal(map_dbl(buckets, \(b) b$fill_rate), c(4, 200 / 3600))
 
   throttle_reset()
   request_test() |>
     req_throttle(rate = c(4, 200 / 3600), fill_time_s = c(1, 3600))
   buckets <- the$throttle[["127.0.0.1"]]
-  expect_equal(map_dbl(buckets, function(b) b$capacity), c(4, 200))
+  expect_equal(map_dbl(buckets, \(b) b$capacity), c(4, 200))
 })
 
 test_that("throttle reset when number of limits changes", {

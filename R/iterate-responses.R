@@ -62,7 +62,7 @@ resps_ok <- function(resps) {
 #' @export
 #' @rdname resps_successes
 resps_requests <- function(resps) {
-  lapply(resps, function(x) x$request)
+  lapply(resps, \(x) x$request)
 }
 
 #' @export

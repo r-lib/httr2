@@ -300,7 +300,7 @@ add_curl_step <- function(
   }
 
   names <- quote_name(names2(args))
-  string <- map_lgl(args, function(x) is.character(x) && !inherits(x, "AsIs"))
+  string <- map_lgl(args, \(x) is.character(x) && !inherits(x, "AsIs"))
   values <- unlist(args)
   values <- ifelse(string, encode_string2(values), values)
 
