@@ -31,7 +31,7 @@ req_options <- function(.req, ...) {
 #'
 #' @inheritParams req_perform
 #' @param string String to be sent in the `User-Agent` header. If `NULL`,
-#'   will user default.
+#'   will use the default.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples

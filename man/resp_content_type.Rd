@@ -18,10 +18,9 @@ will return a character \code{NA}; if no encoding is specified,
 \code{resp_encoding()} will return \code{"UTF-8"}.
 }
 \description{
-\code{resp_content_type()} returns the just the type and subtype of the
-from the \code{Content-Type} header. If \code{Content-Type} is not provided; it
-returns \code{NA}. Used by \code{\link[=resp_body_json]{resp_body_json()}}, \code{\link[=resp_body_html]{resp_body_html()}}, and
-\code{\link[=resp_body_xml]{resp_body_xml()}}.
+\code{resp_content_type()} returns just the type and subtype from the
+\code{Content-Type} header. If \code{Content-Type} is not provided, it returns \code{NA}.
+Used by \code{\link[=resp_body_json]{resp_body_json()}}, \code{\link[=resp_body_html]{resp_body_html()}}, and \code{\link[=resp_body_xml]{resp_body_xml()}}.
 
 \code{resp_encoding()} returns the likely character encoding of text
 types, as parsed from the \code{charset} parameter of the \code{Content-Type}

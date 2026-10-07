@@ -10,7 +10,7 @@ with_verbosity(code, verbosity = 1)
 local_verbosity(verbosity, env = caller_env())
 }
 \arguments{
-\item{code}{Code to execture}
+\item{code}{Code to execute}
 
 \item{verbosity}{How much information to print? This is a wrapper
 around \code{\link[=req_verbose]{req_verbose()}} that uses an integer to control verbosity:

@@ -41,7 +41,7 @@ used as the basis for a separate client assertion unless the client
 supplies its own \code{claim} in \code{auth_params}. The client assertion claim uses
 \code{client$id} as its \code{sub}.}
 
-\item{signature}{Function use to sign \code{claim}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
+\item{signature}{Function used to sign \code{claim}, e.g. \code{\link[=jwt_encode_sig]{jwt_encode_sig()}}.}
 
 \item{signature_params}{Additional arguments passed to \code{signature}, e.g.
 \code{size}, \code{header}.}

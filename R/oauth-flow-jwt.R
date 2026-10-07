@@ -23,7 +23,7 @@
 #'   used as the basis for a separate client assertion unless the client
 #'   supplies its own `claim` in `auth_params`. The client assertion claim uses
 #'   `client$id` as its `sub`.
-#' @param signature Function use to sign `claim`, e.g. [jwt_encode_sig()].
+#' @param signature Function used to sign `claim`, e.g. [jwt_encode_sig()].
 #' @param signature_params Additional arguments passed to `signature`, e.g.
 #'   `size`, `header`.
 #' @returns `req_oauth_bearer_jwt()` returns a modified HTTP [request] that will

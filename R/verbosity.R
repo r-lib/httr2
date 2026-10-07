@@ -11,7 +11,7 @@
 #' changed outside of R.
 #'
 #' @inheritParams req_perform
-#' @param code Code to execture
+#' @param code Code to execute
 #' @returns `with_verbosity()` returns the result of evaluating `code`.
 #'   `local_verbosity()` is called for its side-effect and invisibly returns
 #'   the previous value of the option.
