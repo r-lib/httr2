@@ -97,6 +97,7 @@ req_perform_sequential <- function(
       if (is.null(resps[[i]])) {
         i <- i - 1
       }
+      resps <<- resps[seq_len(i)]
       cli::cli_alert_warning(
         "Terminating iteration; returning {i} response{?s}."
       )
