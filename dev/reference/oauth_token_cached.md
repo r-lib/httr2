@@ -4,7 +4,7 @@ This function wraps around a `oauth_flow_` function to retrieve a token
 from the cache, or to generate and cache a token if needed. Use this for
 manual token management that still takes advantage of httr2's caching
 system. You should only need to use this function if you're passing the
-token
+token to something other than an httr2 request.
 
 ## Usage
 

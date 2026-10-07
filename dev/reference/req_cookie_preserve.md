@@ -46,7 +46,7 @@ request(example_url()) |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> cookie: a=1;b=1
-#> host: 127.0.0.1:43717
+#> host: 127.0.0.1:45771
 #> user-agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> 
 
@@ -65,7 +65,7 @@ request(example_url()) |>
 #> 
 #> 
 
-# Set another sever-side cookie
+# Set another server-side cookie
 request(example_url()) |>
   req_cookie_preserve(path) |>
   req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") |>

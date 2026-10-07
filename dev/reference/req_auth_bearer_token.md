@@ -20,7 +20,7 @@ req_auth_bearer_token(req, token)
 
 - token:
 
-  A bearer token
+  A bearer token.
 
 ## Value
 

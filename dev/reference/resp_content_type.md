@@ -1,7 +1,7 @@
 # Extract response content type and encoding
 
-`resp_content_type()` returns the just the type and subtype of the from
-the `Content-Type` header. If `Content-Type` is not provided; it returns
+`resp_content_type()` returns just the type and subtype from the
+`Content-Type` header. If `Content-Type` is not provided, it returns
 `NA`. Used by
 [`resp_body_json()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md),
 [`resp_body_html()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md),

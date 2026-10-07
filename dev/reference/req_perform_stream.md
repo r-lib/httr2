@@ -65,7 +65,7 @@ HTTP response body if the request was unsuccessful.
 ## Examples
 
 ``` r
-# PREVIOSULY
+# PREVIOUSLY
 show_bytes <- function(x) {
   cat("Got ", length(x), " bytes\n", sep = "")
   TRUE

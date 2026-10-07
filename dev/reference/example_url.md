@@ -1,6 +1,6 @@
 # Code for examples
 
-`example_url()` runs a simple websever using the webfakes package with
+`example_url()` runs a simple webserver using the webfakes package with
 the following endpoints:
 
 - all the ones from the

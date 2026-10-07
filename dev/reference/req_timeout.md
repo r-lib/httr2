@@ -18,7 +18,7 @@ req_timeout(req, seconds)
 
 - seconds:
 
-  Maximum number of seconds to wait
+  Maximum number of seconds to wait.
 
 ## Value
 

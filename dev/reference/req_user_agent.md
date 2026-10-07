@@ -18,7 +18,7 @@ req_user_agent(req, string = NULL)
 
 - string:
 
-  String to be sent in the `User-Agent` header. If `NULL`, will user
+  String to be sent in the `User-Agent` header. If `NULL`, will use the
   default.
 
 ## Value

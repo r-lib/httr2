@@ -37,7 +37,7 @@ req_oauth(req, flow, flow_params, cache, expiry_margin = 30)
 
   - `set()` saves the token to the cache.
 
-  - `clear()` removes the token from the cache
+  - `clear()` removes the token from the cache.
 
 - expiry_margin:
 

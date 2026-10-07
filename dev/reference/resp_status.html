@@ -5,7 +5,7 @@ resp_status() retrieves the numeric HTTP status code
 resp_status_desc() retrieves the brief textual description.
 resp_is_error() returns TRUE if the status code represents an error
 (i.e. a 4xx or 5xx status).
-resp_check_status() turns HTTPs errors into R errors.
+resp_check_status() turns HTTP errors into R errors.
 
 
 These functions are mostly for internal use because in most cases you
@@ -24,7 +24,7 @@ resp_status() retrieves the numeric HTTP status code
 resp_status_desc() retrieves the brief textual description.
 resp_is_error() returns TRUE if the status code represents an error
 (i.e. a 4xx or 5xx status).
-resp_check_status() turns HTTPs errors into R errors.
+resp_check_status() turns HTTP errors into R errors.
 
 
 These functions are mostly for internal use because in most cases you
@@ -91,7 +91,7 @@ e.g. req |&amp;gt; req_error(is_error = \(resp) FALSE).
 <li><p><code>resp_status_desc()</code> retrieves the brief textual description.</p></li>
 <li><p><code>resp_is_error()</code> returns <code>TRUE</code> if the status code represents an error
 (i.e. a 4xx or 5xx status).</p></li>
-<li><p><code>resp_check_status()</code> turns HTTPs errors into R errors.</p></li>
+<li><p><code>resp_check_status()</code> turns HTTP errors into R errors.</p></li>
 </ul><p>These functions are mostly for internal use because in most cases you
 will only ever see a 200 response:</p><ul><li><p>1xx are handled internally by curl.</p></li>
 <li><p>3xx redirects are automatically followed. You will only see them if you

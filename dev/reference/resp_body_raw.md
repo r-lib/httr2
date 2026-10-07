@@ -51,7 +51,7 @@ resp_body_xml(resp, check_type = TRUE, ...)
 - check_type:
 
   Check that response has expected content type? Set to `FALSE` to
-  suppress the automated check
+  suppress the automated check.
 
 - simplifyVector:
 

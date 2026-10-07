@@ -45,7 +45,7 @@ req_get_body(req, obfuscated = c("remove", "redact", "reveal"))
 
   Form and JSON bodies can contain
   [obfuscated](https://httr2.r-lib.org/dev/reference/obfuscate.md)
-  values. This argument control what happens to them: should they be
+  values. This argument controls what happens to them: should they be
   removed, redacted, or revealed.
 
 ## Examples

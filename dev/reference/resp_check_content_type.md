@@ -31,7 +31,8 @@ resp_check_content_type(
 
 - valid_suffix:
 
-  A string given an "structured media type" suffix.
+  A structured syntax suffix, e.g. `"json"`. Types ending in that
+  suffix, like `application/problem+json`, are also accepted.
 
 - check_type:
 

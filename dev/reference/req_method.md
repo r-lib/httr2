@@ -19,7 +19,7 @@ req_method(req, method)
 
 - method:
 
-  Custom HTTP method
+  Custom HTTP method.
 
 ## Value
 
@@ -31,14 +31,14 @@ A modified HTTP
 ``` r
 request(example_url()) |> req_method("PATCH")
 #> <httr2_request>
-#> PATCH http://127.0.0.1:43717/
+#> PATCH http://127.0.0.1:45771/
 #> Body: empty
 request(example_url()) |> req_method("PUT")
 #> <httr2_request>
-#> PUT http://127.0.0.1:43717/
+#> PUT http://127.0.0.1:45771/
 #> Body: empty
 request(example_url()) |> req_method("HEAD")
 #> <httr2_request>
-#> HEAD http://127.0.0.1:43717/
+#> HEAD http://127.0.0.1:45771/
 #> Body: empty
 ```

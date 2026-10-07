@@ -5,16 +5,16 @@ in [Section 6 of RFC
 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-6).
 
 This technique is primarily useful for testing: you can manually
-retrieve a OAuth token using another OAuth flow (e.g. with
+retrieve an OAuth token using another OAuth flow (e.g. with
 [`oauth_flow_auth_code()`](https://httr2.r-lib.org/dev/reference/req_oauth_auth_code.md)),
-extract the refresh token from the result, and then save in an
+extract the refresh token from the result, and then save it in an
 environment variable for use in automated tests.
 
 When requesting an access token, the server may also return a new
 refresh token. If this happens, `oauth_flow_refresh()` will warn, and
-you'll have retrieve a new update refresh token and update the stored
-value. If you find this happening a lot, it's a sign that you should be
-using a different flow in your automated tests.
+you'll have to retrieve a new refresh token and update the stored value.
+If you find this happening a lot, it's a sign that you should be using a
+different flow in your automated tests.
 
 Learn more about the overall OAuth authentication flow in
 <https://httr2.r-lib.org/articles/oauth.html>.

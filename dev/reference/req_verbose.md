@@ -40,7 +40,7 @@ req_verbose(
 
 - body_req, body_resp:
 
-  Should request/response bodies? When the response body is compressed,
+  Show request/response bodies? When the response body is compressed,
   this will show the number of bytes received in each "chunk".
 
 - info:
@@ -85,25 +85,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Tue, 06 Oct 2026 22:53:49 GMT
+#> <- last-modified: Wed, 07 Oct 2026 13:53:32 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6ac57bfd-4c24"
-#> <- expires: Wed, 07 Oct 2026 14:01:24 GMT
+#> <- etag: W/"6ac64edc-4c24"
+#> <- expires: Wed, 07 Oct 2026 14:04:05 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 4B96:22C435:24DC9D:281762:6AC64E5C
+#> <- x-github-request-id: D36E:28A1CF:186D78:1D4428:6AC64EFD
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Wed, 07 Oct 2026 13:51:40 GMT
+#> <- date: Wed, 07 Oct 2026 13:54:22 GMT
 #> <- via: 1.1 varnish
-#> <- age: 15
-#> <- x-served-by: cache-phx1710093-PHX
+#> <- age: 16
+#> <- x-served-by: cache-iad-kcgs7200058-IAD
 #> <- x-cache: HIT
 #> <- x-cache-hits: 1
-#> <- x-timer: S1791381100.175919,VS0,VE1
+#> <- x-timer: S1791381262.077915,VS0,VE4
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 4d109627b95f714e6e34db00d58af30a150e9fdb
+#> <- x-fastly-request-id: 48db4dde530986bf5ade1d32c9117393095a8966
 #> <- content-length: 4860
 #> <- 
 
@@ -119,25 +119,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Tue, 06 Oct 2026 22:53:49 GMT
+#> <- last-modified: Wed, 07 Oct 2026 13:53:32 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6ac57bfd-4c24"
-#> <- expires: Wed, 07 Oct 2026 14:01:24 GMT
+#> <- etag: W/"6ac64edc-4c24"
+#> <- expires: Wed, 07 Oct 2026 14:04:05 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 4B96:22C435:24DC9D:281762:6AC64E5C
+#> <- x-github-request-id: D36E:28A1CF:186D78:1D4428:6AC64EFD
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Wed, 07 Oct 2026 13:51:40 GMT
+#> <- date: Wed, 07 Oct 2026 13:54:22 GMT
 #> <- via: 1.1 varnish
-#> <- age: 15
-#> <- x-served-by: cache-phx1710093-PHX
+#> <- age: 16
+#> <- x-served-by: cache-iad-kcgs7200058-IAD
 #> <- x-cache: HIT
 #> <- x-cache-hits: 2
-#> <- x-timer: S1791381100.186767,VS0,VE0
+#> <- x-timer: S1791381262.096179,VS0,VE1
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 78454ff9f1f15e99a9ce7b47d7908003076469ed
+#> <- x-fastly-request-id: d5803c063d148ef192a4058b80281349acb46f89
 #> <- content-length: 4860
 #> <- 
 ```

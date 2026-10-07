@@ -62,7 +62,7 @@ oauth_flow_bearer_jwt(
 
 - signature:
 
-  Function use to sign `claim`, e.g.
+  Function used to sign `claim`, e.g.
   [`jwt_encode_sig()`](https://httr2.r-lib.org/dev/reference/jwt_claim.md).
 
 - signature_params:

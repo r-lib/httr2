@@ -42,9 +42,9 @@ jwt_encode_hmac(claim, secret, size = 256, header = list())
 
 - aud:
 
-  Audience claim. Identifies the recipients that the JWT is intended.
-  Each principle intended to process the JWT must be identified with a
-  unique value.
+  Audience claim. Identifies the recipients that the JWT is intended
+  for. Each principal intended to process the JWT must be identified
+  with a unique value.
 
 - exp:
 
@@ -106,6 +106,6 @@ str(claim)
 #>  $ exp: num 1.79e+09
 #>  $ nbf: num 1.79e+09
 #>  $ iat: num 1.79e+09
-#>  $ jti: chr "4Qi7w1ZcvnHyWEYjD4twizAxno0G2FQvT_xk_drRTdQ"
+#>  $ jti: chr "iQU3qPsmQRrIpYgL4MXccWCrXxhxJ1ndWK8M_3_cssU"
 #>  - attr(*, "class")= chr [1:2] "jwt_claim" "list"
 ```

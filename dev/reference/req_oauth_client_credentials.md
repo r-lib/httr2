@@ -4,7 +4,7 @@ Authenticate using OAuth **client credentials flow**, as defined by
 [Section 4.4 of RFC
 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4). It is
 used to allow the client to access resources that it controls directly,
-not on behalf of an user.
+not on behalf of a user.
 
 Learn more about the overall OAuth authentication flow in
 <https://httr2.r-lib.org/articles/oauth.html>.

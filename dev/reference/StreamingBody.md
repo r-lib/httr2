@@ -57,7 +57,7 @@ Read `n` bytes into a raw vector.
 
 - `n`:
 
-  Number of bytes to read
+  Number of bytes to read.
 
 ------------------------------------------------------------------------
 
