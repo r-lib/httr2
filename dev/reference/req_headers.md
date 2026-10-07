@@ -120,7 +120,7 @@ req |>
 #> user-agent: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0
 #> 
 
-# Use `req_headers_redacted()`` to hide a header in the output
+# Use `req_headers_redacted()` to hide a header in the output
 req_secret <- req |>
   req_headers_redacted(Secret = "this-is-private") |>
   req_headers(Public = "but-this-is-not")

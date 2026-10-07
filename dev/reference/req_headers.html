@@ -171,7 +171,7 @@ header is always redacted.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">user-agent</span>: httr2/1.3.0.9000 r-curl/8.0.0 libcurl/8.5.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Use `req_headers_redacted()`` to hide a header in the output</span></span></span>
+<span class="r-in"><span><span class="co"># Use `req_headers_redacted()` to hide a header in the output</span></span></span>
 <span class="r-in"><span><span class="va">req_secret</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">req_headers_redacted</span><span class="op">(</span>Secret <span class="op">=</span> <span class="st">"this-is-private"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">req_headers</span><span class="op">(</span>Public <span class="op">=</span> <span class="st">"but-this-is-not"</span><span class="op">)</span></span></span>
