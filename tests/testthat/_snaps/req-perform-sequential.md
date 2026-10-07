@@ -11,3 +11,10 @@
       Error in `req_perform_sequential()`:
       ! If supplied, `paths` must be the same length as `reqs`.
 
+# user termination returns completed responses
+
+    Code
+      resps <- req_perform_sequential(reqs)
+    Message
+      ! Terminating iteration; returning 1 response.
+
