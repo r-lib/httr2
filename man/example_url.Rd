@@ -10,7 +10,7 @@ example_url(path = "/")
 example_github_client()
 }
 \description{
-\code{example_url()} runs a simple websever using the webfakes package with the
+\code{example_url()} runs a simple webserver using the webfakes package with the
 following endpoints:
 \itemize{
 \item all the ones from the \code{\link[webfakes:httpbin_app]{webfakes::httpbin_app()}}

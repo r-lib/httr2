@@ -6,7 +6,8 @@
 #'
 #' @param valid_types A character vector of valid MIME types. Should only
 #'   be specified with `type/subtype`.
-#' @param valid_suffix A string given an "structured media type" suffix.
+#' @param valid_suffix A structured syntax suffix, e.g. `"json"`. Types ending
+#'   in that suffix, like `application/problem+json`, are also accepted.
 #' @param check_type Should the type actually be checked? Provided as a
 #'   convenience for when using this function inside `resp_body_*` helpers.
 #' @inheritParams resp_headers

@@ -84,7 +84,7 @@ resp_body_string <- function(resp, encoding = NULL) {
 }
 
 #' @param check_type Check that response has expected content type? Set to
-#'   `FALSE` to suppress the automated check
+#'   `FALSE` to suppress the automated check.
 #' @param simplifyVector Should JSON arrays containing only primitives (i.e.
 #'   booleans, numbers, and strings) be caused to atomic vectors?
 #' @param ... Other arguments passed on to [jsonlite::fromJSON()] and

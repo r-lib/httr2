@@ -44,7 +44,7 @@ request(example_url()) |>
   req_perform() |>
   resp_body_json()
 
-# Set another sever-side cookie
+# Set another server-side cookie
 request(example_url()) |>
   req_cookie_preserve(path) |>
   req_template("/cookies/set/:name/:value", name = "oatmeal", value = "raisin") |>

@@ -31,7 +31,7 @@ req_options <- function(.req, ...) {
 #'
 #' @inheritParams req_perform
 #' @param string String to be sent in the `User-Agent` header. If `NULL`,
-#'   will user default.
+#'   will use the default.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -77,7 +77,7 @@ curl_system_version <- function() curl::curl_version()$version
 #' An error will be thrown if the request does not complete in the time limit.
 #'
 #' @inheritParams req_perform
-#' @param seconds Maximum number of seconds to wait
+#' @param seconds Maximum number of seconds to wait.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples

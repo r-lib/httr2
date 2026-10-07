@@ -11,7 +11,7 @@
 #'   * `get()` retrieves the token from the cache, returning `NULL` if not
 #'     cached yet.
 #'   * `set()` saves the token to the cache.
-#'   * `clear()` removes the token from the cache
+#'   * `clear()` removes the token from the cache.
 #' @param flow An `oauth_flow_` function used to generate the access token.
 #' @param flow_params Parameters for the flow. This should be a named list
 #'   whose names match the argument names of `flow`.
@@ -94,7 +94,7 @@ auth_oauth_token_get <- function(
 #' from the cache, or to generate and cache a token if needed. Use this for
 #' manual token management that still takes advantage of httr2's caching
 #' system. You should only need to use this function if you're passing
-#' the token
+#' the token to something other than an httr2 request.
 #'
 #' @keywords internal
 #' @inheritParams req_oauth

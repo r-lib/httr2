@@ -10,7 +10,7 @@ req_user_agent(req, string = NULL)
 \item{req}{A httr2 \link{request} object.}
 
 \item{string}{String to be sent in the \code{User-Agent} header. If \code{NULL},
-will user default.}
+will use the default.}
 }
 \value{
 A modified HTTP \link{request}.

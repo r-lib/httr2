@@ -228,7 +228,7 @@ curl_fetch <- function(handle, url, path) {
 
 req_verbosity <- function(req, verbosity, error_call = caller_env()) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
-    cli::cli_abort("{.arg verbosity} must 0, 1, 2, or 3.", call = error_call)
+    cli::cli_abort("{.arg verbosity} must be 0, 1, 2, or 3.", call = error_call)
   }
 
   switch(

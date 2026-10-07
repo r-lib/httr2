@@ -48,7 +48,7 @@ ignored.}
 \code{type}, \code{data}, and \code{id} are always strings; \code{data} and \code{id} may be empty
 strings.
 \item \code{resp_stream_aws()}: a list with components \code{headers} and \code{body}.
-\code{body} will be automatically parsed if the event contents a \verb{:content-type}
+\code{body} will be automatically parsed if the event contains a \verb{:content-type}
 header with \code{application/json}.
 }
 

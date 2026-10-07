@@ -18,7 +18,7 @@
 #'   `type`, `data`, and `id` are always strings; `data` and `id` may be empty
 #'   strings.
 #' * `resp_stream_aws()`: a list with components `headers` and `body`.
-#'   `body` will be automatically parsed if the event contents a `:content-type`
+#'   `body` will be automatically parsed if the event contains a `:content-type`
 #'   header with `application/json`.
 #'
 #' `resp_stream_sse()` and `resp_stream_aws()` will return `NULL` to signal that

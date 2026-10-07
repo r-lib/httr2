@@ -30,7 +30,7 @@ UTF-8 with a warning if it cannot be found. The resulting string is
 always re-encoded to UTF-8.}
 
 \item{check_type}{Check that response has expected content type? Set to
-\code{FALSE} to suppress the automated check}
+\code{FALSE} to suppress the automated check.}
 
 \item{simplifyVector}{Should JSON arrays containing only primitives (i.e.
 booleans, numbers, and strings) be caused to atomic vectors?}

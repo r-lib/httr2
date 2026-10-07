@@ -19,7 +19,7 @@ req_verbose(
 
 \item{header_req, header_resp}{Show request/response headers?}
 
-\item{body_req, body_resp}{Should request/response bodies? When the response
+\item{body_req, body_resp}{Show request/response bodies? When the response
 body is compressed, this will show the number of bytes received in
 each "chunk".}
 

@@ -92,7 +92,7 @@ secret_encrypt <- function(x, key) {
 }
 #' @export
 #' @rdname secrets
-#' @param encrypted String to decrypt
+#' @param encrypted String to decrypt.
 secret_decrypt <- function(encrypted, key) {
   check_string(encrypted)
 
