@@ -199,7 +199,7 @@ StreamingBody <- R6::R6Class(
     },
 
     #' @description Read `n` bytes into a raw vector.
-    #' @param n Number of bytes to read
+    #' @param n Number of bytes to read.
     read = function(n) {
       readBin(private$conn, "raw", n)
     },

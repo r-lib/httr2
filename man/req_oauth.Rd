@@ -20,7 +20,7 @@ be a list containing three functions:
 \item \code{get()} retrieves the token from the cache, returning \code{NULL} if not
 cached yet.
 \item \code{set()} saves the token to the cache.
-\item \code{clear()} removes the token from the cache
+\item \code{clear()} removes the token from the cache.
 }}
 
 \item{expiry_margin}{Number of seconds before a token's stated expiry that

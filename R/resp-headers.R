@@ -41,7 +41,7 @@ resp_headers <- function(resp, filter = NULL) {
 }
 
 #' @export
-#' @param header Header name (case insensitive)
+#' @param header Header name (case insensitive).
 #' @param default Default value to use if header doesn't exist.
 #' @rdname resp_headers
 resp_header <- function(resp, header, default = NULL) {

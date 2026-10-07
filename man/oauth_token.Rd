@@ -14,7 +14,7 @@ oauth_token(
 )
 }
 \arguments{
-\item{access_token}{The access token used to authenticate request}
+\item{access_token}{The access token used to authenticate request.}
 
 \item{token_type}{Type of token; only \code{"bearer"} is currently supported.}
 
@@ -23,7 +23,7 @@ oauth_token(
 \item{refresh_token}{Optional refresh token; if supplied, this can be
 used to cheaply get a new access token when this one expires.}
 
-\item{...}{Additional components returned by the endpoint}
+\item{...}{Additional components returned by the endpoint.}
 
 \item{.date}{Date the request was made; used to convert the relative
 \code{expires_in} to an absolute \code{expires_at}.}

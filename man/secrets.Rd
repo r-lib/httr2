@@ -36,7 +36,7 @@ name of an environment variable. Alternatively, if you already have
 a base64url encoded string, you can wrap it in \code{I()}, or you can pass
 the raw vector in directly.}
 
-\item{encrypted}{String to decrypt}
+\item{encrypted}{String to decrypt.}
 
 \item{path}{Path to file to encrypted file to read or write. For
 \code{secret_write_rds()} and \code{secret_read_rds()} this should be an \code{.rds}

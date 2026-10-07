@@ -11,7 +11,7 @@
 #'   * `get()` retrieves the token from the cache, returning `NULL` if not
 #'     cached yet.
 #'   * `set()` saves the token to the cache.
-#'   * `clear()` removes the token from the cache
+#'   * `clear()` removes the token from the cache.
 #' @param flow An `oauth_flow_` function used to generate the access token.
 #' @param flow_params Parameters for the flow. This should be a named list
 #'   whose names match the argument names of `flow`.
