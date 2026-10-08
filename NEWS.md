@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * `req_cache()` now respects `Cache-Control: no-store` when it isn't the first directive (#874).
+* `req_cache()` no longer returns status 304 for revalidated responses.
 * `req_dry_run()` now shows the URL's query string in the printed request line and returns it in the `query` element of its result; previously both omitted it (@wikisqueaks, #868).
 * `req_dry_run()` once again redacts credentials added by `req_oauth_*()` and `req_auth_aws_v4()`.
 * `req_error()` and `req_retry()` now name the callback in arity errors.
