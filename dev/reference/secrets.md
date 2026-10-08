@@ -194,7 +194,7 @@ Sys.setenv("MY_KEY" = key)
 
 x <- secret_encrypt("This is a secret", "MY_KEY")
 x
-#> [1] "wXxpFqOGh53Vg6voMHtf4D9K0oQ725SCZx8AMtnQVhc"
+#> [1] "YzGk2ZwRpLfjV-V_qa8tZFDhOylmCPTbdqz4nJUp5Aw"
 secret_decrypt(x, "MY_KEY")
 #> [1] "This is a secret"
 ```

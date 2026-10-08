@@ -88,22 +88,22 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- last-modified: Wed, 07 Oct 2026 22:05:10 GMT
 #> <- access-control-allow-origin: *
 #> <- etag: W/"6ac6c216-4c24"
-#> <- expires: Wed, 07 Oct 2026 22:22:36 GMT
+#> <- expires: Wed, 07 Oct 2026 22:18:46 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 6A66:28DE7C:1BD13A:2175DC:6AC6C3D4
+#> <- x-github-request-id: F6EC:2E4781:344099:376222:6AC6C2EE
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Thu, 08 Oct 2026 01:28:04 GMT
+#> <- date: Thu, 08 Oct 2026 01:30:24 GMT
 #> <- via: 1.1 varnish
-#> <- age: 27
-#> <- x-served-by: cache-dfw-kdfw8210030-DFW
+#> <- age: 118
+#> <- x-served-by: cache-chi-kmdw8640079-CHI
 #> <- x-cache: HIT
-#> <- x-cache-hits: 1
-#> <- x-timer: S1791422884.465063,VS0,VE2
+#> <- x-cache-hits: 2
+#> <- x-timer: S1791423025.701726,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 0976f4390777500aad1171b9e4405959dbe99da9
+#> <- x-fastly-request-id: 74f9c4c2fa09323b8616508e3ce54a05c54f9535
 #> <- content-length: 4860
 #> <- 
 
@@ -122,22 +122,22 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- last-modified: Wed, 07 Oct 2026 22:05:10 GMT
 #> <- access-control-allow-origin: *
 #> <- etag: W/"6ac6c216-4c24"
-#> <- expires: Wed, 07 Oct 2026 22:22:36 GMT
+#> <- expires: Wed, 07 Oct 2026 22:18:46 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 6A66:28DE7C:1BD13A:2175DC:6AC6C3D4
+#> <- x-github-request-id: F6EC:2E4781:344099:376222:6AC6C2EE
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Thu, 08 Oct 2026 01:28:04 GMT
+#> <- date: Thu, 08 Oct 2026 01:30:24 GMT
 #> <- via: 1.1 varnish
-#> <- age: 27
-#> <- x-served-by: cache-dfw-kdfw8210030-DFW
+#> <- age: 118
+#> <- x-served-by: cache-chi-kmdw8640079-CHI
 #> <- x-cache: HIT
-#> <- x-cache-hits: 2
-#> <- x-timer: S1791422884.497020,VS0,VE1
+#> <- x-cache-hits: 3
+#> <- x-timer: S1791423025.713073,VS0,VE1
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: a0fa13054ba1ade26075b8a49506e952dac8c7fd
+#> <- x-fastly-request-id: 0ac9de6d6e36905e3929e1bfc13e1bc3f797c01c
 #> <- content-length: 4860
 #> <- 
 ```
