@@ -283,7 +283,7 @@ steps to this process:
 
     key <- secret_make_key()
     key
-    #> [1] "GkQN1BRAwFiMD1aUHosM_A"
+    #> [1] "wPx15o7U4vxDPKsK9SpJDg"
     ```
 
     (Note that
@@ -301,7 +301,7 @@ steps to this process:
 
     secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
     secret_scrambled
-    #> [1] "eKByk5koa4FdIRLYEEJ9Lxpe5mtCTJUWky7fNgMP231a0jn2vP1zenEHSjPb0vnbHg"
+    #> [1] "8gHVtNOqLpVhD0Nq3NegJmsvs7GeTcyG7ovvkXT6YJHsEjNfDqrHm9hfEGuScEY7Tw"
     ```
 
 3.  When needed, you descramble the secret using
@@ -340,7 +340,7 @@ usage.
 
 secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
 secret_scrambled
-#> [1] "UKEeFTSn-ocC-5EUJ6wY39J7Rwau2wtIDHYFGTysMWTnWDQzRdNICQmSGoBjmfXVrA"
+#> [1] "MMnvtS8XsY6CExJkkChxP4z82tTeYwqN2VkT8BYK38ymaB_ynErW_dhzeofhjl3qTw"
 secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
 #> [1] "secret I need to work with an API"
 ```
