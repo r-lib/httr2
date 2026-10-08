@@ -93,7 +93,11 @@ req_perform_sequential <- function(
     interrupt = function(cnd) {
       check_repeated_interrupt()
 
-      resps <- resps[seq_len(i)]
+      # interrupt might occur before request i completes
+      if (is.null(resps[[i]])) {
+        i <- i - 1
+      }
+      resps <<- resps[seq_len(i)]
       cli::cli_alert_warning(
         "Terminating iteration; returning {i} response{?s}."
       )
