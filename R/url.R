@@ -195,17 +195,26 @@ url_modify_query <- function(
   }
   string_url <- is_string(.url)
   if (string_url) {
-    .url <- url_parse(.url)
+    # Existing values are already encoded, possibly with an explicit I() opt-out.
+    query <- curl::curl_parse_url(.url, decode = FALSE, params = FALSE)$query
+    query <- strsplit(query %||% "", "&", fixed = TRUE)[[1]]
+    query <- parse_name_equals_value(query)
+    query <- lapply(query, I)
+    query_names <- gsub("+", " ", names(query), fixed = TRUE)
+    names(query) <- curl::curl_unescape(query_names)
+  } else {
+    query <- .url$query
   }
 
   new_query <- multi_dots(..., .multi = .multi, .space = .space)
   if (length(new_query) > 0) {
-    .url$query <- modify_list(.url$query, !!!new_query)
+    query <- modify_list(query, !!!new_query)
   }
 
   if (string_url) {
-    url_build(.url)
+    url_modify(.url, query = query)
   } else {
+    .url["query"] <- list(query)
     .url
   }
 }

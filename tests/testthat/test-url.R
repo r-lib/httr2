@@ -197,6 +197,66 @@ test_that("can control space formatting", {
   )
 })
 
+test_that("query updates preserve serialized values", {
+  url <- "https://example.com/a%2Fb?q=a;b&x=%2F&plus=+&encoded=%2B#frag"
+  expect_equal(
+    url_modify_query(url, new = "a;b"),
+    "https://example.com/a%2Fb?q=a;b&x=%2F&plus=+&encoded=%2B&new=a%3Bb#frag"
+  )
+  expect_equal(url_modify_query(url), url)
+  expect_equal(
+    url_modify_query("https://example.com/?q=a+b", new = "c d"),
+    "https://example.com/?q=a+b&new=c%20d"
+  )
+  expect_equal(
+    url_modify_query(
+      "https://example.com/?q=a%20b",
+      new = "c d",
+      .space = "form"
+    ),
+    "https://example.com/?q=a%20b&new=c+d"
+  )
+})
+
+test_that("preserved query parameters can be replaced and removed", {
+  url <- "https://example.com/?a%20b=x;y&a%20b=z&keep=%2F"
+  expect_equal(
+    url_modify_query(url, `a b` = "new;value"),
+    "https://example.com/?keep=%2F&a%20b=new%3Bvalue"
+  )
+  expect_equal(
+    url_modify_query(url, `a b` = NULL),
+    "https://example.com/?keep=%2F"
+  )
+  expect_equal(
+    url_modify_query("https://example.com/?a+b=x;y", `a b` = "new"),
+    "https://example.com/?a%20b=new"
+  )
+  expect_equal(
+    url_modify_query("https://example.com/?a%2Bb=x;y", `a+b` = "new"),
+    "https://example.com/?a%2Bb=new"
+  )
+  expect_equal(
+    url_modify_query("https://example.com/?a=x;y", a = NULL),
+    "https://example.com/"
+  )
+})
+
+test_that("multi-value query parameters survive subsequent updates", {
+  url <- "https://example.com/"
+  for (multi in c("comma", "pipe", "explode")) {
+    first <- url_modify_query(url, a = c("x;y", "z"), .multi = multi)
+    expect_equal(url_modify_query(first, b = 1), paste0(first, "&b=1"))
+  }
+})
+
+test_that("parsed URL queries keep decoded values", {
+  url <- url_parse("https://example.com/?a=x%3By")
+  modified <- url_modify_query(url, b = "z")
+  expect_equal(modified$query$a, "x;y")
+  expect_equal(url_build(modified), "https://example.com/?a=x%3By&b=z")
+})
+
 test_that("is idempotent", {
   string <- "http://example.com/"
   url <- url_parse(string)
