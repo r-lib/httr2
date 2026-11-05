@@ -283,7 +283,7 @@ steps to this process:
 
     key <- secret_make_key()
     key
-    #> [1] "kkiE0iRwMDndx8oKe2k-ag"
+    #> [1] "faxo-shN22toGJEeL5OMvg"
     ```
 
     (Note that
@@ -301,7 +301,7 @@ steps to this process:
 
     secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
     secret_scrambled
-    #> [1] "CP5AUclw_m-h0Lsh6JVLQFlOC4s2Ai07nryfldOVGB6mjetHae1-qmbq6PFXjCe0ng"
+    #> [1] "YKZDYoM3gbZ8i1xezT0iiQUvYGERaZXTdOlhtdnOLBHg24sIazcQ3WGxi651ETxvYA"
     ```
 
 3.  When needed, you descramble the secret using
@@ -340,7 +340,7 @@ usage.
 
 secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
 secret_scrambled
-#> [1] "0XxvL7gHwKZWnuor5n1i_7qFsJO9zOnZAwPTwa1tomQaixsMpkGLtpOpjpl8bFX66A"
+#> [1] "7wX0MPwDmWlAyHd9n7N4FGqibSjgaVEA4EstzR-eFwsZZjtCFUoXk6mi1RjED9KdZg"
 secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
 #> [1] "secret I need to work with an API"
 ```
@@ -616,6 +616,33 @@ exceptional circumstances.
 nytimes_books <- function(path, ..., api_key = get_api_key()) {
   ...
 }
+```
+
+Read the environment variable when creating each request, as
+`get_api_key()` does here. Avoid reading it when your package is loaded
+and storing the result in a global variable or closure: that copy won’t
+change if the user updates the environment variable later. The default
+`api_key = get_api_key()` is evaluated for each call, so new requests
+use the current value. Requests you’ve already created keep the value
+they were given.
+
+For example, these requests use dummy keys, and
+[`withr::with_envvar()`](https://withr.r-lib.org/reference/with_envvar.html)
+restores the previous environment variable when the code finishes:
+
+``` r
+
+example_request <- function(key = Sys.getenv("EXAMPLE_API_KEY")) {
+  request("https://example.com") |>
+    req_url_query(key = key)
+}
+
+withr::with_envvar(c(EXAMPLE_API_KEY = "first"), {
+  req1 <- example_request()
+  Sys.setenv(EXAMPLE_API_KEY = "second")
+  req2 <- example_request()
+  c(req_get_url(req1), req_get_url(req2))
+})
 ```
 
 You can make this approach a little more user friendly by providing a

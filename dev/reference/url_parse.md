@@ -57,7 +57,7 @@ url_parse("http://google.com:80/?a=1&b=2")
 #>   * a: 1
 #>   * b: 2
 url_parse("http://username@google.com:80/path;test?a=1&b=2#40")
-#> <httr2_url> http://username@google.com:80/path%3Btest?a=1&b=2#40
+#> <httr2_url> http://username@google.com:80/path;test?a=1&b=2#40
 #> * scheme: http
 #> * hostname: google.com
 #> * username: username
