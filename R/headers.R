@@ -76,10 +76,11 @@ show_headers <- function(x, redact = TRUE) {
 }
 
 #' @export
-str.httr2_headers <- function(object, ..., no.list = FALSE) {
+str.httr2_headers <- function(object, ..., nest.lev = 0, no.list = FALSE) {
   object <- unclass(headers_flatten(object))
-  cat(" <httr2_headers>\n")
-  utils::str(object, ..., no.list = TRUE)
+  str_leading_space(nest.lev)
+  cat("<httr2_headers>\n")
+  utils::str(object, ..., nest.lev = nest.lev, no.list = TRUE)
 }
 
 #' @export

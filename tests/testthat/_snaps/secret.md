@@ -8,7 +8,7 @@
     Code
       str(x)
     Output
-       obfuscated("abcdef")
+      obfuscated("abcdef")
 
 # can coerce to a key
 
