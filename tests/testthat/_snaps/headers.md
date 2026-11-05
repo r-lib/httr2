@@ -31,7 +31,7 @@
     Code
       str(x)
     Output
-       <httr2_headers>
+      <httr2_headers>
        $ x: <REDACTED>
        $ y: chr "2"
 
