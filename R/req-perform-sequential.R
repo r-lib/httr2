@@ -74,7 +74,7 @@ req_perform_sequential <- function(
   tryCatch(
     {
       for (i in seq_along(reqs)) {
-        check_request(reqs[[i]], arg = glue::glue("req[[{i}]]"))
+        check_request(reqs[[i]], arg = glue::glue("reqs[[{i}]]"))
 
         if (err_catch) {
           resps[[i]] <- tryCatch(
@@ -82,7 +82,7 @@ req_perform_sequential <- function(
             httr2_error = function(err) err
           )
         } else {
-          resps[[i]] <- req_perform(reqs[[i]], path = paths[[i]])
+          resps[[i]] <- req_perform(reqs[[i]], path = paths[[i]], mock = mock)
         }
         if (err_return && is_error(resps[[i]])) {
           break
@@ -93,7 +93,11 @@ req_perform_sequential <- function(
     interrupt = function(cnd) {
       check_repeated_interrupt()
 
-      resps <- resps[seq_len(i)]
+      # interrupt might occur before request i completes
+      if (is.null(resps[[i]])) {
+        i <- i - 1
+      }
+      resps <<- resps[seq_len(i)]
       cli::cli_alert_warning(
         "Terminating iteration; returning {i} response{?s}."
       )
@@ -109,7 +113,7 @@ check_paths <- function(paths, reqs, error_call = caller_env()) {
     check_character(paths)
     if (length(reqs) != length(paths)) {
       cli::cli_abort(
-        "If supplied, {.arg paths} must be the same length as {.arg req}.",
+        "If supplied, {.arg paths} must be the same length as {.arg reqs}.",
         call = error_call
       )
     }

@@ -10,8 +10,8 @@
 #' @param sub Subject claim. Identifies the principal that is the subject of
 #'   the JWT (i.e. the entity that the claims apply to).
 #' @param aud Audience claim. Identifies the recipients that the JWT is
-#'    intended. Each principle intended to process the JWT must be identified
-#'    with a unique value.
+#'   intended for. Each principal intended to process the JWT must be
+#'   identified with a unique value.
 #' @param exp Expiration claim. Identifies the expiration time on or after which
 #'   the JWT MUST NOT be accepted for processing. Defaults to 5 minutes.
 #' @param nbf Not before claim. Identifies the time before which the JWT

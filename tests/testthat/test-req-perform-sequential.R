@@ -72,3 +72,20 @@ test_that("mocking works", {
   expect_equal(resps[[1]]$request, req_200)
   expect_s3_class(resps[[2]], "httr2_http_404")
 })
+
+test_that("user termination returns completed responses", {
+  local_mocked_responses(function(req) {
+    if (req$url == "https://interrupt") {
+      interrupt()
+    }
+    response()
+  })
+  reqs <- list(
+    request("https://ok"),
+    request("https://interrupt"),
+    request("https://ok")
+  )
+
+  expect_snapshot(resps <- req_perform_sequential(reqs))
+  expect_length(resps, 1)
+})

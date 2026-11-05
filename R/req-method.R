@@ -5,7 +5,7 @@
 #' `GET` for requests without a body, and `POST` for requests with a body.
 #'
 #' @inheritParams req_perform
-#' @param method Custom HTTP method
+#' @param method Custom HTTP method.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples

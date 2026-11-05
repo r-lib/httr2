@@ -7,7 +7,7 @@ request_test <- function(template = "/get", ...) {
 #' Code for examples
 #'
 #' @description
-#' `example_url()` runs a simple websever using the webfakes package with the
+#' `example_url()` runs a simple webserver using the webfakes package with the
 #' following endpoints:
 #'
 #' * all the ones from the [webfakes::httpbin_app()]

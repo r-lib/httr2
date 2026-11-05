@@ -11,3 +11,14 @@ test_that("get some useful output from WWW-Authenticate header", {
   )
   expect_snapshot_error(resp_check_status(resp))
 })
+
+test_that("WWW-Authenticate header without extra fields has no empty bullet", {
+  resp <- response(401, headers = "WWW-Authenticate: Bearer")
+  expect_snapshot(resp_check_status(resp), error = TRUE)
+
+  resp <- response(
+    401,
+    headers = 'WWW-Authenticate: Bearer error="invalid_token"'
+  )
+  expect_snapshot(resp_check_status(resp), error = TRUE)
+})

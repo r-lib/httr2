@@ -28,7 +28,7 @@
 #'   will contain the HTTP response body if the request was unsuccessful.
 #' @export
 #' @examples
-#' # PREVIOSULY
+#' # PREVIOUSLY
 #' show_bytes <- function(x) {
 #'   cat("Got ", length(x), " bytes\n", sep = "")
 #'   TRUE

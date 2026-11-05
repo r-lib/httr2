@@ -10,7 +10,7 @@ httr2_translate(req, obfuscated = c("redact", "reveal"))
 \item{req}{A httr2 \link{request} object.}
 
 \item{obfuscated}{Form and JSON bodies can contain \link{obfuscated} values.
-This argument control what happens to them: should they be removed,
+This argument controls what happens to them: should they be removed,
 redacted, or revealed.}
 }
 \value{

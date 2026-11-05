@@ -41,7 +41,7 @@ resp_headers <- function(resp, filter = NULL) {
 }
 
 #' @export
-#' @param header Header name (case insensitive)
+#' @param header Header name (case insensitive).
 #' @param default Default value to use if header doesn't exist.
 #' @rdname resp_headers
 resp_header <- function(resp, header, default = NULL) {
@@ -79,10 +79,9 @@ resp_date <- function(resp) {
 #' Extract response content type and encoding
 #'
 #' @description
-#' `resp_content_type()` returns the just the type and subtype of the
-#' from the `Content-Type` header. If `Content-Type` is not provided; it
-#' returns `NA`. Used by [resp_body_json()], [resp_body_html()], and
-#' [resp_body_xml()].
+#' `resp_content_type()` returns just the type and subtype from the
+#' `Content-Type` header. If `Content-Type` is not provided, it returns `NA`.
+#' Used by [resp_body_json()], [resp_body_html()], and [resp_body_xml()].
 #'
 #' `resp_encoding()` returns the likely character encoding of text
 #' types, as parsed from the `charset` parameter of the `Content-Type`

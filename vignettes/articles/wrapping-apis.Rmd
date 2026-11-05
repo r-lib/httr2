@@ -500,6 +500,27 @@ nytimes_books <- function(path, ..., api_key = get_api_key()) {
 }
 ```
 
+Read the environment variable when creating each request, as `get_api_key()` does here.
+Avoid reading it when your package is loaded and storing the result in a global variable or closure: that copy won't change if the user updates the environment variable later.
+The default `api_key = get_api_key()` is evaluated for each call, so new requests use the current value.
+Requests you've already created keep the value they were given.
+
+For example, these requests use dummy keys, and `withr::with_envvar()` restores the previous environment variable when the code finishes:
+
+```{r envvar-per-request}
+example_request <- function(key = Sys.getenv("EXAMPLE_API_KEY")) {
+  request("https://example.com") |>
+    req_url_query(key = key)
+}
+
+withr::with_envvar(c(EXAMPLE_API_KEY = "first"), {
+  req1 <- example_request()
+  Sys.setenv(EXAMPLE_API_KEY = "second")
+  req2 <- example_request()
+  c(req_get_url(req1), req_get_url(req2))
+})
+```
+
 You can make this approach a little more user friendly by providing a helper that sets the environment variable:
 
 ```{r}

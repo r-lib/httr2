@@ -50,7 +50,7 @@ LineSplitter <- R6::R6Class(
 # Decode raw line blocks (each a line plus its trailing LF or CRLF) into a
 # character vector in `encoding`, dropping the terminators.
 stream_parse_lines <- function(blocks, encoding) {
-  text <- vapply(blocks, rawToChar, character(1))
+  text <- map_chr(blocks, rawToChar)
   Encoding(text) <- "bytes"
   text <- iconv(text, encoding, "UTF-8")
   sub("\r?\n$", "", text)

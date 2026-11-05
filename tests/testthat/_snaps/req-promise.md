@@ -19,7 +19,7 @@
       req_perform_promise(req, verbosity = "INVALID")
     Condition
       Error in `req_perform_promise()`:
-      ! `verbosity` must 0, 1, 2, or 3.
+      ! `verbosity` must be 0, 1, 2, or 3.
 
 # correctly prepares request
 

@@ -253,7 +253,7 @@ req_get_body_type <- function(req) {
 #'   * `"redact"` replaces them with `<REDACTED>`.
 #'   * `"reveal"` leaves them in place.
 #' @param obfuscated Form and JSON bodies can contain [obfuscated] values.
-#'   This argument control what happens to them: should they be removed,
+#'   This argument controls what happens to them: should they be removed,
 #'   redacted, or revealed.
 req_get_body <- function(req, obfuscated = c("remove", "redact", "reveal")) {
   check_request(req)
@@ -306,7 +306,12 @@ req_body_apply_data <- function(req, data) {
   if (is_string(data)) {
     data <- charToRaw(enc2utf8(data))
   }
-  req_options(req, post = TRUE, postfieldsize_large = length(data), postfields = data)
+  req_options(
+    req,
+    post = TRUE,
+    postfieldsize_large = length(data),
+    postfields = data
+  )
 }
 req_body_apply_stream <- function(req, data) {
   size <- file.info(data)$size

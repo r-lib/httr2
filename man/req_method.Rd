@@ -9,7 +9,7 @@ req_method(req, method)
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
-\item{method}{Custom HTTP method}
+\item{method}{Custom HTTP method.}
 }
 \value{
 A modified HTTP \link{request}.

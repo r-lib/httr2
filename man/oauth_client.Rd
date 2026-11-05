@@ -33,9 +33,9 @@ instead supply a confidential private key. This should never be included
 in a package.}
 
 \item{auth}{Authentication mechanism used by the client to prove itself to
-the API. Can be one of three built-in methods ("body", "header", or "jwt"),
-or a function that will be called with arguments \code{req}, \code{client}, and
-the contents of \code{auth_params}.
+the API. Can be one of three built-in methods (\code{"body"}, \code{"header"}, or
+\code{"jwt_sig"}), or a function that will be called with arguments \code{req},
+\code{client}, and the contents of \code{auth_params}.
 
 The most common mechanism in the wild is \code{"body"} where the \code{client_id} and
 (optionally) \code{client_secret} are added to the body. \code{"header"} sends the

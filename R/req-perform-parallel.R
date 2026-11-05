@@ -70,7 +70,7 @@ req_perform_parallel <- function(
   check_paths(paths, reqs)
   on_error <- arg_match(on_error)
   check_number_whole(max_active, min = 1)
-  mock <- as_mock_function(mock, error_call)
+  mock <- as_mock_function(mock)
 
   queue <- RequestQueue$new(
     reqs = reqs,

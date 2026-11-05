@@ -44,7 +44,7 @@ req_auth_basic <- function(req, username, password = NULL) {
 #' @seealso See `r rfc(6750)` for more details about bearer token usage
 #'   with OAuth 2.0.
 #' @inheritParams req_perform
-#' @param token A bearer token
+#' @param token A bearer token.
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples

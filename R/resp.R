@@ -202,7 +202,7 @@ resp_raw <- function(resp) {
   cli::cat_line("HTTP/1.1 ", resp$status_code, " ", resp_status_desc(resp))
   cli::cat_line(cli::style_bold(names(resp$headers)), ": ", resp$headers)
   cli::cat_line()
-  if (!is.null(resp$body)) {
+  if (resp_has_body(resp)) {
     cli::cat_line(resp_body_string(resp))
   }
 

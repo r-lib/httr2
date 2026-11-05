@@ -3,7 +3,7 @@
 #' @description
 #' Authenticate using OAuth **client credentials flow**, as defined by
 #' `r rfc(6749, 4.4)`. It is used to allow the client to access resources that
-#' it controls directly, not on behalf of an user.
+#' it controls directly, not on behalf of a user.
 #'
 #' Learn more about the overall OAuth authentication flow in
 #' <https://httr2.r-lib.org/articles/oauth.html>.

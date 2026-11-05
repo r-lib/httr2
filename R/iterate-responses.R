@@ -56,13 +56,13 @@ resps_failures <- function(resps) {
 #' @export
 #' @rdname resps_successes
 resps_ok <- function(resps) {
-  vapply(resps, is_response, logical(1))
+  map_lgl(resps, is_response)
 }
 
 #' @export
 #' @rdname resps_successes
 resps_requests <- function(resps) {
-  lapply(resps, function(x) x$request)
+  lapply(resps, \(x) x$request)
 }
 
 #' @export
