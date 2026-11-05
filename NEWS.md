@@ -1,5 +1,7 @@
 # httr2 (development version)
 
+* `str()` methods for headers, obfuscated strings, and redacted values no longer produce doubled spaces when nested on R 4.7.0 and later, and no longer add a leading space at the top level.
+
 # httr2 1.3.0
 
 * Fixed OAuth token cache pruning so that it actually matches the encrypted `.rds.enc` files written to disk; previously the pruning pattern only matched an unencrypted `.rds` file that was never created, so cached tokens were never automatically deleted regardless of age.

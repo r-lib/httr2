@@ -219,8 +219,9 @@ obfuscated <- function(x) {
 }
 
 #' @export
-str.httr2_obfuscated <- function(object, ...) {
-  cat(" ", glue('obfuscated("{object}")\n'), sep = "")
+str.httr2_obfuscated <- function(object, ..., nest.lev = 0) {
+  str_leading_space(nest.lev)
+  cat(glue('obfuscated("{object}")'), "\n", sep = "")
 }
 
 #' @export

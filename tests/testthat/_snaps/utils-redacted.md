@@ -11,5 +11,5 @@
     Code
       str(x)
     Output
-       <REDACTED>
+      <REDACTED>
 
