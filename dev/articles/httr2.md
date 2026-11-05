@@ -28,7 +28,7 @@ Every request starts with a URL:
 req <- request(example_url())
 req
 #> <httr2_request>
-#> GET http://127.0.0.1:42633/
+#> GET http://127.0.0.1:44187/
 #> Body: empty
 ```
 
@@ -45,7 +45,7 @@ req |> req_dry_run()
 #> GET / HTTP/1.1
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
-#> host: 127.0.0.1:42633
+#> host: 127.0.0.1:44187
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 ```
 
@@ -60,7 +60,7 @@ information:
 
 - The **path**, which is the URL stripped of details that the server
   already knows, i.e. the protocol (`http` or `https`), the host
-  (`localhost`), and the port (`42633`).
+  (`localhost`), and the port (`44187`).
 
 - The version of the HTTP protocol. This is unimportant for our purposes
   because it’s handled at a lower level.
@@ -82,7 +82,7 @@ req |>
 #> GET / HTTP/1.1
 #> accept: application/json
 #> accept-encoding: deflate, gzip, br, zstd
-#> host: 127.0.0.1:42633
+#> host: 127.0.0.1:44187
 #> name: Hadley
 #> shoe-size: 11
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
@@ -108,7 +108,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 15
 #> content-type: application/json
-#> host: 127.0.0.1:42633
+#> host: 127.0.0.1:44187
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
 #> {
@@ -146,7 +146,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 7
 #> content-type: application/x-www-form-urlencoded
-#> host: 127.0.0.1:42633
+#> host: 127.0.0.1:44187
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
 #> x=1&y=a
@@ -166,19 +166,19 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 246
-#> content-type: multipart/form-data; boundary=------------------------Or0mxsmq4c6i0cSofYq2P7
-#> host: 127.0.0.1:42633
+#> content-type: multipart/form-data; boundary=------------------------FWsW8XSNVnyTx73xmzCeg1
+#> host: 127.0.0.1:44187
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
-#> --------------------------Or0mxsmq4c6i0cSofYq2P7
+#> --------------------------FWsW8XSNVnyTx73xmzCeg1
 #> Content-Disposition: form-data; name="x"
 #> 
 #> 1
-#> --------------------------Or0mxsmq4c6i0cSofYq2P7
+#> --------------------------FWsW8XSNVnyTx73xmzCeg1
 #> Content-Disposition: form-data; name="y"
 #> 
 #> a
-#> --------------------------Or0mxsmq4c6i0cSofYq2P7--
+#> --------------------------FWsW8XSNVnyTx73xmzCeg1--
 ```
 
 If you need to send data encoded in a different form, you can use
@@ -197,7 +197,7 @@ req <- request(example_url()) |> req_url_path("/json")
 resp <- req |> req_perform()
 resp
 #> <httr2_response>
-#> GET http://127.0.0.1:42633/json
+#> GET http://127.0.0.1:44187/json
 #> Status: 200 OK
 #> Content-Type: application/json
 #> Body: In memory (407 bytes)
@@ -210,7 +210,7 @@ You can see a simulation of what httr2 actually received with
 
 resp |> resp_raw()
 #> HTTP/1.1 200 OK
-#> Date: Thu, 05 Nov 2026 15:32:32 GMT
+#> Date: Thu, 05 Nov 2026 16:46:00 GMT
 #> Content-Type: application/json
 #> Content-Length: 407
 #> ETag: "de760e6d"
@@ -271,7 +271,7 @@ You can extract data from the response using the `resp_()` functions:
 
   resp |> resp_headers()
   #> <httr2_headers>
-  #> Date: Thu, 05 Nov 2026 15:32:32 GMT
+  #> Date: Thu, 05 Nov 2026 16:46:00 GMT
   #> Content-Type: application/json
   #> Content-Length: 407
   #> ETag: "de760e6d"

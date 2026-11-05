@@ -30,6 +30,10 @@
   longer errors on responses without a body.
 - [`secret_decrypt_file()`](https://httr2.r-lib.org/dev/reference/secrets.md)
   now makes the decrypted file read-only, as intended.
+- [`str()`](https://rdrr.io/r/utils/str.html) methods for headers,
+  obfuscated strings, and redacted values no longer produce doubled
+  spaces when nested on R 4.7.0 and later, and no longer add a leading
+  space at the top level.
 
 ## httr2 1.3.0
 
