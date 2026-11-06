@@ -162,10 +162,10 @@ test_that("tracing works as expected", {
     resp <- req_perform_connection(request(url_build(parsed)))
     close(resp)
 
-    # A request with a curl error.
+    # A request with a curl error
     with_mocked_bindings(
       try(req_perform_connection(request("http://127.0.0.1")), silent = TRUE),
-      curl_fetch = function(...) abort("Failed to connect")
+      open = function(...) stop("Failed to connect")
     )
 
     # A request that triggers retries, generating three individual spans.
