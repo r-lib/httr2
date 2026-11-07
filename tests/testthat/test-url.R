@@ -288,6 +288,12 @@ test_that("handles equals in values", {
   expect_equal(url_query_parse("?x==&y=="), list(x = "=", y = "="))
 })
 
+test_that("doesn't apply header parsing rules", {
+  expect_equal(url_query_parse("a+b=1"), list(`a b` = "1"))
+  expect_equal(url_query_parse('a="q"'), list(a = '"q"'))
+  expect_equal(url_query_parse(" a = 1"), list(` a ` = " 1"))
+})
+
 test_that("empty queries become NULL", {
   expect_equal(url_query_parse("?"), NULL)
   expect_equal(url_query_parse(""), NULL)
