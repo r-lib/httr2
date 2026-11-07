@@ -44,6 +44,17 @@ resp <- req |>
 
 # The result comes back as JSON
 resp |> resp_body_json() |> str()
+#> List of 6
+#>  $ status: chr "OK"
+#>  $ code  : int 200
+#>  $ locale: chr "en_US"
+#>  $ seed  : NULL
+#>  $ total : int 1
+#>  $ data  :List of 1
+#>   ..$ :List of 3
+#>   .. ..$ title      : chr "Iste sint error maxime."
+#>   .. ..$ description: chr "Sequi dolorum dolore deleniti occaecati. Ut nulla animi ea vel ab. Adipisci atque voluptate in aut. Voluptatem "| __truncated__
+#>   .. ..$ url        : chr "https://picsum.photos/380/480"
 ```
 
 ### Errors
@@ -58,6 +69,8 @@ get an error that prevents you from further inspecting the body:
 req |>
   req_url_path_append("invalid") |>
   req_perform()
+#> Error in `req_perform()`:
+#> ! HTTP 400 Bad Request.
 ```
 
 However, you can access the last response (successful or not) with
@@ -67,6 +80,8 @@ However, you can access the last response (successful or not) with
 
 resp <- last_response()
 resp |> resp_body_json()
+#> $message
+#> [1] "Resource invalid not supported in version v1"
 ```
 
 It doesn’t look like there’s anything useful there. Sometimes useful
@@ -75,6 +90,17 @@ info is returned in the headers, so let’s check:
 ``` r
 
 resp |> resp_headers()
+#> <httr2_headers>
+#> Server: nginx
+#> Content-Type: application/json
+#> Transfer-Encoding: chunked
+#> Connection: keep-alive
+#> X-Powered-By: PHP/8.3.8
+#> Cache-Control: no-cache, private
+#> Date: Sat, 07 Nov 2026 17:10:05 GMT
+#> X-RateLimit-Limit: 60
+#> X-RateLimit-Remaining: 56
+#> Access-Control-Allow-Origin: *
 ```
 
 It doesn’t look like we’re getting any more useful information, so we
@@ -97,6 +123,11 @@ function:
 req |>
   req_user_agent("my_package_name (http://my.package.web.site)") |>
   req_dry_run()
+#> GET /api/v1 HTTP/1.1
+#> accept: */*
+#> accept-encoding: deflate, gzip, br, zstd
+#> host: fakerapi.it
+#> user-agent: my_package_name (http://my.package.web.site)
 ```
 
 ### Core request function
@@ -140,6 +171,17 @@ faker <- function(resource, ..., quantity = 1, locale = "en_US", seed = NULL) {
 }
 
 str(faker("images", width = 300))
+#> List of 6
+#>  $ status: chr "OK"
+#>  $ code  : int 200
+#>  $ locale: chr "en_US"
+#>  $ seed  : NULL
+#>  $ total : int 1
+#>  $ data  :List of 1
+#>   ..$ :List of 3
+#>   .. ..$ title      : chr "Voluptas et et et ea dolorem."
+#>   .. ..$ description: chr "Optio voluptas quibusdam illo libero sint ipsa. Repellendus in laboriosam ut quia est. Dolorem recusandae fugit"| __truncated__
+#>   .. ..$ url        : chr "https://picsum.photos/300/480"
 ```
 
 I’ve made a few important choices here:
@@ -195,6 +237,34 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
   )
 }
 str(faker_person("male"))
+#> List of 6
+#>  $ status: chr "OK"
+#>  $ code  : int 200
+#>  $ locale: chr "en_US"
+#>  $ seed  : NULL
+#>  $ total : int 1
+#>  $ data  :List of 1
+#>   ..$ :List of 10
+#>   .. ..$ id       : int 1
+#>   .. ..$ firstname: chr "Jackson"
+#>   .. ..$ lastname : chr "Wilderman"
+#>   .. ..$ email    : chr "nupton@yahoo.com"
+#>   .. ..$ phone    : chr "+17043355509"
+#>   .. ..$ birthday : chr "1994-08-29"
+#>   .. ..$ gender   : chr "male"
+#>   .. ..$ address  :List of 10
+#>   .. .. ..$ id            : int 1
+#>   .. .. ..$ street        : chr "7041 Kenton Cape"
+#>   .. .. ..$ streetName    : chr "Dewitt Hill"
+#>   .. .. ..$ buildingNumber: chr "2512"
+#>   .. .. ..$ city          : chr "Gibsonfort"
+#>   .. .. ..$ zipcode       : chr "21396-2081"
+#>   .. .. ..$ country       : chr "French Guiana"
+#>   .. .. ..$ country_code  : chr "GF"
+#>   .. .. ..$ latitude      : num 58.5
+#>   .. .. ..$ longitude     : num 171
+#>   .. ..$ website  : chr "http://daugherty.com"
+#>   .. ..$ image    : chr "http://placeimg.com/640/480/people"
 ```
 
 We could make it more user friendly by checking the input types, and
@@ -241,6 +311,14 @@ faker_person <- function(gender = NULL, birthday_start = NULL, birthday_end = NU
   )
 }
 faker_person("male", quantity = 5)
+#> # A tibble: 5 × 4
+#>   firstname lastname email                         gender
+#>   <chr>     <chr>    <chr>                         <chr> 
+#> 1 Barton    Runte    trisha11@wiegand.org          male  
+#> 2 Clifford  Boehm    franco.block@pfannerstill.com male  
+#> 3 Edmond    Hane     vickie32@boehm.com            male  
+#> 4 Darius    Hayes    bchristiansen@hotmail.com     male  
+#> 5 Israel    Schimmel reilly.alanna@skiles.com      male
 ```
 
 The next steps would be to export and document this function; I’ll leave
@@ -283,7 +361,7 @@ steps to this process:
 
     key <- secret_make_key()
     key
-    #> [1] "L2cXLHnF9oxfYAKy9dEc-Q"
+    #> [1] "DHNU-PxoPNyv5PXh_lqKdg"
     ```
 
     (Note that
@@ -301,7 +379,7 @@ steps to this process:
 
     secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
     secret_scrambled
-    #> [1] "veNOigHohXJJ2ayMQVcGpK11mMWLhvS24o4ZS_yDCnHWWiuEvwTZ8rVApSOUacGF4w"
+    #> [1] "5FDnPonCaNhb4WKwSMC6TDLNvZTobE1DbD1LlJraVtBSU0Q7GDOdtbSj3dVahWnNtQ"
     ```
 
 3.  When needed, you descramble the secret using
@@ -340,7 +418,7 @@ usage.
 
 secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
 secret_scrambled
-#> [1] "Hpb69t8JxWdGZr7dLgc2zDLMbtllfOgLaExmDpCKbjqk7Qz5q9Zr5EuFaGMkuR1SXQ"
+#> [1] "1MvF8GU1HgaxcIZHBG4OHJzDTUQYBgwGa2H9DrapxO1HuqnL0kJfQ90Zn3JPcgFndg"
 secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
 #> [1] "secret I need to work with an API"
 ```

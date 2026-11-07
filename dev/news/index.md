@@ -19,6 +19,13 @@
   now name the callback in arity errors.
 - [`req_perform_sequential()`](https://httr2.r-lib.org/dev/reference/req_perform_sequential.md)
   no longer ignores `mock` when `on_error = "stop"`.
+- [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
+  and
+  [`url_modify_query()`](https://httr2.r-lib.org/dev/reference/url_modify.md)
+  now preserve existing query values, including unescaped values
+  supplied with [`I()`](https://rdrr.io/r/base/AsIs.html), when
+  modifying other parameters
+  ([\#837](https://github.com/r-lib/httr2/issues/837)).
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   now treats media types as case insensitive, as required by RFC 9110,
   so
@@ -34,6 +41,10 @@
   obfuscated strings, and redacted values no longer produce doubled
   spaces when nested on R 4.7.0 and later, and no longer add a leading
   space at the top level.
+- [`url_query_parse()`](https://httr2.r-lib.org/dev/reference/url_query_parse.md)
+  now decodes `+` in parameter names as a space and no longer strips
+  quotes or surrounding whitespace, which it previously did because it
+  applied HTTP header parsing rules.
 
 ## httr2 1.3.0
 

@@ -83,6 +83,11 @@ url_modify_query(
   parameters). If you want to opt out of escaping, wrap strings in
   [`I()`](https://rdrr.io/r/base/AsIs.html).
 
+  Parameters already in `.url` are left as is when `.url` is a string,
+  so `?a=;` stays `?a=;` rather than becoming `?a=%3B`. When `.url` is a
+  parsed URL, its query values are stored decoded, so they're escaped
+  when the URL is rebuilt.
+
 - .multi:
 
   Controls what happens when a value is a vector:

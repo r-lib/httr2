@@ -217,7 +217,7 @@ your client specification.
 ``` r
 
 obfuscate("secret")
-#> obfuscated("sK38nN6NuMGF7hSBi9-k9Q_Rq0UxUA")
+#> obfuscated("S2LbBtie5jvguu4_eXpWbEKd8csihA")
 ```
 
 Here’s what a complete client specification for GitHub looks like, using

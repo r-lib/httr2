@@ -139,7 +139,11 @@ will be automatically added if omitted.</p></dd>
 <dd><p>&lt;<code><a href="https://rlang.r-lib.org/reference/dyn-dots.html" class="external-link">dynamic-dots</a></code>&gt;
 Name-value pairs that define query parameters. Each value must be either
 an atomic vector or <code>NULL</code> (which removes the corresponding parameters).
-If you want to opt out of escaping, wrap strings in <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code>.</p></dd>
+If you want to opt out of escaping, wrap strings in <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code>.</p>
+<p>Parameters already in <code>.url</code> are left as is when <code>.url</code> is a string, so
+<code>?a=;</code> stays <code>?a=;</code> rather than becoming <code>?a=%3B</code>. When <code>.url</code> is a
+parsed URL, its query values are stored decoded, so they're escaped
+when the URL is rebuilt.</p></dd>
 
 
 <dt id="arg--multi">.multi<a class="anchor" aria-label="anchor" href="#arg--multi"></a></dt>
