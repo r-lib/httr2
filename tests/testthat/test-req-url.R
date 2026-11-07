@@ -163,6 +163,18 @@ test_that("can opt-out of query escaping", {
   expect_equal(req_url_query(req, a = I(","))$url, "http://example.com/?a=,")
 })
 
+test_that("unescaped query values survive subsequent updates (#837)", {
+  req <- request("https://example.com/api") |>
+    req_url_query(param = I("abc;def;ghi")) |>
+    req_url_query(other = "x y") |>
+    req_url_query(last = "z")
+
+  expect_equal(
+    req$url,
+    "https://example.com/api?param=abc;def;ghi&other=x%20y&last=z"
+  )
+})
+
 test_that("can construct relative urls", {
   req <- request("http://example.com/a/b/c.html")
   expect_equal(req_url_relative(req, ".")$url, "http://example.com/a/b/")
