@@ -207,14 +207,16 @@ StreamingBody <- R6::R6Class(
     #' @description Read all bytes and close the connection.
     #' @param buffer Buffer size, in bytes.
     read_all = function(buffer = 32 * 1024) {
-      bytes <- raw()
+      # Flatten once at the end: growing a vector with `c()` is quadratic.
+      chunks <- list(raw())
       repeat {
         new <- self$read(buffer)
         if (length(new) == 0) {
           break
         }
-        bytes <- c(bytes, new)
+        chunks[[length(chunks) + 1L]] <- new
       }
+      bytes <- unlist(chunks, recursive = FALSE, use.names = FALSE)
 
       self$close()
       if (length(bytes) == 0) {
