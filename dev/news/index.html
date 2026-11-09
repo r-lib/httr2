@@ -61,6 +61,8 @@
 <li>
 <code><a href="../reference/req_url.html">req_url_query()</a></code> and <code><a href="../reference/url_modify.html">url_modify_query()</a></code> now preserve existing query values, including unescaped values supplied with <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code>, when modifying other parameters (<a href="https://github.com/r-lib/httr2/issues/837" class="external-link">#837</a>).</li>
 <li>
+<code><a href="../reference/resp_body_raw.html">resp_body_raw()</a></code> and friends now read large bodies from <code><a href="../reference/req_perform_connection.html">req_perform_connection()</a></code> in linear rather than quadratic time (<a href="https://github.com/ptweezy" class="external-link">@ptweezy</a>, <a href="https://github.com/r-lib/httr2/issues/901" class="external-link">#901</a>).</li>
+<li>
 <code><a href="../reference/resp_check_content_type.html">resp_check_content_type()</a></code> now treats media types as case insensitive, as required by RFC 9110, so <code><a href="../reference/resp_body_raw.html">resp_body_json()</a></code> no longer errors on a response with <code>Content-Type: Application/JSON</code> (<a href="https://github.com/dylanpulver" class="external-link">@dylanpulver</a>, <a href="https://github.com/r-lib/httr2/issues/871" class="external-link">#871</a>).</li>
 <li>
 <code><a href="../reference/resp_raw.html">resp_raw()</a></code> no longer errors on responses without a body.</li>

@@ -26,6 +26,12 @@
   supplied with [`I()`](https://rdrr.io/r/base/AsIs.html), when
   modifying other parameters
   ([\#837](https://github.com/r-lib/httr2/issues/837)).
+- [`resp_body_raw()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
+  and friends now read large bodies from
+  [`req_perform_connection()`](https://httr2.r-lib.org/dev/reference/req_perform_connection.md)
+  in linear rather than quadratic time
+  ([@ptweezy](https://github.com/ptweezy),
+  [\#901](https://github.com/r-lib/httr2/issues/901)).
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   now treats media types as case insensitive, as required by RFC 9110,
   so
