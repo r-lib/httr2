@@ -159,6 +159,100 @@ resp_body_xml <- function(resp, check_type = TRUE, ...) {
   resp$cache[[key]]
 }
 
+#' @rdname resp_body_raw
+#' @export
+resp_body_multipart <- function(resp, check_type = TRUE, ...) {
+  check_response(resp)
+
+  # Need to support multiple subtypes (alternative, mixed, digest, byteranges, etc.)
+  ctype <- resp_content_type(resp)
+  if (parse_content_type(ctype)$type != "multipart") {
+    stop("Expected a \"multipart\" content type (got \"", ctype, "\" instead)")
+  }
+
+  # See https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html for the allowed boundary.
+  full_ctype <- resp_header(resp, "Content-Type")
+  allowed <- "0-9a-zA-Z'()+_,-./:=?"
+  boundary <- sub(paste0("multipart/.*; boundary=([", allowed, " ]+[", allowed, "]).*"), "\\1", full_ctype)
+  if (boundary == full_ctype) {
+    stop("Failed to extract the multipart boundary from Content-Type header (\"", ctype, "\")")
+  }
+
+  body <- resp_body_raw(resp)
+
+  cr <- charToRaw("\r")
+  lf <- charToRaw("\n")
+  dash <- charToRaw("-")
+
+  # I'd prefer to avoid creating a (possibly very long) string from the body.
+  # So, instead of using regexes, we'll scan through to find CRLFs and boundaries.
+  delim_prefix <- c(cr, lf, dash, dash, charToRaw(boundary))
+  pos_pre <- which(body == delim_prefix[1L])
+  for (i in 2:length(delim_prefix)) {
+    pos_pre <- pos_pre[body[pos_pre + 1L] == delim_prefix[i]] + 1L
+  }
+
+  pos_end <- pos_pre[body[pos_pre + 1L] == dash] + 1L
+  pos_end <- pos_end[body[pos_end + 1L] == dash] + 1L
+  if (length(pos_end) == 0) {
+    stop("Failed to detect an closing delimiter in the response body")
+  }
+  pos_end <- pos_end[1]
+
+  pos_mid <- pos_pre[body[pos_pre + 1] == cr] + 1L
+  pos_mid <- pos_mid[body[pos_mid + 1] == lf] + 1L
+  pos_mid <- pos_mid[pos_mid < pos_end]
+  if (length(pos_end) == 0) {
+    stop("Failed to detect any non-closing delimiters in the response body")
+  }
+
+  output <- vector("list", length(pos_mid))
+  for (i in seq_along(pos_mid)) {
+    part_start <- pos_mid[i] + 1L # first position after the delimiter
+    if (i == length(pos_mid)) {
+      part_end <- pos_end
+    } else {
+      part_end <- pos_mid[i + 1]
+    }
+    part_end <- part_end - length(delim_prefix) - 2L # last position before the delimiter
+
+    if (part_start > part_end) {
+      stop("Detected an empty part in a multipart response")
+    }
+    part <- body[part_start:part_end]
+
+    # Finding the first empty newline to separate the part's part from headers.
+    pos_empty <- which(part == cr)
+    pos_empty <- pos_empty[part[pos_empty + 1L] == lf] + 1L
+    if (length(pos_empty) == 0) {
+      stop("Failed to detect a CLRF to parse headers in the response part")
+    }
+
+    if (pos_empty[1] == 1) {
+      headers <- list()
+      past_header <- 3
+    } else {
+      pos_empty <- pos_empty[part[pos_empty + 1] == cr] + 1L
+      pos_empty <- pos_empty[part[pos_empty + 1] == lf] + 1L
+      if (length(pos_empty) == 0) {
+        stop("Failed to detect a CLRF to parse headers in the response part")
+      }
+      first_crlf <- pos_empty[1]
+      headers <- curl::parse_headers(part[1:(first_crlf - 4)])
+      past_header <- first_crlf + 1L
+    }
+    if (past_header <= length(part)) {
+      part <- part[past_header:length(part)]
+    } else {
+      part <- raw()
+    }
+
+    output[[i]] <- new_response(resp$method, resp$url, resp$status_code, headers = headers, body = part)
+  }
+
+  output
+}
+
 body_cache_key <- function(prefix, ...) {
   key <- hash(list(...))
   paste0(prefix, "-", substr(key, 1, 10))
