@@ -167,15 +167,16 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
   # Need to support multiple subtypes (alternative, mixed, digest, byteranges, etc.)
   ctype <- resp_content_type(resp)
   if (parse_content_type(ctype)$type != "multipart") {
-    stop("Expected a \"multipart\" content type (got \"", ctype, "\" instead)")
+    cli::cli_abort("Unexpected content type {.str {ctype}}.")
   }
 
   # See https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html for the allowed boundary.
+  # Note that spaces are allowed inside the boundary string, but not at the end of it.
   full_ctype <- resp_header(resp, "Content-Type")
   allowed <- "0-9a-zA-Z'()+_,-./:=?"
   boundary <- sub(paste0("multipart/.*; boundary=([", allowed, " ]+[", allowed, "]).*"), "\\1", full_ctype)
   if (boundary == full_ctype) {
-    stop("Failed to extract the multipart boundary from Content-Type header (\"", ctype, "\")")
+    cli::cli_abort("Failed to extract multipart boundary from content type {.str {ctype}}.")
   }
 
   body <- resp_body_raw(resp)
@@ -195,7 +196,7 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
   pos_end <- pos_pre[body[pos_pre + 1L] == dash] + 1L
   pos_end <- pos_end[body[pos_end + 1L] == dash] + 1L
   if (length(pos_end) == 0) {
-    stop("Failed to detect an closing delimiter in the response body")
+    cli::cli_abort("No closing delimiter detected in multipart response body.")
   }
   pos_end <- pos_end[1]
 
@@ -203,7 +204,7 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
   pos_mid <- pos_mid[body[pos_mid + 1] == lf] + 1L
   pos_mid <- pos_mid[pos_mid < pos_end]
   if (length(pos_end) == 0) {
-    stop("Failed to detect any non-closing delimiters in the response body")
+    cli::cli_abort("No non-closing delimiters detected in multipart response body.")
   }
 
   output <- vector("list", length(pos_mid))
@@ -217,15 +218,17 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
     part_end <- part_end - length(delim_prefix) - 2L # last position before the delimiter
 
     if (part_start > part_end) {
-      stop("Detected an empty part in a multipart response")
+      cli::cli_abort("Detected empty part in multipart response body.")
     }
     part <- body[part_start:part_end]
 
-    # Finding the first empty newline to separate the part's part from headers.
+    # Finding the first empty newline to separate the part's body from headers.
+    # This could potentially occur at the very start if the part has no headers;
+    # otherwise, we need to search for CRLFCRLF.
     pos_empty <- which(part == cr)
     pos_empty <- pos_empty[part[pos_empty + 1L] == lf] + 1L
     if (length(pos_empty) == 0) {
-      stop("Failed to detect a CLRF to parse headers in the response part")
+      cli::cli_abort("Failed to parse per-part headers in a multipart response.")
     }
 
     if (pos_empty[1] == 1) {
@@ -235,7 +238,7 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
       pos_empty <- pos_empty[part[pos_empty + 1] == cr] + 1L
       pos_empty <- pos_empty[part[pos_empty + 1] == lf] + 1L
       if (length(pos_empty) == 0) {
-        stop("Failed to detect a CLRF to parse headers in the response part")
+        cli::cli_abort("Failed to parse per-part headers in a multipart response.")
       }
       first_crlf <- pos_empty[1]
       headers <- curl::parse_headers(part[1:(first_crlf - 4)])
@@ -247,6 +250,7 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
       part <- raw()
     }
 
+    # Using values from the original response's values to fill in the per-part response.
     output[[i]] <- new_response(resp$method, resp$url, resp$status_code, headers = headers, body = part)
   }
 
