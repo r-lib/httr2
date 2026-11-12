@@ -89,38 +89,40 @@ test_that("content types are checked", {
   expect_no_error(resp_body_json(resp, check_type = FALSE))
 })
 
-# library(httr2); library(testthat)
-
 test_that("resp_body_multipart works for varying parts", {
   parts <- c(
     "If you gave me a chance I would take it",
-    "\r\nIt's a shot in the dark\r\nbut I'll make it\r\n", # CRLFs are treated as part of the body
-    "Know with all of your ❤️  you can't shake me", # correct behavior with multi-byte chars
-    "When I am with you (foo) there's no place (\r\n--foo) I'd rather (--foo--) be", # ignore pathological boundary-like strings
-    "" # empty body
+    # CRLFs are treated as part of the body
+    "\r\nIt's a shot in the dark\r\nbut I'll make it\r\n",
+    # multi-byte characters
+    "Know with all of your ❤️  you can't shake me",
+    # boundary-like strings that aren't delimiters
+    "When I am with you (foo) there's no place (\r\n--foo) I'd rather (--foo--) be",
+    ""
   )
+  range <- function(start, part) {
+    paste0(
+      "Content-Range: bytes ",
+      start,
+      "-",
+      start + nchar(part, "bytes") - 1,
+      "/1000"
+    )
+  }
 
-  full_body <- charToRaw(paste0(
+  body <- paste0(
     c(
       "yeah yeah yeah yeah yeah", # preamble
-      "--foo", # No headers at all.
+      "--foo",
       "",
       parts[1],
       "--foo",
-      paste0(
-        "Content-Range: bytes 30-",
-        30 + nchar(parts[2], "bytes") - 1,
-        "/1000"
-      ),
+      range(30, parts[2]),
       "",
       parts[2],
-      "--foo", # Multiple headers
+      "--foo",
       "Content-Type: text/plain",
-      paste0(
-        "Content-Range: bytes 100-",
-        100 + nchar(parts[3], "bytes") - 1,
-        "/1000"
-      ),
+      range(100, parts[3]),
       "",
       parts[3],
       "--foo",
@@ -131,142 +133,87 @@ test_that("resp_body_multipart works for varying parts", {
       "",
       parts[5],
       "--foo--",
-      "No place I'd rather be--foo--" # ignore everything after the first terminating boundary.
+      "No place I'd rather be--foo--" # epilogue
     ),
     collapse = "\r\n"
-  ))
-
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "multipart/byteranges; boundary=foo"),
-    body = full_body
   )
 
-  parsed <- resp_body_multipart(mock_resp)
-  expect_identical(length(parsed), length(parts))
-  for (i in seq_along(parts)) {
-    if (parts[i] != "") {
-      expect_identical(resp_body_raw(parsed[[i]]), charToRaw(parts[i]))
-    } else {
-      expect_false(resp_has_body(parsed[[i]]))
-    }
-  }
+  parsed <- resp_body_multipart(multipart_response(body))
+  expect_length(parsed, length(parts))
+  bodies <- lapply(parsed[1:4], resp_body_string)
+  expect_equal(bodies, as.list(parts[1:4]))
+  expect_false(resp_has_body(parsed[[5]]))
 
-  expect_identical(length(resp_headers(parsed[[1]])), 0L)
-  expect_identical(names(resp_headers(parsed[[2]])), "Content-Range")
-  expect_identical(
-    sort(names(resp_headers(parsed[[3]]))),
-    c("Content-Range", "Content-Type")
+  expect_length(resp_headers(parsed[[1]]), 0)
+  expect_named(resp_headers(parsed[[2]]), "Content-Range")
+  expect_named(
+    resp_headers(parsed[[3]]),
+    c("Content-Type", "Content-Range"),
+    ignore.order = TRUE
   )
-  expect_identical(names(resp_headers(parsed[[4]])), "Content-Type")
-  expect_identical(length(resp_headers(parsed[[5]])), 0L)
+  expect_named(resp_headers(parsed[[4]]), "Content-Type")
+  expect_length(resp_headers(parsed[[5]]), 0)
 })
 
 test_that("multipart boundary extraction works with spaces", {
-  # Spaces in the boundary string are allowed.
-  boundary <- httr2:::extract_multipart_boundary(
-    "multipart/digest; boundary=-- I am the boundary --; other=stuff"
+  boundary <- "-- I am the boundary --"
+  expect_equal(
+    extract_multipart_boundary(
+      "multipart/digest; boundary=-- I am the boundary --; other=stuff"
+    ),
+    boundary
   )
-  expect_identical(boundary, "-- I am the boundary --")
+  # Can't end with a space
+  expect_equal(
+    extract_multipart_boundary(
+      "multipart/digest; boundary=-- I am the boundary -- "
+    ),
+    boundary
+  )
+  # Varying space after ;
+  expect_equal(
+    extract_multipart_boundary(
+      "multipart/digest;boundary=-- I am the boundary --"
+    ),
+    boundary
+  )
+  expect_equal(
+    extract_multipart_boundary(
+      "multipart/digest;    boundary=-- I am the boundary --"
+    ),
+    boundary
+  )
 
-  # Boundary cannot terminate with a space.
-  boundary <- httr2:::extract_multipart_boundary(
-    "multipart/digest; boundary=-- I am the boundary -- "
-  )
-  expect_identical(boundary, "-- I am the boundary --")
-
-  # Handles varying number of spaces between the ';' and 'boundary='.
-  boundary <- httr2:::extract_multipart_boundary(
-    "multipart/digest;boundary=-- I am the boundary --"
-  )
-  expect_identical(boundary, "-- I am the boundary --")
-  boundary <- httr2:::extract_multipart_boundary(
-    "multipart/digest;    boundary=-- I am the boundary --"
-  )
-  expect_identical(boundary, "-- I am the boundary --")
-
-  expect_error(
-    httr2:::extract_multipart_boundary("multipart/digest; boundary"),
-    "Failed to extract multipart boundary"
-  )
+  no_boundary <- "multipart/digest; boundary"
+  expect_snapshot(extract_multipart_boundary(no_boundary), error = TRUE)
 })
 
 test_that("resp_body_multipart generates parsing errors", {
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "text/html"),
-    raw()
-  )
-  expect_error(resp_body_multipart(mock_resp), "Unexpected content type")
+  wrong_type <- multipart_response("", "text/html")
+  no_close <- multipart_response("kyoto to the bay\r\nstrolling so casually")
+  no_open <- multipart_response(paste0(
+    "kyoto to the bay\r\n--foo--\r\n",
+    "strolling so casually\r\n--foo\r\n"
+  ))
+  too_short <- multipart_response(paste0(
+    "kyoto to the bay\r\n--foo\r\n--foo\r\n",
+    "strolling so casually\r\n--foo--\r\n"
+  ))
+  no_header_line <- multipart_response(paste0(
+    "\r\n--foo\r\nkyoto to the bay\r\n",
+    "--foo\r\nstrolling so casually\r\n--foo--\r\n"
+  ))
+  no_header_end <- multipart_response(paste0(
+    "\r\n--foo\r\nContent-Type: foo/bar\r\nkyoto to the bay\r\n",
+    "--foo\r\n\r\nstrolling so casually\r\n--foo--\r\n"
+  ))
 
-  payload <- charToRaw("kyoto to the bay\r\nstrolling so casually")
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "multipart/byteranges; boundary=foo"),
-    body = payload
-  )
-  expect_error(resp_body_multipart(mock_resp), "No closing delimiter")
-
-  # No non-closing delimiter before the closing delimiter.
-  payload <- charToRaw(
-    "kyoto to the bay\r\n--foo--\r\nstrolling so casually\r\n--foo\r\n"
-  )
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "multipart/byteranges; boundary=foo"),
-    body = payload
-  )
-  expect_error(resp_body_multipart(mock_resp), "No non-closing delimiter")
-
-  payload <- charToRaw(
-    "kyoto to the bay\r\n--foo\r\n--foo\r\nstrolling so casually\r\n--foo--\r\n"
-  )
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "multipart/byteranges; boundary=foo"),
-    body = payload
-  )
-  expect_error(resp_body_multipart(mock_resp), "too short")
-
-  # No empty line with no headers.
-  payload <- charToRaw(
-    "\r\n--foo\r\nkyoto to the bay\r\n--foo\r\nstrolling so casually\r\n--foo--\r\n"
-  )
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "multipart/byteranges; boundary=foo"),
-    body = payload
-  )
-  expect_error(
-    resp_body_multipart(mock_resp),
-    "Failed to parse per-part headers"
-  )
-
-  # No empty line after headers.
-  payload <- charToRaw(
-    "\r\n--foo\r\nContent-Type: foo/bar\r\nkyoto to the bay\r\n--foo\r\n\r\nstrolling so casually\r\n--foo--\r\n"
-  )
-  mock_resp <- new_response(
-    "GET",
-    "https://foo.com",
-    206,
-    list(`Content-Type` = "multipart/byteranges; boundary=foo"),
-    body = payload
-  )
-  expect_error(
-    resp_body_multipart(mock_resp),
-    "Failed to parse per-part headers"
-  )
+  expect_snapshot(error = TRUE, {
+    resp_body_multipart(wrong_type)
+    resp_body_multipart(no_close)
+    resp_body_multipart(no_open)
+    resp_body_multipart(too_short)
+    resp_body_multipart(no_header_line)
+    resp_body_multipart(no_header_end)
+  })
 })

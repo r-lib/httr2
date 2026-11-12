@@ -42,3 +42,44 @@
       ! Unexpected content type "application/json".
       * Expecting type "application/xml" or "text/xml" or suffix "xml".
 
+# multipart boundary extraction works with spaces
+
+    Code
+      extract_multipart_boundary(no_boundary)
+    Condition
+      Error in `extract_multipart_boundary()`:
+      ! Failed to extract multipart boundary from content type "multipart/digest; boundary".
+
+# resp_body_multipart generates parsing errors
+
+    Code
+      resp_body_multipart(wrong_type)
+    Condition
+      Error in `resp_body_multipart()`:
+      ! Unexpected content type "text/html".
+    Code
+      resp_body_multipart(no_close)
+    Condition
+      Error in `resp_body_multipart()`:
+      ! No closing delimiter detected in multipart response body.
+    Code
+      resp_body_multipart(no_open)
+    Condition
+      Error in `resp_body_multipart()`:
+      ! No non-closing delimiters detected in multipart response body.
+    Code
+      resp_body_multipart(too_short)
+    Condition
+      Error in `resp_body_multipart()`:
+      ! Part is too short to be parsed in multipart response body.
+    Code
+      resp_body_multipart(no_header_line)
+    Condition
+      Error in `resp_body_multipart()`:
+      ! Failed to parse per-part headers in a multipart response.
+    Code
+      resp_body_multipart(no_header_end)
+    Condition
+      Error in `resp_body_multipart()`:
+      ! Failed to parse per-part headers in a multipart response.
+
