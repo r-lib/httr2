@@ -9,7 +9,7 @@
 #' * `resp_body_multipart()` returns a list of per-part responses.
 #' * `resp_has_body()` returns `TRUE` if the response has a body.
 #'
-#' `resp_body_json()`, `resp_body_xml()` and `resp_body_multipart()` check 
+#' `resp_body_json()`, `resp_body_xml()` and `resp_body_multipart()` check
 #' that the content-type header is correct; if the server returns an incorrect
 #' type you can suppress the check with `check_type = FALSE`.
 #'
@@ -170,9 +170,15 @@ body_cache_key <- function(prefix, ...) {
 
 extract_multipart_boundary <- function(content_type) {
   allowed <- "0-9a-zA-Z'()+_,-./:=?"
-  boundary <- sub(paste0("multipart/.*; *boundary=([", allowed, " ]+[", allowed, "]).*"), "\\1", content_type)
+  boundary <- sub(
+    paste0("multipart/.*; *boundary=([", allowed, " ]+[", allowed, "]).*"),
+    "\\1",
+    content_type
+  )
   if (boundary == content_type) {
-    cli::cli_abort("Failed to extract multipart boundary from content type {.str {content_type}}.")
+    cli::cli_abort(
+      "Failed to extract multipart boundary from content type {.str {content_type}}."
+    )
   }
   boundary
 }
@@ -217,7 +223,9 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
   pos_mid <- pos_mid[body[pos_mid + 1] == lf] + 1L
   pos_mid <- pos_mid[pos_mid < pos_end]
   if (length(pos_mid) == 0) {
-    cli::cli_abort("No non-closing delimiters detected in multipart response body.")
+    cli::cli_abort(
+      "No non-closing delimiters detected in multipart response body."
+    )
   }
 
   output <- vector("list", length(pos_mid))
@@ -231,7 +239,9 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
     part_end <- part_end - length(delim_prefix) - 2L # last position before the delimiter
 
     if (part_start > part_end) {
-      cli::cli_abort("Part is too short to be parsed in multipart response body.")
+      cli::cli_abort(
+        "Part is too short to be parsed in multipart response body."
+      )
     }
     part <- body[part_start:part_end]
 
@@ -239,7 +249,9 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
     pos_empty <- which(part == cr)
     pos_empty <- pos_empty[part[pos_empty + 1L] == lf] + 1L
     if (length(pos_empty) == 0) {
-      cli::cli_abort("Failed to parse per-part headers in a multipart response.")
+      cli::cli_abort(
+        "Failed to parse per-part headers in a multipart response."
+      )
     }
 
     if (pos_empty[1] == 2) {
@@ -251,7 +263,9 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
       pos_empty <- pos_empty[part[pos_empty + 1] == cr] + 1L
       pos_empty <- pos_empty[part[pos_empty + 1] == lf] + 1L
       if (length(pos_empty) == 0) {
-        cli::cli_abort("Failed to parse per-part headers in a multipart response.")
+        cli::cli_abort(
+          "Failed to parse per-part headers in a multipart response."
+        )
       }
       first_crlf <- pos_empty[1]
       headers <- curl::parse_headers(part[1:(first_crlf - 4)])
@@ -264,7 +278,13 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
     }
 
     # Using the original response's values to fill in the per-part response.
-    output[[i]] <- new_response(resp$method, resp$url, resp$status_code, headers = headers, body = part)
+    output[[i]] <- new_response(
+      resp$method,
+      resp$url,
+      resp$status_code,
+      headers = headers,
+      body = part
+    )
   }
 
   output
