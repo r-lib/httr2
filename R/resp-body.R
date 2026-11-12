@@ -16,6 +16,13 @@
 #' `resp_body_json()` and `resp_body_xml()` also cache the parsed
 #' object so the second and subsequent calls are low-cost.
 #'
+#' `resp_body_multipart()` splits a `multipart/*` body (e.g.
+#' `multipart/byteranges` or `multipart/mixed`) into its parts. Each part is
+#' returned as a response with its own headers and body, but the method, URL,
+#' and status code are copied from the original response. Parts often lack a
+#' `Content-Type` header; RFC 2046 says these should be treated as
+#' `text/plain; charset=US-ASCII`, but httr2 doesn't add the header for you.
+#'
 #' @inheritParams resp_headers
 #' @returns
 #' * `resp_body_raw()` returns a raw vector.
@@ -170,7 +177,7 @@ body_cache_key <- function(prefix, ...) {
 
 #' @rdname resp_body_raw
 #' @export
-resp_body_multipart <- function(resp, check_type = TRUE, ...) {
+resp_body_multipart <- function(resp, check_type = TRUE) {
   check_response(resp)
 
   # Need to support multiple subtypes (alternative, mixed, digest, byteranges,

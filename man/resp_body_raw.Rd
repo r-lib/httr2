@@ -22,7 +22,7 @@ resp_body_html(resp, check_type = TRUE, ...)
 
 resp_body_xml(resp, check_type = TRUE, ...)
 
-resp_body_multipart(resp, check_type = TRUE, ...)
+resp_body_multipart(resp, check_type = TRUE)
 }
 \arguments{
 \item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
@@ -67,6 +67,13 @@ type you can suppress the check with \code{check_type = FALSE}.
 
 \code{resp_body_json()} and \code{resp_body_xml()} also cache the parsed
 object so the second and subsequent calls are low-cost.
+
+\code{resp_body_multipart()} splits a \verb{multipart/*} body (e.g.
+\code{multipart/byteranges} or \code{multipart/mixed}) into its parts. Each part is
+returned as a response with its own headers and body, but the method, URL,
+and status code are copied from the original response. Parts often lack a
+\code{Content-Type} header; RFC 2046 says these should be treated as
+\verb{text/plain; charset=US-ASCII}, but httr2 doesn't add the header for you.
 }
 \examples{
 resp <- request("https://httr2.r-lib.org") |> req_perform()
