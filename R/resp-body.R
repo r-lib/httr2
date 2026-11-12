@@ -195,7 +195,7 @@ resp_body_multipart <- function(resp, check_type = TRUE, ...) {
     cli::cli_abort("Unexpected content type {.str {ctype}}.")
   }
 
-  # See https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html for the allowed boundary.
+  # https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.1
   # Note that spaces are allowed inside the boundary string, but not at the end of it.
   boundary <- extract_multipart_boundary(resp_header(resp, "Content-Type"))
   body <- resp_body_raw(resp)
