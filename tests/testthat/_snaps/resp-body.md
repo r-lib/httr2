@@ -42,13 +42,28 @@
       ! Unexpected content type "application/json".
       * Expecting type "application/xml" or "text/xml" or suffix "xml".
 
-# multipart boundary extraction works with spaces
+# multipart_boundary() follows RFC 2046
 
     Code
-      extract_multipart_boundary(no_boundary)
+      multipart_boundary(no_boundary)
     Condition
-      Error in `extract_multipart_boundary()`:
-      ! Failed to extract multipart boundary from content type "multipart/digest; boundary".
+      Error:
+      ! Failed to extract multipart boundary from content type "multipart/mixed".
+    Code
+      multipart_boundary(empty_boundary)
+    Condition
+      Error:
+      ! Failed to extract multipart boundary from content type "multipart/mixed; boundary".
+    Code
+      multipart_boundary(bad_char)
+    Condition
+      Error:
+      ! Failed to extract multipart boundary from content type "multipart/mixed; boundary=\"a@b\"".
+    Code
+      multipart_boundary(too_long)
+    Condition
+      Error:
+      ! Failed to extract multipart boundary from content type "multipart/mixed; boundary=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".
 
 # resp_body_multipart generates parsing errors
 
@@ -67,11 +82,6 @@
     Condition
       Error in `resp_body_multipart()`:
       ! No non-closing delimiters detected in multipart response body.
-    Code
-      resp_body_multipart(too_short)
-    Condition
-      Error in `resp_body_multipart()`:
-      ! Part is too short to be parsed in multipart response body.
     Code
       resp_body_multipart(no_header_line)
     Condition

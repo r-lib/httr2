@@ -155,37 +155,52 @@ test_that("resp_body_multipart works for varying parts", {
   expect_length(resp_headers(parsed[[5]]), 0)
 })
 
-test_that("multipart boundary extraction works with spaces", {
-  boundary <- "-- I am the boundary --"
-  expect_equal(
-    extract_multipart_boundary(
-      "multipart/digest; boundary=-- I am the boundary --; other=stuff"
-    ),
-    boundary
-  )
-  # Can't end with a space
-  expect_equal(
-    extract_multipart_boundary(
-      "multipart/digest; boundary=-- I am the boundary -- "
-    ),
-    boundary
-  )
-  # Varying space after ;
-  expect_equal(
-    extract_multipart_boundary(
-      "multipart/digest;boundary=-- I am the boundary --"
-    ),
-    boundary
-  )
-  expect_equal(
-    extract_multipart_boundary(
-      "multipart/digest;    boundary=-- I am the boundary --"
-    ),
-    boundary
-  )
+test_that("resp_body_multipart handles body without preamble", {
+  resp <- multipart_response("--foo\r\n\r\nhi\r\n--foo--")
+  parsed <- resp_body_multipart(resp)
+  expect_length(parsed, 1)
+  expect_equal(resp_body_string(parsed[[1]]), "hi")
+})
 
-  no_boundary <- "multipart/digest; boundary"
-  expect_snapshot(extract_multipart_boundary(no_boundary), error = TRUE)
+test_that("resp_body_multipart allows transport padding after delimiters", {
+  resp <- multipart_response(
+    "--foo \t\r\n\r\nhi\r\n--foo  \r\n\r\nbye\r\n--foo--"
+  )
+  parsed <- resp_body_multipart(resp)
+  expect_equal(lapply(parsed, resp_body_string), list("hi", "bye"))
+})
+
+test_that("resp_body_multipart handles empty part without headers", {
+  resp <- multipart_response("--foo\r\n\r\n--foo\r\n\r\nhi\r\n--foo--")
+  parsed <- resp_body_multipart(resp)
+  expect_length(parsed, 2)
+  expect_false(resp_has_body(parsed[[1]]))
+  expect_length(resp_headers(parsed[[1]]), 0)
+  expect_equal(resp_body_string(parsed[[2]]), "hi")
+})
+
+test_that("multipart_boundary() follows RFC 2046", {
+  expect_equal(multipart_boundary("multipart/mixed; boundary=foo"), "foo")
+  expect_equal(multipart_boundary("multipart/mixed; boundary=f"), "f")
+  expect_equal(multipart_boundary("multipart/mixed;boundary=foo "), "foo")
+  # quoted strings may contain spaces and tspecials
+  expect_equal(
+    multipart_boundary('multipart/mixed; boundary="a b?"; x=1'),
+    "a b?"
+  )
+  # parameter names and types are case-insensitive
+  expect_equal(multipart_boundary("Multipart/Mixed; Boundary=foo"), "foo")
+
+  no_boundary <- "multipart/mixed"
+  empty_boundary <- "multipart/mixed; boundary"
+  bad_char <- 'multipart/mixed; boundary="a@b"'
+  too_long <- paste0("multipart/mixed; boundary=", strrep("a", 71))
+  expect_snapshot(error = TRUE, {
+    multipart_boundary(no_boundary)
+    multipart_boundary(empty_boundary)
+    multipart_boundary(bad_char)
+    multipart_boundary(too_long)
+  })
 })
 
 test_that("resp_body_multipart generates parsing errors", {
@@ -194,10 +209,6 @@ test_that("resp_body_multipart generates parsing errors", {
   no_open <- multipart_response(paste0(
     "kyoto to the bay\r\n--foo--\r\n",
     "strolling so casually\r\n--foo\r\n"
-  ))
-  too_short <- multipart_response(paste0(
-    "kyoto to the bay\r\n--foo\r\n--foo\r\n",
-    "strolling so casually\r\n--foo--\r\n"
   ))
   no_header_line <- multipart_response(paste0(
     "\r\n--foo\r\nkyoto to the bay\r\n",
@@ -212,7 +223,6 @@ test_that("resp_body_multipart generates parsing errors", {
     resp_body_multipart(wrong_type)
     resp_body_multipart(no_close)
     resp_body_multipart(no_open)
-    resp_body_multipart(too_short)
     resp_body_multipart(no_header_line)
     resp_body_multipart(no_header_end)
   })

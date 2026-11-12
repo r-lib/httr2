@@ -168,124 +168,142 @@ body_cache_key <- function(prefix, ...) {
   paste0(prefix, "-", substr(key, 1, 10))
 }
 
-extract_multipart_boundary <- function(content_type) {
-  allowed <- "0-9a-zA-Z'()+_,-./:=?"
-  boundary <- sub(
-    paste0("multipart/.*; *boundary=([", allowed, " ]+[", allowed, "]).*"),
-    "\\1",
-    content_type
-  )
-  if (boundary == content_type) {
-    cli::cli_abort(
-      "Failed to extract multipart boundary from content type {.str {content_type}}."
-    )
-  }
-  boundary
-}
-
 #' @rdname resp_body_raw
 #' @export
 resp_body_multipart <- function(resp, check_type = TRUE, ...) {
   check_response(resp)
 
-  # Need to support multiple subtypes (alternative, mixed, digest, byteranges, etc.)
-  # and I don't want to list out all type combinations in check_content_type.
-  ctype <- resp_content_type(resp)
-  if (check_type && parse_content_type(ctype)$type != "multipart") {
-    cli::cli_abort("Unexpected content type {.str {ctype}}.")
+  # Need to support multiple subtypes (alternative, mixed, digest, byteranges,
+  # etc.) so can't use check_content_type()
+  content_type <- resp_header(resp, "Content-Type", default = "")
+  if (check_type && parse_content_type(content_type)$type != "multipart") {
+    cli::cli_abort("Unexpected content type {.str {content_type}}.")
   }
 
-  # https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.1
-  # Note that spaces are allowed inside the boundary string, but not at the end of it.
-  boundary <- extract_multipart_boundary(resp_header(resp, "Content-Type"))
-  body <- resp_body_raw(resp)
+  call <- current_env()
+  boundary <- multipart_boundary(content_type, error_call = call)
+  parts <- multipart_split(resp_body_raw(resp), boundary, error_call = call)
 
-  cr <- charToRaw("\r")
-  lf <- charToRaw("\n")
-  dash <- charToRaw("-")
-
-  # I'd prefer to avoid creating a (possibly very long) string from the body.
-  # So, instead of using regexes, we'll manually scan the raw body to find CRLFs and boundaries.
-  delim_prefix <- c(cr, lf, dash, dash, charToRaw(boundary))
-  pos_pre <- which(body == delim_prefix[1L])
-  for (i in 2:length(delim_prefix)) {
-    pos_pre <- pos_pre[body[pos_pre + 1L] == delim_prefix[i]] + 1L
-  }
-
-  pos_end <- pos_pre[body[pos_pre + 1L] == dash] + 1L
-  pos_end <- pos_end[body[pos_end + 1L] == dash] + 1L
-  if (length(pos_end) == 0) {
-    cli::cli_abort("No closing delimiter detected in multipart response body.")
-  }
-  pos_end <- pos_end[1]
-
-  pos_mid <- pos_pre[body[pos_pre + 1] == cr] + 1L
-  pos_mid <- pos_mid[body[pos_mid + 1] == lf] + 1L
-  pos_mid <- pos_mid[pos_mid < pos_end]
-  if (length(pos_mid) == 0) {
-    cli::cli_abort(
-      "No non-closing delimiters detected in multipart response body."
-    )
-  }
-
-  output <- vector("list", length(pos_mid))
-  for (i in seq_along(pos_mid)) {
-    part_start <- pos_mid[i] + 1L # first position after the delimiter
-    if (i == length(pos_mid)) {
-      part_end <- pos_end
-    } else {
-      part_end <- pos_mid[i + 1]
-    }
-    part_end <- part_end - length(delim_prefix) - 2L # last position before the delimiter
-
-    if (part_start > part_end) {
-      cli::cli_abort(
-        "Part is too short to be parsed in multipart response body."
-      )
-    }
-    part <- body[part_start:part_end]
-
-    # Finding the first empty newline to separate the part's body from headers.
-    pos_empty <- which(part == cr)
-    pos_empty <- pos_empty[part[pos_empty + 1L] == lf] + 1L
-    if (length(pos_empty) == 0) {
-      cli::cli_abort(
-        "Failed to parse per-part headers in a multipart response."
-      )
-    }
-
-    if (pos_empty[1] == 2) {
-      # No headers, i.e., empty line is at the start.
-      headers <- list()
-      past_header <- 3
-    } else {
-      # First empty line is represented by a double CRLF.
-      pos_empty <- pos_empty[part[pos_empty + 1] == cr] + 1L
-      pos_empty <- pos_empty[part[pos_empty + 1] == lf] + 1L
-      if (length(pos_empty) == 0) {
-        cli::cli_abort(
-          "Failed to parse per-part headers in a multipart response."
-        )
-      }
-      first_crlf <- pos_empty[1]
-      headers <- curl::parse_headers(part[1:(first_crlf - 4)])
-      past_header <- first_crlf + 1L
-    }
-    if (past_header <= length(part)) {
-      part <- part[past_header:length(part)]
-    } else {
-      part <- raw()
-    }
-
-    # Using the original response's values to fill in the per-part response.
-    output[[i]] <- new_response(
+  lapply(parts, function(part) {
+    part <- multipart_parse_part(part, error_call = call)
+    # Use the original response's values to fill in the per-part response.
+    new_response(
       resp$method,
       resp$url,
       resp$status_code,
-      headers = headers,
-      body = part
+      headers = part$headers,
+      body = part$body
+    )
+  })
+}
+
+# https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.1
+multipart_boundary <- function(content_type, error_call = caller_env()) {
+  params <- parse_media(content_type)
+  names(params) <- tolower(names(params))
+  boundary <- params$boundary %||% ""
+
+  bchars <- "0-9a-zA-Z'()+_,./:=?-"
+  regex <- paste0("^[ ", bchars, "]{0,69}[", bchars, "]$")
+  if (!grepl(regex, boundary)) {
+    cli::cli_abort(
+      "Failed to extract multipart boundary from content type {.str {content_type}}.",
+      call = error_call
+    )
+  }
+  boundary
+}
+
+# Returns a list of raw vectors, one for each body part (headers + body).
+# Works on the raw bytes to avoid creating a (possibly very long) string.
+multipart_split <- function(body, boundary, error_call = caller_env()) {
+  cr <- charToRaw("\r")
+  lf <- charToRaw("\n")
+  dash <- charToRaw("-")
+  padding <- charToRaw(" \t")
+
+  # The CRLF preceding a delimiter is part of the delimiter, but the first
+  # delimiter may also occur at the very start of the body. Prepending a CRLF
+  # lets us handle both cases identically.
+  body <- c(cr, lf, body)
+  n <- length(body)
+  is_at <- function(i, byte) i <= n && body[[i]] == byte
+
+  delim <- c(cr, lf, dash, dash, charToRaw(boundary))
+  starts <- which(body == delim[[1]])
+  for (i in seq_along(delim)[-1]) {
+    starts <- starts[which(body[starts + i - 1L] == delim[[i]])]
+  }
+
+  # A delimiter must be followed by "--" (closing delimiter) or by optional
+  # transport padding then CRLF; anything else is a boundary-like string in the
+  # body.
+  open_start <- integer()
+  open_end <- integer()
+  close_start <- NA_integer_
+  for (start in starts) {
+    j <- start + length(delim)
+    if (is_at(j, dash) && is_at(j + 1L, dash)) {
+      close_start <- start
+      break
+    }
+    while (j <= n && body[[j]] %in% padding) {
+      j <- j + 1L
+    }
+    if (is_at(j, cr) && is_at(j + 1L, lf)) {
+      open_start <- c(open_start, start)
+      open_end <- c(open_end, j + 1L)
+    }
+  }
+
+  if (is.na(close_start)) {
+    cli::cli_abort(
+      "No closing delimiter detected in multipart response body.",
+      call = error_call
+    )
+  }
+  if (length(open_start) == 0) {
+    cli::cli_abort(
+      "No non-closing delimiters detected in multipart response body.",
+      call = error_call
     )
   }
 
-  output
+  part_start <- open_end + 1L
+  part_end <- c(open_start[-1], close_start) - 1L
+  map2(part_start, part_end, \(start, end) body[seq2(start, end)])
+}
+
+# Splits a body part into headers and body. A part with no headers starts
+# with CRLF; otherwise the headers are terminated by an empty line.
+multipart_parse_part <- function(part, error_call = caller_env()) {
+  cr <- charToRaw("\r")
+  lf <- charToRaw("\n")
+  n <- length(part)
+
+  if (n == 0) {
+    return(list(headers = list(), body = raw()))
+  }
+  if (n >= 2 && part[[1]] == cr && part[[2]] == lf) {
+    return(list(headers = list(), body = part[seq2(3, n)]))
+  }
+
+  crlfcrlf <- which(part == cr)
+  crlfcrlf <- crlfcrlf[which(
+    part[crlfcrlf + 1L] == lf &
+      part[crlfcrlf + 2L] == cr &
+      part[crlfcrlf + 3L] == lf
+  )]
+  if (length(crlfcrlf) == 0) {
+    cli::cli_abort(
+      "Failed to parse per-part headers in a multipart response.",
+      call = error_call
+    )
+  }
+  end <- crlfcrlf[[1]]
+
+  list(
+    headers = curl::parse_headers(part[seq_len(end - 1L)]),
+    body = part[seq2(end + 4L, n)]
+  )
 }
