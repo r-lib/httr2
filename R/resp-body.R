@@ -19,9 +19,10 @@
 #' `resp_body_multipart()` splits a `multipart/*` body (e.g.
 #' `multipart/byteranges` or `multipart/mixed`) into its parts. Each part is
 #' returned as a response with its own headers and body, but the method, URL,
-#' and status code are copied from the original response. Parts often lack a
-#' `Content-Type` header; RFC 2046 says these should be treated as
-#' `text/plain; charset=US-ASCII`, but httr2 doesn't add the header for you.
+#' and status code are copied from the original response. Parts without a
+#' `Content-Type` header are given the default specified by RFC 2046:
+#' `message/rfc822` for `multipart/digest`, and `text/plain; charset=US-ASCII`
+#' otherwise.
 #'
 #' @inheritParams resp_headers
 #' @returns
@@ -189,10 +190,14 @@ resp_body_multipart <- function(resp, check_type = TRUE) {
 
   call <- current_env()
   boundary <- multipart_boundary(content_type, error_call = call)
+  default_type <- multipart_default_type(content_type)
   parts <- multipart_split(resp_body_raw(resp), boundary, error_call = call)
 
   lapply(parts, function(part) {
     part <- multipart_parse_part(part, error_call = call)
+    if (!any(grepl("^content-type:", part$headers, ignore.case = TRUE))) {
+      part$headers <- c(part$headers, paste0("Content-Type: ", default_type))
+    }
     # Use the original response's values to fill in the per-part response.
     new_response(
       resp$method,
@@ -219,6 +224,16 @@ multipart_boundary <- function(content_type, error_call = caller_env()) {
     )
   }
   boundary
+}
+
+# https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.5
+multipart_default_type <- function(content_type) {
+  parsed <- parse_content_type(content_type)
+  if (parsed$subtype == "digest") {
+    "message/rfc822"
+  } else {
+    "text/plain; charset=US-ASCII"
+  }
 }
 
 # Returns a list of raw vectors, one for each body part (headers + body).
@@ -289,10 +304,10 @@ multipart_parse_part <- function(part, error_call = caller_env()) {
   n <- length(part)
 
   if (n == 0) {
-    return(list(headers = list(), body = raw()))
+    return(list(headers = character(), body = raw()))
   }
   if (n >= 2 && part[[1]] == cr && part[[2]] == lf) {
-    return(list(headers = list(), body = part[seq2(3, n)]))
+    return(list(headers = character(), body = part[seq2(3, n)]))
   }
 
   crlfcrlf <- which(part == cr)

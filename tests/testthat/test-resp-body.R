@@ -144,15 +144,34 @@ test_that("resp_body_multipart works for varying parts", {
   expect_equal(bodies, as.list(parts[1:4]))
   expect_false(resp_has_body(parsed[[5]]))
 
-  expect_length(resp_headers(parsed[[1]]), 0)
-  expect_named(resp_headers(parsed[[2]]), "Content-Range")
+  expect_named(resp_headers(parsed[[1]]), "Content-Type")
+  expect_named(
+    resp_headers(parsed[[2]]),
+    c("Content-Range", "Content-Type"),
+    ignore.order = TRUE
+  )
   expect_named(
     resp_headers(parsed[[3]]),
     c("Content-Type", "Content-Range"),
     ignore.order = TRUE
   )
   expect_named(resp_headers(parsed[[4]]), "Content-Type")
-  expect_length(resp_headers(parsed[[5]]), 0)
+  expect_named(resp_headers(parsed[[5]]), "Content-Type")
+})
+
+test_that("resp_body_multipart supplies RFC 2046 default content type", {
+  body <- "--foo\r\n\r\nhi\r\n--foo\r\ncontent-type: text/html\r\n\r\nhi\r\n--foo--"
+
+  parsed <- resp_body_multipart(multipart_response(body))
+  expect_equal(
+    resp_header(parsed[[1]], "Content-Type"),
+    "text/plain; charset=US-ASCII"
+  )
+  expect_equal(resp_header(parsed[[2]], "Content-Type"), "text/html")
+
+  digest <- multipart_response(body, "multipart/digest; boundary=foo")
+  parsed <- resp_body_multipart(digest)
+  expect_equal(resp_header(parsed[[1]], "Content-Type"), "message/rfc822")
 })
 
 test_that("resp_body_multipart handles body without preamble", {
@@ -175,7 +194,6 @@ test_that("resp_body_multipart handles empty part without headers", {
   parsed <- resp_body_multipart(resp)
   expect_length(parsed, 2)
   expect_false(resp_has_body(parsed[[1]]))
-  expect_length(resp_headers(parsed[[1]]), 0)
   expect_equal(resp_body_string(parsed[[2]]), "hi")
 })
 

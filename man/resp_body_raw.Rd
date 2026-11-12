@@ -71,9 +71,10 @@ object so the second and subsequent calls are low-cost.
 \code{resp_body_multipart()} splits a \verb{multipart/*} body (e.g.
 \code{multipart/byteranges} or \code{multipart/mixed}) into its parts. Each part is
 returned as a response with its own headers and body, but the method, URL,
-and status code are copied from the original response. Parts often lack a
-\code{Content-Type} header; RFC 2046 says these should be treated as
-\verb{text/plain; charset=US-ASCII}, but httr2 doesn't add the header for you.
+and status code are copied from the original response. Parts without a
+\code{Content-Type} header are given the default specified by RFC 2046:
+\code{message/rfc822} for \code{multipart/digest}, and \verb{text/plain; charset=US-ASCII}
+otherwise.
 }
 \examples{
 resp <- request("https://httr2.r-lib.org") |> req_perform()
