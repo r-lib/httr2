@@ -97,6 +97,19 @@ test_that("304 retains headers but gets cached body", {
   expect_equal(cached$body, resp$body)
 })
 
+test_that("304 doesn't override content-specific headers", {
+  req <- request("http://example.com") |> req_cache(tempfile())
+  headers <- c("Content-Length: 2", "Content-Type: text/plain")
+  resp <- response(200, headers = headers, body = charToRaw("OK"))
+  cache_set(req, resp)
+
+  headers_304 <- c("Content-Length: 0", "Content-Type: text/html", "X: 1")
+  cached <- cache_post_fetch(req, response(304, headers = headers_304))
+  expect_equal(resp_header(cached, "content-length"), "2")
+  expect_equal(resp_header(cached, "content-type"), "text/plain")
+  expect_equal(resp_header(cached, "x"), "1")
+})
+
 test_that("can re-cache a disk body already in the cache (#840)", {
   req <- request("http://example.com") |> req_cache(tempfile())
 
