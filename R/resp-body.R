@@ -275,30 +275,22 @@ multipart_split <- function(body, boundary, error_call = caller_env()) {
 # Splits a body part into headers and body. A part with no headers starts
 # with CRLF; otherwise the headers are terminated by an empty line.
 multipart_parse_part <- function(part, error_call = caller_env()) {
-  cr <- charToRaw("\r")
-  lf <- charToRaw("\n")
   n <- length(part)
 
   if (n == 0) {
     return(list(headers = character(), body = raw()))
   }
-  if (n >= 2 && part[[1]] == cr && part[[2]] == lf) {
+  if (n >= 2 && identical(part[1:2], charToRaw("\r\n"))) {
     return(list(headers = character(), body = part[seq2(3, n)]))
   }
 
-  crlfcrlf <- which(part == cr)
-  crlfcrlf <- crlfcrlf[which(
-    part[crlfcrlf + 1L] == lf &
-      part[crlfcrlf + 2L] == cr &
-      part[crlfcrlf + 3L] == lf
-  )]
-  if (length(crlfcrlf) == 0) {
+  end <- grepRaw("\r\n\r\n", part, fixed = TRUE)
+  if (length(end) == 0) {
     cli::cli_abort(
       "Failed to parse per-part headers in a multipart response.",
       call = error_call
     )
   }
-  end <- crlfcrlf[[1]]
 
   list(
     headers = curl::parse_headers(part[seq_len(end - 1L)]),
