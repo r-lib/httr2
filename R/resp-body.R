@@ -272,18 +272,19 @@ multipart_split <- function(body, boundary, error_call = caller_env()) {
   map2(part_start, part_end, \(start, end) body[seq2(start, end)])
 }
 
-# Splits a body part into headers and body. A part with no headers starts
-# with CRLF; otherwise the headers are terminated by an empty line.
+# Splits a body part into headers and body.
 multipart_parse_part <- function(part, error_call = caller_env()) {
   n <- length(part)
 
   if (n == 0) {
     return(list(headers = character(), body = raw()))
   }
+  # A part with no headers starts with CRLF
   if (n >= 2 && identical(part[1:2], charToRaw("\r\n"))) {
     return(list(headers = character(), body = part[seq2(3, n)]))
   }
 
+  # Headers must be terminated by an empty line
   end <- grepRaw("\r\n\r\n", part, fixed = TRUE)
   if (length(end) == 0) {
     cli::cli_abort(
