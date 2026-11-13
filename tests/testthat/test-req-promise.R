@@ -192,7 +192,7 @@ test_that("tracing works as expected", {
         try(extract_promise(p), silent = TRUE)
       },
       curl_multi_add = function(handle, pool, data, done, fail) {
-        abort(structure(
+        fail(structure(
           "Failed to connect",
           class = c("curl_error_couldnt_connect", "curl_error", "character")
         ))
