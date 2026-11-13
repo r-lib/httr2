@@ -354,10 +354,12 @@ test_that("tracing works as expected", {
     )
 
     # A request with a curl error.
-    with_mocked_bindings(
-      try(req_perform(request("http://127.0.0.1")), silent = TRUE),
-      curl_fetch = function(...) abort("Failed to connect")
-    )
+    local({
+      local_mocked_bindings(curl_fetch = function(...) {
+        abort("Failed to connect")
+      })
+      try(req_perform(request("http://127.0.0.1")), silent = TRUE)
+    })
 
     # Three regular requests, nested inside a parent span.
     parent <- otel::start_span("parent", tracer = "test")

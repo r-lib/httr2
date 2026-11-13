@@ -248,10 +248,12 @@ test_that("tracing works as expected", {
     req_perform(request(url_build(parsed)))
 
     # A request with a curl error.
-    with_mocked_bindings(
-      try(req_perform(request("http://127.0.0.1")), silent = TRUE),
-      curl_fetch = function(...) abort("Failed to connect")
-    )
+    local({
+      local_mocked_bindings(curl_fetch = function(...) {
+        abort("Failed to connect")
+      })
+      try(req_perform(request("http://127.0.0.1")), silent = TRUE)
+    })
 
     # A request that triggers retries, generating three individual spans.
     request_test("/status/:status", status = 429) |>
