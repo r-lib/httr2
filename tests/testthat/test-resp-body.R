@@ -101,37 +101,18 @@ test_that("resp_body_multipart() works for varying parts", {
     ""
   )
   range <- function(start, part) {
-    paste0(
-      "Content-Range: bytes ",
-      start,
-      "-",
-      start + nchar(part, "bytes") - 1,
-      "/1000"
-    )
+    end <- start + nchar(part, "bytes") - 1
+    paste0("Content-Range: bytes ", start, "-", end, "/1000")
   }
 
   body <- paste0(
     c(
       "yeah yeah yeah yeah yeah", # preamble
-      "--foo",
-      "",
-      parts[1],
-      "--foo",
-      range(30, parts[2]),
-      "",
-      parts[2],
-      "--foo",
-      "Content-Type: text/plain",
-      range(100, parts[3]),
-      "",
-      parts[3],
-      "--foo",
-      "Content-Type: text/plain",
-      "",
-      parts[4],
-      "--foo",
-      "",
-      parts[5],
+      c("--foo", "", parts[1]),
+      c("--foo", range(30, parts[2]), "", parts[2]),
+      c("--foo", "Content-Type: text/plain", range(99, parts[3]), "", parts[3]),
+      c("--foo", "Content-Type: text/plain", "", parts[4]),
+      c("--foo", "", parts[5]),
       "--foo--",
       "No place I'd rather be--foo--" # epilogue
     ),
