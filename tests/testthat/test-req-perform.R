@@ -29,7 +29,7 @@ test_that("request updates last_response()", {
 })
 
 test_that("curl errors become errors", {
-  local_mocked_bindings(curl_fetch = function(...) abort("Failed to connect"))
+  local_curl_error()
 
   req <- request("http://127.0.0.1")
   expect_snapshot(req_perform(req), error = TRUE)
@@ -249,9 +249,7 @@ test_that("tracing works as expected", {
 
     # A request with a curl error.
     local({
-      local_mocked_bindings(curl_fetch = function(...) {
-        abort("Failed to connect")
-      })
+      local_curl_error()
       try(req_perform(request("http://127.0.0.1")), silent = TRUE)
     })
 
@@ -297,7 +295,7 @@ test_that("tracing works as expected", {
 
   # And for spans with curl errors.
   expect_equal(spans[[4]]$status, "error")
-  expect_equal(spans[[4]]$attributes$error.type, "rlang_error")
+  expect_equal(spans[[4]]$attributes$error.type, "curl_error_couldnt_connect")
 
   # We should have attached the curl error as an event.
   expect_length(spans[[4]]$events, 1L)

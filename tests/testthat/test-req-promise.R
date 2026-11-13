@@ -187,14 +187,7 @@ test_that("tracing works as expected", {
 
     # A request with a curl error.
     local({
-      local_mocked_bindings(
-        curl_multi_add = function(handle, pool, data, done, fail) {
-          fail(structure(
-            "Failed to connect",
-            class = c("curl_error_couldnt_connect", "curl_error", "character")
-          ))
-        }
-      )
+      local_curl_error()
       p <- req_perform_promise(request("http://127.0.0.1"))
       try(extract_promise(p), silent = TRUE)
     })

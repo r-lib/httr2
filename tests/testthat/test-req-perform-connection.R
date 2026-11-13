@@ -56,7 +56,7 @@ test_that("can retry a transient error", {
 })
 
 test_that("curl errors become errors", {
-  local_mocked_bindings(open = function(...) abort("Failed to connect"))
+  local_curl_error()
 
   req <- request("http://127.0.0.1")
   expect_snapshot(req_perform_connection(req), error = TRUE)
@@ -71,7 +71,7 @@ test_that("curl errors become errors", {
 })
 
 test_that("correclty reports curl error with retries (#817)", {
-  local_mocked_bindings(open = function(...) abort("Failed to connect"))
+  local_curl_error()
 
   req <- request("http://127.0.0.1") |>
     req_retry(max_tries = 2, retry_on_failure = TRUE, backoff = \(i) 0)
@@ -172,7 +172,7 @@ test_that("tracing works as expected", {
 
     # A request with a curl error
     local({
-      local_mocked_bindings(open = function(...) stop("Failed to connect"))
+      local_curl_error()
       try(req_perform_connection(request("http://127.0.0.1")), silent = TRUE)
     })
 
@@ -218,7 +218,7 @@ test_that("tracing works as expected", {
 
   # And for spans with curl errors.
   expect_equal(spans[[4]]$status, "error")
-  expect_equal(spans[[4]]$attributes$error.type, "simpleError")
+  expect_equal(spans[[4]]$attributes$error.type, "curl_error_couldnt_connect")
 
   # We should have attached the curl error as an event.
   expect_length(spans[[4]]$events, 1L)
