@@ -66,25 +66,25 @@ with_verbosity(fun())
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Mon, 09 Nov 2026 12:33:29 GMT
+#> <- last-modified: Fri, 13 Nov 2026 22:38:24 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6af1bd99-4c24"
-#> <- expires: Fri, 13 Nov 2026 16:02:25 GMT
+#> <- etag: W/"6af79160-4c24"
+#> <- expires: Fri, 13 Nov 2026 22:49:40 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 0FFE:C8D7B:11908E4:131CD7F:6AF73238
+#> <- x-github-request-id: 3B50:1C618C:83D277:8FFCA0:6AF791AB
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Fri, 13 Nov 2026 22:37:30 GMT
+#> <- date: Fri, 13 Nov 2026 22:39:43 GMT
 #> <- via: 1.1 varnish
-#> <- age: 23
-#> <- x-served-by: cache-dfw-kdfw8210041-DFW
+#> <- age: 4
+#> <- x-served-by: cache-chi-kmdw8640034-CHI
 #> <- x-cache: HIT
-#> <- x-cache-hits: 5
-#> <- x-timer: S1794609450.311214,VS0,VE1
+#> <- x-cache-hits: 4
+#> <- x-timer: S1794609584.759595,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 2bfe085eb48f56a92db9e82894167e0a843ff5b4
+#> <- x-fastly-request-id: 0d1c9068482b3addfbd79aa67aa2a47044ae60ee
 #> <- content-length: 4860
 #> <- 
 #> <httr2_response>
