@@ -186,18 +186,18 @@ test_that("tracing works as expected", {
     try(extract_promise(p), silent = TRUE)
 
     # A request with a curl error.
-    with_mocked_bindings(
-      {
-        p <- req_perform_promise(request("http://127.0.0.1"))
-        try(extract_promise(p), silent = TRUE)
-      },
-      curl_multi_add = function(handle, pool, data, done, fail) {
-        fail(structure(
-          "Failed to connect",
-          class = c("curl_error_couldnt_connect", "curl_error", "character")
-        ))
-      }
-    )
+    local({
+      local_mocked_bindings(
+        curl_multi_add = function(handle, pool, data, done, fail) {
+          fail(structure(
+            "Failed to connect",
+            class = c("curl_error_couldnt_connect", "curl_error", "character")
+          ))
+        }
+      )
+      p <- req_perform_promise(request("http://127.0.0.1"))
+      try(extract_promise(p), silent = TRUE)
+    })
 
     # A request with no parent context.
     p <- req_perform_promise(request_test("/headers"))

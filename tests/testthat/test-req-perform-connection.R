@@ -171,10 +171,10 @@ test_that("tracing works as expected", {
     close(resp)
 
     # A request with a curl error
-    with_mocked_bindings(
-      try(req_perform_connection(request("http://127.0.0.1")), silent = TRUE),
-      open = function(...) stop("Failed to connect")
-    )
+    local({
+      local_mocked_bindings(open = function(...) stop("Failed to connect"))
+      try(req_perform_connection(request("http://127.0.0.1")), silent = TRUE)
+    })
 
     # A request that triggers retries, generating three individual spans.
     request_test("/status/:status", status = 429) |>
