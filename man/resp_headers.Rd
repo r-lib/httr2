@@ -18,7 +18,7 @@ resp_header_exists(resp, header)
 \item{filter}{A regular expression used to filter the header names.
 \code{NULL}, the default, returns all headers.}
 
-\item{header}{Header name (case insensitive)}
+\item{header}{Header name (case insensitive).}
 
 \item{default}{Default value to use if header doesn't exist.}
 }

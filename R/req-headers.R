@@ -54,7 +54,7 @@
 #'   req_headers(!!!headers, HeaderThree = "three") |>
 #'   req_dry_run()
 #'
-#' # Use `req_headers_redacted()`` to hide a header in the output
+#' # Use `req_headers_redacted()` to hide a header in the output
 #' req_secret <- req |>
 #'   req_headers_redacted(Secret = "this-is-private") |>
 #'   req_headers(Public = "but-this-is-not")
@@ -85,7 +85,7 @@ req_headers_redacted <- function(.req, ...) {
 check_header_values <- function(..., error_call = caller_env()) {
   dots <- list2(...)
 
-  type_ok <- map_lgl(dots, function(x) is_atomic(x) || is.null(x))
+  type_ok <- map_lgl(dots, \(x) is_atomic(x) || is.null(x))
   if (any(!type_ok)) {
     cli::cli_abort(
       "All elements of {.arg ...} must be either an atomic vector or NULL.",

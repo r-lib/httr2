@@ -16,6 +16,13 @@ test_that("response has basic print method", {
   })
 })
 
+test_that("resp_raw() shows the raw response", {
+  expect_snapshot({
+    resp_raw(response(200, headers = "X: 1", body = charToRaw("abc")))
+    resp_raw(response(204))
+  })
+})
+
 test_that("response adds date if not provided by server", {
   resp <- response(headers = "Test: 1")
   expect_named(resp_headers(resp), c("Test", "Date"))

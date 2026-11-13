@@ -41,7 +41,7 @@ otherwise it throws an error with class \verb{httr2_http_\{status\}}.
 \item \code{resp_status_desc()} retrieves the brief textual description.
 \item \code{resp_is_error()} returns \code{TRUE} if the status code represents an error
 (i.e. a 4xx or 5xx status).
-\item \code{resp_check_status()} turns HTTPs errors into R errors.
+\item \code{resp_check_status()} turns HTTP errors into R errors.
 }
 
 These functions are mostly for internal use because in most cases you

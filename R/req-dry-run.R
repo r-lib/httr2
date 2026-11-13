@@ -18,7 +18,7 @@
 #'
 #'   * The default `User-Agent`, which varies based on libcurl, curl, and
 #'     httr2 versions.
-#'   * The `Host`` header, which is often set to a testing server.
+#'   * The `Host` header, which is often set to a testing server.
 #'   * The `Content-Length` header, which will often vary by platform because
 #'     of varying newline encodings. (And is also not correct if you have
 #'     `pretty_json = TRUE`.)
@@ -26,7 +26,7 @@
 #'     built.
 #' @param pretty_json If `TRUE`, automatically prettify JSON bodies.
 #' @returns Invisibly, a list containing information about the request,
-#'   including `method`, `path`, and `headers`.
+#'   including `method`, `path`, `query`, and `headers`.
 #' @export
 #' @examples
 #' # httr2 adds default User-Agent, Accept, and Accept-Encoding headers
@@ -61,7 +61,7 @@ req_dry_run <- function(
 
   req <- req_prepare(req)
   handle <- req_handle(req)
-  handle_preflight(req, handle)
+  req <- handle_preflight(req, handle)
   resp <- curl::curl_echo(handle, progress = FALSE)
   headers <- new_headers(
     as.list(resp$headers),
@@ -70,7 +70,7 @@ req_dry_run <- function(
   )
 
   if (!quiet) {
-    cli::cat_line(resp$method, " ", resp$path, " HTTP/1.1")
+    cli::cat_line(resp$method, " ", resp$path, resp$query, " HTTP/1.1")
 
     if (testing_headers) {
       # curl::curl_echo() overrides
@@ -85,6 +85,7 @@ req_dry_run <- function(
   invisible(list(
     method = resp$method,
     path = resp$path,
+    query = resp$query,
     body = resp$body,
     headers = headers_flatten(headers, redact = redact_headers)
   ))

@@ -122,6 +122,14 @@ test_that("validates its input", {
   })
 })
 
+test_that("read_all() combines multiple reads", {
+  body <- StreamingBody$new(rawConnection(as.raw(1:10), "rb"))
+  expect_equal(body$read_all(buffer = 4), as.raw(1:10))
+
+  body <- StreamingBody$new(rawConnection(raw(), "rb"))
+  expect_null(body$read_all())
+})
+
 test_that("can access fdset", {
   skip_on_cran()
 

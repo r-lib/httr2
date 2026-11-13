@@ -16,7 +16,7 @@ to create a progress bar. \code{progress} can be:
 It's good practice to name your progress bars, to make it clear what
 calculation or process they belong to. We recommend keeping the names
 under 20 characters, so the whole progress bar fits comfortably even on
-on narrower displays.
+narrower displays.
 \subsection{Progress bar parameters}{
 \itemize{
 \item \code{clear}: whether to remove the progress bar from the screen after
@@ -46,7 +46,7 @@ The default display is different for each progress bar type.
 
 \subsection{Further documentation}{
 
-purrr's progress bars are powered by cli, so see
+httr2's progress bars are powered by cli, so see
 \href{https://cli.r-lib.org/articles/progress.html}{Introduction to progress bars in cli}
 and \href{https://cli.r-lib.org/articles/progress-advanced.html}{Advanced cli progress bars}
 for more details.

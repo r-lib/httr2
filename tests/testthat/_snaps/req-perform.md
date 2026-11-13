@@ -43,7 +43,7 @@
       req_perform(req, verbosity = 1.5)
     Condition
       Error in `req_perform()`:
-      ! `verbosity` must 0, 1, 2, or 3.
+      ! `verbosity` must be 0, 1, 2, or 3.
     Code
       req_perform(req, mock = 7)
     Condition

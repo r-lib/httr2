@@ -171,6 +171,11 @@ url_modify_relative <- function(url, relative_url) {
 #'   Name-value pairs that define query parameters. Each value must be either
 #'   an atomic vector or `NULL` (which removes the corresponding parameters).
 #'   If you want to opt out of escaping, wrap strings in `I()`.
+#'
+#'   Parameters already in `.url` are left as is when `.url` is a string, so
+#'   `?a=;` stays `?a=;` rather than becoming `?a=%3B`. When `.url` is a
+#'   parsed URL, its query values are stored decoded, so they're escaped
+#'   when the URL is rebuilt.
 #' @param .multi Controls what happens when a value is a vector:
 #'
 #'   * `"error"`, the default, throws an error.
@@ -193,21 +198,19 @@ url_modify_query <- function(
   if (!is_string(.url) && !is_url(.url)) {
     stop_input_type(.url, "a string or parsed URL")
   }
-  string_url <- is_string(.url)
-  if (string_url) {
-    .url <- url_parse(.url)
+  if (is_string(.url)) {
+    query <- curl::curl_parse_url(.url, decode = FALSE, params = FALSE)$query
+    query <- url_query_parse_raw(query)
+  } else {
+    query <- .url$query
   }
 
   new_query <- multi_dots(..., .multi = .multi, .space = .space)
   if (length(new_query) > 0) {
-    .url$query <- modify_list(.url$query, !!!new_query)
+    query <- modify_list(query, !!!new_query)
   }
 
-  if (string_url) {
-    url_build(.url)
-  } else {
-    .url
-  }
+  url_modify(.url, query = query)
 }
 
 is_url <- function(x) inherits(x, "httr2_url")
@@ -308,14 +311,24 @@ url_query_parse <- function(query) {
   check_string(query)
 
   query <- gsub("^\\?", "", query) # strip leading ?, if present
-  params <- parse_name_equals_value(parse_delim(query, "&"))
+  params <- url_query_parse_raw(query)
 
   if (length(params) == 0) {
     return(NULL)
   }
 
-  out <- as.list(curl::curl_unescape(params))
-  names(out) <- curl::curl_unescape(names(params))
+  lapply(params, \(x) curl::curl_unescape(unclass(x)))
+}
+
+# Like url_query_parse(), but leaves values in their serialized form (wrapped
+# in I() so they aren't re-escaped) and only decodes the names, so that
+# parameters can be matched against user-supplied names.
+url_query_parse_raw <- function(query) {
+  params <- strsplit(query %||% "", "&", fixed = TRUE)[[1]]
+  params <- parse_name_equals_value(params)
+
+  out <- lapply(params, I)
+  names(out) <- curl::curl_unescape(gsub("+", " ", names(params), fixed = TRUE))
   out
 }
 

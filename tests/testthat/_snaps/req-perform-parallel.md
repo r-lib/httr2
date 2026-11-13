@@ -4,7 +4,7 @@
       req_perform_parallel(req, letters)
     Condition
       Error in `req_perform_parallel()`:
-      ! If supplied, `paths` must be the same length as `req`.
+      ! If supplied, `paths` must be the same length as `reqs`.
 
 # req_perform_parallel respects http_error() body message
 

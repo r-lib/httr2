@@ -67,7 +67,7 @@ oauth_flow_abort <- function(
   cli::cli_abort(
     c(
       "OAuth failure [{error}]",
-      "*" = description,
+      "*" = if (!is.null(description)) "{description}",
       i = if (!is.null(uri)) "Learn more at {.url {uri}}."
     ),
     code = error,

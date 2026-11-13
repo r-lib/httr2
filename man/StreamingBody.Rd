@@ -36,7 +36,7 @@ In either case, you will pass to the \code{body} argument of \code{\link[=new_re
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{conn}}{A connection, that is open and ready for reading.
-\code{StreamingBody} will take care of closing it.`}
+\code{StreamingBody} will take care of closing it.}
     }
     \if{html}{\out{</div>}}
   }
@@ -55,7 +55,7 @@ In either case, you will pass to the \code{body} argument of \code{\link[=new_re
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{n}}{Number of bytes to read}
+      \item{\code{n}}{Number of bytes to read.}
     }
     \if{html}{\out{</div>}}
   }

@@ -92,7 +92,7 @@ secret_encrypt <- function(x, key) {
 }
 #' @export
 #' @rdname secrets
-#' @param encrypted String to decrypt
+#' @param encrypted String to decrypt.
 secret_decrypt <- function(encrypted, key) {
   check_string(encrypted)
 
@@ -135,9 +135,9 @@ secret_decrypt_file <- function(path, key, envir = parent.frame()) {
   dec <- secret_decrypt_raw(enc, key = key)
 
   path <- tempfile()
-  withr::defer(unlink(path), envir)
+  withr::defer(unlink(path, force = TRUE), envir)
   writeBin(dec, path)
-  Sys.chmod(path, 400)
+  Sys.chmod(path, "400")
   path
 }
 
@@ -219,8 +219,9 @@ obfuscated <- function(x) {
 }
 
 #' @export
-str.httr2_obfuscated <- function(object, ...) {
-  cat(" ", glue('obfuscated("{object}")\n'), sep = "")
+str.httr2_obfuscated <- function(object, ..., nest.lev = 0) {
+  str_leading_space(nest.lev)
+  cat(glue('obfuscated("{object}")'), "\n", sep = "")
 }
 
 #' @export

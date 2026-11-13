@@ -47,7 +47,7 @@ to stream an error response, you can use \code{\link[=req_error]{req_error()}} t
 handling so that the body is streamed to you.
 }
 \examples{
-# PREVIOSULY
+# PREVIOUSLY
 show_bytes <- function(x) {
   cat("Got ", length(x), " bytes\n", sep = "")
   TRUE

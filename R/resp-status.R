@@ -5,7 +5,7 @@
 #' * `resp_status_desc()` retrieves the brief textual description.
 #' * `resp_is_error()` returns `TRUE` if the status code represents an error
 #'   (i.e. a 4xx or 5xx status).
-#' * `resp_check_status()` turns HTTPs errors into R errors.
+#' * `resp_check_status()` turns HTTP errors into R errors.
 #'
 #' These functions are mostly for internal use because in most cases you
 #' will only ever see a 200 response:
@@ -159,6 +159,6 @@ resp_auth_message <- function(resp) {
   }
 
   non_error <- www_auth[!grepl("^error|^scheme$", names(www_auth))]
-  msg <- c(msg, paste0(names(non_error), ": ", non_error))
+  msg <- c(msg, paste0(names(non_error), ": ", non_error, recycle0 = TRUE))
   set_names(msg, "*")
 }

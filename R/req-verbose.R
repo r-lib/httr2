@@ -12,7 +12,7 @@
 #'
 #' @inheritParams req_perform
 #' @param header_req,header_resp Show request/response headers?
-#' @param body_req,body_resp Should request/response bodies? When the response
+#' @param body_req,body_resp Show request/response bodies? When the response
 #'   body is compressed, this will show the number of bytes received in
 #'   each "chunk".
 #' @param info Show informational text from curl? This is mainly useful

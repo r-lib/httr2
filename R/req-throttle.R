@@ -81,7 +81,7 @@ req_throttle <- function(req, rate, capacity, fill_time_s = 60, realm = NULL) {
     the$throttle[[realm]] <- map2(
       capacity,
       fill_rate,
-      function(capacity, fill_rate) TokenBucket$new(capacity, fill_rate)
+      \(capacity, fill_rate) TokenBucket$new(capacity, fill_rate)
     )
   }
   req_policies(req, throttle_realm = realm)
@@ -125,7 +125,7 @@ check_throttle_number <- function(
 #' @keywords internal
 throttle_status <- function() {
   # Trigger refill before displaying status
-  walk(the$throttle, function(buckets) walk(buckets, function(b) b$refill()))
+  walk(the$throttle, \(buckets) walk(buckets, \(b) b$refill()))
 
   realm <- character()
   capacity <- tokens <- to_wait <- double()
@@ -133,9 +133,9 @@ throttle_status <- function() {
   for (r in sort(env_names(the$throttle))) {
     buckets <- the$throttle[[r]]
     realm <- c(realm, rep(r, length(buckets)))
-    capacity <- c(capacity, map_dbl(buckets, function(b) b$capacity))
-    tokens <- c(tokens, floor(map_dbl(buckets, function(b) b$tokens)))
-    to_wait <- c(to_wait, map_dbl(buckets, function(b) b$token_wait_time()))
+    capacity <- c(capacity, map_dbl(buckets, \(b) b$capacity))
+    tokens <- c(tokens, floor(map_dbl(buckets, \(b) b$tokens)))
+    to_wait <- c(to_wait, map_dbl(buckets, \(b) b$token_wait_time()))
   }
 
   data.frame(

@@ -1,5 +1,5 @@
 parse_media <- function(x) {
-  # https://datatracker.ietf.org/doc/html/rfc2616#section-3.7
+  # https://datatracker.ietf.org/doc/html/rfc9110#section-8.3.1
   pieces <- parse_delim(x, ";")
 
   if (is_empty(pieces)) {

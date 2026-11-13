@@ -121,7 +121,7 @@ req_verbosity_connection <- function(
   error_call = caller_env()
 ) {
   if (!is_integerish(verbosity, n = 1) || verbosity < 0 || verbosity > 3) {
-    cli::cli_abort("{.arg verbosity} must 0, 1, 2, or 3.", call = error_call)
+    cli::cli_abort("{.arg verbosity} must be 0, 1, 2, or 3.", call = error_call)
   }
 
   req <- switch(
@@ -190,7 +190,7 @@ StreamingBody <- R6::R6Class(
   public = list(
     #' @description Create a new object
     #' @param conn A connection, that is open and ready for reading.
-    #'   `StreamingBody` will take care of closing it.`
+    #'   `StreamingBody` will take care of closing it.
     initialize = function(conn) {
       if (!inherits(conn, "connection")) {
         stop_input_type(conn, "a connection", call = caller_env())
@@ -199,7 +199,7 @@ StreamingBody <- R6::R6Class(
     },
 
     #' @description Read `n` bytes into a raw vector.
-    #' @param n Number of bytes to read
+    #' @param n Number of bytes to read.
     read = function(n) {
       readBin(private$conn, "raw", n)
     },
@@ -207,14 +207,16 @@ StreamingBody <- R6::R6Class(
     #' @description Read all bytes and close the connection.
     #' @param buffer Buffer size, in bytes.
     read_all = function(buffer = 32 * 1024) {
-      bytes <- raw()
+      # Flatten once at the end: growing a vector with `c()` is quadratic.
+      chunks <- list(raw())
       repeat {
         new <- self$read(buffer)
         if (length(new) == 0) {
           break
         }
-        bytes <- c(bytes, new)
+        chunks[[length(chunks) + 1L]] <- new
       }
+      bytes <- unlist(chunks, recursive = FALSE, use.names = FALSE)
 
       self$close()
       if (length(bytes) == 0) {

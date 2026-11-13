@@ -30,6 +30,16 @@ test_that("encryption and decryption of file is symmetric", {
   expect_false(file.exists(path_dec))
 })
 
+test_that("decrypted file is read-only", {
+  skip_on_os("windows")
+  key <- secret_make_key()
+  path <- withr::local_tempfile(lines = letters)
+  secret_encrypt_file(path, key)
+
+  path_dec <- secret_decrypt_file(path, key)
+  expect_equal(format(file.mode(path_dec)), "400")
+})
+
 test_that("can unobfuscate obfuscated string", {
   x <- obfuscated("qw6Ua_n2LR_xzuk2uqp2dhb5OaE")
   expect_equal(unobfuscate(x), "test")

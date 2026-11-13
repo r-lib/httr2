@@ -51,7 +51,12 @@ will be automatically added if omitted.}
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}>
 Name-value pairs that define query parameters. Each value must be either
 an atomic vector or \code{NULL} (which removes the corresponding parameters).
-If you want to opt out of escaping, wrap strings in \code{I()}.}
+If you want to opt out of escaping, wrap strings in \code{I()}.
+
+Parameters already in \code{.url} are left as is when \code{.url} is a string, so
+\verb{?a=;} stays \verb{?a=;} rather than becoming \verb{?a=\%3B}. When \code{.url} is a
+parsed URL, its query values are stored decoded, so they're escaped
+when the URL is rebuilt.}
 
 \item{.multi}{Controls what happens when a value is a vector:
 \itemize{

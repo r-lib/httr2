@@ -12,7 +12,7 @@
 #' It's good practice to name your progress bars, to make it clear what
 #' calculation or process they belong to. We recommend keeping the names
 #' under 20 characters, so the whole progress bar fits comfortably even on
-#' on narrower displays.
+#' narrower displays.
 #'
 #' ## Progress bar parameters
 #'
@@ -39,7 +39,7 @@
 #'
 #' ## Further documentation
 #'
-#' purrr's progress bars are powered by cli, so see
+#' httr2's progress bars are powered by cli, so see
 #' [Introduction to progress bars in cli](https://cli.r-lib.org/articles/progress.html)
 #' and [Advanced cli progress bars](https://cli.r-lib.org/articles/progress-advanced.html)
 #' for more details.

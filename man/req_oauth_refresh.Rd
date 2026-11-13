@@ -49,13 +49,13 @@ Authenticate using a \strong{refresh token}, following the process described in
 \href{https://datatracker.ietf.org/doc/html/rfc6749#section-6}{Section 6 of RFC 6749}.
 
 This technique is primarily useful for testing: you can manually retrieve
-a OAuth token using another OAuth flow (e.g. with \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}}),
-extract the refresh token from the result, and then save in an environment
+an OAuth token using another OAuth flow (e.g. with \code{\link[=oauth_flow_auth_code]{oauth_flow_auth_code()}}),
+extract the refresh token from the result, and then save it in an environment
 variable for use in automated tests.
 
 When requesting an access token, the server may also return a new refresh
 token. If this happens, \code{oauth_flow_refresh()} will warn, and you'll have
-retrieve a new update refresh token and update the stored value. If you find
+to retrieve a new refresh token and update the stored value. If you find
 this happening a lot, it's a sign that you should be using a different flow
 in your automated tests.
 

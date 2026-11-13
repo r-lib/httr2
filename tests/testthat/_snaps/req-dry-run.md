@@ -64,3 +64,12 @@
       authorization: Basic dXNlcjpwYXNzd29yZA==
       
 
+# query strings are shown (#868)
+
+    Code
+      out <- req_dry_run(req)
+    Output
+      GET /example-path?a=1&b=2&c=3 HTTP/1.1
+      accept: */*
+      
+

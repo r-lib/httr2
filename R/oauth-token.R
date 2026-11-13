@@ -3,12 +3,12 @@
 #' Creates a S3 object of class `<httr2_token>` representing an OAuth token
 #' returned from the access token endpoint.
 #'
-#' @param access_token The access token used to authenticate request
+#' @param access_token The access token used to authenticate request.
 #' @param token_type Type of token; only `"bearer"` is currently supported.
 #' @param expires_in Number of seconds until token expires.
 #' @param refresh_token Optional refresh token; if supplied, this can be
 #'   used to cheaply get a new access token when this one expires.
-#' @param ... Additional components returned by the endpoint
+#' @param ... Additional components returned by the endpoint.
 #' @param .date Date the request was made; used to convert the relative
 #'   `expires_in` to an absolute `expires_at`.
 #' @seealso [oauth_token_cached()] to use the token cache with a specified
