@@ -101,13 +101,15 @@ check_content_type <- function(
   inform_check_type = FALSE,
   call = caller_env()
 ) {
+  if (is.null(valid_types)) {
+    return()
+  }
+
   parsed <- parse_content_type(content_type)
   base_type <- paste0(parsed$type, "/", parsed$subtype)
   wildcard_type <- paste0(parsed$type, "/*")
 
-  if (
-    is.null(valid_types) || any(c(base_type, wildcard_type) %in% valid_types)
-  ) {
+  if (base_type %in% valid_types || wildcard_type %in% valid_types) {
     return()
   }
   if (!is.null(valid_suffix) && parsed$suffix == valid_suffix) {
