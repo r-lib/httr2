@@ -37,6 +37,7 @@
       Error in `last_response_json()`:
       ! Unexpected content type "application/xml".
       * Expecting type "application/json" or suffix "json".
+      i Override check with `check_type = FALSE`.
 
 # useful errors if no last request/response
 

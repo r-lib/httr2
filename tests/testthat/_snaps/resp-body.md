@@ -35,10 +35,12 @@
       Error in `resp_body_json()`:
       ! Unexpected content type "application/xml".
       * Expecting type "application/json" or suffix "json".
+      i Override check with `check_type = FALSE`.
     Code
       resp_body_xml(req_perform(request_test("/json")))
     Condition
       Error in `resp_body_xml()`:
       ! Unexpected content type "application/json".
       * Expecting type "application/xml" or "text/xml" or suffix "xml".
+      i Override check with `check_type = FALSE`.
 
