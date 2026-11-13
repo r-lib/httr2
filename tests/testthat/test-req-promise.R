@@ -179,7 +179,7 @@ test_that("tracing works as expected", {
 
   spans <- with_otel_record({
     # A request with no URL (which shouldn't create a span).
-    try(req_perform_promise(request("")), silent = TRUE)
+    try(extract_promise(req_perform_promise(request(""))), silent = TRUE)
 
     # A request with an HTTP error.
     p <- req_perform_promise(request_test("/status/:status", status = 404))
@@ -191,8 +191,8 @@ test_that("tracing works as expected", {
         p <- req_perform_promise(request("http://127.0.0.1"))
         try(extract_promise(p), silent = TRUE)
       },
-      multi_add = function(handle, pool, data, done, fail) {
-        fail(structure(
+      curl_multi_add = function(handle, pool, data, done, fail) {
+        abort(structure(
           "Failed to connect",
           class = c("curl_error_couldnt_connect", "curl_error", "character")
         ))
