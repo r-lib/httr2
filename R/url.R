@@ -378,13 +378,9 @@ format_query_param <- function(
     x
   } else {
     if (!is.character(x)) {
-      x <- format(
-        x,
-        scientific = FALSE,
-        digits = 15,
-        trim = TRUE,
-        justify = "none"
-      )
+      x <- map_chr(seq_along(x), function(i) {
+        format(x[[i]], scientific = FALSE, digits = 15, trim = TRUE)
+      })
     }
     x <- curl::curl_escape(x)
     if (form) {

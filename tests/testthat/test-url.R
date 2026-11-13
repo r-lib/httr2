@@ -323,6 +323,10 @@ test_that("doesn't add extra spaces", {
     c("1", "1000")
   )
   expect_equal(
+    format_query_param(c(1.5, 2), "x", multi = TRUE),
+    c("1.5", "2")
+  )
+  expect_equal(
     format_query_param(c("a", "bcdef"), multi = TRUE, "x"),
     c("a", "bcdef")
   )
@@ -330,6 +334,8 @@ test_that("doesn't add extra spaces", {
 
 test_that("formats numbers nicely", {
   expect_equal(format_query_param(1e9, "x"), "1000000000")
+  expect_equal(format_query_param(1234567.891, "x"), "1234567.891")
+  expect_equal(format_query_param(pi, "x"), "3.14159265358979")
 })
 
 test_that("doesn't format long strings (#805)", {
