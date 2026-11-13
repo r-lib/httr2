@@ -72,6 +72,7 @@
     Condition
       Error in `resp_body_multipart()`:
       ! Unexpected content type "text/html".
+      * Expecting type "multipart/*"
     Code
       resp_body_multipart(no_close)
     Condition

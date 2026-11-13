@@ -49,3 +49,12 @@
       ! Unexpected content type "application/xml".
       * Expecting type "text/html" or "application/json"
 
+# check_content_type() supports wildcard subtypes
+
+    Code
+      check_content_type("text/plain", "multipart/*")
+    Condition
+      Error:
+      ! Unexpected content type "text/plain".
+      * Expecting type "multipart/*"
+

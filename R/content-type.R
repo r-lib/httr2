@@ -5,7 +5,8 @@
 #' is as expected and fails otherwise.
 #'
 #' @param valid_types A character vector of valid MIME types. Should only
-#'   be specified with `type/subtype`.
+#'   be specified with `type/subtype`. Use `type/*` to accept any subtype,
+#'   e.g. `"multipart/*"`.
 #' @param valid_suffix A structured syntax suffix, e.g. `"json"`. Types ending
 #'   in that suffix, like `application/problem+json`, are also accepted.
 #' @param check_type Should the type actually be checked? Provided as a
@@ -102,8 +103,11 @@ check_content_type <- function(
 ) {
   parsed <- parse_content_type(content_type)
   base_type <- paste0(parsed$type, "/", parsed$subtype)
+  wildcard_type <- paste0(parsed$type, "/*")
 
-  if (is.null(valid_types) || base_type %in% valid_types) {
+  if (
+    is.null(valid_types) || any(c(base_type, wildcard_type) %in% valid_types)
+  ) {
     return()
   }
   if (!is.null(valid_suffix) && parsed$suffix == valid_suffix) {

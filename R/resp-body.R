@@ -179,15 +179,9 @@ body_cache_key <- function(prefix, ...) {
 #' @rdname resp_body_raw
 #' @export
 resp_body_multipart <- function(resp, check_type = TRUE) {
-  check_response(resp)
+  resp_check_content_type(resp, "multipart/*", check_type = check_type)
 
-  # Need to support multiple subtypes (alternative, mixed, digest, byteranges,
-  # etc.) so can't use check_content_type()
   content_type <- resp_header(resp, "Content-Type", default = "")
-  if (check_type && parse_content_type(content_type)$type != "multipart") {
-    cli::cli_abort("Unexpected content type {.str {content_type}}.")
-  }
-
   call <- current_env()
   boundary <- multipart_boundary(content_type, error_call = call)
   default_type <- multipart_default_type(content_type)

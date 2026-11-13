@@ -96,6 +96,15 @@ test_that("check_content_type() can consult suffixes", {
   )
 })
 
+test_that("check_content_type() supports wildcard subtypes", {
+  expect_no_error(check_content_type("multipart/mixed", "multipart/*"))
+  expect_no_error(check_content_type("Multipart/Byteranges", "multipart/*"))
+  expect_snapshot(
+    check_content_type("text/plain", "multipart/*"),
+    error = TRUE
+  )
+})
+
 test_that("can detect text types", {
   expect_true(is_text_type("text/html"))
   expect_true(is_text_type("application/json"))
