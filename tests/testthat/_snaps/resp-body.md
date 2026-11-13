@@ -45,27 +45,27 @@
 # multipart_boundary() follows RFC 2046
 
     Code
-      multipart_boundary(no_boundary)
+      boundary(no_boundary)
     Condition
-      Error:
-      ! Failed to extract multipart boundary from content type "multipart/mixed".
+      Error in `boundary()`:
+      ! Missing or invalid multipart boundary "".
     Code
-      multipart_boundary(empty_boundary)
+      boundary(empty_boundary)
     Condition
-      Error:
-      ! Failed to extract multipart boundary from content type "multipart/mixed; boundary".
+      Error in `boundary()`:
+      ! Missing or invalid multipart boundary "".
     Code
-      multipart_boundary(bad_char)
+      boundary(bad_char)
     Condition
-      Error:
-      ! Failed to extract multipart boundary from content type "multipart/mixed; boundary=\"a@b\"".
+      Error in `boundary()`:
+      ! Missing or invalid multipart boundary "a@b".
     Code
-      multipart_boundary(too_long)
+      boundary(too_long)
     Condition
-      Error:
-      ! Failed to extract multipart boundary from content type "multipart/mixed; boundary=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".
+      Error in `boundary()`:
+      ! Missing or invalid multipart boundary "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".
 
-# resp_body_multipart generates parsing errors
+# resp_body_multipart() generates parsing errors
 
     Code
       resp_body_multipart(wrong_type)
@@ -77,12 +77,12 @@
       resp_body_multipart(no_close)
     Condition
       Error in `resp_body_multipart()`:
-      ! No closing delimiter detected in multipart response body.
+      ! Failed to find any parts in multipart response body.
     Code
       resp_body_multipart(no_open)
     Condition
       Error in `resp_body_multipart()`:
-      ! No non-closing delimiters detected in multipart response body.
+      ! Failed to find any parts in multipart response body.
     Code
       resp_body_multipart(no_header_line)
     Condition

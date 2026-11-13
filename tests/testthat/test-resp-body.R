@@ -89,7 +89,7 @@ test_that("content types are checked", {
   expect_no_error(resp_body_json(resp, check_type = FALSE))
 })
 
-test_that("resp_body_multipart works for varying parts", {
+test_that("resp_body_multipart() works for varying parts", {
   parts <- c(
     "If you gave me a chance I would take it",
     # CRLFs are treated as part of the body
@@ -142,7 +142,7 @@ test_that("resp_body_multipart works for varying parts", {
   expect_length(parsed, length(parts))
   bodies <- lapply(parsed[1:4], resp_body_string)
   expect_equal(bodies, as.list(parts[1:4]))
-  expect_false(resp_has_body(parsed[[5]]))
+  expect_equal(parsed[[5]]$body, raw())
 
   expect_named(resp_headers(parsed[[1]]), "Content-Type")
   expect_named(
@@ -159,7 +159,7 @@ test_that("resp_body_multipart works for varying parts", {
   expect_named(resp_headers(parsed[[5]]), "Content-Type")
 })
 
-test_that("resp_body_multipart supplies RFC 2046 default content type", {
+test_that("resp_body_multipart() supplies RFC 2046 default content type", {
   body <- "--foo\r\n\r\nhi\r\n--foo\r\ncontent-type: text/html\r\n\r\nhi\r\n--foo--"
 
   parsed <- resp_body_multipart(multipart_response(body))
@@ -174,21 +174,20 @@ test_that("resp_body_multipart supplies RFC 2046 default content type", {
   expect_equal(resp_header(parsed[[1]], "Content-Type"), "message/rfc822")
 })
 
-test_that("resp_body_multipart handles body without preamble", {
+test_that("resp_body_multipart() handles body without preamble", {
   resp <- multipart_response("--foo\r\n\r\nhi\r\n--foo--")
   parsed <- resp_body_multipart(resp)
   expect_length(parsed, 1)
   expect_equal(resp_body_string(parsed[[1]]), "hi")
 })
 
-test_that("resp_body_multipart handles binary parts and regex-like boundary", {
+test_that("resp_body_multipart() handles binary parts and regex-like boundary", {
   body <- c(
     charToRaw("--a.b\r\n\r\n--axb\r\n"),
     as.raw(c(0, 1)),
     charToRaw("\r\n--a.b--")
   )
-  resp <- multipart_response("", 'multipart/mixed; boundary="a.b"')
-  resp$body <- body
+  resp <- multipart_response(body, 'multipart/mixed; boundary="a.b"')
   parsed <- resp_body_multipart(resp)
   expect_length(parsed, 1)
   expect_equal(
@@ -197,7 +196,7 @@ test_that("resp_body_multipart handles binary parts and regex-like boundary", {
   )
 })
 
-test_that("resp_body_multipart allows transport padding after delimiters", {
+test_that("resp_body_multipart() allows transport padding after delimiters", {
   resp <- multipart_response(
     "--foo \t\r\n\r\nhi\r\n--foo  \r\n\r\nbye\r\n--foo--"
   )
@@ -205,39 +204,41 @@ test_that("resp_body_multipart allows transport padding after delimiters", {
   expect_equal(lapply(parsed, resp_body_string), list("hi", "bye"))
 })
 
-test_that("resp_body_multipart handles empty part without headers", {
+test_that("resp_body_multipart() handles empty part without headers", {
   resp <- multipart_response("--foo\r\n\r\n--foo\r\n\r\nhi\r\n--foo--")
   parsed <- resp_body_multipart(resp)
   expect_length(parsed, 2)
-  expect_false(resp_has_body(parsed[[1]]))
+  expect_equal(parsed[[1]]$body, raw())
   expect_equal(resp_body_string(parsed[[2]]), "hi")
 })
 
 test_that("multipart_boundary() follows RFC 2046", {
-  expect_equal(multipart_boundary("multipart/mixed; boundary=foo"), "foo")
-  expect_equal(multipart_boundary("multipart/mixed; boundary=f"), "f")
-  expect_equal(multipart_boundary("multipart/mixed;boundary=foo "), "foo")
+  boundary <- \(x) multipart_boundary(multipart_media(x))
+
+  expect_equal(boundary("multipart/mixed; boundary=foo"), "foo")
+  expect_equal(boundary("multipart/mixed; boundary=f"), "f")
+  expect_equal(boundary("multipart/mixed;boundary=foo "), "foo")
   # quoted strings may contain spaces and tspecials
   expect_equal(
-    multipart_boundary('multipart/mixed; boundary="a b?"; x=1'),
+    boundary('multipart/mixed; boundary="a b?"; x=1'),
     "a b?"
   )
   # parameter names and types are case-insensitive
-  expect_equal(multipart_boundary("Multipart/Mixed; Boundary=foo"), "foo")
+  expect_equal(boundary("Multipart/Mixed; Boundary=foo"), "foo")
 
   no_boundary <- "multipart/mixed"
   empty_boundary <- "multipart/mixed; boundary"
   bad_char <- 'multipart/mixed; boundary="a@b"'
   too_long <- paste0("multipart/mixed; boundary=", strrep("a", 71))
   expect_snapshot(error = TRUE, {
-    multipart_boundary(no_boundary)
-    multipart_boundary(empty_boundary)
-    multipart_boundary(bad_char)
-    multipart_boundary(too_long)
+    boundary(no_boundary)
+    boundary(empty_boundary)
+    boundary(bad_char)
+    boundary(too_long)
   })
 })
 
-test_that("resp_body_multipart generates parsing errors", {
+test_that("resp_body_multipart() generates parsing errors", {
   wrong_type <- multipart_response("", "text/html")
   no_close <- multipart_response("kyoto to the bay\r\nstrolling so casually")
   no_open <- multipart_response(paste0(

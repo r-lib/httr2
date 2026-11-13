@@ -181,17 +181,21 @@ body_cache_key <- function(prefix, ...) {
 resp_body_multipart <- function(resp, check_type = TRUE) {
   resp_check_content_type(resp, "multipart/*", check_type = check_type)
 
-  content_type <- resp_header(resp, "Content-Type", default = "")
   call <- current_env()
-  boundary <- multipart_boundary(content_type, error_call = call)
-  default_type <- multipart_default_type(content_type)
+  media <- multipart_media(resp_header(resp, "Content-Type", default = ""))
+  boundary <- multipart_boundary(media, error_call = call)
   parts <- multipart_split(resp_body_raw(resp), boundary, error_call = call)
+
+  # https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.5
+  if (media$type == "multipart/digest") {
+    default_type <- "message/rfc822"
+  } else {
+    default_type <- "text/plain; charset=US-ASCII"
+  }
 
   lapply(parts, function(part) {
     part <- multipart_parse_part(part, error_call = call)
-    if (!any(grepl("^content-type:", part$headers, ignore.case = TRUE))) {
-      part$headers <- c(part$headers, paste0("Content-Type: ", default_type))
-    }
+    part$headers$`Content-Type` <- part$headers$`Content-Type` %||% default_type
     # Use the original response's values to fill in the per-part response.
     new_response(
       resp$method,
@@ -203,35 +207,34 @@ resp_body_multipart <- function(resp, check_type = TRUE) {
   })
 }
 
+# Parses a content type, normalising the type and parameter names to lower
+# case since both are case-insensitive.
+multipart_media <- function(content_type) {
+  media <- parse_media(content_type)
+  names(media) <- tolower(names(media))
+  media$type <- tolower(media$type)
+  media
+}
+
 # https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.1
-multipart_boundary <- function(content_type, error_call = caller_env()) {
-  params <- parse_media(content_type)
-  names(params) <- tolower(names(params))
-  boundary <- params$boundary %||% ""
+multipart_boundary <- function(media, error_call = caller_env()) {
+  boundary <- media$boundary %||% ""
 
   bchars <- "0-9a-zA-Z'()+_,./:=?-"
   regex <- paste0("^[ ", bchars, "]{0,69}[", bchars, "]$")
   if (!grepl(regex, boundary)) {
     cli::cli_abort(
-      "Failed to extract multipart boundary from content type {.str {content_type}}.",
+      "Missing or invalid multipart boundary {.str {boundary}}.",
       call = error_call
     )
   }
   boundary
 }
 
-# https://datatracker.ietf.org/doc/html/rfc2046#section-5.1.5
-multipart_default_type <- function(content_type) {
-  parsed <- parse_content_type(content_type)
-  if (parsed$subtype == "digest") {
-    "message/rfc822"
-  } else {
-    "text/plain; charset=US-ASCII"
-  }
-}
-
-# Returns a list of raw vectors, one for each body part (headers + body).
-# Works on the raw bytes since binary parts may contain embedded nuls.
+# Returns a list of raw vectors, one for each body part. Each part starts with
+# the CRLF that terminates its delimiter line, so a part without headers
+# starts with a blank line. Works on the raw bytes since binary parts may
+# contain embedded nuls.
 multipart_split <- function(body, boundary, error_call = caller_env()) {
   # The CRLF preceding a delimiter is part of the delimiter, but the first
   # delimiter may also occur at the very start of the body. Prepending a CRLF
@@ -240,42 +243,33 @@ multipart_split <- function(body, boundary, error_call = caller_env()) {
 
   # A delimiter is followed by "--" (closing delimiter) or optional transport
   # padding and CRLF; anything else is a boundary-like string in the body.
+  # grepRaw() doesn't support perl = TRUE, so we must escape by hand.
   escaped <- gsub("([][{}()+*^$|\\\\?.])", "\\\\\\1", boundary)
   pattern <- paste0("\r\n--", escaped, "(--|[ \t]*\r\n)")
   start <- grepRaw(pattern, body, all = TRUE)
   match <- grepRaw(pattern, body, all = TRUE, value = TRUE)
-  # Byte after the boundary is "-" only for a closing delimiter
-  is_close <- body[start + 4L + nchar(boundary, "bytes")] == charToRaw("-")
+  # Only a closing delimiter ends in "-"
+  is_close <- body[start + lengths(match) - 1L] == charToRaw("-")
 
   close <- which(is_close)[1]
-  if (is.na(close)) {
+  if (is.na(close) || close == 1) {
     cli::cli_abort(
-      "No closing delimiter detected in multipart response body.",
-      call = error_call
-    )
-  }
-  if (close == 1) {
-    cli::cli_abort(
-      "No non-closing delimiters detected in multipart response body.",
+      "Failed to find any parts in multipart response body.",
       call = error_call
     )
   }
 
-  part_start <- (start + lengths(match))[seq_len(close - 1)]
+  # Keep the trailing CRLF of each delimiter line
+  part_start <- (start + lengths(match) - 2L)[seq_len(close - 1)]
   part_end <- start[seq2(2, close)] - 1L
   map2(part_start, part_end, \(start, end) body[seq2(start, end)])
 }
 
-# Splits a body part into headers and body.
+# Splits a body part (starting with CRLF) into headers and body.
 multipart_parse_part <- function(part, error_call = caller_env()) {
   n <- length(part)
-
-  if (n == 0) {
-    return(list(headers = character(), body = raw()))
-  }
-  # A part with no headers starts with CRLF
-  if (n >= 2 && identical(part[1:2], charToRaw("\r\n"))) {
-    return(list(headers = character(), body = part[seq2(3, n)]))
+  if (n == 2) {
+    return(list(headers = as_headers(list()), body = raw()))
   }
 
   # Headers must be terminated by an empty line
@@ -287,8 +281,9 @@ multipart_parse_part <- function(part, error_call = caller_env()) {
     )
   }
 
+  headers <- curl::parse_headers(part[seq2(3L, end + 1L)])
   list(
-    headers = curl::parse_headers(part[seq_len(end - 1L)]),
+    headers = as_headers(headers %||% character()),
     body = part[seq2(end + 4L, n)]
   )
 }
