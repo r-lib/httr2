@@ -39,6 +39,10 @@
   ([@ptweezy](https://github.com/ptweezy),
   [\#901](https://github.com/r-lib/httr2/issues/901)).
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
+  and `resp_body_*()` now show the “Override check with
+  `check_type = FALSE`” hint in content type errors
+  ([\#904](https://github.com/r-lib/httr2/issues/904)).
+- [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   now treats media types as case insensitive, as required by RFC 9110,
   so
   [`resp_body_json()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)

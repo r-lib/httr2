@@ -61,6 +61,7 @@ try(resp_check_content_type(resp, "application/xml"))
 #> Error in eval(expr, envir) : 
 #>   Unexpected content type "application/json".
 #> • Expecting type "application/xml"
+#> ℹ Override check with `check_type = FALSE`.
 
 # `types` can also specify multiple valid types
 resp_check_content_type(resp, c("application/xml", "application/json"))
