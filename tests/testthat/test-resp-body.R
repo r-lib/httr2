@@ -181,6 +181,22 @@ test_that("resp_body_multipart handles body without preamble", {
   expect_equal(resp_body_string(parsed[[1]]), "hi")
 })
 
+test_that("resp_body_multipart handles binary parts and regex-like boundary", {
+  body <- c(
+    charToRaw("--a.b\r\n\r\n--axb\r\n"),
+    as.raw(c(0, 1)),
+    charToRaw("\r\n--a.b--")
+  )
+  resp <- multipart_response("", 'multipart/mixed; boundary="a.b"')
+  resp$body <- body
+  parsed <- resp_body_multipart(resp)
+  expect_length(parsed, 1)
+  expect_equal(
+    resp_body_raw(parsed[[1]]),
+    c(charToRaw("--axb\r\n"), as.raw(c(0, 1)))
+  )
+})
+
 test_that("resp_body_multipart allows transport padding after delimiters", {
   resp <- multipart_response(
     "--foo \t\r\n\r\nhi\r\n--foo  \r\n\r\nbye\r\n--foo--"

@@ -237,62 +237,38 @@ multipart_default_type <- function(content_type) {
 }
 
 # Returns a list of raw vectors, one for each body part (headers + body).
-# Works on the raw bytes to avoid creating a (possibly very long) string.
+# Works on the raw bytes since binary parts may contain embedded nuls.
 multipart_split <- function(body, boundary, error_call = caller_env()) {
-  cr <- charToRaw("\r")
-  lf <- charToRaw("\n")
-  dash <- charToRaw("-")
-  padding <- charToRaw(" \t")
-
   # The CRLF preceding a delimiter is part of the delimiter, but the first
   # delimiter may also occur at the very start of the body. Prepending a CRLF
   # lets us handle both cases identically.
-  body <- c(cr, lf, body)
-  n <- length(body)
-  is_at <- function(i, byte) i <= n && body[[i]] == byte
+  body <- c(charToRaw("\r\n"), body)
 
-  delim <- c(cr, lf, dash, dash, charToRaw(boundary))
-  starts <- which(body == delim[[1]])
-  for (i in seq_along(delim)[-1]) {
-    starts <- starts[which(body[starts + i - 1L] == delim[[i]])]
-  }
+  # A delimiter is followed by "--" (closing delimiter) or optional transport
+  # padding and CRLF; anything else is a boundary-like string in the body.
+  escaped <- gsub("([][{}()+*^$|\\\\?.])", "\\\\\\1", boundary)
+  pattern <- paste0("\r\n--", escaped, "(--|[ \t]*\r\n)")
+  start <- grepRaw(pattern, body, all = TRUE)
+  match <- grepRaw(pattern, body, all = TRUE, value = TRUE)
+  # Byte after the boundary is "-" only for a closing delimiter
+  is_close <- body[start + 4L + nchar(boundary, "bytes")] == charToRaw("-")
 
-  # A delimiter must be followed by "--" (closing delimiter) or by optional
-  # transport padding then CRLF; anything else is a boundary-like string in the
-  # body.
-  open_start <- integer()
-  open_end <- integer()
-  close_start <- NA_integer_
-  for (start in starts) {
-    j <- start + length(delim)
-    if (is_at(j, dash) && is_at(j + 1L, dash)) {
-      close_start <- start
-      break
-    }
-    while (j <= n && body[[j]] %in% padding) {
-      j <- j + 1L
-    }
-    if (is_at(j, cr) && is_at(j + 1L, lf)) {
-      open_start <- c(open_start, start)
-      open_end <- c(open_end, j + 1L)
-    }
-  }
-
-  if (is.na(close_start)) {
+  close <- which(is_close)[1]
+  if (is.na(close)) {
     cli::cli_abort(
       "No closing delimiter detected in multipart response body.",
       call = error_call
     )
   }
-  if (length(open_start) == 0) {
+  if (close == 1) {
     cli::cli_abort(
       "No non-closing delimiters detected in multipart response body.",
       call = error_call
     )
   }
 
-  part_start <- open_end + 1L
-  part_end <- c(open_start[-1], close_start) - 1L
+  part_start <- (start + lengths(match))[seq_len(close - 1)]
+  part_end <- start[seq2(2, close)] - 1L
   map2(part_start, part_end, \(start, end) body[seq2(start, end)])
 }
 
