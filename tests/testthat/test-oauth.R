@@ -195,6 +195,29 @@ test_that("can store on disk", {
   expect_equal(cache$get(), NULL)
 })
 
+test_that("disk cache is only accessible to current user", {
+  client <- oauth_client(
+    id = "x",
+    token_url = "http://example.com",
+    name = "httr2-test"
+  )
+  cache <- cache_disk(client, NULL)
+  withr::defer(cache$clear())
+  suppressMessages(cache$set(1))
+  expect_equal(cache$get(), 1)
+
+  # On Windows Sys.chmod() only affects the read-only attribute
+  skip_on_os("windows")
+  app_path <- file.path(oauth_cache_path(), client$name)
+  token_path <- dir(
+    app_path,
+    pattern = "-token\\.rds\\.enc$",
+    full.names = TRUE
+  )
+  expect_equal(file.mode(app_path), as.octmode("700"))
+  expect_equal(file.mode(token_path), as.octmode("600"))
+})
+
 test_that("can explicitly clear cached value", {
   client <- oauth_client(
     id = "x",

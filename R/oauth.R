@@ -194,7 +194,9 @@ cache_mem <- function(client, key = NULL) {
 }
 cache_disk <- function(client, key = NULL) {
   app_path <- file.path(oauth_cache_path(), client$name)
-  dir.create(app_path, showWarnings = FALSE, recursive = TRUE)
+  dir.create(app_path, showWarnings = FALSE, recursive = TRUE, mode = "0700")
+  # Fix up directories created by previous versions of httr2
+  Sys.chmod(app_path, "0700")
 
   path <- file.path(app_path, paste0(hash(key), "-token.rds.enc"))
   list(
@@ -204,6 +206,7 @@ cache_disk <- function(client, key = NULL) {
     set = function(token) {
       cli::cli_inform("Caching httr2 token in {.path {path}}.")
       secret_write_rds(token, path, obfuscate_key())
+      Sys.chmod(path, "0600")
     },
     clear = function() if (file.exists(path)) file.remove(path)
   )
