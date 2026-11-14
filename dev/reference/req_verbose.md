@@ -85,25 +85,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 13 Nov 2026 22:40:30 GMT
+#> <- last-modified: Fri, 13 Nov 2026 22:44:03 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6af791de-4c24"
-#> <- expires: Fri, 13 Nov 2026 22:52:42 GMT
+#> <- etag: W/"6af792b3-4c24"
+#> <- expires: Sat, 14 Nov 2026 11:58:45 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 9E60:F7DD7:12C6B:1E99B:6AF79262
-#> <- x-github-edge-region: westus2
+#> <- x-github-request-id: 9850:1F1B68:F57610:126C36D:6AF84A9D
+#> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Fri, 13 Nov 2026 22:43:12 GMT
+#> <- date: Sat, 14 Nov 2026 12:25:18 GMT
 #> <- via: 1.1 varnish
-#> <- age: 29
-#> <- x-served-by: cache-bfi-krnt7300063-BFI
+#> <- age: 16
+#> <- x-served-by: cache-iad-kiad7000071-IAD
 #> <- x-cache: HIT
 #> <- x-cache-hits: 1
-#> <- x-timer: S1794609792.002666,VS0,VE1
+#> <- x-timer: S1794659119.732230,VS0,VE2
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 1c3604ffb5075b44d37705bc15d656181b6f4665
+#> <- x-fastly-request-id: d061f51be590cf2e8d7bba450b30647d49783acf
 #> <- content-length: 4860
 #> <- 
 
@@ -119,25 +119,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 13 Nov 2026 22:40:30 GMT
+#> <- last-modified: Fri, 13 Nov 2026 22:44:03 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6af791de-4c24"
-#> <- expires: Fri, 13 Nov 2026 22:52:42 GMT
+#> <- etag: W/"6af792b3-4c24"
+#> <- expires: Sat, 14 Nov 2026 11:58:45 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 9E60:F7DD7:12C6B:1E99B:6AF79262
-#> <- x-github-edge-region: westus2
+#> <- x-github-request-id: 9850:1F1B68:F57610:126C36D:6AF84A9D
+#> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Fri, 13 Nov 2026 22:43:12 GMT
+#> <- date: Sat, 14 Nov 2026 12:25:18 GMT
 #> <- via: 1.1 varnish
-#> <- age: 29
-#> <- x-served-by: cache-bfi-krnt7300063-BFI
+#> <- age: 16
+#> <- x-served-by: cache-iad-kiad7000071-IAD
 #> <- x-cache: HIT
 #> <- x-cache-hits: 2
-#> <- x-timer: S1794609792.016757,VS0,VE0
+#> <- x-timer: S1794659119.746683,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: c030997e7a076bea7b7eabc4099f2217663b42e0
+#> <- x-fastly-request-id: 40a409641a5539a38d62d701e94cba302e74bb85
 #> <- content-length: 4860
 #> <- 
 ```
