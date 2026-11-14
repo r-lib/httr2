@@ -76,15 +76,15 @@ with_verbosity(fun())
 #> <- x-github-request-id: 9850:1F1B68:F57610:126C36D:6AF84A9D
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Sat, 14 Nov 2026 12:25:24 GMT
+#> <- date: Sat, 14 Nov 2026 12:28:16 GMT
 #> <- via: 1.1 varnish
-#> <- age: 22
-#> <- x-served-by: cache-iad-kiad7000071-IAD
+#> <- age: 193
+#> <- x-served-by: cache-iad-kcgs7200073-IAD
 #> <- x-cache: HIT
-#> <- x-cache-hits: 5
-#> <- x-timer: S1794659124.396958,VS0,VE0
+#> <- x-cache-hits: 10
+#> <- x-timer: S1794659296.224600,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: d4545176048382a41b73db19ce8addbd769ebfcc
+#> <- x-fastly-request-id: e00b1ea88ca711317205d521695e2d7d3ec77cad
 #> <- content-length: 4860
 #> <- 
 #> <httr2_response>

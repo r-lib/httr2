@@ -32,6 +32,11 @@
   supplied with [`I()`](https://rdrr.io/r/base/AsIs.html), when
   modifying other parameters
   ([\#837](https://github.com/r-lib/httr2/issues/837)).
+- [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
+  and friends no longer round numeric query parameters to 7 significant
+  digits (now up to 15), and format each value of a multi-value
+  parameter individually so `c(1.5, 2)` becomes `1.5,2` rather than
+  `1.5,2.0`.
 - [`resp_body_raw()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
   and friends now read large bodies from
   [`req_perform_connection()`](https://httr2.r-lib.org/dev/reference/req_perform_connection.md)
@@ -49,6 +54,8 @@
   no longer errors on a response with `Content-Type: Application/JSON`
   ([@dylanpulver](https://github.com/dylanpulver),
   [\#871](https://github.com/r-lib/httr2/issues/871)).
+- [`resp_check_status()`](https://httr2.r-lib.org/dev/reference/resp_status.md)
+  once again includes `info` in the error message.
 - [`resp_raw()`](https://httr2.r-lib.org/dev/reference/resp_raw.md) no
   longer errors on responses without a body.
 - [`secret_decrypt_file()`](https://httr2.r-lib.org/dev/reference/secrets.md)
