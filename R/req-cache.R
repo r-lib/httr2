@@ -274,14 +274,16 @@ cache_post_fetch <- function(req, resp, path = NULL) {
       cli::cli_text("Cached value still ok; retrieving body from cache")
     }
 
-    # Combine headers
-    resp$headers <- cache_headers(cached_resp, resp)
-    # Replace body with cached result
-    resp$body <- cache_body(cached_resp, path)
+    # Start from the cached response, updating with new headers and
+    # metadata about this request
+    cached_resp$headers <- cache_headers(cached_resp, resp)
+    cached_resp$body <- cache_body(cached_resp, path)
+    cached_resp$request <- resp$request
+    cached_resp$timing <- resp$timing
 
     # Re-cache, so we get any new headers
-    cache_set(req, resp)
-    resp
+    cache_set(req, cached_resp)
+    cached_resp
   } else if (resp_is_cacheable(resp)) {
     if (debug) {
       cli::cli_text("Saving response to cache {.val {hash(req$url)}}")
@@ -316,9 +318,15 @@ cache_body <- function(cached_resp, path = NULL) {
 cache_headers <- function(cached_resp, resp) {
   check_response(cached_resp)
 
+  # Headers describing the body come from the cache, not the 304
+  content_headers <- c("content-length", "content-encoding", "content-type")
+  new_headers <- resp$headers[
+    !tolower(names(resp$headers)) %in% content_headers
+  ]
+
   headers <- modify_list(
     cached_resp$headers,
-    !!!resp$headers,
+    !!!new_headers,
     .ignore_case = TRUE
   )
   as_headers(headers)

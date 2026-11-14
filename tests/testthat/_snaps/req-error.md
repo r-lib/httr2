@@ -39,4 +39,5 @@
       Caused by error in `resp_body_json()`:
       ! Unexpected content type "text/plain".
       * Expecting type "application/json" or suffix "json".
+      i Override check with `check_type = FALSE`.
 

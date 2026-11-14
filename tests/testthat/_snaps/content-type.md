@@ -6,12 +6,14 @@
       Error:
       ! Unexpected content type "application/json".
       * Expecting type "application/xml"
+      i Override check with `check_type = FALSE`.
     Code
       resp_check_content_type(resp2, "application/xml")
     Condition
       Error:
       ! Unexpected content type "xxxxx".
       * Expecting type "application/xml"
+      i Override check with `check_type = FALSE`.
 
 # useful error even if no content type
 
@@ -21,6 +23,7 @@
       Error:
       ! Unexpected content type "NA".
       * Expecting type "application/xml"
+      i Override check with `check_type = FALSE`.
 
 # check_content_type() can consult suffixes
 

@@ -354,10 +354,14 @@ test_that("tracing works as expected", {
     )
 
     # A request with a curl error.
-    with_mocked_bindings(
-      try(req_perform(request("http://127.0.0.1")), silent = TRUE),
-      curl_fetch = function(...) abort("Failed to connect")
-    )
+    local({
+      local_curl_error()
+      req_perform_parallel(
+        list(request("http://127.0.0.1")),
+        on_error = "continue",
+        progress = FALSE
+      )
+    })
 
     # Three regular requests, nested inside a parent span.
     parent <- otel::start_span("parent", tracer = "test")
@@ -386,7 +390,7 @@ test_that("tracing works as expected", {
 
   # And for spans with curl errors.
   expect_equal(spans[[2]]$status, "error")
-  expect_equal(spans[[2]]$attributes$error.type, "rlang_error")
+  expect_equal(spans[[2]]$attributes$error.type, "curl_error_couldnt_connect")
 
   # We should have attached the curl error as an event.
   expect_length(spans[[2]]$events, 1L)

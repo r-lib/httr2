@@ -78,7 +78,7 @@ PooledRequest <- R6Class(
       )
       handle_preflight(private$req_prep, private$handle)
 
-      curl::multi_add(
+      curl_multi_add(
         handle = private$handle,
         pool = pool,
         data = private$path,
@@ -155,3 +155,14 @@ PooledRequest <- R6Class(
     }
   )
 )
+
+# For mocking
+curl_multi_add <- function(handle, pool, data, done, fail) {
+  curl::multi_add(
+    handle = handle,
+    pool = pool,
+    data = data,
+    done = done,
+    fail = fail
+  )
+}

@@ -122,8 +122,11 @@ check_content_type <- function(
   }
 
   cli::cli_abort(
-    c("Unexpected content type {.str {content_type}}.", "*" = msg),
-    i = if (inform_check_type) "Override check with `check_type = FALSE`.",
+    c(
+      "Unexpected content type {.str {content_type}}.",
+      "*" = msg,
+      i = if (inform_check_type) "Override check with `check_type = FALSE`."
+    ),
     call = call
   )
 }
