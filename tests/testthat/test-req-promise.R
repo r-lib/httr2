@@ -179,20 +179,18 @@ test_that("tracing works as expected", {
 
   spans <- with_otel_record({
     # A request with no URL (which shouldn't create a span).
-    try(req_perform_promise(request("")), silent = TRUE)
+    try(extract_promise(req_perform_promise(request(""))), silent = TRUE)
 
     # A request with an HTTP error.
     p <- req_perform_promise(request_test("/status/:status", status = 404))
     try(extract_promise(p), silent = TRUE)
 
     # A request with a curl error.
-    with_mocked_bindings(
-      {
-        p <- req_perform_promise(request("http://127.0.0.1"))
-        try(extract_promise(p), silent = TRUE)
-      },
-      curl_fetch = function(...) abort("Failed to connect")
-    )
+    local({
+      local_curl_error()
+      p <- req_perform_promise(request("http://127.0.0.1"))
+      try(extract_promise(p), silent = TRUE)
+    })
 
     # A request with no parent context.
     p <- req_perform_promise(request_test("/headers"))
