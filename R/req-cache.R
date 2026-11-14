@@ -69,7 +69,7 @@ req_cache <- function(
   check_number_whole(max_n, min = 0, allow_infinite = TRUE)
   check_number_decimal(max_size, min = 1, allow_infinite = TRUE)
 
-  dir.create(path, showWarnings = FALSE, recursive = TRUE)
+  dir_create_private(path)
   req_policies(
     req,
     cache_path = path,
@@ -126,14 +126,20 @@ cache_set <- function(req, resp) {
   if (resp_body_type(resp) == "disk") {
     body_path <- req_cache_path(req, ".body")
     # Body might already be in the cache (e.g. after a 304), in which case
-    # there's no need to copy it (and doing so would error)
+    # there's no need to copy it
     if (!same_path(resp$body, body_path)) {
-      file.copy(resp$body, body_path, overwrite = TRUE)
+      file_write_private(body_path, function(tmp) {
+        file.copy(resp$body, tmp, overwrite = TRUE, copy.mode = FALSE)
+      })
     }
     resp$body <- new_path(body_path)
   }
 
-  saveRDS(resp, req_cache_path(req, ".rds"))
+  # The request may contain secrets (e.g. passwords in options or the body)
+  # and is replaced with the current request when retrieved from the cache
+  resp["request"] <- list(NULL)
+
+  file_write_private(req_cache_path(req, ".rds"), \(tmp) saveRDS(resp, tmp))
   invisible()
 }
 

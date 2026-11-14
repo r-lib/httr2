@@ -21,6 +21,53 @@ test_that("progress bar suppressed in tests", {
 })
 
 
+test_that("dir_create_private() creates directory only accessible to user", {
+  path <- file.path(withr::local_tempdir(), "a", "b")
+  dir_create_private(path)
+  expect_true(dir.exists(path))
+
+  # On Windows Sys.chmod() only affects the read-only attribute
+  skip_on_os("windows")
+  expect_equal(file.mode(path), as.octmode("700"))
+})
+
+test_that("dir_create_private() only changes existing directory if forced", {
+  # On Windows Sys.chmod() only affects the read-only attribute
+  skip_on_os("windows")
+  path <- withr::local_tempdir()
+  Sys.chmod(path, "0755")
+
+  dir_create_private(path)
+  expect_equal(file.mode(path), as.octmode("755"))
+
+  dir_create_private(path, force = TRUE)
+  expect_equal(file.mode(path), as.octmode("700"))
+})
+
+test_that("file_write_private() replaces file with one only readable by user", {
+  dir <- withr::local_tempdir()
+  path <- file.path(dir, "x")
+  writeLines("old", path)
+  Sys.chmod(path, "0644")
+
+  file_write_private(path, \(tmp) writeLines("new", tmp))
+  expect_equal(readLines(path), "new")
+  expect_equal(dir(dir, all.files = TRUE, no.. = TRUE), "x")
+
+  skip_on_os("windows")
+  expect_equal(file.mode(path), as.octmode("600"))
+})
+
+test_that("file_write_private() leaves existing file untouched on failure", {
+  dir <- withr::local_tempdir()
+  path <- file.path(dir, "x")
+  writeLines("old", path)
+
+  expect_error(file_write_private(path, \(tmp) stop("!")), "!")
+  expect_equal(readLines(path), "old")
+  expect_equal(dir(dir, all.files = TRUE, no.. = TRUE), "x")
+})
+
 test_that("has a working slice", {
   x <- letters[1:5]
   expect_identical(slice(x), x)

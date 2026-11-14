@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * The on-disk OAuth token cache (used by `req_oauth_*(cache_disk = TRUE)`) now creates its directories with mode `700` and token files with mode `600` so that cached tokens are not readable by other users on the same machine.
+* `req_cache()` no longer saves the request (which might contain secrets like passwords) alongside the cached response, and now creates the cache directory with mode `700` and cached files with mode `600` so they are not readable by other users on the same machine.
 * `req_cache()` now respects `Cache-Control: no-store` when it isn't the first directive (#874).
 * `req_cache()` no longer returns status 304 for revalidated responses.
 * `req_dry_run()` now shows the URL's query string in the printed request line and returns it in the `query` element of its result; previously both omitted it (@wikisqueaks, #868).

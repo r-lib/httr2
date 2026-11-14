@@ -231,6 +231,32 @@ test_that("handles responses with files", {
   expect_equal(body, new_path(path2))
 })
 
+test_that("cache doesn't store the request", {
+  req <- request("http://example.com") |>
+    req_cache(tempfile()) |>
+    req_options(userpwd = "user:SECRET")
+  resp <- response(200, headers = "Etag: ABC", body = charToRaw("abc"))
+  resp$request <- req
+  cache_set(req, resp)
+
+  expect_null(cache_get(req)$request)
+})
+
+test_that("cache files are only accessible to current user", {
+  cache_dir <- file.path(withr::local_tempdir(), "cache")
+  req <- request("http://example.com") |> req_cache(cache_dir)
+
+  path <- local_write_lines("Hi there")
+  resp <- response(200, headers = "Etag: ABC", body = new_path(path))
+  cache_set(req, resp)
+
+  # On Windows Sys.chmod() only affects the read-only attribute
+  skip_on_os("windows")
+  expect_equal(file.mode(cache_dir), as.octmode("700"))
+  expect_equal(file.mode(req_cache_path(req, ".rds")), as.octmode("600"))
+  expect_equal(file.mode(req_cache_path(req, ".body")), as.octmode("600"))
+})
+
 test_that("corrupt files are ignored", {
   cache_dir <- withr::local_tempdir()
   req <- request("http://example.com") |> req_cache(cache_dir)

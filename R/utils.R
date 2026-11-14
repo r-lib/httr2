@@ -172,6 +172,33 @@ touch <- function(path, time = Sys.time()) {
   Sys.setFileTime(path, time)
 }
 
+# Private files --------------------------------------------------------------
+# Used for files that might contain secrets (e.g. cached responses and tokens)
+
+dir_create_private <- function(path, force = FALSE) {
+  dir.create(path, showWarnings = FALSE, recursive = TRUE, mode = "0700")
+  if (force) {
+    Sys.chmod(path, "0700")
+  }
+  invisible(path)
+}
+
+# Atomically write a file that's only readable by the current user.
+file_write_private <- function(path, write, error_call = caller_env()) {
+  tmp <- tempfile(".httr2-", tmpdir = dirname(path))
+  on.exit(unlink(tmp), add = TRUE)
+
+  # Set the mode before writing so the contents are never readable by others
+  file.create(tmp)
+  Sys.chmod(tmp, "0600")
+
+  write(tmp)
+  if (!file.rename(tmp, path)) {
+    cli::cli_abort("Failed to write {.path {path}}.", call = error_call)
+  }
+  invisible(path)
+}
+
 local_write_lines <- function(..., .env = caller_env()) {
   path <- withr::local_tempfile(.local_envir = .env)
   writeLines(c(...), path)
