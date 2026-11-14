@@ -6,6 +6,11 @@
   `req_oauth_*(cache_disk = TRUE)`) now creates its directories with
   mode `700` and token files with mode `600` so that cached tokens are
   not readable by other users on the same machine.
+- [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md) no
+  longer saves the request (which might contain secrets like passwords)
+  alongside the cached response, and now creates the cache directory
+  with mode `700` and cached files with mode `600` so they are not
+  readable by other users on the same machine.
 - [`req_cache()`](https://httr2.r-lib.org/dev/reference/req_cache.md)
   now respects `Cache-Control: no-store` when it isn’t the first
   directive ([\#874](https://github.com/r-lib/httr2/issues/874)).
