@@ -29,3 +29,12 @@
       ! HTTP 401 Unauthorized.
       * OAuth error: invalid_token
 
+# resp_check_status() includes info in error message
+
+    Code
+      resp_check_status(resp, info = "Extra context.")
+    Condition
+      Error:
+      ! HTTP 404 Not Found.
+      i Extra context.
+

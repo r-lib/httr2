@@ -11,6 +11,7 @@
 * `resp_body_raw()` and friends now read large bodies from `req_perform_connection()` in linear rather than quadratic time (@ptweezy, #901).
 * `resp_check_content_type()` and `resp_body_*()` now show the "Override check with `check_type = FALSE`" hint in content type errors (#904).
 * `resp_check_content_type()` now treats media types as case insensitive, as required by RFC 9110, so `resp_body_json()` no longer errors on a response with `Content-Type: Application/JSON` (@dylanpulver, #871).
+* `resp_check_status()` once again includes `info` in the error message.
 * `resp_raw()` no longer errors on responses without a body.
 * `secret_decrypt_file()` now makes the decrypted file read-only, as intended.
 * `str()` methods for headers, obfuscated strings, and redacted values no longer produce doubled spaces when nested on R 4.7.0 and later, and no longer add a leading space at the top level.
