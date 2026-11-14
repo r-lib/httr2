@@ -85,25 +85,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 13 Nov 2026 22:44:03 GMT
+#> <- last-modified: Sat, 14 Nov 2026 12:34:28 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6af792b3-4c24"
-#> <- expires: Sat, 14 Nov 2026 11:58:45 GMT
+#> <- etag: W/"6af85554-4c24"
+#> <- expires: Sat, 14 Nov 2026 12:52:39 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 9850:1F1B68:F57610:126C36D:6AF84A9D
+#> <- x-github-request-id: 6C0C:1D3C:B6467E:DBB5F6:6AF8573B
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Sat, 14 Nov 2026 12:28:10 GMT
+#> <- date: Sat, 14 Nov 2026 14:19:42 GMT
 #> <- via: 1.1 varnish
-#> <- age: 188
-#> <- x-served-by: cache-iad-kcgs7200073-IAD
+#> <- age: 426
+#> <- x-served-by: cache-chi-kmdw8640091-CHI
 #> <- x-cache: HIT
 #> <- x-cache-hits: 1
-#> <- x-timer: S1794659291.836562,VS0,VE2
+#> <- x-timer: S1794665982.196603,VS0,VE1
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: a8e8d181ece394e533df402d60b4aa02d35572d4
+#> <- x-fastly-request-id: 383585e26564f7aeee12a3d5705f8ddbab116d4b
 #> <- content-length: 4860
 #> <- 
 
@@ -119,25 +119,25 @@ resp <- request("https://httr2.r-lib.org") |>
 #> <- HTTP/2 200 
 #> <- server: GitHub.com
 #> <- content-type: text/html; charset=utf-8
-#> <- last-modified: Fri, 13 Nov 2026 22:44:03 GMT
+#> <- last-modified: Sat, 14 Nov 2026 12:34:28 GMT
 #> <- access-control-allow-origin: *
-#> <- etag: W/"6af792b3-4c24"
-#> <- expires: Sat, 14 Nov 2026 11:58:45 GMT
+#> <- etag: W/"6af85554-4c24"
+#> <- expires: Sat, 14 Nov 2026 12:52:39 GMT
 #> <- cache-control: max-age=600
 #> <- content-encoding: gzip
 #> <- x-proxy-cache: MISS
-#> <- x-github-request-id: 9850:1F1B68:F57610:126C36D:6AF84A9D
+#> <- x-github-request-id: 6C0C:1D3C:B6467E:DBB5F6:6AF8573B
 #> <- x-github-edge-region: iad
 #> <- accept-ranges: bytes
-#> <- date: Sat, 14 Nov 2026 12:28:10 GMT
+#> <- date: Sat, 14 Nov 2026 14:19:42 GMT
 #> <- via: 1.1 varnish
-#> <- age: 188
-#> <- x-served-by: cache-iad-kcgs7200073-IAD
+#> <- age: 426
+#> <- x-served-by: cache-chi-kmdw8640091-CHI
 #> <- x-cache: HIT
 #> <- x-cache-hits: 2
-#> <- x-timer: S1794659291.863309,VS0,VE0
+#> <- x-timer: S1794665982.208757,VS0,VE0
 #> <- vary: Accept-Encoding
-#> <- x-fastly-request-id: 7c779dc38441c7489f89df735e9fb74c0872cbe5
+#> <- x-fastly-request-id: 4a32870424a7d6b999ac82b8cc025fb6cda58f16
 #> <- content-length: 4860
 #> <- 
 ```
