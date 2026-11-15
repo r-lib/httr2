@@ -2,6 +2,15 @@
 
 ## httr2 (development version)
 
+- [`oauth_client_req_auth_body()`](https://httr2.r-lib.org/dev/reference/oauth_client_req_auth.md)
+  now leaves obfuscated client secrets obfuscated in the request object,
+  so the plaintext secret is no longer revealed by
+  [`httr2_translate()`](https://httr2.r-lib.org/dev/reference/httr2_translate.md),
+  [`req_get_body()`](https://httr2.r-lib.org/dev/reference/req_get_body_type.md),
+  [`str()`](https://rdrr.io/r/utils/str.html), or
+  [`last_request()`](https://httr2.r-lib.org/dev/reference/last_response.md);
+  it is only unobfuscated when the body is rendered at send time
+  ([\#908](https://github.com/r-lib/httr2/issues/908)).
 - The on-disk OAuth token cache (used by
   `req_oauth_*(cache_disk = TRUE)`) now creates its directories with
   mode `700` and token files with mode `600` so that cached tokens are
