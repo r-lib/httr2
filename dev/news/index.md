@@ -63,6 +63,9 @@
   once again includes `info` in the error message.
 - [`resp_raw()`](https://httr2.r-lib.org/dev/reference/resp_raw.md) no
   longer errors on responses without a body.
+- [`resp_stream_aws()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
+  now errors on invalid event streams instead of hanging in an infinite
+  loop ([\#907](https://github.com/r-lib/httr2/issues/907)).
 - [`secret_decrypt_file()`](https://httr2.r-lib.org/dev/reference/secrets.md)
   now makes the decrypted file read-only, as intended.
 - [`str()`](https://rdrr.io/r/utils/str.html) methods for headers,

@@ -78,6 +78,8 @@
 <li>
 <code><a href="../reference/resp_raw.html">resp_raw()</a></code> no longer errors on responses without a body.</li>
 <li>
+<code><a href="../reference/resp_stream_raw.html">resp_stream_aws()</a></code> now errors on invalid event streams instead of hanging in an infinite loop (<a href="https://github.com/r-lib/httr2/issues/907" class="external-link">#907</a>).</li>
+<li>
 <code><a href="../reference/secrets.html">secret_decrypt_file()</a></code> now makes the decrypted file read-only, as intended.</li>
 <li>
 <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code> methods for headers, obfuscated strings, and redacted values no longer produce doubled spaces when nested on R 4.7.0 and later, and no longer add a leading space at the top level.</li>
