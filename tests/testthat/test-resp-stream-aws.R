@@ -44,6 +44,35 @@ test_that("parse_aws_event() checks the prelude length", {
   expect_snapshot(parse_aws_event(as.raw(1:10)), error = TRUE)
 })
 
+test_that("parse_aws_event() checks the prelude and message CRCs", {
+  corrupt <- function(event, i) {
+    event[[i]] <- as.raw((as.integer(event[[i]]) + 1L) %% 256L)
+    event
+  }
+
+  event <- aws_event(body = charToRaw("hello"))
+  n <- length(event)
+
+  # Corrupting the header length or the prelude CRC itself
+  expect_error(
+    parse_aws_event(corrupt(event, 6)),
+    class = "httr2_streaming_error"
+  )
+  expect_error(
+    parse_aws_event(corrupt(event, 10)),
+    class = "httr2_streaming_error"
+  )
+  # Corrupting the body or the message CRC itself
+  expect_error(
+    parse_aws_event(corrupt(event, n - 5)),
+    class = "httr2_streaming_error"
+  )
+  expect_error(
+    parse_aws_event(corrupt(event, n)),
+    class = "httr2_streaming_error"
+  )
+})
+
 test_that("can read aws events one at a time", {
   # Two empty-object events back to back.
   event <- aws_event()
