@@ -133,7 +133,7 @@ stream_pull <- function(resp, n, splitter, max_size) {
 
     stream_buffer <- cache$stream_buffer
     if (length(stream_buffer) > max_size) {
-      stop_stream_size(max_size)
+      stop_streaming_error("Streaming read exceeded size limit of {max_size}")
     }
     # Read up to one byte past the size limit - the extra byte lets us detect a
     # buffer that has overflowed - but never more than one chunk at a time.
@@ -246,11 +246,16 @@ RawSplitter <- R6::R6Class(
   public = list(name = "resp_stream_raw()")
 )
 
-stop_stream_size <- function(max_size, call = caller_env()) {
+stop_streaming_error <- function(
+  message,
+  call = caller_env(),
+  .envir = caller_env()
+) {
   cli::cli_abort(
-    "Streaming read exceeded size limit of {max_size}",
+    message,
     class = "httr2_streaming_error",
-    call = call
+    call = call,
+    .envir = .envir
   )
 }
 
@@ -303,9 +308,8 @@ init_streaming_response <- function(
   }
   if (!inherits(cached, splitter$classname)) {
     used <- splitter$new()$name
-    cli::cli_abort(
+    stop_streaming_error(
       "Can't use {used} after {cached$name} on the same response.",
-      class = "httr2_streaming_error",
       call = call
     )
   }
