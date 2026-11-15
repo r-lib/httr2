@@ -16,7 +16,8 @@ resp_check_content_type(
 \item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
 
 \item{valid_types}{A character vector of valid MIME types. Should only
-be specified with \code{type/subtype}.}
+be specified with \code{type/subtype}. Use \verb{type/*} to accept any subtype,
+e.g. \code{"multipart/*"}.}
 
 \item{valid_suffix}{A structured syntax suffix, e.g. \code{"json"}. Types ending
 in that suffix, like \code{application/problem+json}, are also accepted.}
