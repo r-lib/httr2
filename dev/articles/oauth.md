@@ -217,7 +217,7 @@ your client specification.
 ``` r
 
 obfuscate("secret")
-#> obfuscated("xuIRSnuHrg9APfk1h8W0_WG1kc1jFg")
+#> obfuscated("IvmTKFGndYBSD615Q5ZcECYwsYzydg")
 ```
 
 Here’s what a complete client specification for GitHub looks like, using
@@ -371,7 +371,7 @@ req <- request("https://api.github.com/user")
 req |>
   req_perform()
 #> Error in `req_perform()`:
-#> ! HTTP 403 Forbidden.
+#> ! HTTP 401 Unauthorized.
 ```
 
 We can authenticate this request with

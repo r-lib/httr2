@@ -278,7 +278,7 @@ paste <code>obfuscated("B4Evdd5x4wl0XTWvtTpuGaw7nM7GEg")</code> into
 your client specification.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/obfuscate.html">obfuscate</a></span><span class="op">(</span><span class="st">"secret"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; obfuscated("xuIRSnuHrg9APfk1h8W0_WG1kc1jFg")</span></span></code></pre></div>
+<span><span class="co">#&gt; obfuscated("IvmTKFGndYBSD615Q5ZcECYwsYzydg")</span></span></code></pre></div>
 <p>Here’s what a complete client specification for GitHub looks like,
 using a real app that I created specifically for this vignette:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -414,7 +414,7 @@ error:</p>
 <span><span class="va">req</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/req_perform.html">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `req_perform()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 403 Forbidden.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> HTTP 401 Unauthorized.</span></span></code></pre></div>
 <p>We can authenticate this request with
 <code><a href="../reference/req_oauth_auth_code.html">req_oauth_auth_code()</a></code>, passing the client (which carries
 its endpoints from <code>metadata</code>):</p>

@@ -66,6 +66,10 @@
 - [`resp_stream_aws()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
   now errors on invalid event streams instead of hanging in an infinite
   loop ([\#907](https://github.com/r-lib/httr2/issues/907)).
+- [`resp_stream_aws()`](https://httr2.r-lib.org/dev/reference/resp_stream_raw.md)
+  now verifies the prelude and message CRCs of each event, erroring on
+  corrupted messages
+  ([\#907](https://github.com/r-lib/httr2/issues/907)).
 - [`secret_decrypt_file()`](https://httr2.r-lib.org/dev/reference/secrets.md)
   now makes the decrypted file read-only, as intended.
 - [`str()`](https://rdrr.io/r/utils/str.html) methods for headers,
