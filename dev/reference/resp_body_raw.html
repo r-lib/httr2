@@ -6,26 +6,44 @@ resp_body_string() returns a UTF-8 string.
 resp_body_json() returns parsed JSON.
 resp_body_html() returns parsed HTML.
 resp_body_xml() returns parsed XML.
+resp_body_multipart() returns a list of per-part responses.
 resp_has_body() returns TRUE if the response has a body.
 
 
-resp_body_json() and resp_body_xml() check that the content-type header
-is correct; if the server returns an incorrect type you can suppress the
-check with check_type = FALSE. These two functions also cache the parsed
-object so the second and subsequent calls are low-cost."><meta property="og:description" content="
+resp_body_json(), resp_body_xml() and resp_body_multipart() check
+that the content-type header is correct; if the server returns an incorrect
+type you can suppress the check with check_type = FALSE.
+resp_body_json() and resp_body_xml() also cache the parsed
+object so the second and subsequent calls are low-cost.
+resp_body_multipart() splits a multipart/* body (e.g.
+multipart/byteranges or multipart/mixed) into its parts. Each part is
+returned as a response with its own headers and body, but the method, URL,
+and status code are copied from the original response. Parts without a
+Content-Type header are given the default specified by RFC 2046:
+message/rfc822 for multipart/digest, and text/plain; charset=US-ASCII
+otherwise."><meta property="og:description" content="
 
 resp_body_raw() returns the raw bytes.
 resp_body_string() returns a UTF-8 string.
 resp_body_json() returns parsed JSON.
 resp_body_html() returns parsed HTML.
 resp_body_xml() returns parsed XML.
+resp_body_multipart() returns a list of per-part responses.
 resp_has_body() returns TRUE if the response has a body.
 
 
-resp_body_json() and resp_body_xml() check that the content-type header
-is correct; if the server returns an incorrect type you can suppress the
-check with check_type = FALSE. These two functions also cache the parsed
-object so the second and subsequent calls are low-cost."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+resp_body_json(), resp_body_xml() and resp_body_multipart() check
+that the content-type header is correct; if the server returns an incorrect
+type you can suppress the check with check_type = FALSE.
+resp_body_json() and resp_body_xml() also cache the parsed
+object so the second and subsequent calls are low-cost.
+resp_body_multipart() splits a multipart/* body (e.g.
+multipart/byteranges or multipart/mixed) into its parts. Each part is
+returned as a response with its own headers and body, but the method, URL,
+and status code are copied from the original response. Parts without a
+Content-Type header are given the default specified by RFC 2046:
+message/rfc822 for multipart/digest, and text/plain; charset=US-ASCII
+otherwise."><meta property="og:image" content="https://httr2.r-lib.org/logo.png"><meta name="robots" content="noindex"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="httr2.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -80,11 +98,20 @@ object so the second and subsequent calls are low-cost."><meta property="og:imag
 <li><p><code>resp_body_json()</code> returns parsed JSON.</p></li>
 <li><p><code>resp_body_html()</code> returns parsed HTML.</p></li>
 <li><p><code>resp_body_xml()</code> returns parsed XML.</p></li>
+<li><p><code>resp_body_multipart()</code> returns a list of per-part responses.</p></li>
 <li><p><code>resp_has_body()</code> returns <code>TRUE</code> if the response has a body.</p></li>
-</ul><p><code>resp_body_json()</code> and <code>resp_body_xml()</code> check that the content-type header
-is correct; if the server returns an incorrect type you can suppress the
-check with <code>check_type = FALSE</code>. These two functions also cache the parsed
+</ul><p><code>resp_body_json()</code>, <code>resp_body_xml()</code> and <code>resp_body_multipart()</code> check
+that the content-type header is correct; if the server returns an incorrect
+type you can suppress the check with <code>check_type = FALSE</code>.</p>
+<p><code>resp_body_json()</code> and <code>resp_body_xml()</code> also cache the parsed
 object so the second and subsequent calls are low-cost.</p>
+<p><code>resp_body_multipart()</code> splits a <code>multipart/*</code> body (e.g.
+<code>multipart/byteranges</code> or <code>multipart/mixed</code>) into its parts. Each part is
+returned as a response with its own headers and body, but the method, URL,
+and status code are copied from the original response. Parts without a
+<code>Content-Type</code> header are given the default specified by RFC 2046:
+<code>message/rfc822</code> for <code>multipart/digest</code>, and <code>text/plain; charset=US-ASCII</code>
+otherwise.</p>
     </div>
 
     <div class="section level2">
@@ -99,7 +126,9 @@ object so the second and subsequent calls are low-cost.</p>
 <span></span>
 <span><span class="fu">resp_body_html</span><span class="op">(</span><span class="va">resp</span>, check_type <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">resp_body_xml</span><span class="op">(</span><span class="va">resp</span>, check_type <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">resp_body_xml</span><span class="op">(</span><span class="va">resp</span>, check_type <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">resp_body_multipart</span><span class="op">(</span><span class="va">resp</span>, check_type <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -139,6 +168,7 @@ booleans, numbers, and strings) be caused to atomic vectors?</p></dd>
 <li><p><code>resp_body_string()</code> returns a string.</p></li>
 <li><p><code>resp_body_json()</code> returns NULL, an atomic vector, or list.</p></li>
 <li><p><code>resp_body_html()</code> and <code>resp_body_xml()</code> return an <code>xml2::xml_document</code></p></li>
+<li><p><code>resp_body_multipart()</code> returns a list of responses, one per part.</p></li>
 </ul></div>
 
     <div class="section level2">

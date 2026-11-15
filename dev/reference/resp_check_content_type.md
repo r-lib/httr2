@@ -27,7 +27,8 @@ resp_check_content_type(
 - valid_types:
 
   A character vector of valid MIME types. Should only be specified with
-  `type/subtype`.
+  `type/subtype`. Use `type/*` to accept any subtype, e.g.
+  `"multipart/*"`.
 
 - valid_suffix:
 

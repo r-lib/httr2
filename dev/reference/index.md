@@ -141,6 +141,7 @@ server, but affect the overall process of
   [`resp_body_json()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
   [`resp_body_html()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
   [`resp_body_xml()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
+  [`resp_body_multipart()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
   : Extract body from response
 - [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
   : Check the content type of a response

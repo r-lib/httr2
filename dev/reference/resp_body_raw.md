@@ -10,12 +10,24 @@
 
 - `resp_body_xml()` returns parsed XML.
 
+- `resp_body_multipart()` returns a list of per-part responses.
+
 - `resp_has_body()` returns `TRUE` if the response has a body.
 
-`resp_body_json()` and `resp_body_xml()` check that the content-type
-header is correct; if the server returns an incorrect type you can
-suppress the check with `check_type = FALSE`. These two functions also
-cache the parsed object so the second and subsequent calls are low-cost.
+`resp_body_json()`, `resp_body_xml()` and `resp_body_multipart()` check
+that the content-type header is correct; if the server returns an
+incorrect type you can suppress the check with `check_type = FALSE`.
+
+`resp_body_json()` and `resp_body_xml()` also cache the parsed object so
+the second and subsequent calls are low-cost.
+
+`resp_body_multipart()` splits a `multipart/*` body (e.g.
+`multipart/byteranges` or `multipart/mixed`) into its parts. Each part
+is returned as a response with its own headers and body, but the method,
+URL, and status code are copied from the original response. Parts
+without a `Content-Type` header are given the default specified by RFC
+2046: `message/rfc822` for `multipart/digest`, and
+`text/plain; charset=US-ASCII` otherwise.
 
 ## Usage
 
@@ -31,6 +43,8 @@ resp_body_json(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 resp_body_html(resp, check_type = TRUE, ...)
 
 resp_body_xml(resp, check_type = TRUE, ...)
+
+resp_body_multipart(resp, check_type = TRUE)
 ```
 
 ## Arguments
@@ -75,6 +89,8 @@ resp_body_xml(resp, check_type = TRUE, ...)
 
 - `resp_body_html()` and `resp_body_xml()` return an
   `xml2::xml_document`
+
+- `resp_body_multipart()` returns a list of responses, one per part.
 
 ## Examples
 

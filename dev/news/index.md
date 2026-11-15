@@ -46,6 +46,10 @@
   supplied with [`I()`](https://rdrr.io/r/base/AsIs.html), when
   modifying other parameters
   ([\#837](https://github.com/r-lib/httr2/issues/837)).
+- [`resp_body_multipart()`](https://httr2.r-lib.org/dev/reference/resp_body_raw.md)
+  parses a multipart response body (e.g. `multipart/byteranges`) into a
+  list of responses, one per part ([@LTLA](https://github.com/LTLA),
+  [\#903](https://github.com/r-lib/httr2/issues/903)).
 - [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
   and friends no longer round numeric query parameters to 7 significant
   digits (now up to 15), and format each value of a multi-value
@@ -68,6 +72,9 @@
   no longer errors on a response with `Content-Type: Application/JSON`
   ([@dylanpulver](https://github.com/dylanpulver),
   [\#871](https://github.com/r-lib/httr2/issues/871)).
+- [`resp_check_content_type()`](https://httr2.r-lib.org/dev/reference/resp_check_content_type.md)
+  now accepts wildcard subtypes in `valid_types`, e.g. `"multipart/*"`
+  ([\#903](https://github.com/r-lib/httr2/issues/903)).
 - [`resp_check_status()`](https://httr2.r-lib.org/dev/reference/resp_status.md)
   once again includes `info` in the error message.
 - [`resp_raw()`](https://httr2.r-lib.org/dev/reference/resp_raw.md) no
