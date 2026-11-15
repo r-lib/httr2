@@ -37,7 +37,7 @@ req_oauth_client_credentials <- function(
     token_params = token_params
   )
 
-  cache <- cache_mem(client, NULL)
+  cache <- cache_mem(client, list(scope = scope, token_params = token_params))
   req_oauth(
     req,
     "oauth_flow_client_credentials",

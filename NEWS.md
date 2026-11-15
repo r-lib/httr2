@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* OAuth token cache keys now include the flow parameters that affect the resulting token (e.g. `scope` and, for `req_oauth_token_exchange()`, the subject token and other exchange parameters), so a token cached for one set of parameters is no longer reused for another (#906).
 * The on-disk OAuth token cache (used by `req_oauth_*(cache_disk = TRUE)`) now creates its directories with mode `700` and token files with mode `600` so that cached tokens are not readable by other users on the same machine.
 * `req_cache()` no longer saves the request (which might contain secrets like passwords) alongside the cached response, and now creates the cache directory with mode `700` and cached files with mode `600` so they are not readable by other users on the same machine.
 * `req_cache()` now respects `Cache-Control: no-store` when it isn't the first directive (#874).
