@@ -200,7 +200,7 @@ oauth_client_req_auth_body <- function(req, client) {
   req_body_form(
     req,
     client_id = client$id,
-    client_secret = unobfuscate(client$secret) # might be NULL
+    client_secret = client$secret # might be NULL
   )
 }
 
