@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* `oauth_client_req_auth_body()` now leaves obfuscated client secrets obfuscated in the request object, so the plaintext secret is no longer revealed by `httr2_translate()`, `req_get_body()`, `str()`, or `last_request()`; it is only unobfuscated when the body is rendered at send time (#908).
 * The on-disk OAuth token cache (used by `req_oauth_*(cache_disk = TRUE)`) now creates its directories with mode `700` and token files with mode `600` so that cached tokens are not readable by other users on the same machine.
 * `req_cache()` no longer saves the request (which might contain secrets like passwords) alongside the cached response, and now creates the cache directory with mode `700` and cached files with mode `600` so they are not readable by other users on the same machine.
 * `req_cache()` now respects `Cache-Control: no-store` when it isn't the first directive (#874).

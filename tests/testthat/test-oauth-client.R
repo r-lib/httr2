@@ -105,6 +105,22 @@ test_that("can authenticate using header or body", {
   )
 })
 
+test_that("body auth preserves obfuscated secrets", {
+  client <- oauth_client(
+    id = "id",
+    secret = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"),
+    token_url = "http://example.com"
+  )
+  req <- oauth_client_req_auth(request("http://example.com"), client)
+
+  expect_true(is_obfuscated(req$body$data$client_secret))
+  expect_equal(
+    req_get_body(req, obfuscated = "redact")$client_secret,
+    "<REDACTED>"
+  )
+  expect_equal(req_body_render(req), "client_id=id&client_secret=y")
+})
+
 test_that("can authenticate using a signed jwt", {
   skip_if_not_installed("jose")
   skip_if_not_installed("openssl")
