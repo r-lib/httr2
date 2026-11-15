@@ -18,6 +18,7 @@ Depends:
 Imports:
     cli (>= 3.0.0),
     curl (>= 6.4.0),
+    digest,
     glue,
     lifecycle,
     magrittr,
@@ -31,7 +32,6 @@ Suggests:
     bench,
     clipr,
     covr,
-    digest,
     docopt,
     httpuv,
     jose,
