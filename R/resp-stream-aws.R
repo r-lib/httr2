@@ -47,6 +47,13 @@ find_aws_event_boundaries <- function(buffer) {
     }
     # Read the first 4 bytes of the event as a big endian number.
     event_size <- parse_int(buffer[pos:(pos + 3L)])
+    # No valid AWS event message is less than 16 bytes; a size of 0 would also
+    # cause an infinite loop since `pos` would never advance.
+    if (event_size < 16L) {
+      stop_streaming_error(
+        "Invalid AWS event stream: event size ({event_size} bytes) is less than the minimum message size (16 bytes)."
+      )
+    }
     if (event_size > n - pos + 1L) {
       break
     }

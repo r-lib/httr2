@@ -116,6 +116,21 @@ test_that("find_aws_event_boundaries ignores incomplete trailing events", {
   expect_equal(find_aws_event_boundaries(c(event, big)), 17)
 })
 
+test_that("find_aws_event_boundaries errors on events smaller than the minimum size", {
+  # 16 zero bytes: a zero length prefix would otherwise loop forever
+  expect_error(
+    find_aws_event_boundaries(raw(16)),
+    class = "httr2_streaming_error"
+  )
+
+  # Sizes between 1 and 15 are also invalid
+  small <- c(aws_uint(15, 4L), raw(12))
+  expect_error(
+    find_aws_event_boundaries(small),
+    class = "httr2_streaming_error"
+  )
+})
+
 test_that("json content type automatically parsed", {
   event <- aws_event(
     c(
