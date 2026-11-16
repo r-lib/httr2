@@ -1,7 +1,7 @@
 # Parse a URL into its component pieces
 
 `url_parse()` parses a URL into its component parts, powered by
-[`curl::curl_parse_url()`](https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html).
+[`curl::curl_parse_url()`](https://rdrr.io/pkg/curl/man/curl_parse_url.html).
 The parsing algorithm follows the specifications detailed in [RFC
 3986](https://datatracker.ietf.org/doc/html/rfc3986).
 

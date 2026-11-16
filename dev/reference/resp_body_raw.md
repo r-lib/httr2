@@ -75,7 +75,7 @@ resp_body_multipart(resp, check_type = TRUE)
 - ...:
 
   Other arguments passed on to
-  [`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
+  [`jsonlite::fromJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html)
   and [`xml2::read_xml()`](http://xml2.r-lib.org/reference/read_xml.md)
   respectively.
 

@@ -86,14 +86,14 @@ req_body_multipart(.req, ...)
 
   - For `req_body_multipart()` the values must be strings or objects
     produced by
-    [`curl::form_file()`](https://jeroen.r-universe.dev/curl/reference/multipart.html)/[`curl::form_data()`](https://jeroen.r-universe.dev/curl/reference/multipart.html).
+    [`curl::form_file()`](https://rdrr.io/pkg/curl/man/multipart.html)/[`curl::form_data()`](https://rdrr.io/pkg/curl/man/multipart.html).
 
   - For `req_body_json_modify()`, any simple data made from atomic
     vectors and lists.
 
   `req_body_json()` uses this argument differently; it takes additional
   arguments passed on to
-  [`jsonlite::toJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html).
+  [`jsonlite::toJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html).
 
 - .multi:
 
@@ -132,7 +132,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 28
 #> content-type: application/x-www-form-urlencoded
-#> host: 127.0.0.1:34231
+#> host: 127.0.0.1:42745
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
 #> x=A%20simple%20text%20string
@@ -145,7 +145,7 @@ req |>
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 28
 #> content-type: application/json
-#> host: 127.0.0.1:34231
+#> host: 127.0.0.1:42745
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
 #> {
@@ -160,7 +160,7 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 20
-#> host: 127.0.0.1:34231
+#> host: 127.0.0.1:42745
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
 #> <20 bytes>
@@ -177,7 +177,7 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 12
-#> host: 127.0.0.1:34231
+#> host: 127.0.0.1:42745
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
 #> <12 bytes>
@@ -191,13 +191,13 @@ req |>
 #> accept: */*
 #> accept-encoding: deflate, gzip, br, zstd
 #> content-length: 334
-#> content-type: multipart/form-data; boundary=------------------------ALDwFQ9FQ5OK3UJMRBjjk7
-#> host: 127.0.0.1:34231
+#> content-type: multipart/form-data; boundary=------------------------hqXYdKGpXQAcgar5vuxLTO
+#> host: 127.0.0.1:42745
 #> user-agent: httr2/1.3.0.9000 r-curl/8.1.0 libcurl/8.18.0
 #> 
-#> --------------------------ALDwFQ9FQ5OK3UJMRBjjk7
+#> --------------------------hqXYdKGpXQAcgar5vuxLTO
 
-#> Content-Disposition: form-data; name="a"; filename="file18ad72727d7c"
+#> Content-Disposition: form-data; name="a"; filename="file18b21cfda5b7"
 
 #> Content-Type: application/octet-stream
 
@@ -211,7 +211,7 @@ req |>
 #> f
 #> 
 
-#> --------------------------ALDwFQ9FQ5OK3UJMRBjjk7
+#> --------------------------hqXYdKGpXQAcgar5vuxLTO
 
 #> Content-Disposition: form-data; name="b"
 
@@ -219,7 +219,7 @@ req |>
 
 #> some data
 
-#> --------------------------ALDwFQ9FQ5OK3UJMRBjjk7--
+#> --------------------------hqXYdKGpXQAcgar5vuxLTO--
 
 #> 
 ```

@@ -20,7 +20,7 @@ req_options(.req, ...)
 
   \<[`dynamic-dots`](https://rlang.r-lib.org/reference/dyn-dots.html)\>
   Name-value pairs. The name should be a valid curl option, as found in
-  [`curl::curl_options()`](https://jeroen.r-universe.dev/curl/reference/curl_options.html).
+  [`curl::curl_options()`](https://rdrr.io/pkg/curl/man/curl_options.html).
 
 ## Value
 

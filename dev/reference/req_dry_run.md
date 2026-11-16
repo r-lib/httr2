@@ -4,7 +4,7 @@ This shows you exactly what httr2 will send to the server, without
 actually sending anything. It requires the httpuv package because it
 works by sending the real HTTP request to a local webserver, thanks to
 the magic of
-[`curl::curl_echo()`](https://jeroen.r-universe.dev/curl/reference/curl_echo.html).
+[`curl::curl_echo()`](https://rdrr.io/pkg/curl/man/curl_echo.html).
 
 ## Usage
 

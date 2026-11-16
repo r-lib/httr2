@@ -15,9 +15,9 @@ for more details on how to work with the resulting promise object.
 If using together with
 [`later::with_temp_loop()`](https://later.r-lib.org/reference/create_loop.html)
 or other private event loops, a new curl pool made by
-[`curl::new_pool()`](https://jeroen.r-universe.dev/curl/reference/multi.html)
-should be created for requests made within the loop to ensure that only
-these requests are being polled by the loop.
+[`curl::new_pool()`](https://rdrr.io/pkg/curl/man/multi.html) should be
+created for requests made within the loop to ensure that only these
+requests are being polled by the loop.
 
 Like with
 [`req_perform_parallel()`](https://httr2.r-lib.org/dev/reference/req_perform_parallel.md),
@@ -70,7 +70,7 @@ req_perform_promise(
 - pool:
 
   A pool created by
-  [`curl::new_pool()`](https://jeroen.r-universe.dev/curl/reference/multi.html).
+  [`curl::new_pool()`](https://rdrr.io/pkg/curl/man/multi.html).
 
 - verbosity:
 

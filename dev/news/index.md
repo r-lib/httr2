@@ -2,6 +2,12 @@
 
 ## httr2 (development version)
 
+- OAuth token cache keys now include the flow parameters that affect the
+  resulting token (e.g. `scope` and, for
+  [`req_oauth_token_exchange()`](https://httr2.r-lib.org/dev/reference/req_oauth_token_exchange.md),
+  the subject token and other exchange parameters), so a token cached
+  for one set of parameters is no longer reused for another
+  ([\#906](https://github.com/r-lib/httr2/issues/906)).
 - [`oauth_client_req_auth_body()`](https://httr2.r-lib.org/dev/reference/oauth_client_req_auth.md)
   now leaves obfuscated client secrets obfuscated in the request object,
   so the plaintext secret is no longer revealed by
@@ -298,7 +304,7 @@ CRAN release: 2025-07-13
   ([\#721](https://github.com/r-lib/httr2/issues/721)).
 
 - URL construction is now powered by
-  [`curl::curl_modify_url()`](https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html),
+  [`curl::curl_modify_url()`](https://rdrr.io/pkg/curl/man/curl_parse_url.html),
   and hence now (correctly) escapes the `path` component
   ([\#732](https://github.com/r-lib/httr2/issues/732)). This means that
   [`req_url_path()`](https://httr2.r-lib.org/dev/reference/req_url.md)
@@ -493,7 +499,7 @@ CRAN release: 2025-01-18
 
 - [`is_online()`](https://httr2.r-lib.org/dev/reference/is_online.md)
   wraps
-  [`curl::has_internet()`](https://jeroen.r-universe.dev/curl/reference/nslookup.html),
+  [`curl::has_internet()`](https://rdrr.io/pkg/curl/man/nslookup.html),
   making it easy to tell if you’re currently online
   ([\#512](https://github.com/r-lib/httr2/issues/512)).
 
@@ -576,7 +582,7 @@ CRAN release: 2025-01-18
   parses relative URLs with new `base_url` argument
   ([\#449](https://github.com/r-lib/httr2/issues/449)) and the uses
   faster and more correct
-  [`curl::curl_parse_url()`](https://jeroen.r-universe.dev/curl/reference/curl_parse_url.html)
+  [`curl::curl_parse_url()`](https://rdrr.io/pkg/curl/man/curl_parse_url.html)
   ([\#577](https://github.com/r-lib/httr2/issues/577)).
 
 ## httr2 1.0.7
@@ -688,7 +694,7 @@ CRAN release: 2024-08-22
 
 - [`jwt_encode_hmac()`](https://httr2.r-lib.org/dev/reference/jwt_claim.md)
   now calls correct underlying function
-  [`jose::jwt_encode_hmac()`](https://r-lib.r-universe.dev/jose/reference/jwt_encode.html)
+  [`jose::jwt_encode_hmac()`](https://rdrr.io/pkg/jose/man/jwt_encode.html)
   and has correct default size parameter value
   ([@denskh](https://github.com/denskh),
   [\#508](https://github.com/r-lib/httr2/issues/508)).

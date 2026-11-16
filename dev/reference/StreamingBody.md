@@ -100,8 +100,7 @@ Is the connection complete? (i.e. is there data remaining to be read?)
 ### `StreamingBody$get_fdset()`
 
 Get the active file descriptions and timeout from the handle. Wrapper
-around
-[`curl::multi_fdset()`](https://jeroen.r-universe.dev/curl/reference/multi.html).
+around [`curl::multi_fdset()`](https://rdrr.io/pkg/curl/man/multi.html).
 
 #### Usage
 

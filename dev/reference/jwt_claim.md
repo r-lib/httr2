@@ -1,12 +1,12 @@
 # Create and encode a JWT
 
 `jwt_claim()` is a wrapper around
-[`jose::jwt_claim()`](https://r-lib.r-universe.dev/jose/reference/jwt_claim.html)
-that creates a JWT claim set with a few extra default values.
+[`jose::jwt_claim()`](https://rdrr.io/pkg/jose/man/jwt_claim.html) that
+creates a JWT claim set with a few extra default values.
 `jwt_encode_sig()` and `jwt_encode_hmac()` are thin wrappers around
-[`jose::jwt_encode_sig()`](https://r-lib.r-universe.dev/jose/reference/jwt_encode.html)
+[`jose::jwt_encode_sig()`](https://rdrr.io/pkg/jose/man/jwt_encode.html)
 and
-[`jose::jwt_encode_hmac()`](https://r-lib.r-universe.dev/jose/reference/jwt_encode.html)
+[`jose::jwt_encode_hmac()`](https://rdrr.io/pkg/jose/man/jwt_encode.html)
 that exist primarily to make specification in other functions a little
 simpler.
 
@@ -106,6 +106,6 @@ str(claim)
 #>  $ exp: num 1.79e+09
 #>  $ nbf: num 1.79e+09
 #>  $ iat: num 1.79e+09
-#>  $ jti: chr "uoTlN1xO1WlSZIsycHUOzHqV-Bd2ypUZW02THP4AFaM"
+#>  $ jti: chr "OPIDTTNUAFi5TaZ5PCh9HenaLLOltty-2h3ssC6qbJg"
 #>  - attr(*, "class")= chr [1:2] "jwt_claim" "list"
 ```
