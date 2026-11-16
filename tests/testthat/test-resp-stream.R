@@ -111,7 +111,7 @@ test_that("stream_pull() buffers incomplete blocks across reads (non-blocking)",
 })
 
 test_that("stream_pull() serves queued blocks from a single read", {
-  req <- stream_app_request("/letters")
+  req <- stream_app_chunks(paste0(letters[1:5], "\n", collapse = ""))
 
   resp <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp))
@@ -126,7 +126,7 @@ test_that("stream_pull() serves queued blocks from a single read", {
 })
 
 test_that("stream_pull() serves every block when n is Inf", {
-  req <- stream_app_request("/letters")
+  req <- stream_app_chunks(paste0(letters[1:5], "\n", collapse = ""))
 
   resp <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp))
@@ -138,7 +138,7 @@ test_that("stream_pull() serves every block when n is Inf", {
 })
 
 test_that("stream_pull() enforces max_size (blocking and non-blocking)", {
-  req <- stream_app_request("/zeros")
+  req <- stream_app_chunks(paste(rep_len("0", 1000), collapse = ""))
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
@@ -186,7 +186,8 @@ test_that("stream_pull() re-serves queued blocks after a failed call", {
 })
 
 test_that("stream_pull() flushes a trailing block at end of stream", {
-  req <- stream_app_request("/trailing")
+  # "b" has no trailing line ending, so it can't be served until EOF.
+  req <- stream_app_chunks("a\nb")
   resp <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp))
 
@@ -197,7 +198,7 @@ test_that("stream_pull() flushes a trailing block at end of stream", {
 })
 
 test_that("verbosity = 3 logs the buffered chunk", {
-  req <- stream_app_request("/lines")
+  req <- stream_app_chunks("line 1\n", "line 2\n")
 
   expect_output(
     con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
@@ -214,7 +215,7 @@ test_that("verbosity = 3 logs the buffered chunk", {
 })
 
 test_that("verbosity = 2 streams request bodies", {
-  req <- stream_app_request("/lines")
+  req <- stream_app_chunks("line 1\n", "line 2\n")
 
   stream_all <- function(req, fun, ...) {
     con <- req_perform_connection(req, blocking = TRUE, verbosity = 2)
