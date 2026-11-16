@@ -92,12 +92,7 @@ test_that("StreamSplitter$finish() discards a trailing partial block with a warn
 
 test_that("stream_pull() buffers incomplete blocks across reads (non-blocking)", {
   sync <- sync_req("pull")
-  req <- local_app_request(function(req, res) {
-    sync <- req$app$locals$sync_rep("pull")
-
-    res$send_chunk("This is a ")
-    sync(res$send_chunk("complete sentence.\n"))
-  })
+  req <- stream_app_request("/pull")
 
   resp <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp))
@@ -116,9 +111,7 @@ test_that("stream_pull() buffers incomplete blocks across reads (non-blocking)",
 })
 
 test_that("stream_pull() serves queued blocks from a single read", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
-  })
+  req <- stream_app_chunks(paste0(letters[1:5], "\n", collapse = ""))
 
   resp <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp))
@@ -133,9 +126,7 @@ test_that("stream_pull() serves queued blocks from a single read", {
 })
 
 test_that("stream_pull() serves every block when n is Inf", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk(paste0(letters[1:5], "\n", collapse = ""))
-  })
+  req <- stream_app_chunks(paste0(letters[1:5], "\n", collapse = ""))
 
   resp <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp))
@@ -147,9 +138,7 @@ test_that("stream_pull() serves every block when n is Inf", {
 })
 
 test_that("stream_pull() enforces max_size (blocking and non-blocking)", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk(paste(rep_len("0", 1000), collapse = ""))
-  })
+  req <- stream_app_chunks(paste(rep_len("0", 1000), collapse = ""))
 
   resp1 <- req_perform_connection(req, blocking = FALSE)
   withr::defer(close(resp1))
@@ -197,10 +186,8 @@ test_that("stream_pull() re-serves queued blocks after a failed call", {
 })
 
 test_that("stream_pull() flushes a trailing block at end of stream", {
-  req <- local_app_request(function(req, res) {
-    # "b" has no trailing line ending, so it can't be served until EOF.
-    res$send_chunk("a\nb")
-  })
+  # "b" has no trailing line ending, so it can't be served until EOF.
+  req <- stream_app_chunks("a\nb")
   resp <- req_perform_connection(req, blocking = TRUE)
   withr::defer(close(resp))
 
@@ -211,10 +198,7 @@ test_that("stream_pull() flushes a trailing block at end of stream", {
 })
 
 test_that("verbosity = 3 logs the buffered chunk", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk("line 1\n")
-    res$send_chunk("line 2\n")
-  })
+  req <- stream_app_chunks("line 1\n", "line 2\n")
 
   expect_output(
     con <- req_perform_connection(req, blocking = TRUE, verbosity = 3)
@@ -231,10 +215,7 @@ test_that("verbosity = 3 logs the buffered chunk", {
 })
 
 test_that("verbosity = 2 streams request bodies", {
-  req <- local_app_request(function(req, res) {
-    res$send_chunk("line 1\n")
-    res$send_chunk("line 2\n")
-  })
+  req <- stream_app_chunks("line 1\n", "line 2\n")
 
   stream_all <- function(req, fun, ...) {
     con <- req_perform_connection(req, blocking = TRUE, verbosity = 2)

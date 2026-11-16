@@ -160,10 +160,12 @@ test_that("can cache requests with paths (cache-control)", {
   )
   expect_equal(resp2$body[[1]], path2)
 
-  # Wait until cache expires
-  cached_resp <- cache_get(req)
-  info <- resp_cache_info(cached_resp)
-  Sys.sleep(max(as.double(info$expires - Sys.time()), 0))
+  # Expire the cache instantly by backdating the cached response
+  cache_path <- req_cache_path(req)
+  cached_resp <- readRDS(cache_path)
+  is_date <- tolower(names(cached_resp$headers)) == "date"
+  cached_resp$headers[is_date] <- http_date(Sys.time() - 10)
+  saveRDS(cached_resp, cache_path)
 
   path3 <- withr::local_tempfile()
   expect_condition(
