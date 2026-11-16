@@ -7,6 +7,7 @@
 \alias{resp_body_json}
 \alias{resp_body_html}
 \alias{resp_body_xml}
+\alias{resp_body_multipart}
 \title{Extract body from response}
 \usage{
 resp_body_raw(resp)
@@ -20,6 +21,8 @@ resp_body_json(resp, check_type = TRUE, simplifyVector = FALSE, ...)
 resp_body_html(resp, check_type = TRUE, ...)
 
 resp_body_xml(resp, check_type = TRUE, ...)
+
+resp_body_multipart(resp, check_type = TRUE)
 }
 \arguments{
 \item{resp}{A httr2 \link{response} object, created by \code{\link[=req_perform]{req_perform()}}.}
@@ -44,6 +47,7 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \item \code{resp_body_string()} returns a string.
 \item \code{resp_body_json()} returns NULL, an atomic vector, or list.
 \item \code{resp_body_html()} and \code{resp_body_xml()} return an \code{xml2::xml_document}
+\item \code{resp_body_multipart()} returns a list of responses, one per part.
 }
 }
 \description{
@@ -53,13 +57,24 @@ booleans, numbers, and strings) be caused to atomic vectors?}
 \item \code{resp_body_json()} returns parsed JSON.
 \item \code{resp_body_html()} returns parsed HTML.
 \item \code{resp_body_xml()} returns parsed XML.
+\item \code{resp_body_multipart()} returns a list of per-part responses.
 \item \code{resp_has_body()} returns \code{TRUE} if the response has a body.
 }
 
-\code{resp_body_json()} and \code{resp_body_xml()} check that the content-type header
-is correct; if the server returns an incorrect type you can suppress the
-check with \code{check_type = FALSE}. These two functions also cache the parsed
+\code{resp_body_json()}, \code{resp_body_xml()} and \code{resp_body_multipart()} check
+that the content-type header is correct; if the server returns an incorrect
+type you can suppress the check with \code{check_type = FALSE}.
+
+\code{resp_body_json()} and \code{resp_body_xml()} also cache the parsed
 object so the second and subsequent calls are low-cost.
+
+\code{resp_body_multipart()} splits a \verb{multipart/*} body (e.g.
+\code{multipart/byteranges} or \code{multipart/mixed}) into its parts. Each part is
+returned as a response with its own headers and body, but the method, URL,
+and status code are copied from the original response. Parts without a
+\code{Content-Type} header are given the default specified by RFC 2046:
+\code{message/rfc822} for \code{multipart/digest}, and \verb{text/plain; charset=US-ASCII}
+otherwise.
 }
 \examples{
 resp <- request("https://httr2.r-lib.org") |> req_perform()

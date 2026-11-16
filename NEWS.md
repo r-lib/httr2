@@ -1,6 +1,7 @@
 # httr2 (development version)
 
 * OAuth token cache keys now include the flow parameters that affect the resulting token (e.g. `scope` and, for `req_oauth_token_exchange()`, the subject token and other exchange parameters), so a token cached for one set of parameters is no longer reused for another (#906).
+* `oauth_client_req_auth_body()` now leaves obfuscated client secrets obfuscated in the request object, so the plaintext secret is no longer revealed by `httr2_translate()`, `req_get_body()`, `str()`, or `last_request()`; it is only unobfuscated when the body is rendered at send time (#908).
 * The on-disk OAuth token cache (used by `req_oauth_*(cache_disk = TRUE)`) now creates its directories with mode `700` and token files with mode `600` so that cached tokens are not readable by other users on the same machine.
 * `req_cache()` no longer saves the request (which might contain secrets like passwords) alongside the cached response, and now creates the cache directory with mode `700` and cached files with mode `600` so they are not readable by other users on the same machine.
 * `req_cache()` now respects `Cache-Control: no-store` when it isn't the first directive (#874).
@@ -10,13 +11,16 @@
 * `req_error()` and `req_retry()` now name the callback in arity errors.
 * `req_perform_sequential()` no longer ignores `mock` when `on_error = "stop"`.
 * `req_url_query()` and `url_modify_query()` now preserve existing query values, including unescaped values supplied with `I()`, when modifying other parameters (#837).
+* `resp_body_multipart()` parses a multipart response body (e.g. `multipart/byteranges`) into a list of responses, one per part (@LTLA, #903).
 * `req_url_query()` and friends no longer round numeric query parameters to 7 significant digits (now up to 15), and format each value of a multi-value parameter individually so `c(1.5, 2)` becomes `1.5,2` rather than `1.5,2.0`.
 * `resp_body_raw()` and friends now read large bodies from `req_perform_connection()` in linear rather than quadratic time (@ptweezy, #901).
 * `resp_check_content_type()` and `resp_body_*()` now show the "Override check with `check_type = FALSE`" hint in content type errors (#904).
 * `resp_check_content_type()` now treats media types as case insensitive, as required by RFC 9110, so `resp_body_json()` no longer errors on a response with `Content-Type: Application/JSON` (@dylanpulver, #871).
+* `resp_check_content_type()` now accepts wildcard subtypes in `valid_types`, e.g. `"multipart/*"` (#903).
 * `resp_check_status()` once again includes `info` in the error message.
 * `resp_raw()` no longer errors on responses without a body.
 * `resp_stream_aws()` now errors on invalid event streams instead of hanging in an infinite loop (#907).
+* `resp_stream_aws()` now verifies the prelude and message CRCs of each event, erroring on corrupted messages (#907).
 * `secret_decrypt_file()` now makes the decrypted file read-only, as intended.
 * `str()` methods for headers, obfuscated strings, and redacted values no longer produce doubled spaces when nested on R 4.7.0 and later, and no longer add a leading space at the top level.
 * `url_query_parse()` now decodes `+` in parameter names as a space and no longer strips quotes or surrounding whitespace, which it previously did because it applied HTTP header parsing rules.

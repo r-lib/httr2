@@ -40,3 +40,19 @@ local_mocked_user_agent <- function(env = caller_env()) {
     .env = env
   )
 }
+
+multipart_response <- function(
+  body,
+  content_type = "multipart/byteranges; boundary=foo"
+) {
+  if (is.character(body)) {
+    body <- charToRaw(body)
+  }
+  new_response(
+    "GET",
+    "https://foo.com",
+    206,
+    list(`Content-Type` = content_type),
+    body = body
+  )
+}

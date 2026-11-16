@@ -96,8 +96,10 @@ parse_aws_event <- function(bytes) {
   }
 
   header_length <- parse_int(read_bytes(4))
-  prelude_crc <- read_bytes(4)
-  # TODO: use this value to check prelude lengths
+  prelude_crc <- raw_to_hex(read_bytes(4))
+  if (prelude_crc != aws_crc32(bytes[1:8])) {
+    stop_streaming_error("AWS event has an invalid prelude CRC")
+  }
 
   # headers
   headers <- list()
@@ -125,8 +127,10 @@ parse_aws_event <- function(bytes) {
 
   # body
   body_raw <- read_bytes(total_length - i - 4 + 1)
-  crc_raw <- read_bytes(4)
-  # TODO: use this value to check data
+  message_crc <- raw_to_hex(read_bytes(4))
+  if (message_crc != aws_crc32(bytes[seq_len(total_length - 4L)])) {
+    stop_streaming_error("AWS event has an invalid message CRC")
+  }
 
   body <- rawToChar(body_raw)
   if (identical(headers$`:content-type`, "application/json")) {
@@ -176,4 +180,9 @@ type_enum <- function(value) {
 
 raw_to_hex <- function(x) {
   paste(as.character(x), collapse = "")
+}
+
+# GZIP/zlib CRC32 of `bytes` as a lowercase hex string.
+aws_crc32 <- function(bytes) {
+  digest::digest(bytes, algo = "crc32", serialize = FALSE)
 }
