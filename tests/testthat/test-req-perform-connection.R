@@ -20,12 +20,41 @@ test_that("can read all data from a connection", {
   expect_false(resp_has_body(resp))
 })
 
+test_that("non-blocking connection doesn't wait for the body (#918)", {
+  req <- local_app_request(function(req, res) {
+    if (is.null(res$locals$sent)) {
+      res$locals$sent <- TRUE
+      res$set_header("Content-Length", 5)$set_type("text/plain")
+      res$write("")
+      res$delay(1)
+    } else {
+      res$write("hello")
+      res$send("")
+    }
+  })
+
+  resp <- req_perform_connection(req, blocking = FALSE)
+  withr::defer(close(resp))
+  expect_equal(resp_status(resp), 200)
+  expect_equal(resp_header(resp, "Content-Length"), "5")
+  expect_equal(resp_stream_raw(resp), raw())
+
+  expect_equal(resp_body_string(resp), "hello")
+})
+
 test_that("reads body on error", {
   req <- local_app_request(function(req, res) {
     res$set_status(404L)$send_json(list(status = 404), auto_unbox = TRUE)
   })
 
   expect_error(req_perform_connection(req), class = "httr2_http_404")
+  resp <- last_response()
+  expect_equal(resp_body_json(resp), list(status = 404))
+
+  expect_error(
+    req_perform_connection(req, blocking = FALSE),
+    class = "httr2_http_404"
+  )
   resp <- last_response()
   expect_equal(resp_body_json(resp), list(status = 404))
 })
@@ -129,6 +158,7 @@ test_that("read_all() combines multiple reads", {
   body <- StreamingBody$new(rawConnection(raw(), "rb"))
   expect_null(body$read_all())
 })
+
 
 test_that("can access fdset", {
   skip_on_cran()
