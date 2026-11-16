@@ -80,7 +80,10 @@ req_oauth_token_exchange <- function(
     actor_token_type = actor_token_type,
     token_params = token_params
   )
-  cache <- cache_mem(client, NULL)
+  # The cache key must include every parameter that affects the resulting
+  # token, otherwise two exchanges with the same client but different
+  # subject tokens would share a single cached token (#906).
+  cache <- cache_mem(client, params[names(params) != "client"])
   req_oauth(
     req,
     "oauth_flow_token_exchange",
