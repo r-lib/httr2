@@ -111,6 +111,7 @@ test_that("can retry a transient error", {
   expect_equal(cnd$delay, 0)
 })
 
+
 test_that("repeated transient errors still fail", {
   req <- request_test("/status/:status", status = 429) |>
     req_retry(max_tries = 3, backoff = \(i) 0)

@@ -159,7 +159,6 @@ test_that("read_all() combines multiple reads", {
   expect_null(body$read_all())
 })
 
-
 test_that("can access fdset", {
   skip_on_cran()
 
