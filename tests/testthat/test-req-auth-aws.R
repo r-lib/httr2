@@ -27,6 +27,37 @@ test_that("clear error if body type is unsupported", {
   expect_snapshot(req_perform(req), error = TRUE)
 })
 
+test_that("can sign with secret credentials", {
+  withr::local_envvar(AWS_TEST_KEY_ID = "AKIAIOSFODNN7EXAMPLE")
+
+  captured <- NULL
+  local_mocked_bindings(
+    aws_v4_signature = function(...) {
+      captured <<- list2(...)
+      list(Authorization = "")
+    }
+  )
+
+  req <- request("https://sts.us-east-1.amazonaws.com/") |>
+    req_body_form(Action = "GetCallerIdentity", Version = "2011-06-15") |>
+    req_auth_aws_v4(
+      aws_access_key_id = secret_envvar("AWS_TEST_KEY_ID"),
+      aws_secret_access_key = \() "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+      aws_session_token = secret_value("token123")
+    )
+  req <- req |> req_prepare() |> auth_sign()
+
+  expect_equal(captured$aws_access_key_id, "AKIAIOSFODNN7EXAMPLE")
+  expect_equal(
+    captured$aws_secret_access_key,
+    "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+  expect_equal(
+    headers_flatten(req$headers, redact = FALSE)$`x-amz-security-token`,
+    "token123"
+  )
+})
+
 test_that("can correctly sign a request with live credentials", {
   skip_if_not(has_paws_credentials())
   creds <- paws.common::locate_credentials()

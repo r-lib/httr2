@@ -50,3 +50,21 @@
       Error in `req_body_json_modify()`:
       ! Can only be used after `req_body_json()`.
 
+# req_get_body(obfuscated =) is deprecated
+
+    Code
+      . <- req_get_body(req, obfuscated = "reveal")
+    Condition
+      Warning:
+      The `obfuscated` argument of `req_get_body()` is deprecated as of httr2 1.4.0.
+      i Please use the `secrets` argument instead.
+
+# dropped secret_value errors in body
+
+    Code
+      req_body_apply(req)
+    Condition
+      Error in `secret_reveal_base()`:
+      ! A `secret_value()` is no longer available.
+      i Secret values are removed when a request is saved; re-create it.
+

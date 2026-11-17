@@ -34,3 +34,11 @@ test_that("cookie values are usually escaped", {
 
   expect_equal(resp_body_json(resp), list(cookies = list(a = "%20", b = "%25")))
 })
+
+test_that("cookies don't accept secrets", {
+  req <- request("http://example.com")
+  expect_snapshot(error = TRUE, {
+    req_cookies_set(req, a = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))
+    req_cookies_set(req, a = \() "x")
+  })
+})

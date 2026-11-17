@@ -86,7 +86,7 @@ verbose_header <- function(prefix, x, redact = TRUE, to_redact = NULL) {
 
   for (line in lines) {
     if (grepl("^[-a-zA-z0-9]+:", line)) {
-      headers <- as_headers(line, to_redact, lifespan = current_env())
+      headers <- as_headers(line, to_redact)
       header <- headers_flatten(headers, redact)
       cli::cat_line(
         prefix,

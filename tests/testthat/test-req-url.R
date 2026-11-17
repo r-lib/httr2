@@ -102,6 +102,18 @@ test_that("can set query params", {
   )
 })
 
+test_that("query params don't accept secrets", {
+  req <- request("http://example.com/")
+  expect_snapshot(error = TRUE, {
+    req_url_query(req, a = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))
+    req_url_query(req, a = \() "x")
+    url_modify_query(
+      "http://example.com/",
+      a = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
+    )
+  })
+})
+
 test_that("can control space handling", {
   req <- request("http://example.com/")
   expect_equal(req_url_query(req, a = " ")$url, "http://example.com/?a=%20")

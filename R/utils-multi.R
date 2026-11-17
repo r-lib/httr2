@@ -2,6 +2,7 @@ multi_dots <- function(
   ...,
   .multi = c("error", "comma", "pipe", "explode"),
   .space = c("percent", "form"),
+  secrets = FALSE,
   error_arg = "...",
   error_call = caller_env()
 ) {
@@ -25,7 +26,10 @@ multi_dots <- function(
     )
   }
 
-  type_ok <- map_lgl(dots, \(x) is_atomic(x) || is.null(x))
+  type_ok <- map_lgl(
+    dots,
+    \(x) is_atomic(x) || is.null(x) || (secrets && is_secret(x))
+  )
   if (any(!type_ok)) {
     cli::cli_abort(
       "All elements of {.arg {error_arg}} must be either an atomic vector or NULL.",
@@ -81,9 +85,13 @@ multi_dots <- function(
     dots[n == 1],
     format_query_param,
     form = form,
+    secrets = secrets,
     error_call = error_call
   )
-  dots[n == 1] <- lapply(dots[n == 1], I)
+  dots[n == 1] <- lapply(
+    dots[n == 1],
+    function(x) if (secrets && is_secret(x)) x else I(x)
+  )
 
   dots
 }

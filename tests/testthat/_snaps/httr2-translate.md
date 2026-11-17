@@ -141,7 +141,7 @@
 
     Code
       httr2_translate(req_headers_redacted(request("https://hb.cran.dev/get"),
-      Authorization = "secret-token"), obfuscated = "reveal")
+      Authorization = "secret-token"), secrets = "reveal")
     Output
       curl https://hb.cran.dev/get \
         --header 'Authorization: secret-token' \
@@ -158,7 +158,7 @@
         --header 'Content-Type: application/json' \
         --location \
         --user-agent httr2 \
-        --data '{"username":"test","password":"<REDACTED>"}'
+        --data '{"username":"test","password":"<REDACTED (obfuscated)>"}'
 
 # httr2_translate() works with obfuscated values in form body
 
@@ -170,7 +170,7 @@
         --location \
         --user-agent httr2 \
         --header 'Content-Type: application/x-www-form-urlencoded' \
-        --data 'username=test&password=%3CREDACTED%3E'
+        --data 'username=test&password=%3CREDACTED%20%28obfuscated%29%3E'
 
 # httr2_translate() works with complex requests
 
@@ -204,6 +204,15 @@
     Condition
       Error in `httr2_translate()`:
       ! `req` must be an HTTP request object, not the string "not a request".
+
+# httr2_translate(obfuscated =) is deprecated
+
+    Code
+      . <- httr2_translate(request("https://example.com"), obfuscated = "reveal")
+    Condition
+      Warning:
+      The `obfuscated` argument of `httr2_translate()` is deprecated as of httr2 1.4.0.
+      i Please use the `secrets` argument instead.
 
 # httr2_translate() errors for raw bodies
 

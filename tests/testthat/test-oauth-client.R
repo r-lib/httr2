@@ -105,6 +105,28 @@ test_that("can authenticate using header or body", {
   )
 })
 
+test_that("can authenticate with a secret client secret", {
+  withr::local_envvar(SECRET_OAUTH_TEST = "secret")
+  client <- function(auth) {
+    oauth_client(
+      id = "id",
+      secret = secret_envvar("SECRET_OAUTH_TEST"),
+      token_url = "http://example.com",
+      auth = auth
+    )
+  }
+
+  req <- request("http://example.com")
+  req_h <- oauth_client_req_auth(req, client("header"))
+  expect_equal(
+    headers_flatten(req_h$headers, redact = FALSE),
+    list(Authorization = "Basic aWQ6c2VjcmV0")
+  )
+
+  req_b <- oauth_client_req_auth(req, client("body"))
+  expect_equal(req_body_render(req_b), "client_id=id&client_secret=secret")
+})
+
 test_that("body auth preserves obfuscated secrets", {
   client <- oauth_client(
     id = "id",
@@ -115,8 +137,8 @@ test_that("body auth preserves obfuscated secrets", {
 
   expect_true(is_obfuscated(req$body$data$client_secret))
   expect_equal(
-    req_get_body(req, obfuscated = "redact")$client_secret,
-    "<REDACTED>"
+    req_get_body(req, secrets = "redact")$client_secret,
+    "<REDACTED (obfuscated)>"
   )
   expect_equal(req_body_render(req), "client_id=id&client_secret=y")
 })

@@ -22,6 +22,9 @@ Use \code{obfuscate("value")} to generate a call to \code{obfuscated()}, which w
 unobfuscate the value at the last possible moment. Obfuscated values only
 work in limited locations:
 \itemize{
+\item Header values in \code{\link[=req_headers]{req_headers()}}
+\item The \code{password} argument to \code{\link[=req_auth_basic]{req_auth_basic()}} and the \code{token} argument
+to \code{\link[=req_auth_bearer_token]{req_auth_bearer_token()}}
 \item The \code{secret} argument to \code{\link[=oauth_client]{oauth_client()}}
 \item Elements of the \code{data} argument to \code{\link[=req_body_form]{req_body_form()}}, \code{req_body_json()},
 and \code{req_body_multipart()}.
@@ -40,4 +43,8 @@ obfuscate("good morning")
 # includes 16 bytes of random data which protects against certain types of
 # brute force attack
 obfuscate("good morning")
+}
+\seealso{
+\href{https://httr2.r-lib.org/articles/secrets.html}{Managing secrets}
+for other (generally better) ways to manage secrets.
 }

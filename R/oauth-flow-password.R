@@ -84,6 +84,6 @@ check_password <- function(password, call = caller_env()) {
     check_installed("askpass", call = call)
     password <- askpass::askpass()
   }
-  check_string(password, call = call)
+  check_string_or_secret(password, call = call)
   password
 }

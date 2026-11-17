@@ -41,6 +41,8 @@
 #'     env vars. Make sure to carefully inspect the test output to check that
 #'     the skips have actually gone away.
 #'
+#' @seealso [Managing secrets](https://httr2.r-lib.org/articles/secrets.html)
+#'   for a full overview of how httr2 helps you keep credentials safe.
 #' @name secrets
 #' @returns
 #' * `secret_decrypt()` and `secret_encrypt()` return strings.
@@ -160,18 +162,20 @@ secret_has_key <- function(key) {
 }
 
 secret_get_key <- function(envvar, call = caller_env()) {
-  key <- Sys.getenv(envvar)
+  base64_url_decode(envvar_get(envvar, call = call))
+}
 
-  if (identical(key, "")) {
-    msg <- glue("Can't find envvar {envvar}")
+envvar_get <- function(name, call = caller_env()) {
+  value <- Sys.getenv(name)
+  if (identical(value, "")) {
+    msg <- cli::format_inline("Can't find env var {.envvar {name}}.")
     if (is_testing()) {
       testthat::skip(msg)
     } else {
-      abort(msg, call = call)
+      cli::cli_abort(msg, class = "httr2_secret_missing", call = call)
     }
   }
-
-  base64_url_decode(key)
+  value
 }
 
 
@@ -182,6 +186,9 @@ secret_get_key <- function(envvar, call = caller_env()) {
 #' unobfuscate the value at the last possible moment. Obfuscated values only
 #' work in limited locations:
 #'
+#' * Header values in [req_headers()]
+#' * The `password` argument to [req_auth_basic()] and the `token` argument
+#'   to [req_auth_bearer_token()]
 #' * The `secret` argument to [oauth_client()]
 #' * Elements of the `data` argument to [req_body_form()], `req_body_json()`,
 #'   and `req_body_multipart()`.
@@ -196,6 +203,8 @@ secret_get_key <- function(envvar, call = caller_env()) {
 #' @returns `obfuscate()` prints the `obfuscated()` call to include in your
 #'   code. `obfuscated()` returns an S3 class marking the string as obfuscated
 #'   so it can be unobfuscated when needed.
+#' @seealso [Managing secrets](https://httr2.r-lib.org/articles/secrets.html)
+#'   for other (generally better) ways to manage secrets.
 #' @export
 #' @examples
 #' obfuscate("good morning")
@@ -230,29 +239,237 @@ print.httr2_obfuscated <- function(x, ...) {
   invisible(x)
 }
 
-unobfuscate <- function(x, handle = c("reveal", "redact", "remove")) {
-  handle <- arg_match(handle)
-  unobfuscate_rec(x, handle = handle)
+is_obfuscated <- function(x) {
+  inherits(x, "httr2_obfuscated")
 }
-unobfuscate_rec <- function(x, handle = "reveal") {
-  if (is_obfuscated(x)) {
+
+# Deferred secrets ----------------------------------------------------------
+
+#' Secrets resolved at perform time
+#'
+#' @description
+#' These functions create *secrets*: recipes for obtaining a credential that
+#' httr2 resolves only when the request is performed. Secrets are redacted
+#' wherever httr2 displays them (e.g. in [print()], [req_dry_run()], and
+#' [req_verbose()]), so they can't leak into console output or log files.
+#'
+#' * `secret_envvar()` records the name of an environment variable, reading
+#'   its value at perform time. This is the recommended way to supply
+#'   credentials: store the value in your `.Renviron` (for local work) or in
+#'   your CI system's secret store, and never put it in your code.
+#' * `secret_value()` wraps a value you already have. The value is held in a
+#'   weak reference, so it is never written to disk: if you save a request
+#'   (with e.g. [saveRDS()]) that contains a `secret_value()` and reload it,
+#'   the secret is silently dropped from headers and errors when revealed
+#'   from a body.
+#' * `secret_map()` derives a new secret from an existing secret (or a plain
+#'   value) by applying a function to its value, e.g. to build a custom
+#'   authentication scheme like `Token <secret>`. If `x` is not a secret,
+#'   `secret_map()` simply applies `f` and returns a plain value, so callers
+#'   can use one code path for both secret and plain input.
+#'
+#' Additionally, any zero-argument function that returns a string can be used
+#' as a secret, e.g. `\() keyring::key_get("example")`. Note that a function
+#' is saved with whatever it captures: `\() key` stores `key` inside the
+#' request, so either look the value up inside the function or wrap it in
+#' `secret_value()`.
+#'
+#' Secrets can be used in [req_headers()], [req_auth_basic()],
+#' [req_auth_bearer_token()], [req_auth_aws_v4()], [oauth_client()], and in
+#' the bodies of [req_body_json()], [req_body_form()], and
+#' [req_body_multipart()].
+#'
+#' @param x For `secret_value()`, a string to store. For `secret_map()`,
+#'   a secret (or a plain value) to transform.
+#' @param name The name of an environment variable.
+#' @param f A function (or formula, via [rlang::as_function()]) that takes
+#'   the secret's value and returns a new value. Don't capture sensitive
+#'   values in `f`, as it may be saved along with the request.
+#' @returns `secret_value()` and `secret_envvar()` return secrets;
+#'   `secret_map()` returns a secret if `x` is a secret, and a plain value
+#'   otherwise.
+#' @seealso [Managing secrets](https://httr2.r-lib.org/articles/secrets.html)
+#'   for a full overview of working with secrets.
+#' @export
+#' @examples
+#' req <- request("http://example.com")
+#'
+#' # In real life, set the env var in your .Renviron, not with Sys.setenv()
+#' Sys.setenv(EXAMPLE_TOKEN = "token123")
+#'
+#' # Read the token from an env var at perform time:
+#' req |>
+#'   req_auth_bearer_token(secret_envvar("EXAMPLE_TOKEN")) |>
+#'   req_dry_run()
+#'
+#' # Derive a custom auth scheme from a secret:
+#' req |>
+#'   req_headers(
+#'     Authorization = secret_map(secret_envvar("EXAMPLE_TOKEN"), \(x) paste("Token", x))
+#'   ) |>
+#'   req_dry_run()
+secret_value <- function(x) {
+  check_string(x)
+  new_secret_value(x)
+}
+
+# Like secret_value(), but without the input check, so that new_headers()
+# can wrap any already-flattened value.
+new_secret_value <- function(x) {
+  env <- new_environment(parent = baseenv())
+  env$ref <- new_weakref(env, x)
+  f <- function() rlang::wref_value(get("ref", environment()))
+  environment(f) <- env
+  structure(f, class = c("httr2_secret_value", "function"))
+}
+
+is_secret_value <- function(x) {
+  inherits(x, "httr2_secret_value")
+}
+
+is_secret_dropped <- function(x) {
+  is_secret_value(x) && is.null(x())
+}
+
+#' @export
+format.httr2_secret_value <- function(x, ...) {
+  secret_format(x)
+}
+#' @export
+print.httr2_secret_value <- function(x, ...) {
+  cat(format(x), "\n", sep = "")
+  invisible(x)
+}
+#' @export
+str.httr2_secret_value <- function(object, ..., nest.lev = 0) {
+  str_leading_space(nest.lev)
+  cat(secret_format(object), "\n", sep = "")
+}
+
+#' @export
+#' @rdname secret_value
+secret_envvar <- function(name) {
+  check_string(name, allow_empty = FALSE)
+  structure(
+    function() envvar_get(name),
+    class = c("httr2_secret_envvar", "function")
+  )
+}
+
+is_secret_envvar <- function(x) {
+  inherits(x, "httr2_secret_envvar")
+}
+
+#' @export
+format.httr2_secret_envvar <- function(x, ...) {
+  secret_format(x)
+}
+#' @export
+print.httr2_secret_envvar <- function(x, ...) {
+  cat(format(x), "\n", sep = "")
+  invisible(x)
+}
+#' @export
+str.httr2_secret_envvar <- function(object, ..., nest.lev = 0) {
+  str_leading_space(nest.lev)
+  cat(secret_format(object), "\n", sep = "")
+}
+
+is_secret <- function(x) {
+  is_obfuscated(x) || is.function(x)
+}
+
+#' @export
+#' @rdname secret_value
+secret_map <- function(x, f) {
+  f <- as_function(f)
+  if (!is_secret(x)) {
+    f(x)
+  } else if (is_secret_value(x)) {
+    # Apply immediately so that `f` isn't stored with the secret
+    new_secret_value(f(secret_reveal(x)))
+  } else {
+    attr(x, "httr2_secret_map") <- c(attr(x, "httr2_secret_map"), list(f))
+    x
+  }
+}
+
+# Recursively resolve every secret in `x`
+secrets_resolve <- function(x, handle = c("reveal", "redact", "remove")) {
+  handle <- arg_match(handle)
+  secrets_resolve_rec(x, handle)
+}
+secrets_resolve_rec <- function(x, handle) {
+  if (is_secret(x)) {
     switch(
       handle,
-      reveal = secret_decrypt(x, obfuscate_key()),
-      redact = "<REDACTED>",
+      reveal = secret_reveal(x),
+      redact = secret_format(x),
       remove = NULL
     )
   } else if (is.list(x)) {
-    x[] <- lapply(x, unobfuscate, handle = handle)
+    x[] <- lapply(x, secrets_resolve_rec, handle = handle)
     x
   } else {
     x
   }
 }
-attr(unobfuscate, "srcref") <- "function(x) {}"
 
-is_obfuscated <- function(x) {
-  inherits(x, "httr2_obfuscated")
+secret_reveal <- function(x) {
+  value <- secret_reveal_base(x)
+  for (f in attr(x, "httr2_secret_map")) {
+    value <- f(value)
+  }
+  if (!is_string(value)) {
+    cli::cli_abort(
+      "A secret must resolve to a single string, not {obj_type_friendly(value)}."
+    )
+  }
+  value
+}
+
+secret_reveal_base <- function(x) {
+  if (is_obfuscated(x)) {
+    # Strip attributes so `httr2_secret_map` doesn't confuse the decryption
+    secret_decrypt(as.character(x), obfuscate_key())
+  } else if (is_secret_dropped(x)) {
+    cli::cli_abort(
+      c(
+        "A {.fn secret_value} is no longer available.",
+        i = "Secret values are removed when a request is saved; re-create it."
+      ),
+      class = "httr2_secret_dropped"
+    )
+  } else if (is.function(x)) {
+    x()
+  } else {
+    cli::cli_abort("Unknown secret type.", .internal = TRUE)
+  }
+}
+
+secret_format <- function(x) {
+  if (is_secret_value(x)) {
+    "<REDACTED>"
+  } else if (is_obfuscated(x)) {
+    "<REDACTED (obfuscated)>"
+  } else if (is_secret_envvar(x)) {
+    paste0("<REDACTED (env: ", fn_env(x)$name, ")>")
+  } else {
+    "<REDACTED (on-demand)>"
+  }
+}
+
+check_string_or_secret <- function(
+  x,
+  ...,
+  allow_null = FALSE,
+  arg = caller_arg(x),
+  call = caller_env()
+) {
+  if (is_secret(x)) {
+    return(invisible(x))
+  }
+  check_string(x, ..., allow_null = allow_null, arg = arg, call = call)
 }
 
 # Helpers -----------------------------------------------------------------

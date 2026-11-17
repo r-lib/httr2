@@ -1,16 +1,6 @@
-as_headers <- function(
-  x,
-  redact = character(),
-  lifespan,
-  error_call = caller_env()
-) {
+as_headers <- function(x, redact = character(), error_call = caller_env()) {
   if (is.list(x)) {
-    new_headers(
-      x,
-      redact = redact,
-      lifespan = lifespan,
-      error_call = error_call
-    )
+    new_headers(x, redact = redact, error_call = error_call)
   } else if (is.character(x) || is.raw(x)) {
     parsed <- curl::parse_headers(x)
     valid <- parsed[grepl(":", parsed, fixed = TRUE)]
@@ -20,7 +10,6 @@ as_headers <- function(
     new_headers(
       as.list(headers),
       redact = redact,
-      lifespan = lifespan,
       error_call = error_call
     )
   } else {
@@ -31,12 +20,7 @@ as_headers <- function(
   }
 }
 
-new_headers <- function(
-  x,
-  redact = character(),
-  lifespan,
-  error_call = caller_env()
-) {
+new_headers <- function(x, redact = character(), error_call = caller_env()) {
   if (!is_list(x)) {
     cli::cli_abort("{.arg x} must be a list.", call = error_call)
   }
@@ -44,10 +28,10 @@ new_headers <- function(
     cli::cli_abort("All elements of {.arg x} must be named.", call = error_call)
   }
   for (i in seq_along(x)) {
-    if (!is.atomic(x[[i]]) && !is_weakref(x[[i]])) {
+    if (!is.atomic(x[[i]]) && !is_secret(x[[i]])) {
       cli::cli_abort(
         c(
-          "Each element of {.arg x} must be an atomic vector or a weakref.",
+          "Each element of {.arg x} must be an atomic vector or a secret.",
           i = "{.arg x[[{i}]]} is {obj_type_friendly(x[[i]])}."
         ),
         call = error_call
@@ -56,7 +40,10 @@ new_headers <- function(
   }
 
   needs_redact <- !is_redacted(x) & (tolower(names(x)) %in% tolower(redact))
-  x[needs_redact] <- lapply(x[needs_redact], \(x) new_weakref(lifespan, x))
+  x[needs_redact] <- lapply(
+    x[needs_redact],
+    \(x) new_secret_value(paste(x, collapse = ","))
+  )
 
   structure(x, class = "httr2_headers")
 }
@@ -107,10 +94,10 @@ str.httr2_headers <- function(object, ..., nest.lev = 0, no.list = FALSE) {
 }
 
 is_redacted <- function(x) {
-  map_lgl(x, is_weakref)
+  map_lgl(x, is_secret)
 }
 is_redacted_empty <- function(x) {
-  map_lgl(x, \(x) is_weakref(x) && is.null(wref_value(x)))
+  map_lgl(x, is_secret_dropped)
 }
 
 which_redacted <- function(x) {
@@ -129,16 +116,30 @@ headers_flatten <- function(x, redact = TRUE) {
   out[!is_redacted] <- lapply(x[!is_redacted], paste, collapse = ",")
 
   if (redact) {
-    out[is_redacted] <- list(redacted_sentinel())
+    out[is_redacted] <- lapply(
+      x[is_redacted],
+      \(x) redacted_sentinel(secret_format(x))
+    )
   } else {
-    out[is_redacted] <- lapply(x[is_redacted], wref_value)
-    # also need to ensure redacted values are simple strings
-    out[is_redacted] <- lapply(out[is_redacted], function(x) {
-      if (!is.null(x)) paste(x, collapse = ",")
+    out[is_redacted] <- lapply(x[is_redacted], function(x) {
+      if (!is_secret_dropped(x)) secret_reveal(x)
     })
-    # need to strip serialized weakrefs that now yield NULL
+    # need to strip serialized secret_values that now yield NULL
     out <- compact(out)
   }
 
   out
+}
+
+# Resolve all secrets (apart from `secret_value()`s, which are already as
+# resolved as they can be) so that this happens once per perform. Idempotent.
+headers_resolve <- function(req) {
+  req$headers[] <- lapply(req$headers, function(x) {
+    if (is_secret(x) && !is_secret_value(x)) {
+      new_secret_value(secret_reveal(x))
+    } else {
+      x
+    }
+  })
+  req
 }

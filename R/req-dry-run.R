@@ -65,8 +65,7 @@ req_dry_run <- function(
   resp <- curl::curl_echo(handle, progress = FALSE)
   headers <- new_headers(
     as.list(resp$headers),
-    redact = which_redacted(req$headers),
-    lifespan = current_env()
+    redact = which_redacted(req$headers)
   )
 
   if (!quiet) {

@@ -250,6 +250,7 @@ req_verbosity <- function(req, verbosity, error_call = caller_env()) {
 req_prepare <- function(req) {
   req <- req_method_apply(req)
   req <- req_body_apply(req)
+  req <- headers_resolve(req)
   if (!req_has_user_agent(req)) {
     req <- req_user_agent(req)
   }

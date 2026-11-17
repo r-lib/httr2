@@ -1,3 +1,22 @@
+# query params don't accept secrets
+
+    Code
+      req_url_query(req, a = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))
+    Condition
+      Error in `url_modify_query()`:
+      ! Query value `a` must be a length-1 atomic vector, not a <httr2_obfuscated> object.
+    Code
+      req_url_query(req, a = function() "x")
+    Condition
+      Error in `url_modify_query()`:
+      ! All elements of `...` must be either an atomic vector or NULL.
+    Code
+      url_modify_query("http://example.com/", a = obfuscated(
+        "ZdYJeG8zwISodg0nu4UxBhs"))
+    Condition
+      Error in `url_modify_query()`:
+      ! Query value `a` must be a length-1 atomic vector, not a <httr2_obfuscated> object.
+
 # can control space handling
 
     Code

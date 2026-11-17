@@ -48,6 +48,8 @@ test_that("req_proxy gives helpful errors", {
   expect_snapshot(error = TRUE, {
     req |> req_proxy(port = "abc")
     req |> req_proxy("abc", auth = "bsc")
+    req |> req_proxy("abc", username = 1)
+    req |> req_proxy("abc", password = \() "x")
   })
 })
 
