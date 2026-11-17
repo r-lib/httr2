@@ -262,11 +262,6 @@ is_obfuscated <- function(x) {
 #'   (with e.g. [saveRDS()]) that contains a `secret_value()` and reload it,
 #'   the secret is silently dropped from headers and errors when revealed
 #'   from a body.
-#' * `secret_map()` derives a new secret from an existing secret (or a plain
-#'   value) by applying a function to its value, e.g. to build a custom
-#'   authentication scheme like `Token <secret>`. If `x` is not a secret,
-#'   `secret_map()` simply applies `f` and returns a plain value, so callers
-#'   can use one code path for both secret and plain input.
 #'
 #' Additionally, any zero-argument function that returns a string can be used
 #' as a secret, e.g. `\() keyring::key_get("example")`. Note that a function
@@ -279,15 +274,9 @@ is_obfuscated <- function(x) {
 #' the bodies of [req_body_json()], [req_body_form()], and
 #' [req_body_multipart()].
 #'
-#' @param x For `secret_value()`, a string to store. For `secret_map()`,
-#'   a secret (or a plain value) to transform.
+#' @param x A string to store.
 #' @param name The name of an environment variable.
-#' @param f A function (or formula, via [rlang::as_function()]) that takes
-#'   the secret's value and returns a new value. Don't capture sensitive
-#'   values in `f`, as it may be saved along with the request.
-#' @returns `secret_value()` and `secret_envvar()` return secrets;
-#'   `secret_map()` returns a secret if `x` is a secret, and a plain value
-#'   otherwise.
+#' @returns A secret.
 #' @seealso [Managing secrets](https://httr2.r-lib.org/articles/secrets.html)
 #'   for a full overview of working with secrets.
 #' @export
@@ -300,13 +289,6 @@ is_obfuscated <- function(x) {
 #' # Read the token from an env var at perform time:
 #' req |>
 #'   req_auth_bearer_token(secret_envvar("EXAMPLE_TOKEN")) |>
-#'   req_dry_run()
-#'
-#' # Derive a custom auth scheme from a secret:
-#' req |>
-#'   req_headers(
-#'     Authorization = secret_map(secret_envvar("EXAMPLE_TOKEN"), \(x) paste("Token", x))
-#'   ) |>
 #'   req_dry_run()
 secret_value <- function(x) {
   check_string(x)
@@ -379,8 +361,9 @@ is_secret <- function(x) {
   is_obfuscated(x) || is.function(x)
 }
 
-#' @export
-#' @rdname secret_value
+# Derives a new secret from an existing secret (or a plain value) by applying
+# `f` to its value. If `x` is not a secret, applies `f` and returns a plain
+# value, so callers can use one code path for both secret and plain input.
 secret_map <- function(x, f) {
   f <- as_function(f)
   if (!is_secret(x)) {

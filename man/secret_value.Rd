@@ -3,29 +3,19 @@
 \name{secret_value}
 \alias{secret_value}
 \alias{secret_envvar}
-\alias{secret_map}
 \title{Secrets resolved at perform time}
 \usage{
 secret_value(x)
 
 secret_envvar(name)
-
-secret_map(x, f)
 }
 \arguments{
-\item{x}{For \code{secret_value()}, a string to store. For \code{secret_map()},
-a secret (or a plain value) to transform.}
+\item{x}{A string to store.}
 
 \item{name}{The name of an environment variable.}
-
-\item{f}{A function (or formula, via \code{\link[rlang:as_function]{rlang::as_function()}}) that takes
-the secret's value and returns a new value. Don't capture sensitive
-values in \code{f}, as it may be saved along with the request.}
 }
 \value{
-\code{secret_value()} and \code{secret_envvar()} return secrets;
-\code{secret_map()} returns a secret if \code{x} is a secret, and a plain value
-otherwise.
+A secret.
 }
 \description{
 These functions create \emph{secrets}: recipes for obtaining a credential that
@@ -42,11 +32,6 @@ weak reference, so it is never written to disk: if you save a request
 (with e.g. \code{\link[=saveRDS]{saveRDS()}}) that contains a \code{secret_value()} and reload it,
 the secret is silently dropped from headers and errors when revealed
 from a body.
-\item \code{secret_map()} derives a new secret from an existing secret (or a plain
-value) by applying a function to its value, e.g. to build a custom
-authentication scheme like \verb{Token <secret>}. If \code{x} is not a secret,
-\code{secret_map()} simply applies \code{f} and returns a plain value, so callers
-can use one code path for both secret and plain input.
 }
 
 Additionally, any zero-argument function that returns a string can be used
@@ -69,13 +54,6 @@ Sys.setenv(EXAMPLE_TOKEN = "token123")
 # Read the token from an env var at perform time:
 req |>
   req_auth_bearer_token(secret_envvar("EXAMPLE_TOKEN")) |>
-  req_dry_run()
-
-# Derive a custom auth scheme from a secret:
-req |>
-  req_headers(
-    Authorization = secret_map(secret_envvar("EXAMPLE_TOKEN"), \(x) paste("Token", x))
-  ) |>
   req_dry_run()
 }
 \seealso{
