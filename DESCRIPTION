@@ -51,6 +51,8 @@ Suggests:
     xml2
 VignetteBuilder:
     knitr
+Remotes:
+    jeroen/curl#460
 Config/Needs/website: tidyverse/tidytemplate
 Config/roxygen2/version: 8.1.1
 Config/testthat/edition: 3

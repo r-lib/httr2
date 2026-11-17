@@ -211,10 +211,12 @@ StreamingBody <- R6::R6Class(
       chunks <- list(raw())
       repeat {
         new <- self$read(buffer)
-        if (length(new) == 0) {
+        if (length(new) > 0) {
+          chunks[[length(chunks) + 1L]] <- new
+        } else if (self$is_complete()) {
+          # A non-blocking connection can return nothing before it's complete
           break
         }
-        chunks[[length(chunks) + 1L]] <- new
       }
       bytes <- unlist(chunks, recursive = FALSE, use.names = FALSE)
 
