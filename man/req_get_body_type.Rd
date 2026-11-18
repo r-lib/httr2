@@ -7,14 +7,24 @@
 \usage{
 req_get_body_type(req)
 
-req_get_body(req, obfuscated = c("remove", "redact", "reveal"))
+req_get_body(
+  req,
+  secrets = c("remove", "redact", "reveal"),
+  obfuscated = deprecated()
+)
 }
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
-\item{obfuscated}{Form and JSON bodies can contain \link{obfuscated} values.
-This argument controls what happens to them: should they be removed,
-redacted, or revealed.}
+\item{secrets}{What to do with secrets (e.g. \code{\link[=obfuscated]{obfuscated()}} values) that
+can be present in JSON, form, and multipart bodies?
+\itemize{
+\item \code{"remove"} (the default) replaces them with \code{NULL}.
+\item \code{"redact"} replaces them with \verb{<REDACTED>}.
+\item \code{"reveal"} reveals them.
+}}
+
+\item{obfuscated}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{secrets} instead.}
 }
 \description{
 This pair of functions gives you sufficient information to capture the

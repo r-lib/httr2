@@ -95,6 +95,7 @@ reference:
   contents:
   - obfuscate
   - secrets
+  - secret_value
 
 - subtitle: Testing
   contents:
@@ -113,6 +114,7 @@ articles:
   contents:
   - articles/wrapping-apis
   - articles/oauth
+  - articles/secrets
 
 news:
   releases:

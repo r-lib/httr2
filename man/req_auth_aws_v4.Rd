@@ -16,9 +16,11 @@ req_auth_aws_v4(
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
-\item{aws_access_key_id, aws_secret_access_key}{AWS key and secret.}
+\item{aws_access_key_id, aws_secret_access_key}{AWS key and secret. Each can
+be a string or a secret (see \code{\link[=secret_value]{secret_value()}}).}
 
-\item{aws_session_token}{AWS session token, if required.}
+\item{aws_session_token}{AWS session token, if required. Can be a string or
+a secret (see \code{\link[=secret_value]{secret_value()}}).}
 
 \item{aws_service, aws_region}{The AWS service and region to use for the
 request. If not supplied, will be automatically parsed from the URL

@@ -123,6 +123,9 @@ req_proxy <- function(
   password = NULL,
   auth = "basic"
 ) {
+  check_string(username, allow_null = TRUE)
+  check_string(password, allow_null = TRUE)
+
   if (!is.null(username) || !is.null(password)) {
     proxyuserpwd <- paste0(username, ":", password)
   } else {

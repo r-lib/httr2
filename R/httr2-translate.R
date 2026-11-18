@@ -22,19 +22,31 @@
 #' # Secrets are redacted by default, but can be revealed
 #' request("https://example.com") |>
 #'   req_headers_redacted(Authorization = "secret") |>
-#'   httr2_translate(obfuscated = "reveal")
-httr2_translate <- function(req, obfuscated = c("redact", "reveal")) {
+#'   httr2_translate(secrets = "reveal")
+httr2_translate <- function(
+  req,
+  secrets = c("redact", "reveal"),
+  obfuscated = deprecated()
+) {
   check_request(req)
-  obfuscated <- arg_match(obfuscated)
+  if (lifecycle::is_present(obfuscated)) {
+    lifecycle::deprecate_warn(
+      "1.4.0",
+      "httr2_translate(obfuscated)",
+      "httr2_translate(secrets)"
+    )
+    secrets <- obfuscated
+  }
+  secrets <- arg_match(secrets)
 
   req <- req_prepare(req)
   req <- auth_sign(req)
 
-  body <- curl_body(req, obfuscated)
+  body <- curl_body(req, secrets)
   args <- c(
     dquote(req_get_url(req)),
     curl_method(req, has_body = !is.null(body)),
-    curl_headers(req, obfuscated),
+    curl_headers(req, secrets),
     curl_options(req),
     body
   )
@@ -56,10 +68,10 @@ curl_method <- function(req, has_body = FALSE) {
   }
 }
 
-curl_headers <- function(req, obfuscated = c("redact", "reveal")) {
-  obfuscated <- arg_match(obfuscated)
+curl_headers <- function(req, secrets = c("redact", "reveal")) {
+  secrets <- arg_match(secrets)
 
-  headers <- req_get_headers(req, redacted = obfuscated)
+  headers <- req_get_headers(req, redacted = secrets)
   if (is_empty(headers)) {
     return(NULL)
   }
@@ -128,10 +140,10 @@ curl_options <- function(req) {
   c(follow, unlist(args))
 }
 
-curl_body <- function(req, obfuscated = c("redact", "reveal")) {
-  obfuscated <- arg_match(obfuscated)
+curl_body <- function(req, secrets = c("redact", "reveal")) {
+  secrets <- arg_match(secrets)
 
-  body <- req_get_body(req, obfuscated = obfuscated)
+  body <- req_get_body(req, secrets = secrets)
   if (is.null(body)) {
     return(NULL)
   }

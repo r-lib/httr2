@@ -48,9 +48,9 @@
       Error:
       ! All elements of `x` must be named.
     Code
-      new_headers(list(x = mean))
+      new_headers(list(x = mtcars))
     Condition
       Error:
-      ! Each element of `x` must be an atomic vector or a weakref.
-      i `x[[1]]` is a function.
+      ! Each element of `x` must be an atomic vector or a secret.
+      i `x[[1]]` is a <data.frame> object.
 

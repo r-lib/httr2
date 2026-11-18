@@ -368,13 +368,20 @@ format_query_param <- function(
   name,
   multi = FALSE,
   form = FALSE,
+  secrets = FALSE,
   error_call = caller_env()
 ) {
-  check_query_param(x, name, multi = multi, error_call = error_call)
+  check_query_param(
+    x,
+    name,
+    multi = multi,
+    secrets = secrets,
+    error_call = error_call
+  )
 
   if (inherits(x, "AsIs")) {
     unclass(x)
-  } else if (is_obfuscated(x)) {
+  } else if (secrets && is_secret(x)) {
     x
   } else {
     if (!is.character(x)) {
@@ -393,8 +400,12 @@ check_query_param <- function(
   x,
   name,
   multi = FALSE,
+  secrets = FALSE,
   error_call = caller_env()
 ) {
+  if (secrets && is_secret(x)) {
+    return(invisible())
+  }
   if (inherits(x, "AsIs")) {
     if (multi) {
       ok <- is.character(x)
@@ -407,10 +418,10 @@ check_query_param <- function(
     x <- unclass(x)
   } else {
     if (multi) {
-      ok <- is.atomic(x)
+      ok <- is.atomic(x) && !is_obfuscated(x)
       expected <- "an atomic vector"
     } else {
-      ok <- is.atomic(x) && length(x) == 1
+      ok <- is.atomic(x) && length(x) == 1 && !is_obfuscated(x)
       expected <- "a length-1 atomic vector"
     }
     arg <- paste0("Query value `", name, "`")

@@ -140,7 +140,7 @@ test_that("httr2_translate() can reveal obfuscated values", {
   expect_snapshot({
     request("https://hb.cran.dev/get") |>
       req_headers_redacted(Authorization = "secret-token") |>
-      httr2_translate(obfuscated = "reveal")
+      httr2_translate(secrets = "reveal")
   })
 })
 
@@ -202,6 +202,12 @@ test_that("httr2_translate() validates input", {
   })
 })
 
+test_that("httr2_translate(obfuscated =) is deprecated", {
+  expect_snapshot(
+    . <- httr2_translate(request("https://example.com"), obfuscated = "reveal")
+  )
+})
+
 test_that("httr2_translate() signs AWS requests", {
   req <- request("https://sts.us-east-1.amazonaws.com/") |>
     req_body_form(
@@ -213,7 +219,7 @@ test_that("httr2_translate() signs AWS requests", {
       aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     )
 
-  command <- as.character(httr2_translate(req, obfuscated = "reveal"))
+  command <- as.character(httr2_translate(req, secrets = "reveal"))
   expect_match(
     command,
     "Authorization: AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/"

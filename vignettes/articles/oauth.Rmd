@@ -160,6 +160,8 @@ client <- oauth_client(
 
 You can certainly uncover my client secret if you are an experienced R programmer and are willing to spend a bit of time experimenting, but I'm pretty sure it'd be easy for you to just create your own app on GitHub.
 
+To learn more about the other kinds of secrets httr2 supports and how to keep credentials out of your code, console output, and saved objects, see the [managing secrets](https://httr2.r-lib.org/articles/secrets.html) article.
+
 ### Packaging
 
 I recommend wrapping client creation in a function in your package, e.g.:

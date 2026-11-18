@@ -18,6 +18,8 @@ and their values.
 \item Use \code{NULL} to reset a value to httr2's default.
 \item Use \code{""} to remove a header.
 \item Use a character vector to repeat a header.
+\item Use a secret (see \code{\link[=secret_value]{secret_value()}}) to supply a value that is resolved
+only when the request is performed. Secrets are always redacted.
 }}
 
 \item{.redact}{A character vector of headers to redact. The Authorization
