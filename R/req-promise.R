@@ -127,7 +127,8 @@ ensure_pool_poller <- function(pool) {
             readfds = fds$reads,
             writefds = fds$writes,
             exceptfds = fds$exceptions,
-            timeout = fds$timeout
+            # curl reports milliseconds and later expects seconds.
+            timeout = fds$timeout / 1000
           )
         } else {
           monitor$ending()

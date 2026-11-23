@@ -9,6 +9,20 @@ test_that("checks its inputs", {
   })
 })
 
+test_that("pool poller respects request timeouts", {
+  req <- request_test("/delay/:secs", secs = 2) |> req_timeout(0.2)
+  started <- Sys.time()
+
+  expect_error(
+    extract_promise(req_perform_promise(req)),
+    class = "httr2_failure"
+  )
+  expect_lt(
+    as.numeric(difftime(Sys.time(), started, units = "secs")),
+    1.5
+  )
+})
+
 test_that("returns a promise that resolves", {
   p1 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
   p2 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
