@@ -111,6 +111,31 @@ test_that("req_perform_promise can use non-default pool", {
   expect_equal(resp_status(p2_value), 200)
 })
 
+test_that("req_perform_promise wakes a sleeping pool for new requests", {
+  req1 <- request_test("/delay/:secs", secs = 2)
+  req2 <- request_test("/get")
+  pool <- curl::new_pool()
+
+  p1 <- req_perform_promise(req1, pool = pool)
+  withr::defer(extract_promise(p1, timeout = 5))
+  # Let curl establish the connection and start waiting for the slow response.
+  deadline <- as.double(Sys.time()) + 0.15
+  while (as.double(Sys.time()) < deadline) {
+    later::run_now(0.01)
+  }
+
+  p2 <- req_perform_promise(req2, pool = pool)
+  status <- NULL
+  promises::then(p2, function(resp) status <<- resp_status(resp))
+
+  deadline <- as.double(Sys.time()) + 1
+  while (is.null(status) && as.double(Sys.time()) < deadline) {
+    later::run_now(0.01)
+  }
+
+  expect_equal(status, 200)
+})
+
 test_that("req_perform_promise uses the default loop", {
   # The main reason for temp loops is to allow an asynchronous operation to be
   # created, waited on, and resolved/rejected inside of a synchronous function,

@@ -111,45 +111,52 @@ req_perform_promise <- function(
 }
 
 ensure_pool_poller <- function(pool) {
-  monitor <- pool_poller_monitor(pool)
-  if (monitor$already_going()) {
+  key <- obj_address(pool)
+  wake <- the$pool_pollers[[key]]
+  if (!is.null(wake) && wake()) {
     return()
   }
 
+  loop <- later::current_loop()
+  cancel_wait <- NULL
   poll_pool <- function(ready) {
+    cancel_wait <<- NULL
     withCallingHandlers(
       {
-        status <- curl::multi_run(0, pool = pool)
-        if (status$pending > 0) {
+        curl::multi_run(0, pool = pool)
+        # A completion callback may have added another handle.
+        if (length(curl::multi_list(pool = pool)) > 0) {
           fds <- curl::multi_fdset(pool = pool)
-          later::later_fd(
+          cancel_wait <<- later::later_fd(
             func = poll_pool,
             readfds = fds$reads,
             writefds = fds$writes,
             exceptfds = fds$exceptions,
-            timeout = fds$timeout
+            timeout = fds$timeout,
+            loop = loop
           )
         } else {
-          monitor$ending()
+          env_unbind(the$pool_pollers, key)
         }
       },
       error = function(cnd) {
-        monitor$ending()
+        env_unbind(the$pool_pollers, key)
       }
     )
   }
 
-  monitor$starting()
+  the$pool_pollers[[key]] <- function() {
+    alive <- later::exists_loop(loop)
+    if (!is.null(cancel_wait)) {
+      cancel_wait()
+      cancel_wait <<- NULL
+      if (alive) {
+        later::later(poll_pool, loop = loop)
+      }
+    }
+    # A running or scheduled poll will include the new request. If its loop
+    # was destroyed, let the caller start a new poller on the current loop.
+    alive
+  }
   poll_pool()
-}
-
-pool_poller_monitor <- function(pool) {
-  pool_address <- obj_address(pool)
-  list(
-    already_going = function() {
-      env_get(the$pool_pollers, pool_address, default = FALSE)
-    },
-    starting = function() env_poke(the$pool_pollers, pool_address, TRUE),
-    ending = function() env_unbind(the$pool_pollers, pool_address)
-  )
 }
