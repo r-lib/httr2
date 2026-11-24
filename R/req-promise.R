@@ -113,61 +113,81 @@ req_perform_promise <- function(
 ensure_pool_poller <- function(pool) {
   key <- obj_address(pool)
   poller <- the$pool_pollers[[key]]
-  if (!is.null(poller) && later::exists_loop(poller$loop)) {
-    wake_pool_poller(poller)
-    return(invisible())
+  if (is.null(poller) || poller$done || !later::exists_loop(poller$loop)) {
+    poller <- PoolPoller$new(pool)
+    the$pool_pollers[[key]] <- poller
+    poller$poll()
+  } else {
+    poller$repoll()
   }
-
-  # A temporary loop can be destroyed while a socket wait is outstanding.
-  if (!is.null(poller$cancel_wait)) {
-    poller$cancel_wait()
-  }
-
-  poller <- new_environment(list(
-    pool = pool,
-    loop = later::current_loop(),
-    cancel_wait = NULL
-  ))
-  the$pool_pollers[[key]] <- poller
-  poll_curl_pool(poller)
+  invisible()
 }
 
-wake_pool_poller <- function(poller) {
-  # A poll already running or scheduled will pick up the new request.
-  if (is.null(poller$cancel_wait)) {
-    return(invisible())
-  }
+PoolPoller <- R6Class(
+  "PoolPoller",
+  public = list(
+    pool = NULL,
+    loop = NULL,
+    cancel_poll = NULL,
+    done = FALSE,
 
-  # The pending wait only watches sockets known before this request arrived.
-  poller$cancel_wait()
-  poller$cancel_wait <- NULL
-  later::later(\() poll_curl_pool(poller), loop = poller$loop)
-}
+    initialize = function(pool) {
+      self$pool <- pool
+      self$loop <- later::current_loop()
+    },
 
-poll_curl_pool <- function(poller) {
-  poller$cancel_wait <- NULL
-  pool <- poller$pool
-  key <- obj_address(pool)
-  withCallingHandlers(
-    {
-      curl::multi_run(0, pool = pool)
-      # A completion callback can add another handle while curl is running.
-      if (length(curl::multi_list(pool = pool)) == 0) {
-        env_unbind(the$pool_pollers, key)
+    stop = function() {
+      self$done <- TRUE
+      self$pool <- NULL
+      self$loop <- NULL
+    },
+
+    repoll = function() {
+      # poll() snapshots the pool's sockets at its end, so a poll that is
+      # running or queued (cancel_poll is NULL) is guaranteed to see the
+      # new request when it snapshots, and there's nothing to do.
+      if (is.null(self$cancel_poll)) {
         return(invisible())
       }
 
-      fds <- curl::multi_fdset(pool = pool)
-      poller$cancel_wait <- later::later_fd(
-        func = \(ready) poll_curl_pool(poller),
+      # The pending wait only watches sockets known before this request arrived,
+      # so cancel it and re-poll.
+      self$cancel_poll()
+      self$cancel_poll <- NULL
+
+      # Defer to the next tick on the poller's own loop, rather than calling
+      # poll() directly, so that curl work (and any errors or completion
+      # callbacks it triggers) doesn't run in the caller's stack.
+      later::later(\() self$poll(), loop = self$loop)
+    },
+
+    poll = function() {
+      self$cancel_poll <- NULL
+      withCallingHandlers(
+        {
+          curl::multi_run(0, pool = self$pool)
+          if (length(curl::multi_list(self$pool)) > 0) {
+            self$cancel_poll <- self$schedule_poll()
+          } else {
+            self$stop()
+          }
+        },
+        error = function(cnd) self$stop()
+      )
+      invisible()
+    },
+
+    schedule_poll = function() {
+      fds <- curl::multi_fdset(pool = self$pool)
+      later::later_fd(
+        func = \(ready) self$poll(),
         readfds = fds$reads,
         writefds = fds$writes,
         exceptfds = fds$exceptions,
         # curl reports milliseconds and later expects seconds.
         timeout = fds$timeout / 1000,
-        loop = poller$loop
+        loop = self$loop
       )
-    },
-    error = function(cnd) env_unbind(the$pool_pollers, key)
+    }
   )
-}
+)
