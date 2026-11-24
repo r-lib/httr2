@@ -163,7 +163,8 @@ poll_curl_pool <- function(poller) {
         readfds = fds$reads,
         writefds = fds$writes,
         exceptfds = fds$exceptions,
-        timeout = fds$timeout,
+        # curl reports milliseconds and later expects seconds.
+        timeout = fds$timeout / 1000,
         loop = poller$loop
       )
     },
