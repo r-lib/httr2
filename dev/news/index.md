@@ -47,6 +47,9 @@
   now returns as soon as the response headers have been received, rather
   than waiting for the first bytes of the body
   ([\#918](https://github.com/r-lib/httr2/issues/918)).
+- [`req_perform_promise()`](https://httr2.r-lib.org/dev/reference/req_perform_promise.md)
+  now observes the request timeout while waiting for a response on an
+  idle socket ([\#923](https://github.com/r-lib/httr2/issues/923)).
 - [`req_perform_sequential()`](https://httr2.r-lib.org/dev/reference/req_perform_sequential.md)
   no longer ignores `mock` when `on_error = "stop"`.
 - [`req_url_query()`](https://httr2.r-lib.org/dev/reference/req_url.md)
