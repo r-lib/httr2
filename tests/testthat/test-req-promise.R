@@ -128,12 +128,40 @@ test_that("req_perform_promise wakes a sleeping pool for new requests", {
   status <- NULL
   promises::then(p2, function(resp) status <<- resp_status(resp))
 
-  deadline <- as.double(Sys.time()) + 1
+  # curl wakes the pool at least once a second (for its low-speed check), so
+  # waiting less than that shows the new request didn't wait for the old one.
+  deadline <- as.double(Sys.time()) + 0.5
   while (is.null(status) && as.double(Sys.time()) < deadline) {
     later::run_now(0.01)
   }
 
   expect_equal(status, 200)
+})
+
+test_that("req_perform_promise polls requests submitted by completion callbacks", {
+  pool <- curl::new_pool(multiplex = FALSE)
+  status <- NULL
+  handle <- curl::new_handle(url = example_url("/delay/0.2"))
+  curl::multi_add(handle, pool = pool, done = function(res) {
+    p <- req_perform_promise(request_test("/get"), pool = pool)
+    promises::then(p, function(resp) status <<- resp_status(resp))
+  })
+
+  extract_promise(req_perform_promise(request_test("/get"), pool = pool))
+  expect_equal(status, 200)
+})
+
+test_that("req_perform_promise restarts a poller whose loop was destroyed", {
+  pool <- curl::new_pool()
+  later::with_temp_loop({
+    req_perform_promise(request_test("/delay/:secs", secs = 0.2), pool = pool)
+  })
+
+  resp <- extract_promise(req_perform_promise(
+    request_test("/get"),
+    pool = pool
+  ))
+  expect_equal(resp_status(resp), 200)
 })
 
 test_that("req_perform_promise uses the default loop", {
