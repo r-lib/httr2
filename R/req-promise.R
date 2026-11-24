@@ -112,51 +112,61 @@ req_perform_promise <- function(
 
 ensure_pool_poller <- function(pool) {
   key <- obj_address(pool)
-  wake <- the$pool_pollers[[key]]
-  if (!is.null(wake) && wake()) {
-    return()
+  poller <- the$pool_pollers[[key]]
+  if (!is.null(poller) && later::exists_loop(poller$loop)) {
+    wake_pool_poller(poller)
+    return(invisible())
   }
 
-  loop <- later::current_loop()
-  cancel_wait <- NULL
-  poll_pool <- function(ready) {
-    cancel_wait <<- NULL
-    withCallingHandlers(
-      {
-        curl::multi_run(0, pool = pool)
-        # A completion callback may have added another handle.
-        if (length(curl::multi_list(pool = pool)) > 0) {
-          fds <- curl::multi_fdset(pool = pool)
-          cancel_wait <<- later::later_fd(
-            func = poll_pool,
-            readfds = fds$reads,
-            writefds = fds$writes,
-            exceptfds = fds$exceptions,
-            timeout = fds$timeout,
-            loop = loop
-          )
-        } else {
-          env_unbind(the$pool_pollers, key)
-        }
-      },
-      error = function(cnd) {
+  # A temporary loop can be destroyed while a socket wait is outstanding.
+  if (!is.null(poller$cancel_wait)) {
+    poller$cancel_wait()
+  }
+
+  poller <- new_environment(list(
+    pool = pool,
+    loop = later::current_loop(),
+    cancel_wait = NULL
+  ))
+  the$pool_pollers[[key]] <- poller
+  poll_curl_pool(poller)
+}
+
+wake_pool_poller <- function(poller) {
+  # A poll already running or scheduled will pick up the new request.
+  if (is.null(poller$cancel_wait)) {
+    return(invisible())
+  }
+
+  # The old socket wait doesn't include the newly added handle.
+  poller$cancel_wait()
+  poller$cancel_wait <- NULL
+  later::later(\() poll_curl_pool(poller), loop = poller$loop)
+}
+
+poll_curl_pool <- function(poller) {
+  poller$cancel_wait <- NULL
+  pool <- poller$pool
+  key <- obj_address(pool)
+  withCallingHandlers(
+    {
+      curl::multi_run(0, pool = pool)
+      # Count handles after running curl: a completion callback can add one.
+      if (length(curl::multi_list(pool = pool)) == 0) {
         env_unbind(the$pool_pollers, key)
+        return(invisible())
       }
-    )
-  }
 
-  the$pool_pollers[[key]] <- function() {
-    alive <- later::exists_loop(loop)
-    if (!is.null(cancel_wait)) {
-      cancel_wait()
-      cancel_wait <<- NULL
-      if (alive) {
-        later::later(poll_pool, loop = loop)
-      }
-    }
-    # A running or scheduled poll will include the new request. If its loop
-    # was destroyed, let the caller start a new poller on the current loop.
-    alive
-  }
-  poll_pool()
+      fds <- curl::multi_fdset(pool = pool)
+      poller$cancel_wait <- later::later_fd(
+        func = \(ready) poll_curl_pool(poller),
+        readfds = fds$reads,
+        writefds = fds$writes,
+        exceptfds = fds$exceptions,
+        timeout = fds$timeout,
+        loop = poller$loop
+      )
+    },
+    error = function(cnd) env_unbind(the$pool_pollers, key)
+  )
 }
