@@ -138,7 +138,7 @@ wake_pool_poller <- function(poller) {
     return(invisible())
   }
 
-  # The old socket wait doesn't include the newly added handle.
+  # The pending wait only watches sockets known before this request arrived.
   poller$cancel_wait()
   poller$cancel_wait <- NULL
   later::later(\() poll_curl_pool(poller), loop = poller$loop)
@@ -151,7 +151,7 @@ poll_curl_pool <- function(poller) {
   withCallingHandlers(
     {
       curl::multi_run(0, pool = pool)
-      # Count handles after running curl: a completion callback can add one.
+      # A completion callback can add another handle while curl is running.
       if (length(curl::multi_list(pool = pool)) == 0) {
         env_unbind(the$pool_pollers, key)
         return(invisible())

@@ -142,8 +142,7 @@ test_that("req_perform_promise wakes a sleeping pool for new requests", {
   status <- NULL
   promises::then(p2, function(resp) status <<- resp_status(resp))
 
-  # curl wakes the pool at least once a second (for its low-speed check), so
-  # waiting less than that shows the new request didn't wait for the old one.
+  # A longer deadline could let curl's periodic wakeup start the fast request.
   deadline <- as.double(Sys.time()) + 0.5
   while (is.null(status) && as.double(Sys.time()) < deadline) {
     later::run_now(0.01)
