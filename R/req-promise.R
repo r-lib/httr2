@@ -163,17 +163,17 @@ PoolPoller <- R6Class(
 
     poll = function() {
       self$cancel_poll <- NULL
-      # Stop unless the next poll was scheduled, even after an interrupt.
-      on.exit(if (is.null(self$cancel_poll)) self$stop(), add = TRUE)
-
       withCallingHandlers(
         {
           curl_multi_run(0, pool = self$pool)
           if (length(curl::multi_list(self$pool)) > 0) {
             self$cancel_poll <- self$schedule_poll()
+          } else {
+            self$stop()
           }
         },
         error = function(cnd) {
+          self$stop()
           cli::cli_abort(
             c(
               "Background request polling stopped after an unexpected error.",
@@ -181,7 +181,8 @@ PoolPoller <- R6Class(
             ),
             parent = cnd
           )
-        }
+        },
+        interrupt = function(cnd) self$stop()
       )
       invisible()
     },
