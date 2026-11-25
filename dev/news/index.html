@@ -69,6 +69,10 @@
 <li>
 <code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code> now observes the request timeout while waiting for a response on an idle socket (<a href="https://github.com/r-lib/httr2/issues/923" class="external-link">#923</a>).</li>
 <li>
+<code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code> now starts new requests promptly when another request in the same pool is waiting for a response, including requests submitted from a curl completion callback, and resumes polling a pool whose event loop was destroyed (<a href="https://github.com/r-lib/httr2/issues/924" class="external-link">#924</a>).</li>
+<li>
+<code><a href="../reference/req_perform_promise.html">req_perform_promise()</a></code> now fails with an informative error if background polling stops after an unexpected error, instead of leaving pending promises to hang silently.</li>
+<li>
 <code><a href="../reference/req_perform_sequential.html">req_perform_sequential()</a></code> no longer ignores <code>mock</code> when <code>on_error = "stop"</code>.</li>
 <li>
 <code><a href="../reference/req_url.html">req_url_query()</a></code> and <code><a href="../reference/url_modify.html">url_modify_query()</a></code> now preserve existing query values, including unescaped values supplied with <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code>, when modifying other parameters (<a href="https://github.com/r-lib/httr2/issues/837" class="external-link">#837</a>).</li>
