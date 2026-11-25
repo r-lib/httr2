@@ -9,7 +9,8 @@ req_auth_bearer_token(req, token)
 \arguments{
 \item{req}{A httr2 \link{request} object.}
 
-\item{token}{A bearer token.}
+\item{token}{A bearer token. Can be a string or a secret
+(see \code{\link[=secret_value]{secret_value()}}).}
 }
 \value{
 A modified HTTP \link{request}.

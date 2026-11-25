@@ -116,3 +116,7 @@ x <- secret_encrypt("This is a secret", "MY_KEY")
 x
 secret_decrypt(x, "MY_KEY")
 }
+\seealso{
+\href{https://httr2.r-lib.org/articles/secrets.html}{Managing secrets}
+for a full overview of how httr2 helps you keep credentials safe.
+}

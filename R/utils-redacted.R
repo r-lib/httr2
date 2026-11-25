@@ -1,5 +1,5 @@
-redacted_sentinel <- function() {
-  structure(list(NULL), class = "httr2_redacted_sentinel")
+redacted_sentinel <- function(label = "<REDACTED>") {
+  structure(list(label), class = "httr2_redacted_sentinel")
 }
 #' @export
 print.httr2_redacted_sentinel <- function(x, ...) {
@@ -8,12 +8,12 @@ print.httr2_redacted_sentinel <- function(x, ...) {
 }
 #' @export
 format.httr2_redacted_sentinel <- function(x, ...) {
-  unclass(cli::col_grey("<REDACTED>"))
+  unclass(cli::col_grey(x[[1]]))
 }
 #' @export
 str.httr2_redacted_sentinel <- function(object, ..., nest.lev = 0) {
   str_leading_space(nest.lev)
-  cat(cli::col_grey("<REDACTED>"), "\n", sep = "")
+  cat(cli::col_grey(object[[1]]), "\n", sep = "")
 }
 
 list_redact <- function(x, names) {

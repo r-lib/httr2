@@ -236,87 +236,8 @@ We need to take a quick break from APIs to talk about secrets.
 Secrets are important, because every API (except for very simple APIs like faker) is going to require that you identify yourself in some way, typically with an API key or a token.
 And even if you plan to require your users to supply this information, you'll still need to record your own credentials in order to test your own package.
 
-This system described below is likely to be overkill if you have one secret that only needs to be shared in a couple of places: you can just put it in your `.Renviron` and access it with `Sys.getenv()`.
-But you will probably accumulate more secrets over time, and you'll need to figure out how to share them with other people and other computers, so I think spending a little time to understand this system and set up it for your package will pay off in the long term.
-
-### Basics
-
-httr2 provides `secret_encrypt()` and `secret_decrypt()` to scramble secrets so that you can include them in your public source code without worrying that others can read them.
-There are three basic steps to this process:
-
-1.  You create an **encryption** key with `secret_make_key()` that is used to scramble and descramble secrets using symmetric cryptography:
-
-    ```{r}
-    key <- secret_make_key()
-    key
-    ```
-
-    (Note that `secret_make_key()` uses a cryptographically secure random number generator provided by OpenSSL; it is not affected by R's RNG settings, and there's no way to make it reproducible.)
-
-2.  You scramble your secrets with `secret_encrypt()` and store the resulting text directly in the source code of your package:
-
-    ```{r}
-    secret_scrambled <- secret_encrypt("secret I need to work with an API", key)
-    secret_scrambled
-    ```
-
-3.  When needed, you descramble the secret using `secret_decrypt()`:
-
-    ```{r}
-    secret_decrypt(secret_scrambled, key)
-    ```
-
-### Package keys and secrets
-
-You can create any number of encryption keys, but I highly recommend that you create one key per package, which I'll call the **package** key.
-In this section, I'll show you how to store that key so that you (and your automated tests) can use it, but no one else can.
-
-httr2 is built around the notion that this key should live in an environment variable.
-So the first step is to make your package key available on your local development machine by adding a line to your your user-level `.Renviron` (which you can easily open with `usethis::edit_r_environ()`):
-
-```
-YOURPACKAGE_KEY=key_you_generated_with_secret_make_key
-```
-
-```{r, include = FALSE}
-Sys.setenv(YOURPACKAGE_KEY = secret_make_key())
-```
-
-Now (after you restart R), you'll be able to take advantage of a special `secret_encrypt()` and `secret_decrypt()` feature: the `key` argument can be the name of an environment variable, instead of the encryption key itself.
-In fact, this is most natural usage.
-
-```{r}
-secret_scrambled <- secret_encrypt("secret I need to work with an API", "YOURPACKAGE_KEY")
-secret_scrambled
-secret_decrypt(secret_scrambled, "YOURPACKAGE_KEY")
-```
-
-You'll also need to make the key available in your GitHub Actions (both check and pkgdown) so your automated tests can use it.
-This requires two steps:
-
-1.  Add the key to your [repository secrets](https://docs.github.com/en/actions/reference/encrypted-secrets).
-
-2.  Share the key with the workflows that need it by adding a line to the appropriate workflow:
-
-    ``` yaml
-        env:
-          YOURPACKAGE_KEY: ${{ secrets.YOURPACKAGE_KEY }}
-    ```
-
-    You can see how httr2 does it in [its GitHub workflow](https://github.com/r-lib/httr2/blob/master/.github/workflows/R-CMD-check.yaml){.uri}.
-
-Other continuous integration platforms will offer similar ways to make a key available as a secure environment variable.
-
-### When the package key isn't available
-
-There are a few important cases where your code won't have access to your package key: on CRAN, on the personal machines of external contributors, and in automated checks on their PRs.
-So if you want to share your package on CRAN or make it easy for others to contribute, you need to make sure that your examples, vignettes, and tests all work without error:
-
--   In vignettes, you can run `knitr::opts_chunk(eval = secret_has_key("YOURPACKAGE_KEY"))` so that chunks are only evaluated if your key is available.
-
--   In examples, you can surround code blocks that require your key with `if (httr2::secret_has_key("YOURPACKAGE_KEY")) {}`
-
--   You don't need to do anything in tests because when `secret_decrypt()` is run by testthat, it will automatically `skip()` the test if the key isn't available.
+httr2 provides a system for managing secrets so they don't leak into your code, your console output, or saved objects; you can read all about it in the [managing secrets](https://httr2.r-lib.org/articles/secrets.html) article.
+In this vignette, we'll use the two simplest pieces: env vars to store credentials, and `secret_encrypt()`/`secret_decrypt()` (described in [encrypting secrets in a package](https://httr2.r-lib.org/articles/secrets.html#encrypting-secrets-in-a-package)) to make a testing credential available to you and your CI without sharing it with your users.
 
 ## NYTimes Books API
 

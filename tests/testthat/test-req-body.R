@@ -255,3 +255,86 @@ test_that("mutlipart data is unobufcated", {
 
   expect_equal(req$fields, list(x = "x", y = "y"))
 })
+
+# secrets ---------------------------------------------------------------------
+
+test_that("json bodies accept all secret types", {
+  withr::local_envvar(SECRET_BODY_TEST = "env")
+  req <- request_test() |>
+    req_body_json(list(
+      a = secret_envvar("SECRET_BODY_TEST"),
+      b = secret_value("val"),
+      c = \() "fun",
+      d = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
+    )) |>
+    req_body_apply()
+
+  expect_equal(
+    rawToChar(req$options$postfields),
+    '{"a":"env","b":"val","c":"fun","d":"y"}'
+  )
+})
+
+test_that("form bodies accept all secret types", {
+  withr::local_envvar(SECRET_BODY_TEST = "env")
+  req <- request_test() |>
+    req_body_form(
+      a = secret_envvar("SECRET_BODY_TEST"),
+      b = secret_value("val"),
+      c = \() "fun",
+      d = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
+    ) |>
+    req_body_apply()
+
+  expect_equal(rawToChar(req$options$postfields), "a=env&b=val&c=fun&d=y")
+})
+
+test_that("multipart bodies accept all secret types", {
+  withr::local_envvar(SECRET_BODY_TEST = "env")
+  req <- request_test() |>
+    req_body_multipart(
+      a = secret_envvar("SECRET_BODY_TEST"),
+      b = secret_value("val"),
+      c = \() "fun",
+      d = obfuscated("ZdYJeG8zwISodg0nu4UxBhs")
+    ) |>
+    req_body_apply()
+
+  expect_equal(req$fields, list(a = "env", b = "val", c = "fun", d = "y"))
+})
+
+test_that("req_get_body handles secrets", {
+  withr::local_envvar(SECRET_BODY_TEST = "env")
+  req <- request_test() |>
+    req_body_form(a = "x", b = secret_envvar("SECRET_BODY_TEST"))
+
+  expect_equal(req_get_body(req, "remove")$b, NULL)
+  expect_equal(
+    req_get_body(req, "redact")$b,
+    "<REDACTED (env: SECRET_BODY_TEST)>"
+  )
+  expect_equal(req_get_body(req, "reveal")$b, "env")
+})
+
+test_that("req_get_body(obfuscated =) is deprecated", {
+  req <- request_test() |>
+    req_body_form(a = obfuscated("ZdYJeG8zwISodg0nu4UxBhs"))
+  expect_snapshot(. <- req_get_body(req, obfuscated = "reveal"))
+})
+
+test_that("dropped secret_value errors in body", {
+  req <- request_test() |> req_body_json(list(a = secret_value("abc")))
+  req <- unserialize(serialize(req, NULL))
+  expect_snapshot(error = TRUE, req_body_apply(req))
+})
+
+test_that("secret_envvar body survives serialization", {
+  path <- withr::local_tempfile()
+  req <- request_test() |>
+    req_body_form(a = secret_envvar("SECRET_BODY_TEST"))
+  saveRDS(req, path)
+
+  withr::local_envvar(SECRET_BODY_TEST = "env")
+  req <- readRDS(path) |> req_body_apply()
+  expect_equal(rawToChar(req$options$postfields), "a=env")
+})

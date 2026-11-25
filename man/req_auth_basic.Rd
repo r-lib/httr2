@@ -14,7 +14,7 @@ req_auth_basic(req, username, password = NULL)
 \item{password}{Password. You should avoid entering the password directly
 when calling this function as it will be captured by \code{.Rhistory}. Instead,
 leave it unset and the default behaviour will prompt you for it
-interactively.}
+interactively. Can also be a secret (see \code{\link[=secret_value]{secret_value()}}).}
 }
 \value{
 A modified HTTP \link{request}.

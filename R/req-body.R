@@ -155,7 +155,7 @@ req_body_form <- function(
 ) {
   check_request(.req)
 
-  dots <- multi_dots(..., .multi = .multi)
+  dots <- multi_dots(..., .multi = .multi, secrets = TRUE)
   data <- modify_list(.req$body$data %||% list(), !!!dots)
   req_body(.req, data = data, type = "form")
 }
@@ -247,21 +247,31 @@ req_get_body_type <- function(req) {
 
 #' @export
 #' @rdname req_get_body_type
-#' @param obfuscated What to do with obfuscated values that can be present in
-#'   JSON, form, and multipart bodies?
+#' @param secrets What to do with secrets (e.g. [obfuscated()] values) that
+#'   can be present in JSON, form, and multipart bodies?
 #'   * `"remove"` (the default) replaces them with `NULL`.
 #'   * `"redact"` replaces them with `<REDACTED>`.
-#'   * `"reveal"` leaves them in place.
-#' @param obfuscated Form and JSON bodies can contain [obfuscated] values.
-#'   This argument controls what happens to them: should they be removed,
-#'   redacted, or revealed.
-req_get_body <- function(req, obfuscated = c("remove", "redact", "reveal")) {
+#'   * `"reveal"` reveals them.
+#' @param obfuscated `r lifecycle::badge("deprecated")` Use `secrets` instead.
+req_get_body <- function(
+  req,
+  secrets = c("remove", "redact", "reveal"),
+  obfuscated = deprecated()
+) {
   check_request(req)
-  obfuscated <- arg_match(obfuscated)
+  if (lifecycle::is_present(obfuscated)) {
+    lifecycle::deprecate_warn(
+      "1.4.0",
+      "req_get_body(obfuscated)",
+      "req_get_body(secrets)"
+    )
+    secrets <- obfuscated
+  }
+  secrets <- arg_match(secrets)
 
   data <- req$body$data
   if (req_get_body_type(req) %in% c("json", "form", "multipart")) {
-    data <- unobfuscate(data, obfuscated)
+    data <- secrets_resolve(data, secrets)
   }
   data
 }
@@ -292,10 +302,10 @@ req_body_render <- function(req) {
   type <- req_get_body_type(req)
   switch(
     type,
-    form = url_query_build(unobfuscate(req$body$data)),
+    form = url_query_build(secrets_resolve(req$body$data)),
     json = unclass(exec(
       jsonlite::toJSON,
-      unobfuscate(req$body$data),
+      secrets_resolve(req$body$data),
       !!!req$body$params
     )),
     cli::cli_abort("Unsupported type {type}", .internal = TRUE)
@@ -329,6 +339,6 @@ req_body_apply_stream <- function(req, data) {
   req
 }
 req_body_apply_multipart <- function(req, data) {
-  req$fields <- unobfuscate(req$body$data)
+  req$fields <- secrets_resolve(req$body$data)
   req
 }

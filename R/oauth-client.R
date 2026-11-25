@@ -72,7 +72,7 @@ oauth_client <- function(
     )
   }
   check_string(token_url)
-  check_string(secret, allow_null = TRUE)
+  check_string_or_secret(secret, allow_null = TRUE)
 
   if (is.character(auth)) {
     if (missing(auth)) {
@@ -190,7 +190,7 @@ oauth_client_req_auth_header <- function(req, client) {
   req_auth_basic(
     req,
     username = client$id,
-    password = unobfuscate(client$secret)
+    password = client$secret
   )
 }
 

@@ -14,6 +14,8 @@
 #'   * Use `NULL` to reset a value to httr2's default.
 #'   * Use `""` to remove a header.
 #'   * Use a character vector to repeat a header.
+#'   * Use a secret (see [secret_value()]) to supply a value that is resolved
+#'     only when the request is performed. Secrets are always redacted.
 #' @param .redact A character vector of headers to redact. The Authorization
 #'   header is always redacted.
 #' @returns A modified HTTP [request].
@@ -68,7 +70,7 @@ req_headers <- function(.req, ..., .redact = NULL) {
 
   headers <- modify_list(.req$headers, ..., .ignore_case = TRUE)
   redact <- c("Authorization", .redact, which_redacted(.req$headers))
-  .req$headers <- new_headers(headers, redact, lifespan = .req$state)
+  .req$headers <- new_headers(headers, redact)
 
   .req
 }
@@ -85,10 +87,10 @@ req_headers_redacted <- function(.req, ...) {
 check_header_values <- function(..., error_call = caller_env()) {
   dots <- list2(...)
 
-  type_ok <- map_lgl(dots, \(x) is_atomic(x) || is.null(x))
+  type_ok <- map_lgl(dots, \(x) is_atomic(x) || is.null(x) || is_secret(x))
   if (any(!type_ok)) {
     cli::cli_abort(
-      "All elements of {.arg ...} must be either an atomic vector or NULL.",
+      "All elements of {.arg ...} must be either an atomic vector, a secret, or NULL.",
       call = error_call
     )
   }
@@ -125,7 +127,10 @@ req_get_headers <- function(req, redacted = c("drop", "redact", "reveal")) {
   if (redacted == "drop") {
     headers <- headers[!is_redacted(headers)]
   } else if (redacted == "redact") {
-    headers[is_redacted(headers)] <- "<REDACTED>"
+    headers[is_redacted(headers)] <- lapply(
+      headers[is_redacted(headers)],
+      secret_format
+    )
   }
   headers_flatten(headers, redact = FALSE)
 }

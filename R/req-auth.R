@@ -8,7 +8,7 @@
 #' @param password Password. You should avoid entering the password directly
 #'   when calling this function as it will be captured by `.Rhistory`. Instead,
 #'   leave it unset and the default behaviour will prompt you for it
-#'   interactively.
+#'   interactively. Can also be a secret (see [secret_value()]).
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -29,8 +29,14 @@ req_auth_basic <- function(req, username, password = NULL) {
   check_string(username)
   password <- check_password(password)
 
-  username_password <- openssl::base64_encode(paste0(username, ":", password))
-  req_headers(req, Authorization = paste0("Basic ", username_password))
+  req_headers(req, Authorization = secret_map(password, auth_basic(username)))
+}
+
+auth_basic <- function(username) {
+  force(username)
+  function(password) {
+    paste0("Basic ", openssl::base64_encode(paste0(username, ":", password)))
+  }
 }
 
 #' Authenticate request with bearer token
@@ -44,7 +50,8 @@ req_auth_basic <- function(req, username, password = NULL) {
 #' @seealso See `r rfc(6750)` for more details about bearer token usage
 #'   with OAuth 2.0.
 #' @inheritParams req_perform
-#' @param token A bearer token.
+#' @param token A bearer token. Can be a string or a secret
+#'   (see [secret_value()]).
 #' @returns A modified HTTP [request].
 #' @export
 #' @examples
@@ -56,6 +63,10 @@ req_auth_basic <- function(req, username, password = NULL) {
 #' print(req, redact_headers = FALSE)
 req_auth_bearer_token <- function(req, token) {
   check_request(req)
-  check_string(token)
-  req_headers(req, Authorization = paste("Bearer", token))
+  check_string_or_secret(token)
+  req_headers(req, Authorization = secret_map(token, auth_bearer))
+}
+
+auth_bearer <- function(token) {
+  paste("Bearer", token)
 }

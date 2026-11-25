@@ -3,8 +3,10 @@
 #' This is a custom auth protocol implemented by AWS.
 #'
 #' @inheritParams req_perform
-#' @param aws_access_key_id,aws_secret_access_key AWS key and secret.
-#' @param aws_session_token AWS session token, if required.
+#' @param aws_access_key_id,aws_secret_access_key AWS key and secret. Each can
+#'   be a string or a secret (see [secret_value()]).
+#' @param aws_session_token AWS session token, if required. Can be a string or
+#'   a secret (see [secret_value()]).
 #' @param aws_service,aws_region The AWS service and region to use for the
 #'   request. If not supplied, will be automatically parsed from the URL
 #'   hostname.
@@ -38,9 +40,9 @@ req_auth_aws_v4 <- function(
   aws_region = NULL
 ) {
   check_request(req)
-  check_string(aws_access_key_id)
-  check_string(aws_secret_access_key)
-  check_string(aws_session_token, allow_null = TRUE)
+  check_string_or_secret(aws_access_key_id)
+  check_string_or_secret(aws_secret_access_key)
+  check_string_or_secret(aws_session_token, allow_null = TRUE)
   check_string(aws_service, allow_null = TRUE)
   check_string(aws_region, allow_null = TRUE)
 
@@ -69,6 +71,10 @@ auth_aws_sign <- function(
   aws_region = NULL,
   cache
 ) {
+  aws_access_key_id <- secrets_resolve(aws_access_key_id)
+  aws_secret_access_key <- secrets_resolve(aws_secret_access_key)
+  aws_session_token <- secrets_resolve(aws_session_token)
+
   current_time <- Sys.time()
 
   type <- req_get_body_type(req)
