@@ -11,6 +11,8 @@
 * `req_error()` and `req_retry()` now name the callback in arity errors.
 * `req_perform_connection()` now returns as soon as the response headers have been received, rather than waiting for the first bytes of the body (#918).
 * `req_perform_promise()` now observes the request timeout while waiting for a response on an idle socket (#923).
+* `req_perform_promise()` now starts new requests promptly when another request in the same pool is waiting for a response, including requests submitted from a curl completion callback, and resumes polling a pool whose event loop was destroyed (#924).
+* `req_perform_promise()` now fails with an informative error if background polling stops after an unexpected error, instead of leaving pending promises to hang silently.
 * `req_perform_sequential()` no longer ignores `mock` when `on_error = "stop"`.
 * `req_url_query()` and `url_modify_query()` now preserve existing query values, including unescaped values supplied with `I()`, when modifying other parameters (#837).
 * `resp_body_multipart()` parses a multipart response body (e.g. `multipart/byteranges`) into a list of responses, one per part (@LTLA, #903).
