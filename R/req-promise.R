@@ -165,14 +165,23 @@ PoolPoller <- R6Class(
       self$cancel_poll <- NULL
       withCallingHandlers(
         {
-          curl::multi_run(0, pool = self$pool)
+          curl_multi_run(0, pool = self$pool)
           if (length(curl::multi_list(self$pool)) > 0) {
             self$cancel_poll <- self$schedule_poll()
           } else {
             self$stop()
           }
         },
-        error = function(cnd) self$stop()
+        error = function(cnd) {
+          self$stop()
+          cli::cli_abort(
+            c(
+              "Background request polling stopped after an unexpected error.",
+              i = "Pending promises may not resolve until a new request is submitted to the same pool."
+            ),
+            parent = cnd
+          )
+        }
       )
       invisible()
     },
@@ -191,3 +200,8 @@ PoolPoller <- R6Class(
     }
   )
 )
+
+# For mocking
+curl_multi_run <- function(...) {
+  curl::multi_run(...)
+}

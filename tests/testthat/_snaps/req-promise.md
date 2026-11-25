@@ -21,6 +21,17 @@
       Error in `req_perform_promise()`:
       ! `verbosity` must be 0, 1, 2, or 3.
 
+# pool poller fails informatively when polling fails
+
+    Code
+      later::run_now()
+    Condition
+      Error in `self$poll()`:
+      ! Background request polling stopped after an unexpected error.
+      i Pending promises may not resolve until a new request is submitted to the same pool.
+      Caused by error in `curl_multi_run()`:
+      ! Simulated poll failure
+
 # correctly prepares request
 
     Code

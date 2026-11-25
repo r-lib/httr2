@@ -23,6 +23,19 @@ test_that("pool poller respects request timeouts", {
   )
 })
 
+test_that("pool poller fails informatively when polling fails", {
+  pool <- curl::new_pool()
+  req_perform_promise(request_test("/delay/:secs", secs = 2), pool = pool)
+
+  # Force the next poll to fail, then wake the sleeping poller by submitting
+  # another request so the failing poll runs on the next tick
+  local_mocked_bindings(
+    curl_multi_run = function(...) stop("Simulated poll failure")
+  )
+  req_perform_promise(request_test("/get"), pool = pool)
+  expect_snapshot(later::run_now(), error = TRUE)
+})
+
 test_that("returns a promise that resolves", {
   p1 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
   p2 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
