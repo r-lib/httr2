@@ -36,6 +36,27 @@ test_that("pool poller fails informatively when polling fails", {
   expect_snapshot(later::run_now(), error = TRUE)
 })
 
+test_that("pool poller recovers after an interrupt", {
+  pool <- curl::new_pool()
+  p1 <- req_perform_promise(
+    request_test("/delay/:secs", secs = 0.2),
+    pool = pool
+  )
+
+  with_mocked_bindings(
+    curl_multi_run = function(...) signal("", class = "interrupt"),
+    {
+      p2 <- req_perform_promise(request_test("/get"), pool = pool)
+      tryCatch(later::run_now(), interrupt = function(cnd) NULL)
+    }
+  )
+
+  p3 <- req_perform_promise(request_test("/get"), pool = pool)
+  expect_equal(resp_status(extract_promise(p1, timeout = 2)), 200)
+  expect_equal(resp_status(extract_promise(p2, timeout = 2)), 200)
+  expect_equal(resp_status(extract_promise(p3, timeout = 2)), 200)
+})
+
 test_that("returns a promise that resolves", {
   p1 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
   p2 <- req_perform_promise(request_test("/delay/:secs", secs = 0.25))
