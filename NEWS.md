@@ -1,5 +1,6 @@
 # httr2 (development version)
 
+* Sending a large JSON body is faster: preparing the body no longer re-validates its options for every element of the body (#925).
 * OAuth token cache keys now include the flow parameters that affect the resulting token (e.g. `scope` and, for `req_oauth_token_exchange()`, the subject token and other exchange parameters), so a token cached for one set of parameters is no longer reused for another (#906).
 * `oauth_client_req_auth_body()` now leaves obfuscated client secrets obfuscated in the request object, so the plaintext secret is no longer revealed by `httr2_translate()`, `req_get_body()`, `str()`, or `last_request()`; it is only unobfuscated when the body is rendered at send time (#908).
 * The on-disk OAuth token cache (used by `req_oauth_*(cache_disk = TRUE)`) now creates its directories with mode `700` and token files with mode `600` so that cached tokens are not readable by other users on the same machine.

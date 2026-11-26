@@ -243,7 +243,7 @@ unobfuscate_rec <- function(x, handle = "reveal") {
       remove = NULL
     )
   } else if (is.list(x)) {
-    x[] <- lapply(x, unobfuscate, handle = handle)
+    x[] <- lapply(x, unobfuscate_rec, handle = handle)
     x
   } else {
     x
