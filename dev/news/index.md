@@ -2,6 +2,9 @@
 
 ## httr2 (development version)
 
+- Sending a large JSON body is faster: preparing the body no longer
+  re-validates its options for every element of the body
+  ([\#925](https://github.com/r-lib/httr2/issues/925)).
 - OAuth token cache keys now include the flow parameters that affect the
   resulting token (e.g. `scope` and, for
   [`req_oauth_token_exchange()`](https://httr2.r-lib.org/dev/reference/req_oauth_token_exchange.md),
