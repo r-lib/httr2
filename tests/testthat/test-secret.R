@@ -70,13 +70,21 @@ test_that("unobfuscated can control behaviour", {
 })
 
 test_that("unobfuscate applies handle at every level of nesting", {
-  x <- list(a = list(b = list(obfuscated("JKWA-5KOJpjZcuwVYjILoayq4A"), "plain")))
-  expect_equal(unobfuscate(x, "reveal"), list(a = list(b = list("abc", "plain"))))
+  x <- list(
+    a = list(b = list(obfuscated("JKWA-5KOJpjZcuwVYjILoayq4A"), "plain"))
+  )
+  expect_equal(
+    unobfuscate(x, "reveal"),
+    list(a = list(b = list("abc", "plain")))
+  )
   expect_equal(
     unobfuscate(x, "redact"),
     list(a = list(b = list("<REDACTED>", "plain")))
   )
-  expect_equal(unobfuscate(x, "remove"), list(a = list(b = list(NULL, "plain"))))
+  expect_equal(
+    unobfuscate(x, "remove"),
+    list(a = list(b = list(NULL, "plain")))
+  )
 })
 
 test_that("secret_has_key returns FALSE/TRUE", {
