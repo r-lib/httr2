@@ -152,16 +152,26 @@ aws_v4_signature <- function(
   HTTPMethod <- method
   CanonicalURI <- aws_escape_path(path)
 
-  if (is.null(parsed_url$query)) {
+  if (length(parsed_url$query) == 0) {
     CanonicalQueryString <- ""
   } else {
-    sorted_query <- parsed_url$query[order(names(parsed_url$query))]
-    CanonicalQueryString <- url_query_build(sorted_query)
+    query_names <- curl::curl_escape(names(parsed_url$query))
+    query_values <- curl::curl_escape(unlist(
+      parsed_url$query,
+      use.names = FALSE
+    ))
+    ord <- order(query_names, query_values, method = "radix")
+    CanonicalQueryString <- paste0(
+      query_names[ord],
+      "=",
+      query_values[ord],
+      collapse = "&"
+    )
   }
 
   headers$host <- parsed_url$hostname
   names(headers) <- tolower(names(headers))
-  headers <- headers[order(names(headers))]
+  headers <- headers[order(names(headers), method = "radix")]
   headers[] <- trimws(headers)
   headers[] <- gsub(" {2,}", " ", headers)
   CanonicalHeaders <- paste0(names(headers), ":", headers, "\n", collapse = "")

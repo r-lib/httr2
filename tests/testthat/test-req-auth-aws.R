@@ -170,3 +170,42 @@ test_that("canonical URI preserves trailing slash", {
   canonical_uri <- strsplit(signature$CanonicalRequest, "\n")[[1]][[2]]
   expect_equal(canonical_uri, "/v0/")
 })
+
+test_that("canonical query string sorts by code point and value", {
+  sig_dup <- aws_v4_signature(
+    method = "GET",
+    url = "https://example.amazonaws.com/?a=2&a=1&B=0",
+    headers = list("x-amz-date" = "20150830T123600Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2015-08-30 12:36:00", tz = "UTC"),
+    aws_service = "service",
+    aws_region = "us-east-1",
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+  canonical_dup <- strsplit(sig_dup$CanonicalRequest, "\n")[[1]][[3]]
+  expect_equal(canonical_dup, "B=0&a=1&a=2")
+
+  suppressWarnings(tryCatch(
+    withr::local_collate("en_US.UTF-8"),
+    error = \(e) NULL
+  ))
+  skip_if_not(identical(Sys.getlocale("LC_COLLATE"), "en_US.UTF-8"))
+
+  sig_case <- aws_v4_signature(
+    method = "GET",
+    url = "https://iam.amazonaws.com/?Action=ListUsers&maxItems=10&Version=2010-05-08",
+    headers = list("x-amz-date" = "20150830T123600Z"),
+    body_sha256 = openssl::sha256(""),
+    current_time = as.POSIXct("2015-08-30 12:36:00", tz = "UTC"),
+    aws_service = "iam",
+    aws_region = "us-east-1",
+    aws_access_key_id = "AKIAIOSFODNN7EXAMPLE",
+    aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  )
+  canonical_query <- strsplit(sig_case$CanonicalRequest, "\n")[[1]][[3]]
+  expect_equal(
+    canonical_query,
+    "Action=ListUsers&Version=2010-05-08&maxItems=10"
+  )
+})
