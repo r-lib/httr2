@@ -25,7 +25,8 @@
 #' the end of the stream has been reached or, if in nonblocking mode, that
 #' no event is currently available.
 #' @export
-#' @param resp,con A streaming [response] created by [req_perform_connection()].
+#' @param resp,con A streaming [response] created by
+#'   [req_perform_connection()] or [req_perform_connection_promise()].
 #' @param kb How many kilobytes (1024 bytes) of data to read.
 #' @order 1
 #' @examples

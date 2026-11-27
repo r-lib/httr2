@@ -10,6 +10,7 @@
 * `req_dry_run()` once again redacts credentials added by `req_oauth_*()` and `req_auth_aws_v4()`.
 * `req_error()` and `req_retry()` now name the callback in arity errors.
 * `req_perform_connection()` now returns as soon as the response headers have been received, rather than waiting for the first bytes of the body (#918).
+* New `req_perform_connection_promise()` opens a streaming connection asynchronously, returning a promise that resolves to a streaming response as soon as the response headers have been received, so the event loop isn't blocked while waiting for the server to respond (@JamesHWade, #921).
 * `req_perform_promise()` now observes the request timeout while waiting for a response on an idle socket (#923).
 * `req_perform_promise()` now starts new requests promptly when another request in the same pool is waiting for a response, including requests submitted from a curl completion callback, and resumes polling a pool whose event loop was destroyed (#924).
 * `req_perform_promise()` now fails with an informative error if background polling stops after an unexpected error, instead of leaving pending promises to hang silently.

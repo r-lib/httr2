@@ -23,7 +23,8 @@ resp_stream_aws(resp, max_size = Inf)
 resp_stream_is_complete(resp)
 }
 \arguments{
-\item{resp, con}{A streaming \link{response} created by \code{\link[=req_perform_connection]{req_perform_connection()}}.}
+\item{resp, con}{A streaming \link{response} created by
+\code{\link[=req_perform_connection]{req_perform_connection()}} or \code{\link[=req_perform_connection_promise]{req_perform_connection_promise()}}.}
 
 \item{kb}{How many kilobytes (1024 bytes) of data to read.}
 
