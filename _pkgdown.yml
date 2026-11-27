@@ -46,6 +46,7 @@ reference:
   - req_perform
   - req_perform_stream
   - req_perform_connection
+  - req_perform_connection_promise
   - req_perform_promise
 
 - subtitle: Control the process
